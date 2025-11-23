@@ -219,8 +219,10 @@ bool CInventory::RemoveItemBySlot(int slotNum, int count)
 
     slot.count -= count;
 
-    if (slot.count == 0)
-        slot.itemInst.itemId = -1;
+	if (slot.count == 0)
+	{
+		slot.itemInst.itemId = -1;
+	}
 
     return true;
 }

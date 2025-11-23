@@ -23,7 +23,7 @@
 #include "ItemData.h"
 #include "ItemInstance.h"
 #include "CWeaponEquip.h"
-#include "CClient_EnumHelper.h"
+#include "CEnumHelper.h"
 
 CLoading::CLoading(DEVICE pGraphicDev)
     : m_GraphicDev(pGraphicDev),
@@ -242,6 +242,17 @@ _uint CLoading::Loading_ForState()
     if (FAILED(pProtoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_SKILLCOUNT, CTexture::Create(m_GraphicDev, TEX_NORMAL,
             L"../Bin/Resource/Texture/UI/PlayerState/Skill/Skillcount%d.png",2))))
+        return E_FAIL;
+
+
+    if (FAILED(pProtoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_UI_CELL, CTexture::Create(m_GraphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/UI/Inventory/InventoryIcon_BG.png", 1))))
+        return E_FAIL;
+
+    if (FAILED(pProtoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_UI_HIGHLIGHT, CTexture::Create(m_GraphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/UI/Inventory/Outline%d.png", 2))))
         return E_FAIL;
 
 #pragma endregion

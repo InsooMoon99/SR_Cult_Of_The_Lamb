@@ -114,7 +114,9 @@ void CDroppedItem::OnBeginOverlap(CCollider* self, CCollider* other)
         //CDropSystem::GetInstance()->
 
         if (CItemDB::GetInstance()->GetItemById(m_itemInst.itemId)->type == ItemType::Weapon)
-            ply->Get_WeaponEquip()->Equip_Weapon(m_itemInst);
+        {
+            dynamic_cast<CWeaponEquip*>(ply->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::WEAPON_EQUIP))->Equip_Weapon(m_itemInst);
+        }
         else
         {
             CComponent* com = ply->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::INVENTORY);

@@ -5,6 +5,7 @@
 #include "CDropSystem.h"
 #include "CEditContext.h"
 #include "CHumanMonster.h"
+#include "CInventory.h"
 #include "CItemDB.h"
 #include "CLayer.h"
 #include "CMainCamera.h"
@@ -19,7 +20,11 @@
 #include "CUIWeapon.h"
 #include "ItemInstance.h"
 #include "CUIIcon.h"
+#include "CUIInventory.h"
+#include "CUIInventoryCell.h"
 #include "CUISKillCount.h"
+
+class CUIInventoryCell;
 
 CStage::CStage(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -118,6 +123,10 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
         dynamic_cast<CTransform*>(gameObject->Get_Component(
             ID_DYNAMIC,
             COMPONENTTYPE::TRANSFORM));
+    m_PlayerInventoryCom =
+        dynamic_cast<CInventory*>(gameObject->Get_Component(
+        ID_STATIC,
+        COMPONENTTYPE::INVENTORY));
 
     m_PlayerCombatStatCom =
         dynamic_cast<CCombatStat*>(gameObject->Get_Component(
@@ -232,6 +241,17 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
         layer->Add_GameObject(OBJTYPE::UI, uiSkillCount),
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUISKillCount) failed");
 
+    //CUIInventoryCell* uiInventoryCell = CUIInventoryCell::Create(m_GraphicDev);
+    //
+    //FAILED_CHECK_MSG(
+    //    layer->Add_GameObject(OBJTYPE::UI, uiInventoryCell),
+    //    L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UIInventoryCell) failed");
+
+    //Inventory UI
+    CUIInventory* uiInventory = CUIInventory::Create(m_GraphicDev);
+    uiInventory->SetInventory(m_PlayerInventoryCom);
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiInventory),
+        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UIInventory) failed");
 
 
     m_Layers.insert({ layerType, layer });

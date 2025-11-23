@@ -130,6 +130,9 @@
     <Filter Include="05. UI\01. UI\05. UIInventoryCell">
       <UniqueIdentifier>{4310f1dd-5ece-4cd9-9cba-8031db119dc0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. UI\01. UI\06. UIInventroy">
+      <UniqueIdentifier>{242d5095-fbe4-4d3b-8bfe-6906aa37b2d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -261,6 +264,9 @@
     <ClInclude Include="..\Header\CUIInventoryCell.h">
       <Filter>05. UI\01. UI\05. UIInventoryCell</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CUIInventory.h">
+      <Filter>05. UI\01. UI\06. UIInventroy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -373,6 +379,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CUIInventoryCell.cpp">
       <Filter>05. UI\01. UI\05. UIInventoryCell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUIInventory.cpp">
+      <Filter>05. UI\01. UI\06. UIInventroy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

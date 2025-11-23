@@ -56,7 +56,7 @@ void CWeaponEquip::Unequip_Weapon()
     RemoveWeaponStat();
 
     _vec3 DropPos = dynamic_cast<CPlayer*>(Get_Owner())->Get_TransformCom()->Get_Pos();
-    CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, m_CurrentWeaponSlot.itemInst, { DropPos.x,DropPos.y,DropPos.z + 5.f });
+    CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, m_CurrentWeaponSlot.itemInst, { DropPos.x,DropPos.y,DropPos.z + 2.f });
 
     m_CurrentWeaponID = -1;
     m_WeaponEquipped = false;
@@ -68,7 +68,7 @@ void CWeaponEquip::ApplyWeaponStat(Item* item)
     if (!player)
         return;
 
-    auto* combatStat = player->Get_CombatStat();
+    auto* combatStat = dynamic_cast<CCombatStat*>(player->Get_Component(ID_STATIC, COMPONENTTYPE::COMBATSTAT));
     if (!combatStat)
         return;
 
@@ -86,7 +86,7 @@ void CWeaponEquip::RemoveWeaponStat()
     if (!player)
         return;
 
-    auto* combatStat = player->Get_CombatStat();
+    auto* combatStat = dynamic_cast<CCombatStat*>(player->Get_Component(ID_STATIC, COMPONENTTYPE::COMBATSTAT));
 
     if (!combatStat)
         return;
