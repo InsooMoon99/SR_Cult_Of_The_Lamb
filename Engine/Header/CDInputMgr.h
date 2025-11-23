@@ -33,6 +33,8 @@ public:
         return *(reinterpret_cast<_long*>(&m_MouseState) + mouseMoveState);
     }
 
+    HWND Get_HWND() { return m_hWnd; }
+
 public:
     HRESULT Ready_InputDev(HINSTANCE hInst, HWND hWnd);
     void    Update_InputDev();
@@ -46,6 +48,8 @@ private:
     _ubyte m_KeyState[256];       // 키보드에 있는 모든 키값을 저장하기 위한 변수
 
     DIMOUSESTATE m_MouseState;
+
+    HWND m_hWnd;
 
 public:
     void Free() override;

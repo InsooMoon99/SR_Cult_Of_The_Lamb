@@ -57,6 +57,8 @@ _int CScene::Update_Scene(const _float& timeDelta)
         pLayer.second->Update_Layer(timeDelta);
     }
 
+
+
     return 0;
 }
 
