@@ -1,10 +1,10 @@
 ﻿#include "pch.h"
 #include "CPlayerController.h"
 
-#include "CRigidbody.h"
 #include "CCombatStat.h"
 #include "CDInputMgr.h"
 #include "CGameObject.h"
+#include "CRigidbody.h"
 #include "CState.h"
 #include "CTransform.h"
 
@@ -111,22 +111,40 @@ void CPlayerController::Update_Roll(const _float& timeDelta)
         m_RollData.rollElapsedTime = 0.f;
 
         m_TransformCom->Set_Scale(1.f, 1.f, 1.f);
+        m_OwnerRigidbody->Set_Friction(true);
 
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
     }
     // ROLL 하는 중
     else
     {
+#pragma region 구르기 텍스처 크기 문제로 임의로 스케일 값 조정
         // TODO 임시로 스케일 값 조정중. 고쳐지면 수정할 것
         //!! 스케일을 키우면 collider의 크기 또한 커지는 문제 있음
-        if (m_OwnerStateCom->Get_Dir() == ACTORDIR::LEFT)
-            m_TransformCom->Set_Scale(1.45f, 1.45f, 1.f);
-        else if (m_OwnerStateCom->Get_Dir() == ACTORDIR::RIGHT)
-            m_TransformCom->Set_Scale(-1.45f, 1.45f, 1.f);
 
-        _float rollSpeed = m_OwnerCombatStat->Get_Speed() * 1.5f; // 구르기 속도 배율
-        // Force = Mass * Accel. 빠른 반응성을 위해 배율 적용
-        m_OwnerRigidbody->Add_Force(m_RollData.rollDir * rollSpeed * 50.f);
+        if (m_OwnerStateCom->Get_Dir() == ACTORDIR::LEFT ||
+            m_OwnerStateCom->Get_Dir() == ACTORDIR::L_UP ||
+            m_OwnerStateCom->Get_Dir() == ACTORDIR::L_DOWN)
+            m_TransformCom->Set_Scale(1.4f, 1.4f, 1.f);
+
+        else if (m_OwnerStateCom->Get_Dir() == ACTORDIR::RIGHT ||
+                 m_OwnerStateCom->Get_Dir() == ACTORDIR::R_UP ||
+                 m_OwnerStateCom->Get_Dir() == ACTORDIR::R_DOWN)
+            m_TransformCom->Set_Scale(-1.4f, 1.4f, 1.f);
+
+        else if (m_OwnerStateCom->Get_Dir() == ACTORDIR::UP ||
+                 m_OwnerStateCom->Get_Dir() == ACTORDIR::DOWN)
+            m_TransformCom->Set_Scale(0.88f, 0.88f, 1.f);
+
+#pragma endregion
+
+        const _float rollSpeed = m_OwnerCombatStat->Get_Speed() * 2.5f; // 구르기 속도 배율
+
+        // 마찰이 필요 없는 강제 이동이므로 rigidbody의 마찰 및 AddForce 사용 안함
+        m_OwnerRigidbody->Set_Friction(false);
+        m_TransformCom->Move_Pos(m_RollData.rollDir, timeDelta, rollSpeed);
+
+        //m_OwnerRigidbody->Add_Force(m_RollData.rollDir * rollSpeed * 5.f);
     }
 }
 
@@ -229,7 +247,34 @@ void CPlayerController::Determine_State(KeyInputData& inputData)
     {
         m_RollData.isRolling       = true;
         m_RollData.rollElapsedTime = 0.f;
-        m_RollData.rollDir         = inputData.moveDir;
+
+        switch (m_OwnerStateCom->Get_Dir())
+        {
+        case ACTORDIR::RIGHT:
+            m_RollData.rollDir = g_WorldRight;
+            break;
+        case ACTORDIR::UP:
+            m_RollData.rollDir = g_WorldLook;
+            break;
+        case ACTORDIR::DOWN:
+            m_RollData.rollDir = - g_WorldLook;
+            break;
+        case ACTORDIR::L_UP:
+            m_RollData.rollDir = - g_WorldRight + g_WorldLook;
+            break;
+        case ACTORDIR::R_UP:
+            m_RollData.rollDir = g_WorldRight + g_WorldLook;
+            break;
+        case ACTORDIR::L_DOWN:
+            m_RollData.rollDir = - g_WorldRight - g_WorldLook;
+            break;
+        case ACTORDIR::R_DOWN:
+            m_RollData.rollDir = g_WorldRight - g_WorldLook;
+            break;
+        default:
+            m_RollData.rollDir = - g_WorldRight;
+            break;
+        }
 
         D3DXVec3Normalize(&m_RollData.rollDir, &m_RollData.rollDir);
 
@@ -286,8 +331,11 @@ void CPlayerController::Apply_Movement(KeyInputData& inputData, const _float& ti
 
     D3DXVec3Normalize(&inputData.moveDir, &inputData.moveDir);
 
-    // Force = Mass * Accel. 빠른 반응성을 위해 배율 적용
-    m_OwnerRigidbody->Add_Force(inputData.moveDir * finalSpeed * 50.f);
+    // 가속 없는 등속 이동
+    //m_TransformCom->Move_Pos(inputData.moveDir, timeDelta, finalSpeed);
+
+    // 가속 이동. 입력이 지속될수록 가속력 증가, 최대 속도 상한까지 계속 올라감
+    m_OwnerRigidbody->Add_Force(inputData.moveDir * finalSpeed * 4.f);
 }
 
 CPlayerController* CPlayerController::Create(DEVICE graphicDev)

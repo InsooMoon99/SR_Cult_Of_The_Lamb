@@ -4,20 +4,22 @@
 
 CRigidbody::CRigidbody(DEVICE graphicDev)
     : CComponent(graphicDev),
-      m_GravityOn(false),
+      m_UseGravity(false),
+      m_UseFriction(true),
       m_IsGround(true),
       m_Mass(1.f),
-      m_Friction(0.5f),
+      m_Friction(0.2f),
       m_Force(0.f, 0.f, 0.f),
       m_Accel(0.f, 0.f, 0.f),
       m_Vel(0.f, 0.f, 0.f),
-      m_VelLimit(200.f, 1000.f, 200.f),
+      m_VelLimit(100.f, 500.f, 100.f),
       m_Gravity(0.f, -800.f, 0.f)
 { }
 
 CRigidbody::CRigidbody(const CRigidbody& rhs)
     : CComponent(rhs),
-      m_GravityOn(false),
+      m_UseGravity(false),
+      m_UseFriction(true),
       m_IsGround(true),
       m_Mass(rhs.m_Mass),
       m_Friction(rhs.m_Friction),
@@ -53,8 +55,8 @@ _int CRigidbody::Update_Component(const _float& timeDelta)
     else
         D3DXVec3Normalize(&gravityDir, &gravityDir);
 
-    // 3. 중력 적용 여부에 따른 처리
-    if (m_GravityOn)
+    // 3. 중력 스위치 여부로 중력 적용
+    if (m_UseGravity)
     {
         if (m_IsGround) // 지상
         {
@@ -75,25 +77,31 @@ _int CRigidbody::Update_Component(const _float& timeDelta)
         }
     }
 
-    // 4. 지상에서 마찰력 적용
-    if (m_IsGround && D3DXVec3LengthSq(&m_Vel) > 1e-4f)
+    // 4. 마찰력 스위치 여부로 마찰력 적용
+    if (m_UseFriction)
     {
-        _vec3 frictionDir = -m_Vel; // 운동 방향의 반대
-        D3DXVec3Normalize(&frictionDir, &frictionDir);
+        const _vec3 forceXZ    = { m_Force.x, 0.f, m_Force.z };
+        const _bool hasForceXZ = (D3DXVec3LengthSq(&forceXZ) > 1e-4f);
 
-        // 마찰력 크기
-        _float gravityAccelScalar = D3DXVec3Length(&m_Gravity);
+        if (m_IsGround && !hasForceXZ && D3DXVec3LengthSq(&m_Vel) > 1e-4f)
+        {
+            _vec3 frictionDir = -m_Vel; // 운동 방향의 반대
+            D3DXVec3Normalize(&frictionDir, &frictionDir);
 
-        // 감속량 계산
-        _float frictionDeltaVel = m_Friction * gravityAccelScalar * timeDelta;
+            // 마찰력 크기
+            _float gravityAccelScalar = D3DXVec3Length(&m_Gravity);
 
-        _float currentSpeed = D3DXVec3Length(&m_Vel);
+            // 감속량 계산
+            _float frictionDeltaVel = m_Friction * gravityAccelScalar * timeDelta;
 
-        // 마찰력이 남은 속도보다 크면 정지, 아니면 감속
-        if (currentSpeed <= frictionDeltaVel)
-            m_Vel = { 0.f, 0.f, 0.f };
-        else
-            m_Vel += frictionDir * frictionDeltaVel;
+            _float currentSpeed = D3DXVec3Length(&m_Vel);
+
+            // 마찰력이 남은 속도보다 크면 정지, 아니면 감속
+            if (currentSpeed <= frictionDeltaVel)
+                m_Vel = { 0.f, 0.f, 0.f };
+            else
+                m_Vel += frictionDir * frictionDeltaVel;
+        }
     }
 
     // 5. 속도 제한 (Clamping)
@@ -114,7 +122,7 @@ _int CRigidbody::Update_Component(const _float& timeDelta)
         if (D3DXVec3Length(&velXZ) > m_VelLimit.x)
         {
             D3DXVec3Normalize(&velXZ, &velXZ);
-            velXZ *= m_VelLimit.x;  // m_VelLimit.x = m_VelLimit.z 일 때
+            velXZ *= m_VelLimit.x; // m_VelLimit.x = m_VelLimit.z 일 때
         }
 
         // 재합성
@@ -133,11 +141,9 @@ _int CRigidbody::Update_Component(const _float& timeDelta)
     return 0;
 }
 
-void CRigidbody::LateUpdate_Component()
-{ }
+void CRigidbody::LateUpdate_Component() {}
 
-void CRigidbody::Render_Editor()
-{ }
+void CRigidbody::Render_Editor() {}
 
 CRigidbody* CRigidbody::Create(DEVICE graphicDev)
 {
@@ -153,12 +159,6 @@ CRigidbody* CRigidbody::Create(DEVICE graphicDev)
     return rigidbody;
 }
 
-CComponent* CRigidbody::Clone()
-{
-    return new CRigidbody(*this);
-}
+CComponent* CRigidbody::Clone() { return new CRigidbody(*this); }
 
-void CRigidbody::Free()
-{
-    CComponent::Free();
-}
+void CRigidbody::Free() { CComponent::Free(); }
