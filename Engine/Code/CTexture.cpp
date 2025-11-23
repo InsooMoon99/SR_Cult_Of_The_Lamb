@@ -135,7 +135,6 @@ HRESULT CTexture::Add_Texture(const wstring& animKey, TEXTUREID texType, const w
     {
         wchar_t fileName[MAX_PATH] = L"";
 
-        // 파일이 1~N 이면 (i+1), 0~N-1 이면 (i)로 맞춰줘
         swprintf_s(fileName, MAX_PATH, filePathPattern.c_str(), i + 1);
 
         IDirect3DBaseTexture9* texture = nullptr;

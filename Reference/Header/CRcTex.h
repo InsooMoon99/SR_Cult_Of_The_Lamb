@@ -19,6 +19,7 @@ public:
 public:
     static CRcTex* Create(DEVICE graphicDev);
     CComponent*    Clone() override;
+
 private:
     void Free() override;
 };

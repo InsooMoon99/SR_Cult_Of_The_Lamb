@@ -42,13 +42,37 @@ public: // Getter       ====================================
     // 월드 업데이트 플래그 확인용
     bool Get_DirtyFlag() const { return m_IsDirty; }
 
+#pragma region Transform Local/World 분리
+
+    // === Local ===
+    const _vec3& Get_LocalPos() const { return m_LocalPos; }
+    const _vec3& Get_LocalAngle() const { return m_LocalAngle; }
+    const _vec3& Get_LocalScale() const { return m_LocalScale; }
+
+    void Set_LocalPos(const _vec3& localPos);
+    void Set_LocalAngle(const _vec3& localAngle);
+    void Set_LocalScale(const _vec3& localScale);
+
+    // === 계층 ===
+    bool Has_Parent() const { return m_Parent != nullptr; }
+
+    CTransform* Get_Parent() const { return m_Parent; }
+    void        Set_Parent(CTransform* parent);
+
+    const vector<CTransform*>& Get_Children() const { return m_Children; }
+    void Add_Child(CTransform* child);
+
+    // 월드/로컬 갱신
+    void Update_Transform();
+
+#pragma endregion
+    
 public: // Setter       ====================================
+    void Set_Pos(const _vec3& worldPos);  // { m_Info[INFO_POS] = worldPos; }
+    void Set_Pos(_float x, _float y, _float z);// { m_Info[INFO_POS] = { x, y, z }; }
 
-    void Set_Pos(const _vec3& pos) { m_Info[INFO_POS] = pos; }
-    void Set_Pos(_float x, _float y, _float z) { m_Info[INFO_POS] = { x, y, z }; }
-
-    void Set_Scale(const _vec3& scale) { m_Scale = scale; }
-    void Set_Scale(_float x, _float y, _float z) { m_Scale = { x, y, z }; }
+    void Set_Scale(const _vec3& worldScale); //{ m_Scale = worldScale; }
+    void Set_Scale(_float x, _float y, _float z); // { m_Scale = { x, y, z }; }
 
     void Set_World(const _matrix& matrix) { m_matWorld = matrix; }
 
@@ -56,7 +80,6 @@ public: // Setter       ====================================
     // Radian 기준 Euler(Pitch=X, Yaw=Y, Roll=Z) 세팅
     void Set_Rotation(const _vec3& rad);        
     void Set_RotationAxis(ROTATION axis, _float value);
-
 
 public: // Transform Operations     ========================
 
@@ -112,6 +135,20 @@ private:
     bool m_IsDirty;                     // 월드 변환 필요 여부 플래그
 
     _vec3 m_EulerRad {};
+#pragma endregion
+
+#pragma region Local
+
+    _vec3   m_LocalPos;
+    _vec3   m_LocalAngle; 
+    _vec3   m_LocalScale;
+
+    _matrix m_matLocal;
+
+    // 계층
+    CTransform* m_Parent;
+    vector<CTransform*>    m_Children;
+
 #pragma endregion
 
 public:

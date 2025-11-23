@@ -62,8 +62,9 @@ HRESULT CPlayer::Ready_GameObject()
     m_CombatStatCom->Set_Mp(5.f);
     m_CombatStatCom->Set_Speed(5.f);
 
-    // Transform 테스트
-    m_TransformCom->Set_Pos(_vec3(0.f, 0.f, 1.f));
+    m_TransformCom->Set_Pos(_vec3(-30.f, 0.f, 1.f));
+
+    m_BufferCom->Set_Size(4.f, 2.f);
 
     Animation_Setting();
 
