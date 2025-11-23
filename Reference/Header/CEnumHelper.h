@@ -75,7 +75,9 @@ static const char* ToString(ACTORSTATE state)
     case ACTORSTATE::DEAD:
         return "Dead";
 
-    case ACTORSTATE::STATE_END:
+    case ACTORSTATE::ROLL:
+        return "Roll";
+
     default:
         return "UnknownState";
     }

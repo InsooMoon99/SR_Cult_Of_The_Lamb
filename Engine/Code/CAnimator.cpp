@@ -4,6 +4,7 @@
 #include "CRcTex.h"
 #include "CSpriteAnimation.h"
 #include "CTexture.h"
+#include "CTransform.h"
 
 CAnimator::CAnimator(DEVICE graphicDev)
     : CComponent(graphicDev),
@@ -64,48 +65,69 @@ HRESULT CAnimator::Add_Animation(const wstring& key, CSpriteAnimation* animation
         return E_FAIL;
 
     auto iter = m_Animations.find(key);
-
     if (iter != m_Animations.end())
     {
         MSG_BOX("Exits animation");
         return E_FAIL;
     }
 
-    m_Animations.insert({ key, animation });
+    AnimDesc desc;
+    desc.anim = animation;
+    desc.size = _vec2(1.f, 1.f); // 사이즈 안넘기면 기본값으로
+    desc.offset = _vec2(0.f, 0.f);
+
+    m_Animations.insert({ key, desc });
 
     return S_OK;
 }
 
-CSpriteAnimation* CAnimator::GetOrAdd_Animation(const wstring& key, CSpriteAnimation* animation)
-{
-    auto iter = m_Animations.find(key);
-
-    if (iter != m_Animations.end())
-        return iter->second;
-
-    if (animation == nullptr)
-        return nullptr;
-
-    m_Animations.insert({ key, animation });
-
-    return animation;
-}
-
 HRESULT CAnimator::Create_Animation(const wstring& key, _uint frameCount, _float interval)
 {
-    CSpriteAnimation* anim
-        = CSpriteAnimation::Create(frameCount, interval);
+    CSpriteAnimation* anim = CSpriteAnimation::Create(frameCount, interval);
 
     NULL_CHECK_RETURN(anim, E_FAIL);
 
     return Add_Animation(key, anim);
 }
 
+HRESULT CAnimator::Add_Animation(const wstring& key, CSpriteAnimation* animation, const _vec2 size, const _vec2 offset)
+{
+    if (animation == nullptr)
+        return E_FAIL;
+
+    auto iter = m_Animations.find(key);
+    if (iter != m_Animations.end())
+    {
+        MSG_BOX("Exits animation");
+        return E_FAIL;
+    }
+
+    AnimDesc desc;
+    desc.anim = animation;
+    desc.size = size;
+    desc.offset = offset;
+
+    m_Animations.insert({ key, desc });
+
+    return S_OK;
+}
+
+HRESULT CAnimator::Create_Animation(const wstring& key, _uint frameCount, _float interval, const _vec2& size, const _vec2 offset)
+{
+    CSpriteAnimation* anim = CSpriteAnimation::Create(frameCount, interval);
+    NULL_CHECK_RETURN(anim, E_FAIL);
+
+    return Add_Animation(key, anim, size, offset);
+}
+
 void CAnimator::Play_Animation(const wstring& key, ANIMSTATE state, bool reset)
 {
-    CSpriteAnimation* anim = Find_Animation(key);
-    if (anim == nullptr)
+    auto iter = m_Animations.find(key);
+    if (iter == m_Animations.end())
         return;
+
+    AnimDesc& desc = iter->second;
+    CSpriteAnimation* anim = desc.anim;
 
     // 플레이 중에 같은 애니메이션, 상태가 같으면 변경 X
     if (m_Play && m_CurAnimation == anim && anim->GetState() == state)
@@ -118,6 +140,16 @@ void CAnimator::Play_Animation(const wstring& key, ANIMSTATE state, bool reset)
 
     if (reset)
         m_CurAnimation->Reset();
+
+    if (m_BufferCom)
+    {
+        CRcTex* rect = static_cast<CRcTex*>(m_BufferCom);
+        if (rect)
+        {
+            rect->Set_Scale(desc.size.x, desc.size.y);
+        }
+    }
+
 
     // STOP이면 False, 나머지는 True값 세팅
     m_Play = (state != ANIMSTATE::STOP);
@@ -176,13 +208,18 @@ CSpriteAnimation* CAnimator::Find_Animation(const wstring& Key)
     if (iter == m_Animations.end())
         return nullptr;
 
-    return iter->second;
+    return iter->second.anim;
 }
 
 void CAnimator::Free()
 {
     CComponent::Free();
 
-    for_each(m_Animations.begin(), m_Animations.end(), CDeleteMap());
+    for (auto& pair : m_Animations)
+    {
+        Safe_Release(pair.second.anim);
+    }
+
     m_Animations.clear();
 }
+

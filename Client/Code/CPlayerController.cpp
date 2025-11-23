@@ -123,12 +123,12 @@ void CPlayerController::Update_Roll(const _float& timeDelta)
     // ROLL 하는 중
     else
     {
-        // TODO 임시로 스케일 값 조정중. 고쳐지면 수정할 것
-        //!! 스케일을 키우면 collider의 크기 또한 커지는 문제 있음
-        if (m_OwnerStateCom->Get_Dir() == ACTORDIR::LEFT)
-            m_TransformCom->Set_Scale(1.45f, 1.45f, 1.f);
-        else if (m_OwnerStateCom->Get_Dir() == ACTORDIR::RIGHT)
-            m_TransformCom->Set_Scale(-1.45f, 1.45f, 1.f);
+        //// TODO 임시로 스케일 값 조정중. 고쳐지면 수정할 것 -> 해결 완료
+        ////!! 스케일을 키우면 collider의 크기 또한 커지는 문제 있음
+        //if (m_OwnerStateCom->Get_Dir() == ACTORDIR::LEFT)
+        //    m_TransformCom->Set_Scale(1.45f, 1.45f, 1.f);
+        //else if (m_OwnerStateCom->Get_Dir() == ACTORDIR::RIGHT)
+        //    m_TransformCom->Set_Scale(-1.45f, 1.45f, 1.f);
 
         _float rollSpeed = m_OwnerCombatStat->Get_Speed() * 1.5f; // 구르기 속도 배율
         m_TransformCom->Move_Pos(m_RollData.rollDir, timeDelta, rollSpeed);

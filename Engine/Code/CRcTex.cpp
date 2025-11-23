@@ -4,12 +4,24 @@ CRcTex::CRcTex()
 { }
 
 CRcTex::CRcTex(DEVICE graphicDev)
-    : CVIBuffer(graphicDev)
+    : CVIBuffer(graphicDev), m_HalfWidth(1.f), m_HalfHeight(1.f)
 { }
 
 CRcTex::CRcTex(const CRcTex& rhs)
-    : CVIBuffer(rhs)
-{ }
+    : CVIBuffer(rhs), m_HalfWidth(1.f), m_HalfHeight(1.f)
+{
+    Safe_Release(m_VB);
+    Safe_Release(m_IB);
+
+    m_HalfWidth = rhs.m_HalfWidth;
+    m_HalfHeight = rhs.m_HalfHeight;
+
+    if (FAILED(Ready_Buffer()))
+    {
+        MSG_BOX("RcTex Create Failed");
+        return;
+    }
+}
 
 CRcTex::~CRcTex()
 { }
@@ -27,23 +39,7 @@ HRESULT CRcTex::Ready_Buffer()
     if (FAILED(CVIBuffer::Ready_Buffer()))
         return E_FAIL;
 
-    VTXTEX* vtxtex = nullptr;
-
-    m_VB->Lock(0, 0, (void**)&vtxtex, 0);
-
-    vtxtex[0].position = { -1.f, 1.f, 0.f };
-    vtxtex[0].texUV    = { 0.f, 0.f };
-
-    vtxtex[1].position = { 1.f, 1.f, 0.f };
-    vtxtex[1].texUV    = { 1.f, 0.f };
-
-    vtxtex[2].position = { 1.f, -1.f, 0.f };
-    vtxtex[2].texUV    = { 1.f, 1.f };
-
-    vtxtex[3].position = { -1.f, -1.f, 0.f };
-    vtxtex[3].texUV    = { 0.f, 1.f };
-
-    m_VB->Unlock();
+    Apply_VertexSize();
 
     INDEX32* index = nullptr;
 
@@ -90,6 +86,44 @@ void CRcTex::Set_UV(_float u0, _float v0, _float u1, _float v1)
     // 좌하단
     vertex[3].texUV.x = u0;
     vertex[3].texUV.y = v1;
+
+    m_VB->Unlock();
+}
+
+void CRcTex::Set_Scale(_float width, _float height)
+{
+    m_HalfWidth = width;
+    m_HalfHeight = height;
+
+    Apply_VertexSize();
+}
+
+void CRcTex::Apply_VertexSize()
+{
+    if (m_VB == nullptr)
+        return;
+
+    VTXTEX* vtxtex = nullptr;
+    m_VB->Lock(0, 0, (void**)&vtxtex, 0);
+
+    const _float halfWidth = m_HalfWidth;
+    const _float halfHeight = m_HalfHeight;
+
+    // 좌상단
+    vtxtex[0].position = { -halfWidth,  halfHeight, 0.f };
+    vtxtex[0].texUV = { 0.f, 0.f };
+
+    // 우상단
+    vtxtex[1].position = { halfWidth,  halfHeight, 0.f };
+    vtxtex[1].texUV = { 1.f, 0.f };
+
+    // 우하단
+    vtxtex[2].position = { halfWidth, -halfHeight, 0.f };
+    vtxtex[2].texUV = { 1.f, 1.f };
+
+    // 좌하단
+    vtxtex[3].position = { -halfWidth, -halfHeight, 0.f };
+    vtxtex[3].texUV = { 0.f, 1.f };
 
     m_VB->Unlock();
 }
