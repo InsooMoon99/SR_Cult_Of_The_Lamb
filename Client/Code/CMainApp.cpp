@@ -122,6 +122,11 @@ HRESULT CMainApp::Ready_DefaultSetting(DEVICE* graphicDev)
         *graphicDev, L"궁서", L"궁서", 20, 15, FW_THIN)))
         return E_FAIL;
 
+    //AddFontResourceEx(L"../Bin/Resource/Font/LaptureDisplay-Regular.otf", FR_PRIVATE, NULL);
+    if (FAILED(CFontMgr::GetInstance()->Ready_Font(
+        *graphicDev, L"LaptureDisplay-Regular", L"LaptureDisplay-Regular", 0, 20, FW_HEAVY)))
+        return E_FAIL;
+
     // DInput
     if (FAILED(CDInputMgr::GetInstance()->Ready_InputDev(g_hInst, g_hWnd)))
         return E_FAIL;
