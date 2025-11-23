@@ -50,6 +50,9 @@ void CBoxCollider::LateUpdate_Component()
 
 void CBoxCollider::Render()
 {
+    if (m_ShowDebug == false)
+        return;
+
     CCollider::Render();
 
     if (m_BufferCom == nullptr)

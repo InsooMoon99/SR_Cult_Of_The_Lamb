@@ -16,8 +16,7 @@
 #include "CInventory.h"
 #include "CWeaponEquip.h"
 #include "CClient_CreateHelper.h"
-#include "CDInputMgr.h"
-#include "CLayer.h"
+#include "CMapEditorPlacer.h"
 
 IMPLEMENT_SINGLETON(CMainEditorMgr)
 
@@ -27,6 +26,24 @@ CMainEditorMgr::CMainEditorMgr()
 CMainEditorMgr::~CMainEditorMgr()
 {
     Free();
+}
+
+
+void CMainEditorMgr::Ready_MainEditor(DEVICE graphicDev, CEditContext* ctx)
+{
+    m_GraphicDev = graphicDev;
+
+    Set_EditContext(ctx);
+
+    m_MapPlacer = CMapEditorPlacer::Create(m_GraphicDev);
+}
+
+void CMainEditorMgr::Update_MainEditor(const _float& timeDelta)
+{
+    if (m_MapPlacer)
+    {
+        m_MapPlacer->Update_MapPlacer(timeDelta);
+    }
 }
 
 void CMainEditorMgr::Set_EditContext(CEditContext* ctx)
@@ -49,9 +66,9 @@ void CMainEditorMgr::Render_MainEditor()
         MSG_BOX("Scene Is Where ? ");
 
     // 프리뷰 오브젝트 렌더
-    if (m_PlacingMapObject && m_PreviewMapObject)
+    if (m_MapPlacer)
     {
-        m_PreviewMapObject->Render_GameObject();
+        m_MapPlacer->Render_Privew();
     }
 
     ImGui::Begin("MainEditor");
@@ -69,16 +86,6 @@ void CMainEditorMgr::Render_MainEditor()
     ImGui::EndChild();
 
     ImGui::End();
-
-    // MapObject
-    Render_MapObjectWindow();
-}
-
-void CMainEditorMgr::Ready_MainEditor(DEVICE graphicDev, CEditContext* ctx)
-{
-    m_GraphicDev = graphicDev;
-
-    Set_EditContext(ctx);
 }
 
 void CMainEditorMgr::Render_Hierarchy()
@@ -303,93 +310,39 @@ void CMainEditorMgr::Render_SelectComponent()
     }
 }
 
-void CMainEditorMgr::Update_MapObjectPlacement(const _float& timeDelta)
-{
-    if (!m_PlacingMapObject || m_PreviewMapObject == nullptr)
-        return;
-
-    // 마우스 -> 월드좌표
-    _vec3 worldPos;
-    if (Get_MouseWorldPosOnTerrain(worldPos))
-    {
-        m_PreviewMapObject->Set_WorldPos(worldPos);
-    }
-
-    m_PreviewMapObject->Update_GameObject(timeDelta);
-    m_PreviewMapObject->LateUpdate_GameObject(timeDelta);
-
-    // 좌클릭 하면 배치하기
-    auto input = CDInputMgr::GetInstance();
-
-    if (input->KeyDown(VK_LBUTTON))
-    {
-        CScene* scene = CManagement::GetInstance()->Get_Scene();
-        if (scene)
-        {
-            CLayer* layer = scene->Get_Layer(LAYERTYPE::ENVIRONMENT);
-            if (layer)
-            {
-                CMapObjectBase* newObj = CreateMapObjectType(m_GraphicDev, m_SelectedMapObjType);
-                if (newObj)
-                {
-                    newObj->Set_WorldPos(worldPos);
-                    layer->Add_GameObject(OBJTYPE::PLACEMENT, newObj);
-
-                }
-            }
-        }
-    }
-
-    // 우클릭 : 배치 종료
-    if (input->KeyDown(VK_LBUTTON) || input->KeyDown(VK_ESCAPE))
-    {
-        m_PlacingMapObject = false;
-        Safe_Release(m_PreviewMapObject);
-    }
-}
-
 void CMainEditorMgr::Render_MapObjectWindow()
 {
     ImGui::Begin("Map Objects");
 
+    bool isGrassSelected =
+        (m_MapPlacer && m_MapPlacer->IsPlacing() && m_MapPlacer->Get_CurType() == MAPOBJTYPE::GRASS);
+
     // Grass 풀때기만 일단
-    if (ImGui::Selectable("Grass", m_SelectedMapObjType == MAPOBJTYPE::GRASS))
+    if (ImGui::Selectable("Grass", isGrassSelected))
     {
-        m_SelectedMapObjType = MAPOBJTYPE::GRASS;
-
-        Safe_Release(m_PreviewMapObject);
-
-        // 새 프리뷰 설정. 투명하게도 할지?
-        m_PreviewMapObject = CreateMapObjectType(m_GraphicDev, m_SelectedMapObjType);
-        m_PlacingMapObject = (m_PreviewMapObject != nullptr); // m_PreviewMapObject이 있으면 true
+        if (m_MapPlacer)
+            m_MapPlacer->Start_Place(MAPOBJTYPE::GRASS);
     }
 
     // 추가 예정) Rock, Tree 등등
 
     // 배치 취소
-    if (m_PlacingMapObject)
+    if (m_MapPlacer && m_MapPlacer->IsPlacing())
     {
         if (ImGui::Button("Cancel Place"))
         {
-            m_PlacingMapObject = false;
-            Safe_Release(m_PreviewMapObject);
+            m_MapPlacer->Cancel_Place();
         }
     }
 
     ImGui::End();
-
 }
 
-bool CMainEditorMgr::Get_MouseWorldPosOnTerrain(_vec3& outPos)
-{
-    // TODO : 마우스 월드좌표로 변환하기. 일단은 상수값으로 실험
-
-    outPos = _vec3(0.1f, 3.1f, 3.1f);
-
-    return true;
-}
 
 void CMainEditorMgr::Free()
 {
+    Safe_Release(m_MapPlacer);
+
     Safe_Release(m_Context);
+    Safe_Release(m_GraphicDev);
 }

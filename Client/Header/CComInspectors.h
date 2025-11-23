@@ -290,6 +290,8 @@ static void Terrain_Inspector(CTerrainRenderer* renderer)
     if (renderer)
     {
         renderer->Render_Editor();
+
+        CMainEditorMgr::GetInstance()->Render_MapObjectWindow();
     }
 }
 

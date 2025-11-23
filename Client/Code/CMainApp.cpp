@@ -67,7 +67,7 @@ int CMainApp::Update_MainApp(const float& timeDelta)
     {
         CImGuiManager::GetInstance()->Update();
 
-        CMainEditorMgr::GetInstance()->Update_MapObjectPlacement(timeDelta);
+        CMainEditorMgr::GetInstance()->Update_MainEditor(timeDelta);
     }
 
     return 0;

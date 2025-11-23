@@ -10,7 +10,7 @@ END
 
 enum class MAPOBJTYPE
 {
-    GRASS, ROCK, /* Object 종류 추가하기 */ MAPOBJEND,
+    GRASS, ROCK, /* Object 종류 추가하기 */ MAPOBJ_END,
 };
 
 class CMapObjectBase : public CGameObject

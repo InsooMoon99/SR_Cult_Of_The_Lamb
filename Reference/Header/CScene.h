@@ -38,7 +38,6 @@ public:
 protected:
     map<LAYERTYPE, CLayer*> m_Layers;
     DEVICE                  m_GraphicDev;
-    
 
 protected:
     void Free() override;

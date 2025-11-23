@@ -195,6 +195,7 @@ xcopy /Y /I "$(SolutionDir)Engine\Header\*.*" "$(SolutionDir)Reference\Header\"<
     <ClInclude Include="..\header\CLight.h" />
     <ClInclude Include="..\header\CLightMgr.h" />
     <ClInclude Include="..\Header\CPersistentObjectHelper.h" />
+    <ClInclude Include="..\Header\CPickingHelper.h" />
     <ClInclude Include="..\header\CPlayerController.h" />
     <ClInclude Include="..\Header\CRectCollider.h" />
     <ClInclude Include="..\Header\CCollisionManager.h" />
