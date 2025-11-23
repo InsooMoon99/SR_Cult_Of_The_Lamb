@@ -18,8 +18,7 @@ public:
     _int    Update_GameObject(const _float& timeDelta) override;
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
-
-    virtual void Render_Editor() override;
+    void    Render_Editor() override;
 
 public: // Setter
     HRESULT Set_CamTarget(CTransform* targetTransform); // 카메라가 추적할 타겟 세팅

@@ -31,13 +31,7 @@
 // DInput
 #define DIRECTINPUT_VERSION	0x0800
 #include <dinput.h>
-
 #pragma warning(disable : 4251)
-
-//DirectXTk (SimpleMath)
-#include "../../Libs/DirectXTK/SimpleMath.h"
-using namespace DirectX;
-using namespace SimpleMath;
 
 //Fmod
 #include "../../Libs/Fmod/fmod.hpp"

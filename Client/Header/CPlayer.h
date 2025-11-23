@@ -1,11 +1,7 @@
 ﻿#pragma once
 #include "CGameObject.h"
-#include "Engine_Define.h"
-
-class CWeaponEquip;
 
 BEGIN(Engine)
-class CPlayerController;
 class CRcTex;
 class CTransform;
 class CTexture;
@@ -16,6 +12,9 @@ class CBoxCollider;
 class CState;
 class CCombatStat;
 END
+
+class CWeaponEquip;
+class CPlayerController;
 
 class CInventory; // 이건 클라에 있음
 
@@ -37,7 +36,7 @@ public:
     CCombatStat*  Get_CombatStat() { return m_CombatStatCom; }
     CWeaponEquip* Get_WeaponEquip() { return m_WeaponEquipCom; }
 
-    virtual void Render_Editor() override;
+    void Render_Editor() override;
 
 private:
     HRESULT Add_Component();
@@ -47,20 +46,24 @@ private:
     void Render_Reset();
 
 private:
-    // Engine Components    /////////////////
-    Engine::CRcTex*            m_BufferCom;
-    Engine::CTransform*        m_TransformCom;
-    Engine::CTexture*          m_TextureCom;
-    Engine::CAnimator*         m_AnimatorCom;
-    Engine::CBoxCollider*      m_BoxColCom;
-    Engine::CState*            m_StateCom;
-    Engine::CCombatStat*       m_CombatStatCom;
-    Engine::CPlayerController* m_PlayerControllerCom;
+#pragma region Engine Components
 
-    // Client Components    /////////////////
-    CWeaponEquip* m_WeaponEquipCom;
+    Engine::CRcTex*       m_BufferCom;
+    Engine::CTransform*   m_TransformCom;
+    Engine::CTexture*     m_TextureCom;
+    Engine::CAnimator*    m_AnimatorCom;
+    Engine::CBoxCollider* m_BoxColCom;
+    Engine::CState*       m_StateCom;
+    Engine::CCombatStat*  m_CombatStatCom;
 
-    CInventory* m_Inventory;
+#pragma endregion
+#pragma region Client Components
+
+    CWeaponEquip*      m_WeaponEquipCom;
+    CInventory*        m_Inventory;
+    CPlayerController* m_PlayerControllerCom;
+
+#pragma endregion
 
     map<ACTORSTATE, wstring> m_StateAnim;
 

@@ -127,6 +127,9 @@
     <Filter Include="97. Component\02. Terrain">
       <UniqueIdentifier>{a82a3041-8adf-4ea9-b83c-573792a7e93c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97. Component\03. Player Controller">
+      <UniqueIdentifier>{f2106dd3-bd45-46c3-8297-8a8688247354}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -240,6 +243,9 @@
     <ClInclude Include="..\Header\CComInspectors.h">
       <Filter>99. ImGui_Editor\01. EditorScript</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CPlayerController.h">
+      <Filter>97. Component\03. Player Controller</Filter>
+    </ClInclude>
     <ClInclude Include="..\Header\CInventory.h">
       <Filter>97. Component\00. Inventory</Filter>
     </ClInclude>
@@ -346,6 +352,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CMainEditorMgr.cpp">
       <Filter>99. ImGui_Editor\00. MainEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CPlayerController.cpp">
+      <Filter>97. Component\03. Player Controller</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CInventory.cpp">
       <Filter>97. Component\00. Inventory</Filter>
