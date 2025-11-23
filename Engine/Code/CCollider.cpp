@@ -7,18 +7,28 @@
 #include "CTransform.h"
 
 CCollider::CCollider(DEVICE graphicDev, COLLIDERTYPE colliderType)
-    : CComponent(graphicDev), m_ColliderType(colliderType), m_ShowDebug(true)
+    : CComponent(graphicDev),
+    m_ColliderType(colliderType),
+    m_ShowDebug(true),
+    m_IsColliderActive(true)
 {
 }
 
 CCollider::CCollider(const CCollider& rhs)
-    : CComponent(rhs), m_ColliderType(rhs.m_ColliderType), m_ShowDebug(rhs.m_ShowDebug)
+    : CComponent(rhs),
+    m_ColliderType(rhs.m_ColliderType),
+    m_ShowDebug(rhs.m_ShowDebug),
+    m_IsColliderActive(true)
 {
 }
 
 CCollider::~CCollider()
 {
-    CCollisionManager::GetInstance()->RemoveCollider(this);
+    auto collider = CCollisionManager::GetInstance_NoCreate();
+
+    if (collider)
+        collider->RemoveCollider(this);
+
 }
 
 HRESULT CCollider::Ready_Collider()
@@ -44,7 +54,6 @@ void CCollider::Render()
 {
     if (m_ShowDebug == false)
         return;
-
 
 }
 

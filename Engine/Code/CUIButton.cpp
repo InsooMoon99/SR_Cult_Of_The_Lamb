@@ -60,10 +60,9 @@ _int CUIButton::Update_GameObject(const _float& timeDelta)
     POINT pt;
     GetCursorPos(&pt);
     ScreenToClient(CDInputMgr::GetInstance()->Get_HWND(), &pt);
-    cout << pt.x << " , " << pt.y << endl;
+    //cout << pt.x << " , " << pt.y << endl;
 
     bool hoveredNow = PtInRect(&m_tRect, pt) != 0;
-
 
     // 4) Hover 변화 감지
     if (hoveredNow != m_bHovered)

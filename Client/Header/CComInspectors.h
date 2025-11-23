@@ -200,6 +200,25 @@ static void CombatStat_Inspector(CCombatStat* stat)
 
 }
 
+static void Menu_CameraInspector(CCameraCom* camera)
+{
+    if (camera == nullptr)
+        return;
+
+    ImGui::PushID("Main_CameraInspector");
+    {
+        const char* camModeItems[] = { "Free", "Target" };
+        int camMode = camera->Get_CamMode();
+
+        ImGui::SetNextItemWidth(80.f);
+        if (ImGui::Combo("##CamMode", &camMode, camModeItems, IM_ARRAYSIZE(camModeItems)))
+        {
+            camera->Set_CamMode(static_cast<CCameraCom::CAM_MODE>(camMode));
+        }
+    }
+    ImGui::PopID();
+}
+
 static void Camera_Inspector(CCameraCom* camera)
 {
     if (camera == nullptr)
@@ -310,10 +329,17 @@ static void BoxColl_Inspector(CBoxCollider* collider)
 
         ImGui::NewLine();
 
-        if (ImGui::Button("Render Check"))
+        // Collider Render 그리기
+        bool renderCheck = collider->Get_ShowDebug();
+        if (ImGui::Checkbox("Render Debug Box", &renderCheck))
         {
-            bool check = collider->Get_ShowDebug();
-            collider->Set_ShowDebug(!check);
+            collider->Set_ShowDebug(renderCheck);
+        }
+        // Collider Active 충돌체크
+        bool collisionCheck = collider->IsCollisionActive();
+        if (ImGui::Checkbox("Collision Active", &collisionCheck))
+        {
+            collider->Set_CollisionActive(collisionCheck);
         }
 
     }

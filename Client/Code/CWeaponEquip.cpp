@@ -58,6 +58,7 @@ void CWeaponEquip::ApplyWeaponStat(Item* item)
         return;
 
     auto* combatStat = player->Get_CombatStat();
+
     if (!combatStat)
         return;
 

@@ -7,6 +7,7 @@
 #include "CMainEditorMgr.h"
 #include "CState.h"
 #include "CTransform.h"
+#include "CBoxCollider.h"
 
 CPlayerController::CPlayerController(DEVICE graphicDev)
     : CComponent(graphicDev),
@@ -35,6 +36,7 @@ _int CPlayerController::Update_Component(const _float& timeDelta)
         return 0;
 
     Key_Input(timeDelta);
+
     // TODO : 구르기 중 적과의 충돌판정을 무시하는 작업 추가하기
     if (m_RollData.isRolling)
         Update_Roll(timeDelta);
@@ -55,6 +57,9 @@ HRESULT CPlayerController::Init_OwnerComponent()
     m_OwnerCombatStat =
         dynamic_cast<CCombatStat*>(m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
 
+    m_OwnerCollider =
+        dynamic_cast<CBoxCollider*>(m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::BOX_COLL));
+
     NULL_CHECK_RETURN_MSG(
         m_OwnerStateCom,
         E_FAIL,
@@ -64,6 +69,11 @@ HRESULT CPlayerController::Init_OwnerComponent()
         m_OwnerCombatStat,
         E_FAIL,
         L"CPlayerController::Init_OwnerComponent(): Owner's COMBATSTAT caching has failed");
+
+    NULL_CHECK_RETURN_MSG(
+        m_OwnerCollider,
+        E_FAIL,
+        L"CPlayerController::Init_OwnerComponent(): Owner's BOXCOLLIDER caching has failed");
 
     return S_OK;
 }
@@ -108,6 +118,7 @@ void CPlayerController::Update_Roll(const _float& timeDelta)
         m_TransformCom->Set_Scale(1.f, 1.f, 1.f);
 
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+        m_OwnerCollider->Set_CollisionActive(true); // 충돌체 키기
     }
     // ROLL 하는 중
     else
@@ -121,6 +132,8 @@ void CPlayerController::Update_Roll(const _float& timeDelta)
 
         _float rollSpeed = m_OwnerCombatStat->Get_Speed() * 1.5f; // 구르기 속도 배율
         m_TransformCom->Move_Pos(m_RollData.rollDir, timeDelta, rollSpeed);
+
+        m_OwnerCollider->Set_CollisionActive(false); // 충돌체 끄기
     }
 }
 

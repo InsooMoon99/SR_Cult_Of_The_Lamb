@@ -178,7 +178,18 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
         L"Persistent object setup failed");
 
     // 카메라 타겟을 플레이어로 설정
-    dynamic_cast<CMainCamera*>(gameObject)->Set_CamTarget(playerTransform);
+    auto mainCam = dynamic_cast<CMainCamera*>(gameObject);
+    if (mainCam)
+    {
+        mainCam->Set_CamTarget(playerTransform);
+
+        auto camCom = dynamic_cast<CCameraCom*>(
+            mainCam->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAMERA));
+
+        if (camCom)
+            CMainEditorMgr::GetInstance()->Set_MainCamera(camCom); // 에디터에 카메라 설정
+    }
+
 
     m_Layers.insert({ layerType, layer });
 

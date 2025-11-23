@@ -21,14 +21,10 @@
 
 IMPLEMENT_SINGLETON(CMainEditorMgr)
 
-CMainEditorMgr::CMainEditorMgr()
-{ }
-
 CMainEditorMgr::~CMainEditorMgr()
 {
     Free();
 }
-
 
 void CMainEditorMgr::Ready_MainEditor(DEVICE graphicDev, CEditContext* ctx)
 {
@@ -100,17 +96,39 @@ void CMainEditorMgr::Render_ToolBar()
     float delta = CTimerMgr::GetInstance()->Get_TimeDelta(L"Timer_FPS60");
     float fps = (delta > 0.f) ? 1.f / delta : 0.f;
 
-    if (ImGui::Button(m_IsPlaying ? "Pause" : "Play"))
+    ImGui::Columns(2, "ToolbarCols", false);
+
+    // ============
+    // Play / FPS
+    // ============
     {
-        m_IsPlaying = !m_IsPlaying;
+        ImGui::AlignTextToFramePadding();
+        ImGui::Text("Game");
+        ImGui::SameLine();
 
+        if (ImGui::Button(m_IsPlaying ? "Pause" : "Play", ImVec2(60.f, 0.f)))
+            m_IsPlaying = !m_IsPlaying;
 
+        ImGui::SameLine();
+        ImGui::Text("FPS : %.1f", fps);
     }
-    ImGui::SameLine();
 
-    ImGui::Text("FPS : %.1f", fps);
+    ImGui::NextColumn();
 
+    // =======
+    // Camera
+    // =======
+    {
+        ImGui::AlignTextToFramePadding();
+        ImGui::Text("Camera");
+        ImGui::SameLine();
+
+        Menu_CameraInspector(m_MainCamera);
+    }
+
+    ImGui::Columns(1);
 }
+
 
 void CMainEditorMgr::Render_Hierarchy()
 {
@@ -121,7 +139,6 @@ void CMainEditorMgr::Render_Hierarchy()
         return;
     }
 
-    // TODO 인수 : 일단은 하나의 Scene만 있다고 가정하고 구현
     if (ImGui::TreeNode("Scene"))
     {
         const auto& layers = scene->Get_Layers();
