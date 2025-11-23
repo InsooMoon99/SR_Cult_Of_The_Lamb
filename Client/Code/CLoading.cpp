@@ -6,6 +6,7 @@
 #include "CBoxCollider.h"
 #include "CBoxTex.h"
 #include "CCameraCom.h"
+#include "CClient_EnumHelper.h"
 #include "CCombatStat.h"
 #include "CInventory.h"
 #include "CItemDB.h"
@@ -20,6 +21,7 @@
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CTriCol.h"
+#include "CWeaponEquip.h"
 #include "ItemData.h"
 #include "ItemInstance.h"
 #include "CWeaponEquip.h"
@@ -87,16 +89,16 @@ _uint CLoading::Loading_ForState()
         COMPONENTTYPE::TERRAIN_TEX, Engine::CTerrainTex::Create(m_GraphicDev, TILE_CNT_X, TILE_CNT_Z, 1))))
         return E_FAIL;
 
-    //// Buffer : Rect UV
-    //// CLogo 에서 이미 프로토타입 생성중이므로 비활성화
+    // Buffer : Rect UV
+    // CLogo 에서 이미 프로토타입 생성중이므로 비활성화
     //if (FAILED(pProtoMgr->Ready_Prototype(
     //    COMPONENTTYPE::RC_TEX, Engine::CRcTex::Create(m_GraphicDev))))
     //    return E_FAIL;
 
     m_LoadingText = L"Texture LOADING..........";
 
-#pragma region TextureNumber
-    // Player
+#pragma region ------   Player Textures     ------
+
     CTexture* playerTex = CTexture::Create(m_GraphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(playerTex, E_FAIL);
 
@@ -124,9 +126,23 @@ _uint CLoading::Loading_ForState()
         L"../Bin/Resource/Texture/Player/Player_Run/Lamb-run%d.png", 19)))
         return E_FAIL;
 
+    if (FAILED(playerTex->Add_Texture(L"PlayerRoll_LEFT", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Palyer_Roll/Lamb-roll%d.png", 19)))
+        return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"PlayerRoll_UP", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Palyer_RollUp/Lamb-roll-up%d.png", 16)))
+        return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"PlayerRoll_DOWN", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Palyer_RollDown/Lamb-roll-down%d.png", 16)))
+        return E_FAIL;
+
     if (FAILED(pProtoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_PLAYER, playerTex)))
         return E_FAIL;
+
+#pragma endregion
 
     //Texture : Player Heart
     if (FAILED(CProtoMgr::GetInstance()
@@ -134,8 +150,6 @@ _uint CLoading::Loading_ForState()
             Engine::CTexture::Create(m_GraphicDev, TEX_NORMAL,
                 L"../Bin/Resource/Texture/UI/PlayerState/Hp/Hp%d.png", 3))))
         return E_FAIL;
-
-#pragma region 테스트로 보스 꺼놓음. 필요하면 다시 사용하시오
 
     // Boss2 Test
     //CTexture* bossTex = CTexture::Create(m_GraphicDev, TEX_NORMAL, L"", 0);
@@ -148,8 +162,6 @@ _uint CLoading::Loading_ForState()
     //if (FAILED(pProtoMgr->Ready_Prototype(
     //    COMPONENTTYPE::TEX_MONSTER, bossTex)))
     //    return E_FAIL;
-
-#pragma endregion
 
     //HumanMonster
     CTexture* humanmonsterTex = CTexture::Create(m_GraphicDev, TEX_NORMAL, L"", 0);
@@ -192,9 +204,7 @@ _uint CLoading::Loading_ForState()
             L"../Bin/Resource/Texture/"))))
         return E_FAIL;*/
 
-
-
-        //circleColorTex
+    //circleColorTex
     if (FAILED(CProtoMgr::GetInstance()
         ->Ready_Prototype(COMPONENTTYPE::TEX_UI_COLOR,
             Engine::CTexture::Create(m_GraphicDev, TEX_NORMAL,
@@ -214,21 +224,21 @@ _uint CLoading::Loading_ForState()
                 L"../Bin/Resource/Texture/UI/PlayerState/Icon/Weapon_Sword.png", 1))))
         return E_FAIL;
 
-
     // 메인 메뉴 이미지
 
     CTexture* menuChar = CTexture::Create(m_GraphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(menuChar, E_FAIL);
-    
+
     if (FAILED(menuChar->Add_Texture(L"MenuChar", TEX_NORMAL,
         L"../Bin/Resource/Texture/MainMenu/MenuChar/Main menu-animation%d.png", 100)))
         return E_FAIL;
-    
+
     if (FAILED(pProtoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_MANUCHAR, menuChar)))
         return E_FAIL;
 
     //UIICON 텍스쳐
+
     vector<wstring> pathVec1;
     pathVec1.push_back(L"../Bin/Resource/Texture/UI/MainMenu/Title0.png");
 
@@ -240,6 +250,24 @@ _uint CLoading::Loading_ForState()
     if (FAILED(pProtoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_GRASS, CTexture::Create(m_GraphicDev, TEXTUREID::TEX_NORMAL,
             L"../Bin/Resource/Texture/MapObject/WeedShrub/WeedShrub%d.png", 20))))
+    //UIBUTTON 텍스쳐
+    vector<wstring> pathVec2;
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/MainMenu/Null.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/MainMenu/Button Black.png");
+
+
+    if (FAILED(CProtoMgr::GetInstance()->Ready_Prototype(
+        COMPONENTTYPE::TEX_UIBUTTON, Engine::CTexture::Create(m_GraphicDev, TEX_NORMAL, pathVec2))))
+        return E_FAIL;
+
+    //// Texture : MainMenu BackGround
+if (FAILED(CProtoMgr::GetInstance()
+    ->Ready_Prototype(COMPONENTTYPE::TEX_MAINBG,
+        Engine::CTexture::Create(
+            m_GraphicDev,
+            TEX_NORMAL,
+            L"../Bin/Resource/Texture/BackGround/MainMenu/MenuMask1.png",
+            1))))
     return E_FAIL;
 
 #pragma endregion

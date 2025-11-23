@@ -41,6 +41,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE     hInstance,
     LoadStringW(hInstance, IDC_CLIENT, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
+    //비율이슈
+    SetProcessDPIAware();
+
     // 애플리케이션 초기화를 수행합니다:
     if (!InitInstance(hInstance, nCmdShow))
         return FALSE;

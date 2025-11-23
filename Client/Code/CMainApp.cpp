@@ -4,6 +4,7 @@
 #include "CCollisionManager.h"
 #include "CDInputMgr.h"
 #include "CDropSystem.h"
+#include "CEditContext.h"
 #include "CFontMgr.h"
 #include "CFrameMgr.h"
 #include "CGraphicDev.h"
@@ -11,13 +12,12 @@
 #include "CItemDB.h"
 #include "CLightMgr.h"
 #include "CLogo.h"
+#include "CMainEditorMgr.h"
 #include "CManagement.h"
 #include "CProtoMgr.h"
 #include "CRenderer.h"
-#include "CTimerMgr.h"
-#include "CMainEditorMgr.h"
-#include "CEditContext.h"
 #include "CSceneMgr.h"
+#include "CTimerMgr.h"
 
 CMainApp::CMainApp()
     : m_ManagementClass(CManagement::GetInstance()),
@@ -123,6 +123,11 @@ HRESULT CMainApp::Ready_DefaultSetting(DEVICE* graphicDev)
 
     if (FAILED(CFontMgr::GetInstance()->Ready_Font(
         *graphicDev, L"궁서", L"궁서", 20, 15, FW_THIN)))
+        return E_FAIL;
+
+    //AddFontResourceEx(L"../Bin/Resource/Font/LaptureDisplay-Regular.otf", FR_PRIVATE, NULL);
+    if (FAILED(CFontMgr::GetInstance()->Ready_Font(
+        *graphicDev, L"LaptureDisplay-Regular", L"LaptureDisplay-Regular", 10, 24, FW_HEAVY)))
         return E_FAIL;
 
     // DInput

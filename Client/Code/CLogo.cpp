@@ -96,12 +96,12 @@ HRESULT CLogo::Ready_Environment_Layer(LAYERTYPE layerType)
 
     Engine::CGameObject* gameObject = nullptr;
 
-    gameObject = CMainBG::Create(m_GraphicDev);
+    //gameObject = CMainBG::Create(m_GraphicDev);
 
-    NULL_CHECK_RETURN(m_GraphicDev, E_FAIL)
+    //NULL_CHECK_RETURN(m_GraphicDev, E_FAIL)
 
-    if (FAILED(layer->Add_GameObject(OBJTYPE::PLAYER, gameObject)))
-        return E_FAIL;
+    //if (FAILED(layer->Add_GameObject(OBJTYPE::PLAYER, gameObject)))
+    //    return E_FAIL;
 
     m_Layers.insert({ layerType, layer });
 
@@ -136,15 +136,15 @@ HRESULT CLogo::Ready_Prototype()
         ->Ready_Prototype(COMPONENTTYPE::RC_TEX, Engine::CRcTex::Create(m_GraphicDev))))
         return E_FAIL;
 
-    // Texture : MainMenu BackGround
-    if (FAILED(CProtoMgr::GetInstance()
-        ->Ready_Prototype(COMPONENTTYPE::TEX_MAINBG,
-            Engine::CTexture::Create(
-                m_GraphicDev,
-                TEX_NORMAL,
-                L"../Bin/Resource/Texture/BackGround/MainMenu/MenuMask1.png",
-                1))))
-        return E_FAIL;
+    //// Texture : MainMenu BackGround
+    //if (FAILED(CProtoMgr::GetInstance()
+    //    ->Ready_Prototype(COMPONENTTYPE::TEX_MAINBG,
+    //        Engine::CTexture::Create(
+    //            m_GraphicDev,
+    //            TEX_NORMAL,
+    //            L"../Bin/Resource/Texture/BackGround/MainMenu/MenuMask1.png",
+    //            1))))
+    //    return E_FAIL;
 
     return S_OK;
 }

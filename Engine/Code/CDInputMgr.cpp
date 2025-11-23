@@ -40,6 +40,8 @@ HRESULT CDInputMgr::Ready_InputDev(HINSTANCE hInst, HWND hWnd)
 
     m_MouseDev->Acquire();
 
+    m_hWnd = hWnd;
+
     return S_OK;
 }
 

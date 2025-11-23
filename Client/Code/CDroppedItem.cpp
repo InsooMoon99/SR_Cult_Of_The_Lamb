@@ -114,15 +114,21 @@ void CDroppedItem::OnBeginOverlap(CCollider* self, CCollider* other)
         //CDropSystem::GetInstance()->
 
         if (CItemDB::GetInstance()->GetItemById(m_itemInst.itemId)->type == ItemType::Weapon)
+        {
             ply->Get_WeaponEquip()->Equip_Weapon(m_itemInst);
+            //*** 아이템 지우기 ***
+            Mark_As_PendingKill();
+        }
         else
         {
             CComponent* com = ply->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::INVENTORY);
-            dynamic_cast<CInventory*>(com)->AddItem(m_itemInst);
-        }
+            if (dynamic_cast<CInventory*>(com)->AddItem(m_itemInst) == true)
+            {
+            //*** 아이템 지우기 ***
+            Mark_As_PendingKill();
 
-        //*** 아이템 지우기 ***
-        Mark_As_PendingKill();
+            }
+        }
     }
 
     cout << "item Hit" << endl;

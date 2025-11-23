@@ -100,6 +100,7 @@ enum class COMPONENTTYPE
     TEX_ITEM,
     TEX_MANUCHAR,
     TEX_UIICON,
+    TEX_UIBUTTON,
 
     // TODO : Test Tile -> 은수 Texture 버전이랑 합치면 고치기
     TEX_TILE_284,
@@ -131,7 +132,7 @@ enum class ACTORSTATE
     HIT,
     DEAD,
 
-    PLAYERSTATE_END
+    STATE_END
 };
 
 enum class ACTORDIR
@@ -145,7 +146,7 @@ enum class ACTORDIR
     L_DOWN,
     R_DOWN,
 
-    PLAYERDIR_END
+    DIR_END
 };
 
 enum class SCENETYPE

@@ -47,6 +47,8 @@ public:
     {
         return !(m_KeyState[key] & 0x80) && (m_PrevKeyState[key] & 0x80);
     }
+    
+    HWND Get_HWND() { return m_hWnd; }
 
 public:
     HRESULT Ready_InputDev(HINSTANCE hInst, HWND hWnd);
@@ -62,6 +64,8 @@ private:
     _ubyte m_PrevKeyState[256];
 
     DIMOUSESTATE m_MouseState;
+
+    HWND m_hWnd;
 
 public:
     void Free() override;
