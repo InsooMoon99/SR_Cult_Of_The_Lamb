@@ -12,12 +12,12 @@ class CAnimator;
 class ENGINE_DLL CCombatStat : public CComponent
 {
 private:
-    explicit CCombatStat(DEVICE GraphicDev);
+    explicit CCombatStat(DEVICE graphicDev);
     explicit CCombatStat(const CCombatStat& rhs);
     ~CCombatStat() override;
 
 public:
-    HRESULT Ready_StateComponent(DEVICE GraphicDev);
+    HRESULT Ready_StateComponent(DEVICE graphicDev);
     _int    Update_Component(const _float& timeDelta) override;
     void    LateUpdate_Component() override;
 
@@ -38,7 +38,7 @@ public:
 
     void Add_Attack(float attack) { m_Attack += attack; }
 public:
-    static CCombatStat* Create(DEVICE GraphicDev);
+    static CCombatStat* Create(DEVICE graphicDev);
 
     CComponent* Clone() override;
 

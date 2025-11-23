@@ -20,10 +20,10 @@ private:
 
     struct RollData
     {
+        _vec3  rollDir = { 0.f, 0.f, 0.f };
         _bool  isRolling{};
         _float rollElapsedTime{};
-        _float rollDuration{ 0.3f };
-        _vec3  rollDir = { 0.f, 0.f, 0.f };
+        _float rollDuration{ 0.4f };
     };
 
 private:
@@ -50,6 +50,7 @@ public:
 
 private:
     void Key_Input(const _float& timeDelta);
+    void Update_Roll(const _float& timeDelta);
 
     void  Calc_InputVector(KeyInputData& inputData);    // 입력 벡터 및 축 값 계산
     _bool CanApplyDirection(ACTORSTATE currentState);   // 상태에 따라 방향 변경 가능 여부 판단
