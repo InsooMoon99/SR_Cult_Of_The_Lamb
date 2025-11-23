@@ -60,20 +60,24 @@ HRESULT CPlayerController::Init_OwnerComponent()
 
 void CPlayerController::Key_Input(const _float& timeDelta)
 {
-    // 매 프레임 입력 저장값 초기화
-    KeyInputData inputData;
+    KeyInputData inputData; // 매 프레임 입력 저장값 초기화
+    ACTORSTATE   currentState = m_OwnerStateCom->Get_State();
 
     // 1. 입력 데이터 수집
     Calc_InputVector(inputData);
 
-    // 2. 상태(State) 결정
+    // 2. 가능한 경우 방향(Direction) 결정
+    if (CanApplyDirection(currentState))
+        Apply_Direction(inputData);
+
+    // 3. 상태(State) 결정
     Determine_State(inputData);
 
-    // 3. 방향(Direction) 결정 - 이동 여부와 관계없이 입력이 있다면 바라봄
-    Apply_Direction(inputData);
+    currentState = m_OwnerStateCom->Get_State();
 
-    // 4. 이동(Position) 적용
-    Apply_Movement(inputData, timeDelta);
+    // 4. 가능한 경우 이동(Position) 적용
+    if (CanApplyMovement(currentState))
+        Apply_Movement(inputData, timeDelta);
 }
 
 void CPlayerController::Calc_InputVector(KeyInputData& inputData)
@@ -107,23 +111,15 @@ void CPlayerController::Calc_InputVector(KeyInputData& inputData)
     inputData.isMove = (D3DXVec3LengthSq(&inputData.moveDir) > 0.f);
 }
 
-void CPlayerController::Determine_State(KeyInputData& inputData)
+_bool CPlayerController::CanApplyDirection(ACTORSTATE currentState)
 {
-    if (nullptr == m_OwnerStateCom)
-        return;
+    //!! ROLL, ATTACK, DEAD 에서 방향 변경 금지
+    if (ACTORSTATE::ROLL == currentState ||
+        ACTORSTATE::ATTACK == currentState ||
+        ACTORSTATE::DEAD == currentState)
+        return false;
 
-    ACTORSTATE nextState = ACTORSTATE::IDLE;
-
-    //!! 현재 우선순위: ATTACK > ROLL > RUN > IDLE
-    // TODO (여기서는 간단히 RUN/IDLE만 처리, 추후 확장)
-
-    if (inputData.isMove)
-        nextState = ACTORSTATE::RUN;
-    else
-        nextState = ACTORSTATE::IDLE;
-
-    // 상태 변경 요청
-    m_OwnerStateCom->Change_State(nextState);
+    return true;
 }
 
 void CPlayerController::Apply_Direction(KeyInputData& inputData)
@@ -164,6 +160,35 @@ void CPlayerController::Apply_Direction(KeyInputData& inputData)
     }
 
     m_OwnerStateCom->Change_Dir(newDir);
+}
+
+void CPlayerController::Determine_State(KeyInputData& inputData)
+{
+    if (nullptr == m_OwnerStateCom)
+        return;
+
+    ACTORSTATE nextState = ACTORSTATE::IDLE;
+
+    //!! 현재 우선순위: ATTACK > ROLL > RUN > IDLE
+    // TODO (여기서는 간단히 RUN/IDLE만 처리, 추후 확장)
+
+    if (inputData.isMove)
+        nextState = ACTORSTATE::RUN;
+    else
+        nextState = ACTORSTATE::IDLE;
+
+    // 상태 변경 요청
+    m_OwnerStateCom->Change_State(nextState);
+}
+
+_bool CPlayerController::CanApplyMovement(ACTORSTATE currentState)
+{
+    //!! ROLL, DEAD 에서 수동 이동 금지
+    if (ACTORSTATE::ROLL == currentState ||
+        ACTORSTATE::DEAD == currentState)
+        return false;
+
+    return true;
 }
 
 void CPlayerController::Apply_Movement(KeyInputData& inputData, const _float& timeDelta)
