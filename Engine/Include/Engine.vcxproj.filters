@@ -145,12 +145,6 @@
     <Filter Include="01. Logic\05. Tiled">
       <UniqueIdentifier>{1e08cf3b-8a9b-415b-9274-78f77f8da805}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Prototype\08. Controller">
-      <UniqueIdentifier>{df002db7-481e-45c5-aa16-79fd755b7d78}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Prototype\08. Controller\00. Player Controller">
-      <UniqueIdentifier>{0bf74464-2b7d-4281-8a6c-e4be32181354}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\Engine_Define.h">
@@ -309,9 +303,6 @@
     <ClInclude Include="..\Header\Engine_Global.h">
       <Filter>99. Header</Filter>
     </ClInclude>
-    <ClInclude Include="..\header\CPlayerController.h">
-      <Filter>02. Prototype\08. Controller\00. Player Controller</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CGraphicDev.cpp">
@@ -439,9 +430,6 @@
     </ClCompile>
     <ClCompile Include="..\Code\CEditContext.cpp">
       <Filter>01. Logic\97. Editor</Filter>
-    </ClCompile>
-    <ClCompile Include="..\code\CPlayerController.cpp">
-      <Filter>02. Prototype\08. Controller\00. Player Controller</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

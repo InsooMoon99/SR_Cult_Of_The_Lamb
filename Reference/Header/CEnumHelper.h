@@ -1,6 +1,7 @@
 ﻿#pragma once
-
 #include "Engine_Define.h"
+
+#include "CGameObject.h"
 
 BEGIN(Engine)
 
@@ -74,7 +75,7 @@ static const char* ToString(ACTORSTATE state)
     case ACTORSTATE::DEAD:
         return "Dead";
 
-    case ACTORSTATE::PLAYERSTATE_END:
+    case ACTORSTATE::STATE_END:
     default:
         return "UnknownState";
     }

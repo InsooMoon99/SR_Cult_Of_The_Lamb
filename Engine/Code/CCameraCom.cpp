@@ -6,8 +6,8 @@
 class CMainCamera;
 
 CCameraCom::CCameraCom()
-    : m_CamMode(CAM_TARGET),
-      m_ViewType(VIEW_QUARTER),
+    : m_CamMode(CAM_FREE),
+      m_ViewType(VIEW_FPS),
       m_ProjType(PROJ_PERSPECTIVE),
       m_Offset(0.f, 4.f, -6.f),
       m_FOV(D3DXToRadian(60.f)),
@@ -19,8 +19,8 @@ CCameraCom::CCameraCom()
 
 CCameraCom::CCameraCom(DEVICE graphicDev)
     : CComponent(graphicDev),
-      m_CamMode(CAM_TARGET),
-      m_ViewType(VIEW_QUARTER),
+      m_CamMode(CAM_FREE),
+      m_ViewType(VIEW_FPS),
       m_ProjType(PROJ_PERSPECTIVE),
       m_Offset(0.f, 4.f, -6.f),
       m_FOV(D3DXToRadian(60.f)),

@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include "CComponent.h"
 #include "CItemDB.h"
-#include "Engine_Define.h"
 #include "ItemInstance.h"
 
 BEGIN(Engine)

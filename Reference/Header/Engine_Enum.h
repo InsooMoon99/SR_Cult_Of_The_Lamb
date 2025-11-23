@@ -130,7 +130,7 @@ enum class ACTORSTATE
     HIT,
     DEAD,
 
-    PLAYERSTATE_END
+    STATE_END
 };
 
 enum class ACTORDIR
@@ -144,7 +144,7 @@ enum class ACTORDIR
     L_DOWN,
     R_DOWN,
 
-    PLAYERDIR_END
+    DIR_END
 };
 
 

@@ -76,14 +76,10 @@ HRESULT CMainMenu::Ready_GameLogic_Layer(LAYERTYPE layerType)
     pGameObject = CMenuChar::Create(m_GraphicDev);
     NULL_CHECK_RETURN_MSG(pGameObject, E_FAIL, L"CMainMenu::Ready_GameLogic_Layer() failed: CMenuChar::Create() returned null")
 
+    // TODO ↓ 임시로 구성한, 메인 화면 애니메이션 재생용 더미 플레이어. 나중에 수정할 것
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::PLAYER, pGameObject),
         L"CMainMenu::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CMenuChar) failed");
-
-    const auto playerTransform =
-        dynamic_cast<CTransform*>(pGameObject->Get_Component(
-            ID_DYNAMIC,
-            COMPONENTTYPE::TRANSFORM));
 
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CMainCamera>(
@@ -93,8 +89,8 @@ HRESULT CMainMenu::Ready_GameLogic_Layer(LAYERTYPE layerType)
             &pGameObject),
         L"Persistent object setup failed");
 
-    // 카메라 타겟을 플레이어로 설정
-    dynamic_cast<CMainCamera*>(pGameObject)->Set_CamTarget(playerTransform);
+    // 카메라 타겟을 null로 설정
+    dynamic_cast<CMainCamera*>(pGameObject)->Set_CamTarget(nullptr);
 
     if (nullptr == layer)
         return E_FAIL;

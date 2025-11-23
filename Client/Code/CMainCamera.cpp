@@ -61,7 +61,6 @@ void CMainCamera::LateUpdate_GameObject(const _float& timeDelta)
 void CMainCamera::Render_GameObject()
 {
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-
 }
 
 void CMainCamera::Render_Editor()
@@ -73,15 +72,16 @@ void CMainCamera::Render_Editor()
 
 HRESULT CMainCamera::Set_CamTarget(CTransform* targetTransform)
 {
-    // 같은 대상을 다시 설정하는 경우 무시
-    if (m_TargetTransformCom == targetTransform)
-        return S_OK;
+    // 타겟이 변경되었는지 확인하고, 변경되었다면 새로운 타겟 설정
+    if (m_TargetTransformCom != targetTransform)
+        m_TargetTransformCom = targetTransform;
 
-    // 새 타겟 설정
-    m_TargetTransformCom = targetTransform;
-
+    // 새로운 타겟 상태에 따라 카메라 모드 설정
     if (nullptr == m_TargetTransformCom)
+    {
+        //MSG_BOX("Camera target set to null. Switching to Free Mode.");
         m_CameraCom->Set_CamMode(CCameraCom::CAM_FREE);
+    }
     else
         m_CameraCom->Set_CamMode(CCameraCom::CAM_TARGET);
 
