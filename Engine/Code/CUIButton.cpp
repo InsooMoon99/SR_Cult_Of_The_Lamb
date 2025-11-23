@@ -11,7 +11,7 @@ int CUIButton::m_nextID = 0;
 
 // 일단 대기 rcTex 고치고 보자
 
-CUIButton::CUIButton(DEVICE graphicDev) : CUI(graphicDev), m_textureOn(1), m_textureOff(1)
+CUIButton::CUIButton(DEVICE graphicDev) : CUI(graphicDev), m_textureOn(0), m_textureOff(0)
 {
     m_ID = ++m_nextID;
 }

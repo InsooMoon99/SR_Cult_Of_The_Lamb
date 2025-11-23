@@ -39,12 +39,7 @@ HRESULT CMainMenu::Ready_Scene()
 _int CMainMenu::Update_Scene(const _float& timeDelta)
 {
     _int exit = Engine::CScene::Update_Scene(timeDelta);
-    // Stage
-    if (CDInputMgr::GetInstance()->Get_DIKeyState(DIK_1) & 0x80)
-        CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_STAGE);
-        // Editor
-    else if (CDInputMgr::GetInstance()->Get_DIKeyState(DIK_2) & 0x80)
-        CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_EDIT);
+   
     return exit;
 }
 
