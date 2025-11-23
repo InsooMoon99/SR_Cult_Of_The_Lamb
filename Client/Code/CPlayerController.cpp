@@ -60,6 +60,7 @@ HRESULT CPlayerController::Init_OwnerComponent()
 
 void CPlayerController::Key_Input(const _float& timeDelta)
 {
+    // 매 프레임 입력 저장값 초기화
     KeyInputData inputData;
 
     // 1. 입력 데이터 수집

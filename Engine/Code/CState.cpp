@@ -62,28 +62,6 @@ void CState::Update_Animation()
         // Animator가 없으면 그냥 넘어감 Null 체크는 아래에서 진행
     }
 
-#pragma region Legacy: 이전 애니메이션 변경 방식
-    /*
-    if (m_Animator != nullptr && m_State != m_PrevState)
-    {
-        auto iter = m_PlayerStateMap.find(m_State);
-        if (iter != m_PlayerStateMap.end())
-        {
-            ANIMSTATE animState = ANIMSTATE::LOOP; // 기본 LOOP 로 세팅
-    
-            auto animIter = m_AnimStateMap.find(m_State);
-    
-            if (animIter != m_AnimStateMap.end())
-                animState = animIter->second;
-    
-            m_Animator->Play_Animation(iter->second, animState);
-        }
-    
-        m_PrevState = m_State;
-    }
-    */
-#pragma endregion
-
     // 상태 혹은 방향이 바뀌었을 때만 로직 수행
     if (m_Animator != nullptr && m_TransformCom != nullptr &&
         (m_State != m_PrevState || m_Dir != m_PrevDir))
@@ -172,7 +150,7 @@ CComponent* CState::Clone()
 
 pair<wstring, bool> CState::Get_AnimDirInfo(ACTORSTATE state, ACTORDIR dir)
 {
-    wstring suffix = L"";
+    wstring suffix;
     bool    bFlip  = false;
 
     switch (state)
