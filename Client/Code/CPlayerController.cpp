@@ -29,7 +29,6 @@ HRESULT CPlayerController::Ready_PlayerController()
 
 _int CPlayerController::Update_Component(const _float& timeDelta)
 {
-    // TODO : 구르기 중 적과의 충돌판정을 무시하는 작업 추가하기
     if (m_RollData.isRolling)
         Update_Roll(timeDelta);
     else
@@ -217,12 +216,7 @@ void CPlayerController::Determine_State(KeyInputData& inputData)
     {
         m_RollData.isRolling       = true;
         m_RollData.rollElapsedTime = 0.f;
-
-        // 이동 중이면 이동 방향으로, 아니면 바라보는 방향으로 구르기
-        if (inputData.isMove)
-            m_RollData.rollDir = inputData.moveDir;
-        else
-            m_RollData.rollDir = m_TransformCom->Get_Look();
+        m_RollData.rollDir         = inputData.moveDir;
 
         D3DXVec3Normalize(&m_RollData.rollDir, &m_RollData.rollDir);
 

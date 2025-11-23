@@ -145,6 +145,9 @@
     <Filter Include="01. Logic\05. Tiled">
       <UniqueIdentifier>{1e08cf3b-8a9b-415b-9274-78f77f8da805}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Prototype\08. Rigidbody">
+      <UniqueIdentifier>{e68e5ef7-ba11-4622-a159-024ba3f50365}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\Engine_Define.h">
@@ -303,6 +306,9 @@
     <ClInclude Include="..\Header\Engine_Global.h">
       <Filter>99. Header</Filter>
     </ClInclude>
+    <ClInclude Include="..\header\CRigidbody.h">
+      <Filter>02. Prototype\08. Rigidbody</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CGraphicDev.cpp">
@@ -430,6 +436,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CEditContext.cpp">
       <Filter>01. Logic\97. Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\CRigidbody.cpp">
+      <Filter>02. Prototype\08. Rigidbody</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
