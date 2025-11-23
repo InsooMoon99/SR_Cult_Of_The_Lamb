@@ -262,8 +262,8 @@ void CPlayer::Animation_Setting()
 
 #pragma region ------   ROLL    ------
     m_AnimatorCom->Create_Animation(L"PlayerRoll_LEFT", 19, 0.02f,
-        _vec2(1.3f, 1.3f), // Scale
-        _vec2(1.f, 1.f)); // Offset
+        _vec2(1.3f, 1.3f),       // Scale
+        _vec2(1.f, 1.f));  // Offset
 
     m_AnimatorCom->Create_Animation(L"PlayerRoll_UP", 16, 0.02f * 19 / 16);
     m_AnimatorCom->Create_Animation(L"PlayerRoll_DOWN", 16, 0.02f * 19 / 16);

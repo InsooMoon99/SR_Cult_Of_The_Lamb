@@ -147,6 +147,7 @@ void CAnimator::Play_Animation(const wstring& key, ANIMSTATE state, bool reset)
         if (rect)
         {
             rect->Set_Scale(desc.size.x, desc.size.y);
+            rect->Set_Offset(desc.offset.x, desc.offset.y);
         }
     }
 
