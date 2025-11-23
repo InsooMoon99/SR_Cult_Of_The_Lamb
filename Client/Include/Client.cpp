@@ -4,12 +4,13 @@
 #include "pch.h"
 #include "Client.h"
 #include "framework.h"
-
-#include <locale.h>
 #include "CFrameMgr.h"
 #include "CImGuiManager.h"
 #include "CMainApp.h"
 #include "CTimerMgr.h"
+#include "CMainEditorMgr.h"
+
+#include <locale.h> // cmd창 출력용
 
 #define MAX_LOADSTRING 100
 
@@ -40,6 +41,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE     hInstance,
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_CLIENT, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
+
+    //비율이슈
+    SetProcessDPIAware();
 
     // 애플리케이션 초기화를 수행합니다:
     if (!InitInstance(hInstance, nCmdShow))
@@ -92,8 +96,18 @@ int APIENTRY wWinMain(_In_ HINSTANCE     hInstance,
 
                 _float fTimer_FPS60 = CTimerMgr::GetInstance()->Get_TimeDelta(L"Timer_FPS60");
 
-                pMainApp->Update_MainApp(fTimer_FPS60);
-                pMainApp->LateUpdate_MainApp(fTimer_FPS60);
+                if (CMainEditorMgr::GetInstance()->IsPlaying())
+                {
+                    pMainApp->Update_MainApp(fTimer_FPS60);
+                    pMainApp->LateUpdate_MainApp(fTimer_FPS60);
+                }
+
+                else // 일시정지
+                {
+                    pMainApp->Update_MainApp(0.f);
+                    pMainApp->LateUpdate_MainApp(0.f);
+                }
+               
                 pMainApp->Render_MainApp();
             }
         }

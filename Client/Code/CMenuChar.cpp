@@ -32,8 +32,8 @@ HRESULT CMenuChar::Ready_GameObject()
 
     Animation_Setting();
 
-    m_TransformCom->Set_Pos(_vec3(0.f, 0.f, 10.f));
-    m_TransformCom->Set_Scale(_vec3(4.f, 4.f, 1.f));
+    m_TransformCom->Set_Pos(_vec3(0.f, -3.f, 10.f));
+    m_TransformCom->Set_Scale(_vec3(4.f, 5.5f, 1.f));
 
     return S_OK;
 }

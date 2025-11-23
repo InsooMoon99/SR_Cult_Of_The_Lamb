@@ -1,21 +1,26 @@
 ﻿#include "CCombatStat.h"
 #include "CAnimator.h"
 
-CCombatStat::CCombatStat(DEVICE GraphicDev)
-    : CComponent(GraphicDev), m_Attack(0), m_Hp(0), m_Mp(0)
-
-{}
+CCombatStat::CCombatStat(DEVICE graphicDev)
+    : CComponent(graphicDev),
+      m_Attack(0),
+      m_Hp(0),
+      m_Mp(0),
+      m_Speed(15)
+{ }
 
 CCombatStat::CCombatStat(const CCombatStat& rhs)
-    : CComponent(rhs), m_Attack(0), m_Hp(0), m_Mp(0)
-{}
+    : CComponent(rhs),
+      m_Attack(0),
+      m_Hp(0),
+      m_Mp(0),
+      m_Speed(rhs.m_Speed)
+{ }
 
 CCombatStat::~CCombatStat()
-{
-    
-}
+{ }
 
-HRESULT CCombatStat::Ready_StateComponent(DEVICE GraphicDev)
+HRESULT CCombatStat::Ready_StateComponent(DEVICE graphicDev)
 {
     // TODO : 객체마다 스탯 설정해주기
     // ex) Player -> m_CombatStat->Set_Hp(100.f);
@@ -36,11 +41,11 @@ void CCombatStat::LateUpdate_Component()
     CComponent::LateUpdate_Component();
 }
 
-CCombatStat* CCombatStat::Create(DEVICE GraphicDev)
+CCombatStat* CCombatStat::Create(DEVICE graphicDev)
 {
-    CCombatStat* state = new CCombatStat(GraphicDev);
+    CCombatStat* state = new CCombatStat(graphicDev);
 
-    if (FAILED(state->Ready_StateComponent(GraphicDev)))
+    if (FAILED(state->Ready_StateComponent(graphicDev)))
     {
         Safe_Release(state);
         MSG_BOX("CombatStat Create Failed");

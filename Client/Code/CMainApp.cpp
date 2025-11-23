@@ -4,6 +4,7 @@
 #include "CCollisionManager.h"
 #include "CDInputMgr.h"
 #include "CDropSystem.h"
+#include "CEditContext.h"
 #include "CFontMgr.h"
 #include "CFrameMgr.h"
 #include "CGraphicDev.h"
@@ -11,13 +12,12 @@
 #include "CItemDB.h"
 #include "CLightMgr.h"
 #include "CLogo.h"
+#include "CMainEditorMgr.h"
 #include "CManagement.h"
 #include "CProtoMgr.h"
 #include "CRenderer.h"
-#include "CTimerMgr.h"
-#include "CMainEditorMgr.h"
-#include "CEditContext.h"
 #include "CSceneMgr.h"
+#include "CTimerMgr.h"
 
 CMainApp::CMainApp()
     : m_ManagementClass(CManagement::GetInstance()),
@@ -40,9 +40,8 @@ HRESULT CMainApp::Ready_MainApp()
         CImGuiManager::GetInstance()->InitImGui(g_hWnd, m_GraphicDev);
 
         CEditContext* ctx = CEditContext::Create();
-        CMainEditorMgr::GetInstance()->Set_EditContext(ctx);
+        CMainEditorMgr::GetInstance()->Ready_MainEditor(m_GraphicDev, ctx);
     }
-    
 
 #pragma region 데이터 파싱 테스트
 
@@ -67,8 +66,8 @@ int CMainApp::Update_MainApp(const float& timeDelta)
     // Imgui
     {
         CImGuiManager::GetInstance()->Update();
-        /*ImGui::Begin("New Windows");
-        ImGui::End();*/
+
+        CMainEditorMgr::GetInstance()->Update_MainEditor(timeDelta);
     }
 
     return 0;
@@ -85,8 +84,12 @@ void CMainApp::Render_MainApp()
 
     m_ManagementClass->Render_Scene(m_GraphicDev);
 
-    CMainEditorMgr::GetInstance()->Render();
-    CImGuiManager::GetInstance()->Render();
+    CMainEditorMgr::GetInstance()->Render_MainEditor();
+
+    // ImGui
+    {
+        CImGuiManager::GetInstance()->Render();
+    }
 
     m_DeviceClass->Render_End();
 }
@@ -122,6 +125,11 @@ HRESULT CMainApp::Ready_DefaultSetting(DEVICE* graphicDev)
         *graphicDev, L"궁서", L"궁서", 20, 15, FW_THIN)))
         return E_FAIL;
 
+    //AddFontResourceEx(L"../Bin/Resource/Font/LaptureDisplay-Regular.otf", FR_PRIVATE, NULL);
+    if (FAILED(CFontMgr::GetInstance()->Ready_Font(
+        *graphicDev, L"LaptureDisplay-Regular", L"LaptureDisplay-Regular", 10, 24, FW_HEAVY)))
+        return E_FAIL;
+
     // DInput
     if (FAILED(CDInputMgr::GetInstance()->Ready_InputDev(g_hInst, g_hWnd)))
         return E_FAIL;
@@ -131,19 +139,6 @@ HRESULT CMainApp::Ready_DefaultSetting(DEVICE* graphicDev)
 
 HRESULT CMainApp::Ready_Scene(DEVICE graphicDev)
 {
-   /* Engine::CScene* logo = CLogo::Create(graphicDev);
-
-    if (nullptr == logo)
-        return E_FAIL;
-
-    if (FAILED(m_ManagementClass->Set_Scene(logo)))
-    {
-        MSG_BOX("Logo Setting Failed");
-        return E_FAIL;
-    }
-
-    return S_OK;*/
-
     return CSceneMgr::GetInstance()->Ready_SceneMgr(graphicDev);
 }
 
@@ -183,7 +178,7 @@ void CMainApp::Free()
 #pragma region 데이터 파싱 테스트
 
     CItemDB::DestroyInstance();
-    CDropSystem::DestroyInstance();
+    CDropSystem::DestroyInstance(); 
 
 #pragma endregion
 }

@@ -25,9 +25,9 @@ CPlayer::CPlayer(DEVICE graphicDev)
       m_BoxColCom(nullptr),
       m_StateCom(nullptr),
       m_CombatStatCom(nullptr),
-      m_PlayerControllerCom(nullptr),
       m_WeaponEquipCom(nullptr),
-      m_Inventory(nullptr)
+      m_Inventory(nullptr),
+      m_PlayerControllerCom(nullptr)
 {}
 
 CPlayer::CPlayer(const CPlayer& rhs)
@@ -39,9 +39,9 @@ CPlayer::CPlayer(const CPlayer& rhs)
       m_BoxColCom(nullptr),
       m_StateCom(nullptr),
       m_CombatStatCom(nullptr),
-      m_PlayerControllerCom(nullptr),
       m_WeaponEquipCom(nullptr),
-      m_Inventory(nullptr)
+      m_Inventory(nullptr),
+      m_PlayerControllerCom(nullptr)
 {}
 
 CPlayer::~CPlayer()
@@ -62,8 +62,7 @@ HRESULT CPlayer::Ready_GameObject()
     m_CombatStatCom->Set_Mp(5.f);
     m_CombatStatCom->Set_Speed(5.f);
 
-    // Transform 테스트
-    m_TransformCom->Set_Pos(_vec3(0.f, 0.f, 1.f));
+    m_TransformCom->Set_Pos(_vec3(-30.f, 0.f, 1.f));
 
     Animation_Setting();
 
@@ -200,7 +199,7 @@ HRESULT CPlayer::Add_Component()
     // RectCol Componet
     m_BoxColCom = CreateProtoComponent<CBoxCollider>(this, COMPONENTTYPE::BOX_COLL);
     NULL_CHECK_RETURN(m_BoxColCom, E_FAIL);
-    //m_BoxColCom->Set_Size(_vec3(2.f, 2.f, 2.f));
+    //m_BoxColCom->Set_Scale(_vec3(2.f, 2.f, 2.f));
 
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::BOX_COLL, m_BoxColCom });
 
@@ -232,6 +231,8 @@ HRESULT CPlayer::Add_Component()
     m_Components[ID_DYNAMIC].insert(
         { COMPONENTTYPE::CONTROLLER_PLAYER, m_PlayerControllerCom });
 
+    m_PlayerControllerCom->Init_OwnerComponent();
+
     // weaponequip
     m_WeaponEquipCom = CreateProtoComponent<CWeaponEquip>(this, COMPONENTTYPE::WEAPON_EQUIP);
     NULL_CHECK_RETURN(m_WeaponEquipCom, E_FAIL);
@@ -243,20 +244,32 @@ HRESULT CPlayer::Add_Component()
 
 void CPlayer::Animation_Setting()
 {
-    // 애니메이션 생성
-    // 여기서는 CLoading에서 만들어둔 텍스처 이름대로 가져온다
+#pragma region ------   IDLE    ------
     m_AnimatorCom->Create_Animation(L"PlayerIdle", 150, 0.02f);
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"PlayerIdle", ANIMSTATE::LOOP);
+#pragma endregion
+
+#pragma region ------   RUN     ------
     m_AnimatorCom->Create_Animation(L"PlayerRun_LEFT", 19, 0.02f);
     m_AnimatorCom->Create_Animation(L"PlayerRun_UP", 19, 0.02f);
     m_AnimatorCom->Create_Animation(L"PlayerRun_DOWN", 19, 0.02f);
     m_AnimatorCom->Create_Animation(L"PlayerRun_LUP", 19, 0.02f);
     m_AnimatorCom->Create_Animation(L"PlayerRun_LDOWN", 19, 0.02f);
 
-    // State -> Animation 연동
-    m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"PlayerIdle", ANIMSTATE::LOOP);
-    // CState쪽에는 PlayerRun이라는 앞쪽 이름(상태)만 적어주면,
-    // 자동으로 _LEFT 등 뒤쪽에 적어놓은 이름(방향)을 찾아준다
     m_StateCom->Set_AnimInfo(ACTORSTATE::RUN, L"PlayerRun", ANIMSTATE::LOOP);
+#pragma endregion
+
+#pragma region ------   ROLL    ------
+    m_AnimatorCom->Create_Animation(L"PlayerRoll_LEFT", 19, 0.02f,
+        _vec2(1.3f, 1.3f),       // Scale
+        _vec2(1.f, 1.f));  // Offset
+
+    m_AnimatorCom->Create_Animation(L"PlayerRoll_UP", 16, 0.02f * 19 / 16);
+    m_AnimatorCom->Create_Animation(L"PlayerRoll_DOWN", 16, 0.02f * 19 / 16);
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::ROLL, L"PlayerRoll", ANIMSTATE::ONCE);
+#pragma endregion
 }
 
 CPlayer* CPlayer::Create(DEVICE graphicDev)

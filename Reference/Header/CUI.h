@@ -21,7 +21,10 @@ public:
     void    Render_GameObject() override;
 
     virtual int Get_ID() { return m_ID; }
-
+protected:
+    bool m_bHovered = false;
+    bool m_bClicked = false;
+    RECT m_tRect;
 protected:
     void Free() override;
 

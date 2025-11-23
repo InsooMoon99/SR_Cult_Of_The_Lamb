@@ -15,17 +15,32 @@
 #include "CBoxCollider.h"
 #include "CInventory.h"
 #include "CWeaponEquip.h"
+#include "CClient_CreateHelper.h"
+#include "CMapEditorPlacer.h"
+#include "CTimerMgr.h"
 
 IMPLEMENT_SINGLETON(CMainEditorMgr)
-
-CMainEditorMgr::CMainEditorMgr()
-    : m_Context(nullptr)
-{
-}
 
 CMainEditorMgr::~CMainEditorMgr()
 {
     Free();
+}
+
+void CMainEditorMgr::Ready_MainEditor(DEVICE graphicDev, CEditContext* ctx)
+{
+    m_GraphicDev = graphicDev;
+
+    Set_EditContext(ctx);
+
+    m_MapPlacer = CMapEditorPlacer::Create(m_GraphicDev);
+}
+
+void CMainEditorMgr::Update_MainEditor(const _float& timeDelta)
+{
+    if (m_MapPlacer)
+    {
+        m_MapPlacer->Update_MapPlacer(timeDelta);
+    }
 }
 
 void CMainEditorMgr::Set_EditContext(CEditContext* ctx)
@@ -35,7 +50,7 @@ void CMainEditorMgr::Set_EditContext(CEditContext* ctx)
     m_Context = ctx;
 }
 
-void CMainEditorMgr::Render()
+void CMainEditorMgr::Render_MainEditor()
 {
     if (!m_Context)
         return;
@@ -47,22 +62,73 @@ void CMainEditorMgr::Render()
     else
         MSG_BOX("Scene Is Where ? ");
 
+    // 프리뷰 오브젝트 렌더
+    if (m_MapPlacer)
+    {
+        m_MapPlacer->Render_Privew();
+    }
+
     ImGui::Begin("MainEditor");
 
+    ImGui::BeginChild("[ Tool bar ]", ImVec2(0, 40), true);
+    Render_ToolBar();
+    ImGui::EndChild();
+
+    ImGui::Separator();
+
     // 왼쪽 Hierarchy (계층 구조)
-    ImGui::BeginChild(u8"[ Hierarchy ]", ImVec2(170, 0), true);
+    ImGui::BeginChild("[ Hierarchy ]", ImVec2(170, 0), true);
     Render_Hierarchy();
     ImGui::EndChild();
 
     ImGui::SameLine();
 
     // 오른쪽 Inspector (정보 및 설정)
-    ImGui::BeginChild(u8"[ Inspector ]", ImVec2(0, 0), true);
+    ImGui::BeginChild("[ Inspector ]", ImVec2(0, 0), true);
     Render_Inspector();
     ImGui::EndChild();
 
     ImGui::End();
 }
+
+void CMainEditorMgr::Render_ToolBar()
+{
+    float delta = CTimerMgr::GetInstance()->Get_TimeDelta(L"Timer_FPS60");
+    float fps = (delta > 0.f) ? 1.f / delta : 0.f;
+
+    ImGui::Columns(2, "ToolbarCols", false);
+
+    // ============
+    // Play / FPS
+    // ============
+    {
+        ImGui::AlignTextToFramePadding();
+        ImGui::Text("Game");
+        ImGui::SameLine();
+
+        if (ImGui::Button(m_IsPlaying ? "Pause" : "Play", ImVec2(60.f, 0.f)))
+            m_IsPlaying = !m_IsPlaying;
+
+        ImGui::SameLine();
+        ImGui::Text("FPS : %.1f", fps);
+    }
+
+    ImGui::NextColumn();
+
+    // =======
+    // Camera
+    // =======
+    {
+        ImGui::AlignTextToFramePadding();
+        ImGui::Text("Camera");
+        ImGui::SameLine();
+
+        Menu_CameraInspector(m_MainCamera);
+    }
+
+    ImGui::Columns(1);
+}
+
 
 void CMainEditorMgr::Render_Hierarchy()
 {
@@ -73,7 +139,6 @@ void CMainEditorMgr::Render_Hierarchy()
         return;
     }
 
-    // TODO 인수 : 일단은 하나의 Scene만 있다고 가정하고 구현
     if (ImGui::TreeNode("Scene"))
     {
         const auto& layers = scene->Get_Layers();
@@ -282,14 +347,43 @@ void CMainEditorMgr::Render_SelectComponent()
 
         // 다른 컴포넌트 타입 ImGui에 보여줄거 있으면 추가하기
 
-
         }
-
-
     }
 }
 
+void CMainEditorMgr::Render_MapObjectWindow()
+{
+    ImGui::Begin("Map Objects");
+
+    bool isGrassSelected =
+        (m_MapPlacer && m_MapPlacer->IsPlacing() && m_MapPlacer->Get_CurType() == MAPOBJTYPE::GRASS);
+
+    // Grass 풀때기만 일단
+    if (ImGui::Selectable("Grass", isGrassSelected))
+    {
+        if (m_MapPlacer)
+            m_MapPlacer->Start_Place(MAPOBJTYPE::GRASS);
+    }
+
+    // 추가 예정) Rock, Tree 등등
+
+    // 배치 취소
+    if (m_MapPlacer && m_MapPlacer->IsPlacing())
+    {
+        if (ImGui::Button("Cancel Place"))
+        {
+            m_MapPlacer->Cancel_Place();
+        }
+    }
+
+    ImGui::End();
+}
+
+
 void CMainEditorMgr::Free()
 {
+    Safe_Release(m_MapPlacer);
+
     Safe_Release(m_Context);
+    Safe_Release(m_GraphicDev);
 }

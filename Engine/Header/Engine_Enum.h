@@ -64,6 +64,7 @@ enum class OBJTYPE
     BOSS2,
     HUMANMONSTER,
     TERRAIN,
+    PLACEMENT,
 
     OBJ_END
 };
@@ -103,6 +104,7 @@ enum class COMPONENTTYPE
     TEX_ITEM,
     TEX_MANUCHAR,
     TEX_UIICON,
+    TEX_UIBUTTON,
 
     // TODO : Test Tile -> 은수 Texture 버전이랑 합치면 고치기
     TEX_TILE_284,
@@ -127,6 +129,7 @@ enum class COMPONENTTYPE
 
 enum class ACTORSTATE
 {
+    // 여기 추가할때마다 EnumHelper에 추가해야 Editor에 정상적으로 나옴
     IDLE,
     RUN,
     ATTACK,
@@ -134,7 +137,7 @@ enum class ACTORSTATE
     HIT,
     DEAD,
 
-    PLAYERSTATE_END
+    STATE_END
 };
 
 enum class ACTORDIR
@@ -148,9 +151,8 @@ enum class ACTORDIR
     L_DOWN,
     R_DOWN,
 
-    PLAYERDIR_END
+    DIR_END
 };
-
 
 enum class SCENETYPE
 {

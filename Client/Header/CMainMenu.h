@@ -1,5 +1,10 @@
 ﻿#pragma once
 #include "CScene.h"
+
+BEGIN(Engine)
+class CUIButton;
+END
+
 class CMainMenu :
     public CScene
 {
@@ -14,6 +19,8 @@ class CMainMenu :
         void    LateUpdate_Scene(const _float& timeDelta) override;
         void    Render_Scene() override;
 
+        void RenderFont(const wstring& font, const wstring& text, CUIButton* btt);
+
 
     private:
         HRESULT Ready_Environment_Layer(LAYERTYPE layerType);
@@ -21,6 +28,13 @@ class CMainMenu :
         HRESULT Ready_UI_Layer(LAYERTYPE layerType);
 
         HRESULT Ready_Prototype();
+
+
+private:
+    CUIButton* bt;
+    CUIButton* bt1;
+    CUIButton* bt2;
+    CUIButton* bt3;
 
     public:
         static CMainMenu* Create(DEVICE graphicDev);

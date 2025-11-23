@@ -33,11 +33,11 @@ public:
 
     // Editor
     const map<LAYERTYPE, CLayer*>& Get_Layers() const { return m_Layers; }
+    CLayer* Get_Layer(LAYERTYPE type);
 
 protected:
     map<LAYERTYPE, CLayer*> m_Layers;
     DEVICE                  m_GraphicDev;
-    
 
 protected:
     void Free() override;

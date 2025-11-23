@@ -6,33 +6,31 @@
 CState::CState(DEVICE graphicDev)
     : CComponent(graphicDev),
       m_State(ACTORSTATE::IDLE),
-      m_PrevState(ACTORSTATE::PLAYERSTATE_END),
+      m_PrevState(ACTORSTATE::STATE_END),
       m_Dir(ACTORDIR::LEFT),
-      m_PrevDir(ACTORDIR::PLAYERDIR_END),
+      m_PrevDir(ACTORDIR::DIR_END),
       m_Animator(nullptr)
-{}
+{ }
 
 CState::CState(const CState& rhs)
-    : CComponent(rhs.m_GraphicDev),
+    : CComponent(rhs),
       m_State(ACTORSTATE::IDLE),
-      m_PrevState(ACTORSTATE::PLAYERSTATE_END),
+      m_PrevState(ACTORSTATE::STATE_END),
       m_Dir(ACTORDIR::LEFT),
-      m_PrevDir(ACTORDIR::PLAYERDIR_END),
+      m_PrevDir(ACTORDIR::DIR_END),
       m_Animator(nullptr)
-{}
+{ }
 
 CState::~CState()
-{
-    CState::Free();
-}
+{ }
 
 HRESULT CState::Ready_StateComponent(DEVICE graphicDev)
 {
     m_State     = ACTORSTATE::IDLE;
-    m_PrevState = ACTORSTATE::PLAYERSTATE_END;
+    m_PrevState = ACTORSTATE::STATE_END;
 
     m_Dir     = ACTORDIR::LEFT;
-    m_PrevDir = ACTORDIR::PLAYERDIR_END;
+    m_PrevDir = ACTORDIR::DIR_END;
 
     return S_OK;
 }
@@ -63,28 +61,6 @@ void CState::Update_Animation()
 
         // Animator가 없으면 그냥 넘어감 Null 체크는 아래에서 진행
     }
-
-#pragma region Legacy: 이전 애니메이션 변경 방식
-    /*
-    if (m_Animator != nullptr && m_State != m_PrevState)
-    {
-        auto iter = m_PlayerStateMap.find(m_State);
-        if (iter != m_PlayerStateMap.end())
-        {
-            ANIMSTATE animState = ANIMSTATE::LOOP; // 기본 LOOP 로 세팅
-    
-            auto animIter = m_AnimStateMap.find(m_State);
-    
-            if (animIter != m_AnimStateMap.end())
-                animState = animIter->second;
-    
-            m_Animator->Play_Animation(iter->second, animState);
-        }
-    
-        m_PrevState = m_State;
-    }
-    */
-#pragma endregion
 
     // 상태 혹은 방향이 바뀌었을 때만 로직 수행
     if (m_Animator != nullptr && m_TransformCom != nullptr &&
@@ -174,7 +150,7 @@ CComponent* CState::Clone()
 
 pair<wstring, bool> CState::Get_AnimDirInfo(ACTORSTATE state, ACTORDIR dir)
 {
-    wstring suffix = L"";
+    wstring suffix;
     bool    bFlip  = false;
 
     switch (state)
@@ -237,7 +213,7 @@ pair<wstring, bool> CState::Get_AnimDirInfo(ACTORSTATE state, ACTORDIR dir)
             bFlip = true;
             break;
         default:
-            suffix = L"_DOWN";
+            suffix = L"_LEFT";
             break;
         }
         break;

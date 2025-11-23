@@ -116,15 +116,19 @@ void CDroppedItem::OnBeginOverlap(CCollider* self, CCollider* other)
         if (CItemDB::GetInstance()->GetItemById(m_itemInst.itemId)->type == ItemType::Weapon)
         {
             dynamic_cast<CWeaponEquip*>(ply->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::WEAPON_EQUIP))->Equip_Weapon(m_itemInst);
+            //*** 아이템 지우기 ***
+            Mark_As_PendingKill();
         }
         else
         {
             CComponent* com = ply->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::INVENTORY);
-            dynamic_cast<CInventory*>(com)->AddItem(m_itemInst);
-        }
+            if (dynamic_cast<CInventory*>(com)->AddItem(m_itemInst) == true)
+            {
+            //*** 아이템 지우기 ***
+            Mark_As_PendingKill();
 
-        //*** 아이템 지우기 ***
-        Mark_As_PendingKill();
+            }
+        }
     }
 
     cout << "item Hit" << endl;
@@ -155,11 +159,11 @@ HRESULT CDroppedItem::Add_Component()
 
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_ITEM, m_TextureCom });
 
-    // RectCol Componet
+    // Box Col
     m_BoxColCom = CreateProtoComponent<CBoxCollider>(this, COMPONENTTYPE::BOX_COLL);
     NULL_CHECK_RETURN(m_BoxColCom, E_FAIL);
 
-    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::RECT_COLL, m_BoxColCom });
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::BOX_COLL, m_BoxColCom });
 
     return S_OK;
 }

@@ -1,7 +1,5 @@
 ﻿#pragma once
-
 #include "CGameObject.h"
-#include "Engine_Define.h"
 
 BEGIN(Engine)
 class CTransform;
@@ -37,13 +35,13 @@ private:
     void    Animation_Setting();
 
 private:
-    Engine::CRcTex*         m_BufferCom;
+    Engine::CRcTex* m_BufferCom;
 
-    Engine::CTransform*     m_TransformCom;
-    Engine::CTexture*       m_TextureCom;
-    Engine::CAnimator*      m_AnimatorCom;
-    Engine::CBoxCollider*   m_BoxColCom;
-    Engine::CState*         m_StateCom;
+    Engine::CTransform*   m_TransformCom;
+    Engine::CTexture*     m_TextureCom;
+    Engine::CAnimator*    m_AnimatorCom;
+    Engine::CBoxCollider* m_BoxColCom;
+    Engine::CState*       m_StateCom;
 
 public:
     static CTestMonster* Create(DEVICE graphicDev);
