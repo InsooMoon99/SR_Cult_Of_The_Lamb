@@ -64,6 +64,7 @@ enum class OBJTYPE
     BOSS2,
     HUMANMONSTER,
     TERRAIN,
+    PLACEMENT,
 
     OBJ_END
 };
@@ -124,6 +125,7 @@ enum class COMPONENTTYPE
 
 enum class ACTORSTATE
 {
+    // 여기 추가할때마다 EnumHelper에 추가해야 Editor에 정상적으로 나옴
     IDLE,
     RUN,
     ATTACK,
@@ -147,7 +149,6 @@ enum class ACTORDIR
 
     DIR_END
 };
-
 
 enum class SCENETYPE
 {

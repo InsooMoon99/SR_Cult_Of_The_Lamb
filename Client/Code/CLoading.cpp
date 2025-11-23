@@ -6,7 +6,6 @@
 #include "CBoxCollider.h"
 #include "CBoxTex.h"
 #include "CCameraCom.h"
-#include "CClient_EnumHelper.h"
 #include "CCombatStat.h"
 #include "CInventory.h"
 #include "CItemDB.h"
@@ -27,16 +26,17 @@
 
 CLoading::CLoading(DEVICE pGraphicDev)
     : m_GraphicDev(pGraphicDev),
-      m_Thread(nullptr),
-      m_Crt{},
-      m_LoadingID(LOADING_END),
-      m_IsFinish(false)
+    m_Thread(nullptr),
+    m_Crt{},
+    m_LoadingID(LOADING_END),
+    m_IsFinish(false)
 {
     m_GraphicDev->AddRef();
 }
 
 CLoading::~CLoading()
-{ }
+{
+}
 
 HRESULT CLoading::Ready_Loading(LOADINGID eID)
 {
@@ -203,7 +203,7 @@ _uint CLoading::Loading_ForState()
             L"../Bin/Resource/Texture/"))))
         return E_FAIL;*/
 
-    //circleColorTex
+        //circleColorTex
     if (FAILED(CProtoMgr::GetInstance()
         ->Ready_Prototype(COMPONENTTYPE::TEX_UI_COLOR,
             Engine::CTexture::Create(m_GraphicDev, TEX_NORMAL,
@@ -256,14 +256,14 @@ _uint CLoading::Loading_ForState()
         return E_FAIL;
 
     //// Texture : MainMenu BackGround
-if (FAILED(CProtoMgr::GetInstance()
-    ->Ready_Prototype(COMPONENTTYPE::TEX_MAINBG,
-        Engine::CTexture::Create(
-            m_GraphicDev,
-            TEX_NORMAL,
-            L"../Bin/Resource/Texture/BackGround/MainMenu/MenuMask1.png",
-            1))))
-    return E_FAIL;
+    if (FAILED(CProtoMgr::GetInstance()
+        ->Ready_Prototype(COMPONENTTYPE::TEX_MAINBG,
+            Engine::CTexture::Create(
+                m_GraphicDev,
+                TEX_NORMAL,
+                L"../Bin/Resource/Texture/BackGround/MainMenu/MenuMask1.png",
+                1))))
+        return E_FAIL;
 
 #pragma endregion
 

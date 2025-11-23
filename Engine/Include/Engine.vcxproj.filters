@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="99. Header">
@@ -303,6 +303,10 @@
     <ClInclude Include="..\Header\Engine_Global.h">
       <Filter>99. Header</Filter>
     </ClInclude>
+    <ClInclude Include="..\header\CPlayerController.h">
+      <Filter>02. Prototype\08. Controller\00. Player Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CPickingHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CGraphicDev.cpp">

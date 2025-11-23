@@ -5,6 +5,7 @@
 #include "CDInputMgr.h"
 #include "CGameObject.h"
 #include "CTerrainTex.h"
+#include "CPickingHelper.h"
 
 static const int ATLAS_COLS_284 = 5;  // 가로 5칸
 static const int ATLAS_ROWS_284 = 1;  // 세로 1칸
@@ -325,85 +326,32 @@ void CTerrainRenderer::SelectPlaceObject(_uint cellX, _uint cellZ)
 
 bool CTerrainRenderer::PickCellMousePos(_int& outX, _int& outZ)
 {
-    POINT mousePos;
-    GetCursorPos(&mousePos);
-    ScreenToClient(g_hWnd, &mousePos);
-
-    // 1. 뷰포트, 클라이언트 크기 보정
-    RECT rcClient;
-    GetClientRect(g_hWnd, &rcClient);
-    D3DVIEWPORT9 viewport;
-    m_GraphicDev->GetViewport(&viewport);
-
-    if (rcClient.right > 0 && rcClient.bottom > 0)
-    {
-        mousePos.x = (long)(mousePos.x * (viewport.Width / (float)rcClient.right));
-        mousePos.y = (long)(mousePos.y * (viewport.Height / (float)rcClient.bottom));
-    }
-
-    // 2. 투영/뷰 행렬 가져오기
-    _matrix matProj, matView;
-    m_GraphicDev->GetTransform(D3DTS_PROJECTION, &matProj);
-    m_GraphicDev->GetTransform(D3DTS_VIEW, &matView);
-
-    // Ray를 World 좌표계 고정으로 변환
-    _matrix matIdentity;
-    D3DXMatrixIdentity(&matIdentity);
-
-    _vec3 vNear((float)mousePos.x, (float)mousePos.y, 0.0f);
-    _vec3 vFar((float)mousePos.x, (float)mousePos.y, 1.0f);
-
-    D3DXVec3Unproject(&vNear, &vNear, &viewport, &matProj, &matView, &matIdentity);
-    D3DXVec3Unproject(&vFar, &vFar, &viewport, &matProj, &matView, &matIdentity);
-
-    // 3. 레이(Ray) 생성 (World 기준)
-    _vec3 rayOrigin = vNear;
-    _vec3 rayDir = vFar - vNear;
-    D3DXVec3Normalize(&rayDir, &rayDir);
-
-    // 4. 지형 평면과 충돌 검사 (World 기준)
     _vec3 terrainPos;
     m_TransformCom->Get_Info(INFO_POS, &terrainPos);
     float planeY = terrainPos.y;
 
-    // 평면과 평행하면 무시
-    if (fabs(rayDir.y) < 1e-6f) return false;
+	_vec3 hitWorld;
+	if (PickPlaneY(m_GraphicDev, g_hWnd, terrainPos.y, hitWorld) == false)
+		return false;
 
-    // 레이가 평면 높이(planeY)에 도달하는 거리 t 계산
-    float t = (planeY - rayOrigin.y) / rayDir.y;
+	_matrix matWorld = m_TransformCom->Get_World();
+	_matrix matInvWorld;
+	D3DXMatrixInverse(&matInvWorld, nullptr, &matWorld);
 
-    // 카메라 뒤쪽이면 무시
-    if (t < 0.0f) return false;
+	_vec3 hitLocal;
+	D3DXVec3TransformCoord(&hitLocal, &hitWorld, &matInvWorld);
 
-    // 충돌 지점 (World 좌표)
-    _vec3 hitPosWorld = rayOrigin + rayDir * t;
+	const float cellSize = (float)VTX_IV;
+	_int cellX = (_int)floorf(hitLocal.x / cellSize);
+	_int cellZ = (_int)floorf(hitLocal.z / cellSize);
 
-    // 5. World 좌표 -> Local 좌표 변환
-    _matrix matWorld = m_TransformCom->Get_World();
-    _matrix matInvWorld;
-    D3DXMatrixInverse(&matInvWorld, NULL, &matWorld);
+	if (cellX < 0 || cellX >= (int)TILE_CNT_X - 1 ||
+		cellZ < 0 || cellZ >= (int)TILE_CNT_Z - 1)
+		return false;
 
-    _vec3 hitPosLocal;
-    D3DXVec3TransformCoord(&hitPosLocal, &hitPosWorld, &matInvWorld);
-
-    // 6. 인덱스 계산
-    const float cellSize = (float)VTX_IV;
-
-    // 역행렬을 썼으므로 그냥 나누기
-    _int cellX = (int)floorf(hitPosLocal.x / cellSize);
-    _int cellZ = (int)floorf(hitPosLocal.z / cellSize);
-
-    // 7. 범위 체크
-    if (cellX < 0 || cellX >= (int)TILE_CNT_X - 1 ||
-        cellZ < 0 || cellZ >= (int)TILE_CNT_Z - 1)
-    {
-        return false;
-    }
-
-    outX = cellX;
-    outZ = cellZ;
-
-    return true;
+	outX = cellX;
+	outZ = cellZ;
+	return true;
 }
 
 HRESULT CTerrainRenderer::Refresh_MapFileList()
