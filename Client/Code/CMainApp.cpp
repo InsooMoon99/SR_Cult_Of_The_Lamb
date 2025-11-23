@@ -124,7 +124,7 @@ HRESULT CMainApp::Ready_DefaultSetting(DEVICE* graphicDev)
 
     //AddFontResourceEx(L"../Bin/Resource/Font/LaptureDisplay-Regular.otf", FR_PRIVATE, NULL);
     if (FAILED(CFontMgr::GetInstance()->Ready_Font(
-        *graphicDev, L"LaptureDisplay-Regular", L"LaptureDisplay-Regular", 0, 20, FW_HEAVY)))
+        *graphicDev, L"LaptureDisplay-Regular", L"LaptureDisplay-Regular", 10, 24, FW_HEAVY)))
         return E_FAIL;
 
     // DInput

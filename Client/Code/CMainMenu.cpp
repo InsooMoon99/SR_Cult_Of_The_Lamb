@@ -55,11 +55,11 @@ void CMainMenu::LateUpdate_Scene(const _float& timeDelta)
 
 void CMainMenu::Render_Scene()
 {
-    RenderFont(L"6092-Reg", L"플레이", bt);
-    RenderFont(L"6092-Reg", L"맵툴", bt1);
+    RenderFont(L"LaptureDisplay-Regular", L"플레이", bt);
+    RenderFont(L"LaptureDisplay-Regular", L"맵툴", bt1);
    // RenderFont(L"견명조", L"설정", bt);
-    RenderFont(L"견명조", L"제작진", bt2);
-    RenderFont(L"견명조", L"종료", bt3);
+    RenderFont(L"LaptureDisplay-Regular", L"제작진", bt2);
+    RenderFont(L"LaptureDisplay-Regular", L"종료", bt3);
 
     //
 
@@ -99,11 +99,13 @@ HRESULT CMainMenu::Ready_Environment_Layer(LAYERTYPE layerType)
 
     pGameObject = CMainBG::Create(m_GraphicDev);
     NULL_CHECK_RETURN(m_GraphicDev, E_FAIL)
+
     const auto playerTransform =
         dynamic_cast<CTransform*>(pGameObject->Get_Component(
             ID_DYNAMIC,
             COMPONENTTYPE::TRANSFORM));
-    playerTransform->Set_Pos({ 0,0,10 });
+    playerTransform->Set_Pos({ 0,0,2 });
+    playerTransform->Set_Scale({ 2.2f,1.2f,0.f });
         if (FAILED(layer->Add_GameObject(OBJTYPE::PLAYER, pGameObject)))
             return E_FAIL;
 
@@ -126,7 +128,14 @@ HRESULT CMainMenu::Ready_GameLogic_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::UI, pGameObject),
         L"CMainMenu::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CMenuChar) failed");
+    const auto playerTransform =
+        dynamic_cast<CTransform*>(pGameObject->Get_Component(
+            ID_DYNAMIC,
+            COMPONENTTYPE::TRANSFORM));
+    playerTransform->Set_Pos({ 0,0,20 });
 
+
+    // 카메라
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CMainCamera>(
             OBJTYPE::CAMERA,

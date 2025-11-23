@@ -43,23 +43,14 @@ void CMainBG::LateUpdate_GameObject(const _float& timeDelta)
 void CMainBG::Render_GameObject()
 {
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-
     //
-
-    m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-    m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-
-    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-    m_GraphicDev->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-    m_GraphicDev->SetRenderState(D3DRS_ALPHAREF, 0);
+    m_GraphicDev->SetRenderState(D3DRS_ZENABLE, FALSE);   // Z 버퍼 OFF
     //
     m_TextureCom->Set_Texture(0);
 
     m_BufferCom->Render_Buffer();
     //
-    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-
+    m_GraphicDev->SetRenderState(D3DRS_ZENABLE, TRUE);   // Z 버퍼 OFF
 }
 
 HRESULT CMainBG::Add_Component()

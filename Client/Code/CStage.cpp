@@ -19,6 +19,9 @@
 #include "CUIWeapon.h"
 #include "ItemInstance.h"
 
+#include "CDInputMgr.h"
+#include "CSceneMgr.h"
+
 CStage::CStage(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
       m_PlayerCombatStatCom(nullptr)
@@ -58,6 +61,12 @@ HRESULT CStage::Ready_Scene()
 _int CStage::Update_Scene(const _float& timeDelta)
 {
     _int exit = Engine::CScene::Update_Scene(timeDelta);
+
+    //안은수 테스트
+    if (CDInputMgr::GetInstance()->Get_DIKeyState(DIK_0) & 0x80)
+    {
+        CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_MAINMENU);
+    }
 
     return exit;
 }
