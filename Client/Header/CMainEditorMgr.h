@@ -30,11 +30,14 @@ public:
     // Map Object Render
     void Render_MapObjectWindow();
 
+    _bool IsPlaying() const { return m_IsPlaying; }
+
 private:
     // Context 세팅
     void Set_EditContext(CEditContext* ctx);
 
     // Editor Render
+    void Render_ToolBar();
     void Render_Hierarchy();
     void Render_Inspector();
 
@@ -43,19 +46,16 @@ private:
 
     void Render_SelectComponent();
 
-    
-
-
 protected:
     virtual void Free() override;
 
 private:
     DEVICE m_GraphicDev = nullptr;
-
     CEditContext* m_Context = nullptr;
 
     // MapObject 배치
     CMapEditorPlacer*   m_MapPlacer = nullptr;
 
+    _bool m_IsPlaying = true;
 };
 

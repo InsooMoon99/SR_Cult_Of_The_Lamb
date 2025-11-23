@@ -17,6 +17,7 @@
 #include "CWeaponEquip.h"
 #include "CClient_CreateHelper.h"
 #include "CMapEditorPlacer.h"
+#include "CTimerMgr.h"
 
 IMPLEMENT_SINGLETON(CMainEditorMgr)
 
@@ -73,19 +74,42 @@ void CMainEditorMgr::Render_MainEditor()
 
     ImGui::Begin("MainEditor");
 
+    ImGui::BeginChild("[ Tool bar ]", ImVec2(0, 40), true);
+    Render_ToolBar();
+    ImGui::EndChild();
+
+    ImGui::Separator();
+
     // 왼쪽 Hierarchy (계층 구조)
-    ImGui::BeginChild(u8"[ Hierarchy ]", ImVec2(170, 0), true);
+    ImGui::BeginChild("[ Hierarchy ]", ImVec2(170, 0), true);
     Render_Hierarchy();
     ImGui::EndChild();
 
     ImGui::SameLine();
 
     // 오른쪽 Inspector (정보 및 설정)
-    ImGui::BeginChild(u8"[ Inspector ]", ImVec2(0, 0), true);
+    ImGui::BeginChild("[ Inspector ]", ImVec2(0, 0), true);
     Render_Inspector();
     ImGui::EndChild();
 
     ImGui::End();
+}
+
+void CMainEditorMgr::Render_ToolBar()
+{
+    float delta = CTimerMgr::GetInstance()->Get_TimeDelta(L"Timer_FPS60");
+    float fps = (delta > 0.f) ? 1.f / delta : 0.f;
+
+    if (ImGui::Button(m_IsPlaying ? "Pause" : "Play"))
+    {
+        m_IsPlaying = !m_IsPlaying;
+
+
+    }
+    ImGui::SameLine();
+
+    ImGui::Text("FPS : %.1f", fps);
+
 }
 
 void CMainEditorMgr::Render_Hierarchy()

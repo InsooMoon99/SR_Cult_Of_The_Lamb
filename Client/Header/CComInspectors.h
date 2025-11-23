@@ -307,6 +307,15 @@ static void BoxColl_Inspector(CBoxCollider* collider)
 
         if (ImGui::DragFloat3("##PositionDrag", &scale.x, 0.01f))
             collider->Set_Size(scale);
+
+        ImGui::NewLine();
+
+        if (ImGui::Button("Render Check"))
+        {
+            bool check = collider->Get_ShowDebug();
+            collider->Set_ShowDebug(!check);
+        }
+
     }
     ImGui::PopID();
     

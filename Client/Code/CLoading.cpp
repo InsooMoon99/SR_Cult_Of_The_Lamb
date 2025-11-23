@@ -6,7 +6,6 @@
 #include "CBoxCollider.h"
 #include "CBoxTex.h"
 #include "CCameraCom.h"
-#include "CClient_EnumHelper.h"
 #include "CCombatStat.h"
 #include "CInventory.h"
 #include "CItemDB.h"
@@ -24,20 +23,20 @@
 #include "CWeaponEquip.h"
 #include "ItemData.h"
 #include "ItemInstance.h"
-#include "CWeaponEquip.h"
 
 CLoading::CLoading(DEVICE pGraphicDev)
     : m_GraphicDev(pGraphicDev),
-      m_Thread(nullptr),
-      m_Crt{},
-      m_LoadingID(LOADING_END),
-      m_IsFinish(false)
+    m_Thread(nullptr),
+    m_Crt{},
+    m_LoadingID(LOADING_END),
+    m_IsFinish(false)
 {
     m_GraphicDev->AddRef();
 }
 
 CLoading::~CLoading()
-{ }
+{
+}
 
 HRESULT CLoading::Ready_Loading(LOADINGID eID)
 {
@@ -204,7 +203,7 @@ _uint CLoading::Loading_ForState()
             L"../Bin/Resource/Texture/"))))
         return E_FAIL;*/
 
-    //circleColorTex
+        //circleColorTex
     if (FAILED(CProtoMgr::GetInstance()
         ->Ready_Prototype(COMPONENTTYPE::TEX_UI_COLOR,
             Engine::CTexture::Create(m_GraphicDev, TEX_NORMAL,
@@ -246,10 +245,6 @@ _uint CLoading::Loading_ForState()
         COMPONENTTYPE::TEX_UIICON, Engine::CTexture::Create(m_GraphicDev, TEX_NORMAL, pathVec1))))
         return E_FAIL;
 
-    // Grass [풀때기]
-    if (FAILED(pProtoMgr->Ready_Prototype(
-        COMPONENTTYPE::TEX_GRASS, CTexture::Create(m_GraphicDev, TEXTUREID::TEX_NORMAL,
-            L"../Bin/Resource/Texture/MapObject/WeedShrub/WeedShrub%d.png", 20))))
     //UIBUTTON 텍스쳐
     vector<wstring> pathVec2;
     pathVec2.push_back(L"../Bin/Resource/Texture/UI/MainMenu/Null.png");
@@ -261,14 +256,14 @@ _uint CLoading::Loading_ForState()
         return E_FAIL;
 
     //// Texture : MainMenu BackGround
-if (FAILED(CProtoMgr::GetInstance()
-    ->Ready_Prototype(COMPONENTTYPE::TEX_MAINBG,
-        Engine::CTexture::Create(
-            m_GraphicDev,
-            TEX_NORMAL,
-            L"../Bin/Resource/Texture/BackGround/MainMenu/MenuMask1.png",
-            1))))
-    return E_FAIL;
+    if (FAILED(CProtoMgr::GetInstance()
+        ->Ready_Prototype(COMPONENTTYPE::TEX_MAINBG,
+            Engine::CTexture::Create(
+                m_GraphicDev,
+                TEX_NORMAL,
+                L"../Bin/Resource/Texture/BackGround/MainMenu/MenuMask1.png",
+                1))))
+        return E_FAIL;
 
 #pragma endregion
 

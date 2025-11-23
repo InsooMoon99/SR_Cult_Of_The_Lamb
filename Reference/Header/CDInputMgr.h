@@ -47,6 +47,7 @@ public:
     {
         return !(m_KeyState[key] & 0x80) && (m_PrevKeyState[key] & 0x80);
     }
+    
     HWND Get_HWND() { return m_hWnd; }
 
 public:

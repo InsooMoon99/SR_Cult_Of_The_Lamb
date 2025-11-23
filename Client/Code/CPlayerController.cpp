@@ -4,6 +4,7 @@
 #include "CCombatStat.h"
 #include "CDInputMgr.h"
 #include "CGameObject.h"
+#include "CMainEditorMgr.h"
 #include "CState.h"
 #include "CTransform.h"
 
@@ -29,6 +30,10 @@ HRESULT CPlayerController::Ready_PlayerController()
 
 _int CPlayerController::Update_Component(const _float& timeDelta)
 {
+    // 일시정지면 입력 무시
+    if (!CMainEditorMgr::GetInstance()->IsPlaying())
+        return 0;
+
     Key_Input(timeDelta);
 
     return 0;

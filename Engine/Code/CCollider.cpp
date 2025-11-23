@@ -7,12 +7,12 @@
 #include "CTransform.h"
 
 CCollider::CCollider(DEVICE graphicDev, COLLIDERTYPE colliderType)
-    : CComponent(graphicDev), m_ColliderType(colliderType), m_ShowDebug(false)
+    : CComponent(graphicDev), m_ColliderType(colliderType), m_ShowDebug(true)
 {
 }
 
 CCollider::CCollider(const CCollider& rhs)
-    : CComponent(rhs), m_ColliderType(rhs.m_ColliderType), m_ShowDebug(false)
+    : CComponent(rhs), m_ColliderType(rhs.m_ColliderType), m_ShowDebug(rhs.m_ShowDebug)
 {
 }
 
@@ -42,8 +42,10 @@ void CCollider::LateUpdate_Component()
 
 void CCollider::Render()
 {
-    // 디버깅용 Render가 필요하긴 할듯
-    
+    if (m_ShowDebug == false)
+        return;
+
+
 }
 
 bool CCollider::CheckCollision(CCollider* other)

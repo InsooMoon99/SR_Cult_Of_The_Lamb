@@ -45,11 +45,10 @@ protected:
     void Free() override;
 
 protected:
-    
     // TODO : 충돌처리 조건 더 필요하면 추가하기
 
     COLLIDERTYPE  m_ColliderType;
-    _bool         m_ShowDebug = true;      // 디버그 렌더링 여부
+    _bool         m_ShowDebug;      // 디버그 렌더링 여부
 
 private:
     // 현재 프레임 기준으로 겹쳐있는(충돌중인) 다른 Collider들
