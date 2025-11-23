@@ -14,6 +14,7 @@
 #include "CProtoMgr.h"
 #include "CRcCol.h"
 #include "CRectCollider.h"
+#include "CRigidbody.h"
 #include "CState.h"
 #include "CTerrain.h"
 #include "CTerrainRenderer.h"
@@ -324,7 +325,12 @@ if (FAILED(CProtoMgr::GetInstance()
         COMPONENTTYPE::WEAPON_EQUIP, CWeaponEquip::Create(m_GraphicDev))))
         return E_FAIL;
 
-    m_LoadingText = L"COMPLETE: PRESS 1 -> Stage|PRESS 2 -> Editor";
+    // Rigidbody
+    if (FAILED(pProtoMgr->Ready_Prototype(
+        COMPONENTTYPE::RIGIDBODY, CRigidbody::Create(m_GraphicDev))))
+        return E_FAIL;
+
+    m_LoadingText = L"COMPLETE";
 
     m_IsFinish = true;
 

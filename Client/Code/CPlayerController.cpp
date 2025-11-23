@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "CPlayerController.h"
 
+#include "CRigidbody.h"
 #include "CCombatStat.h"
 #include "CDInputMgr.h"
 #include "CGameObject.h"
@@ -10,13 +11,15 @@
 CPlayerController::CPlayerController(DEVICE graphicDev)
     : CComponent(graphicDev),
       m_OwnerStateCom(nullptr),
-      m_OwnerCombatStat(nullptr)
+      m_OwnerCombatStat(nullptr),
+      m_OwnerRigidbody(nullptr)
 { }
 
 CPlayerController::CPlayerController(const CPlayerController& rhs)
     : CComponent(rhs),
       m_OwnerStateCom(nullptr),
-      m_OwnerCombatStat(nullptr)
+      m_OwnerCombatStat(nullptr),
+      m_OwnerRigidbody(nullptr)
 { }
 
 CPlayerController::~CPlayerController()
@@ -48,6 +51,9 @@ HRESULT CPlayerController::Init_OwnerComponent()
     m_OwnerCombatStat =
         dynamic_cast<CCombatStat*>(m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
 
+    m_OwnerRigidbody =
+        dynamic_cast<CRigidbody*>(m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::RIGIDBODY));
+
     NULL_CHECK_RETURN_MSG(
         m_OwnerStateCom,
         E_FAIL,
@@ -57,6 +63,11 @@ HRESULT CPlayerController::Init_OwnerComponent()
         m_OwnerCombatStat,
         E_FAIL,
         L"CPlayerController::Init_OwnerComponent(): Owner's COMBATSTAT caching has failed");
+
+    NULL_CHECK_RETURN_MSG(
+        m_OwnerRigidbody,
+        E_FAIL,
+        L"CPlayerController::Init_OwnerComponent(): Owner's RIGIDBODY caching has failed");
 
     return S_OK;
 }
@@ -87,7 +98,8 @@ void CPlayerController::Update_Roll(const _float& timeDelta)
 {
     if (nullptr == m_TransformCom ||
         nullptr == m_OwnerStateCom ||
-        nullptr == m_OwnerCombatStat)
+        nullptr == m_OwnerCombatStat ||
+        nullptr == m_OwnerRigidbody)
         return;
 
     m_RollData.rollElapsedTime += timeDelta;
@@ -113,7 +125,8 @@ void CPlayerController::Update_Roll(const _float& timeDelta)
             m_TransformCom->Set_Scale(-1.45f, 1.45f, 1.f);
 
         _float rollSpeed = m_OwnerCombatStat->Get_Speed() * 1.5f; // 구르기 속도 배율
-        m_TransformCom->Move_Pos(m_RollData.rollDir, timeDelta, rollSpeed);
+        // Force = Mass * Accel. 빠른 반응성을 위해 배율 적용
+        m_OwnerRigidbody->Add_Force(m_RollData.rollDir * rollSpeed * 50.f);
     }
 }
 
@@ -254,7 +267,8 @@ void CPlayerController::Apply_Movement(KeyInputData& inputData, const _float& ti
 
     if (nullptr == m_TransformCom ||
         nullptr == m_OwnerCombatStat ||
-        nullptr == m_OwnerStateCom)
+        nullptr == m_OwnerStateCom ||
+        nullptr == m_OwnerRigidbody)
         return;
 
     ACTORSTATE curState   = m_OwnerStateCom->Get_State();
@@ -272,7 +286,8 @@ void CPlayerController::Apply_Movement(KeyInputData& inputData, const _float& ti
 
     D3DXVec3Normalize(&inputData.moveDir, &inputData.moveDir);
 
-    m_TransformCom->Move_Pos(inputData.moveDir, timeDelta, finalSpeed);
+    // Force = Mass * Accel. 빠른 반응성을 위해 배율 적용
+    m_OwnerRigidbody->Add_Force(inputData.moveDir * finalSpeed * 50.f);
 }
 
 CPlayerController* CPlayerController::Create(DEVICE graphicDev)
@@ -298,6 +313,7 @@ void CPlayerController::Free()
 {
     m_OwnerStateCom   = nullptr;
     m_OwnerCombatStat = nullptr;
+    m_OwnerRigidbody  = nullptr;
 
     CComponent::Free();
 }

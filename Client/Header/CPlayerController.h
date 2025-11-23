@@ -4,6 +4,7 @@
 BEGIN(Engine)
 class CCombatStat;
 class CState;
+class CRigidbody;
 END
 
 /// @brief 플레이어의 조작을 담당하는 컴포넌트
@@ -63,6 +64,7 @@ private:
 #pragma region Caching owner components
     Engine::CState*      m_OwnerStateCom;
     Engine::CCombatStat* m_OwnerCombatStat;
+    Engine::CRigidbody*  m_OwnerRigidbody;
 #pragma endregion
 
     RollData m_RollData;

@@ -1,5 +1,6 @@
 ﻿#ifndef Engine_Struct_h__
 #define Engine_Struct_h__
+// @formatter:off
 
 namespace Engine
 {
@@ -58,3 +59,4 @@ typedef struct tagSprite
 }
 
 #endif // Engine_Struct_h__
+// @formatter:on

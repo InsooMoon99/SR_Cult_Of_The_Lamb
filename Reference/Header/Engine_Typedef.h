@@ -1,5 +1,6 @@
 ﻿#ifndef Engine_Typedef_h__
 #define Engine_Typedef_h__
+// @formatter:off
 
 namespace Engine
 {
@@ -41,3 +42,4 @@ typedef	 struct tagMyVec3 : public D3DXVECTOR3
 }
 
 #endif // Engine_Typedef_h__
+// @formatter:on

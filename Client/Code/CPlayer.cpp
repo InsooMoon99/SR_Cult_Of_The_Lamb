@@ -11,6 +11,7 @@
 #include "CPlayerController.h"
 #include "CRcTex.h"
 #include "CRenderer.h"
+#include "CRigidbody.h"
 #include "CState.h"
 #include "CTexture.h"
 #include "CTransform.h"
@@ -25,8 +26,9 @@ CPlayer::CPlayer(DEVICE graphicDev)
       m_BoxColCom(nullptr),
       m_StateCom(nullptr),
       m_CombatStatCom(nullptr),
+      m_RigidbodyCom(nullptr),
       m_WeaponEquipCom(nullptr),
-      m_Inventory(nullptr),
+      m_InventoryCom(nullptr),
       m_PlayerControllerCom(nullptr)
 {}
 
@@ -39,8 +41,9 @@ CPlayer::CPlayer(const CPlayer& rhs)
       m_BoxColCom(nullptr),
       m_StateCom(nullptr),
       m_CombatStatCom(nullptr),
+      m_RigidbodyCom(nullptr),
       m_WeaponEquipCom(nullptr),
-      m_Inventory(nullptr),
+      m_InventoryCom(nullptr),
       m_PlayerControllerCom(nullptr)
 {}
 
@@ -78,7 +81,7 @@ _int CPlayer::Update_GameObject(const _float& timeDelta)
 
     if (inputMgr->Get_DIKeyState(DIK_1) & 0x80)
     {
-        m_Inventory->DropItemfromSlot(
+        m_InventoryCom->DropItemfromSlot(
             0,
             {
                 m_TransformCom->Get_Pos().x,
@@ -218,11 +221,11 @@ HRESULT CPlayer::Add_Component()
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::COMBATSTAT, m_CombatStatCom });
 
     // inventory
-    m_Inventory = CreateProtoComponent<CInventory>(this, COMPONENTTYPE::INVENTORY);
-    NULL_CHECK_RETURN(m_Inventory, E_FAIL);
+    m_InventoryCom = CreateProtoComponent<CInventory>(this, COMPONENTTYPE::INVENTORY);
+    NULL_CHECK_RETURN(m_InventoryCom, E_FAIL);
 
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::INVENTORY, m_Inventory });
-    m_Inventory->SetInvenSlotNum(12);
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::INVENTORY, m_InventoryCom });
+    m_InventoryCom->SetInvenSlotNum(12);
 
     // Player Controller
     m_PlayerControllerCom =
@@ -239,6 +242,12 @@ HRESULT CPlayer::Add_Component()
     NULL_CHECK_RETURN(m_WeaponEquipCom, E_FAIL);
 
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::WEAPON_EQUIP, m_WeaponEquipCom });
+
+    // Rigidbody
+    m_RigidbodyCom = CreateProtoComponent<CRigidbody>(this, COMPONENTTYPE::RIGIDBODY);
+    NULL_CHECK_RETURN(m_RigidbodyCom, E_FAIL);
+
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::RIGIDBODY, m_RigidbodyCom });
 
     return S_OK;
 }
