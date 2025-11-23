@@ -6,7 +6,7 @@ CCombatStat::CCombatStat(DEVICE GraphicDev)
       m_Attack(0),
       m_Hp(0),
       m_Mp(0),
-      m_Speed(10)
+      m_Speed(15)
 { }
 
 CCombatStat::CCombatStat(const CCombatStat& rhs)
