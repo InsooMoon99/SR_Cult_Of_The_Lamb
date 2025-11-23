@@ -213,7 +213,7 @@ pair<wstring, bool> CState::Get_AnimDirInfo(ACTORSTATE state, ACTORDIR dir)
             bFlip = true;
             break;
         default:
-            suffix = L"_DOWN";
+            suffix = L"_LEFT";
             break;
         }
         break;

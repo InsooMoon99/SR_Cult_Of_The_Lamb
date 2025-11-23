@@ -13,10 +13,10 @@ class CState;
 class CCombatStat;
 END
 
+// Client
 class CWeaponEquip;
 class CPlayerController;
-
-class CInventory; // 이건 클라에 있음
+class CInventory;
 
 class CPlayer : public CGameObject
 {
