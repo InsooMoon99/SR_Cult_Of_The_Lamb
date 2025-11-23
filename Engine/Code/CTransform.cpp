@@ -2,47 +2,36 @@
 
 CTransform::CTransform()
     : m_Info{}, m_Scale(1.f, 1.f, 1.f), m_Rotation(0.f, 0.f, 0.f, 1.f),
-      m_PrevInfo{}, m_PrevScale(m_Scale), m_PrevRotation(m_Rotation), m_IsDirty(true),
-	  m_LocalPos(0.f, 0.f, 0.f), m_LocalAngle(0.f, 0.f, 0.f) ,
-      m_LocalScale(1.f, 1.f, 1.f) , m_Parent(nullptr)             
+    m_PrevInfo{}, m_PrevScale(m_Scale), m_PrevRotation(m_Rotation), m_IsDirty(true)
 {
     D3DXMatrixIdentity(&m_matWorld);
     D3DXMatrixIdentity(&m_matRot);
-	D3DXMatrixIdentity(&m_matLocal);
 }
 
 CTransform::CTransform(DEVICE graphicDev)
     : CComponent(graphicDev),
-      m_Info{}, m_Scale(1.f, 1.f, 1.f), m_Rotation(0.f, 0.f, 0.f, 1.f),
-      m_PrevInfo{}, m_PrevScale(m_Scale), m_PrevRotation(m_Rotation), m_IsDirty(true),
-	  m_LocalPos(0.f, 0.f, 0.f), m_LocalAngle(0.f, 0.f, 0.f),
-	  m_LocalScale(1.f, 1.f, 1.f), m_Parent(nullptr)
+    m_Info{}, m_Scale(1.f, 1.f, 1.f), m_Rotation(0.f, 0.f, 0.f, 1.f),
+    m_PrevInfo{}, m_PrevScale(m_Scale), m_PrevRotation(m_Rotation), m_IsDirty(true)
 {
     D3DXMatrixIdentity(&m_matWorld);
     D3DXMatrixIdentity(&m_matRot);
-	D3DXMatrixIdentity(&m_matLocal);
 }
 
 CTransform::CTransform(const CTransform& rhs)
     : CComponent(rhs),
-      m_Scale(rhs.m_Scale), m_Rotation(rhs.m_Rotation),
-      m_PrevScale(rhs.m_Scale), m_PrevRotation(rhs.m_Rotation), m_IsDirty(true),
-      m_LocalPos(rhs.m_LocalPos) , m_LocalAngle(rhs.m_LocalAngle) , m_LocalScale(rhs.m_LocalScale),
-      m_Parent(nullptr) // 부모는 복사 ㄴㄴ
+    m_Scale(rhs.m_Scale), m_Rotation(rhs.m_Rotation),
+    m_PrevScale(rhs.m_Scale), m_PrevRotation(rhs.m_Rotation), m_IsDirty(true)
 {
     // 복제본이 독립적으로 상태를 유지하도록 깊은 복사
     for (_uint i = 0; i < INFO_END; ++i)
     {
         m_PrevInfo[i] = m_Info[i] = rhs.m_Info[i];
     }
-
-	D3DXMatrixIdentity(&m_matWorld);
-	D3DXMatrixIdentity(&m_matRot);
-	D3DXMatrixIdentity(&m_matLocal);
 }
 
 CTransform::~CTransform()
-{ }
+{
+}
 
 HRESULT CTransform::Ready_Transform()
 {
@@ -56,182 +45,41 @@ HRESULT CTransform::Ready_Transform()
         m_PrevInfo[i] = m_Info[i];
     }
 
-	/*m_LocalPos = _vec3(0.f, 0.f, 0.f);
-	m_LocalAngle = _vec3(0.f, 0.f, 0.f);
-	m_LocalScale = _vec3(1.f, 1.f, 1.f);
-	m_Parent = nullptr;*/
-
-	Update_Transform();
-
     return S_OK;
 }
 
 _int CTransform::Update_Component(const _float& timeDelta)
 {
-	bool bCheck = m_IsDirty || Check_Dirty();
+    m_IsDirty = false;
 
-	if (bCheck)
-		Update_Transform();   // 여기서 m_IsDirty = false; 처리
-
-	return 0;
+    if ((m_IsDirty = Check_Dirty()) == true)
+        Compute_WorldMatrix();
 
     return 0;
 }
 
 void CTransform::LateUpdate_Component()
 {
+    if ((m_IsDirty = Check_Dirty()) == true)
+        Compute_WorldMatrix();
+
     // 현재 값을 이전 값으로 저장
     for (size_t i = 0; i < INFO_END; ++i)
     {
         m_PrevInfo[i] = m_Info[i];
     }
 
-    m_PrevScale    = m_Scale;
+    m_PrevScale = m_Scale;
     m_PrevRotation = m_Rotation;
-}
 
-void CTransform::Update_Transform()
-{
-	_matrix matS, matR, matT;
-
-	// Local Scale
-	D3DXMatrixScaling(&matS, m_LocalScale.x, m_LocalScale.y, m_LocalScale.z);
-
-	// Local Rotation (쿼터니온 기반)
-	_quat q = m_Rotation;
-	D3DXQuaternionNormalize(&q, &q);
-	D3DXMatrixRotationQuaternion(&matR, &q);
-
-	// Local Translation
-	D3DXMatrixTranslation(&matT, m_LocalPos.x, m_LocalPos.y, m_LocalPos.z);
-
-	m_matLocal = matS * matR * matT;
-
-	// 2. World 행렬 = Local * ParentWorld
-	if (m_Parent)
-		m_matWorld = m_matLocal * m_Parent->Get_World();
-	else
-		m_matWorld = m_matLocal;
-
-	// 3. m_Info[RIGHT/UP/LOOK/POS] 갱신
-	_vec3 right(m_matWorld._11, m_matWorld._12, m_matWorld._13);
-	_vec3 up(m_matWorld._21, m_matWorld._22, m_matWorld._23);
-	_vec3 look(m_matWorld._31, m_matWorld._32, m_matWorld._33);
-	_vec3 pos(m_matWorld._41, m_matWorld._42, m_matWorld._43);
-
-	m_Info[INFO_RIGHT] = right;
-	m_Info[INFO_UP] = up;
-	m_Info[INFO_LOOK] = look;
-	m_Info[INFO_POS] = pos;
-
-	// 4. 월드 기준 스케일 m_Scale 추출 (각 축벡터의 길이)
-	m_Scale.x = D3DXVec3Length(&right);
-	m_Scale.y = D3DXVec3Length(&up);
-	m_Scale.z = D3DXVec3Length(&look);
-
-	// 5. 회전 행렬 m_matRot 갱신 (정규화된 축 기준)
-	if (m_Scale.x != 0.f) right /= m_Scale.x;
-	if (m_Scale.y != 0.f) up /= m_Scale.y;
-	if (m_Scale.z != 0.f) look /= m_Scale.z;
-
-	D3DXMatrixIdentity(&m_matRot);
-	m_matRot._11 = right.x; m_matRot._12 = right.y; m_matRot._13 = right.z;
-	m_matRot._21 = up.x;    m_matRot._22 = up.y;    m_matRot._23 = up.z;
-	m_matRot._31 = look.x;  m_matRot._32 = look.y;  m_matRot._33 = look.z;
-
-	// 6. 더티 플래그/Prev 갱신
-	m_IsDirty = false;
-
-	for (size_t i = 0; i < INFO_END; ++i)
-		m_PrevInfo[i] = m_Info[i];
-
-	m_PrevScale = m_Scale;
-	m_PrevRotation = m_Rotation;
-}
-
-void CTransform::Set_Pos(const _vec3& worldPos)
-{
-    if (m_Parent)
-    {
-        // 부모 월드의 역행렬로 worldPos -> localPos 변환
-		_matrix parentInvert;
-		D3DXMatrixInverse(&parentInvert, nullptr, &m_Parent->Get_World());
-
-		_vec3 localPos;
-		D3DXVec3TransformCoord(&localPos, &worldPos, &parentInvert);
-		Set_LocalPos(localPos);
-    }
-    else
-    {
-		Set_LocalPos(worldPos);
-    }
-}
-
-void CTransform::Set_Pos(_float x, _float y, _float z)
-{
-	if (m_Parent)
-	{
-		// 부모 월드의 역행렬로 worldPos -> localPos 변환
-		_matrix parentInvert;
-		D3DXMatrixInverse(&parentInvert, nullptr, &m_Parent->Get_World());
-
-		_vec3 localPos;
-		_vec3 worldPos = _vec3(x, y, z);
-		D3DXVec3TransformCoord(&localPos, &worldPos, &parentInvert);
-		Set_LocalPos(localPos);
-	}
-	else
-	{
-		_vec3 worldPos = _vec3(x, y, z);
-		Set_LocalPos(worldPos);
-	}
-}
-
-void CTransform::Set_Scale(const _vec3& worldScale)
-{
-    if (m_Parent)
-    {
-		_vec3 scale = m_Parent->Get_Scale();
-		_vec3 local = worldScale;
-
-		if (scale.x != 0.f) local.x /= scale.x;
-		if (scale.y != 0.f) local.y /= scale.y;
-		if (scale.z != 0.f) local.z /= scale.z;
-
-		Set_LocalScale(local);
-    }
-    else
-    {
-		Set_LocalScale(worldScale);
-    }
-}
-
-void CTransform::Set_Scale(_float x, _float y, _float z)
-{
-	if (m_Parent)
-	{
-		_vec3 scale = m_Parent->Get_Scale();
-		_vec3 local = _vec3(x, y, z);
-
-		if (scale.x != 0.f) local.x /= scale.x;
-		if (scale.y != 0.f) local.y /= scale.y;
-		if (scale.z != 0.f) local.z /= scale.z;
-
-		Set_LocalScale(local);
-	}
-	else
-	{
-		_vec3 scale = _vec3(x, y, z);
-		Set_LocalScale(scale);
-	}
 }
 
 _vec3 CTransform::Get_Rotation() const
 {
     return {
         asinf(Clamp(-m_matRot._23, -1.f, 1.f)), // Pitch (X회전)
-        atan2f(m_matRot._13, m_matRot._33),			  // Yaw (Y회전)
-        atan2f(m_matRot._21, m_matRot._22)			 	  // Roll (Z회전)
+        atan2f(m_matRot._13, m_matRot._33),     // Yaw (Y회전)
+        atan2f(m_matRot._21, m_matRot._22)      // Roll (Z회전)
     };
 }
 
@@ -253,42 +101,6 @@ _float CTransform::Get_Rotation(ROTATION eType) const
 void CTransform::Get_Info(INFO type, _vec3* info)
 {
     memcpy(info, &m_matWorld.m[type][0], sizeof(_vec3));
-}
-
-void CTransform::Set_LocalPos(const _vec3& localPos)
-{
-	m_LocalPos = localPos;
-	m_IsDirty = true;
-}
-
-void CTransform::Set_LocalAngle(const _vec3& localAngle)
-{
-	m_LocalAngle = localAngle;
-	m_IsDirty = true;
-}
-
-void CTransform::Set_LocalScale(const _vec3& localScale)
-{
-	m_LocalScale = localScale;
-	m_IsDirty = true;
-}
-
-void CTransform::Set_Parent(CTransform* parent)
-{
-	m_Parent = parent;
-
-	if (m_Parent)
-		m_Parent->Add_Child(this);
-
-	m_IsDirty = true;
-}
-
-void CTransform::Add_Child(CTransform* child)
-{
-	if (!child)
-		return;
-
-	m_Children.push_back(child);
 }
 
 void CTransform::Set_Rotation(const _vec3& rad)
@@ -319,12 +131,7 @@ void CTransform::Set_RotationAxis(ROTATION axis, float v)
 
 void CTransform::Move_Pos(const _vec3& dir, const _float& timeDelta, const _float& speed)
 {
-    //m_Info[INFO_POS] += dir * timeDelta * speed;
-
-	_vec3 worldPos = Get_Pos();                
-	worldPos += dir * timeDelta * speed;       
-
-	Set_Pos(worldPos);                         
+    m_Info[INFO_POS] += dir * timeDelta * speed;
 }
 
 void CTransform::Rotation(ROTATION rotType, const _float& radian, const _float& timeDelta)
@@ -393,12 +200,12 @@ void CTransform::Rotation_World(ROTATION rotType, const _float& radian, const _f
 
 void CTransform::Chase_Target(const _vec3* targetPos, const _float& timeDelta, const _float& speed)
 {
-    const float epsMove      = 1e-6f;               // 이보다 가까우면 이동하지 않음
-    const float epsRotDist   = 0.01f;               // 이 거리보다 가까우면 회전 멈춤 (데드존)
+    const float epsMove = 1e-6f;               // 이보다 가까우면 이동하지 않음
+    const float epsRotDist = 0.01f;               // 이 거리보다 가까우면 회전 멈춤 (데드존)
     const float maxTurnSpeed = D3DXToRadian(720.f); // 초당 회전 한계 (rad/s)
 
     // [1] 이동: 등속 이동 + 남은 거리 클램프
-    _vec3 dir  = *targetPos - m_Info[INFO_POS];
+    _vec3 dir = *targetPos - m_Info[INFO_POS];
     float dist = D3DXVec3Length(&dir);
 
     if (dist > epsMove)
@@ -417,7 +224,7 @@ void CTransform::Chase_Target(const _vec3* targetPos, const _float& timeDelta, c
     if (dist < epsRotDist)
         return;
 
-    const _quat targetRot  = Compute_LookAtTarget_Quat(targetPos);
+    const _quat targetRot = Compute_LookAtTarget_Quat(targetPos);
     _quat       currentRot = m_Rotation;
     D3DXQuaternionNormalize(&currentRot, &currentRot);
 
@@ -436,8 +243,8 @@ void CTransform::Chase_Target(const _vec3* targetPos, const _float& timeDelta, c
     D3DXQuaternionNormalize(&deltaRot, &deltaRot);
 
     // 프레임 당 이동 제한 (= 각속도 제한)
-    const float dot     = Clamp(fabsf(deltaRot.w), -1.f, 1.f);
-    const float angle   = 2.f * acosf(dot);
+    const float dot = Clamp(fabsf(deltaRot.w), -1.f, 1.f);
+    const float angle = 2.f * acosf(dot);
     const float maxStep = maxTurnSpeed * timeDelta;
 
     if (angle > 1e-6f)
@@ -459,8 +266,6 @@ void CTransform::Chase_Target(const _vec3* targetPos, const _float& timeDelta, c
 
         D3DXQuaternionNormalize(&m_Rotation, &m_Rotation);
     }
-
-	Set_Pos(m_Info[INFO_POS]);
 }
 
 _quat CTransform::Compute_LookAtTarget_Quat(const _vec3* pTargetPos)

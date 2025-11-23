@@ -42,51 +42,28 @@ public: // Getter       ====================================
     // 월드 업데이트 플래그 확인용
     bool Get_DirtyFlag() const { return m_IsDirty; }
 
-#pragma region Transform Local/World 분리
-
-    // === Local ===
-    const _vec3& Get_LocalPos() const { return m_LocalPos; }
-    const _vec3& Get_LocalAngle() const { return m_LocalAngle; }
-    const _vec3& Get_LocalScale() const { return m_LocalScale; }
-
-    void Set_LocalPos(const _vec3& localPos);
-    void Set_LocalAngle(const _vec3& localAngle);
-    void Set_LocalScale(const _vec3& localScale);
-
-    // === 계층 ===
-    bool Has_Parent() const { return m_Parent != nullptr; }
-
-    CTransform* Get_Parent() const { return m_Parent; }
-    void        Set_Parent(CTransform* parent);
-
-    const vector<CTransform*>& Get_Children() const { return m_Children; }
-    void Add_Child(CTransform* child);
-
-    // 월드/로컬 갱신
-    void Update_Transform();
-
-#pragma endregion
-    
 public: // Setter       ====================================
-    void Set_Pos(const _vec3& worldPos);  // { m_Info[INFO_POS] = worldPos; }
-    void Set_Pos(_float x, _float y, _float z);// { m_Info[INFO_POS] = { x, y, z }; }
 
-    void Set_Scale(const _vec3& worldScale); //{ m_Scale = worldScale; }
-    void Set_Scale(_float x, _float y, _float z); // { m_Scale = { x, y, z }; }
+    void Set_Pos(const _vec3& pos) { m_Info[INFO_POS] = pos; }
+    void Set_Pos(_float x, _float y, _float z) { m_Info[INFO_POS] = { x, y, z }; }
+
+    void Set_Scale(const _vec3& scale) { m_Scale = scale; }
+    void Set_Scale(_float x, _float y, _float z) { m_Scale = { x, y, z }; }
 
     void Set_World(const _matrix& matrix) { m_matWorld = matrix; }
 
     // 인수) Rotation Setter
     // Radian 기준 Euler(Pitch=X, Yaw=Y, Roll=Z) 세팅
-    void Set_Rotation(const _vec3& rad);        
+    void Set_Rotation(const _vec3& rad);
     void Set_RotationAxis(ROTATION axis, _float value);
+
 
 public: // Transform Operations     ========================
 
     // direction * dt * speed 를 매 프레임 더해 오브젝트를 움직이는 함수
-    void Move_Pos(const _vec3&  dir,
-                  const _float& timeDelta,
-                  const _float& speed);
+    void Move_Pos(const _vec3& dir,
+        const _float& timeDelta,
+        const _float& speed);
 
     // 오브젝트 로컬 회전축 기준 회전 함수
     void Rotation(ROTATION rotType, const _float& radian, const _float& timeDelta);
@@ -109,11 +86,11 @@ private: // Internal Calculations   ========================
     /// @return 변화가 있으면 true, 없으면 false
     bool Check_Dirty();
     bool HasVectorChanged(const _vec3& now,
-                          const _vec3& prev,
-                          float        eps = 1e-4f);
+        const _vec3& prev,
+        float        eps = 1e-4f);
     bool HasQuatChanged(const _quat& now,
-                        const _quat& prev,
-                        float        eps = 1e-4f);
+        const _quat& prev,
+        float        eps = 1e-4f);
 
 private:
     _vec3 m_Info[INFO_END];             // 월드 방향, 위치
@@ -134,26 +111,12 @@ private:
 
     bool m_IsDirty;                     // 월드 변환 필요 여부 플래그
 
-    _vec3 m_EulerRad {};
-#pragma endregion
-
-#pragma region Local
-
-    _vec3   m_LocalPos;
-    _vec3   m_LocalAngle; 
-    _vec3   m_LocalScale;
-
-    _matrix m_matLocal;
-
-    // 계층
-    CTransform* m_Parent;
-    vector<CTransform*>    m_Children;
-
+    _vec3 m_EulerRad{};
 #pragma endregion
 
 public:
     static CTransform* Create(DEVICE graphicDev);
-    CComponent*        Clone() override;
+    CComponent* Clone() override;
 
 private:
     void Free() override;
