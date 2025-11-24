@@ -29,7 +29,7 @@ HRESULT CMainMenu::Ready_Scene()
 
     if (FAILED(Ready_GameLogic_Layer(LAYERTYPE::GAMELOGIC)))
         return E_FAIL;
-
+    
     if (FAILED(Ready_UI_Layer(LAYERTYPE::UI)))
         return E_FAIL;
 
@@ -56,7 +56,6 @@ void CMainMenu::Render_Scene()
     RenderFont(L"LaptureDisplay-Regular", L"제작진", bt2);
     RenderFont(L"LaptureDisplay-Regular", L"종료", bt3);
 
-    //
 
 }
 void CMainMenu::RenderFont(const wstring& font, const  wstring &text, CUIButton* btt)
@@ -100,7 +99,8 @@ HRESULT CMainMenu::Ready_Environment_Layer(LAYERTYPE layerType)
             ID_DYNAMIC,
             COMPONENTTYPE::TRANSFORM));
     playerTransform->Set_Pos({ 0,0,2 });
-    playerTransform->Set_Scale({ 2.2f,1.2f,0.f });
+    //playerTransform->Set_Scale({ 2.2f,1.2f,0.f });
+    pGameObject->SetAspectScale(playerTransform, { 1.1f,1.2f,1.f });
         if (FAILED(layer->Add_GameObject(OBJTYPE::PLAYER, pGameObject)))
             return E_FAIL;
 
@@ -123,11 +123,11 @@ HRESULT CMainMenu::Ready_GameLogic_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::UI, pGameObject),
         L"CMainMenu::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CMenuChar) failed");
-    const auto playerTransform =
-        dynamic_cast<CTransform*>(pGameObject->Get_Component(
-            ID_DYNAMIC,
-            COMPONENTTYPE::TRANSFORM));
-    playerTransform->Set_Pos({ 0,0,20 });
+    //const auto playerTransform =
+    //    dynamic_cast<CTransform*>(pGameObject->Get_Component(
+    //        ID_DYNAMIC,
+    //        COMPONENTTYPE::TRANSFORM));
+    //playerTransform->Set_Pos({ 0,0,20 });
 
 
     // 카메라
@@ -160,7 +160,8 @@ HRESULT CMainMenu::Ready_UI_Layer(LAYERTYPE layerType)
     //아이콘
     CUIIcon* pGameObject = CUIIcon::Create(m_GraphicDev);
     pGameObject->Set_TextureIndex(0);
-    pGameObject->Get_Transform()->Set_Scale(262.f / 1.3f,143.f / 1.3f,1.f);
+    //pGameObject->Get_Transform()->Set_Scale(262.f / 1.3f,143.f / 1.3f,1.f);
+    pGameObject->SetCloneTexAspectScale({.2f,.2f, 1 });
     pGameObject->Get_Transform()->Set_Pos(-WINCX/3, WINCY / 4.f, 1);
    // pGameObject = CUIIcon::Create(m_GraphicDev);
 
@@ -168,12 +169,12 @@ HRESULT CMainMenu::Ready_UI_Layer(LAYERTYPE layerType)
         layer->Add_GameObject(OBJTYPE::UI, pGameObject),
         L"CMainMenu::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUIIcon) failed");
     ///////////////////////////////////////////////////////////////////////////////////
-    float scaleX = 4.f;
-    float scaleY = 3.5f;
+    float scaleX = 0.20f;
+    float scaleY = 0.25f;
     // 버튼.
     bt = CUIButton::Create(m_GraphicDev);
     bt->Set_TextureIndex(1,0);
-    bt->Get_Transform()->Set_Scale(413.f/ scaleX, 100.f/ scaleY, 1.f);
+    bt->SetCloneTexAspectScale({ scaleX, scaleY, 1 });
     bt->Get_Transform()->Set_Pos(-WINCX / 3, -0, .3);
     bt->SetOnClick([]() {CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_STAGE);});
     FAILED_CHECK_MSG(
@@ -183,7 +184,7 @@ HRESULT CMainMenu::Ready_UI_Layer(LAYERTYPE layerType)
      // 버튼
     bt1 = CUIButton::Create(m_GraphicDev);
     bt1->Set_TextureIndex(1, 0);
-    bt1->Get_Transform()->Set_Scale(413.f / scaleX, 100.f / scaleY, 1.f);
+    bt1->SetCloneTexAspectScale({ scaleX, scaleY, 1 });
     bt1->Get_Transform()->Set_Pos(-WINCX / 3, -WINCX / 18, .3);
     bt1->SetOnClick([]() {CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_EDIT);});
     FAILED_CHECK_MSG(
@@ -193,7 +194,7 @@ HRESULT CMainMenu::Ready_UI_Layer(LAYERTYPE layerType)
     // 버튼
     bt2 = CUIButton::Create(m_GraphicDev);
     bt2->Set_TextureIndex(1, 0);
-    bt2->Get_Transform()->Set_Scale(413.f / scaleX, 100.f / scaleY, 1.f);
+    bt2->SetCloneTexAspectScale({ scaleX, scaleY, 1 });
     bt2->Get_Transform()->Set_Pos(-WINCX / 3, -WINCX / 9, .3);
     bt2->SetOnClick([]() {CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_STAGE1);});
     FAILED_CHECK_MSG(
@@ -203,7 +204,7 @@ HRESULT CMainMenu::Ready_UI_Layer(LAYERTYPE layerType)
         // 버튼
     bt3 = CUIButton::Create(m_GraphicDev);
     bt3->Set_TextureIndex(1, 0);
-    bt3->Get_Transform()->Set_Scale(413.f / scaleX, 100.f / scaleY, 1.f);
+    bt3->SetCloneTexAspectScale({ scaleX, scaleY, 1 });
     bt3->Get_Transform()->Set_Pos(-WINCX / 3, -WINCX / 6, .3);
     bt3->SetOnClick([]() {DestroyWindow(g_hWnd);});
     FAILED_CHECK_MSG(

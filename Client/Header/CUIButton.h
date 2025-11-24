@@ -2,7 +2,10 @@
 #include "CUI.h"
 
 BEGIN(Engine)
-class ENGINE_DLL CUIButton : public CUI
+class CTransform;
+END
+
+class  CUIButton : public CUI
 {
 protected:
     explicit CUIButton(DEVICE graphicDev);
@@ -31,6 +34,8 @@ public:
     bool Get_Hovered() { return m_bHovered; }
 
     void SetOnClick(std::function<void()> callback) { m_OnClick = callback; }
+
+    bool SetCloneTexAspectScale(_vec3 vec);
 private:
     std::function<void()> m_OnClick;
 
@@ -46,4 +51,4 @@ private:
 
 };
 
-END
+

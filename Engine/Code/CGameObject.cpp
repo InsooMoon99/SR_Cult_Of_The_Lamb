@@ -1,6 +1,8 @@
 ﻿#include "CGameObject.h"
 
 #include "CComponent.h"
+#include "CTexture.h"
+#include "CTransform.h"
 
 CGameObject::CGameObject(DEVICE graphicDev)
     : m_GraphicDev(graphicDev),
@@ -54,6 +56,57 @@ void CGameObject::LateUpdate_GameObject(const _float& timeDelta)
 
 void CGameObject::Render_GameObject()
 { }
+
+bool CGameObject::SetTexAspectInit(CTexture* texCom, CTransform* transCom,int index, bool is_width, float lengh)
+{
+    float w = 0, h = 0;
+
+    if (texCom->Get_TextureSize(index, w, h)==false || texCom==nullptr)
+        return false;
+    float aspect;
+    if (is_width == true)
+    {
+    aspect = h / w;
+
+    m_BaseScaleAsp.x = (float)lengh;
+    m_BaseScaleAsp.y =(float)lengh * aspect;
+    m_BaseScaleAsp.z = 1.f;
+
+    m_ScaleAsp = { 1.f,1.f,1.f };
+
+    transCom->Set_Scale
+    ({ m_BaseScaleAsp.x * m_ScaleAsp.x,
+        m_BaseScaleAsp.y * m_ScaleAsp.y,
+        1.f });
+    }
+    else
+    {
+        aspect = w / h;
+
+        m_BaseScaleAsp.y = (float)lengh;
+        m_BaseScaleAsp.x = (float)lengh * aspect;
+        m_BaseScaleAsp.z = 1.f;
+
+        m_ScaleAsp = { 1.f,1.f,1.f };
+
+        transCom->Set_Scale
+        ({ m_BaseScaleAsp.x * m_ScaleAsp.x,
+            m_BaseScaleAsp.y * m_ScaleAsp.y,
+            1.f });
+    }
+
+    return true;
+}
+
+void CGameObject::SetAspectScale(CTransform* transCom,_vec3 magnification)
+{
+    m_ScaleAsp = magnification;
+
+    transCom->Set_Scale
+    ({ m_BaseScaleAsp.x * m_ScaleAsp.x,
+        m_BaseScaleAsp.y * m_ScaleAsp.y,
+        1.f });
+}
 
 CComponent* CGameObject::Find_Component(COMPONENTID componentID, COMPONENTTYPE componentType)
 {
