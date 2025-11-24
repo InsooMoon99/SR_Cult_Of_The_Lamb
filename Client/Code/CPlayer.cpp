@@ -62,8 +62,7 @@ HRESULT CPlayer::Ready_GameObject()
     m_CombatStatCom->Set_Mp(5.f);
     m_CombatStatCom->Set_Speed(5.f);
 
-    // Transform 테스트
-    m_TransformCom->Set_Pos(_vec3(0.f, 0.f, 1.f));
+    m_TransformCom->Set_Pos(_vec3(-30.f, 0.f, 1.f));
 
     Animation_Setting();
 
@@ -79,7 +78,7 @@ _int CPlayer::Update_GameObject(const _float& timeDelta)
     if (inputMgr->Get_DIKeyState(DIK_1) & 0x80)
     {
         m_Inventory->DropItemfromSlot(
-            0,
+            1,
             {
                 m_TransformCom->Get_Pos().x,
                 m_TransformCom->Get_Pos().y,
@@ -200,7 +199,7 @@ HRESULT CPlayer::Add_Component()
     // RectCol Componet
     m_BoxColCom = CreateProtoComponent<CBoxCollider>(this, COMPONENTTYPE::BOX_COLL);
     NULL_CHECK_RETURN(m_BoxColCom, E_FAIL);
-    //m_BoxColCom->Set_Size(_vec3(2.f, 2.f, 2.f));
+    //m_BoxColCom->Set_Scale(_vec3(2.f, 2.f, 2.f));
 
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::BOX_COLL, m_BoxColCom });
 
@@ -262,7 +261,10 @@ void CPlayer::Animation_Setting()
 #pragma endregion
 
 #pragma region ------   ROLL    ------
-    m_AnimatorCom->Create_Animation(L"PlayerRoll_LEFT", 19, 0.02f);
+    m_AnimatorCom->Create_Animation(L"PlayerRoll_LEFT", 19, 0.02f,
+        _vec2(1.3f, 1.3f),       // Scale
+        _vec2(1.f, 1.f));  // Offset
+
     m_AnimatorCom->Create_Animation(L"PlayerRoll_UP", 16, 0.02f * 19 / 16);
     m_AnimatorCom->Create_Animation(L"PlayerRoll_DOWN", 16, 0.02f * 19 / 16);
 

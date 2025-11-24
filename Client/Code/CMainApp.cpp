@@ -40,9 +40,8 @@ HRESULT CMainApp::Ready_MainApp()
         CImGuiManager::GetInstance()->InitImGui(g_hWnd, m_GraphicDev);
 
         CEditContext* ctx = CEditContext::Create();
-        CMainEditorMgr::GetInstance()->Set_EditContext(ctx);
+        CMainEditorMgr::GetInstance()->Ready_MainEditor(m_GraphicDev, ctx);
     }
-    
 
 #pragma region 데이터 파싱 테스트
 
@@ -67,8 +66,8 @@ int CMainApp::Update_MainApp(const float& timeDelta)
     // Imgui
     {
         CImGuiManager::GetInstance()->Update();
-        /*ImGui::Begin("New Windows");
-        ImGui::End();*/
+
+        CMainEditorMgr::GetInstance()->Update_MainEditor(timeDelta);
     }
 
     return 0;
@@ -85,8 +84,12 @@ void CMainApp::Render_MainApp()
 
     m_ManagementClass->Render_Scene(m_GraphicDev);
 
-    CMainEditorMgr::GetInstance()->Render();
-    CImGuiManager::GetInstance()->Render();
+    CMainEditorMgr::GetInstance()->Render_MainEditor();
+
+    // ImGui
+    {
+        CImGuiManager::GetInstance()->Render();
+    }
 
     m_DeviceClass->Render_End();
 }
@@ -136,19 +139,6 @@ HRESULT CMainApp::Ready_DefaultSetting(DEVICE* graphicDev)
 
 HRESULT CMainApp::Ready_Scene(DEVICE graphicDev)
 {
-   /* Engine::CScene* logo = CLogo::Create(graphicDev);
-
-    if (nullptr == logo)
-        return E_FAIL;
-
-    if (FAILED(m_ManagementClass->Set_Scene(logo)))
-    {
-        MSG_BOX("Logo Setting Failed");
-        return E_FAIL;
-    }
-
-    return S_OK;*/
-
     return CSceneMgr::GetInstance()->Ready_SceneMgr(graphicDev);
 }
 
@@ -188,7 +178,7 @@ void CMainApp::Free()
 #pragma region 데이터 파싱 테스트
 
     CItemDB::DestroyInstance();
-    CDropSystem::DestroyInstance();
+    CDropSystem::DestroyInstance(); 
 
 #pragma endregion
 }

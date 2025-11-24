@@ -6,6 +6,7 @@
 #include "CTerrain.h"
 #include "CTexture.h"
 #include "CTransform.h"
+#include "CRenderer.h"
 
 CMapObjectBase::CMapObjectBase(DEVICE graphicDev)
     : CGameObject(graphicDev),
@@ -39,6 +40,8 @@ _int CMapObjectBase::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CGameObject::Update_GameObject(timeDelta);
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_PRIORITY, this);
+
     return exit;
 }
 
@@ -53,7 +56,7 @@ void CMapObjectBase::Render_GameObject()
         return;
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-    m_TextureCom->Set_Texture(0);
+    m_TextureCom->Set_Texture(2);
     m_BufferCom->Render_Buffer();
 }
 
@@ -77,15 +80,17 @@ HRESULT CMapObjectBase::Add_BaseComponent(COMPONENTTYPE InType)
     // Transform
     type           = COMPONENTTYPE::TRANSFORM;
     m_TransformCom = CreateProtoComponent<CTransform>(this, type);
-    NULL_CHECK_RETURN(m_BufferCom, E_FAIL);
+    NULL_CHECK_RETURN(m_TransformCom, E_FAIL);
 
     m_Components[ID_DYNAMIC].insert({ type, m_TransformCom });
 
     // Texture Component는 자식에서 세팅하기
     m_TextureCom = CreateProtoComponent<CTexture>(this, InType);
-    NULL_CHECK_RETURN(m_BufferCom, E_FAIL);
+    NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
 
     m_Components[ID_STATIC].insert({ InType, m_TextureCom });
+
+    return S_OK;
 }
 
 void CMapObjectBase::Free()

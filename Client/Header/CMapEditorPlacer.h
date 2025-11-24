@@ -1,0 +1,42 @@
+﻿#pragma once
+
+#include "CBase.h"
+#include "CMapObjectBase.h"
+
+/**
+ * @brief 에디터 전용 맵 오브젝트 배치 헬퍼
+ * CMainEditor에서만 사용 하는 클래스임
+ */
+class CMapEditorPlacer : public CBase
+{
+private:
+    explicit CMapEditorPlacer(DEVICE graphicDev);
+    explicit CMapEditorPlacer(const CMapEditorPlacer& rhs);
+    ~CMapEditorPlacer();
+
+public:
+    void Update_MapPlacer(const _float& timeDelta);
+    void Render_Privew();
+
+    void Start_Place(MAPOBJTYPE type);  // 배치 시작
+    void Cancel_Place();                // 배치 취소
+
+    bool IsPlacing() { return m_Placing; }
+
+    bool Get_MouseWorldPos(_vec3& outPos);
+
+    MAPOBJTYPE Get_CurType() { return m_SelectedType; }
+
+private:
+    DEVICE          m_GraphicDev;
+    CMapObjectBase* m_PreviewObj;
+    MAPOBJTYPE      m_SelectedType;
+    bool            m_Placing;
+
+public:
+    static CMapEditorPlacer* Create(DEVICE graphicDev);
+
+protected:
+    void Free() override;
+};
+

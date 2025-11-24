@@ -63,7 +63,6 @@ _int CLayer::Update_Layer(const _float& timeDelta)
 
 void CLayer::LateUpdate_Layer(const _float& timeDelta)
 {
-    // PendingKill 추가
     for (auto mapIter = m_Objects.begin(); mapIter != m_Objects.end(); ++mapIter)
     {
         auto& objList = mapIter->second;

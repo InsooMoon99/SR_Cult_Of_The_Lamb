@@ -13,10 +13,10 @@ class CState;
 class CCombatStat;
 END
 
+// Client
 class CWeaponEquip;
 class CPlayerController;
-
-class CInventory; // 이건 클라에 있음
+class CInventory;
 
 class CPlayer : public CGameObject
 {
@@ -33,8 +33,7 @@ public:
 
     void          OnBeginOverlap(CCollider* self, CCollider* other) override;
     void          OnEndOverlap(CCollider* self, CCollider* other) override;
-    CCombatStat*  Get_CombatStat() { return m_CombatStatCom; }
-    CWeaponEquip* Get_WeaponEquip() { return m_WeaponEquipCom; }
+    CTransform* Get_TransformCom() { return m_TransformCom; }
 
     void Render_Editor() override;
 

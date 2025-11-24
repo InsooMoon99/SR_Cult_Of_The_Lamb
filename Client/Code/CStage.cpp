@@ -5,6 +5,7 @@
 #include "CDropSystem.h"
 #include "CEditContext.h"
 #include "CHumanMonster.h"
+#include "CInventory.h"
 #include "CItemDB.h"
 #include "CLayer.h"
 #include "CMainCamera.h"
@@ -18,6 +19,12 @@
 #include "CUIPlayerPanel.h"
 #include "CUIWeapon.h"
 #include "ItemInstance.h"
+#include "CUIIcon.h"
+#include "CUIInventory.h"
+#include "CUIInventoryCell.h"
+#include "CUISKillCount.h"
+
+class CUIInventoryCell;
 
 #include "CDInputMgr.h"
 #include "CSceneMgr.h"
@@ -125,6 +132,10 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
         dynamic_cast<CTransform*>(gameObject->Get_Component(
             ID_DYNAMIC,
             COMPONENTTYPE::TRANSFORM));
+    m_PlayerInventoryCom =
+        dynamic_cast<CInventory*>(gameObject->Get_Component(
+        ID_STATIC,
+        COMPONENTTYPE::INVENTORY));
 
     m_PlayerCombatStatCom =
         dynamic_cast<CCombatStat*>(gameObject->Get_Component(
@@ -134,27 +145,6 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     // -----------------------------
     // Monster
     // -----------------------------
-
-    // monster
-    //gameObject = CMonster::Create(m_GraphicDev);
-    //
-    //if (nullptr == gameObject)
-    //    return E_FAIL;
-    //
-    //if (FAILED(layer->Add_GameObject(OBJTYPE::MONSTER, gameObject)))
-    //    return E_FAIL;
-
-    // testMonster
-    //gameObject = CTestMonster::Create(m_GraphicDev);
-
-    // NULL_CHECK_RETURN_MSG(
-    //     gameObject,
-    //     E_FAIL,
-    //     L"CStage::Ready_GameLogic_Layer() failed: CMonster::Create() returned null");
-
-    // FAILED_CHECK_MSG(
-    //     layer->Add_GameObject(OBJTYPE::BOSS2, gameObject),
-    //     L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(BOSS2) failed");
 
     // HumanMonster
     gameObject = CHumanMonster::Create(m_GraphicDev);
@@ -178,7 +168,17 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
         L"Persistent object setup failed");
 
     // 카메라 타겟을 플레이어로 설정
-    dynamic_cast<CMainCamera*>(gameObject)->Set_CamTarget(playerTransform);
+    auto mainCam = dynamic_cast<CMainCamera*>(gameObject);
+    if (mainCam)
+    {
+        mainCam->Set_CamTarget(playerTransform);
+
+        auto camCom = dynamic_cast<CCameraCom*>(
+            mainCam->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAMERA));
+
+        if (camCom)
+            CMainEditorMgr::GetInstance()->Set_MainCamera(camCom); // 에디터에 카메라 설정
+    }
 
     m_Layers.insert({ layerType, layer });
 
@@ -223,7 +223,34 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
         layer->Add_GameObject(OBJTYPE::UI, gameObject),
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUIWeapon) failed");
 
-    CUIWeapon* uiweapon = dynamic_cast<CUIWeapon*>(gameObject);
+    //왼쪽 상단 스킬 아이콘 UI
+    CUIIcon* pgameObject = CUIIcon::Create(m_GraphicDev);
+    pgameObject->Set_TextureIndex(1);
+    pgameObject->Get_Transform()->Set_Pos(-535.f, 260.f, 0.f);
+    pgameObject->Get_Transform()->Set_Scale(9.5f, 11.f, 0.f);
+
+    FAILED_CHECK_MSG(
+    layer->Add_GameObject(OBJTYPE::UI, pgameObject),
+    L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUIIcon) failed");
+
+    CUISkillCount* uiSkillCount = CUISkillCount::Create(m_GraphicDev);
+    
+    FAILED_CHECK_MSG(
+        layer->Add_GameObject(OBJTYPE::UI, uiSkillCount),
+        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUISKillCount) failed");
+
+    //CUIInventoryCell* uiInventoryCell = CUIInventoryCell::Create(m_GraphicDev);
+    //
+    //FAILED_CHECK_MSG(
+    //    layer->Add_GameObject(OBJTYPE::UI, uiInventoryCell),
+    //    L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UIInventoryCell) failed");
+
+    //Inventory UI
+    CUIInventory* uiInventory = CUIInventory::Create(m_GraphicDev);
+    uiInventory->SetInventory(m_PlayerInventoryCom);
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiInventory),
+        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UIInventory) failed");
+
 
     m_Layers.insert({ layerType, layer });
 

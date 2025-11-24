@@ -50,6 +50,16 @@ void CScene::AddObjectOnLayer(LAYERTYPE layerType, CGameObject* obj, OBJTYPE obj
 
 }
 
+CLayer* CScene::Get_Layer(LAYERTYPE type)
+{
+    auto iter = m_Layers.find(type);
+
+    if (iter == m_Layers.end())
+        return nullptr;
+
+    return iter->second;
+}
+
 _int CScene::Update_Scene(const _float& timeDelta)
 {
     for (auto& pLayer : m_Layers)

@@ -65,7 +65,6 @@ void CUIIcon::Render_GameObject()
     CUI::Render_GameObject();
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-
     m_TextureCom->Set_Texture(m_textureIndex);
 
     m_BufferCom->Render_Buffer();

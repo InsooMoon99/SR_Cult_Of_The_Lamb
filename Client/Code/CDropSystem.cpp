@@ -29,7 +29,8 @@ void CDropSystem::SpawnAllFromInven(DEVICE pGraphicDev, CInventory& Inven)
     if (obj == nullptr)
         return;
 
-    _vec3 objPos = obj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM)->Get_Transform()->Get_Pos();
+    auto transfom = dynamic_cast<CTransform*>(obj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+    _vec3 objPos = transfom->Get_Pos();
 
     for (int i = 0; i < Inven.GetVector().size(); i++)
     {

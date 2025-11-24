@@ -9,14 +9,18 @@
 CBoxCollider::CBoxCollider(DEVICE graphicDev)
     : CCollider(graphicDev, COLLIDERTYPE::BOX)
       , m_BufferCom(nullptr), m_Size(1.f, 1.f, 1.f)
+{
+    if (m_BufferCom)
+        m_BufferCom->AddRef();
 
-{ }
+}
 
 CBoxCollider::CBoxCollider(const CBoxCollider& rhs)
     : CCollider(rhs), m_BufferCom(rhs.m_BufferCom), m_Size(rhs.m_Size)
 {
     if (m_BufferCom)
         m_BufferCom->AddRef();
+
 }
 
 CBoxCollider::~CBoxCollider()
@@ -50,9 +54,7 @@ void CBoxCollider::LateUpdate_Component()
 
 void CBoxCollider::Render()
 {
-    CCollider::Render();
-
-    if (m_BufferCom == nullptr)
+    if (m_ShowDebug == false || m_BufferCom == nullptr)
         return;
 
     CTransform* transform = Get_Transform();

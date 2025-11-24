@@ -99,6 +99,13 @@ void CUIPlayerPanel::Render_GameObject()
 {
     CUIPanel::Render_GameObject();
 
+    
+}
+
+void CUIPlayerPanel::Render_Editor()
+{
+    CUIPanel::Render_Editor();
+
     if (ImGui::Begin("UI_Heart Inspector"))
     {
         for (auto child : m_Children)
@@ -114,7 +121,7 @@ void CUIPlayerPanel::Render_GameObject()
 
             // TransformComponent
             if (m_HeartTransformCom && ImGui::CollapsingHeader(("Transform Component" + to_string(heartBar->Get_ID())).c_str(),
-                                                               ImGuiTreeNodeFlags_DefaultOpen))
+                ImGuiTreeNodeFlags_DefaultOpen))
             {
                 const _vec3& pos = m_HeartTransformCom->Get_Pos();
 
@@ -122,22 +129,22 @@ void CUIPlayerPanel::Render_GameObject()
 
                 ImGui::Text("X :");
                 ImGui::SameLine();
-                ImGui::InputFloat("##HeartX",(float*)&pos.x);
+                ImGui::InputFloat("##HeartX", (float*)&pos.x);
 
                 ImGui::Text("Y :");
                 ImGui::SameLine();
-                ImGui::InputFloat("##HeartY",(float*)&pos.y);
+                ImGui::InputFloat("##HeartY", (float*)&pos.y);
 
                 ImGui::Text("Z :");
                 ImGui::SameLine();
-                ImGui::InputFloat("##HeartZ",(float*)&pos.z);
+                ImGui::InputFloat("##HeartZ", (float*)&pos.z);
 
                 m_HeartTransformCom->Set_Pos(pos);
 
                 const _vec3& scale = m_HeartTransformCom->Get_Scale();
 
-                ImGui::InputFloat("##ScaleX",(float*)&scale.x);
-                ImGui::InputFloat("##ScaleY",(float*)&scale.y);
+                ImGui::InputFloat("##ScaleX", (float*)&scale.x);
+                ImGui::InputFloat("##ScaleY", (float*)&scale.y);
 
                 m_HeartTransformCom->Set_Scale(scale);
             }
@@ -146,13 +153,6 @@ void CUIPlayerPanel::Render_GameObject()
         }
     }
     ImGui::End();
-}
-
-void CUIPlayerPanel::Render_Editor()
-{
-    CUIPanel::Render_Editor();
-
-    ImGui::Text("Player Panel ~");
 }
 
 CUIPlayerPanel* CUIPlayerPanel::Create(DEVICE graphicDev)

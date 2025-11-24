@@ -28,22 +28,20 @@ public:
     _uint Get_TextureIndex() const;
     bool Get_TextureSize(int index, float& outWidth, float& outHeight);
 
-private:
-    vector<IDirect3DBaseTexture9*> m_Textures;
-    map<wstring, vector<IDirect3DBaseTexture9*>> m_AnimTextures;
-
 public:
-    static CTexture* Create(DEVICE graphicDev,
-                            TEXTUREID         texType,
-                            const wstring&    filePath,
-                            const _uint&      count);
-
+    static CTexture* Create(DEVICE graphicDev, TEXTUREID texType, const wstring& filePath, const _uint& count);
     static CTexture* Create(LPDIRECT3DDEVICE9 graphicDev, TEXTUREID texType, const vector<wstring>& fileList);
 
     CComponent* Clone() override;
 
 private:
     void Free() override;
+
+private:
+    vector<IDirect3DBaseTexture9*> m_Textures;
+    map<wstring, vector<IDirect3DBaseTexture9*>> m_AnimTextures;
+
+
 };
 
 END

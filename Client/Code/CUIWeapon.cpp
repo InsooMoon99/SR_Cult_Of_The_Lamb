@@ -8,18 +8,19 @@
 #include "CScene.h"
 #include "Engine_Enum.h"
 #include "CWeaponEquip.h"
+#include "CManagement.h"
 
 class CWeaponEquip;
-int CUIWeapon::m_nextID = 0;
+int CUIWeapon::m_NextID = 0;
 
 CUIWeapon::CUIWeapon(DEVICE pGraphicDev) : CUI(pGraphicDev)
 {
-    m_ID = ++m_nextID;
+    m_ID = ++m_NextID;
 }
 
 CUIWeapon::CUIWeapon(const CUIWeapon& rhs) : CUI(rhs)
 {
-    m_ID = ++m_nextID;
+    m_ID = ++m_NextID;
 }
 
 CUIWeapon::~CUIWeapon()
@@ -42,8 +43,15 @@ _int CUIWeapon::Update_GameObject(const _float& timeDelta)
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
-    // CWeaponEquip* weaponequip = CScene::Get_Component(COMPONENTID::ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::WEAPON_EQUIP;
+    CScene* scene = CManagement::GetInstance()->Get_Scene();
 
+    CWeaponEquip* weaponEquip = dynamic_cast<CWeaponEquip*>(scene->Get_Component(COMPONENTID::ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::WEAPON_EQUIP));
+
+    if (weaponEquip->Get_WeaponEquipped())
+    {
+        m_WeaponID = weaponEquip->Get_CurrentWeaponID();
+        m_Invisible = false;
+    }
     return exit;
 }
 
@@ -54,16 +62,25 @@ void CUIWeapon::LateUpdate_GameObject(const _float& timeDelta)
 
 void CUIWeapon::Render_GameObject()
 {
-    //  if (m_Invisible)
-    //  {
-    CUI::Render_GameObject();
+    if (!m_Invisible)
+    {
+        CUI::Render_GameObject();
 
-    m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
+        m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
-    m_TextureCom->Set_Texture(0);
+        switch(m_WeaponID)
+        {
+        case 3001:
+            m_TextureCom->Set_Texture(0);
+            break;
 
-    m_BufferCom->Render_Buffer();
-    // }
+        case 3002:
+            m_TextureCom->Set_Texture(1);
+            break;
+        }
+
+        m_BufferCom->Render_Buffer();
+    }
 }
 
 HRESULT CUIWeapon::Add_Component()

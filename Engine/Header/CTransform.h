@@ -54,16 +54,16 @@ public: // Setter       ====================================
 
     // 인수) Rotation Setter
     // Radian 기준 Euler(Pitch=X, Yaw=Y, Roll=Z) 세팅
-    void Set_Rotation(const _vec3& rad);        
+    void Set_Rotation(const _vec3& rad);
     void Set_RotationAxis(ROTATION axis, _float value);
 
 
 public: // Transform Operations     ========================
 
     // direction * dt * speed 를 매 프레임 더해 오브젝트를 움직이는 함수
-    void Move_Pos(const _vec3&  dir,
-                  const _float& timeDelta,
-                  const _float& speed);
+    void Move_Pos(const _vec3& dir,
+        const _float& timeDelta,
+        const _float& speed);
 
     // 오브젝트 로컬 회전축 기준 회전 함수
     void Rotation(ROTATION rotType, const _float& radian, const _float& timeDelta);
@@ -86,11 +86,11 @@ private: // Internal Calculations   ========================
     /// @return 변화가 있으면 true, 없으면 false
     bool Check_Dirty();
     bool HasVectorChanged(const _vec3& now,
-                          const _vec3& prev,
-                          float        eps = 1e-4f);
+        const _vec3& prev,
+        float        eps = 1e-4f);
     bool HasQuatChanged(const _quat& now,
-                        const _quat& prev,
-                        float        eps = 1e-4f);
+        const _quat& prev,
+        float        eps = 1e-4f);
 
 private:
     _vec3 m_Info[INFO_END];             // 월드 방향, 위치
@@ -111,12 +111,12 @@ private:
 
     bool m_IsDirty;                     // 월드 변환 필요 여부 플래그
 
-    _vec3 m_EulerRad {};
+    _vec3 m_EulerRad{};
 #pragma endregion
 
 public:
     static CTransform* Create(DEVICE graphicDev);
-    CComponent*        Clone() override;
+    CComponent* Clone() override;
 
 private:
     void Free() override;

@@ -4,8 +4,9 @@ IMPLEMENT_SINGLETON(CDInputMgr)
 
 CDInputMgr::CDInputMgr()
     : m_InputSDK(nullptr), m_KeyBoardDev(nullptr), m_MouseDev(nullptr),
-      m_KeyState{}, m_MouseState{}
-{ }
+      m_KeyState{}, m_PrevKeyState{}, m_MouseState{}
+{
+}
 
 CDInputMgr::~CDInputMgr()
 {
@@ -46,8 +47,23 @@ HRESULT CDInputMgr::Ready_InputDev(HINSTANCE hInst, HWND hWnd)
 
 void CDInputMgr::Update_InputDev()
 {
-    m_KeyBoardDev->GetDeviceState(256, m_KeyState);
-    m_MouseDev->GetDeviceState(sizeof(m_MouseState), &m_MouseState);
+    // 이전 프레임 상태 백업
+    memcpy(m_PrevKeyState, m_KeyState, sizeof(m_KeyState));
+
+    // 키보드
+    if (FAILED(m_KeyBoardDev->GetDeviceState(256, m_KeyState)))
+    {
+        // 포커스 잃었을 때 복구용
+        m_KeyBoardDev->Acquire();
+        m_KeyBoardDev->GetDeviceState(256, m_KeyState);
+    }
+
+    // 마우스
+    if (FAILED(m_MouseDev->GetDeviceState(sizeof(m_MouseState), &m_MouseState)))
+    {
+        m_MouseDev->Acquire();
+        m_MouseDev->GetDeviceState(sizeof(m_MouseState), &m_MouseState);
+    }
 }
 
 void CDInputMgr::Free()
