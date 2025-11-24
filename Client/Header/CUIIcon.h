@@ -21,7 +21,7 @@ public:
 
     void        Set_TextureIndex(int textureIndex) { m_textureIndex = textureIndex; }
     CTransform* Get_Transform() const { return m_TransformCom; }
-
+    bool SetCloneTexAspectScale(_vec3 vec);
 private:
     static int m_nextID;
     int        m_textureIndex = 0;

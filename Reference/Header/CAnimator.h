@@ -51,14 +51,11 @@ public:
     // 현재 재생중인 프레임
     _int Get_CurFrame();
 
-    // 주의! Object마다 Set_TextureType 설정 꼭 해줘야함
-    void Set_TextureType(COMPONENTTYPE type);
-
     static CAnimator* Create(DEVICE graphicDev);
     CComponent*       Clone() override;
 
-private:
     HRESULT           Ready_Animator();
+private:
     CSpriteAnimation* Find_Animation(const wstring& Key);
 
     void Free() override;
@@ -75,8 +72,6 @@ private:
     Engine::CTexture*  m_Texture;
 
     bool m_Initialized = false;
-
-    COMPONENTTYPE m_TextureType;
 };
 
 END

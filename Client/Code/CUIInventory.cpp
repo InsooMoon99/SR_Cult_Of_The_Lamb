@@ -1,32 +1,39 @@
 ﻿#include "pch.h"
-#include "CUI.h"
 #include "CUIInventory.h"
 
-#include <CDInputMgr.h>
-#include "CRcTex.h"
-#include "CTransform.h"
 #include "CCreateHelper.h"
+#include "CDInputMgr.h"
+#include "CFontMgr.h"
 #include "CInventory.h"
-#include "CUIInventoryCell.h"
+#include "CRcTex.h"
 #include "CRenderer.h"
 #include "CTexture.h"
+#include "CTransform.h"
 #include "CUIIcon.h"
 #include "CFontMgr.h"
 #include "CTimerMgr.h"
+#include "CUIInventoryCell.h"
 
-CUIInventory::CUIInventory(DEVICE pGraphicDev) : CUI(pGraphicDev), m_Cols(6), m_CellWidth(100.f),m_CellHeight(150.f),m_Inventory(nullptr),m_IsOpen(false)
-{
-}
+CUIInventory::CUIInventory(DEVICE pGraphicDev)
+    : CUI(pGraphicDev),
+      m_Cols(6),
+      m_CellWidth(100.f),
+      m_CellHeight(150.f),
+      m_IsOpen(false),
+      m_Inventory(nullptr)
+{}
 
-        
-CUIInventory::CUIInventory(const CUIInventory& rhs) : CUI(rhs), m_Cols(6) , m_CellWidth(100.f), m_CellHeight(150.f), m_Inventory(nullptr), m_IsOpen(false)
-{
-}
+CUIInventory::CUIInventory(const CUIInventory& rhs)
+    : CUI(rhs),
+      m_Cols(6),
+      m_CellWidth(100.f),
+      m_CellHeight(150.f),
+      m_IsOpen(false),
+      m_Inventory(nullptr)
+{}
 
 CUIInventory::~CUIInventory()
-{
-
-}
+{}
 
 HRESULT CUIInventory::Ready_GameObject()
 {
@@ -50,9 +57,7 @@ _int CUIInventory::Update_GameObject(const _float& timeDelta)
     }
     
     else if (m_IsOpen == true && CDInputMgr::GetInstance()->KeyDown(DIK_TAB))
-    {
         m_IsOpen = false;
-    }
 
     const vector<InventorySlot>& slots = m_Inventory->GetVector();
     
@@ -78,9 +83,9 @@ void CUIInventory::Render_GameObject()
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
-    _vec2 pos{ m_TransformCom->Get_Pos().x , m_TransformCom->Get_Pos().y};
-    _vec2 material = { WINCX/12, WINCY/2 - 160};
-    _vec2 food = { WINCX / 12, WINCY / 2};
+    _vec2 pos{ m_TransformCom->Get_Pos().x, m_TransformCom->Get_Pos().y };
+    _vec2 material = { WINCX / 12, WINCY / 2 - 160 };
+    _vec2 food     = { WINCX / 12, WINCY / 2 };
 
 
    // if (m_IsOpen)
@@ -264,22 +269,22 @@ HRESULT CUIInventory::Add_Component()
     // buffer
     m_BufferCom = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
     NULL_CHECK_RETURN(m_BufferCom, E_FAIL);
-   
+
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::RC_TEX, m_BufferCom });
-   
+
     // transform
     m_TransformCom = CreateProtoComponent<CTransform>(this, COMPONENTTYPE::TRANSFORM);
     NULL_CHECK_RETURN(m_TransformCom, E_FAIL);
-   
-    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
-   
-    // texture
-    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_UI_INVEN);
-    NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
-   
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_UI_INVEN, m_TextureCom });
 
-   return S_OK;
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
+
+    // texture
+    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEXTURE, L"UI_Inven");
+    NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
+
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEXTURE, m_TextureCom });
+
+    return S_OK;
 }
 
 void CUIInventory::Check_If_Empty()
@@ -329,7 +334,6 @@ void CUIInventory::Render_Editor()
     CUI::Render_Editor();
 }
 
-
 CUIInventory* CUIInventory::Create(DEVICE graphicDev)
 {
     CUIInventory* inventoryUI = new CUIInventory(graphicDev);
@@ -345,5 +349,12 @@ CUIInventory* CUIInventory::Create(DEVICE graphicDev)
 
 void CUIInventory::Free()
 {
+    for (auto& cell : m_Cells)
+    {
+        Safe_Release(cell);
+    }
+
+    m_Cells.clear();
+
     CUI::Free();
 }

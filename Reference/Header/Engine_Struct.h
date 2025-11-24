@@ -48,7 +48,7 @@ typedef struct tagIndex32
     _ulong _1;
     _ulong _2;
 } INDEX32;
-
+\
 typedef struct tagSprite
 {
     _uint  index;           // 스프라이트 인덱스

@@ -1,12 +1,13 @@
 ﻿#include "pch.h"
 #include "CMapEditorPlacer.h"
-#include "CManagement.h"
-#include "CScene.h"
+
 #include "CClient_CreateHelper.h"
 #include "CDInputMgr.h"
-#include "CLayer.h"
 #include "CGameObject.h"
+#include "CLayer.h"
+#include "CManagement.h"
 #include "CPickingHelper.h"
+#include "CScene.h"
 
 CMapEditorPlacer::CMapEditorPlacer(DEVICE graphicDev)
     : m_GraphicDev(graphicDev),

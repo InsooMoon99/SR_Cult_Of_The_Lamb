@@ -1,7 +1,7 @@
 ﻿#include "pch.h"
 #include "CMapObject_Grass.h"
 
-#include "../../Engine/Header/CTransform.h"
+#include "CTransform.h"
 
 CMapObject_Grass::CMapObject_Grass(DEVICE graphicDev)
     : CMapObjectBase(graphicDev)
@@ -40,7 +40,6 @@ void CMapObject_Grass::LateUpdate_GameObject(const _float& timeDelta)
 void CMapObject_Grass::Render_GameObject()
 {
     CMapObjectBase::Render_GameObject();
-
 }
 
 MAPOBJTYPE CMapObject_Grass::Get_Type()

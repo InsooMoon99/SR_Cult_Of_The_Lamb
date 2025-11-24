@@ -28,9 +28,22 @@ HRESULT CUIIcon::Ready_GameObject()
     if (FAILED(Add_Component()))
         return E_FAIL;
 
-    m_TransformCom->Set_Pos(_vec3(100.f, 100.f, 1.f));
-    m_TransformCom->Set_Scale(_vec3(100.f, 100.f, 1.f));
+    m_TransformCom->Set_Pos(_vec3(0.f, 0.f, 1.f));
+    //m_TransformCom->Set_Scale(_vec3(100.f, 100.f, 1.f));
+
     return S_OK;
+}
+
+bool CUIIcon::SetCloneTexAspectScale(_vec3 vec) // 텍스쳐 등록후
+{
+    float x, y;
+    m_TextureCom->Get_TextureSize(0, x, y);
+    if (false == SetTexAspectInit(m_TextureCom, m_TransformCom, 0, true, x))
+        return false;
+
+     SetAspectScale(m_TransformCom, vec);
+
+     return true;
 }
 
 _int CUIIcon::Update_GameObject(const _float& timeDelta)
@@ -72,10 +85,10 @@ HRESULT CUIIcon::Add_Component()
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
     // texture
-    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_UIICON);
+    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEXTURE, L"UI_Icon");
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
 
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_UIICON, m_TextureCom });
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEXTURE, m_TextureCom });
 
     return S_OK;
 }

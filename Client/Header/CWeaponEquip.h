@@ -18,13 +18,14 @@ public:
     void ApplyWeaponStat(Item* item);
     void RemoveWeaponStat();
     bool Get_WeaponEquipped() { return m_WeaponEquipped; }
-    int             Get_CurrentWeaponID() { return m_CurrentWeaponID; }
+    int  Get_CurrentWeaponID() { return m_CurrentWeaponID; }
 
     static CWeaponEquip* Create(DEVICE graphicDev);
     CComponent*          Clone() override;
 
 protected:
     void Free() override;
+
 public:
     int           m_CurrentWeaponID;
     InventorySlot m_CurrentWeaponSlot;

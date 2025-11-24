@@ -136,16 +136,6 @@ HRESULT CLogo::Ready_Prototype()
         ->Ready_Prototype(COMPONENTTYPE::RC_TEX, Engine::CRcTex::Create(m_GraphicDev))))
         return E_FAIL;
 
-    //// Texture : MainMenu BackGround
-    //if (FAILED(CProtoMgr::GetInstance()
-    //    ->Ready_Prototype(COMPONENTTYPE::TEX_MAINBG,
-    //        Engine::CTexture::Create(
-    //            m_GraphicDev,
-    //            TEX_NORMAL,
-    //            L"../Bin/Resource/Texture/BackGround/MainMenu/MenuMask1.png",
-    //            1))))
-    //    return E_FAIL;
-
     return S_OK;
 }
 

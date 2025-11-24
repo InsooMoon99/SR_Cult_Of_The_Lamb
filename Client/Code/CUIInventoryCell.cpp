@@ -1,16 +1,15 @@
 ﻿#include "pch.h"
 #include "CUIInventoryCell.h"
+#include "CCreateHelper.h"
 #include "CDInputMgr.h"
 #include "CEnumHelper.h"
-#include "CCreateHelper.h"
 #include "CItemDB.h"
-#include "CTransform.h"
 #include "CRcTex.h"
-#include "CTexture.h"
 #include "CRenderer.h"
 #include "CUIIcon.h"
 #include <iostream>
-
+#include "CTexture.h"
+#include "CTransform.h"
 CUIInventoryCell::CUIInventoryCell(DEVICE pGraphicDev)
     : CUI(pGraphicDev),
       uiIcon(nullptr),
@@ -32,9 +31,7 @@ CUIInventoryCell::CUIInventoryCell(const CUIInventoryCell& rhs)
 {}
 
 CUIInventoryCell::~CUIInventoryCell()
-{
-
-}
+{ }
 
 void CUIInventoryCell::OnBeginOverlap(CCollider* self, CCollider* other)
 {
@@ -67,14 +64,10 @@ _int CUIInventoryCell::Update_GameObject(const _float& timeDelta)
 {
     // 외곽선 잘 바뀌는지 test
     if (m_IsHovered)
-    {
         m_IsHovered = false;
-    }
 
     if (CDInputMgr::GetInstance()->Get_DIKeyState(DIK_4) & 0x80)
-    {
         m_IsHovered = true;
-    }
     int exit = CUI::Update_GameObject(timeDelta);
     return exit;
 }
@@ -96,7 +89,7 @@ void CUIInventoryCell::Render_GameObject()
     m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);   // 무시됨
     m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
 
-    //m_TextureCom->Set_Texture(0);
+    m_TextureCom->Set_Texture(0);
     m_BufferCom->Render_Buffer();
 
     m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
@@ -110,7 +103,6 @@ void CUIInventoryCell::Render_GameObject()
     {
     
         int TextureIndex = CItemDB::GetInstance()->GetIndexById(m_ItemInst.itemId);
-
         //uiIcon->Set_TextureIndex(m_TextureIndex);
        // m_BufferCom->Render_Buffer();
     }
@@ -155,16 +147,16 @@ HRESULT CUIInventoryCell::Add_Component()
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
     // cell texture
-    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_UI_CELL);
+    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEXTURE, L"UI_Cell");
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
 
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_UI_CELL, m_TextureCom });
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEXTURE, m_TextureCom });
 
     //highlight texture
-    m_HighlightTexCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_UI_HIGHLIGHT);
+    m_HighlightTexCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEXTURE, L"UI_HighLight");
     NULL_CHECK_RETURN(m_HighlightTexCom, E_FAIL);
 
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_UI_HIGHLIGHT, m_HighlightTexCom });
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEXTURE, m_HighlightTexCom });
 
     return S_OK;
 }
@@ -185,4 +177,3 @@ void CUIInventoryCell::Free()
 {
     CUI::Free();
 }
-

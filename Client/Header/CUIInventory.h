@@ -8,13 +8,13 @@ class CInventory;
 class CUIInventory : public CUI
 {
 private:
-   explicit CUIInventory(DEVICE pGraphicDev);
-   explicit CUIInventory(const CUIInventory& rhs);
-   ~CUIInventory() override;
+    explicit CUIInventory(DEVICE pGraphicDev);
+    explicit CUIInventory(const CUIInventory& rhs);
+    ~CUIInventory() override;
 
 public:
-   void    OnBeginOverlap(CCollider* self, CCollider* other) override;
-   void    OnEndOverlap(CCollider* self, CCollider* other) override;
+    void    OnBeginOverlap(CCollider* self, CCollider* other) override;
+    void    OnEndOverlap(CCollider* self, CCollider* other) override;
     void    Render_Editor() override;
    HRESULT Ready_GameObject() override;
    _int    Update_GameObject(const _float& timeDelta) override;
@@ -24,14 +24,14 @@ public:
    void    SetPositions();
    HRESULT  Add_Component();
 
-   void Check_If_Empty();
+    void Check_If_Empty();
     void CreateCells();
     void On_Item_Gained();
 
-   static CUIInventory* Create(DEVICE graphicDev);
+    static CUIInventory* Create(DEVICE graphicDev);
 
 protected:
-   void Free() override;
+    void Free() override;
 
 private:
     int     m_Cols;                         // 한 줄에 몇 칸?
@@ -42,6 +42,6 @@ private:
     bool    m_IsFoodEmpty;
 
     CInventory* m_Inventory;
-    vector<CUIInventoryCell*> m_Cells;
 
+    vector<CUIInventoryCell*> m_Cells;
 };

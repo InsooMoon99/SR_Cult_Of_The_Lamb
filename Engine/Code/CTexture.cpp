@@ -1,5 +1,7 @@
 ﻿#include "CTexture.h"
 
+#include "CResourceManager.h"
+
 CTexture::CTexture(LPDIRECT3DDEVICE9 graphicDev)
     : CComponent(graphicDev)
 { }
@@ -124,6 +126,8 @@ void CTexture::Set_Texture(const _uint& index)
         return;
 
     m_GraphicDev->SetTexture(0, m_Textures[index]);
+
+
 }
 
 HRESULT CTexture::Add_Texture(const wstring& animKey, TEXTUREID texType, const wstring& filePathPattern, _uint count)
@@ -188,6 +192,48 @@ IDirect3DBaseTexture9* CTexture::Get_BaseTexture(_uint index) const
 _uint CTexture::Get_TextureIndex() const
 {
     return static_cast<_uint>(m_Textures.size());
+}
+
+bool CTexture::Get_TextureSize(int index, float& outWidth, float& outHeight)
+{
+    IDirect3DBaseTexture9* tex= nullptr;
+    // 애니메이션인지 아닌지 구분 애니메이션이면 처음의 처음 반환
+    if ((int)m_Textures.size() == 0)
+    {
+        if (m_AnimTextures.empty())
+            return false;
+        else
+        {
+            auto it = m_AnimTextures.begin();
+            if (!it->second.empty())
+            {
+                tex = it->second[0];
+            }
+        }
+    }
+    else
+    {
+        if (index < 0 || index >= (int)m_Textures.size())
+            return false;
+        
+        tex = m_Textures[index];
+    }
+    if (tex == nullptr)
+        return false;
+    // 2d 인지 박스 인지 구분
+    if (tex->GetType() != D3DRESOURCETYPE::D3DRTYPE_TEXTURE)
+        return false;
+    IDirect3DTexture9* tex2D = static_cast<IDirect3DTexture9*>(tex);
+
+    // 가로 세로 픽셀 가져오는 함수
+    D3DSURFACE_DESC desc;
+    if (FAILED(tex2D->GetLevelDesc(0, &desc)))
+        return false;
+
+    outWidth = desc.Width;
+    outHeight = desc.Height;
+
+    return true;
 }
 
 CTexture* CTexture::Create(DEVICE graphicDev, TEXTUREID texType, const wstring& filePath, const _uint& count)

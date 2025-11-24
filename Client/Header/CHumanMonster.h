@@ -42,7 +42,7 @@ private:
     CState*       m_StateCom;
     CTexture*     m_TextureCom;
     CAnimator*    m_AnimatorCom;
-    CCombatStat* m_CombatStatCom;
+    CCombatStat*  m_CombatStatCom;
 public:
     static CHumanMonster* Create(DEVICE graphicDev);
 

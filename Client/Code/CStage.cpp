@@ -15,16 +15,16 @@
 #include "CTestMonster.h"
 #include "CTransform.h"
 #include "CUICircle.h"
-#include "CUIMp.h"
-#include "CUIPlayerPanel.h"
-#include "CUIWeapon.h"
-#include "ItemInstance.h"
 #include "CUIIcon.h"
 #include "CUIInventory.h"
 #include "CUIInventoryCell.h"
+#include "CUIMp.h"
+#include "CUIPlayerPanel.h"
 #include "CUISKillCount.h"
+#include "CUIWeapon.h"
+#include "ItemInstance.h"
 
-class CUIInventoryCell;
+
 
 #include "CDInputMgr.h"
 #include "CSceneMgr.h"
