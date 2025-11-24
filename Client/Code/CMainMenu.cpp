@@ -29,7 +29,7 @@ HRESULT CMainMenu::Ready_Scene()
 
     if (FAILED(Ready_GameLogic_Layer(LAYERTYPE::GAMELOGIC)))
         return E_FAIL;
-
+    
     if (FAILED(Ready_UI_Layer(LAYERTYPE::UI)))
         return E_FAIL;
 
@@ -174,7 +174,6 @@ HRESULT CMainMenu::Ready_UI_Layer(LAYERTYPE layerType)
     // 버튼.
     bt = CUIButton::Create(m_GraphicDev);
     bt->Set_TextureIndex(1,0);
-    //bt->Get_Transform()->Set_Scale(413.f/ scaleX, 100.f/ scaleY, 1.f);
     bt->SetCloneTexAspectScale({ scaleX, scaleY, 1 });
     bt->Get_Transform()->Set_Pos(-WINCX / 3, -0, .3);
     bt->SetOnClick([]() {CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_STAGE);});
