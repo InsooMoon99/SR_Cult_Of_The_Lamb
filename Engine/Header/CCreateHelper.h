@@ -2,6 +2,8 @@
 
 #include "CProtoMgr.h"
 #include "CEnumHelper.h"
+#include "CManagement.h"
+#include "CScene.h"
 
 BEGIN(Engine)
 class CGameObject;
@@ -34,5 +36,17 @@ static T* CreateProtoComponent(CGameObject* Owner, COMPONENTTYPE eComponentType)
 
     return component;
 }
+
+static void SpawnAttackObject(CGameObject* obj)
+{
+    auto mgr = CManagement::GetInstance();
+    auto scene = mgr ? mgr->Get_Scene() : nullptr;
+
+    if (scene == nullptr)
+        return;
+
+    scene->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, obj, OBJTYPE::ATTACK_COL);
+}
+
 
 END

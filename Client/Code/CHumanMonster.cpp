@@ -1,6 +1,8 @@
 ﻿#include "pch.h"
 #include "CHumanMonster.h"
 
+#include <CCombatStat.h>
+
 #include "CAnimator.h"
 #include "CBoxCollider.h"
 #include "CCreateHelper.h"
@@ -43,6 +45,9 @@ HRESULT CHumanMonster::Ready_GameObject()
 
     m_TransformCom->Set_Pos(_vec3(0.f, 0.f, 0.f));
     m_TransformCom->Set_Scale(_vec3(1.2f, 1.2f, 1.2f));
+
+    m_CombatStatCom->Set_MaxHp(50.f);
+    m_CombatStatCom->Set_Hp(50);
 
     return S_OK;
 }
@@ -176,10 +181,17 @@ HRESULT CHumanMonster::Add_Component()
 
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::BOX_COLL, m_BoxColCom });
 
+    // State
     m_StateCom = CreateProtoComponent<CState>(this, COMPONENTTYPE::STATE);
     NULL_CHECK_RETURN(m_StateCom, E_FAIL);
 
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::STATE, m_StateCom });
+
+    // CombatStat
+    m_CombatStatCom = CreateProtoComponent<CCombatStat>(this, COMPONENTTYPE::COMBATSTAT);
+    NULL_CHECK_RETURN(m_CombatStatCom, E_FAIL);
+
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::COMBATSTAT, m_CombatStatCom });
 
     return S_OK;
 }

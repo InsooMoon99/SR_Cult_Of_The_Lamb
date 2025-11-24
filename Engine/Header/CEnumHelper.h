@@ -204,6 +204,9 @@ static const char* ToString(OBJTYPE type)
     case OBJTYPE::HUMANMONSTER: return "HumanMonster";
     case OBJTYPE::TERRAIN:      return "Terrain";
 
+    case OBJTYPE::PLACEMENT:    return "Placement";
+    case OBJTYPE::ATTACK_COL:   return "Attack_Collider";
+    case OBJTYPE::OBJ_END:      return "Obj_End";
     default:
         return "UnknownObjectType";
     }

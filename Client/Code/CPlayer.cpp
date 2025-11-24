@@ -16,6 +16,9 @@
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CWeaponEquip.h"
+#include "CAttackBox.h"
+#include "CManagement.h"
+#include "CScene.h"
 
 CPlayer::CPlayer(DEVICE graphicDev)
     : CGameObject(graphicDev),
@@ -65,7 +68,7 @@ HRESULT CPlayer::Ready_GameObject()
     m_CombatStatCom->Set_Mp(5.f);
     m_CombatStatCom->Set_Speed(5.f);
 
-    m_TransformCom->Set_Pos(_vec3(-30.f, 0.f, 1.f));
+    m_TransformCom->Set_Pos(_vec3(0.f, 0.f, 1.f));
 
     Animation_Setting();
 
@@ -94,6 +97,13 @@ _int CPlayer::Update_GameObject(const _float& timeDelta)
     _int exit = CGameObject::Update_GameObject(timeDelta);
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
+
+
+
+    if (CDInputMgr::GetInstance()->KeyDown(DIK_5))
+    {
+        Test_Attack();
+    }
 
     return exit;
 }
@@ -145,6 +155,31 @@ void CPlayer::Render_Reset()
 
     m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+}
+
+void CPlayer::Test_Attack()
+{
+    // 1. 공격 박스 생성
+    auto obj = CAttackBox::Create(m_GraphicDev);
+    obj->Set_Instigator(this);
+
+    // 2. 구조체 데이터 세팅
+    HITDATA hit{};
+    hit.damage = 12;
+    hit.knockback = 50.f;
+    obj->Set_HitDesc(hit);
+
+    // 3. 공격 박스 위치 설정, 방향값 추가 가능
+    _vec3 pos = m_TransformCom->Get_Pos();
+
+    auto transform = dynamic_cast<CTransform*>(
+        obj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+    transform->Set_Pos(pos);
+
+    // 4. 레이어에 추가, 헬퍼 함수 SpawnAttackObject 사용
+    //CManagement::GetInstance()->Get_Scene()->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, obj, OBJTYPE::ATTACK_COL);
+    SpawnAttackObject(obj);
 }
 
 void CPlayer::OnBeginOverlap(CCollider* self, CCollider* other)
@@ -260,7 +295,7 @@ void CPlayer::Animation_Setting()
 #pragma region ------   ROLL    ------
     m_AnimatorCom->Create_Animation(L"PlayerRoll_LEFT", 19, 0.02f,
         _vec2(1.3f, 1.3f),       // Scale
-        _vec2(1.f, 1.f));  // Offset
+        _vec2(0.f, 0.f));  // Offset
 
     m_AnimatorCom->Create_Animation(L"PlayerRoll_UP", 16, 0.02f * 19 / 16);
     m_AnimatorCom->Create_Animation(L"PlayerRoll_DOWN", 16, 0.02f * 19 / 16);

@@ -36,6 +36,8 @@ public:
     virtual void OnBeginOverlap(CCollider* self, CCollider* other) {}
     virtual void OnEndOverlap(CCollider* self, CCollider* other) {}
 
+    //virtual void TakeDamage(HITSTRUCT hit);
+
     const map<COMPONENTTYPE, CComponent*>&
         Get_DynamicComponents() const { return m_Components[ID_DYNAMIC]; }
 
@@ -67,7 +69,7 @@ protected:
     DEVICE m_GraphicDev;
 
     // TODO 기본 생성자에서 이름 세팅해주도록 구조 변경하기 -> Editor와 연동을 위해
-    wstring m_Name = L"Default_GameObject";
+    wstring m_Name;
     _bool m_Active;       // 오브젝트의 업데이트와 렌더를 하면 true, 안할거면 false로 바꾸면 되는 스위치
 
     _bool m_PendingKill;
