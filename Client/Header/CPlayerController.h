@@ -66,7 +66,7 @@ private:
     Engine::CState*      m_OwnerStateCom;
     Engine::CCombatStat* m_OwnerCombatStatCom;
     Engine::CRigidbody*  m_OwnerRigidbodyCom;
-    Engine::CCollider*   m_OwnerCollider;
+    Engine::CCollider*   m_OwnerColliderCom;
 #pragma endregion
 
     KeyInputData m_InputData;

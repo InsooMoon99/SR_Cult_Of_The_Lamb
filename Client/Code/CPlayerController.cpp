@@ -1,21 +1,21 @@
 ﻿#include "pch.h"
 #include "CPlayerController.h"
 
+#include "CBoxCollider.h"
 #include "CCombatStat.h"
 #include "CDInputMgr.h"
 #include "CGameObject.h"
-#include "CRigidbody.h"
 #include "CMainEditorMgr.h"
+#include "CRigidbody.h"
 #include "CState.h"
 #include "CTransform.h"
-#include "CBoxCollider.h"
 
 CPlayerController::CPlayerController(DEVICE graphicDev)
     : CComponent(graphicDev),
       m_OwnerStateCom(nullptr),
       m_OwnerCombatStatCom(nullptr),
       m_OwnerRigidbodyCom(nullptr),
-      m_OwnerCollider(nullptr)
+      m_OwnerColliderCom(nullptr)
 { }
 
 CPlayerController::CPlayerController(const CPlayerController& rhs)
@@ -23,7 +23,7 @@ CPlayerController::CPlayerController(const CPlayerController& rhs)
       m_OwnerStateCom(nullptr),
       m_OwnerCombatStatCom(nullptr),
       m_OwnerRigidbodyCom(nullptr),
-      m_OwnerCollider(nullptr)
+      m_OwnerColliderCom(nullptr)
 { }
 
 CPlayerController::~CPlayerController()
@@ -69,7 +69,7 @@ HRESULT CPlayerController::Init_OwnerComponent()
 
     m_OwnerRigidbodyCom =
         dynamic_cast<CRigidbody*>(m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::RIGIDBODY));
-    m_OwnerCollider =
+    m_OwnerColliderCom =
         dynamic_cast<CBoxCollider*>(m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::BOX_COLL));
 
     NULL_CHECK_RETURN_MSG(
@@ -88,7 +88,7 @@ HRESULT CPlayerController::Init_OwnerComponent()
         L"CPlayerController::Init_OwnerComponent(): Owner's RIGIDBODY caching has failed");
 
     NULL_CHECK_RETURN_MSG(
-        m_OwnerCollider,
+        m_OwnerColliderCom,
         E_FAIL,
         L"CPlayerController::Init_OwnerComponent(): Owner's BOXCOLLIDER caching has failed");
 
@@ -141,7 +141,7 @@ void CPlayerController::Update_Roll(const _float& timeDelta)
         m_OwnerRigidbodyCom->Set_Friction(true);
 
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
-        m_OwnerCollider->Set_CollisionActive(true); // 충돌체 키기
+        m_OwnerColliderCom->Set_CollisionActive(true); // 충돌체 키기
     }
     // ROLL 하는 중
     else
@@ -174,7 +174,7 @@ void CPlayerController::Update_Roll(const _float& timeDelta)
 
         //m_OwnerRigidbody->Add_Force(m_RollData.rollDir * rollSpeed * 5.f);
 
-        m_OwnerCollider->Set_CollisionActive(false); // 충돌체 끄기
+        m_OwnerColliderCom->Set_CollisionActive(false); // 충돌체 끄기
     }
 }
 
@@ -365,7 +365,7 @@ void CPlayerController::Apply_Movement(const _float& timeDelta)
     //m_TransformCom->Move_Pos(m_InputData.moveDir, timeDelta, finalSpeed);
 
     // 가속 이동. 입력이 지속될수록 가속력 증가, 최대 속도 상한까지 계속 올라감
-    m_OwnerRigidbodyCom->Add_Force(m_InputData.moveDir * finalSpeed * 4.f);
+    m_OwnerRigidbodyCom->Add_Force(m_InputData.moveDir * finalSpeed * 3.f);
 }
 
 CPlayerController* CPlayerController::Create(DEVICE graphicDev)

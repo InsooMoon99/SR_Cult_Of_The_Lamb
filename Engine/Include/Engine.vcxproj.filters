@@ -312,8 +312,6 @@
     <ClInclude Include="..\header\CPlayerController.h">
       <Filter>02. Prototype\08. Controller\00. Player Controller</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CPickingHelper.h" />
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CGraphicDev.cpp">

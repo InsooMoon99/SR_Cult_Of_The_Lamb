@@ -3,10 +3,10 @@
 
 #include "CCreateHelper.h"
 #include "CRcTex.h"
+#include "CRenderer.h"
 #include "CTerrain.h"
 #include "CTexture.h"
 #include "CTransform.h"
-#include "CRenderer.h"
 
 CMapObjectBase::CMapObjectBase(DEVICE graphicDev)
     : CGameObject(graphicDev),

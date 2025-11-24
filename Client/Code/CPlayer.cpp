@@ -80,7 +80,7 @@ _int CPlayer::Update_GameObject(const _float& timeDelta)
 
     if (inputMgr->Get_DIKeyState(DIK_1) & 0x80)
     {
-        m_Inventory->DropItemfromSlot(
+        m_InventoryCom->DropItemfromSlot(
             1,
             {
                 m_TransformCom->Get_Pos().x,

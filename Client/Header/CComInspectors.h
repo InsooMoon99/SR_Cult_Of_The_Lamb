@@ -1,13 +1,13 @@
 ﻿#pragma once
-
-#include "CComponent.h"
-#include "CTransform.h"
-#include "CState.h"
-#include "CCombatStat.h"
-#include "CCameraCom.h"
-#include "CTerrainRenderer.h"
 #include "CBoxCollider.h"
+#include "CCameraCom.h"
+#include "CCombatStat.h"
+#include "CComponent.h"
+#include "CEnumHelper.h"
 #include "CInventory.h"
+#include "CState.h"
+#include "CTerrainRenderer.h"
+#include "CTransform.h"
 #include "CWeaponEquip.h"
 
 USING(Engine)
