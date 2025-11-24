@@ -294,14 +294,14 @@
     <ClInclude Include="..\Header\CUIPanel.h">
       <Filter>04. UI\00. UI Panel</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CUIButton.h">
-      <Filter>04. UI\01. UI Button</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\CEditContext.h">
       <Filter>01. Logic\97. Editor</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Engine_Global.h">
       <Filter>99. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CTransformAsp.h">
+      <Filter>02. Prototype\01. Transform</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -425,11 +425,11 @@
     <ClCompile Include="..\Code\CUIPanel.cpp">
       <Filter>04. UI\00. UI Panel</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CUIButton.cpp">
-      <Filter>04. UI\01. UI Button</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\CEditContext.cpp">
       <Filter>01. Logic\97. Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CTransformAsp.cpp">
+      <Filter>02. Prototype\01. Transform</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

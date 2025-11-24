@@ -197,6 +197,7 @@
     <ClInclude Include="..\Header\CTerrainRenderer.h" />
     <ClInclude Include="..\Header\CTestMonster.h" />
     <ClInclude Include="..\Header\CTerrain.h" />
+    <ClInclude Include="..\Header\CUIButton.h" />
     <ClInclude Include="..\Header\CUICircle.h" />
     <ClInclude Include="..\Header\CUIHeartBar.h" />
     <ClInclude Include="..\Header\CUIIcon.h" />
@@ -238,6 +239,7 @@
     <ClCompile Include="..\Code\CTerrainRenderer.cpp" />
     <ClCompile Include="..\Code\CTestMonster.cpp" />
     <ClCompile Include="..\Code\CTerrain.cpp" />
+    <ClCompile Include="..\Code\CUIButton.cpp" />
     <ClCompile Include="..\Code\CUICircle.cpp" />
     <ClCompile Include="..\Code\CUIHeartBar.cpp" />
     <ClCompile Include="..\Code\CUIIcon.cpp" />

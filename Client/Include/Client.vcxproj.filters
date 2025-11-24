@@ -231,9 +231,6 @@
     <ClInclude Include="..\Header\CMainMenu.h">
       <Filter>02. Scene\03.MainMenu</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CUIIcon.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\CSceneMgr.h">
       <Filter>01. Manager</Filter>
     </ClInclude>
@@ -257,6 +254,12 @@
     </ClInclude>
     <ClInclude Include="..\Header\CClient_EnumHelper.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUIButton.h">
+      <Filter>05. UI\01. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUIIcon.h">
+      <Filter>05. UI\01. UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -344,9 +347,6 @@
     <ClCompile Include="..\Code\CMainMenu.cpp">
       <Filter>02. Scene\03.MainMenu</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CUIIcon.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\CSceneMgr.cpp">
       <Filter>01. Manager</Filter>
     </ClCompile>
@@ -367,6 +367,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\CClient_EnumHelper.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUIIcon.cpp">
+      <Filter>05. UI\01. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUIButton.cpp">
+      <Filter>05. UI\01. UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -25,7 +25,8 @@ public:
     // index 번째 텍스처 포인터 반환
     IDirect3DBaseTexture9* Get_BaseTexture(_uint index = 0) const;
     // 텍스처 개수
-    _uint Get_TextureIndex() const; 
+    _uint Get_TextureIndex() const;
+    bool Get_TextureSize(int index, float& outWidth, float& outHeight);
 
 private:
     vector<IDirect3DBaseTexture9*> m_Textures;
