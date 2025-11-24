@@ -62,7 +62,7 @@ HRESULT CPlayer::Ready_GameObject()
     m_CombatStatCom->Set_Mp(5.f);
     m_CombatStatCom->Set_Speed(5.f);
 
-    m_TransformCom->Set_Pos(_vec3(-30.f, 0.f, 1.f));
+    m_TransformCom->Set_Pos(_vec3(0.f, 0.f, 1.f));
 
     Animation_Setting();
 
@@ -262,7 +262,7 @@ void CPlayer::Animation_Setting()
 
 #pragma region ------   ROLL    ------
     m_AnimatorCom->Create_Animation(L"PlayerRoll_LEFT", 19, 0.02f,
-        _vec2(1.3f, 1.3f),       // Scale
+        _vec2(2.3f, 1.3f),  // Scale
         _vec2(1.f, 1.f));  // Offset
 
     m_AnimatorCom->Create_Animation(L"PlayerRoll_UP", 16, 0.02f * 19 / 16);
