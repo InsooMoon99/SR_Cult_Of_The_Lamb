@@ -10,7 +10,7 @@ CCollisionManager::CCollisionManager()
 
 CCollisionManager::~CCollisionManager()
 {
-    CCollisionManager::Free();
+    Free();
 }
 
 void CCollisionManager::Update()
@@ -25,7 +25,10 @@ void CCollisionManager::Update()
             continue;
 
         CGameObject* ownerSrc = src->Get_Owner();
-        if (ownerSrc == nullptr || ownerSrc->Is_PendingDestroy())
+        if (ownerSrc == nullptr || ownerSrc->Is_PendingDestroy()) // 소멸 예정인 애들은 충돌 X
+            continue;
+
+        if (src->IsCollisionActive() == false) // 충돌체 Active가 꺼져있다면 무시
             continue;
 
         for (_uint j = i + 1; j < count; j++)
@@ -35,7 +38,10 @@ void CCollisionManager::Update()
                 continue;
 
             CGameObject* ownerDst = dst->Get_Owner();
-            if (ownerDst == nullptr || ownerDst->Is_PendingDestroy())
+            if (ownerDst == nullptr || ownerDst->Is_PendingDestroy()) // 소멸 예정인 애들은 충돌 X
+                continue;
+
+            if (dst->IsCollisionActive() == false) // 충돌체 Active가 꺼져있다면 무시
                 continue;
 
             // TODO : Owner 세팅 후 비교
@@ -80,6 +86,7 @@ void CCollisionManager::Update()
     }
 }
 
+// 충돌체 추가
 void CCollisionManager::AddCollider(CCollider* collider)
 {
     if (collider == nullptr)
@@ -87,7 +94,7 @@ void CCollisionManager::AddCollider(CCollider* collider)
 
     m_Colliders.push_back(collider);
 }
-
+// 충돌체 제거
 void CCollisionManager::RemoveCollider(CCollider* collider)
 {
     if (collider == nullptr)
@@ -100,4 +107,5 @@ void CCollisionManager::RemoveCollider(CCollider* collider)
 void CCollisionManager::Free()
 {
     m_Colliders.clear();
+
 }

@@ -6,7 +6,6 @@
 #include "CBoxCollider.h"
 #include "CBoxTex.h"
 #include "CCameraCom.h"
-#include "CClient_EnumHelper.h"
 #include "CCombatStat.h"
 #include "CInventory.h"
 #include "CItemDB.h"
@@ -25,19 +24,22 @@
 #include "CWeaponEquip.h"
 #include "ItemData.h"
 #include "ItemInstance.h"
+#include "CWeaponEquip.h"
+#include "CEnumHelper.h"
 
 CLoading::CLoading(DEVICE pGraphicDev)
     : m_GraphicDev(pGraphicDev),
-      m_Thread(nullptr),
-      m_Crt{},
-      m_LoadingID(LOADING_END),
-      m_IsFinish(false)
+    m_Thread(nullptr),
+    m_Crt{},
+    m_LoadingID(LOADING_END),
+    m_IsFinish(false)
 {
     m_GraphicDev->AddRef();
 }
 
 CLoading::~CLoading()
-{ }
+{
+}
 
 HRESULT CLoading::Ready_Loading(LOADINGID eID)
 {
@@ -204,7 +206,7 @@ _uint CLoading::Loading_ForState()
             L"../Bin/Resource/Texture/"))))
         return E_FAIL;*/
 
-    //circleColorTex
+        //circleColorTex
     if (FAILED(CProtoMgr::GetInstance()
         ->Ready_Prototype(COMPONENTTYPE::TEX_UI_COLOR,
             Engine::CTexture::Create(m_GraphicDev, TEX_NORMAL,
@@ -221,7 +223,7 @@ _uint CLoading::Loading_ForState()
     if (FAILED(CProtoMgr::GetInstance()
         ->Ready_Prototype(COMPONENTTYPE::TEX_UI_WEAPON,
             Engine::CTexture::Create(m_GraphicDev, TEX_NORMAL,
-                L"../Bin/Resource/Texture/UI/PlayerState/Icon/Weapon_Sword.png", 1))))
+                L"../Bin/Resource/Texture/UI/PlayerState/Icon/Weapon%d.png", 2))))
         return E_FAIL;
 
     // 메인 메뉴 이미지
@@ -238,33 +240,59 @@ _uint CLoading::Loading_ForState()
         return E_FAIL;
 
     //UIICON 텍스쳐
-
     vector<wstring> pathVec1;
     pathVec1.push_back(L"../Bin/Resource/Texture/UI/MainMenu/Title0.png");
+    pathVec1.push_back(L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Sermon_Icon.png");
+;
 
     if (FAILED(CProtoMgr::GetInstance()->Ready_Prototype(
         COMPONENTTYPE::TEX_UIICON, Engine::CTexture::Create(m_GraphicDev, TEX_NORMAL, pathVec1))))
         return E_FAIL;
 
-    //UIBUTTON 텍스쳐
-    vector<wstring> pathVec2;
+    if (FAILED(pProtoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_UI_SKILLCOUNT, CTexture::Create(m_GraphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/UI/PlayerState/Skill/Skillcount%d.png", 2))))
+        return E_FAIL;
+
+
+    if (FAILED(pProtoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_UI_CELL, CTexture::Create(m_GraphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/UI/Inventory/InventoryIcon_BG.png", 1))))
+        return E_FAIL;
+
+    if (FAILED(pProtoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_UI_HIGHLIGHT, CTexture::Create(m_GraphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/UI/Inventory/Outline%d.png", 2))))
+        return E_FAIL;
+
+        //UIButton 텍스쳐
+        vector<wstring> pathVec2;
     pathVec2.push_back(L"../Bin/Resource/Texture/UI/MainMenu/Null.png");
     pathVec2.push_back(L"../Bin/Resource/Texture/UI/MainMenu/Button Black.png");
-
 
     if (FAILED(CProtoMgr::GetInstance()->Ready_Prototype(
         COMPONENTTYPE::TEX_UIBUTTON, Engine::CTexture::Create(m_GraphicDev, TEX_NORMAL, pathVec2))))
         return E_FAIL;
 
     //// Texture : MainMenu BackGround
-if (FAILED(CProtoMgr::GetInstance()
-    ->Ready_Prototype(COMPONENTTYPE::TEX_MAINBG,
-        Engine::CTexture::Create(
-            m_GraphicDev,
-            TEX_NORMAL,
-            L"../Bin/Resource/Texture/BackGround/MainMenu/MenuMask1.png",
-            1))))
-    return E_FAIL;
+    if (FAILED(CProtoMgr::GetInstance()
+        ->Ready_Prototype(COMPONENTTYPE::TEX_MAINBG,
+            Engine::CTexture::Create(
+                m_GraphicDev,
+                TEX_NORMAL,
+                L"../Bin/Resource/Texture/BackGround/MainMenu/MenuMask1.png",
+                1))))
+        return E_FAIL;
+
+	// Texture : Inventory BackGround
+	if (FAILED(CProtoMgr::GetInstance()
+		->Ready_Prototype(COMPONENTTYPE::TEX_UI_INVEN,
+			Engine::CTexture::Create(
+				m_GraphicDev,
+				TEX_NORMAL,
+				L"../Bin/Resource/Texture/UI/Inventory/Background.png",
+				1))))
+		return E_FAIL;
 
 #pragma endregion
 

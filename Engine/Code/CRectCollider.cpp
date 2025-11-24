@@ -48,9 +48,7 @@ void CRectCollider::LateUpdate_Component()
 
 void CRectCollider::Render()
 {
-    CCollider::Render();
-
-    if (m_BufferCom == nullptr)
+    if (m_ShowDebug == false || m_BufferCom == nullptr)
         return;
 
     CTransform* transform = Get_Transform();

@@ -8,6 +8,13 @@ class CSpriteAnimation;
 class CTexture;
 class CVIBuffer;
 
+struct AnimDesc
+{
+    CSpriteAnimation* anim;
+    _vec2             size;
+    _vec2             offset;
+};
+
 /// @brief 여러 개의 애니메이션을 보관하고 있다가, CState의 명령에 따라 애니메이션을 변경해서 재생하는 "재생장치" 컴포넌트
 class ENGINE_DLL CAnimator : public CComponent
 {
@@ -23,12 +30,16 @@ public:
 
 public:
     // 애니메이션 등록 (이미 만들어진 CSpriteAnimation 넣기)
-    HRESULT           Add_Animation(const wstring& key, CSpriteAnimation* animation);
-    CSpriteAnimation* GetOrAdd_Animation(const wstring& key, CSpriteAnimation* animation);
+    HRESULT Add_Animation(const wstring& key, CSpriteAnimation* animation);
+    HRESULT Create_Animation(const wstring& key, _uint frameCount,_float interval);
 
-    HRESULT Create_Animation(const wstring& key,
-                             _uint          frameCount,
-                             _float         interval);
+    // 사이즈 세팅 버전
+    HRESULT Add_Animation(
+        const wstring& key, CSpriteAnimation* animation,
+        const _vec2 size, const _vec2 offset = _vec2(0.f, 0.f));
+
+    HRESULT Create_Animation(const wstring& key, _uint frameCount,
+        _float interval, const _vec2& size, const _vec2 offset = _vec2(0.f, 0.f));
 
     void Play_Animation(const wstring& key, ANIMSTATE state, bool reset = true);
     void Stop_Animation();
@@ -53,9 +64,9 @@ private:
     void Free() override;
 
 private:
-    map<wstring, CSpriteAnimation*> m_Animations;
-    CSpriteAnimation*               m_CurAnimation;
-    wstring                         m_CurKey;
+    map<wstring, AnimDesc> m_Animations;
+    CSpriteAnimation*      m_CurAnimation;
+    wstring                m_CurKey;
 
     _bool m_Play;
 

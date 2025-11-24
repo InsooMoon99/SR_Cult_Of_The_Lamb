@@ -28,7 +28,8 @@ protected:
     void Free() override;
 
 private:
-    static int         m_nextID;
+    int          m_WeaponID;
+    static int   m_NextID;
     CCombatStat* m_CombatStatCom;
 
 };

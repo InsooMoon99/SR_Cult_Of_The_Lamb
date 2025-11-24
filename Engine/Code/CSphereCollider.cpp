@@ -33,7 +33,8 @@ void CSphereCollider::LateUpdate_Component()
 
 void CSphereCollider::Render()
 {
-    CCollider::Render();
+    //if (m_ShowDebug == false || m_BufferCom == nullptr)
+    //    return;
 }
 
 bool CSphereCollider::CheckCollision(CCollider* other)

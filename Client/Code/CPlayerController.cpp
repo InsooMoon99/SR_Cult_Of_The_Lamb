@@ -5,8 +5,10 @@
 #include "CDInputMgr.h"
 #include "CGameObject.h"
 #include "CRigidbody.h"
+#include "CMainEditorMgr.h"
 #include "CState.h"
 #include "CTransform.h"
+#include "CBoxCollider.h"
 
 CPlayerController::CPlayerController(DEVICE graphicDev)
     : CComponent(graphicDev),
@@ -32,6 +34,10 @@ HRESULT CPlayerController::Ready_PlayerController()
 
 _int CPlayerController::Update_Component(const _float& timeDelta)
 {
+    // 일시정지면 입력 무시
+    if (!CMainEditorMgr::GetInstance()->IsPlaying())
+        return 0;
+
     if (m_InputData.isMove)
     {
         if (m_OwnerRigidbodyCom->Get_Friction() > 0.02f)
@@ -61,6 +67,8 @@ HRESULT CPlayerController::Init_OwnerComponent()
 
     m_OwnerRigidbodyCom =
         dynamic_cast<CRigidbody*>(m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::RIGIDBODY));
+    m_OwnerCollider =
+        dynamic_cast<CBoxCollider*>(m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::BOX_COLL));
 
     NULL_CHECK_RETURN_MSG(
         m_OwnerStateCom,
@@ -76,6 +84,11 @@ HRESULT CPlayerController::Init_OwnerComponent()
         m_OwnerRigidbodyCom,
         E_FAIL,
         L"CPlayerController::Init_OwnerComponent(): Owner's RIGIDBODY caching has failed");
+
+    NULL_CHECK_RETURN_MSG(
+        m_OwnerCollider,
+        E_FAIL,
+        L"CPlayerController::Init_OwnerComponent(): Owner's BOXCOLLIDER caching has failed");
 
     return S_OK;
 }
@@ -126,6 +139,7 @@ void CPlayerController::Update_Roll(const _float& timeDelta)
         m_OwnerRigidbodyCom->Set_Friction(true);
 
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+        m_OwnerCollider->Set_CollisionActive(true); // 충돌체 키기
     }
     // ROLL 하는 중
     else
@@ -157,6 +171,8 @@ void CPlayerController::Update_Roll(const _float& timeDelta)
         m_TransformCom->Move_Pos(m_RollData.rollDir, timeDelta, rollSpeed);
 
         //m_OwnerRigidbody->Add_Force(m_RollData.rollDir * rollSpeed * 5.f);
+
+        m_OwnerCollider->Set_CollisionActive(false); // 충돌체 끄기
     }
 }
 

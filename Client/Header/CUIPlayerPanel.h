@@ -18,7 +18,9 @@ public:
     _int    Update_GameObject(const _float& timeDelta) override;
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
+
     virtual void Render_Editor() override;
+
 
 public:
     static CUIPlayerPanel* Create(DEVICE graphicDev);

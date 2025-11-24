@@ -21,6 +21,8 @@ public:
     void AddCollider(CCollider* collider);
     void RemoveCollider(CCollider* collider);
 
+    static CCollisionManager* GetInstance_NoCreate() { return m_Instance; }
+
 private:
     void Free() override;
 

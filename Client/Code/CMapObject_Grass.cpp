@@ -40,6 +40,7 @@ void CMapObject_Grass::LateUpdate_GameObject(const _float& timeDelta)
 void CMapObject_Grass::Render_GameObject()
 {
     CMapObjectBase::Render_GameObject();
+
 }
 
 MAPOBJTYPE CMapObject_Grass::Get_Type()

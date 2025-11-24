@@ -5,6 +5,7 @@ BEGIN(Engine)
 class CCombatStat;
 class CState;
 class CRigidbody;
+class CCollider;
 END
 
 /// @brief 플레이어의 조작을 담당하는 컴포넌트
@@ -65,6 +66,7 @@ private:
     Engine::CState*      m_OwnerStateCom;
     Engine::CCombatStat* m_OwnerCombatStatCom;
     Engine::CRigidbody*  m_OwnerRigidbodyCom;
+    Engine::CCollider*   m_OwnerCollider;
 #pragma endregion
 
     KeyInputData m_InputData;

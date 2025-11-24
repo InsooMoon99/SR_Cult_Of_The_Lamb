@@ -200,6 +200,25 @@ static void CombatStat_Inspector(CCombatStat* stat)
 
 }
 
+static void Menu_CameraInspector(CCameraCom* camera)
+{
+    if (camera == nullptr)
+        return;
+
+    ImGui::PushID("Main_CameraInspector");
+    {
+        const char* camModeItems[] = { "Free", "Target" };
+        int camMode = camera->Get_CamMode();
+
+        ImGui::SetNextItemWidth(80.f);
+        if (ImGui::Combo("##CamMode", &camMode, camModeItems, IM_ARRAYSIZE(camModeItems)))
+        {
+            camera->Set_CamMode(static_cast<CCameraCom::CAM_MODE>(camMode));
+        }
+    }
+    ImGui::PopID();
+}
+
 static void Camera_Inspector(CCameraCom* camera)
 {
     if (camera == nullptr)
@@ -290,6 +309,8 @@ static void Terrain_Inspector(CTerrainRenderer* renderer)
     if (renderer)
     {
         renderer->Render_Editor();
+
+        CMainEditorMgr::GetInstance()->Render_MapObjectWindow();
     }
 }
 
@@ -305,6 +326,22 @@ static void BoxColl_Inspector(CBoxCollider* collider)
 
         if (ImGui::DragFloat3("##PositionDrag", &scale.x, 0.01f))
             collider->Set_Size(scale);
+
+        ImGui::NewLine();
+
+        // Collider Render 그리기
+        bool renderCheck = collider->Get_ShowDebug();
+        if (ImGui::Checkbox("Render Debug Box", &renderCheck))
+        {
+            collider->Set_ShowDebug(renderCheck);
+        }
+        // Collider Active 충돌체크
+        bool collisionCheck = collider->IsCollisionActive();
+        if (ImGui::Checkbox("Collision Active", &collisionCheck))
+        {
+            collider->Set_CollisionActive(collisionCheck);
+        }
+
     }
     ImGui::PopID();
     
@@ -403,8 +440,8 @@ static void Weapon_Inspector(CWeaponEquip* weapon)
         ImGui::Text("[ Weapon Equip ]");
         ImGui::Separator();
 
-        const InventorySlot& slot = weapon->m_iCurrentWeaponSlot;
-        int weaponId = weapon->m_iCurrentWeaponID;
+        const InventorySlot& slot = weapon->m_CurrentWeaponSlot;
+        int weaponId = weapon->m_CurrentWeaponID;
 
         if (weaponId < 0 || slot.itemInst.itemId < 0)
         {
