@@ -10,6 +10,9 @@
 #include "CAnimator.h"
 #include "CBoxCollider.h"
 #include "CCreateHelper.h"
+#include "CCombatStat.h"
+#include "CMonsterState.h"
+
 
 CBossPhase1::CBossPhase1(DEVICE graphicDev) : CGameObject(graphicDev)
 {
@@ -30,7 +33,11 @@ HRESULT CBossPhase1::Ready_GameObject()
 
     Animation_Setting();
 
-    return E_NOTIMPL;
+    m_StateMachine = CBossStateMachine::Create(this);
+
+    m_TransformCom->Set_Scale({ 3,3,1 });
+
+    return S_OK;
 }
 
 _int CBossPhase1::Update_GameObject(const _float& timeDelta)
@@ -39,7 +46,7 @@ _int CBossPhase1::Update_GameObject(const _float& timeDelta)
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 
-    stateMachine->Update_StateMachine(timeDelta);
+    m_StateMachine->Update_StateMachine(timeDelta);
 
     return exit;
 }
@@ -51,6 +58,9 @@ void CBossPhase1::LateUpdate_GameObject(const _float& timeDelta)
 
 void CBossPhase1::Render_GameObject()
 {
+
+    m_StateMachine->Get_CurState()->Render_State();
+
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
     //
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
@@ -89,20 +99,18 @@ HRESULT CBossPhase1::Add_Component()
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
     // texture
-    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_PLAYER);
+    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEXTURE, L"BossPhase1Tex");
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEXTURE, m_TextureCom });
 
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_PLAYER, m_TextureCom });
-
-    // Animator
+    // Animator (순서조심 텍스쳐, 버퍼 이후)
     m_AnimatorCom = CreateProtoComponent<CAnimator>(this, COMPONENTTYPE::ANIMATOR);
     NULL_CHECK_RETURN(m_AnimatorCom, E_FAIL);
-
-    m_AnimatorCom->Set_TextureType(COMPONENTTYPE::TEX_PLAYER);
-
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::ANIMATOR, m_AnimatorCom });
 
-    // RectCol Componet
+    m_AnimatorCom->Ready_Animator();
+
+    // CBoxCollider Componet
     m_BoxColCom = CreateProtoComponent<CBoxCollider>(this, COMPONENTTYPE::BOX_COLL);
     NULL_CHECK_RETURN(m_BoxColCom, E_FAIL);
     //m_BoxColCom->Set_Scale(_vec3(2.f, 2.f, 2.f));
@@ -118,8 +126,6 @@ HRESULT CBossPhase1::Add_Component()
     // CombatStat
     m_CombatStatCom = CreateProtoComponent<CCombatStat>(this, COMPONENTTYPE::COMBATSTAT);
     NULL_CHECK_RETURN(m_CombatStatCom, E_FAIL);
-
-    // TODO 인수) CombatStat 컴포넌트에서 Update쓸거면 Dynamic으로 변경하기
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::COMBATSTAT, m_CombatStatCom });
 
 
@@ -128,11 +134,35 @@ HRESULT CBossPhase1::Add_Component()
 
 void CBossPhase1::Animation_Setting()
 {
+
+    m_AnimatorCom->Create_Animation(L"BossIdle", 100, 0.02f);
+
+    //m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"BossIdle", ANIMSTATE::LOOP);
+
+
+
+    //m_AnimatorCom->Create_Animation(L"BossAwake", 83, 0.02f);
+    //m_AnimatorCom->Create_Animation(L"BossAttack", 97, 0.02f);
+    //m_AnimatorCom->Create_Animation(L"BossDead", 167, 0.02f);
+    //m_AnimatorCom->Create_Animation(L"BossMove_up", 50, 0.02f);
+    //m_AnimatorCom->Create_Animation(L"BossMove_Down", 28, 0.02f);
+
+    //m_StateCom->Set_AnimInfo(ACTORSTATE::RUN, L"PlayerRun", ANIMSTATE::LOOP);
+
+
+
+    //m_AnimatorCom->Create_Animation(L"BossGroggy_start", 115, 0.02f);
+    //
+    //m_AnimatorCom->Create_Animation(L"BossGroggy_loop", 84, 0.02f);
+    //m_AnimatorCom->Create_Animation(L"BossGroggy_end", 67, 0.02f);
+
+    //m_StateCom->Set_AnimInfo(ACTORSTATE::ROLL, L"PlayerRoll", ANIMSTATE::ONCE);
+
 }
 
 CBossPhase1* CBossPhase1::Create(DEVICE graphicDev)
 {
-    auto Boss= new CBossPhase1(graphicDev);
+    auto Boss = new CBossPhase1(graphicDev);
 
     if (FAILED(Boss->Ready_GameObject()))
     {

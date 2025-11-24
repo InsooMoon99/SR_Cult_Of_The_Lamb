@@ -1,9 +1,13 @@
 ﻿#pragma once
 #include "CMonsterState.h"
+
+class CBossPhase1;
+class CBossStateMachine;
+
 class CBossAwake :
     public CMonsterState
 {
-    explicit CBossAwake();
+    explicit CBossAwake(CBossPhase1* pOwner, CBossStateMachine* pStateMachine);
     virtual ~CBossAwake();
 
 public:
@@ -15,7 +19,7 @@ public:
      virtual HRESULT Ready_State();
      virtual _int    Update_State(const _float& timeDelta);
      virtual void    LateUpdate_State(const _float& timeDelta);
-     virtual void    Render_State() {}
+     virtual void    Render_State();
 
 private:
     CBossPhase1* m_pOwner;

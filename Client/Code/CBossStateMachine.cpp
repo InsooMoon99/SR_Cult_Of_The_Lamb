@@ -69,13 +69,6 @@ void CBossStateMachine::Change_State(_uint changeStateKey)
 
 }
 
-
-void CBossStateMachine::Free()
-{
-    for_each(m_vecState.begin(), m_vecState.end(), CDeleteObj());
-    m_vecState.clear();
-}
-
 HRESULT CBossStateMachine::Ready_BossStates()
 {
     m_vecState.resize(CBossPhase1::BOSSPHASE1::BOSS_END);
@@ -128,7 +121,7 @@ CBossStateMachine* CBossStateMachine::Create(CBossPhase1* owner)
     }
 
     return StateMachine;
-    return nullptr;
+
 }
 
 void CBossStateMachine::Free()

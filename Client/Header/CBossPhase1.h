@@ -47,7 +47,7 @@ private:
     Engine::CState* m_StateCom;
     Engine::CCombatStat* m_CombatStatCom;
 
-    CBossStateMachine* stateMachine;
+    CBossStateMachine* m_StateMachine;
 public:
     static CBossPhase1* Create(DEVICE graphicDev);
 

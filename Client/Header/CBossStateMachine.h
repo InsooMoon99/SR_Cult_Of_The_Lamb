@@ -16,6 +16,8 @@ public:
     _int    Update_StateMachine(const _float& timeDelta);
     virtual void Change_State(_uint changeStateKey);
 
+
+    CMonsterState* Get_CurState() { return m_pCurState; }
 protected:
     vector<CMonsterState*> m_vecState;
     CMonsterState* m_pCurState;

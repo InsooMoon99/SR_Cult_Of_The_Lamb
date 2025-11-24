@@ -7,6 +7,7 @@ namespace Engine
 {
     class CTransform;
     class CTexture;
+    class CAnimator;
 }
 
 class CPlayer;
@@ -49,6 +50,8 @@ protected:
     CTransform* m_pPlayerTransformCom;
     CTransform* m_pOwnerTransformCom;
     //CTexture* m_pOwnerTextureCom
+    CAnimator* m_pOwnerAnimatorCom;
+
 
     _float m_fCurStateElapsedTime; // 누적시간
     _float      m_fMinStateTime;

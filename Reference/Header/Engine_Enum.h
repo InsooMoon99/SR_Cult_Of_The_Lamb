@@ -62,6 +62,7 @@ enum class OBJTYPE
     /* 오브젝트 타입 종류 추가 */
     UI,
     BOSS2,
+    BOSS1,
     HUMANMONSTER,
     TERRAIN,
     PLACEMENT,
