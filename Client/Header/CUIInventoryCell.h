@@ -2,6 +2,8 @@
 #include "CUI.h"
 #include "ItemInstance.h"
 
+class CUIIcon;
+
 class CUIInventoryCell : public CUI
 {
 private:
@@ -26,10 +28,11 @@ protected:
     void Free() override;
 
 private:
+    CUIIcon*        uiIcon;
     CTexture*       m_ItemTexCom;
     CTexture*       m_HighlightTexCom;
     ItemInstance    m_ItemInst;
-    int             m_index;
+    int             m_TextureIndex;
     int             m_Count;
     bool            m_IsHovered; //외곽선 그리기 여부 판단용
 };

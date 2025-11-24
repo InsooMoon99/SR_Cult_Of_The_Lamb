@@ -126,6 +126,7 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
             layer,
             &gameObject),
         L"Persistent object setup failed");
+    m_Player = dynamic_cast <CPlayer*> (gameObject);
 
     // 플레이어의 Transform 가져오기
     const auto playerTransform =
@@ -239,18 +240,18 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
         layer->Add_GameObject(OBJTYPE::UI, uiSkillCount),
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUISKillCount) failed");
 
-    //CUIInventoryCell* uiInventoryCell = CUIInventoryCell::Create(m_GraphicDev);
-    //
-    //FAILED_CHECK_MSG(
-    //    layer->Add_GameObject(OBJTYPE::UI, uiInventoryCell),
-    //    L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UIInventoryCell) failed");
-
-    //Inventory UI
+    /*CUIInventoryCell* uiInventoryCell = CUIInventoryCell::Create(m_GraphicDev);
+        
+    FAILED_CHECK_MSG(
+        layer->Add_GameObject(OBJTYPE::UI, uiInventoryCell),
+        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UIInventoryCell) failed");*/
+   
+   ///Inventory UI
     CUIInventory* uiInventory = CUIInventory::Create(m_GraphicDev);
     uiInventory->SetInventory(m_PlayerInventoryCom);
+    m_Player->Set_UIInventory(uiInventory);
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiInventory),
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UIInventory) failed");
-
 
     m_Layers.insert({ layerType, layer });
 

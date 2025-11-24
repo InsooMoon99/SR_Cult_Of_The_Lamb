@@ -20,11 +20,13 @@ public:
    _int    Update_GameObject(const _float& timeDelta) override;
    void    LateUpdate_GameObject(const _float& timeDelta) override;
    void    Render_GameObject() override;
-   void     SetInventory(CInventory* inventory) { m_Inventory = inventory; }
+   void     SetInventory(CInventory* inventory);
+   void    SetPositions();
    HRESULT  Add_Component();
 
    void Check_If_Empty();
     void CreateCells();
+    void On_Item_Gained();
 
    static CUIInventory* Create(DEVICE graphicDev);
 
@@ -38,8 +40,8 @@ private:
     bool    m_IsOpen;
     bool    m_IsMaterialEmpty;
     bool    m_IsFoodEmpty;
+
     CInventory* m_Inventory;
     vector<CUIInventoryCell*> m_Cells;
 
 };
-

@@ -14,6 +14,7 @@
 #include "CState.h"
 #include "CTexture.h"
 #include "CTransform.h"
+#include "CUIInventory.h"
 #include "CWeaponEquip.h"
 
 CPlayer::CPlayer(DEVICE graphicDev)
@@ -270,6 +271,15 @@ void CPlayer::Animation_Setting()
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::ROLL, L"PlayerRoll", ANIMSTATE::ONCE);
 #pragma endregion
+}
+
+void CPlayer::NotifyInventoryUpdate()
+{
+
+    if(m_UIInventory)
+    {
+        m_UIInventory->On_Item_Gained();
+    }
 }
 
 CPlayer* CPlayer::Create(DEVICE graphicDev)

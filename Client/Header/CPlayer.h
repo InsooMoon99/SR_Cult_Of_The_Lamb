@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CGameObject.h"
 
+class CUIInventory;
 BEGIN(Engine)
 class CRcTex;
 class CTransform;
@@ -36,11 +37,12 @@ public:
     CTransform* Get_TransformCom() { return m_TransformCom; }
 
     void Render_Editor() override;
+    void    NotifyInventoryUpdate();
+    void   Set_UIInventory(CUIInventory* uiInventory) { m_UIInventory = uiInventory; };
 
 private:
     HRESULT Add_Component();
     void    Animation_Setting();
-
     void Render_Setting();
     void Render_Reset();
 
@@ -61,7 +63,7 @@ private:
     CWeaponEquip*      m_WeaponEquipCom;
     CInventory*        m_Inventory;
     CPlayerController* m_PlayerControllerCom;
-
+    CUIInventory*       m_UIInventory;
 #pragma endregion
 
     map<ACTORSTATE, wstring> m_StateAnim;

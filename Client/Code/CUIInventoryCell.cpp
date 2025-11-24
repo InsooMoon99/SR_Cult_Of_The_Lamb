@@ -1,7 +1,6 @@
 ﻿#include "pch.h"
 #include "CUIInventoryCell.h"
-
-#include <CDInputMgr.h>
+#include "CDInputMgr.h"
 #include "CEnumHelper.h"
 #include "CCreateHelper.h"
 #include "CItemDB.h"
@@ -9,16 +8,28 @@
 #include "CRcTex.h"
 #include "CTexture.h"
 #include "CRenderer.h"
+#include "CUIIcon.h"
+#include <iostream>
 
-CUIInventoryCell::CUIInventoryCell(DEVICE pGraphicDev) : CUI(pGraphicDev),m_Count(0),m_IsHovered(false)
-{
+CUIInventoryCell::CUIInventoryCell(DEVICE pGraphicDev)
+    : CUI(pGraphicDev),
+      uiIcon(nullptr),
+      m_ItemTexCom(nullptr),
+      m_HighlightTexCom(nullptr),
+      m_TextureIndex(0),
+      m_Count(0),
+      m_IsHovered(false)
+{}
 
-}
-
-CUIInventoryCell::CUIInventoryCell(const CUIInventoryCell& rhs) : CUI(rhs),m_Count(0), m_IsHovered(false)
-{
-
-}
+CUIInventoryCell::CUIInventoryCell(const CUIInventoryCell& rhs)
+    : CUI(rhs),
+      uiIcon(nullptr),
+      m_ItemTexCom(nullptr),
+      m_HighlightTexCom(nullptr),
+      m_TextureIndex(0),
+      m_Count(0),
+      m_IsHovered(false)
+{}
 
 CUIInventoryCell::~CUIInventoryCell()
 {
@@ -45,8 +56,9 @@ HRESULT CUIInventoryCell::Ready_GameObject()
     if (FAILED(Add_Component()))
         return E_FAIL;
 
-    //m_TransformCom->Set_Pos(_vec3(-550.f, 270.f, 0.f));
-    m_TransformCom->Set_Scale(_vec3(40.f, 40.f, 0.f));
+
+    m_TransformCom->Set_Scale(45.f, 45.f, 0.3f);
+    //uiIcon = CUIIcon::Create(m_GraphicDev);
 
     return S_OK;
 }
@@ -74,59 +86,58 @@ void CUIInventoryCell::LateUpdate_GameObject(const _float& timeDelta)
 
 void CUIInventoryCell::Render_GameObject()
 {
-    CUI::Render_GameObject();
+        CUI::Render_GameObject();
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
-    if (!(m_ItemInst.itemId == -1))
+    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(180, 100, 100, 100));
 
-    {
-        m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(180, 100, 100, 100));
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG2);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);   // 무시됨
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
 
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG2);
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);   // 무시됨
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
-
-        m_TextureCom->Set_Texture(0);
-        m_BufferCom->Render_Buffer();
-
-        // 되돌리기
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-
-        m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(255, 255, 255, 255));
-
-        m_index = CItemDB::GetInstance()->GetIndexById(m_ItemInst.itemId);
-
-        m_ItemTexCom->Set_Texture(m_index);
-        m_BufferCom->Render_Buffer();
-
-        cout << m_ItemInst.itemId << endl;
-    }
-
-    //TODO 유림 : 외곽선 그리기 인벤토리에서 셀 위치 확인해서 m_IsHovered 세팅하기
-    //외곽선 테스트용
-    if(m_IsHovered)
-    {
-    m_HighlightTexCom->Set_Texture(1);
-    
-        //외곽선 빨강으로 바꾸기
-    D3DCOLOR color = D3DCOLOR_ARGB(255, 200, 0, 0);
-    
-    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, color);
-    
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE); //색상을 곱하기 방식으로 처리하곘다는 뜻
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE); //첫번째 인자는 텍스처
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR); //두번째 인자는 색상
+    //m_TextureCom->Set_Texture(0);
     m_BufferCom->Render_Buffer();
-    
-    //RenderState 원상태로 돌리기
-    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR,D3DCOLOR_ARGB(255, 255, 255, 255));
-    
+
     m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
     m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE); // TFACTOR를 DIFFUSE로 변경
+    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(255, 255, 255, 255));
+
+    cout << m_TransformCom->Get_Pos().x << "\t" << m_TransformCom->Get_Pos().y << endl;
+
+    if (!(m_ItemInst.itemId == -1))
+    {
+    
+        int TextureIndex = CItemDB::GetInstance()->GetIndexById(m_ItemInst.itemId);
+
+        //uiIcon->Set_TextureIndex(m_TextureIndex);
+       // m_BufferCom->Render_Buffer();
     }
+
+   // //TODO 유림 : 외곽선 그리기 인벤토리에서 셀 위치 확인해서 m_IsHovered 세팅하기
+   // //외곽선 테스트용
+   // if(m_IsHovered)
+   // {
+   // m_HighlightTexCom->Set_Texture(1);
+   // 
+   //     //외곽선 빨강으로 바꾸기
+   // D3DCOLOR color = D3DCOLOR_ARGB(255, 200, 0, 0);
+   // 
+   // m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, color);
+   // 
+   // m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE); //색상을 곱하기 방식으로 처리하곘다는 뜻
+   // m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE); //첫번째 인자는 텍스처
+   // m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR); //두번째 인자는 색상
+   // m_BufferCom->Render_Buffer();
+   // 
+   // //RenderState 원상태로 돌리기
+   // m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR,D3DCOLOR_ARGB(255, 255, 255, 255));
+   // 
+   // m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+   // m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+   // m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+   // }
 }
 
 HRESULT CUIInventoryCell::Add_Component()
@@ -148,12 +159,6 @@ HRESULT CUIInventoryCell::Add_Component()
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
 
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_UI_CELL, m_TextureCom });
-
-    // item texture
-    m_ItemTexCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_ITEM);
-    NULL_CHECK_RETURN(m_ItemTexCom, E_FAIL);
-
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_ITEM, m_ItemTexCom });
 
     //highlight texture
     m_HighlightTexCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_UI_HIGHLIGHT);
