@@ -145,6 +145,9 @@
     <Filter Include="01. Logic\05. Tiled">
       <UniqueIdentifier>{1e08cf3b-8a9b-415b-9274-78f77f8da805}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. AttackObject">
+      <UniqueIdentifier>{db85108b-1b92-41b9-835d-1a021eaf4a5c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\Engine_Define.h">
@@ -303,10 +306,9 @@
     <ClInclude Include="..\Header\Engine_Global.h">
       <Filter>99. Header</Filter>
     </ClInclude>
-    <ClInclude Include="..\header\CPlayerController.h">
-      <Filter>02. Prototype\08. Controller\00. Player Controller</Filter>
+    <ClInclude Include="..\Header\CAttackBox.h">
+      <Filter>05. AttackObject</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CPickingHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CGraphicDev.cpp">
@@ -434,6 +436,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CEditContext.cpp">
       <Filter>01. Logic\97. Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CAttackBox.cpp">
+      <Filter>05. AttackObject</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

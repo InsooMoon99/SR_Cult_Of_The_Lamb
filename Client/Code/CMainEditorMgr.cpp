@@ -206,9 +206,12 @@ void CMainEditorMgr::Render_Inspector()
 
     // Object 이름 세팅
     {
-        wstring wName = obj->Get_Name();
-        string name(wName.begin(), wName.end());
-        ImGui::Text("Object : %s", name.c_str());
+        if (obj && obj->Is_PendingDestroy() == false)
+        {
+            wstring wName = obj->Get_Name();
+            string name(wName.begin(), wName.end());
+            ImGui::Text("Object : %s", name.c_str());
+        }
     }
 
     ImGui::Separator();

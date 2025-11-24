@@ -7,7 +7,7 @@ class CBoxCol;
 
 class ENGINE_DLL CBoxCollider : public CCollider
 {
-private:
+protected:
     explicit CBoxCollider(DEVICE graphicDev);
     explicit CBoxCollider(const CBoxCollider& rhs);
     ~CBoxCollider() override;

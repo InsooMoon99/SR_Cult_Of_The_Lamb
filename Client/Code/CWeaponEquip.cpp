@@ -55,7 +55,9 @@ void CWeaponEquip::Unequip_Weapon()
 
     RemoveWeaponStat();
 
-    _vec3 DropPos = dynamic_cast<CPlayer*>(Get_Owner())->Get_TransformCom()->Get_Pos();
+    auto transform = dynamic_cast<CTransform*>(Get_Owner()->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+    _vec3 DropPos = transform->Get_Pos();
     CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, m_CurrentWeaponSlot.itemInst, { DropPos.x,DropPos.y,DropPos.z + 2.f });
 
     m_CurrentWeaponID = -1;

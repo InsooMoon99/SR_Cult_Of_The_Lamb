@@ -65,6 +65,7 @@ enum class OBJTYPE
     HUMANMONSTER,
     TERRAIN,
     PLACEMENT,
+    ATTACK_COL,
 
     OBJ_END
 };
