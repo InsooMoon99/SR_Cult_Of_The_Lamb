@@ -36,7 +36,8 @@ private:
     float   m_CellWidth;                    // 셀 가로 이동거리
     float   m_CellHeight;                   // 셀 세로 이동거리
     bool    m_IsOpen;
-    bool    m_IsEmpty;
+    bool    m_IsMaterialEmpty;
+    bool    m_IsFoodEmpty;
     CInventory* m_Inventory;
     vector<CUIInventoryCell*> m_Cells;
 

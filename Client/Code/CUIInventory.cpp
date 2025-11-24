@@ -204,17 +204,39 @@ HRESULT CUIInventory::Add_Component()
    return S_OK;
 }
 
-//void CUIInventory::Check_If_Empty()
-//{
-//    const vector<InventorySlot>& slots = m_Inventory->GetVector();
-//    m_IsEmpty = true;
-//    for(auto& slot :slots)
-//    {
-//        if (slot.itemInst.itemId != -1)
-//            m_IsEmpty = false;
-//        break;
-//    }
-//}
+void CUIInventory::Check_If_Empty()
+{
+    const vector<InventorySlot>& slots = m_Inventory->GetVector();
+
+    m_IsMaterialEmpty = true;
+
+    for(int i = 0; i < slots.size()/2; i++)
+    {
+        if(slots[i].itemInst.itemId!=-1)
+        {
+            m_IsMaterialEmpty = false;
+            break;
+        }
+        
+    }
+
+
+    for (int i = slots.size() / 2; i < slots.size(); i++)
+    {
+        if (slots[i].itemInst.itemId != -1)
+        {
+            m_IsMaterialEmpty = false;
+            break;
+        }
+
+    }
+    //for(auto& slot :slots)
+    //{   if (slot.itemInst.itemId)
+    //    if (slot.itemInst.itemId != -1)
+    //        m_IsEmpty = false;
+    //    break;
+    //}
+}
 
 void CUIInventory::OnBeginOverlap(CCollider* self, CCollider* other)
 {
