@@ -93,6 +93,7 @@ void CAttackBox::OnBeginOverlap(CCollider* self, CCollider* other)
     if (D3DXVec3LengthSq(&dir) > 0.0001f)
         D3DXVec3Normalize(&dir, &dir);
 
+    // 파싱된 데이터값으로 세팅?
     HITDATA hit = m_HitDesc;
     hit.dir = dir;
     hit.attacker = m_Instigator;
