@@ -206,12 +206,13 @@ _uint CLoading::Loading_ForState()
             L"../Bin/Resource/Texture/"))))
         return E_FAIL;*/
 
-        //circleColorTex
+    //circleColorTex
     if (FAILED(CProtoMgr::GetInstance()
         ->Ready_Prototype(COMPONENTTYPE::TEX_UI_COLOR,
             Engine::CTexture::Create(m_GraphicDev, TEX_NORMAL,
                 L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Circle1.png", 1))))
         return E_FAIL;
+
     //circleTex
     if (FAILED(CProtoMgr::GetInstance()
         ->Ready_Prototype(COMPONENTTYPE::TEX_UI_CIRCLE,
