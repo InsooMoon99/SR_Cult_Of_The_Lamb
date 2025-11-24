@@ -1,5 +1,7 @@
 ﻿#include "CTexture.h"
 
+#include "CResourceManager.h"
+
 CTexture::CTexture(LPDIRECT3DDEVICE9 graphicDev)
     : CComponent(graphicDev)
 { }
@@ -232,6 +234,21 @@ bool CTexture::Get_TextureSize(int index, float& outWidth, float& outHeight)
     outHeight = desc.Height;
 
     return true;
+}
+
+HRESULT CTexture::Attach_AnimSet(const wstring& animKey, const wstring& resKey)
+{
+    auto& source = CResourceManager::GetInstance()->Get_Sprite(resKey);
+    if (source.empty())
+        return E_FAIL;
+
+    auto& dst = m_AnimTextures[animKey];
+    dst.reserve(source.size());
+
+    for (auto* tex : source)
+        dst.push_back(tex); // Get_Sprite에서 이미 AddRef 했으므로 그대로 사용
+
+    return S_OK;
 }
 
 CTexture* CTexture::Create(DEVICE graphicDev, TEXTUREID texType, const wstring& filePath, const _uint& count)

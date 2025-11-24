@@ -53,7 +53,7 @@ HRESULT CTerrainRenderer::Ready_TerrainRenderer()
             m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::TERRAIN_TEX));
 
         m_TextureCom = dynamic_cast<CTexture*>(
-            m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::TEX_TILE_284));
+            m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::TEXTURE));
     }
 
     NULL_CHECK_RETURN(m_TransformCom, E_FAIL);

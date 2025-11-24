@@ -146,26 +146,6 @@ void CPlayerController::Update_Roll(const _float& timeDelta)
     // ROLL 하는 중
     else
     {
-#pragma region 구르기 텍스처 크기 문제로 임의로 스케일 값 조정
-        // TODO 임시로 스케일 값 조정중. 고쳐지면 수정할 것
-        //!! 스케일을 키우면 collider의 크기 또한 커지는 문제 있음
-
-        if (m_OwnerStateCom->Get_Dir() == ACTORDIR::LEFT ||
-            m_OwnerStateCom->Get_Dir() == ACTORDIR::L_UP ||
-            m_OwnerStateCom->Get_Dir() == ACTORDIR::L_DOWN)
-            m_TransformCom->Set_Scale(1.4f, 1.4f, 1.f);
-
-        else if (m_OwnerStateCom->Get_Dir() == ACTORDIR::RIGHT ||
-            m_OwnerStateCom->Get_Dir() == ACTORDIR::R_UP ||
-            m_OwnerStateCom->Get_Dir() == ACTORDIR::R_DOWN)
-            m_TransformCom->Set_Scale(-1.4f, 1.4f, 1.f);
-
-        else if (m_OwnerStateCom->Get_Dir() == ACTORDIR::UP ||
-            m_OwnerStateCom->Get_Dir() == ACTORDIR::DOWN)
-            m_TransformCom->Set_Scale(0.88f, 0.88f, 1.f);
-
-#pragma endregion
-
         const _float rollSpeed = m_OwnerCombatStatCom->Get_Speed() * 3.5f; // 구르기 속도 배율
 
         // 마찰이 필요 없는 강제 이동이므로 rigidbody의 마찰 및 AddForce 사용 안함
