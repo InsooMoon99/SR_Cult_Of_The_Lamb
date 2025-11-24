@@ -28,8 +28,6 @@ public:
     _uint Get_TextureIndex() const;
     bool Get_TextureSize(int index, float& outWidth, float& outHeight);
 
-    HRESULT Attach_AnimSet(const wstring& animKey, const wstring& resKey);
-
 public:
     static CTexture* Create(DEVICE graphicDev, TEXTUREID texType, const wstring& filePath, const _uint& count);
     static CTexture* Create(LPDIRECT3DDEVICE9 graphicDev, TEXTUREID texType, const vector<wstring>& fileList);
