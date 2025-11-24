@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CUI.h"
 
+class CUIIcon;
 class CUIInventoryCell;
 class CInventory;
 
@@ -20,8 +21,10 @@ public:
    void    LateUpdate_GameObject(const _float& timeDelta) override;
    void    Render_GameObject() override;
    void     SetInventory(CInventory* inventory) { m_Inventory = inventory; }
-   void CreateCells();
    HRESULT  Add_Component();
+
+   void Check_If_Empty();
+    void CreateCells();
 
    static CUIInventory* Create(DEVICE graphicDev);
 
@@ -30,8 +33,10 @@ protected:
 
 private:
     int     m_Cols;                         // 한 줄에 몇 칸?
-    float   m_CellWidth;                    // 셀 가로 크기
-    float   m_CellHeight;                   // 셀 세로 크기
+    float   m_CellWidth;                    // 셀 가로 이동거리
+    float   m_CellHeight;                   // 셀 세로 이동거리
+    bool    m_IsOpen;
+    bool    m_IsEmpty;
     CInventory* m_Inventory;
     vector<CUIInventoryCell*> m_Cells;
 

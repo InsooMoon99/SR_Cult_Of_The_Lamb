@@ -239,10 +239,10 @@ _uint CLoading::Loading_ForState()
         return E_FAIL;
 
     //UIICON 텍스쳐
-
     vector<wstring> pathVec1;
     pathVec1.push_back(L"../Bin/Resource/Texture/UI/MainMenu/Title0.png");
-	pathVec1.push_back(L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Sermon_Icon.png");
+    pathVec1.push_back(L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Sermon_Icon.png");
+;
 
     if (FAILED(CProtoMgr::GetInstance()->Ready_Prototype(
         COMPONENTTYPE::TEX_UIICON, Engine::CTexture::Create(m_GraphicDev, TEX_NORMAL, pathVec1))))
@@ -250,7 +250,7 @@ _uint CLoading::Loading_ForState()
 
     if (FAILED(pProtoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_SKILLCOUNT, CTexture::Create(m_GraphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/UI/PlayerState/Skill/Skillcount%d.png",2))))
+            L"../Bin/Resource/Texture/UI/PlayerState/Skill/Skillcount%d.png", 2))))
         return E_FAIL;
 
 
@@ -262,11 +262,12 @@ _uint CLoading::Loading_ForState()
     if (FAILED(pProtoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_HIGHLIGHT, CTexture::Create(m_GraphicDev, TEX_NORMAL,
             L"../Bin/Resource/Texture/UI/Inventory/Outline%d.png", 2))))
-    //UIBUTTON 텍스쳐
-    vector<wstring> pathVec2;
+        return E_FAIL;
+
+        //UIButton 텍스쳐
+        vector<wstring> pathVec2;
     pathVec2.push_back(L"../Bin/Resource/Texture/UI/MainMenu/Null.png");
     pathVec2.push_back(L"../Bin/Resource/Texture/UI/MainMenu/Button Black.png");
-
 
     if (FAILED(CProtoMgr::GetInstance()->Ready_Prototype(
         COMPONENTTYPE::TEX_UIBUTTON, Engine::CTexture::Create(m_GraphicDev, TEX_NORMAL, pathVec2))))
@@ -281,6 +282,16 @@ _uint CLoading::Loading_ForState()
                 L"../Bin/Resource/Texture/BackGround/MainMenu/MenuMask1.png",
                 1))))
         return E_FAIL;
+
+	// Texture : Inventory BackGround
+	if (FAILED(CProtoMgr::GetInstance()
+		->Ready_Prototype(COMPONENTTYPE::TEX_UI_INVEN,
+			Engine::CTexture::Create(
+				m_GraphicDev,
+				TEX_NORMAL,
+				L"../Bin/Resource/Texture/UI/Inventory/Background.png",
+				1))))
+		return E_FAIL;
 
 #pragma endregion
 

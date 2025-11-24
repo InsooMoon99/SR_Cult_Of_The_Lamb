@@ -25,6 +25,7 @@
 #include <list>
 #include <map>
 #include <vector>
+#include <string>
 #include <process.h>
 #include <filesystem>
 

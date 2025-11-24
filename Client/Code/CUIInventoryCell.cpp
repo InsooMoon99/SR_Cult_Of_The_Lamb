@@ -46,7 +46,7 @@ HRESULT CUIInventoryCell::Ready_GameObject()
         return E_FAIL;
 
     //m_TransformCom->Set_Pos(_vec3(-550.f, 270.f, 0.f));
-    m_TransformCom->Set_Scale(_vec3(45.f, 45.f, 0.f));
+    m_TransformCom->Set_Scale(_vec3(40.f, 40.f, 0.f));
 
     return S_OK;
 }
@@ -78,63 +78,55 @@ void CUIInventoryCell::Render_GameObject()
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
-    //TODO 유림 : 아이템 인덱스에 따른 텍스처 전환 -> 아이템 인덱스 전달은 인벤토리에서 해줘야함
-
-   //    // 1. UI용 공통 상태 세팅 (여기서 '정상 상태'로 리셋)
-   // m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);              // UI는 라이팅 끄기
-   // m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);       // 알파블렌딩 켜기
-   // m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-   // m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-   //
-   // // 텍스처 색 그대로 사용
-   // m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
-   // m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-   //
-   // // 알파도 텍스처 알파 사용
-   // m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-   // m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-
-
     if (!(m_ItemInst.itemId == -1))
+
     {
+        m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(180, 100, 100, 100));
+
+        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG2);
+        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);   // 무시됨
+        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
+
         m_TextureCom->Set_Texture(0);
         m_BufferCom->Render_Buffer();
 
+        // 되돌리기
+        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+
+        m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(255, 255, 255, 255));
+
         m_index = CItemDB::GetInstance()->GetIndexById(m_ItemInst.itemId);
-
-
 
         m_ItemTexCom->Set_Texture(m_index);
         m_BufferCom->Render_Buffer();
 
         cout << m_ItemInst.itemId << endl;
-
-
     }
 
-    //TODO 유림 : 외곽선 그리기 인벤토리에서 m_IsHovered 세팅하기
+    //TODO 유림 : 외곽선 그리기 인벤토리에서 셀 위치 확인해서 m_IsHovered 세팅하기
+    //외곽선 테스트용
     if(m_IsHovered)
     {
-    //m_HighlightTexCom->Set_Texture(1);
-    //
-    //    //외곽선 빨강으로 바꾸기
-    //D3DCOLOR color = D3DCOLOR_ARGB(255, 255, 0, 0);
-    //
-    //m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, color);
-    //
-    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE); //색상을 곱하기 방식으로 처리하곘다는 뜻
-    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE); //첫번째 인자는 텍스처
-    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR); //두번째 인자는 색상
-    //m_BufferCom->Render_Buffer();
-    //
-    ////RenderState 원상태로 돌리기
-    //m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR,D3DCOLOR_ARGB(255, 255, 255, 255));
-    //
-    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+    m_HighlightTexCom->Set_Texture(1);
+    
+        //외곽선 빨강으로 바꾸기
+    D3DCOLOR color = D3DCOLOR_ARGB(255, 200, 0, 0);
+    
+    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, color);
+    
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE); //색상을 곱하기 방식으로 처리하곘다는 뜻
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE); //첫번째 인자는 텍스처
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR); //두번째 인자는 색상
+    m_BufferCom->Render_Buffer();
+    
+    //RenderState 원상태로 돌리기
+    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR,D3DCOLOR_ARGB(255, 255, 255, 255));
+    
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
     }
-
 }
 
 HRESULT CUIInventoryCell::Add_Component()
@@ -168,10 +160,6 @@ HRESULT CUIInventoryCell::Add_Component()
     NULL_CHECK_RETURN(m_HighlightTexCom, E_FAIL);
 
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_UI_HIGHLIGHT, m_HighlightTexCom });
-
-
-    // TODO 유림 : 폰트 컴포넌트 따로 만들지 생각해보기 아니면 따로 출력할 수 있도록 만들기
-
 
     return S_OK;
 }
