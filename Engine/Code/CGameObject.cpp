@@ -1,19 +1,19 @@
 ﻿#include "CGameObject.h"
-
+#include "CTransform.h"
 #include "CComponent.h"
 #include "CTexture.h"
 #include "CTransform.h"
 
 CGameObject::CGameObject(DEVICE graphicDev)
     : m_GraphicDev(graphicDev),
-      m_Active(true), m_PendingKill(false)
+      m_Active(true), m_PendingKill(false), m_Name(L"Default_GameObject")
 {
     m_GraphicDev->AddRef();
 }
 
 CGameObject::CGameObject(const CGameObject& rhs)
     : m_GraphicDev(rhs.m_GraphicDev),
-      m_Active(true), m_PendingKill(false)
+      m_Active(true), m_PendingKill(false), m_Name(rhs.m_Name)
 {
     m_GraphicDev->AddRef();
 }

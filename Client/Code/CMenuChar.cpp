@@ -1,34 +1,41 @@
 ﻿#include "pch.h"
 #include "CMenuChar.h"
-#include "CTransform.h"
+
+#include "CAnimator.h"
+#include "CCreateHelper.h"
+#include "CProtoMgr.h"
+#include "CRcTex.h"
 #include "CRenderer.h"
+#include "CState.h"
 #include "CTexture.h"
 #include "CTransform.h"
-#include "CAnimator.h"
-#include "CRcTex.h"
-#include "CProtoMgr.h"
-#include "CCreateHelper.h"
-#include "CState.h"
+#include "CTransform.h"
 
+CMenuChar::CMenuChar(DEVICE graphicDev)
+    : CGameObject(graphicDev),
+      m_BufferCom(nullptr),
+      m_TransformCom(nullptr),
+      m_TextureCom(nullptr),
+      m_AnimatorCom(nullptr),
+      m_StateCom(nullptr)
+{ }
 
-CMenuChar::CMenuChar(DEVICE graphicDev) : CGameObject(graphicDev)
-{
-}
-
-CMenuChar::CMenuChar(const CMenuChar& rhs) : CGameObject(rhs)
-{
-}
+CMenuChar::CMenuChar(const CMenuChar& rhs)
+    : CGameObject(rhs),
+      m_BufferCom(nullptr),
+      m_TransformCom(nullptr),
+      m_TextureCom(nullptr),
+      m_AnimatorCom(nullptr),
+      m_StateCom(nullptr)
+{ }
 
 CMenuChar::~CMenuChar()
-{
-
-}
+{ }
 
 HRESULT CMenuChar::Ready_GameObject()
 {
     if (FAILED(Add_Component()))
         return E_FAIL;
-
 
     Animation_Setting();
 
@@ -51,20 +58,17 @@ _int CMenuChar::Update_GameObject(const _float& timeDelta)
 void CMenuChar::LateUpdate_GameObject(const _float& timeDelta)
 {
     CGameObject::LateUpdate_GameObject(timeDelta);
-
 }
 
 void CMenuChar::Render_GameObject()
 {
-
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-
 
     Render_Setting();
 
     if (m_TextureCom && m_AnimatorCom)
     {
-        const wstring& key = m_AnimatorCom->Get_CurKey();
+        const wstring& key   = m_AnimatorCom->Get_CurKey();
         _int           frame = m_AnimatorCom->Get_CurFrame();
 
         m_TextureCom->Set_Texture(key, frame);
@@ -79,10 +83,9 @@ void CMenuChar::Animation_Setting()
 {
     // 애니메이션 생성
     m_AnimatorCom->Create_Animation(L"MenuChar", 100, 0.02f);
-    
+
     // State -> Animation 연동
     m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"MenuChar", ANIMSTATE::LOOP);
-    
 }
 
 HRESULT CMenuChar::Add_Component()
@@ -99,25 +102,23 @@ HRESULT CMenuChar::Add_Component()
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
     // texture
-    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_MANUCHAR);
+    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEXTURE, L"MenuChar");
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
 
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_MANUCHAR, m_TextureCom });
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEXTURE, m_TextureCom });
 
     // Animator
     m_AnimatorCom = CreateProtoComponent<CAnimator>(this, COMPONENTTYPE::ANIMATOR);
     NULL_CHECK_RETURN(m_AnimatorCom, E_FAIL);
 
-    m_AnimatorCom->Set_TextureType(COMPONENTTYPE::TEX_MANUCHAR);
+    m_AnimatorCom->Ready_Animator();
 
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::ANIMATOR, m_AnimatorCom });
-
 
     m_StateCom = CreateProtoComponent<CState>(this, COMPONENTTYPE::STATE);
     NULL_CHECK_RETURN(m_StateCom, E_FAIL);
 
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::STATE, m_StateCom });
-
 
     return S_OK;
 }
@@ -143,12 +144,10 @@ void CMenuChar::Render_Reset()
 }
 
 void CMenuChar::OnBeginOverlap(CCollider* self, CCollider* other)
-{
-}
+{}
 
 void CMenuChar::OnEndOverlap(CCollider* self, CCollider* other)
-{
-}
+{}
 
 CMenuChar* CMenuChar::Create(DEVICE graphicDev)
 {
@@ -168,5 +167,4 @@ CMenuChar* CMenuChar::Create(DEVICE graphicDev)
 void CMenuChar::Free()
 {
     CGameObject::Free();
-
 }

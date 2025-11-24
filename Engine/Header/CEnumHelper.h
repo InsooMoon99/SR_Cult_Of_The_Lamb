@@ -139,25 +139,12 @@ static const char* ToString(COMPONENTTYPE type)
 
     // Texture Components (General & Specific)
     case COMPONENTTYPE::TEXTURE: return "Texture";
-    case COMPONENTTYPE::TEX_PLAYER: return "TexPlayer";
-    case COMPONENTTYPE::TEX_MAINBG: return "TexMainBg";
-    case COMPONENTTYPE::TEX_MONSTER: return "TexMonster";
-    case COMPONENTTYPE::TEX_HUMANMONSTER: return "TexHumanMonster";
-    case COMPONENTTYPE::TEX_ITEM: return "TexItem";
     case COMPONENTTYPE::TEX_GRASS: return "TexGrass";
     case COMPONENTTYPE::TEX_ROCK: return "TexRock";
 
     // UI Texture Components
-    case COMPONENTTYPE::TEX_UI_CIRCLE: return "UI_Circle";
-    case COMPONENTTYPE::TEX_UI_COLOR: return "UI_Color";
-    case COMPONENTTYPE::TEX_UI_HEART: return "UI_Heart";
-    case COMPONENTTYPE::TEX_UI_WEAPON: return "UI_Weapon";
-    case COMPONENTTYPE::TEX_MANUCHAR: return "UI_ManuChaR";
-    case COMPONENTTYPE::TEX_UIICON: return "UI_Icon";
 
     // Tile Texture Components
-    case COMPONENTTYPE::TEX_TILE_284: return "TexTile284";
-    case COMPONENTTYPE::TEX_TILE_1024: return "TexTile1024";
 
     // Collider Components
     case COMPONENTTYPE::RECT_COLL: return "RectColl";
@@ -204,6 +191,9 @@ static const char* ToString(OBJTYPE type)
     case OBJTYPE::HUMANMONSTER: return "HumanMonster";
     case OBJTYPE::TERRAIN:      return "Terrain";
 
+    case OBJTYPE::PLACEMENT:    return "Placement";
+    case OBJTYPE::ATTACK_COL:   return "Attack_Collider";
+    case OBJTYPE::OBJ_END:      return "Obj_End";
     default:
         return "UnknownObjectType";
     }

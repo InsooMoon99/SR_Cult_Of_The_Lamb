@@ -8,19 +8,20 @@
 
 int CUICircle::m_nextID = 0;
 
-CUICircle::CUICircle(DEVICE pGraphicDev) : CUI(pGraphicDev)
+CUICircle::CUICircle(DEVICE pGraphicDev)
+    : CUI(pGraphicDev)
 {
     m_ID = ++m_nextID;
 }
 
-CUICircle::CUICircle(const CUICircle& rhs) : CUI(rhs)
+CUICircle::CUICircle(const CUICircle& rhs)
+    : CUI(rhs)
 {
     m_ID = ++m_nextID;
 }
 
 CUICircle::~CUICircle()
-{
-}
+{}
 
 HRESULT CUICircle::Ready_GameObject()
 {
@@ -28,7 +29,7 @@ HRESULT CUICircle::Ready_GameObject()
         return E_FAIL;
 
     m_TransformCom->Set_Pos(_vec3(-550.f, 270.f, 0.f));
-    m_TransformCom->Set_Scale(_vec3(95.f, 90.f, 0.f));
+    m_TransformCom->Set_Scale(_vec3(85.f, 85.f, 0.f));
     return S_OK;
 }
 
@@ -72,10 +73,10 @@ HRESULT CUICircle::Add_Component()
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
     // texture
-    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_UI_CIRCLE);
+    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEXTURE, L"UI_Circle");
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
 
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_UI_CIRCLE, m_TextureCom });
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEXTURE, m_TextureCom });
 
     return S_OK;
 }
@@ -94,6 +95,5 @@ CUICircle* CUICircle::Create(DEVICE graphicDev)
 
 void CUICircle::Free()
 {
- 
     CUI::Free();
 }

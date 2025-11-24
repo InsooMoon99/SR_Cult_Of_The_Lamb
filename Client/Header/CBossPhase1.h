@@ -23,17 +23,16 @@ enum  BOSSPHASE1 { AWAKE=0, BULLETATTACK, CHAINATTACK, BOSSDEAD, BOSSIDLE, BOSSM
 private:
     explicit CBossPhase1(DEVICE graphicDev);
     explicit CBossPhase1(const CBossPhase1& rhs);
-    ~CBossPhase1();
+    ~CBossPhase1() override;
 public:
-     HRESULT Ready_GameObject();
-     _int    Update_GameObject(const _float& timeDelta);
-     void    LateUpdate_GameObject(const _float& timeDelta);
-     void    Render_GameObject();
-
+    HRESULT Ready_GameObject() override;
+    _int    Update_GameObject(const _float& timeDelta) override;
+    void    LateUpdate_GameObject(const _float& timeDelta) override;
+    void    Render_GameObject() override;
 
 public:
-    virtual void OnBeginOverlap(CCollider* self, CCollider* other) {}
-    virtual void OnEndOverlap(CCollider* self, CCollider* other) {}
+    void OnBeginOverlap(CCollider* self, CCollider* other) override {}
+    void OnEndOverlap(CCollider* self, CCollider* other) override {}
 
 private:
     HRESULT Add_Component();
@@ -54,6 +53,4 @@ public:
 
 private:
     void Free() override;
-    
 };
-

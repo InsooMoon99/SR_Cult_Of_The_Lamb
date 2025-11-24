@@ -31,7 +31,7 @@ HRESULT CUIMp::Ready_GameObject()
     if (FAILED(Add_Component()))
         return E_FAIL;
 
-    m_TransformCom->Set_Pos(_vec3(-550.f, 260.f, 0.f));
+    m_TransformCom->Set_Pos(_vec3(-540.f, 260.f, 0.f));
     m_TransformCom->Set_Scale(_vec3(54.f, 54.f, 0.f));
     return S_OK;
 }
@@ -104,10 +104,10 @@ HRESULT CUIMp::Add_Component()
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
     // texture
-    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_UI_COLOR);
+    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEXTURE, L"UI_Color");
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
 
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_UI_COLOR, m_TextureCom });
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEXTURE, m_TextureCom });
 
     return S_OK;
 }

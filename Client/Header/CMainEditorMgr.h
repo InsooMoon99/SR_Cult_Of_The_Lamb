@@ -1,9 +1,7 @@
 ﻿#pragma once
-
 #include "CBase.h"
-#include "CMapObjectBase.h"
-#include "CMapEditorPlacer.h"
 
+class CMapEditorPlacer;
 class CMapObjectBase;
 class CMapObjectGrass;
 

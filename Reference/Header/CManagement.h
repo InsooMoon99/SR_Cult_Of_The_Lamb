@@ -54,6 +54,10 @@ public:
     HRESULT Request_ChangeScene(CScene* nextScene);    // 씬 전환 예약
     void    Commit_ChangeScene();   // 프레임 경계(다음 프레임 업데이트 시작)에서 씬 실제 전환
 
+    HRESULT Add_GameObject(LAYERTYPE layerType,
+                            OBJTYPE   objType,
+                            CGameObject* gameObject);
+
 private:
     CScene* m_Scene;                // 현재 씬
     CScene* m_NextScene;            // 전환 예약 씬

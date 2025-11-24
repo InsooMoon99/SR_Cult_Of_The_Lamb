@@ -303,6 +303,18 @@
     <ClInclude Include="..\Header\CBossGroggy.h">
       <Filter>03. GameObject\04. Boss\01. Boss1\01.State</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CMapEditorPlacer.h">
+      <Filter>99. ImGui_Editor\01. EditorScript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUISkillCount.h">
+      <Filter>05. UI\01. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUIInventory.h">
+      <Filter>05. UI\01. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUIInventoryCell.h">
+      <Filter>05. UI\01. UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -454,6 +466,18 @@
     </ClCompile>
     <ClCompile Include="..\Code\CBossGroggy.cpp">
       <Filter>03. GameObject\04. Boss\01. Boss1\01.State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMapEditorPlacer.cpp">
+      <Filter>99. ImGui_Editor\01. EditorScript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUISkillCount.cpp">
+      <Filter>05. UI\01. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUIInventory.cpp">
+      <Filter>05. UI\01. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUIInventoryCell.cpp">
+      <Filter>05. UI\01. UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
