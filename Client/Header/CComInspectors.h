@@ -440,8 +440,8 @@ static void Weapon_Inspector(CWeaponEquip* weapon)
         ImGui::Text("[ Weapon Equip ]");
         ImGui::Separator();
 
-        const InventorySlot& slot = weapon->m_iCurrentWeaponSlot;
-        int weaponId = weapon->m_iCurrentWeaponID;
+        const InventorySlot& slot = weapon->m_CurrentWeaponSlot;
+        int weaponId = weapon->m_CurrentWeaponID;
 
         if (weaponId < 0 || slot.itemInst.itemId < 0)
         {

@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CScene.h"
 
+class CInventory;
 class CWeaponEquip;
 BEGIN(Engine)
     class CCombatStat;
@@ -43,5 +44,6 @@ private:
     // 그 대신 플레이어 생성 시 Ready_GameLogic_Layer 쪽에서 플레이어의 스테이터스를 저장한 부품인
     // CCombatStat 만을 어쩔수 없이 여기 보관하고, 사용 후 바로 제거하는 의도
     CCombatStat* m_PlayerCombatStatCom;
+    CInventory* m_PlayerInventoryCom;
     CWeaponEquip* m_WeaponEquipCom;
 };

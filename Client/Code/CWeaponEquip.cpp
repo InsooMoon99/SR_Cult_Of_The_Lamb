@@ -1,26 +1,30 @@
 ﻿#include "pch.h"
 #include "CWeaponEquip.h"
 #include "CCombatStat.h"
+#include "CDropSystem.h"
 #include "CItemDB.h"
 #include "CPlayer.h"
+#include "CTransform.h"
 
 CWeaponEquip::CWeaponEquip(DEVICE graphicDev)
     : CComponent(graphicDev),
-      m_iCurrentWeaponID(-1),
-      m_iCurrentWeaponSlot{}
+      m_CurrentWeaponID(-1),
+      m_CurrentWeaponSlot{},
+      m_WeaponEquipped(false)
 {
     // 빈 슬롯 시작이 -1이면, -1로 맞추는게 안전함.
-    m_iCurrentWeaponSlot.itemInst.itemId = -1;
-    m_iCurrentWeaponSlot.count = 0;
+    m_CurrentWeaponSlot.itemInst.itemId = -1;
+    m_CurrentWeaponSlot.count = 0;
 }
 
 CWeaponEquip::CWeaponEquip(const CWeaponEquip& rhs)
     : CComponent(rhs),
-      m_iCurrentWeaponID(-1),
-      m_iCurrentWeaponSlot{}
+      m_CurrentWeaponID(-1),
+      m_CurrentWeaponSlot{},
+      m_WeaponEquipped(false)
 {
-    m_iCurrentWeaponSlot.itemInst.itemId = -1;
-    m_iCurrentWeaponSlot.count = 0;
+    m_CurrentWeaponSlot.itemInst.itemId = -1;
+    m_CurrentWeaponSlot.count = 0;
 }
 
 CWeaponEquip::~CWeaponEquip()
@@ -28,27 +32,34 @@ CWeaponEquip::~CWeaponEquip()
 
 void CWeaponEquip::Equip_Weapon(ItemInstance itemInst)
 {
-    if (m_iCurrentWeaponSlot.itemInst.itemId != -1)
+    if (m_CurrentWeaponSlot.itemInst.itemId != -1)
         Unequip_Weapon();
 
-    m_iCurrentWeaponSlot.itemInst = itemInst;
-    m_iCurrentWeaponID            = itemInst.itemId;
+    m_CurrentWeaponSlot.itemInst = itemInst;
+    m_CurrentWeaponID            = itemInst.itemId;
 
-    Item* itemData = CItemDB::GetInstance()->GetItemById(m_iCurrentWeaponID);
+    Item* itemData = CItemDB::GetInstance()->GetItemById(m_CurrentWeaponID);
 
     if (itemData)
         ApplyWeaponStat(itemData);
+
+    m_WeaponEquipped = true;
+
     cout << "Weapon Equipped" << endl;
 }
 
 void CWeaponEquip::Unequip_Weapon()
 {
-    if (m_iCurrentWeaponID == -1)
+    if (m_CurrentWeaponID == -1)
         return;
 
     RemoveWeaponStat();
 
-    m_iCurrentWeaponID = -1;
+    _vec3 DropPos = dynamic_cast<CPlayer*>(Get_Owner())->Get_TransformCom()->Get_Pos();
+    CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, m_CurrentWeaponSlot.itemInst, { DropPos.x,DropPos.y,DropPos.z + 2.f });
+
+    m_CurrentWeaponID = -1;
+    m_WeaponEquipped = false;
 }
 
 void CWeaponEquip::ApplyWeaponStat(Item* item)
@@ -57,8 +68,7 @@ void CWeaponEquip::ApplyWeaponStat(Item* item)
     if (!player)
         return;
 
-    auto* combatStat = player->Get_CombatStat();
-
+    auto* combatStat = dynamic_cast<CCombatStat*>(player->Get_Component(ID_STATIC, COMPONENTTYPE::COMBATSTAT));
     if (!combatStat)
         return;
 
@@ -76,12 +86,12 @@ void CWeaponEquip::RemoveWeaponStat()
     if (!player)
         return;
 
-    auto* combatStat = player->Get_CombatStat();
+    auto* combatStat = dynamic_cast<CCombatStat*>(player->Get_Component(ID_STATIC, COMPONENTTYPE::COMBATSTAT));
 
     if (!combatStat)
         return;
 
-    Item* itemData = CItemDB::GetInstance()->GetItemById(m_iCurrentWeaponID);
+    Item* itemData = CItemDB::GetInstance()->GetItemById(m_CurrentWeaponID);
 
     combatStat->Add_Attack(-(itemData->stats["attack1"]));
 }
@@ -104,7 +114,7 @@ void CWeaponEquip::Free()
     CComponent::Free();
 }
 
-CComponent* CWeaponEquip::Clone()
+Engine::CComponent* CWeaponEquip::Clone()
 {
     return new CWeaponEquip(*this);
 }

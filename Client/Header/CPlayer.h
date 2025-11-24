@@ -33,9 +33,7 @@ public:
 
     void          OnBeginOverlap(CCollider* self, CCollider* other) override;
     void          OnEndOverlap(CCollider* self, CCollider* other) override;
-
-    CCombatStat*  Get_CombatStat() { return m_CombatStatCom; }
-    CWeaponEquip* Get_WeaponEquip() { return m_WeaponEquipCom; }
+    CTransform* Get_TransformCom() { return m_TransformCom; }
 
     void Render_Editor() override;
 
