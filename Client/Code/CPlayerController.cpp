@@ -14,14 +14,16 @@ CPlayerController::CPlayerController(DEVICE graphicDev)
     : CComponent(graphicDev),
       m_OwnerStateCom(nullptr),
       m_OwnerCombatStatCom(nullptr),
-      m_OwnerRigidbodyCom(nullptr)
+      m_OwnerRigidbodyCom(nullptr),
+      m_OwnerCollider(nullptr)
 { }
 
 CPlayerController::CPlayerController(const CPlayerController& rhs)
     : CComponent(rhs),
       m_OwnerStateCom(nullptr),
       m_OwnerCombatStatCom(nullptr),
-      m_OwnerRigidbodyCom(nullptr)
+      m_OwnerRigidbodyCom(nullptr),
+      m_OwnerCollider(nullptr)
 { }
 
 CPlayerController::~CPlayerController()
