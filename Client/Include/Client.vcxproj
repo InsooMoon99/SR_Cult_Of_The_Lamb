@@ -172,7 +172,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\CBossPhase1.h" />
-    <ClInclude Include="..\Header\CClient_EnumHelper.h" />
     <ClInclude Include="..\Header\CComInspectors.h" />
     <ClInclude Include="..\Header\CDroppedItem.h" />
     <ClInclude Include="..\Header\CDropSystem.h" />
@@ -187,6 +186,7 @@
     <ClInclude Include="..\header\CMainCamera.h" />
     <ClInclude Include="..\Header\CMainEditorMgr.h" />
     <ClInclude Include="..\Header\CMainMenu.h" />
+    <ClInclude Include="..\Header\CMapEditorPlacer.h" />
     <ClInclude Include="..\Header\CMapObjectBase.h" />
     <ClInclude Include="..\Header\CMapObject_Grass.h" />
     <ClInclude Include="..\Header\CMenuChar.h" />
@@ -202,7 +202,10 @@
     <ClInclude Include="..\Header\CUICircle.h" />
     <ClInclude Include="..\Header\CUIHeartBar.h" />
     <ClInclude Include="..\Header\CUIIcon.h" />
+    <ClInclude Include="..\Header\CUIInventory.h" />
+    <ClInclude Include="..\Header\CUIInventoryCell.h" />
     <ClInclude Include="..\Header\CUIPlayerPanel.h" />
+    <ClInclude Include="..\Header\CUISkillCount.h" />
     <ClInclude Include="..\Header\CUIWeapon.h" />
     <ClInclude Include="..\Header\CWeaponEquip.h" />
     <ClInclude Include="..\Header\ItemData.h" />
@@ -216,7 +219,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CBossPhase1.cpp" />
-    <ClCompile Include="..\Code\CClient_EnumHelper.cpp" />
     <ClCompile Include="..\Code\CDroppedItem.cpp" />
     <ClCompile Include="..\Code\CDropSystem.cpp" />
     <ClCompile Include="..\Code\CEdit.cpp" />
@@ -230,6 +232,7 @@
     <ClCompile Include="..\code\CMainCamera.cpp" />
     <ClCompile Include="..\Code\CMainEditorMgr.cpp" />
     <ClCompile Include="..\Code\CMainMenu.cpp" />
+    <ClCompile Include="..\Code\CMapEditorPlacer.cpp" />
     <ClCompile Include="..\Code\CMapObjectBase.cpp" />
     <ClCompile Include="..\Code\CMapObject_Grass.cpp" />
     <ClCompile Include="..\Code\CMenuChar.cpp" />
@@ -245,8 +248,11 @@
     <ClCompile Include="..\Code\CUICircle.cpp" />
     <ClCompile Include="..\Code\CUIHeartBar.cpp" />
     <ClCompile Include="..\Code\CUIIcon.cpp" />
+    <ClCompile Include="..\Code\CUIInventory.cpp" />
+    <ClCompile Include="..\Code\CUIInventoryCell.cpp" />
     <ClCompile Include="..\Code\CUIPlayerPanel.cpp" />
     <ClCompile Include="..\Code\CUIMp.cpp" />
+    <ClCompile Include="..\Code\CUISkillCount.cpp" />
     <ClCompile Include="..\Code\CUIWeapon.cpp" />
     <ClCompile Include="..\Code\CWeaponEquip.cpp" />
     <ClCompile Include="Client.cpp" />

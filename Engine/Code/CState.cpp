@@ -151,7 +151,7 @@ CComponent* CState::Clone()
 pair<wstring, bool> CState::Get_AnimDirInfo(ACTORSTATE state, ACTORDIR dir)
 {
     wstring suffix;
-    bool    bFlip  = false;
+    bool    bFlip = false;
 
     switch (state)
     {
@@ -196,19 +196,14 @@ pair<wstring, bool> CState::Get_AnimDirInfo(ACTORSTATE state, ACTORDIR dir)
         switch (dir)
         {
         case ACTORDIR::UP:
-        case ACTORDIR::L_UP:
-        case ACTORDIR::R_UP:
             suffix = L"_UP";
             break;
         case ACTORDIR::DOWN:
-        case ACTORDIR::L_DOWN:
-        case ACTORDIR::R_DOWN:
             suffix = L"_DOWN";
             break;
-        case ACTORDIR::LEFT:
-            suffix = L"_LEFT";
-            break;
         case ACTORDIR::RIGHT:
+        case ACTORDIR::R_UP:
+        case ACTORDIR::R_DOWN:
             suffix = L"_LEFT";
             bFlip = true;
             break;

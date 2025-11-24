@@ -11,6 +11,7 @@
 #include "CPlayerController.h"
 #include "CRcTex.h"
 #include "CRenderer.h"
+#include "CRigidbody.h"
 #include "CState.h"
 #include "CTexture.h"
 #include "CTransform.h"
@@ -25,8 +26,9 @@ CPlayer::CPlayer(DEVICE graphicDev)
       m_BoxColCom(nullptr),
       m_StateCom(nullptr),
       m_CombatStatCom(nullptr),
+      m_RigidbodyCom(nullptr),
       m_WeaponEquipCom(nullptr),
-      m_Inventory(nullptr),
+      m_InventoryCom(nullptr),
       m_PlayerControllerCom(nullptr)
 {}
 
@@ -39,8 +41,9 @@ CPlayer::CPlayer(const CPlayer& rhs)
       m_BoxColCom(nullptr),
       m_StateCom(nullptr),
       m_CombatStatCom(nullptr),
+      m_RigidbodyCom(nullptr),
       m_WeaponEquipCom(nullptr),
-      m_Inventory(nullptr),
+      m_InventoryCom(nullptr),
       m_PlayerControllerCom(nullptr)
 {}
 
@@ -77,7 +80,7 @@ _int CPlayer::Update_GameObject(const _float& timeDelta)
 
     if (inputMgr->Get_DIKeyState(DIK_1) & 0x80)
     {
-        m_Inventory->DropItemfromSlot(
+        m_InventoryCom->DropItemfromSlot(
             1,
             {
                 m_TransformCom->Get_Pos().x,
@@ -173,71 +176,65 @@ HRESULT CPlayer::Add_Component()
     // buffer
     m_BufferCom = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
     NULL_CHECK_RETURN(m_BufferCom, E_FAIL);
-
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::RC_TEX, m_BufferCom });
 
     // transform
     m_TransformCom = CreateProtoComponent<CTransform>(this, COMPONENTTYPE::TRANSFORM);
     NULL_CHECK_RETURN(m_TransformCom, E_FAIL);
-
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
     // texture
     m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_PLAYER);
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
-
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_PLAYER, m_TextureCom });
 
     // Animator
     m_AnimatorCom = CreateProtoComponent<CAnimator>(this, COMPONENTTYPE::ANIMATOR);
     NULL_CHECK_RETURN(m_AnimatorCom, E_FAIL);
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::ANIMATOR, m_AnimatorCom });
 
     m_AnimatorCom->Set_TextureType(COMPONENTTYPE::TEX_PLAYER);
-
-    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::ANIMATOR, m_AnimatorCom });
 
     // RectCol Componet
     m_BoxColCom = CreateProtoComponent<CBoxCollider>(this, COMPONENTTYPE::BOX_COLL);
     NULL_CHECK_RETURN(m_BoxColCom, E_FAIL);
-    //m_BoxColCom->Set_Scale(_vec3(2.f, 2.f, 2.f));
-
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::BOX_COLL, m_BoxColCom });
+
+    //m_BoxColCom->Set_Size(_vec3(2.f, 2.f, 2.f));
 
     // Stat
     m_StateCom = CreateProtoComponent<CState>(this, COMPONENTTYPE::STATE);
     NULL_CHECK_RETURN(m_StateCom, E_FAIL);
-
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::STATE, m_StateCom });
 
     // CombatStat
     m_CombatStatCom = CreateProtoComponent<CCombatStat>(this, COMPONENTTYPE::COMBATSTAT);
     NULL_CHECK_RETURN(m_CombatStatCom, E_FAIL);
-
-    // TODO 인수) CombatStat 컴포넌트에서 Update쓸거면 Dynamic으로 변경하기
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::COMBATSTAT, m_CombatStatCom });
 
     // inventory
-    m_Inventory = CreateProtoComponent<CInventory>(this, COMPONENTTYPE::INVENTORY);
-    NULL_CHECK_RETURN(m_Inventory, E_FAIL);
+    m_InventoryCom = CreateProtoComponent<CInventory>(this, COMPONENTTYPE::INVENTORY);
+    NULL_CHECK_RETURN(m_InventoryCom, E_FAIL);
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::INVENTORY, m_InventoryCom });
 
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::INVENTORY, m_Inventory });
-    m_Inventory->SetInvenSlotNum(12);
-
-    // Player Controller
-    m_PlayerControllerCom =
-        CreateProtoComponent<CPlayerController>(this, COMPONENTTYPE::CONTROLLER_PLAYER);
-    NULL_CHECK_RETURN(m_PlayerControllerCom, E_FAIL);
-
-    m_Components[ID_DYNAMIC].insert(
-        { COMPONENTTYPE::CONTROLLER_PLAYER, m_PlayerControllerCom });
-
-    m_PlayerControllerCom->Init_OwnerComponent();
+    m_InventoryCom->SetInvenSlotNum(12);
 
     // weaponequip
     m_WeaponEquipCom = CreateProtoComponent<CWeaponEquip>(this, COMPONENTTYPE::WEAPON_EQUIP);
     NULL_CHECK_RETURN(m_WeaponEquipCom, E_FAIL);
-
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::WEAPON_EQUIP, m_WeaponEquipCom });
+
+    // Rigidbody
+    m_RigidbodyCom = CreateProtoComponent<CRigidbody>(this, COMPONENTTYPE::RIGIDBODY);
+    NULL_CHECK_RETURN(m_RigidbodyCom, E_FAIL);
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::RIGIDBODY, m_RigidbodyCom });
+
+    // Player Controller
+    m_PlayerControllerCom = CreateProtoComponent<CPlayerController>(this, COMPONENTTYPE::CONTROLLER_PLAYER);
+    NULL_CHECK_RETURN(m_PlayerControllerCom, E_FAIL);
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::CONTROLLER_PLAYER, m_PlayerControllerCom });
+
+    m_PlayerControllerCom->Init_OwnerComponent();
 
     return S_OK;
 }

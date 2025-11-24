@@ -2,6 +2,7 @@
 #include "CGameObject.h"
 
 BEGIN(Engine)
+class CRigidbody;
 class CRcTex;
 class CTransform;
 class CTexture;
@@ -54,12 +55,13 @@ private:
     Engine::CBoxCollider* m_BoxColCom;
     Engine::CState*       m_StateCom;
     Engine::CCombatStat*  m_CombatStatCom;
+    Engine::CRigidbody*   m_RigidbodyCom;
 
 #pragma endregion
 #pragma region Client Components
 
     CWeaponEquip*      m_WeaponEquipCom;
-    CInventory*        m_Inventory;
+    CInventory*        m_InventoryCom;
     CPlayerController* m_PlayerControllerCom;
 
 #pragma endregion
