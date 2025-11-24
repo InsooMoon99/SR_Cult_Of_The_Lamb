@@ -1,31 +1,37 @@
 ﻿#include "pch.h"
-#include "CUI.h"
 #include "CUIInventory.h"
 
-#include <CDInputMgr.h>
-#include "CRcTex.h"
-#include "CTransform.h"
 #include "CCreateHelper.h"
+#include "CDInputMgr.h"
+#include "CFontMgr.h"
 #include "CInventory.h"
-#include "CUIInventoryCell.h"
+#include "CRcTex.h"
 #include "CRenderer.h"
 #include "CTexture.h"
+#include "CTransform.h"
 #include "CUIIcon.h"
-#include "CFontMgr.h"
+#include "CUIInventoryCell.h"
 
-CUIInventory::CUIInventory(DEVICE pGraphicDev) : CUI(pGraphicDev), m_Cols(6), m_CellWidth(100.f),m_CellHeight(150.f),m_Inventory(nullptr),m_IsOpen(false)
-{
-}
+CUIInventory::CUIInventory(DEVICE pGraphicDev)
+    : CUI(pGraphicDev),
+      m_Cols(6),
+      m_CellWidth(100.f),
+      m_CellHeight(150.f),
+      m_IsOpen(false),
+      m_Inventory(nullptr)
+{}
 
-
-CUIInventory::CUIInventory(const CUIInventory& rhs) : CUI(rhs), m_Cols(6) , m_CellWidth(100.f), m_CellHeight(150.f), m_Inventory(nullptr), m_IsOpen(false)
-{
-}
+CUIInventory::CUIInventory(const CUIInventory& rhs)
+    : CUI(rhs),
+      m_Cols(6),
+      m_CellWidth(100.f),
+      m_CellHeight(150.f),
+      m_IsOpen(false),
+      m_Inventory(nullptr)
+{}
 
 CUIInventory::~CUIInventory()
-{
-
-}
+{}
 
 HRESULT CUIInventory::Ready_GameObject()
 {
@@ -40,7 +46,6 @@ HRESULT CUIInventory::Ready_GameObject()
 
 _int CUIInventory::Update_GameObject(const _float& timeDelta)
 {
-
     if (m_Cells.empty())
         CreateCells();
 
@@ -48,7 +53,7 @@ _int CUIInventory::Update_GameObject(const _float& timeDelta)
 
     const vector<InventorySlot>& slots = m_Inventory->GetVector();
 
-    for(int i = 0; i < slots.size(); i++)
+    for (int i = 0; i < slots.size(); i++)
     {
         auto& slot = slots[i];
 
@@ -57,14 +62,10 @@ _int CUIInventory::Update_GameObject(const _float& timeDelta)
     }
 
     if (m_IsOpen == false && CDInputMgr::GetInstance()->KeyDown(DIK_TAB))
-    {
         m_IsOpen = true;
-    }
 
     else if (m_IsOpen == true && CDInputMgr::GetInstance()->KeyDown(DIK_TAB))
-    {
         m_IsOpen = false;
-    }
 
     int exit = CUI::Update_GameObject(timeDelta);
     return exit;
@@ -81,49 +82,47 @@ void CUIInventory::Render_GameObject()
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
-    _vec2 pos{ m_TransformCom->Get_Pos().x , m_TransformCom->Get_Pos().y};
-    _vec2 material = { WINCX/12, WINCY/2 - 160};
-    _vec2 food = { WINCX / 12, WINCY / 2};
+    _vec2 pos{ m_TransformCom->Get_Pos().x, m_TransformCom->Get_Pos().y };
+    _vec2 material = { WINCX / 12, WINCY / 2 - 160 };
+    _vec2 food     = { WINCX / 12, WINCY / 2 };
 
     if (m_IsOpen)
     {
         //TODO 유림 : 각 종류에 해당하는 소지품 비었을 때 "소지품 없음" 출력
-       // Check_If_Empty();
-       //
-       // if (m_IsEmpty)
-       // {
-       //     CFontMgr::GetInstance()->Render_Font(L"LaptureDisplay-Regular",
-       //         L"소지품 없음",
-       //         &,
-       //         D3DXCOLOR(0.6f, 0.4f, 0.4f, 1.f));
-       //
-       //
-       //     CFontMgr::GetInstance()->Render_Font(L"LaptureDisplay-Regular",
-       //         L"소지품 없음",
-       //         &,
-       //         D3DXCOLOR(0.6f, 0.4f, 0.4f, 1.f));
-       // }
-       //
+        // Check_If_Empty();
+        //
+        // if (m_IsEmpty)
+        // {
+        //     CFontMgr::GetInstance()->Render_Font(L"LaptureDisplay-Regular",
+        //         L"소지품 없음",
+        //         &,
+        //         D3DXCOLOR(0.6f, 0.4f, 0.4f, 1.f));
+        //
+        //
+        //     CFontMgr::GetInstance()->Render_Font(L"LaptureDisplay-Regular",
+        //         L"소지품 없음",
+        //         &,
+        //         D3DXCOLOR(0.6f, 0.4f, 0.4f, 1.f));
+        // }
+        //
         m_TextureCom->Set_Texture(0);
         m_BufferCom->Render_Buffer();
 
         CFontMgr::GetInstance()->Render_Font(L"LaptureDisplay-Regular",
-            L"재화",
-            &material,
-            D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.f));
-
+                                             L"재화",
+                                             &material,
+                                             D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.f));
 
         CFontMgr::GetInstance()->Render_Font(L"LaptureDisplay-Regular",
-            L"음식",
-            &food,
-            D3DXCOLOR(0.5f, 0.5, 0.5f, 1.f));
+                                             L"음식",
+                                             &food,
+                                             D3DXCOLOR(0.5f, 0.5, 0.5f, 1.f));
     }
-  
 
     if (m_IsOpen)
     {
-        const vector<InventorySlot>& slots = m_Inventory->GetVector();
-        int slotCount = slots.size();
+        const vector<InventorySlot>& slots     = m_Inventory->GetVector();
+        int                          slotCount = slots.size();
 
         int materialRenderCount = 0;
 
@@ -135,7 +134,7 @@ void CUIInventory::Render_GameObject()
             {
                 int col = materialRenderCount % m_Cols;
 
-                float x = startOffset + (float)col * m_CellWidth;
+                float x = startOffset + static_cast<float>(col) * m_CellWidth;
 
                 CTransform* transform = dynamic_cast<CTransform*>(m_Cells[i]->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
                 transform->Set_Pos(x, 100.f, 0.f);
@@ -153,7 +152,7 @@ void CUIInventory::Render_GameObject()
             {
                 int col = foodRenderCount % m_Cols;
 
-                float x = startOffset + (float)col * m_CellWidth;
+                float x = startOffset + static_cast<float>(col) * m_CellWidth;
 
                 CTransform* transform = dynamic_cast<CTransform*>(m_Cells[i]->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
                 transform->Set_Pos(x, -70.f, 0.f);
@@ -186,22 +185,22 @@ HRESULT CUIInventory::Add_Component()
     // buffer
     m_BufferCom = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
     NULL_CHECK_RETURN(m_BufferCom, E_FAIL);
-   
+
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::RC_TEX, m_BufferCom });
-   
+
     // transform
     m_TransformCom = CreateProtoComponent<CTransform>(this, COMPONENTTYPE::TRANSFORM);
     NULL_CHECK_RETURN(m_TransformCom, E_FAIL);
-   
+
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
-   
+
     // texture
     m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_UI_INVEN);
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
-   
+
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_UI_INVEN, m_TextureCom });
 
-   return S_OK;
+    return S_OK;
 }
 
 //void CUIInventory::Check_If_Empty()
@@ -231,7 +230,6 @@ void CUIInventory::Render_Editor()
     CUI::Render_Editor();
 }
 
-
 CUIInventory* CUIInventory::Create(DEVICE graphicDev)
 {
     CUIInventory* inventoryUI = new CUIInventory(graphicDev);
@@ -247,5 +245,12 @@ CUIInventory* CUIInventory::Create(DEVICE graphicDev)
 
 void CUIInventory::Free()
 {
+    for (auto& cell : m_Cells)
+    {
+        Safe_Release(cell);
+    }
+
+    m_Cells.clear();
+
     CUI::Free();
 }

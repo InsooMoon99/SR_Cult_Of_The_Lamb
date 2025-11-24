@@ -36,7 +36,7 @@ public:
     void              Set_Name(wstring name) { m_ComponentName = name; }
 
     // Editor
-    virtual void Render_Editor() {};
+    virtual void Render_Editor() {}
 
 protected:
     COMPONENTTYPE m_ComponentType;

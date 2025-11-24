@@ -9,7 +9,7 @@ CCombatStat::CCombatStat(DEVICE graphicDev)
       m_Attack(0),
       m_Hp(0), m_MaxHp(6),
       m_Mp(0), m_MaxMp(10),
-      m_Speed(15), m_IsDead(false)
+      m_Speed(20), m_IsDead(false)
 {
 }
 

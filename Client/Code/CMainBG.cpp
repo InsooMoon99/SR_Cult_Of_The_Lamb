@@ -22,6 +22,10 @@ HRESULT CMainBG::Ready_GameObject()
 {
     if (FAILED(Add_Component()))
         return E_FAIL;
+    m_TextureCom->Set_Texture(0);
+
+    if (false == SetTexAspectInit(m_TextureCom, m_TransformCom, 0))
+        return E_FAIL;
 
     return S_OK;
 }

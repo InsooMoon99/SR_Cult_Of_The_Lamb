@@ -6,6 +6,7 @@ BEGIN(Engine)
 class CComponent;
 class CCollider;
 class CTransform;
+class CTexture;
 
 /// @brief 다양한 컴포넌트를 조합해 게임 내 오브젝트를 구현하는 클래스
 /// @details
@@ -30,6 +31,7 @@ public:
     virtual void    LateUpdate_GameObject(const _float& timeDelta);
     virtual void    Render_GameObject() PURE;
 
+
 public:
     virtual void OnBeginOverlap(CCollider* self, CCollider* other) {}
     virtual void OnEndOverlap(CCollider* self, CCollider* other) {}
@@ -52,6 +54,14 @@ public:
     // CLayer -> LateUpdate에서 세팅 중
     void Mark_As_PendingKill() { m_PendingKill = true; }
     bool Is_PendingDestroy() { return m_PendingKill; }
+
+public:
+    bool SetTexAspectInit(CTexture* texCom, CTransform* transCom, int index, bool is_width = true, float width = 2);
+    void SetAspectScale(CTransform* transCom,_vec3 magnification);
+    void SetScaleAsp(_vec3 ScaleAsp) { m_ScaleAsp = ScaleAsp; }
+private:
+    _vec3 m_BaseScaleAsp;
+    _vec3 m_ScaleAsp;
 
 protected:
     map<COMPONENTTYPE, CComponent*> m_Components[ID_END];

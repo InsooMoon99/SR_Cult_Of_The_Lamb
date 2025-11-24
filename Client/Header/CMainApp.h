@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "CBase.h"
-
+#include "Engine_Define.h"
 BEGIN(Engine)
 class CGraphicDev;
 class CManagement;

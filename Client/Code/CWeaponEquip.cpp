@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "CWeaponEquip.h"
+
 #include "CCombatStat.h"
 #include "CDropSystem.h"
 #include "CItemDB.h"
@@ -14,7 +15,7 @@ CWeaponEquip::CWeaponEquip(DEVICE graphicDev)
 {
     // 빈 슬롯 시작이 -1이면, -1로 맞추는게 안전함.
     m_CurrentWeaponSlot.itemInst.itemId = -1;
-    m_CurrentWeaponSlot.count = 0;
+    m_CurrentWeaponSlot.count           = 0;
 }
 
 CWeaponEquip::CWeaponEquip(const CWeaponEquip& rhs)
@@ -24,7 +25,7 @@ CWeaponEquip::CWeaponEquip(const CWeaponEquip& rhs)
       m_WeaponEquipped(false)
 {
     m_CurrentWeaponSlot.itemInst.itemId = -1;
-    m_CurrentWeaponSlot.count = 0;
+    m_CurrentWeaponSlot.count           = 0;
 }
 
 CWeaponEquip::~CWeaponEquip()
@@ -61,7 +62,7 @@ void CWeaponEquip::Unequip_Weapon()
     CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, m_CurrentWeaponSlot.itemInst, { DropPos.x,DropPos.y,DropPos.z + 2.f });
 
     m_CurrentWeaponID = -1;
-    m_WeaponEquipped = false;
+    m_WeaponEquipped  = false;
 }
 
 void CWeaponEquip::ApplyWeaponStat(Item* item)

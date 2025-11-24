@@ -1,29 +1,33 @@
 ﻿#include "pch.h"
 #include "CMainEditorMgr.h"
-#include "CComponent.h"
-#include "CLayer.h"
-#include "CGameObject.h"
-#include "CEditContext.h"
-#include "CEnumHelper.h"
-#include "CManagement.h"
-#include "CScene.h"
-#include "CState.h"
+
+#include "CBoxCollider.h"
+#include "CCameraCom.h"
+#include "CClient_CreateHelper.h"
 #include "CCombatStat.h"
 #include "CComInspectors.h"
-#include "CTerrainRenderer.h"
-#include "CTransform.h"
-#include "CBoxCollider.h"
+#include "CComponent.h"
+#include "CEditContext.h"
+#include "CEnumHelper.h"
+#include "CGameObject.h"
 #include "CInventory.h"
-#include "CWeaponEquip.h"
-#include "CClient_CreateHelper.h"
+#include "CLayer.h"
+#include "CManagement.h"
 #include "CMapEditorPlacer.h"
+#include "CMapObjectBase.h"
+#include "CMapObject_Grass.h"
+#include "CScene.h"
+#include "CState.h"
+#include "CTerrainRenderer.h"
 #include "CTimerMgr.h"
+#include "CTransform.h"
+#include "CWeaponEquip.h"
 
 IMPLEMENT_SINGLETON(CMainEditorMgr)
 
 CMainEditorMgr::~CMainEditorMgr()
 {
-    Free();
+    CMainEditorMgr::Free();
 }
 
 void CMainEditorMgr::Ready_MainEditor(DEVICE graphicDev, CEditContext* ctx)

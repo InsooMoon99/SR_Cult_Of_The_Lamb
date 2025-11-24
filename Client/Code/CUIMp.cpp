@@ -31,7 +31,7 @@ HRESULT CUIMp::Ready_GameObject()
     if (FAILED(Add_Component()))
         return E_FAIL;
 
-    m_TransformCom->Set_Pos(_vec3(-550.f, 260.f, 0.f));
+    m_TransformCom->Set_Pos(_vec3(-540.f, 260.f, 0.f));
     m_TransformCom->Set_Scale(_vec3(54.f, 54.f, 0.f));
     return S_OK;
 }

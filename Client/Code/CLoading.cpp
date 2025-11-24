@@ -7,12 +7,14 @@
 #include "CBoxTex.h"
 #include "CCameraCom.h"
 #include "CCombatStat.h"
+#include "CEnumHelper.h"
 #include "CInventory.h"
 #include "CItemDB.h"
 #include "CPlayerController.h"
 #include "CProtoMgr.h"
 #include "CRcCol.h"
 #include "CRectCollider.h"
+#include "CRigidbody.h"
 #include "CState.h"
 #include "CTerrain.h"
 #include "CTerrainRenderer.h"
@@ -21,10 +23,9 @@
 #include "CTransform.h"
 #include "CTriCol.h"
 #include "CWeaponEquip.h"
+#include "CWeaponEquip.h"
 #include "ItemData.h"
 #include "ItemInstance.h"
-#include "CWeaponEquip.h"
-#include "CEnumHelper.h"
 
 CLoading::CLoading(DEVICE pGraphicDev)
     : m_GraphicDev(pGraphicDev),
@@ -205,12 +206,13 @@ _uint CLoading::Loading_ForState()
             L"../Bin/Resource/Texture/"))))
         return E_FAIL;*/
 
-        //circleColorTex
+    //circleColorTex
     if (FAILED(CProtoMgr::GetInstance()
         ->Ready_Prototype(COMPONENTTYPE::TEX_UI_COLOR,
             Engine::CTexture::Create(m_GraphicDev, TEX_NORMAL,
                 L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Circle1.png", 1))))
         return E_FAIL;
+
     //circleTex
     if (FAILED(CProtoMgr::GetInstance()
         ->Ready_Prototype(COMPONENTTYPE::TEX_UI_CIRCLE,
@@ -352,7 +354,12 @@ _uint CLoading::Loading_ForState()
         COMPONENTTYPE::WEAPON_EQUIP, CWeaponEquip::Create(m_GraphicDev))))
         return E_FAIL;
 
-    m_LoadingText = L"COMPLETE: PRESS 1 -> Stage|PRESS 2 -> Editor";
+    // Rigidbody
+    if (FAILED(pProtoMgr->Ready_Prototype(
+        COMPONENTTYPE::RIGIDBODY, CRigidbody::Create(m_GraphicDev))))
+        return E_FAIL;
+
+    m_LoadingText = L"COMPLETE";
 
     m_IsFinish = true;
 

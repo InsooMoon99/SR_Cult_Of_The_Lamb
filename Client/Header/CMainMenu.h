@@ -1,9 +1,9 @@
 ﻿#pragma once
 #include "CScene.h"
 
-BEGIN(Engine)
+
 class CUIButton;
-END
+
 
 class CMainMenu :
     public CScene
