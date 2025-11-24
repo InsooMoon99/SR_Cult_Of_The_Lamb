@@ -8,19 +8,20 @@
 
 int CUICircle::m_nextID = 0;
 
-CUICircle::CUICircle(DEVICE pGraphicDev) : CUI(pGraphicDev)
+CUICircle::CUICircle(DEVICE pGraphicDev)
+    : CUI(pGraphicDev)
 {
     m_ID = ++m_nextID;
 }
 
-CUICircle::CUICircle(const CUICircle& rhs) : CUI(rhs)
+CUICircle::CUICircle(const CUICircle& rhs)
+    : CUI(rhs)
 {
     m_ID = ++m_nextID;
 }
 
 CUICircle::~CUICircle()
-{
-}
+{}
 
 HRESULT CUICircle::Ready_GameObject()
 {
@@ -28,7 +29,7 @@ HRESULT CUICircle::Ready_GameObject()
         return E_FAIL;
 
     m_TransformCom->Set_Pos(_vec3(-550.f, 270.f, 0.f));
-    m_TransformCom->Set_Scale(_vec3(95.f, 90.f, 0.f));
+    m_TransformCom->Set_Scale(_vec3(85.f, 85.f, 0.f));
     return S_OK;
 }
 
@@ -94,6 +95,5 @@ CUICircle* CUICircle::Create(DEVICE graphicDev)
 
 void CUICircle::Free()
 {
- 
     CUI::Free();
 }
