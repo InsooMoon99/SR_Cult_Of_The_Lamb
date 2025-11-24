@@ -14,29 +14,44 @@ CProtoMgr::~CProtoMgr()
 
 HRESULT CProtoMgr::Ready_Prototype(COMPONENTTYPE componentType, CComponent* component)
 {
-    CComponent* instance = Find_Prototype(componentType);
+    return Ready_Prototype(componentType, L"", component);
+}
 
-    if (nullptr != instance)
+HRESULT CProtoMgr::Ready_Prototype(COMPONENTTYPE componentType, const wstring& tag, CComponent* component)
+{
+    ProtoKey key{ componentType, tag };
+
+    auto iter = m_Prototypes.find(key);
+    if (iter != m_Prototypes.end())
         return E_FAIL;
 
-    m_Prototypes.insert({ componentType, component });
-
+    m_Prototypes.insert({ key, component });
     return S_OK;
 }
 
-CComponent* CProtoMgr::Clone_Prototype(COMPONENTTYPE componentType)
+CComponent* CProtoMgr::Clone_Prototype(COMPONENTTYPE componentType, const wstring& tag)
 {
-    CComponent* component = Find_Prototype(componentType);
-
-    if (nullptr == component)
+    CComponent* component = Find_Prototype(componentType, tag);
+    if (component == nullptr)
         return nullptr;
 
     return component->Clone();
 }
 
+CComponent* CProtoMgr::Clone_Prototype(COMPONENTTYPE componentType)
+{
+    return Clone_Prototype(componentType, L"");
+}
+
 CComponent* CProtoMgr::Find_Prototype(COMPONENTTYPE componentType)
 {
-    auto iter = m_Prototypes.find(componentType);
+    return Find_Prototype(componentType, L"");
+}
+
+CComponent* CProtoMgr::Find_Prototype(COMPONENTTYPE componentType, const wstring& tag)
+{
+    ProtoKey key{ componentType, tag };
+    auto iter = m_Prototypes.find(key);
 
     if (iter == m_Prototypes.end())
         return nullptr;

@@ -9,12 +9,12 @@ BEGIN(Engine)
 class CGameObject;
 
 template <typename T>
-static T* CreateProtoComponent(CGameObject* Owner, COMPONENTTYPE eComponentType)
+static T* CreateProtoComponent(CGameObject* Owner, COMPONENTTYPE eComponentType, const wstring& tag = L"")
 {
     if (Owner == nullptr)
         return nullptr;
 
-    auto proto = Engine::CProtoMgr::GetInstance()->Clone_Prototype(eComponentType);
+    auto proto = Engine::CProtoMgr::GetInstance()->Clone_Prototype(eComponentType, tag);
     if (proto == nullptr)
         return nullptr;
 
