@@ -7,6 +7,7 @@
 #include "CBoxTex.h"
 #include "CCameraCom.h"
 #include "CCombatStat.h"
+#include "CEnumHelper.h"
 #include "CInventory.h"
 #include "CItemDB.h"
 #include "CPlayerController.h"
@@ -22,10 +23,9 @@
 #include "CTransform.h"
 #include "CTriCol.h"
 #include "CWeaponEquip.h"
+#include "CWeaponEquip.h"
 #include "ItemData.h"
 #include "ItemInstance.h"
-#include "CWeaponEquip.h"
-#include "CEnumHelper.h"
 
 CLoading::CLoading(DEVICE pGraphicDev)
     : m_GraphicDev(pGraphicDev),
