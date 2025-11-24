@@ -131,16 +131,14 @@ HRESULT CTestMonster::Add_Component()
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
     // texture
-    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_MONSTER);
-    NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
-
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_MONSTER, m_TextureCom });
+    //m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEXTURE, L"TestMonster");
+    //NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
+    //
+    //m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEXTURE, m_TextureCom });
 
     // Animator
     m_AnimatorCom = CreateProtoComponent<CAnimator>(this, COMPONENTTYPE::ANIMATOR);
     NULL_CHECK_RETURN(m_AnimatorCom, E_FAIL);
-
-    m_AnimatorCom->Set_TextureType(COMPONENTTYPE::TEX_MONSTER);
 
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::ANIMATOR, m_AnimatorCom });
 

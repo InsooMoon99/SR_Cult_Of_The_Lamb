@@ -8,12 +8,12 @@
 
 CAnimator::CAnimator(DEVICE graphicDev)
     : CComponent(graphicDev),
-      m_CurAnimation(nullptr), m_Play(false), m_BufferCom(nullptr), m_Texture(nullptr), m_TextureType(COMPONENTTYPE::COMPONENT_END)
+      m_CurAnimation(nullptr), m_Play(false), m_BufferCom(nullptr), m_Texture(nullptr)
 { }
 
 CAnimator::CAnimator(const CAnimator& rhs)
     : CComponent(rhs),
-      m_CurAnimation(nullptr), m_Play(false), m_BufferCom(nullptr), m_Texture(nullptr), m_TextureType(rhs.m_TextureType)
+      m_CurAnimation(nullptr), m_Play(false), m_BufferCom(nullptr), m_Texture(nullptr)
 { }
 
 CAnimator::~CAnimator()
@@ -27,10 +27,7 @@ HRESULT CAnimator::Ready_Animator()
     m_BufferCom = dynamic_cast<CRcTex*>(m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::RC_TEX));
     NULL_CHECK_RETURN(m_BufferCom, E_FAIL);
 
-    // 주의! Object마다 Set_TextureType 설정 꼭 해줘야함
-    // ex) Player -> m_AnimatorCom->Set_TextureType(COMPONENTTYPE::TEX_PLAYER);
-
-    m_Texture = dynamic_cast<CTexture*>(m_Owner->Get_Component(ID_STATIC, m_TextureType));
+    m_Texture = dynamic_cast<CTexture*>(m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::TEXTURE));
     NULL_CHECK_RETURN(m_Texture, E_FAIL);
 
     return S_OK;
@@ -167,20 +164,6 @@ _int CAnimator::Get_CurFrame()
         return 0;
 
     return m_CurAnimation->Get_Frame();
-}
-
-void CAnimator::Set_TextureType(COMPONENTTYPE type)
-{
-    m_TextureType = type;
-
-    if (m_Owner && m_Initialized == false)
-    {
-        if (SUCCEEDED(Ready_Animator()))
-            m_Initialized = true;
-
-        else
-            MSG_BOX("Animator Ready Failed");
-    }
 }
 
 CAnimator* CAnimator::Create(DEVICE graphicDev)

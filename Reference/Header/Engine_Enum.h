@@ -91,26 +91,6 @@ enum class COMPONENTTYPE
     RIGIDBODY,
 
     TEXTURE,
-    TEX_PLAYER,
-    TEX_MAINBG,
-    TEX_MONSTER,
-    TEX_HUMANMONSTER,
-    TEX_UI_CIRCLE,
-    TEX_UI_CELL,
-    TEX_UI_COLOR,
-    TEX_UI_HEART,
-    TEX_UI_WEAPON,
-    TEX_UI_SKILLCOUNT,
-    TEX_UI_HIGHLIGHT,
-    TEX_UI_INVEN,
-    TEX_ITEM,
-    TEX_MANUCHAR,
-    TEX_UIICON,
-    TEX_UIBUTTON,
-
-    // TODO : Test Tile -> 은수 Texture 버전이랑 합치면 고치기
-    TEX_TILE_284,
-    TEX_TILE_1024,
 
     ANIMATOR,
     CAMERA,
