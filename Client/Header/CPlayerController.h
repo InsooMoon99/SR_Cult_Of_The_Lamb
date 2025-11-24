@@ -53,21 +53,22 @@ private:
     void Key_Input(const _float& timeDelta);
     void Update_Roll(const _float& timeDelta);
 
-    void  Calc_InputVector(KeyInputData& inputData);    // 입력 벡터 및 축 값 계산
+    void  Calc_InputVector();    // 입력 벡터 및 축 값 계산
     _bool CanApplyDirection(ACTORSTATE currentState);   // 상태에 따라 방향 변경 가능 여부 판단
-    void  Apply_Direction(KeyInputData& inputData);     // 입력을 바탕으로 애니메이션 방향 설정
-    void  Determine_State(KeyInputData& inputData);     // 입력을 바탕으로 State에 상태 변경 요청
+    void  Apply_Direction();     // 입력을 바탕으로 애니메이션 방향 설정
+    void  Determine_State();     // 입력을 바탕으로 State에 상태 변경 요청
     _bool CanApplyMovement(ACTORSTATE currentState);    // 상태에 따라 이동 가능 여부 판단
-    void  Apply_Movement(KeyInputData& inputData, const _float& timeDelta); // 입력을 바탕으로 이동
+    void  Apply_Movement(const _float& timeDelta); // 입력을 바탕으로 이동
 
 private:
 #pragma region Caching owner components
     Engine::CState*      m_OwnerStateCom;
-    Engine::CCombatStat* m_OwnerCombatStat;
-    Engine::CRigidbody*  m_OwnerRigidbody;
+    Engine::CCombatStat* m_OwnerCombatStatCom;
+    Engine::CRigidbody*  m_OwnerRigidbodyCom;
 #pragma endregion
 
-    RollData m_RollData;
+    KeyInputData m_InputData;
+    RollData     m_RollData;
 
 public:
     static CPlayerController* Create(DEVICE graphicDev);
