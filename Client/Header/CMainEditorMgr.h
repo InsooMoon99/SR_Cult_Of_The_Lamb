@@ -33,7 +33,6 @@ public:
     // 매 프레임 ImGui로 메인 에디터 창 그리는 부분
     void Update_MainEditor(const _float& timeDelta);
     void Render_MainEditor();
-    void Render_MapObjectWindow(); // Map Object Render
 
     void Set_MainCamera(CCameraCom* cam) { m_MainCamera = cam; }
 
@@ -58,8 +57,24 @@ private:
 
     CTerrainRenderer* Find_TerrainRenderer();
 
+public:
+    // Map Object 배치
+    void Render_MapObjectWindow(); // Map Object Render
+
+    HRESULT SaveMapObject(const char* filePath);
+    HRESULT LoadMapObject(const char* filePath);
+    void    Clear_PlacedObjects(); // 로드 전 기존 오브젝트 정리
+
+    void Refresh_MapObjectList();
+
 protected:
     virtual void Free() override;
+
+private:
+    vector<string> m_MapObjList {};
+    _int m_SelectMapObjIndex = 0;
+
+    char m_MapObjFileName[128] = "MapObject_";
 
 private:
     DEVICE              m_GraphicDev = nullptr;

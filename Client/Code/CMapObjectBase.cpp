@@ -40,7 +40,7 @@ _int CMapObjectBase::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CGameObject::Update_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_PRIORITY, this);
+    CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_PRIORITY_ALPHA, this);
 
     return exit;
 }
@@ -58,11 +58,6 @@ void CMapObjectBase::Render_GameObject()
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
     m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-
-    // 알파 블렌딩 
-    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-    m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-    m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
     // 알파 테스트 
     m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);

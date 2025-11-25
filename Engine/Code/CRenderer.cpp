@@ -24,6 +24,7 @@ void CRenderer::Add_RenderGroup(RENDERID type, CGameObject* gameObject)
 void CRenderer::Render_GameObject(DEVICE& graphicDev)
 {
     Render_Priority(graphicDev);
+    Render_Priority_Alpha(graphicDev);
     Render_NonAlpha(graphicDev);
     Render_Alpha(graphicDev);
     Render_UI(graphicDev);
@@ -46,6 +47,22 @@ void CRenderer::Render_Priority(DEVICE& graphicDev)
     {
         obj->Render_GameObject();
     }
+}
+
+void CRenderer::Render_Priority_Alpha(DEVICE& graphicDev)
+{
+    // 알파 블렌딩 켜기
+    graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    graphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);      
+    graphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);  
+
+    for (auto& obj : m_RenderGroup[RENDER_PRIORITY_ALPHA])
+    {
+        obj->Render_GameObject();
+    }
+
+    // 알파 블렌딩 끄기
+    graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 }
 
 void CRenderer::Render_NonAlpha(DEVICE& graphicDev)

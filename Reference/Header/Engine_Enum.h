@@ -22,7 +22,16 @@ namespace Engine
     enum TEXTUREID { TEX_NORMAL, TEX_CUBE, TEX_END };
 
     // 렌더링 우선순위별 렌더링 그룹 인덱스
-    enum RENDERID { RENDER_PRIORITY, RENDER_NONALPHA, RENDER_ALPHA, RENDER_UI, RENDER_END };
+    enum RENDERID
+    {
+        RENDER_PRIORITY,
+        RENDER_PRIORITY_ALPHA,
+        RENDER_NONALPHA,
+        RENDER_ALPHA,
+        RENDER_UI,
+
+        RENDER_END
+    };
 
     // DirectInput 마우스 버튼 상태 인덱스
     enum MOUSEKEYSTATE { DIM_LB, DIM_RB, DIM_MB, DIM_END };
