@@ -122,12 +122,17 @@ HRESULT CMainApp::Ready_DefaultSetting(DEVICE* graphicDev)
         return E_FAIL;
 
     if (FAILED(CFontMgr::GetInstance()->Ready_Font(
-        *graphicDev, L"궁서", L"궁서", 20, 15, FW_THIN)))
+        *graphicDev, L"궁서", L"궁서", 30, 30, FW_THIN)))
         return E_FAIL;
 
     //AddFontResourceEx(L"../Bin/Resource/Font/LaptureDisplay-Regular.otf", FR_PRIVATE, NULL);
     if (FAILED(CFontMgr::GetInstance()->Ready_Font(
         *graphicDev, L"LaptureDisplay-Regular", L"LaptureDisplay-Regular", 10, 24, FW_HEAVY)))
+        return E_FAIL;
+
+    //아이템 숫자 출력용 폰트
+    if (FAILED(CFontMgr::GetInstance()->Ready_Font(
+        *graphicDev, L"LaptureDisplay-Bold", L"LaptureDisplay-Bold", 20, 40, FW_HEAVY)))
         return E_FAIL;
 
     // DInput

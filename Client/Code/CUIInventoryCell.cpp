@@ -10,6 +10,8 @@
 #include <iostream>
 #include "CTexture.h"
 #include "CTransform.h"
+#include "CFontMgr.h"
+
 CUIInventoryCell::CUIInventoryCell(DEVICE pGraphicDev)
     : CUI(pGraphicDev),
       uiIcon(nullptr),
@@ -54,7 +56,7 @@ HRESULT CUIInventoryCell::Ready_GameObject()
 
     m_TransformCom->Set_Scale(45.f, 45.f, 0.f);
     uiIcon = CUIIcon::Create(m_GraphicDev,L"Texture_Item");
-    uiIcon->SetRegister(false);
+    uiIcon->SetRegister(false); // 아이템 텍스처 렌더 그룹에 중복 등록되는 것 막기 위한 플래그
 
     return S_OK;
 }
@@ -82,6 +84,8 @@ void CUIInventoryCell::LateUpdate_GameObject(const _float& timeDelta)
 
 void CUIInventoryCell::Render_GameObject()
 {
+
+
         CUI::Render_GameObject();
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
@@ -95,10 +99,7 @@ void CUIInventoryCell::Render_GameObject()
     m_TextureCom->Set_Texture(0);
     m_BufferCom->Render_Buffer();
 
-   // m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-   // m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-   // m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE); // TFACTOR를 DIFFUS
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
     m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
     m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(255, 255, 255, 255));
 
@@ -114,8 +115,16 @@ void CUIInventoryCell::Render_GameObject()
             m_TransformCom->Get_Pos().z));
         iconTransform->Set_Scale(_vec3(30.f, 30.f, 0.f));
         uiIcon->Render_GameObject();
-        //dynamic_cast<CRcTex*>(uiIcon->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::RC_TEX))->Render_Buffer();
 
+    }
+    float numberOffsetX = 30.f;
+    float numberOffsetY = 25.f;
+    if(m_Count>0)
+    {
+        _vec2 cellPos = { m_TransformCom->Get_Pos().x + WINCX/2, WINCY/2 - m_TransformCom->Get_Pos().y};
+        
+        _vec2 number = { cellPos.x+numberOffsetX, cellPos.y + numberOffsetY };
+        CFontMgr::GetInstance()->Render_FontOutlined(L"LaptureDisplay-Bold", to_wstring(m_Count), &number, D3DXCOLOR(1.f, 1.f, 1.f, 1.f), D3DXCOLOR(0.f, 0.f, 0.f, 1.f), 3);
     }
 
    // //TODO 유림 : 외곽선 그리기 인벤토리에서 셀 위치 확인해서 m_IsHovered 세팅하기
@@ -186,5 +195,9 @@ CUIInventoryCell* CUIInventoryCell::Create(DEVICE graphicDev)
 
 void CUIInventoryCell::Free()
 {
+    Safe_Release(uiIcon);
+    Safe_Release(m_ItemTexCom);
+    Safe_Release(m_HighlightTexCom);
+
     CUI::Free();
 }

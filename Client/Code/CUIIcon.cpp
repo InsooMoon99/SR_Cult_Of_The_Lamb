@@ -53,7 +53,6 @@ _int CUIIcon::Update_GameObject(const _float& timeDelta)
     _int exit = CUI::Update_GameObject(timeDelta);
     if(m_Register)
     {
-        
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
     }
 
@@ -71,9 +70,6 @@ void CUIIcon::Render_GameObject()
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
     m_TextureCom->Set_Texture(m_textureIndex);
-
-    cout << m_TransformCom->Get_Pos().x << "\t" << m_TransformCom->Get_Pos().y << endl;
-    cout << m_TransformCom->Get_Scale().x << "\t" << m_TransformCom->Get_Scale().y << endl;
     m_BufferCom->Render_Buffer();
 }
 

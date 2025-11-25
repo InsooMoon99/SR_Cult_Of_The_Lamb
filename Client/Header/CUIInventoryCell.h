@@ -20,11 +20,12 @@ public:
 
     void OnBeginOverlap(CCollider* self, CCollider* other) override;
     void OnEndOverlap(CCollider* self, CCollider* other) override;
-
+    
     HRESULT Add_Component();
 
     static CUIInventoryCell* Create(DEVICE graphicDev);
 
+    void    Set_IsHovered(bool tf) { m_IsHovered = tf; }
     void SetInventoryCell(const ItemInstance& itemInstance, int count)
     {
         m_ItemInst = itemInstance;
