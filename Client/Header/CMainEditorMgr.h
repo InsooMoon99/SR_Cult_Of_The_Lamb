@@ -4,6 +4,7 @@
 class CMapEditorPlacer;
 class CMapObjectBase;
 class CMapObjectGrass;
+class CTerrainRenderer;
 
 BEGIN(Engine)
 class CEditContext;
@@ -13,6 +14,13 @@ END
 
 class CMainEditorMgr : public CBase
 {
+    enum class MAPTOOL_VIEW
+    {
+        NONE,
+        TERRAIN,
+        MAP_OBJECT,
+    };
+
     DECLARE_SINGLETON(CMainEditorMgr)
 
 private:
@@ -35,6 +43,9 @@ private:
     // Context 세팅
     void Set_EditContext(CEditContext* ctx);
 
+    void Render_SceneTab();
+    void Render_MapToolTab();
+
     // Editor Render
     void Render_ToolBar();
     void Render_Hierarchy();
@@ -44,6 +55,8 @@ private:
     void Render_StaticComponents(CGameObject* obj);
 
     void Render_SelectComponent();
+
+    CTerrainRenderer* Find_TerrainRenderer();
 
 protected:
     virtual void Free() override;
@@ -55,5 +68,7 @@ private:
     CCameraCom*         m_MainCamera = nullptr;
 
     _bool               m_IsPlaying = true;
+
+    MAPTOOL_VIEW m_MapToolView = MAPTOOL_VIEW::MAP_OBJECT;
 };
 

@@ -10,22 +10,22 @@
 
 CMapObjectBase::CMapObjectBase(DEVICE graphicDev)
     : CGameObject(graphicDev),
-      m_BufferCom(nullptr),
-      m_TransformCom(nullptr),
-      m_TextureCom(nullptr),
-      m_AttachTerrain(false),
-      m_Terrain(nullptr)
+    m_BufferCom(nullptr),
+    m_TransformCom(nullptr),
+    m_TextureCom(nullptr),
+    m_AttachTerrain(false),
+    m_Terrain(nullptr)
 { }
 
 CMapObjectBase::CMapObjectBase(const CMapObjectBase& rhs)
     : CGameObject(rhs),
-      m_BufferCom(nullptr),
-      m_TransformCom(nullptr),
-      m_TextureCom(nullptr),
-      m_AttachTerrain(rhs.m_AttachTerrain),
-      m_CellX(rhs.m_CellX),
-      m_CellZ(rhs.m_CellZ),
-      m_Terrain(rhs.m_Terrain)
+    m_BufferCom(rhs.m_BufferCom),
+    m_TransformCom(rhs.m_TransformCom),
+    m_TextureCom(rhs.m_TextureCom),
+    m_AttachTerrain(rhs.m_AttachTerrain),
+    m_CellX(rhs.m_CellX),
+    m_CellZ(rhs.m_CellZ),
+    m_Terrain(rhs.m_Terrain)
 { }
 
 CMapObjectBase::~CMapObjectBase()
@@ -62,27 +62,32 @@ void CMapObjectBase::Render_GameObject()
 
 void CMapObjectBase::Set_WorldPos(const _vec3& pos)
 {
-    if (m_TransformCom)
-        m_TransformCom->Set_Pos(pos);
+    if (m_TransformCom == nullptr)
+    {
+        CComponent* com = Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM);
+        m_TransformCom = dynamic_cast<CTransform*>(com);
+
+        if (m_TransformCom == nullptr)
+            return; 
+    }
+
+    m_TransformCom->Set_Pos(pos);
 }
+
 
 HRESULT CMapObjectBase::Add_BaseComponent(COMPONENTTYPE InType)
 {
-    COMPONENTTYPE type = COMPONENTTYPE::COMPONENT_END;
-
     // RcTex
-    type        = COMPONENTTYPE::RC_TEX;
-    m_BufferCom = CreateProtoComponent<CRcTex>(this, type);
+    m_BufferCom = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
     NULL_CHECK_RETURN(m_BufferCom, E_FAIL);
 
-    m_Components[ID_STATIC].insert({ type, m_BufferCom });
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::RC_TEX, m_BufferCom });
 
     // Transform
-    type           = COMPONENTTYPE::TRANSFORM;
-    m_TransformCom = CreateProtoComponent<CTransform>(this, type);
+    m_TransformCom = CreateProtoComponent<CTransform>(this, COMPONENTTYPE::TRANSFORM);
     NULL_CHECK_RETURN(m_TransformCom, E_FAIL);
 
-    m_Components[ID_DYNAMIC].insert({ type, m_TransformCom });
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
     // Texture Component는 자식에서 세팅하기
     m_TextureCom = CreateProtoComponent<CTexture>(this, InType);
