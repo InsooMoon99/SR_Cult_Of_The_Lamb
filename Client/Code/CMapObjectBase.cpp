@@ -19,9 +19,9 @@ CMapObjectBase::CMapObjectBase(DEVICE graphicDev)
 
 CMapObjectBase::CMapObjectBase(const CMapObjectBase& rhs)
     : CGameObject(rhs),
-    m_BufferCom(rhs.m_BufferCom),
-    m_TransformCom(rhs.m_TransformCom),
-    m_TextureCom(rhs.m_TextureCom),
+    m_BufferCom(nullptr),
+    m_TransformCom(nullptr),
+    m_TextureCom(nullptr),
     m_AttachTerrain(rhs.m_AttachTerrain),
     m_CellX(rhs.m_CellX),
     m_CellZ(rhs.m_CellZ),
@@ -56,8 +56,26 @@ void CMapObjectBase::Render_GameObject()
         return;
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
+
+    m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
+    // 알파 블렌딩 
+    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+    m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
+    // 알파 테스트 
+    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+    m_GraphicDev->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+    m_GraphicDev->SetRenderState(D3DRS_ALPHAREF, 0);
+
     m_TextureCom->Set_Texture(2);
     m_BufferCom->Render_Buffer();
+
+    //m_GraphicDev->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+    m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 }
 
 void CMapObjectBase::Set_WorldPos(const _vec3& pos)
