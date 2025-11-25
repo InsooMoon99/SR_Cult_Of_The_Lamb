@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CUI.h"
 
+class CUIButton;
 class CUIIcon;
 class CUIInventoryCell;
 class CInventory;
@@ -23,7 +24,7 @@ void    Render_GameObject() override;
 void     SetInventory(CInventory* inventory);
 void    SetPositions();
 HRESULT  Add_Component();
-
+void    Check_Hovered();
 void CreateCells();
     static CUIInventory* Create(DEVICE graphicDev);
 
@@ -39,6 +40,7 @@ private:
     float   m_TargetX;                      // 인벤토리 열려 있을 때의 X 좌표
     bool    m_IsAnimating;                  // 애니메이션 진행 중인가?
     float   m_Speed;                        // 애니메이션 속도
+    CUIButton* m_Button;        
     CInventory* m_Inventory;
     vector<CUIInventoryCell*> m_Cells;
 };

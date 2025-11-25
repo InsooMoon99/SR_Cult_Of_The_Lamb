@@ -84,8 +84,6 @@ void CUIInventoryCell::LateUpdate_GameObject(const _float& timeDelta)
 
 void CUIInventoryCell::Render_GameObject()
 {
-
-
         CUI::Render_GameObject();
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
@@ -119,6 +117,7 @@ void CUIInventoryCell::Render_GameObject()
     }
     float numberOffsetX = 30.f;
     float numberOffsetY = 25.f;
+
     if(m_Count>0)
     {
         _vec2 cellPos = { m_TransformCom->Get_Pos().x + WINCX/2, WINCY/2 - m_TransformCom->Get_Pos().y};
@@ -127,29 +126,29 @@ void CUIInventoryCell::Render_GameObject()
         CFontMgr::GetInstance()->Render_FontOutlined(L"LaptureDisplay-Bold", to_wstring(m_Count), &number, D3DXCOLOR(1.f, 1.f, 1.f, 1.f), D3DXCOLOR(0.f, 0.f, 0.f, 1.f), 3);
     }
 
-   // //TODO 유림 : 외곽선 그리기 인벤토리에서 셀 위치 확인해서 m_IsHovered 세팅하기
-   // //외곽선 테스트용
-   // if(m_IsHovered)
-   // {
-   // m_HighlightTexCom->Set_Texture(1);
-   // 
-   //     //외곽선 빨강으로 바꾸기
-   // D3DCOLOR color = D3DCOLOR_ARGB(255, 200, 0, 0);
-   // 
-   // m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, color);
-   // 
-   // m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE); //색상을 곱하기 방식으로 처리하곘다는 뜻
-   // m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE); //첫번째 인자는 텍스처
-   // m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR); //두번째 인자는 색상
-   // m_BufferCom->Render_Buffer();
-   // 
-   // //RenderState 원상태로 돌리기
-   // m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR,D3DCOLOR_ARGB(255, 255, 255, 255));
-   // 
-   // m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-   // m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-   // m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-   // }
+    //외곽선 그리기
+    if(m_IsHovered)
+    {
+        m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
+    m_HighlightTexCom->Set_Texture(1);
+
+        //외곽선 빨강으로 바꾸기
+    D3DCOLOR color = D3DCOLOR_ARGB(255, 160, 0, 0);
+    
+    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, color);
+    
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE); //색상을 곱하기 방식으로 처리하곘다는 뜻
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE); //첫번째 인자는 텍스처
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR); //두번째 인자는 색상
+    m_BufferCom->Render_Buffer();
+    
+    //RenderState 원상태로 돌리기
+    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR,D3DCOLOR_ARGB(255, 255, 255, 255));
+    
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+    }
 }
 
 HRESULT CUIInventoryCell::Add_Component()

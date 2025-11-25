@@ -250,7 +250,8 @@ _uint CLoading::Loading_ForState()
     vector<wstring> pathVec2;
     pathVec2.push_back(L"../Bin/Resource/Texture/UI/MainMenu/Null.png");
     pathVec2.push_back(L"../Bin/Resource/Texture/UI/MainMenu/Button Black.png");
-
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/Inventory/ButtonTab0.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/Inventory/ButtonTab1.png");
     if (FAILED(pProtoMgr->Ready_Prototype(COMPONENTTYPE::TEXTURE, L"UI_Button",
         Engine::CTexture::Create(m_GraphicDev, TEX_NORMAL, pathVec2))))
         return E_FAIL;

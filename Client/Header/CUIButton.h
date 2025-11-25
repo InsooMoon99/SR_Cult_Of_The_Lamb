@@ -13,7 +13,7 @@ protected:
     ~CUIButton() override;
 
 public:
-    HRESULT Ready_GameObject() override;
+    HRESULT Ready_GameObject();
     _int    Update_GameObject(const _float& timeDelta) override;
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
@@ -32,7 +32,7 @@ public:
     void        Set_TextureIndex(int textureOn, int textureOff) { m_textureOn = textureOn; m_textureOff = textureOff;}
     CTransform* Get_Transform() const { return m_TransformCom; }
     bool Get_Hovered() { return m_bHovered; }
-
+    void Set_Hovered(bool tf) { m_bHovered = tf; }
     void SetOnClick(std::function<void()> callback) { m_OnClick = callback; }
 
     bool SetCloneTexAspectScale(_vec3 vec);

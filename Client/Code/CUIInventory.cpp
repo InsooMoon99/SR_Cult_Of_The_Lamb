@@ -12,6 +12,7 @@
 #include "CUIIcon.h"
 #include "CFontMgr.h"
 #include "CTimerMgr.h"
+#include "CUIButton.h"
 #include "CUIInventoryCell.h"
 
 CUIInventory::CUIInventory(DEVICE pGraphicDev)
@@ -39,12 +40,17 @@ HRESULT CUIInventory::Ready_GameObject()
 {
     if (FAILED(Add_Component()))
         return E_FAIL;
+
     m_TargetX = -WINCX / 5.f;
     m_ClosedX = -WINCX;
     m_Speed = 900.f;
     m_TransformCom->Set_Pos(m_ClosedX, 0.f, 1.f);
     m_TransformCom->Set_Scale(420.f, 400.f, 1.f);
 
+   // m_Button = CUIButton::Create(m_GraphicDev);
+   // m_Button->Set_TextureIndex(3, 2);
+   // m_Button->Get_Transform()->Set_Pos(m_ClosedX, -200.f, 1.f);
+   // m_Button->Get_Transform()->Set_Scale ( 200.f,100.f,1.f );
     return S_OK;
 }
 
@@ -52,7 +58,6 @@ _int CUIInventory::Update_GameObject(const _float& timeDelta)
 {
     CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_UI, this);
     
-
     if (CDInputMgr::GetInstance()->KeyDown(DIK_TAB))
     {
         m_IsOpen = !m_IsOpen;
@@ -74,6 +79,8 @@ _int CUIInventory::Update_GameObject(const _float& timeDelta)
         }
 
         m_TransformCom->Set_Pos(pos);
+        //m_Button->Update_GameObject(timeDelta);
+        //m_Button->Get_Transform()->Set_Pos(pos);
     }
 
     if (m_IsOpen||m_IsAnimating)
@@ -88,9 +95,9 @@ _int CUIInventory::Update_GameObject(const _float& timeDelta)
 
         m_Cells[i]->SetInventoryCell(slot.itemInst, slot.count);
         m_Cells[i]->Update_GameObject(timeDelta);
-
     }
 
+    Check_Hovered();
 
     int exit = CUI::Update_GameObject(timeDelta);
     return exit;
@@ -143,7 +150,9 @@ void CUIInventory::Render_GameObject()
       {
           m_Cells[i]->Render_GameObject();
       }
-   // }
+
+   //버튼 그리기
+      //m_Button->Render_GameObject();
 }
 
 void CUIInventory::SetInventory(CInventory* inventory)
@@ -233,6 +242,35 @@ HRESULT CUIInventory::Add_Component()
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEXTURE, m_TextureCom });
 
     return S_OK;
+}
+
+void CUIInventory::Check_Hovered()
+{
+    const vector<InventorySlot>& slots = m_Inventory->GetVector();
+    for(int i = 0; i < slots.size();i++)
+    {
+       _vec3 cellPos = dynamic_cast<CTransform*>(m_Cells[i]->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Get_Pos();
+       _vec3 cellSize = dynamic_cast<CTransform*>(m_Cells[i]->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Get_Scale();
+
+       float screenX = cellPos.x + WINCX * 0.5f;
+       float screenY = WINCY * 0.5f - cellPos.y;
+
+       m_tRect.left = (LONG)(screenX - cellSize.x);
+       m_tRect.top = (LONG)(screenY - cellSize.y);
+       m_tRect.right = (LONG)(screenX + cellSize.x);
+       m_tRect.bottom = (LONG)(screenY + cellSize.y);
+
+       POINT pt;
+       GetCursorPos(&pt);
+       ScreenToClient(CDInputMgr::GetInstance()->Get_HWND(), &pt);
+       bool hoveredNow = PtInRect(&m_tRect, pt) != 0;
+
+        if(hoveredNow !=m_Cells[i]->Get_IsHovered())
+        {
+            m_Cells[i]->Set_IsHovered(hoveredNow);
+        }
+
+    }
 }
 
 void CUIInventory::OnBeginOverlap(CCollider* self, CCollider* other)

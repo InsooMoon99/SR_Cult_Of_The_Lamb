@@ -132,7 +132,7 @@ HRESULT CMainApp::Ready_DefaultSetting(DEVICE* graphicDev)
 
     //아이템 숫자 출력용 폰트
     if (FAILED(CFontMgr::GetInstance()->Ready_Font(
-        *graphicDev, L"LaptureDisplay-Bold", L"LaptureDisplay-Bold", 20, 40, FW_HEAVY)))
+        *graphicDev, L"LaptureDisplay-Bold", L"LaptureDisplay-Bold", 15, 35, FW_HEAVY)))
         return E_FAIL;
 
     // DInput

@@ -26,6 +26,7 @@ public:
     static CUIInventoryCell* Create(DEVICE graphicDev);
 
     void    Set_IsHovered(bool tf) { m_IsHovered = tf; }
+    bool    Get_IsHovered() { return m_IsHovered; }
     void SetInventoryCell(const ItemInstance& itemInstance, int count)
     {
         m_ItemInst = itemInstance;
