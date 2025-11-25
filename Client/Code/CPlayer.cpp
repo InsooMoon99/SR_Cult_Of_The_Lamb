@@ -303,15 +303,6 @@ void CPlayer::Animation_Setting()
 #pragma endregion
 }
 
-void CPlayer::NotifyInventoryUpdate()
-{
-
-    if(m_UIInventory)
-    {
-        m_UIInventory->On_Item_Gained();
-    }
-}
-
 CPlayer* CPlayer::Create(DEVICE graphicDev)
 {
     auto player = new CPlayer(graphicDev);

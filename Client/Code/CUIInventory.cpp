@@ -40,8 +40,8 @@ HRESULT CUIInventory::Ready_GameObject()
     if (FAILED(Add_Component()))
         return E_FAIL;
 
-    m_TransformCom->Set_Pos(-WINCX / 4, 0.f, 1.f);
-    m_TransformCom->Set_Scale(400.f, 400.f, 1.f);
+    m_TransformCom->Set_Pos(-WINCX / 5, 0.f, 1.f);
+    m_TransformCom->Set_Scale(420.f, 400.f, 1.f);
 
     return S_OK;
 }
@@ -66,8 +66,11 @@ _int CUIInventory::Update_GameObject(const _float& timeDelta)
         auto& slot = slots[i];
 
         m_Cells[i]->SetInventoryCell(slot.itemInst, slot.count);
-        //m_Cells[i]->Update_GameObject(CTimerMgr::GetInstance()->Get_TimeDelta());
+        m_Cells[i]->Update_GameObject(CTimerMgr::GetInstance()->Get_TimeDelta());
+
     }
+
+
     int exit = CUI::Update_GameObject(timeDelta);
     return exit;
 }
@@ -84,83 +87,33 @@ void CUIInventory::Render_GameObject()
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
     _vec2 pos{ m_TransformCom->Get_Pos().x, m_TransformCom->Get_Pos().y };
-    _vec2 material = { WINCX / 12, WINCY / 2 - 160 };
+    _vec2 material = { WINCX / 12, WINCY / 2 - 170 };
     _vec2 food     = { WINCX / 12, WINCY / 2 };
 
-
-   // if (m_IsOpen)
+    if (m_IsOpen)
     {
-       // //인벤토리 배경 그리기
-       // m_TextureCom->Set_Texture(0);
-       // m_BufferCom->Render_Buffer();
-       //     
-       // CFontMgr::GetInstance()->Render_Font(L"LaptureDisplay-Regular",
-       //     L"재화",
-       //     &material,
-       //     D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.f));
-       //
-       //
-       // CFontMgr::GetInstance()->Render_Font(L"LaptureDisplay-Regular",
-       //     L"음식",
-       //     &food,
-       //     D3DXCOLOR(0.5f, 0.5, 0.5f, 1.f));
+        //인벤토리 배경 그리기
+        m_TextureCom->Set_Texture(0);
+        m_BufferCom->Render_Buffer();
+            
+        CFontMgr::GetInstance()->Render_Font(L"LaptureDisplay-Regular",
+            L"재화",
+            &material,
+            D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.f));
+       
+       
+        CFontMgr::GetInstance()->Render_Font(L"LaptureDisplay-Regular",
+            L"음식",
+            &food,
+            D3DXCOLOR(0.5f, 0.5, 0.5f, 1.f));
 
         const vector<InventorySlot>& slots = m_Inventory->GetVector();
         int slotCount = slots.size();
         for (int i = 0; i < slotCount; i++)
         {
-                    m_Cells[i]->Render_GameObject();
+                        m_Cells[i]->Render_GameObject();
         }
-
     }
-//    if (m_IsOpen)
-//    {
-//        const vector<InventorySlot>& slots = m_Inventory->GetVector();
-//        int slotCount = slots.size();
-//
-//        for(int i = 0; i < slotCount; i++)
-//        {
-//            m_Cells[i]->Render_GameObject();
-//        }
-//        int materialRenderCount = 0;
-//        
-//        int startOffset = -500.f;
-//        
-//        for (int i = 0; i < slotCount / 2; i++)
-//        {
-//            if (slots[i].itemInst.itemId != -1)
-//            {
-//                int col = materialRenderCount % m_Cols;
-//        
-//                float x = startOffset + (float)col * m_CellWidth;
-//        
-//                CTransform* transform = dynamic_cast<CTransform*>(m_Cells[i]->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-//                transform->Set_Pos(x, 100.f, 0.f);
-//        
-//                m_Cells[i]->Render_GameObject();
-//        
-//                materialRenderCount++;
-//            }
-//        }
-//        int foodRenderCount = 0;
-//        
-//        for (int i = slotCount / 2; i < slotCount; i++)
-//        {
-//            if (slots[i].itemInst.itemId != -1)
-//            {
-//                int col = foodRenderCount % m_Cols;
-//        
-//                float x = startOffset + (float)col * m_CellWidth;
-//        
-//                CTransform* transform = dynamic_cast<CTransform*>(m_Cells[i]->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-//                transform->Set_Pos(x, -70.f, 0.f);
-//        
-//                m_Cells[i]->Render_GameObject();
-//        
-//                foodRenderCount++;
-//            }
-//        }
-//    }
 }
 
 void CUIInventory::SetInventory(CInventory* inventory)
@@ -191,77 +144,41 @@ void CUIInventory::CreateCells()
 void CUIInventory::SetPositions()
 {
     const vector<InventorySlot>& slots = m_Inventory->GetVector();
+
     int slotCount = slots.size();
-    
-    //for (int i = 0; i < slotCount; i++)
-    //{
-    //    m_Cells[i]->Render_GameObject();
-    //}
+
     int materialRenderCount = 0;
 
     int startOffset = -500.f;
 
     for (int i = 0; i < slotCount / 2; i++)
     {
-        //if (slots[i].itemInst.itemId != -1)
-        //{
             int col = materialRenderCount % m_Cols;
 
             float x = startOffset + (float)col * m_CellWidth;
 
             CTransform* transform = dynamic_cast<CTransform*>(m_Cells[i]->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
             transform->Set_Pos(x, 100.f, 0.f);
 
-            //m_Cells[i]->Render_GameObject();
-
             materialRenderCount++;
-        //}
     }
     int foodRenderCount = 0;
 
     for (int i = slotCount / 2; i < slotCount; i++)
     {
-       // if (slots[i].itemInst.itemId != -1)
-       // {
             int col = foodRenderCount % m_Cols;
 
             float x = startOffset + (float)col * m_CellWidth;
 
             CTransform* transform = dynamic_cast<CTransform*>(m_Cells[i]->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
             transform->Set_Pos(x, -70.f, 0.f);
 
-            //m_Cells[i]->Render_GameObject();
-
             foodRenderCount++;
-       // }
     }
 
 
-}
-
-void CUIInventory::On_Item_Gained()
-{
-//    //int cellIndex = 0;
-//    //const vector<InventorySlot>& slots = m_Inventory->GetVector();
-//    //for(int i = 0; i < slots.size(); i++)
-//    //{
-//    //     if(slots[i].itemInst.itemId!=-1)
-//    //    {
-//    //    CUIInventoryCell* cell = m_Cells[cellIndex];
-//    //    cell->SetInventoryCell(slots[i].itemInst, slots[i].count);
-//    //    m_Cells[cellIndex]->Update_GameObject(CTimerMgr::GetInstance()->Get_TimeDelta());
-//    //    cellIndex++;
-//    //    }
-//    //}
-//    const vector<InventorySlot>& slots = m_Inventory->GetVector();
-//
-//    for (int i = 0; i < slots.size(); i++)
-//    {
-//        auto& slot = slots[i];
-//
-//        m_Cells[i]->SetInventoryCell(slot.itemInst, slot.count);
-//        m_Cells[i]->Update_GameObject(CTimerMgr::GetInstance()->Get_TimeDelta());
-//    }
 }
 
 HRESULT CUIInventory::Add_Component()

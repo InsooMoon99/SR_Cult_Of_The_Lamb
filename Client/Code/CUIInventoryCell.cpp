@@ -15,7 +15,6 @@ CUIInventoryCell::CUIInventoryCell(DEVICE pGraphicDev)
       uiIcon(nullptr),
       m_ItemTexCom(nullptr),
       m_HighlightTexCom(nullptr),
-      m_TextureIndex(0),
       m_Count(0),
       m_IsHovered(false)
 {}
@@ -25,7 +24,6 @@ CUIInventoryCell::CUIInventoryCell(const CUIInventoryCell& rhs)
       uiIcon(nullptr),
       m_ItemTexCom(nullptr),
       m_HighlightTexCom(nullptr),
-      m_TextureIndex(0),
       m_Count(0),
       m_IsHovered(false)
 {}
@@ -54,8 +52,9 @@ HRESULT CUIInventoryCell::Ready_GameObject()
         return E_FAIL;
 
 
-    m_TransformCom->Set_Scale(45.f, 45.f, 0.3f);
-    //uiIcon = CUIIcon::Create(m_GraphicDev);
+    m_TransformCom->Set_Scale(45.f, 45.f, 0.f);
+    uiIcon = CUIIcon::Create(m_GraphicDev,L"Texture_Item");
+    uiIcon->SetRegister(false);
 
     return S_OK;
 }
@@ -68,6 +67,10 @@ _int CUIInventoryCell::Update_GameObject(const _float& timeDelta)
 
     if (CDInputMgr::GetInstance()->Get_DIKeyState(DIK_4) & 0x80)
         m_IsHovered = true;
+
+    if (uiIcon)
+        uiIcon->Update_GameObject(timeDelta);
+
     int exit = CUI::Update_GameObject(timeDelta);
     return exit;
 }
@@ -92,19 +95,27 @@ void CUIInventoryCell::Render_GameObject()
     m_TextureCom->Set_Texture(0);
     m_BufferCom->Render_Buffer();
 
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+   // m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+   // m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+   // m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE); // TFACTOR를 DIFFUS
+        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
     m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE); // TFACTOR를 DIFFUSE로 변경
     m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(255, 255, 255, 255));
-
-    cout << m_TransformCom->Get_Pos().x << "\t" << m_TransformCom->Get_Pos().y << endl;
 
     if (!(m_ItemInst.itemId == -1))
     {
     
         int TextureIndex = CItemDB::GetInstance()->GetIndexById(m_ItemInst.itemId);
-        //uiIcon->Set_TextureIndex(m_TextureIndex);
-       // m_BufferCom->Render_Buffer();
+        uiIcon->Set_TextureIndex(TextureIndex);
+        auto iconTransform = uiIcon->Get_Transform();
+        iconTransform->Set_Pos(_vec3(
+            m_TransformCom->Get_Pos().x,
+            m_TransformCom->Get_Pos().y,
+            m_TransformCom->Get_Pos().z));
+        iconTransform->Set_Scale(_vec3(30.f, 30.f, 0.f));
+        uiIcon->Render_GameObject();
+        //dynamic_cast<CRcTex*>(uiIcon->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::RC_TEX))->Render_Buffer();
+
     }
 
    // //TODO 유림 : 외곽선 그리기 인벤토리에서 셀 위치 확인해서 m_IsHovered 세팅하기

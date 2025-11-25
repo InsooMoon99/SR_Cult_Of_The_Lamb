@@ -31,6 +31,8 @@ public:
         m_Count    = count;
     }
 
+    CUIIcon* Get_Icon() { return uiIcon; }
+
 protected:
     void Free() override;
 
@@ -39,7 +41,6 @@ private:
     CTexture*       m_ItemTexCom;
     CTexture*       m_HighlightTexCom;
     ItemInstance    m_ItemInst;
-    int             m_TextureIndex;
     int             m_Count;
     bool            m_IsHovered; //외곽선 그리기 여부 판단용
 };

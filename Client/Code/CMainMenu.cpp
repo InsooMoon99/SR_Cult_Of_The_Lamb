@@ -158,7 +158,7 @@ HRESULT CMainMenu::Ready_UI_Layer(LAYERTYPE layerType)
         return E_FAIL;
     //////////////////////////////////////////////////////////////////////////////////
     //아이콘
-    CUIIcon* pGameObject = CUIIcon::Create(m_GraphicDev);
+    CUIIcon* pGameObject = CUIIcon::Create(m_GraphicDev,L"UI_Icon");
     pGameObject->Set_TextureIndex(0);
     //pGameObject->Get_Transform()->Set_Scale(262.f / 1.3f,143.f / 1.3f,1.f);
     pGameObject->SetCloneTexAspectScale({.2f,.2f, 1 });

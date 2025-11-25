@@ -37,8 +37,6 @@ public:
     void        OnEndOverlap(CCollider* self, CCollider* other) override;
 
     void Render_Editor() override;
-    void    NotifyInventoryUpdate();
-    void   Set_UIInventory(CUIInventory* uiInventory) { m_UIInventory = uiInventory; };
 
 private:
     HRESULT Add_Component();

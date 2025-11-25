@@ -126,7 +126,6 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
             layer,
             &gameObject),
         L"Persistent object setup failed");
-    m_Player = dynamic_cast <CPlayer*> (gameObject);
 
     // 플레이어의 Transform 가져오기
     const auto playerTransform =
@@ -225,7 +224,7 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUIWeapon) failed");
 
     //왼쪽 상단 스킬 아이콘 UI
-    CUIIcon* pgameObject = CUIIcon::Create(m_GraphicDev);
+    CUIIcon* pgameObject = CUIIcon::Create(m_GraphicDev,L"UI_Icon");
     pgameObject->Set_TextureIndex(1);
     pgameObject->Get_Transform()->Set_Pos(-535.f, 260.f, 0.f);
     pgameObject->Get_Transform()->Set_Scale(9.5f, 11.f, 0.f);
@@ -239,17 +238,10 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::UI, uiSkillCount),
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUISKillCount) failed");
-
-    /*CUIInventoryCell* uiInventoryCell = CUIInventoryCell::Create(m_GraphicDev);
-        
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::UI, uiInventoryCell),
-        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UIInventoryCell) failed");*/
    
    ///Inventory UI
     CUIInventory* uiInventory = CUIInventory::Create(m_GraphicDev);
     uiInventory->SetInventory(m_PlayerInventoryCom);
-    m_Player->Set_UIInventory(uiInventory);
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiInventory),
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UIInventory) failed");
 
