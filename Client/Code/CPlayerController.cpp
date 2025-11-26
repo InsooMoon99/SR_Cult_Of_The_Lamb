@@ -101,10 +101,10 @@ void CPlayerController::Update_Input()
     _int axisZ = 0;
 
     // 키 입력 체크
-    if (inputMgr->Get_DIKeyState(DIK_W) & 0x80) axisZ++;
-    if (inputMgr->Get_DIKeyState(DIK_S) & 0x80) axisZ--;
-    if (inputMgr->Get_DIKeyState(DIK_D) & 0x80) axisX++;
-    if (inputMgr->Get_DIKeyState(DIK_A) & 0x80) axisX--;
+    if (inputMgr->KeyPress(DIK_W)) axisZ++;
+    if (inputMgr->KeyPress(DIK_S)) axisZ--;
+    if (inputMgr->KeyPress(DIK_D)) axisX++;
+    if (inputMgr->KeyPress(DIK_A)) axisX--;
 
     // MoveDir 벡터 생성
     m_StateData.moveDir = _vec3(static_cast<_float>(axisX),
@@ -128,7 +128,7 @@ void CPlayerController::CheckStateTransition()
         return;
 
     // [우선순위 1] 구르기 (Space)
-    if (inputMgr->Get_DIKeyState(DIK_SPACE) & 0x80)
+    if (inputMgr->KeyDown(DIK_SPACE))
     {
         // 구르기 진입 세팅
         m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_ROLL);
@@ -141,7 +141,8 @@ void CPlayerController::CheckStateTransition()
         else
             m_StateData.rollDir = CalcWorldDir(m_OwnerStateCom->Get_Dir());
 
-#pragma region 구르기 시 벽 통과 문제
+
+        // TODO : 문제점 추후 해결
         /*
         현재 구르기(ACTORSTATE::PLAYER_ROLL) 진입 시 m_OwnerColliderCom->Set_CollisionActive(false)를 호출하고 있습니다.
 
@@ -159,14 +160,14 @@ void CPlayerController::CheckStateTransition()
         방법 B:
         만약 벽 충돌체와 피격 충돌체가 분리되어 있다면, 피격용 충돌체만 꺼야 합니다.
         */
-#pragma endregion
+
         if (m_OwnerColliderCom) m_OwnerColliderCom->Set_CollisionActive(false);
         // 구를 때는 마찰력 무시
         if (m_OwnerRigidbodyCom) m_OwnerRigidbodyCom->Set_Friction(0.f);
     }
 
     // [우선순위 2] 공격 입력 처리 (공격 시작 시 방향 보정 로직 포함)
-    else if (inputMgr->Get_DIMouseState(DIM_LB) & 0x80)
+    else if (inputMgr->)
     {
         if (curState == ACTORSTATE::IDLE)
             m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SWORD_COMBO1);
@@ -355,6 +356,7 @@ void CPlayerController::Action_Roll(const _float& timeDelta)
     {
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
         m_OwnerColliderCom->Set_CollisionActive(true);
+        m_OwnerRigidbodyCom->Set_UseAccel(true);
         m_OwnerRigidbodyCom->Set_Friction(0.2f);
 
         m_StateData.Reset();
@@ -372,7 +374,9 @@ void CPlayerController::Action_Roll(const _float& timeDelta)
         }
 
         const _vec3  rollDir   = m_StateData.rollDir;
-        const _float rollSpeed = m_OwnerCombatStatCom->Get_Speed() * 2.5f;
+        const _float rollSpeed = m_OwnerCombatStatCom->Get_Speed() * 3.f;
+
+        m_OwnerRigidbodyCom->Set_UseAccel(false);
 
         // 구르기에 한해서는 Move_Pos로 강제 이동
         m_TransformCom->Move_Pos(rollDir, timeDelta, rollSpeed);
@@ -421,9 +425,12 @@ void CPlayerController::Action_Sword(const _float& timeDelta)
             // 다음 콤보로 전이
             ++m_StateData.comboIndex;
 
-            ACTORSTATE nextState = static_cast<ACTORSTATE>(
-                static_cast<_uint>(ACTORSTATE::PLAYER_SWORD_COMBO1)
-                + m_StateData.comboIndex - 1);
+            //ACTORSTATE nextState = static_cast<ACTORSTATE>(
+            //    static_cast<_uint>(ACTORSTATE::PLAYER_SWORD_COMBO1)
+            //    + m_StateData.comboIndex - 1);
+
+            // 임시
+            ACTORSTATE nextState = ACTORSTATE::PLAYER_SWORD_COMBO1;
 
             m_OwnerStateCom->Change_State(nextState);
             m_StateData.Reset();

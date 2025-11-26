@@ -32,8 +32,8 @@ private:
         // ==========================================
         _bool isRollInvincibleEnded = false; // 구르기 무적시간 끝났는지 여부 
 
-        _float rollDuration           = 0.5f; // 구르기 전체 시간
-        _float rollInvincibleDuration = 0.35f; // 구르기 무적 시간 (초반 0.3초만 무적)
+        _float rollDuration           = 0.4f; // 구르기 전체 시간
+        _float rollInvincibleDuration = 0.3f; // 구르기 무적 시간 (초반 0.3초만 무적)
 
         // ==========================================
         // [4] 일반공격 공통

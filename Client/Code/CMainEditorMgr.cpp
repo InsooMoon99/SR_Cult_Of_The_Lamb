@@ -432,14 +432,14 @@ void CMainEditorMgr::Render_SelectComponent()
         case COMPONENTTYPE::CONTROLLER_PLAYER:
         {
             auto controller = dynamic_cast<CPlayerController*>(selectComponent);
-            
+            // TODO : 헬퍼함수 만들기
         }
         break;
 
         case COMPONENTTYPE::RIGIDBODY:
         {
             auto rigidbody = dynamic_cast<CRigidbody*>(selectComponent);
-            
+            // TODO : 헬퍼함수 만들기
         }
         break;
 

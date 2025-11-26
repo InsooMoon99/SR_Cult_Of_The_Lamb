@@ -298,8 +298,17 @@ void CPlayer::Animation_Setting()
                                     _vec2(1.3f, 1.3f), // Scale
                                     _vec2(0.f, 0.f));  // Offset
 
-    m_AnimatorCom->Create_Animation(L"PlayerRoll_UP", 16, 0.02f * 19 / 16);
-    m_AnimatorCom->Create_Animation(L"PlayerRoll_DOWN", 16, 0.02f * 19 / 16);
+    m_AnimatorCom->Create_Animation(L"PlayerRoll_UP",
+                                    16,
+                                    0.02f * 19 / 16,
+                                    _vec2(0.85f, 0.85f),
+                                    _vec2(0.f, 0.f));
+
+    m_AnimatorCom->Create_Animation(L"PlayerRoll_DOWN",
+                                    16,
+                                    0.02f * 19 / 16,
+                                    _vec2(0.85f, 0.85f),
+                                    _vec2(0.f, 0.f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_ROLL, L"PlayerRoll", ANIMSTATE::ONCE);
 #pragma endregion
