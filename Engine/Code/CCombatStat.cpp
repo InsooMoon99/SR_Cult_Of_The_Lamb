@@ -7,18 +7,25 @@
 CCombatStat::CCombatStat(DEVICE graphicDev)
     : CComponent(graphicDev),
       m_Attack(0),
-      m_Hp(0), m_MaxHp(6),
-      m_Mp(0), m_MaxMp(10),
-      m_Speed(20), m_IsDead(false)
-{
-}
+      m_AttackSpeed(1.f),
+      m_Hp(0),
+      m_MaxHp(6),
+      m_Mp(0),
+      m_MaxMp(10),
+      m_Speed(20),
+      m_IsDead(false)
+{}
 
 CCombatStat::CCombatStat(const CCombatStat& rhs)
     : CComponent(rhs),
       m_Attack(0),
-      m_Hp(0), m_MaxHp(rhs.m_MaxHp),
-      m_Mp(0), m_MaxMp(rhs.m_MaxMp),
-      m_Speed(rhs.m_Speed), m_IsDead(false)
+      m_AttackSpeed(1.f),
+      m_Hp(0),
+      m_MaxHp(rhs.m_MaxHp),
+      m_Mp(0),
+      m_MaxMp(rhs.m_MaxMp),
+      m_Speed(rhs.m_Speed),
+      m_IsDead(false)
 {
     m_Hp = m_MaxHp;
     m_Mp = m_MaxMp;

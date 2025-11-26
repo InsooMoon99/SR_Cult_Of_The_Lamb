@@ -13,7 +13,7 @@ CRigidbody::CRigidbody(DEVICE graphicDev)
       m_Force(0.f, 0.f, 0.f),
       m_Accel(0.f, 0.f, 0.f),
       m_Vel(0.f, 0.f, 0.f),
-      m_VelLimit(20.f, 100.f, 20.f),
+      m_VelLimit(10.f, 100.f, 10.f),
       m_Gravity(0.f, -200.f, 0.f)
 { }
 
@@ -113,30 +113,27 @@ _int CRigidbody::Update_Component(const _float& timeDelta)
         }
     }
 
-    // 속도 제한 (Clamping)
+    // 속도 분해 : Y / XZ
+    _float speedY = D3DXVec3Dot(&m_Vel, &gravityDir);
+    _vec3  velY   = gravityDir * speedY;
+    _vec3  velXZ  = m_Vel - velY;
+
+    // Y축(중력 방향) 속도 제한
+    if (D3DXVec3Length(&velY) > m_VelLimit.y)
     {
-        // 속도 분해 : Y / XZ
-        _float speedY = D3DXVec3Dot(&m_Vel, &gravityDir);
-        _vec3  velY   = gravityDir * speedY;
-        _vec3  velXZ  = m_Vel - velY;
-
-        // Y축(중력 방향) 속도 제한
-        if (D3DXVec3Length(&velY) > m_VelLimit.y)
-        {
-            D3DXVec3Normalize(&velY, &velY);
-            velY *= m_VelLimit.y;
-        }
-
-        // X, Z축(평면) 속도 제한
-        if (D3DXVec3Length(&velXZ) > m_VelLimit.x)
-        {
-            D3DXVec3Normalize(&velXZ, &velXZ);
-            velXZ *= m_VelLimit.x; // m_VelLimit.x = m_VelLimit.z 일 때
-        }
-
-        // 재합성
-        m_Vel = velY + velXZ;
+        D3DXVec3Normalize(&velY, &velY);
+        velY *= m_VelLimit.y;
     }
+
+    // X, Z축(평면) 속도 제한
+    if (D3DXVec3Length(&velXZ) > m_VelLimit.x)
+    {
+        D3DXVec3Normalize(&velXZ, &velXZ);
+        velXZ *= m_VelLimit.x; // m_VelLimit.x = m_VelLimit.z 일 때
+    }
+
+    // 재합성
+    m_Vel = velY + velXZ;
 
     // 위치 갱신
     NULL_CHECK_RETURN(m_TransformCom, 0);

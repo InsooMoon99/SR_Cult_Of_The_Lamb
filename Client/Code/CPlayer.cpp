@@ -70,8 +70,9 @@ HRESULT CPlayer::Ready_GameObject()
 
     m_TransformCom->Set_Pos(_vec3(0.f, 0.f, 1.f));
 
-    //!! Rigidbody에서 가속, 중력 사용 안함
-    m_RigidbodyCom->Set_UseAccel(false);
+    //!! Rigidbody에서 중력만 사용 안함
+    m_RigidbodyCom->Set_UseAccel(true);
+    m_RigidbodyCom->Set_UseFriction(true);
     m_RigidbodyCom->Set_UseGravity(false);
 
     Animation_Setting();
@@ -303,12 +304,14 @@ void CPlayer::Animation_Setting()
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_ROLL, L"PlayerRoll", ANIMSTATE::ONCE);
 #pragma endregion
 
-#pragma region ------   Sword_Combo1    ------
+#pragma region ------   SWORD    ------
     m_AnimatorCom->Create_Animation(L"PlayerSwordCombo1", 31, 0.02f);
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SWORD_COMBO1,
                              L"PlayerSwordCombo1",
                              ANIMSTATE::ONCE);
+
+    // TODO : 검 공격 추가
 #pragma endregion
 }
 

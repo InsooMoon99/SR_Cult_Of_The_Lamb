@@ -1,11 +1,12 @@
 ﻿#include "pch.h"
 #include "CMainEditorMgr.h"
-#include "CDInputMgr.h"
+
 #include "CBoxCollider.h"
 #include "CCameraCom.h"
 #include "CCombatStat.h"
 #include "CComInspectors.h"
 #include "CComponent.h"
+#include "CDInputMgr.h"
 #include "CEditContext.h"
 #include "CEnumHelper.h"
 #include "CGameObject.h"
@@ -14,6 +15,8 @@
 #include "CManagement.h"
 #include "CMapEditorPlacer.h"
 #include "CMapObjectMgr.h"
+#include "CPlayerController.h"
+#include "CRigidbody.h"
 #include "CScene.h"
 #include "CState.h"
 #include "CTerrainRenderer.h"
@@ -87,7 +90,7 @@ void CMainEditorMgr::Render_MapToolTab()
     ImGui::Text("Map Tools");
     ImGui::Separator();
 
-    bool selTerrain = (m_MapToolView == MAPTOOL_VIEW::TERRAIN);
+    bool selTerrain   = (m_MapToolView == MAPTOOL_VIEW::TERRAIN);
     bool selMapObject = (m_MapToolView == MAPTOOL_VIEW::MAP_OBJECT);
 
     if (ImGui::Selectable("Terrain Renderer", selTerrain))
@@ -117,9 +120,7 @@ void CMainEditorMgr::Render_MapToolTab()
             Terrain_Inspector(terrain);
         }
         else
-        {
             ImGui::Text("TerrainRenderer 를 찾을 수 없음");
-        }
         break;
     }
 
@@ -154,9 +155,7 @@ void CMainEditorMgr::Render_MainEditor()
 
     // 프리뷰 오브젝트 렌더
     if (CMapObjectMgr::GetInstance()->Get_MapPlacer())
-    {
         CMapObjectMgr::GetInstance()->Get_MapPlacer()->Render_Privew();
-    }
 
     ImGui::Begin("MainEditor");
 
@@ -180,13 +179,12 @@ void CMainEditorMgr::Render_MainEditor()
     ImGui::End();
 
     CMapObjectMgr::GetInstance()->Render_GrassWindow();
-
 }
 
 void CMainEditorMgr::Render_ToolBar()
 {
     float delta = CTimerMgr::GetInstance()->Get_TimeDelta(L"Timer_FPS60");
-    float fps = (delta > 0.f) ? 1.f / delta : 0.f;
+    float fps   = (delta > 0.f) ? 1.f / delta : 0.f;
 
     ImGui::Columns(2, "ToolbarCols", false);
 
@@ -221,7 +219,6 @@ void CMainEditorMgr::Render_ToolBar()
     ImGui::Columns(1);
 }
 
-
 void CMainEditorMgr::Render_Hierarchy()
 {
     CScene* scene = m_Context->Get_ActiveScene();
@@ -238,7 +235,7 @@ void CMainEditorMgr::Render_Hierarchy()
         for (const auto& layerPair : layers)
         {
             LAYERTYPE layerType = layerPair.first;
-            CLayer* layer = layerPair.second;
+            CLayer*   layer     = layerPair.second;
 
             if (layer == nullptr) continue;
 
@@ -250,7 +247,7 @@ void CMainEditorMgr::Render_Hierarchy()
 
                 for (const auto& objPair : objMap)
                 {
-                    OBJTYPE objType = objPair.first;
+                    OBJTYPE                     objType = objPair.first;
                     const vector<CGameObject*>& objList = objPair.second;
 
                     for (CGameObject* obj : objList)
@@ -260,12 +257,10 @@ void CMainEditorMgr::Render_Hierarchy()
                         bool isSelected = (obj == m_Context->Get_SelectedObject());
 
                         const wstring& wName = obj->Get_Name();
-                        string name(wName.begin(), wName.end()); // wstring -> string
+                        string         name(wName.begin(), wName.end()); // wstring -> string
 
                         if (ImGui::Selectable(name.c_str(), isSelected))
-                        {
                             m_Context->Select_Object(obj);
-                        }
                     }
                 }
 
@@ -301,7 +296,7 @@ void CMainEditorMgr::Render_Inspector()
         if (obj && obj->Is_PendingDestroy() == false)
         {
             wstring wName = obj->Get_Name();
-            string name(wName.begin(), wName.end());
+            string  name(wName.begin(), wName.end());
             ImGui::Text("Object : %s", name.c_str());
         }
     }
@@ -325,20 +320,18 @@ void CMainEditorMgr::Render_DynamicComponents(CGameObject* obj)
 
     for (const auto& typePair : dynamicComponents)
     {
-        COMPONENTTYPE   type = typePair.first;
-        CComponent* com = typePair.second;
+        COMPONENTTYPE type = typePair.first;
+        CComponent*   com  = typePair.second;
 
         if (!com) continue;
 
         wstring wTypeName = com->Get_Name();
-        string typeName(wTypeName.begin(), wTypeName.end());
+        string  typeName(wTypeName.begin(), wTypeName.end());
 
         bool isSelected = (com == m_Context->Get_SelectedComponent());
 
         if (ImGui::Selectable(typeName.c_str(), isSelected))
-        {
             m_Context->Select_Component(com);
-        }
     }
 }
 
@@ -349,26 +342,22 @@ void CMainEditorMgr::Render_StaticComponents(CGameObject* obj)
     if (inven)
     {
         wstring wTypeName = inven->Get_Name();
-        string typeName(wTypeName.begin(), wTypeName.end());
+        string  typeName(wTypeName.begin(), wTypeName.end());
 
         bool isSelected = (inven == m_Context->Get_SelectedComponent());
         if (ImGui::Selectable(typeName.c_str(), isSelected))
-        {
             m_Context->Select_Component(inven);
-        }
     }
 
     auto weapon = obj->Get_Component(ID_STATIC, COMPONENTTYPE::WEAPON_EQUIP);
     if (weapon)
     {
         wstring wTypeName = weapon->Get_Name();
-        string typeName(wTypeName.begin(), wTypeName.end());
+        string  typeName(wTypeName.begin(), wTypeName.end());
 
         bool isSelected = (weapon == m_Context->Get_SelectedComponent());
         if (ImGui::Selectable(typeName.c_str(), isSelected))
-        {
             m_Context->Select_Component(weapon);
-        }
     }
 }
 
@@ -384,7 +373,7 @@ void CMainEditorMgr::Render_SelectComponent()
 
         switch (selectComponent->Get_Type())
         {
-            // Dynamic
+        // Dynamic
         case COMPONENTTYPE::TRANSFORM:
         {
             auto transform = dynamic_cast<CTransform*>(selectComponent);
@@ -440,8 +429,22 @@ void CMainEditorMgr::Render_SelectComponent()
             break;
         }
 
-        // 다른 컴포넌트 타입 ImGui에 보여줄거 있으면 추가하기
+        case COMPONENTTYPE::CONTROLLER_PLAYER:
+        {
+            auto controller = dynamic_cast<CPlayerController*>(selectComponent);
+            
+        }
+        break;
 
+        case COMPONENTTYPE::RIGIDBODY:
+        {
+            auto rigidbody = dynamic_cast<CRigidbody*>(selectComponent);
+            
+        }
+        break;
+
+        default: break;
+        // 다른 컴포넌트 타입 ImGui에 보여줄거 있으면 추가하기
         }
     }
 }
