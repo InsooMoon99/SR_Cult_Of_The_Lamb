@@ -27,7 +27,6 @@ void CBossChainAttack::Enter()
 void CBossChainAttack::Exit()
 {
     CMonsterState::Exit();
-
 }
 
 HRESULT CBossChainAttack::Ready_State()
