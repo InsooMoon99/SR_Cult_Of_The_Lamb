@@ -49,30 +49,9 @@ void CMapObjectMgr::Render_MapObjectWindow()
     {
         m_ShowGrass = true;
 
-        //if (m_MapPlacer)
-        //    m_MapPlacer->Start_Place(MAPOBJTYPE::GRASS);
-
     }
 
-    // 추가 예정) Rock, Tree 등등
-
-#pragma region Legacy
-
-     // 배치 취소 -> MapEditorPlacer에서 진행가능
-    //if (m_MapPlacer && m_MapPlacer->IsPlacing())
-    //{
-    //    if (CDInputMgr::GetInstance()->Get_DIMouseState(MOUSEKEYSTATE::DIM_RB))
-    //    {
-    //        cout << "Check" << endl;
-    //        m_MapPlacer->Cancel_Place();
-    //    }
-    //    //if (ImGui::Button("Cancel Place"))
-    //    //{
-    //    //    m_MapPlacer->Cancel_Place();
-    //    //}
-    //}
-
-#pragma endregion
+    // TODO 추가 예정) Rock, Tree 등등
 
     ImGui::Text(u8"맵 오브젝트 파일명 : "); ImGui::SameLine();
     ImGui::InputText("##MapObjectName", m_MapObjFileName, 128);
@@ -113,10 +92,12 @@ void CMapObjectMgr::Render_GrassWindow()
 
     if (ImGui::Begin(u8"풀때기 배치", &m_ShowGrass))
     {
-        CTexture* grassTexture = dynamic_cast<CTexture*>(CProtoMgr::GetInstance()->Clone_Prototype(COMPONENTTYPE::TEX_GRASS));
+        CTexture* grassTexture =
+            dynamic_cast<CTexture*>(CProtoMgr::GetInstance()->Clone_Prototype(COMPONENTTYPE::TEX_GRASS));
 
         if (grassTexture)
         {
+
             const _int TOTAL_GRASS = 20;
             const _int COLS = 5;
             const ImVec2 buttonSize(50.f, 50.f);
@@ -131,25 +112,27 @@ void CMapObjectMgr::Render_GrassWindow()
 
                     ImGui::PushID(i);
 
-                    //_bool isSelected = (i == m_SelectMapObjIndex);
-                    //if (isSelected)
-                    //{
-                    //    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.2f, 0.2f, 1.f));
-                    //}
+                    _bool isSelected = (i == m_SelectGrassIndex);
+                    if (isSelected)
+                    {
+                        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.2f, 0.2f, 1.f));
+                    }
 
                     if (ImGui::ImageButton("Grass", texID, buttonSize))
                     {
                         if (m_MapPlacer)
                         {
+                            m_SelectGrassIndex = i;
+                            m_MapPlacer->Set_GrassIndex(i);
                             m_MapPlacer->Start_Place(MAPOBJTYPE::GRASS);
                         }
 
                     }
 
-                    //if (isSelected)
-                    //{
-                    //    ImGui::PopStyleColor();
-                    //}
+                    if (isSelected)
+                    {
+                        ImGui::PopStyleColor();
+                    }
 
                     if (((i + 1) % COLS != 0))
                         ImGui::SameLine();

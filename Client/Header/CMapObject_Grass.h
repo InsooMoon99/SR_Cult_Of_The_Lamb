@@ -9,16 +9,17 @@ private:
     ~CMapObject_Grass() override;
 
 public:
-    HRESULT Ready_GameObject() override;
-    _int    Update_GameObject(const _float& timeDelta) override;
-    void    LateUpdate_GameObject(const _float& timeDelta) override;
-    void    Render_GameObject() override;
-
-public:
-    MAPOBJTYPE Get_Type() override;
+    HRESULT     Ready_GameObject() override;
+    _int        Update_GameObject(const _float& timeDelta) override;
+    void        LateUpdate_GameObject(const _float& timeDelta) override;
+    void        Render_GameObject() override;
+    
+    MAPOBJTYPE  Get_Type() override;
 
     static CMapObject_Grass* Create(DEVICE graphicDev);
 
 private:
     void Free() override;
+
+
 };

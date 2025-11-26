@@ -34,6 +34,7 @@ public:
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
 
+    virtual MAPOBJTYPE Get_Type() abstract;
 public:
     // 에디터 배치용 함수들
     void Set_WorldPos(const _vec3& pos);
@@ -47,7 +48,8 @@ public:
 
     void Set_Terrain(Engine::CTerrain* terrain) { m_Terrain = terrain; }
 
-    virtual MAPOBJTYPE Get_Type() abstract;
+    void Set_TextureIndex(_int index) { m_TextureIndex = index; }
+    _int Get_TextureIndex() const { return m_TextureIndex; }
 
 protected:
     HRESULT Add_BaseComponent(COMPONENTTYPE InType);
@@ -65,4 +67,7 @@ protected:
     _int  m_CellZ = -1;
 
     Engine::CTerrain* m_Terrain;
+
+    _int m_TextureIndex = 0;
+    
 };

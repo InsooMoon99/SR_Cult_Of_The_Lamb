@@ -12,28 +12,28 @@ static const int ATLAS_ROWS_284 = 1;  // 세로 1칸
 
 CTerrainRenderer::CTerrainRenderer(DEVICE graphicDev)
     : CComponent(graphicDev),
-    m_TransformCom(nullptr),
-    m_BufferCom(nullptr),
-    m_TextureCom(nullptr),
-    m_SelectedTile(0),
-    m_PaintX(0),
-    m_PaintZ(0),
-    m_MapName{"Terrain_"},
-    m_SelectedMapIndex(0)
+      m_TransformCom(nullptr),
+      m_BufferCom(nullptr),
+      m_TextureCom(nullptr),
+      m_SelectedTile(0),
+      m_PaintX(0),
+      m_PaintZ(0),
+      m_MapName{"Terrain_"},
+      m_SelectedMapIndex(0), m_SizeX(TILE_CNT_X), m_SizeZ(TILE_CNT_Z)
 {
 }
 
 CTerrainRenderer::CTerrainRenderer(const CTerrainRenderer& rhs)
     : CComponent(rhs),
-    m_TransformCom(nullptr),
-    m_BufferCom(nullptr),
-    m_TextureCom(nullptr),
-    m_TileIndices(rhs.m_TileIndices),
-    m_SelectedTile(rhs.m_SelectedTile),
-    m_PaintX(rhs.m_PaintX),
-    m_PaintZ(rhs.m_PaintZ),
-    m_SelectedMapIndex(rhs.m_SelectedMapIndex),
-    m_MapList(rhs.m_MapList)
+      m_TransformCom(nullptr),
+      m_BufferCom(nullptr),
+      m_TextureCom(nullptr),
+      m_TileIndices(rhs.m_TileIndices),
+      m_SelectedTile(rhs.m_SelectedTile),
+      m_PaintX(rhs.m_PaintX),
+      m_PaintZ(rhs.m_PaintZ),
+      m_SelectedMapIndex(rhs.m_SelectedMapIndex), m_SizeX(TILE_CNT_X), m_SizeZ(TILE_CNT_Z),
+      m_MapList(rhs.m_MapList)
 {
     memcpy(m_MapName, rhs.m_MapName, sizeof(m_MapName));
 }
@@ -387,6 +387,16 @@ HRESULT CTerrainRenderer::Refresh_MapFileList()
         m_SelectedMapIndex = (_int)m_MapList.size() - 1;
 
     return S_OK;
+}
+
+void CTerrainRenderer::Resize_Terrain(_int sizeX, _int sizeZ)
+{
+    m_SizeX = sizeX, m_SizeZ = sizeZ;
+
+    // 기존 버퍼 메모리 해제
+    Safe_Release(m_BufferCom);
+
+    m_BufferCom = CTerrainTex::Create(m_GraphicDev, sizeX, sizeZ, 1);
 }
 
 CTerrainRenderer* CTerrainRenderer::Create(DEVICE graphicDev)

@@ -30,13 +30,21 @@ public:
 
 public:
     // 셀 좌표 -> 월드 좌표로 변환
-    _vec3 GetCellCenterWorld(_uint cellX, _uint cellZ) const;
-    void  SelectPlaceObject(_uint cellX, _uint cellZ);
+    _vec3   GetCellCenterWorld(_uint cellX, _uint cellZ) const;
+    void    SelectPlaceObject(_uint cellX, _uint cellZ);
 
-    bool  PickCellMousePos(_int& outX, _int& outZ);
+    bool    PickCellMousePos(_int& outX, _int& outZ);
 
     HRESULT Refresh_MapFileList();
 
+    // Terrain 사이즈 조절
+    void    Resize_Terrain(_int sizeX, _int sizeZ);
+
+    _int    Get_SizeX() { return m_SizeX; }
+    _int    Get_SizeZ() { return m_SizeZ; }
+
+    void    Set_SizeX(_int sizeX) { m_SizeX = sizeX; }
+    void    Set_SizeZ(_int sizeZ) { m_SizeX = sizeZ; }
 
 public:
     static CTerrainRenderer* Create(DEVICE graphicDev);
@@ -58,4 +66,6 @@ private:
     vector<string>  m_MapList{};
     char            m_MapName[64];
     _int            m_SelectedMapIndex;
+
+    _int            m_SizeX, m_SizeZ;
 };

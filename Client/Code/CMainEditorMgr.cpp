@@ -110,6 +110,7 @@ void CMainEditorMgr::Render_MapToolTab()
     case MAPTOOL_VIEW::TERRAIN:
     {
         CTerrainRenderer* terrain = Find_TerrainRenderer();
+
         if (terrain)
         {
             ImGui::Text("Terrain Renderer");
@@ -118,7 +119,7 @@ void CMainEditorMgr::Render_MapToolTab()
         }
         else
         {
-            ImGui::Text("TerrainRenderer 를 찾을 수 없음");
+            ImGui::Text(u8"TerrainRenderer 를 찾을 수 없음");
         }
         break;
     }

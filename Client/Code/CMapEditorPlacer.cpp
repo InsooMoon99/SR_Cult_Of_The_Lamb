@@ -11,9 +11,9 @@
 
 CMapEditorPlacer::CMapEditorPlacer(DEVICE graphicDev)
     : m_GraphicDev(graphicDev),
-    m_PreviewObj(nullptr),
-    m_SelectedType(MAPOBJTYPE::MAPOBJ_END),
-    m_Placing(false)
+      m_PreviewObj(nullptr),
+      m_SelectedType(MAPOBJTYPE::MAPOBJ_END),
+      m_Placing(false), m_GrassIndex(0)
 {
     if (m_GraphicDev)
         m_GraphicDev->AddRef();
@@ -21,9 +21,9 @@ CMapEditorPlacer::CMapEditorPlacer(DEVICE graphicDev)
 
 CMapEditorPlacer::CMapEditorPlacer(const CMapEditorPlacer& rhs)
     : m_GraphicDev(rhs.m_GraphicDev),
-    m_PreviewObj(nullptr),
-    m_SelectedType(MAPOBJTYPE::MAPOBJ_END),
-    m_Placing(false)
+      m_PreviewObj(nullptr),
+      m_SelectedType(MAPOBJTYPE::MAPOBJ_END),
+      m_Placing(false), m_GrassIndex(0)
 {
     if (m_GraphicDev)
         m_GraphicDev->AddRef();
@@ -47,6 +47,11 @@ void CMapEditorPlacer::Update_MapPlacer(const _float& timeDelta)
     m_PreviewObj->Update_GameObject(timeDelta);
     m_PreviewObj->LateUpdate_GameObject(timeDelta);
 
+    // ImGui 클릭 시에는 화면 클릭 무시
+    ImGuiIO& io = ImGui::GetIO();
+    if (io.WantCaptureMouse)
+        return;
+
     // 좌클릭 하면 배치하기
     auto input = CDInputMgr::GetInstance();
 
@@ -61,6 +66,7 @@ void CMapEditorPlacer::Update_MapPlacer(const _float& timeDelta)
                 CMapObjectBase* newObj = CreateMapObjectType(m_GraphicDev, MAPOBJTYPE::GRASS);
                 if (newObj)
                 {
+                    newObj->Set_TextureIndex(m_GrassIndex);
                     newObj->Set_WorldPos(_vec3(worldPos.x, worldPos.y + 0.2f, worldPos.z));
                     layer->Add_GameObject(OBJTYPE::PLACEMENT, newObj);
                 }
@@ -95,6 +101,7 @@ void CMapEditorPlacer::Start_Place(MAPOBJTYPE type)
     m_PreviewObj = CreateMapObjectType(m_GraphicDev, type);
     if (m_PreviewObj)
     {
+        m_PreviewObj->Set_TextureIndex(m_GrassIndex);
         m_Placing = true;
         return;
     }

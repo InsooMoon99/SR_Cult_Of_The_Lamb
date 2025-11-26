@@ -319,12 +319,42 @@ static void Camera_Inspector(CCameraCom* camera)
 
 static void Terrain_Inspector(CTerrainRenderer* renderer)
 {
-    if (renderer)
+    if (renderer == nullptr)
+        return;
+
+    ImGui::PushID("Terrain_Resize");
     {
         renderer->Render_Editor();
 
-        //CMainEditorMgr::GetInstance()->Render_MapObjectWindow();
+        ImGui::Separator();
+        ImGui::Text(u8"=== Terrain 크기 설정 ===");
+        ImGui::NewLine();
+
+        static _int resizeX = TILE_CNT_X;
+        static _int resizeZ = TILE_CNT_Z;
+
+        const _int width = 65.f;
+
+        ImGui::Text("Size X :"); ImGui::SameLine();
+        ImGui::SetNextItemWidth(width);
+        ImGui::DragInt("##Terrain_SizeX", &resizeX, 1, 10, 129);
+
+        ImGui::SameLine();
+
+        ImGui::Text("Size Z :"); ImGui::SameLine();
+        ImGui::SetNextItemWidth(width);
+        ImGui::DragInt("##Terrain_SizeZ", &resizeZ, 1, 10, 129);
+
+        ImGui::NewLine();
+        if (ImGui::Button(u8"Terrain 재생성"))
+        {
+            renderer->Resize_Terrain(resizeX, resizeZ);
+        }
+
+        ImGui::SameLine();
+        ImGui::Text(u8"현재 %d x %d", renderer->Get_SizeX(), renderer->Get_SizeZ());
     }
+    ImGui::PopID();
 }
 
 static void BoxColl_Inspector(CBoxCollider* collider)

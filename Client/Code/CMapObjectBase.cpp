@@ -64,7 +64,7 @@ void CMapObjectBase::Render_GameObject()
     m_GraphicDev->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
     m_GraphicDev->SetRenderState(D3DRS_ALPHAREF, 0);
 
-    m_TextureCom->Set_Texture(2);
+    m_TextureCom->Set_Texture(m_TextureIndex);
     m_BufferCom->Render_Buffer();
 
     //m_GraphicDev->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
@@ -86,7 +86,6 @@ void CMapObjectBase::Set_WorldPos(const _vec3& pos)
 
     m_TransformCom->Set_Pos(pos);
 }
-
 
 HRESULT CMapObjectBase::Add_BaseComponent(COMPONENTTYPE InType)
 {
