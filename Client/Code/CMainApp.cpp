@@ -16,6 +16,7 @@
 #include "CManagement.h"
 #include "CProtoMgr.h"
 #include "CRenderer.h"
+#include "CResourceMgr.h"
 #include "CSceneMgr.h"
 #include "CTimerMgr.h"
 
@@ -172,6 +173,7 @@ void CMainApp::Free()
     CFontMgr::DestroyInstance();
     CRenderer::DestroyInstance();
     CProtoMgr::DestroyInstance();
+    CResourceMgr::DestroyInstance();
     CFrameMgr::DestroyInstance();
     CTimerMgr::DestroyInstance();
     CMainEditorMgr::DestroyInstance();

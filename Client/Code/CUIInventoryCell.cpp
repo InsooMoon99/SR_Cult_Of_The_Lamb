@@ -166,16 +166,22 @@ HRESULT CUIInventoryCell::Add_Component()
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
     // cell texture
-    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEXTURE, L"UI_Cell");
+    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_UI_CELL);
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
 
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEXTURE, m_TextureCom });
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_UI_CELL, m_TextureCom });
+
+    // item texture
+    m_ItemTexCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_ITEM);
+    NULL_CHECK_RETURN(m_ItemTexCom, E_FAIL);
+
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_ITEM, m_ItemTexCom });
 
     //highlight texture
-    m_HighlightTexCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEXTURE, L"UI_HighLight");
+    m_HighlightTexCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_UI_HIGHLIGHT);
     NULL_CHECK_RETURN(m_HighlightTexCom, E_FAIL);
 
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEXTURE, m_HighlightTexCom });
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_UI_HIGHLIGHT, m_HighlightTexCom });
 
     return S_OK;
 }

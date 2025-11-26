@@ -153,10 +153,10 @@ HRESULT CDroppedItem::Add_Component()
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
     // texture
-    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEXTURE, L"Texture_Item");
+    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_ITEM);
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
 
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEXTURE, m_TextureCom });
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_ITEM, m_TextureCom });
 
     // Box Col
     m_BoxColCom = CreateProtoComponent<CBoxCollider>(this, COMPONENTTYPE::BOX_COLL);

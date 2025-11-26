@@ -53,7 +53,7 @@ HRESULT CTerrainRenderer::Ready_TerrainRenderer()
             m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::TERRAIN_TEX));
 
         m_TextureCom = dynamic_cast<CTexture*>(
-            m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::TEXTURE));
+            m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::TEX_TILE_284));
     }
 
     NULL_CHECK_RETURN(m_TransformCom, E_FAIL);
@@ -130,7 +130,7 @@ void CTerrainRenderer::Render_Editor()
     ImGui::Text(u8"선택된 타일 : %d", m_SelectedTile + 1);
     ImGui::Separator();
 
-    // --- 타일 버튼들 ---
+    // --- 타일 버튼 ---
     if (m_TextureCom)
     {
         const _uint  tileCount = 5;

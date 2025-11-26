@@ -130,6 +130,9 @@
     <Filter Include="97. Component\03. Player Controller">
       <UniqueIdentifier>{f2106dd3-bd45-46c3-8297-8a8688247354}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\04. Boss\01. Boss1\01.State">
+      <UniqueIdentifier>{632c0230-c490-492f-96a9-7c7a3903e946}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -225,9 +228,6 @@
     <ClInclude Include="..\Header\CUIWeapon.h">
       <Filter>05. UI\01. UI\03. UIWeapon</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CMenuChar.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\CMainMenu.h">
       <Filter>02. Scene\03.MainMenu</Filter>
     </ClInclude>
@@ -258,8 +258,50 @@
     <ClInclude Include="..\Header\CUIIcon.h">
       <Filter>05. UI\01. UI</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CMapEditorPlacer.h">
+      <Filter>99. ImGui_Editor\00. MainEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUISkillCount.h">
+      <Filter>05. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUIInventory.h">
+      <Filter>05. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUIInventoryCell.h">
+      <Filter>05. UI</Filter>
+    </ClInclude>
     <ClInclude Include="..\Header\CBossPhase1.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>03. GameObject\04. Boss\01. Boss1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMenuChar.h">
+      <Filter>05. UI\01. UI\04. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBossStateMachine.h">
+      <Filter>03. GameObject\04. Boss\01. Boss1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMonsterState.h">
+      <Filter>03. GameObject\04. Boss\01. Boss1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBossAwake.h">
+      <Filter>03. GameObject\04. Boss\01. Boss1\01.State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBossBulletAttack.h">
+      <Filter>03. GameObject\04. Boss\01. Boss1\01.State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBossChainAttack.h">
+      <Filter>03. GameObject\04. Boss\01. Boss1\01.State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBossDead.h">
+      <Filter>03. GameObject\04. Boss\01. Boss1\01.State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBossIdle.h">
+      <Filter>03. GameObject\04. Boss\01. Boss1\01.State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBossMove.h">
+      <Filter>03. GameObject\04. Boss\01. Boss1\01.State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBossGroggy.h">
+      <Filter>03. GameObject\04. Boss\01. Boss1\01.State</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CMapEditorPlacer.h">
       <Filter>99. ImGui_Editor\01. EditorScript</Filter>
@@ -278,6 +320,18 @@
     </ClInclude>
     <ClInclude Include="..\Header\CUITabMenu.h">
       <Filter>05. UI</Filter>
+        </ClInclude>
+    <ClInclude Include="..\Header\CStateMachine.h">
+      <Filter>03. GameObject\04. Boss\01. Boss1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBaseState.h">
+      <Filter>03. GameObject\04. Boss\01. Boss1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CResourceMgr.h">
+      <Filter>01. Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMapObjectMgr.h">
+      <Filter>99. ImGui_Editor\01. EditorScript</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -359,9 +413,6 @@
     <ClCompile Include="..\Code\CMapObjectBase.cpp">
       <Filter>02. GameObject\09. MapObject</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CMenuChar.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\CMainMenu.cpp">
       <Filter>02. Scene\03.MainMenu</Filter>
     </ClCompile>
@@ -389,8 +440,50 @@
     <ClCompile Include="..\Code\CUIButton.cpp">
       <Filter>05. UI\01. UI</Filter>
     </ClCompile>
+    <ClCompile Include="..\Code\CMapEditorPlacer.cpp">
+      <Filter>99. ImGui_Editor\01. EditorScript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUISkillCount.cpp">
+      <Filter>05. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUIInventory.cpp">
+      <Filter>05. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUIInventoryCell.cpp">
+      <Filter>05. UI</Filter>
+    </ClCompile>
     <ClCompile Include="..\Code\CBossPhase1.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>03. GameObject\04. Boss\01. Boss1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMenuChar.cpp">
+      <Filter>05. UI\01. UI\04. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBossStateMachine.cpp">
+      <Filter>03. GameObject\04. Boss\01. Boss1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMonsterState.cpp">
+      <Filter>03. GameObject\04. Boss\01. Boss1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBossAwake.cpp">
+      <Filter>03. GameObject\04. Boss\01. Boss1\01.State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBossBulletAttack.cpp">
+      <Filter>03. GameObject\04. Boss\01. Boss1\01.State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBossChainAttack.cpp">
+      <Filter>03. GameObject\04. Boss\01. Boss1\01.State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBossDead.cpp">
+      <Filter>03. GameObject\04. Boss\01. Boss1\01.State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBossIdle.cpp">
+      <Filter>03. GameObject\04. Boss\01. Boss1\01.State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBossMove.cpp">
+      <Filter>03. GameObject\04. Boss\01. Boss1\01.State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBossGroggy.cpp">
+      <Filter>03. GameObject\04. Boss\01. Boss1\01.State</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CMapEditorPlacer.cpp">
       <Filter>99. ImGui_Editor\01. EditorScript</Filter>
@@ -409,6 +502,18 @@
     </ClCompile>
     <ClCompile Include="..\Code\CUITabMenu.cpp">
       <Filter>05. UI</Filter>
+         </ClCompile>
+    <ClCompile Include="..\Code\CStateMachine.cpp">
+      <Filter>03. GameObject\04. Boss\01. Boss1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBaseState.cpp">
+      <Filter>03. GameObject\04. Boss\01. Boss1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CResourceMgr.cpp">
+      <Filter>01. Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMapObjectMgr.cpp">
+      <Filter>99. ImGui_Editor\01. EditorScript</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

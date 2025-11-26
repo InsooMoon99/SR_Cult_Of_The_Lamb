@@ -91,7 +91,7 @@ HRESULT CUIIcon::Add_Component(const wstring& texProtoTag)
     m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEXTURE, texProtoTag);
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
 
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEXTURE, m_TextureCom });
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_UI_ICON, m_TextureCom });
 
     return S_OK;
 }
