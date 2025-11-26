@@ -1,32 +1,9 @@
 ﻿#include "pch.h"
 #include "CLoading.h"
 
-#include "CAnimator.h"
-#include "CBoxCol.h"
-#include "CBoxCollider.h"
-#include "CBoxTex.h"
-#include "CCameraCom.h"
-#include "CCombatStat.h"
-#include "CEnumHelper.h"
-#include "CInventory.h"
-#include "CItemDB.h"
-#include "CPlayerController.h"
 #include "CProtoMgr.h"
-#include "CRcCol.h"
-#include "CRectCollider.h"
 #include "CResourceMgr.h"
-#include "CRigidbody.h"
-#include "CState.h"
-#include "CTerrain.h"
-#include "CTerrainRenderer.h"
-#include "CTerrainTex.h"
-#include "CTexture.h"
-#include "CTransform.h"
-#include "CTriCol.h"
-#include "CWeaponEquip.h"
-#include "CWeaponEquip.h"
-#include "ItemData.h"
-#include "ItemInstance.h"
+
 
 CLoading::CLoading(DEVICE pGraphicDev)
     : m_GraphicDev(pGraphicDev),

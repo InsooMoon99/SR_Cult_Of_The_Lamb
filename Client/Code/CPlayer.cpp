@@ -160,6 +160,7 @@ void CPlayer::Render_Reset()
 
 void CPlayer::Test_Attack()
 {
+    // TODO : 나중에 무기 컴포넌트 안에 들어가면 좋을듯
     // 1. 공격 박스 생성
     auto obj = CAttackBox::Create(m_GraphicDev);
     obj->Set_Instigator(this);
@@ -320,7 +321,17 @@ void CPlayer::Animation_Setting()
                              L"PlayerSwordCombo1",
                              ANIMSTATE::ONCE);
 
-    // TODO : 검 공격 추가
+    m_AnimatorCom->Create_Animation(L"PlayerSwordCombo2", 38, 0.02f);
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SWORD_COMBO2,
+                             L"PlayerSwordCombo2",
+                             ANIMSTATE::ONCE);
+
+    m_AnimatorCom->Create_Animation(L"PlayerSwordCombo3", 38, 0.02f);
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SWORD_COMBO3,
+                             L"PlayerSwordCombo3",
+                             ANIMSTATE::ONCE);
 #pragma endregion
 }
 

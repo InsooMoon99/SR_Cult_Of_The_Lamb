@@ -51,6 +51,7 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
 
     return S_OK;
 }
+
 HRESULT CResourceMgr::Ready_BossP1(DEVICE graphicDev)
 {
     auto protoMgr = CProtoMgr::GetInstance();
@@ -97,7 +98,9 @@ HRESULT CResourceMgr::Ready_BossP1(DEVICE graphicDev)
         COMPONENTTYPE::TEX_BOSSPHASE1, BossP1Tex)))
         return E_FAIL;
 
+    return S_OK;
 }
+
 HRESULT CResourceMgr::Ready_Common(DEVICE graphicDev)
 {
     auto protoMgr = CProtoMgr::GetInstance();
@@ -258,7 +261,13 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         L"../Bin/Resource/Texture/Player/Sword_Combo1/Lamb-attack-combo1-%d.png", 31)))
         return E_FAIL;
 
-    // TODO : 검 공격 콤보 추가
+    if (FAILED(playerTex->Add_Texture(L"PlayerSwordCombo2", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Sword_Combo2/Lamb-attack-combo2-%d.png", 38)))
+        return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"PlayerSwordCombo3", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Sword_Combo3/Lamb-attack-combo3-%d.png", 38)))
+        return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
         return E_FAIL;

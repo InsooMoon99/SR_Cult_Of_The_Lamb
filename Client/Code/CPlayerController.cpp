@@ -7,6 +7,7 @@
 #include "CDInputMgr.h"
 #include "CGameObject.h"
 #include "CMainEditorMgr.h"
+#include "CPlayer.h"
 #include "CRigidbody.h"
 #include "CState.h"
 #include "CTransform.h"
@@ -121,74 +122,92 @@ void CPlayerController::CheckStateTransition()
     ACTORSTATE curState = m_OwnerStateCom->Get_State();
     const auto inputMgr = CDInputMgr::GetInstance();
 
-    //!! 상태 변경 불가 조건 (구르기, 피격, 사망)
-    if (curState == ACTORSTATE::PLAYER_ROLL ||
-        curState == ACTORSTATE::DEAD ||
-        curState == ACTORSTATE::HIT)
+    //!! 상태 변경 불가 조건 (피격, 사망)
+    if (curState == ACTORSTATE::DEAD || curState == ACTORSTATE::HIT)
         return;
 
     // [우선순위 1] 구르기 (Space)
+    // - 공격 상태여도 구르기로 이행 (캔슬)
     if (inputMgr->KeyDown(DIK_SPACE))
     {
-        // 구르기 진입 세팅
-        m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_ROLL);
+        if (curState != ACTORSTATE::PLAYER_ROLL)
+        {
+            // 구르기 진입 세팅
+            m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_ROLL);
 
-        m_StateData.Reset();
+            m_StateData.Reset();
 
-        // 구르기 시작 시 방향 결정
-        if (D3DXVec3LengthSq(&m_StateData.moveDir) > 0.f)
-            m_StateData.rollDir = m_StateData.moveDir;
-        else
-            m_StateData.rollDir = CalcWorldDir(m_OwnerStateCom->Get_Dir());
+            // 구르기 시작 시 방향 결정
+            if (D3DXVec3LengthSq(&m_StateData.moveDir) > 0.f)
+                m_StateData.rollDir = m_StateData.moveDir;
+            else
+                m_StateData.rollDir = CalcWorldDir(m_OwnerStateCom->Get_Dir());
 
+            // TODO : 문제점 추후 해결
+            /*
+            현재 구르기(ACTORSTATE::PLAYER_ROLL) 진입 시 m_OwnerColliderCom->Set_CollisionActive(false)를 호출하고 있습니다.
+    
+            문제점:
+    
+            이 코드는 플레이어의 모든 충돌을 꺼버립니다. 즉, 적의 공격뿐만 아니라
+            벽이나 장애물도 통과하게 될 가능성이 매우 높습니다.
+    
+            해결 방안:
+            
+            방법 A (추천):
+            충돌체(Collider)는 끄지 말고,PlayerStateData에 isInvincible (무적) 플래그를 두거나
+            CCombatStat 쪽에 무적 상태를 설정하여, 피격 판정 로직에서만 데미지를 무시하도록 처리해야 합니다.
+    
+            방법 B:
+            만약 벽 충돌체와 피격 충돌체가 분리되어 있다면, 피격용 충돌체만 꺼야 합니다.
+            */
+            if (m_OwnerColliderCom) m_OwnerColliderCom->Set_CollisionActive(false);
 
-        // TODO : 문제점 추후 해결
-        /*
-        현재 구르기(ACTORSTATE::PLAYER_ROLL) 진입 시 m_OwnerColliderCom->Set_CollisionActive(false)를 호출하고 있습니다.
+            // 구를 때는 마찰력 무시
+            if (m_OwnerRigidbodyCom) m_OwnerRigidbodyCom->Set_Friction(0.f);
 
-        문제점:
-
-        이 코드는 플레이어의 모든 충돌을 꺼버립니다. 즉, 적의 공격뿐만 아니라
-        벽이나 장애물도 통과하게 될 가능성이 매우 높습니다.
-
-        해결 방안:
-        
-        방법 A (추천):
-        충돌체(Collider)는 끄지 말고,PlayerStateData에 isInvincible (무적) 플래그를 두거나
-        CCombatStat 쪽에 무적 상태를 설정하여, 피격 판정 로직에서만 데미지를 무시하도록 처리해야 합니다.
-
-        방법 B:
-        만약 벽 충돌체와 피격 충돌체가 분리되어 있다면, 피격용 충돌체만 꺼야 합니다.
-        */
-
-        if (m_OwnerColliderCom) m_OwnerColliderCom->Set_CollisionActive(false);
-        // 구를 때는 마찰력 무시
-        if (m_OwnerRigidbodyCom) m_OwnerRigidbodyCom->Set_Friction(0.f);
+            return;
+        }
     }
 
     // [우선순위 2] 공격 입력 처리 (공격 시작 시 방향 보정 로직 포함)
-    else if (inputMgr->)
+    // - 구르기 상태여도 공격으로 이행 (캔슬)
+    else if (inputMgr->MouseDown(DIM_LB))
     {
-        if (curState == ACTORSTATE::IDLE)
-            m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SWORD_COMBO1);
-        else if (curState == ACTORSTATE::RUN)
+        if (curState == ACTORSTATE::PLAYER_ROLL ||
+            curState == ACTORSTATE::IDLE ||
+            curState == ACTORSTATE::RUN)
         {
-            // TODO : 나중에 대쉬 공격으로 변경 예정
             m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SWORD_COMBO1);
+
+            // 공격 시작 시에만 초기화
+            m_StateData.Reset();
+            m_StateData.comboIndex = 1;
+
+            if (curState == ACTORSTATE::PLAYER_ROLL)
+            {
+                if (m_OwnerColliderCom) m_OwnerColliderCom->Set_CollisionActive(true);
+                if (m_OwnerRigidbodyCom) m_OwnerRigidbodyCom->Set_Friction(0.2f); // 기본 마찰력 복구
+            }
         }
+        // TODO : PLAYER_ROLL, RUN 의 경우 대쉬 공격으로 가도록
+        else if (IsAttacking(curState))
+        {
+            if (m_StateData.canNextCombo)
+                m_StateData.isNextComboReserved = true;
 
-        else if (m_StateData.canNextCombo)
-            m_StateData.isNextComboReserved = true;
-
-        m_StateData.Reset();
-
-        m_StateData.comboIndex = 1;
-
-        // TODO : 마우스의 월드 좌표를 구해서 마우스 뱡향으로 공격이 되도록 구성하기
+            return;
+        }
     }
 
+    // TODO : 마우스의 월드 좌표를 구해서 마우스 뱡향으로 공격이 되도록 구성하기
+
+    //!! 공격 or 구르기 중이라면 이동/대기 상태로 넘어가지 않도록 여기서 리턴
+    if (IsAttacking(curState) || curState == ACTORSTATE::PLAYER_ROLL)
+        return;
+
     // [우선순위 3] 이동 (방향 입력)
-    else if (D3DXVec3LengthSq(&m_StateData.moveDir) > 0.f)
+    if (D3DXVec3LengthSq(&m_StateData.moveDir) > 0.001f)
     {
         if (curState != ACTORSTATE::RUN)
         {
@@ -332,6 +351,13 @@ _vec3 CPlayerController::CalcWorldDir(ACTORDIR dir)
     return vDir;
 }
 
+_bool CPlayerController::IsAttacking(ACTORSTATE state)
+{
+    return (state == ACTORSTATE::PLAYER_SWORD_COMBO1 ||
+            state == ACTORSTATE::PLAYER_SWORD_COMBO2 ||
+            state == ACTORSTATE::PLAYER_SWORD_COMBO3);
+}
+
 void CPlayerController::Action_Idle(const _float& timeDelta)
 {
     m_OwnerRigidbodyCom->Set_Friction(0.2f);
@@ -385,8 +411,9 @@ void CPlayerController::Action_Roll(const _float& timeDelta)
 
 void CPlayerController::Action_Sword(const _float& timeDelta)
 {
-    // 예시: 콤보 1, 2, 3을 하나의 함수에서 인덱스로 처리하거나 분리 가능
-    // 여기서는 통합 로직 예시
+    m_OwnerRigidbodyCom->Set_Friction(0.2f);
+
+    ACTORSTATE curState = m_OwnerStateCom->Get_State();
 
     _float attackSpeed = 1.f;
     if (m_OwnerCombatStatCom)
@@ -401,7 +428,9 @@ void CPlayerController::Action_Sword(const _float& timeDelta)
         if (!m_StateData.isHitboxActive)
         {
             m_StateData.isHitboxActive = true;
-            // if(m_WeaponCollider) m_WeaponCollider->Set_Active(true);
+            // 예시 : if(m_WeaponCollider) m_WeaponCollider->Set_Active(true);
+
+            dynamic_cast<CPlayer*>(m_Owner)->Test_Attack();
         }
     }
     else
@@ -409,12 +438,12 @@ void CPlayerController::Action_Sword(const _float& timeDelta)
         if (m_StateData.isHitboxActive)
         {
             m_StateData.isHitboxActive = false;
-            // if(m_WeaponCollider) m_WeaponCollider->Set_Active(false);
+            // 예시 : if(m_WeaponCollider) m_WeaponCollider->Set_Active(false);
         }
     }
 
-    // 2. 선입력 구간 체크 (예: 50% 지점부터)
-    if (m_StateData.timer > attackDuration * 0.5f)
+    // 2. 선입력 구간 체크
+    if (m_StateData.timer > attackDuration * 0.4f && m_StateData.comboIndex < 3)
         m_StateData.canNextCombo = true;
 
     // 3. 애니메이션 종료 시 처리
@@ -425,12 +454,9 @@ void CPlayerController::Action_Sword(const _float& timeDelta)
             // 다음 콤보로 전이
             ++m_StateData.comboIndex;
 
-            //ACTORSTATE nextState = static_cast<ACTORSTATE>(
-            //    static_cast<_uint>(ACTORSTATE::PLAYER_SWORD_COMBO1)
-            //    + m_StateData.comboIndex - 1);
-
-            // 임시
-            ACTORSTATE nextState = ACTORSTATE::PLAYER_SWORD_COMBO1;
+            ACTORSTATE nextState = static_cast<ACTORSTATE>(
+                static_cast<_uint>(ACTORSTATE::PLAYER_SWORD_COMBO1)
+                + m_StateData.comboIndex - 1);
 
             m_OwnerStateCom->Change_State(nextState);
             m_StateData.Reset();

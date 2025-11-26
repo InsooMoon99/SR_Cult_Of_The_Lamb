@@ -48,15 +48,15 @@ private:
         // ==========================================
         // [5] 검 공격
         // ==========================================
-        _float swordCombo1Duration      = 0.8f; // 1타 길이
-        _float swordCombo2Duration      = 0.8f; // 2타 길이
-        _float swordCombo3Duration      = 1.2f; // 3타 길이
-        _float swordHeavyAttackDuration = 1.5f; // 강공격 길이
+        _float swordCombo1Duration      = 0.5f; // 1타 길이
+        _float swordCombo2Duration      = 0.5f; // 2타 길이
+        _float swordCombo3Duration      = 0.5f; // 3타 길이
+        _float swordHeavyAttackDuration = 1.0f; // 강공격 길이
 
         // 현재 검 공격의 지속시간 Getter
         _float Get_SwordAttackDuration(_float attackSpeed)
         {
-            _float duration = 0.2f;
+            _float duration = 0.8f;
 
             if (isHeavyAttack)
                 duration = swordHeavyAttackDuration;
@@ -64,15 +64,18 @@ private:
             {
                 switch (comboIndex)
                 {
-                case 1: duration = swordCombo1Duration; break;
-                case 2: duration = swordCombo2Duration; break;
-                case 3: duration = swordCombo3Duration; break;
+                case 1: duration = swordCombo1Duration;
+                    break;
+                case 2: duration = swordCombo2Duration;
+                    break;
+                case 3: duration = swordCombo3Duration;
+                    break;
                 }
             }
 
             if (attackSpeed > 0.f)
                 return duration / attackSpeed;
-            
+
             return duration;
         }
 
@@ -130,6 +133,9 @@ private:
     _bool CanChangeDir(ACTORSTATE state);   // 방향 전환 가능 상태인지 확인
     void  ChangeDir();                      // 이동 방향에 맞춰 바라보는 방향 갱신
     _vec3 CalcWorldDir(ACTORDIR dir);       // 플레이어의 ACTORDIR 상태에 따라 월드 기준 방향 반환
+
+    // --- [보조 함수] ---
+    _bool IsAttacking(ACTORSTATE state);
 
     // --- [세부 행동 메서드] ---
     void Action_Idle(const _float& timeDelta);      // IDLE 상태
