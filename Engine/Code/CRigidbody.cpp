@@ -4,9 +4,9 @@
 
 CRigidbody::CRigidbody(DEVICE graphicDev)
     : CComponent(graphicDev),
-      m_UseAccel(false),
+      m_UseAccel(true),
       m_UseFriction(true),
-      m_UseGravity(false),
+      m_UseGravity(true),
       m_OnGround(true),
       m_Mass(1.f),
       m_Friction(0.05f),

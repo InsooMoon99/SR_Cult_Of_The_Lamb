@@ -70,6 +70,10 @@ HRESULT CPlayer::Ready_GameObject()
 
     m_TransformCom->Set_Pos(_vec3(0.f, 0.f, 1.f));
 
+    //!! Rigidbody에서 가속, 중력 사용 안함
+    m_RigidbodyCom->Set_UseAccel(false);
+    m_RigidbodyCom->Set_UseGravity(false);
+
     Animation_Setting();
 
     return S_OK;
@@ -98,8 +102,8 @@ _int CPlayer::Update_GameObject(const _float& timeDelta)
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 
-    if (CDInputMgr::GetInstance()->KeyDown(DIK_5))
-        Test_Attack();
+    //if (CDInputMgr::GetInstance()->KeyDown(DIK_5))
+    //    Test_Attack();
 
     return exit;
 }
@@ -302,7 +306,9 @@ void CPlayer::Animation_Setting()
 #pragma region ------   Sword_Combo1    ------
     m_AnimatorCom->Create_Animation(L"PlayerSwordCombo1", 31, 0.02f);
 
-    m_StateCom->Set_AnimInfo(ACTORSTATE::ATTACK, L"PlayerSwordCombo1", ANIMSTATE::ONCE);
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SWORD_COMBO1,
+                             L"PlayerSwordCombo1",
+                             ANIMSTATE::ONCE);
 #pragma endregion
 }
 

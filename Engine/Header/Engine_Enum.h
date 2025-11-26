@@ -56,7 +56,6 @@ namespace Engine
     {
         ENVIRONMENT,
         GAMELOGIC,
-        CAMERA,
         UI,
 
         LAYER_END
@@ -130,12 +129,6 @@ namespace Engine
         CIRCLE_COLL,
         BOX_COLL,
         SPHERE_COLL,
-
-        ////////////////
-        // MapObject ///
-        ////////////////
-        TEX_GRASS,
-        TEX_ROCK,
 
         ////////////////
         // MapObject ///
