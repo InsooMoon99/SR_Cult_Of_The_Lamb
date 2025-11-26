@@ -204,8 +204,10 @@
     <ClInclude Include="..\Header\CUIIcon.h" />
     <ClInclude Include="..\Header\CUIInventory.h" />
     <ClInclude Include="..\Header\CUIInventoryCell.h" />
+    <ClInclude Include="..\Header\CUIPlayerPage.h" />
     <ClInclude Include="..\Header\CUIPlayerPanel.h" />
     <ClInclude Include="..\Header\CUISkillCount.h" />
+    <ClInclude Include="..\Header\CUITabMenu.h" />
     <ClInclude Include="..\Header\CUIWeapon.h" />
     <ClInclude Include="..\Header\CWeaponEquip.h" />
     <ClInclude Include="..\Header\ItemData.h" />
@@ -250,9 +252,11 @@
     <ClCompile Include="..\Code\CUIIcon.cpp" />
     <ClCompile Include="..\Code\CUIInventory.cpp" />
     <ClCompile Include="..\Code\CUIInventoryCell.cpp" />
+    <ClCompile Include="..\Code\CUIPlayerPage.cpp" />
     <ClCompile Include="..\Code\CUIPlayerPanel.cpp" />
     <ClCompile Include="..\Code\CUIMp.cpp" />
     <ClCompile Include="..\Code\CUISkillCount.cpp" />
+    <ClCompile Include="..\Code\CUITabMenu.cpp" />
     <ClCompile Include="..\Code\CUIWeapon.cpp" />
     <ClCompile Include="..\Code\CWeaponEquip.cpp" />
     <ClCompile Include="Client.cpp" />

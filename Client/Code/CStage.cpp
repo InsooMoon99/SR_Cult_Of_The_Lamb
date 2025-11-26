@@ -28,6 +28,7 @@
 
 #include "CDInputMgr.h"
 #include "CSceneMgr.h"
+#include "CUITabMenu.h"
 
 CStage::CStage(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -239,11 +240,16 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
         layer->Add_GameObject(OBJTYPE::UI, uiSkillCount),
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUISKillCount) failed");
    
-   ///Inventory UI
-    CUIInventory* uiInventory = CUIInventory::Create(m_GraphicDev);
-    uiInventory->SetInventory(m_PlayerInventoryCom);
-    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiInventory),
-        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UIInventory) failed");
+    /////Inventory UI
+    //CUIInventory* uiInventory = CUIInventory::Create(m_GraphicDev);
+    //uiInventory->SetInventory(m_PlayerInventoryCom);
+    //FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiInventory),
+    //    L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UIInventory) failed");
+    //CUITabMenu
+    CUITabMenu* uiTabMenu = CUITabMenu::Create(m_GraphicDev);
+    uiTabMenu->SetInventory(m_PlayerInventoryCom);
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiTabMenu),
+      L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UITabMenu) failed");
 
     m_Layers.insert({ layerType, layer });
 

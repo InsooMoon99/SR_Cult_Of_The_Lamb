@@ -12,15 +12,21 @@ int CUIButton::m_nextID = 0;
 
 // 일단 대기 rcTex 고치고 보자
 
-CUIButton::CUIButton(DEVICE graphicDev) : CUI(graphicDev), m_textureOn(0), m_textureOff(0)
+CUIButton::CUIButton(DEVICE graphicDev, int texOn, int texOff) : CUI(graphicDev), m_textureOn(texOn), m_textureOff(texOff)
 {
     m_ID = ++m_nextID;
+
+    m_textureOn = texOn;
+    m_textureOff = texOff;
 }
 
-CUIButton::CUIButton(const CUIButton& rhs)
-: CUI(rhs) 
+CUIButton::CUIButton(const CUIButton& rhs, int texOn, int texOff)
+: CUI(rhs) , m_textureOn(texOn), m_textureOff(texOff)
 {
     m_ID = ++m_nextID;
+
+    m_textureOn = texOn;
+    m_textureOff = texOff;
 }
 CUIButton::~CUIButton()
 {
@@ -35,9 +41,14 @@ HRESULT CUIButton::Ready_GameObject()
    // m_TransformCom->Set_Scale(_vec3(100.f, 100.f, 1.f));
     //if (false == SetTexAspectInit(m_TextureCom, m_TransformCom, 1))
     //    return E_FAIL;
-
-    m_textureIndex = m_textureOn;
-
+    if (m_textureOn == 1)
+    {
+        m_textureIndex = 0;
+    }
+    if (m_textureOn == 3)
+    {
+        m_textureIndex = 2;
+    }
     return S_OK;
 }
 
@@ -111,7 +122,7 @@ void CUIButton::Render_GameObject()
 
     m_BufferCom->Render_Buffer();
 
-
+   
 }
 
 HRESULT CUIButton::Add_Component()
@@ -160,9 +171,9 @@ bool CUIButton::SetCloneTexAspectScale(_vec3 vec) // 텍스쳐 등록후
 
     return true;
 }
-CUIButton* CUIButton::Create(DEVICE graphicDev)
+CUIButton* CUIButton::Create(DEVICE graphicDev, int texOn, int texOff)
 {
-    auto Button = new CUIButton(graphicDev);
+    auto Button = new CUIButton(graphicDev, texOn, texOff);
     if (FAILED(Button->Ready_GameObject()))
     {
         Safe_Release(Button);

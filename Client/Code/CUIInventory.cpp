@@ -41,10 +41,9 @@ HRESULT CUIInventory::Ready_GameObject()
     if (FAILED(Add_Component()))
         return E_FAIL;
 
-    m_TargetX = -WINCX / 5.f;
-    m_ClosedX = -WINCX;
-    m_Speed = 900.f;
-    m_TransformCom->Set_Pos(m_ClosedX, 0.f, 1.f);
+    float m_ClosedX = -WINCX;
+    
+    //m_TransformCom->Set_Pos(m_ClosedX, 0.f, 1.f);
     m_TransformCom->Set_Scale(420.f, 400.f, 1.f);
 
    // m_Button = CUIButton::Create(m_GraphicDev);
@@ -56,37 +55,35 @@ HRESULT CUIInventory::Ready_GameObject()
 
 _int CUIInventory::Update_GameObject(const _float& timeDelta)
 {
-    CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_UI, this);
-    
-    if (CDInputMgr::GetInstance()->KeyDown(DIK_TAB))
-    {
-        m_IsOpen = !m_IsOpen;
-        m_IsAnimating = true;
-    }
+    // 
+    // if (CDInputMgr::GetInstance()->KeyDown(DIK_TAB))
+    // {
+    //     m_IsOpen = !m_IsOpen;
+    //     m_IsAnimating = true;
+    // }
 
-    float targetX = m_IsOpen ? m_TargetX: m_ClosedX; //열려있냐 닫혀있냐에 따라서 목표 X값이 달라짐
-    _vec3 pos = m_TransformCom->Get_Pos();
+    //float targetX = m_IsOpen ? m_TargetX : m_ClosedX; //열려있냐 닫혀있냐에 따라서 목표 X값이 달라짐
+    //_vec3 pos = m_TransformCom->Get_Pos();
+    //
+    ////if(m_IsAnimating) //인벤 배경 움직이기
+    ////{
+    //float dir = targetX < pos.x ? -1.f : 1.f; //현재 x좌표에 따라서 움직일 방향이 달라짐
+    //pos.x += dir * m_Speed * timeDelta;
+    //
+    //if ((dir > 0.f && pos.x >= targetX) || (dir < 0.f && pos.x <= targetX)) //목표한 X에 도달하면 애니메이션 동작 꺼주기
+    //{
+    //    pos.x = targetX;
+    //    m_IsAnimating = false;
+    //}
+    //
+    //m_TransformCom->Set_Pos(pos);
+    //
+    // }
 
-    if(m_IsAnimating) //인벤 배경 움직이기
-    {
-        float dir = targetX < pos.x ? -1.f : 1.f; //현재 x좌표에 따라서 움직일 방향이 달라짐
-        pos.x+= dir * m_Speed * timeDelta;
-
-        if((dir>0.f&&pos.x>=targetX)||(dir<0.f&&pos.x<=targetX)) //목표한 X에 도달하면 애니메이션 동작 꺼주기
-        {
-            pos.x = targetX;
-            m_IsAnimating = false;
-        }
-
-        m_TransformCom->Set_Pos(pos);
-        //m_Button->Update_GameObject(timeDelta);
-        //m_Button->Get_Transform()->Set_Pos(pos);
-    }
-
-    if (m_IsOpen||m_IsAnimating)
-    {
+    //if (m_IsOpen||m_IsAnimating)
+    //{
         SetPositions(); //애니메이션 실행 시 셀 위치 재계산
-    }
+   //}
 
     const vector<InventorySlot>& slots = m_Inventory->GetVector();
     for (int i = 0; i < slots.size(); i++)
@@ -111,9 +108,9 @@ void CUIInventory::LateUpdate_GameObject(const _float& timeDelta)
 void CUIInventory::Render_GameObject()
 {
     CUI::Render_GameObject();
-
-    if (!m_IsOpen && !m_IsAnimating)
-        return;
+    //
+    //if (!m_IsOpen && !m_IsAnimating)
+    //    return;
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 

@@ -273,6 +273,12 @@
     <ClInclude Include="..\Header\CUIInventoryCell.h">
       <Filter>05. UI\01. UI</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CUIPlayerPage.h">
+      <Filter>05. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUITabMenu.h">
+      <Filter>05. UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -397,6 +403,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\CUIInventoryCell.cpp">
       <Filter>05. UI\01. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUIPlayerPage.cpp">
+      <Filter>05. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUITabMenu.cpp">
+      <Filter>05. UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

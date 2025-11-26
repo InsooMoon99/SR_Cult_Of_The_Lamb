@@ -8,8 +8,8 @@ END
 class  CUIButton : public CUI
 {
 protected:
-    explicit CUIButton(DEVICE graphicDev);
-    explicit CUIButton(const CUIButton& rhs);
+    explicit CUIButton(DEVICE graphicDev, int texOn, int texOff);
+    explicit CUIButton(const CUIButton& rhs, int texOn, int texOff);
     ~CUIButton() override;
 
 public:
@@ -27,7 +27,7 @@ protected:
     //bool m_bClicked = false;
     RECT m_tRect;
 public:
-    static CUIButton* Create(DEVICE graphicDev);
+    static CUIButton* Create(DEVICE graphicDev, int texOn, int texOff);
 
     void        Set_TextureIndex(int textureOn, int textureOff) { m_textureOn = textureOn; m_textureOff = textureOff;}
     CTransform* Get_Transform() const { return m_TransformCom; }
