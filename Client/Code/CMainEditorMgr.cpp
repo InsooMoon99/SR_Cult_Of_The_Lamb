@@ -1,9 +1,8 @@
 ﻿#include "pch.h"
 #include "CMainEditorMgr.h"
-
+#include "CDInputMgr.h"
 #include "CBoxCollider.h"
 #include "CCameraCom.h"
-#include "CClient_CreateHelper.h"
 #include "CCombatStat.h"
 #include "CComInspectors.h"
 #include "CComponent.h"
@@ -14,8 +13,7 @@
 #include "CLayer.h"
 #include "CManagement.h"
 #include "CMapEditorPlacer.h"
-#include "CMapObjectBase.h"
-#include "CMapObject_Grass.h"
+#include "CMapObjectMgr.h"
 #include "CScene.h"
 #include "CState.h"
 #include "CTerrainRenderer.h"
@@ -36,15 +34,12 @@ void CMainEditorMgr::Ready_MainEditor(DEVICE graphicDev, CEditContext* ctx)
 
     Set_EditContext(ctx);
 
-    m_MapPlacer = CMapEditorPlacer::Create(m_GraphicDev);
+    CMapObjectMgr::GetInstance()->Ready_MapObjectMgr(graphicDev);
 }
 
 void CMainEditorMgr::Update_MainEditor(const _float& timeDelta)
 {
-    if (m_MapPlacer)
-    {
-        m_MapPlacer->Update_MapPlacer(timeDelta);
-    }
+    CMapObjectMgr::GetInstance()->Update_MapObjectMgr(timeDelta);
 }
 
 void CMainEditorMgr::Set_EditContext(CEditContext* ctx)
@@ -52,6 +47,97 @@ void CMainEditorMgr::Set_EditContext(CEditContext* ctx)
     Safe_Release(m_Context);
 
     m_Context = ctx;
+}
+
+void CMainEditorMgr::Render_SceneTab()
+{
+    ImGui::BeginChild("[ Tool bar ]", ImVec2(0, 40), true);
+    Render_ToolBar();
+    ImGui::EndChild();
+
+    ImGui::Separator();
+
+    // 왼쪽 Hierarchy
+    ImGui::BeginChild("[ Hierarchy ]", ImVec2(170, 0), true);
+    Render_Hierarchy();
+    ImGui::EndChild();
+
+    ImGui::SameLine();
+
+    // 오른쪽 Inspector
+    ImGui::BeginChild("[ Inspector ]", ImVec2(0, 0), true);
+    Render_Inspector();
+    ImGui::EndChild();
+}
+
+void CMainEditorMgr::Render_MapToolTab()
+{
+    // 공용 툴바
+    ImGui::BeginChild("[ MapTool_Toolbar ]", ImVec2(0, 40), true);
+    Render_ToolBar();
+    ImGui::EndChild();
+
+    ImGui::Separator();
+
+    // =======================
+    // 왼쪽 : 메뉴 (선택만 담당)
+    // =======================
+    ImGui::BeginChild("[ MapTool_Menu ]", ImVec2(140, 0), true);
+
+    ImGui::Text("Map Tools");
+    ImGui::Separator();
+
+    bool selTerrain = (m_MapToolView == MAPTOOL_VIEW::TERRAIN);
+    bool selMapObject = (m_MapToolView == MAPTOOL_VIEW::MAP_OBJECT);
+
+    if (ImGui::Selectable("Terrain Renderer", selTerrain))
+        m_MapToolView = MAPTOOL_VIEW::TERRAIN;
+
+    if (ImGui::Selectable("Map Object", selMapObject))
+        m_MapToolView = MAPTOOL_VIEW::MAP_OBJECT;
+
+    ImGui::EndChild();
+
+    // ==========
+    // 오른쪽 세팅
+    // ==========
+    ImGui::SameLine();
+
+    ImGui::BeginChild("[ MapTool_Content ]", ImVec2(0, 0), true);
+
+    switch (m_MapToolView)
+    {
+    case MAPTOOL_VIEW::TERRAIN:
+    {
+        CTerrainRenderer* terrain = Find_TerrainRenderer();
+        if (terrain)
+        {
+            ImGui::Text("Terrain Renderer");
+            ImGui::Separator();
+            Terrain_Inspector(terrain);
+        }
+        else
+        {
+            ImGui::Text("TerrainRenderer 를 찾을 수 없음");
+        }
+        break;
+    }
+
+    case MAPTOOL_VIEW::MAP_OBJECT:
+    {
+        CMapObjectMgr::GetInstance()->Render_MapObjectWindow();
+        break;
+    }
+
+    case MAPTOOL_VIEW::NONE:
+        break;
+
+    default:
+        ImGui::Text("왼쪽에서 툴을 선택하세요.");
+        break;
+    }
+
+    ImGui::EndChild();
 }
 
 void CMainEditorMgr::Render_MainEditor()
@@ -67,32 +153,34 @@ void CMainEditorMgr::Render_MainEditor()
         MSG_BOX("Scene Is Where ? ");
 
     // 프리뷰 오브젝트 렌더
-    if (m_MapPlacer)
+    if (CMapObjectMgr::GetInstance()->Get_MapPlacer())
     {
-        m_MapPlacer->Render_Privew();
+        CMapObjectMgr::GetInstance()->Get_MapPlacer()->Render_Privew();
     }
 
     ImGui::Begin("MainEditor");
 
-    ImGui::BeginChild("[ Tool bar ]", ImVec2(0, 40), true);
-    Render_ToolBar();
-    ImGui::EndChild();
+    if (ImGui::BeginTabBar("MainEditorTabs"))
+    {
+        if (ImGui::BeginTabItem("Scene"))
+        {
+            Render_SceneTab();
+            ImGui::EndTabItem();
+        }
 
-    ImGui::Separator();
+        if (ImGui::BeginTabItem("MapTool"))
+        {
+            Render_MapToolTab();
+            ImGui::EndTabItem();
+        }
 
-    // 왼쪽 Hierarchy (계층 구조)
-    ImGui::BeginChild("[ Hierarchy ]", ImVec2(170, 0), true);
-    Render_Hierarchy();
-    ImGui::EndChild();
-
-    ImGui::SameLine();
-
-    // 오른쪽 Inspector (정보 및 설정)
-    ImGui::BeginChild("[ Inspector ]", ImVec2(0, 0), true);
-    Render_Inspector();
-    ImGui::EndChild();
+        ImGui::EndTabBar();
+    }
 
     ImGui::End();
+
+    CMapObjectMgr::GetInstance()->Render_GrassWindow();
+
 }
 
 void CMainEditorMgr::Render_ToolBar()
@@ -358,38 +446,50 @@ void CMainEditorMgr::Render_SelectComponent()
     }
 }
 
-void CMainEditorMgr::Render_MapObjectWindow()
+CTerrainRenderer* CMainEditorMgr::Find_TerrainRenderer()
 {
-    ImGui::Begin("Map Objects");
+    if (!m_Context)
+        return nullptr;
 
-    bool isGrassSelected =
-        (m_MapPlacer && m_MapPlacer->IsPlacing() && m_MapPlacer->Get_CurType() == MAPOBJTYPE::GRASS);
+    CScene* scene = m_Context->Get_ActiveScene();
+    if (!scene)
+        return nullptr;
 
-    // Grass 풀때기만 일단
-    if (ImGui::Selectable("Grass", isGrassSelected))
+    const auto& layers = scene->Get_Layers();
+
+    for (const auto& layerPair : layers)
     {
-        if (m_MapPlacer)
-            m_MapPlacer->Start_Place(MAPOBJTYPE::GRASS);
-    }
+        CLayer* layer = layerPair.second;
+        if (!layer) continue;
 
-    // 추가 예정) Rock, Tree 등등
+        const auto& objMap = layer->Get_Objects();
 
-    // 배치 취소
-    if (m_MapPlacer && m_MapPlacer->IsPlacing())
-    {
-        if (ImGui::Button("Cancel Place"))
+        for (const auto& objPair : objMap)
         {
-            m_MapPlacer->Cancel_Place();
+            const vector<CGameObject*>& objList = objPair.second;
+
+            for (CGameObject* obj : objList)
+            {
+                if (!obj) continue;
+
+                CComponent* com =
+                    obj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TERRAIN_RENDER);
+                if (!com)
+                    continue;
+
+                auto terrain = dynamic_cast<CTerrainRenderer*>(com);
+                if (terrain)
+                    return terrain;
+            }
         }
     }
 
-    ImGui::End();
+    return nullptr;
 }
-
 
 void CMainEditorMgr::Free()
 {
-    Safe_Release(m_MapPlacer);
+    CMapObjectMgr::DestroyInstance();
 
     Safe_Release(m_Context);
     Safe_Release(m_GraphicDev);

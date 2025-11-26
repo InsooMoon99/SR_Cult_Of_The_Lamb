@@ -20,6 +20,7 @@ public:
 
 private:
     void Render_Priority(DEVICE& graphicDev);
+    void Render_Priority_Alpha(DEVICE& graphicDev);
     void Render_NonAlpha(DEVICE& graphicDev);
     void Render_Alpha(DEVICE& graphicDev);
     void Render_UI(DEVICE& graphicDev);

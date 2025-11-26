@@ -13,6 +13,14 @@ enum class MAPOBJTYPE
     GRASS, ROCK, /* Object 종류 추가하기 */ MAPOBJ_END,
 };
 
+typedef struct tagMapData
+{
+    MAPOBJTYPE type;
+    _vec3 pos;
+    _vec3 scale;
+
+} MapObjectData;
+
 class CMapObjectBase : public CGameObject
 {
 protected:

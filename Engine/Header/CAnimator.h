@@ -31,7 +31,7 @@ public:
 public:
     // 애니메이션 등록 (이미 만들어진 CSpriteAnimation 넣기)
     HRESULT Add_Animation(const wstring& key, CSpriteAnimation* animation);
-    HRESULT Create_Animation(const wstring& key, _uint frameCount,_float interval);
+    HRESULT Create_Animation(const wstring& key, _uint frameCount, _float interval);
 
     // 사이즈 세팅 버전
     HRESULT Add_Animation(
@@ -53,27 +53,32 @@ public:
 
     _int Get_MaxFrame();
 
-    static CAnimator* Create(DEVICE graphicDev);
-    CComponent*       Clone() override;
+    // 주의! Object마다 Set_TextureType 설정 꼭 해줘야함
+    void Set_TextureType(COMPONENTTYPE type);
 
-    HRESULT           Ready_Animator();
+    static CAnimator* Create(DEVICE graphicDev);
+    CComponent* Clone() override;
+
 private:
+    HRESULT           Ready_Animator();
     CSpriteAnimation* Find_Animation(const wstring& Key);
 
     void Free() override;
 
 private:
     map<wstring, AnimDesc> m_Animations;
-    CSpriteAnimation*      m_CurAnimation;
+    CSpriteAnimation* m_CurAnimation;
     wstring                m_CurKey;
 
     _bool m_Play;
 
     //Engine::CRcTex*   m_BufferCom;
     Engine::CVIBuffer* m_BufferCom;
-    Engine::CTexture*  m_Texture;
+    Engine::CTexture* m_Texture;
 
     bool m_Initialized = false;
+
+    COMPONENTTYPE m_TextureType;
 };
 
 END
