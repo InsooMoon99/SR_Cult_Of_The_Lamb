@@ -10,23 +10,25 @@
 
 CMapObjectBase::CMapObjectBase(DEVICE graphicDev)
     : CGameObject(graphicDev),
-    m_BufferCom(nullptr),
-    m_TransformCom(nullptr),
-    m_TextureCom(nullptr),
-    m_AttachTerrain(false),
-    m_Terrain(nullptr)
-{ }
+      m_BufferCom(nullptr),
+      m_TransformCom(nullptr),
+      m_TextureCom(nullptr),
+      m_AttachTerrain(false), m_IsPreview(false),
+      m_Terrain(nullptr)
+{
+}
 
 CMapObjectBase::CMapObjectBase(const CMapObjectBase& rhs)
     : CGameObject(rhs),
-    m_BufferCom(nullptr),
-    m_TransformCom(nullptr),
-    m_TextureCom(nullptr),
-    m_AttachTerrain(rhs.m_AttachTerrain),
-    m_CellX(rhs.m_CellX),
-    m_CellZ(rhs.m_CellZ),
-    m_Terrain(rhs.m_Terrain)
-{ }
+      m_BufferCom(nullptr),
+      m_TransformCom(nullptr),
+      m_TextureCom(nullptr),
+      m_AttachTerrain(rhs.m_AttachTerrain), m_IsPreview(false),
+      m_CellX(rhs.m_CellX),
+      m_CellZ(rhs.m_CellZ),
+      m_Terrain(rhs.m_Terrain)
+{
+}
 
 CMapObjectBase::~CMapObjectBase()
 { }
@@ -40,7 +42,8 @@ _int CMapObjectBase::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CGameObject::Update_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_PRIORITY_ALPHA, this);
+    if (!m_IsPreview)
+        CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_PRIORITY_ALPHA, this);
 
     return exit;
 }
@@ -69,7 +72,7 @@ void CMapObjectBase::Render_GameObject()
 
     //m_GraphicDev->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
     m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+    //m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
     m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 }
 
@@ -101,7 +104,7 @@ HRESULT CMapObjectBase::Add_BaseComponent(COMPONENTTYPE InType)
 
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
-    // Texture Component는 자식에서 세팅하기
+    // 자식에서 Add_BaseComponent에 타입 넣어주기
     m_TextureCom = CreateProtoComponent<CTexture>(this, InType);
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
 

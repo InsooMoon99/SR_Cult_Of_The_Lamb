@@ -46,7 +46,7 @@ void CWeaponEquip::Equip_Weapon(ItemInstance itemInst)
 
     m_WeaponEquipped = true;
 
-    cout << "Weapon Equipped" << endl;
+    //cout << "Weapon Equipped" << endl;
 }
 
 void CWeaponEquip::Unequip_Weapon()
@@ -77,7 +77,7 @@ void CWeaponEquip::ApplyWeaponStat(Item* item)
 
     combatStat->Add_Attack(item->stats["attack1"]);
 
-    cout << combatStat->Get_Attack() << endl;
+    //cout << combatStat->Get_Attack() << endl;
 
     //dynamic_cast<CPlayer*>(Get_Owner())->Get_CombatStat()->Add_Attack(item->stats["attack1"]);
     //cout << dynamic_cast<CPlayer*>(Get_Owner())->Get_CombatStat()->Get_Attack() << endl;

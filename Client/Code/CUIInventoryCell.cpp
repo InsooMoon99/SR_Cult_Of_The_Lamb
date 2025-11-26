@@ -103,7 +103,7 @@ void CUIInventoryCell::Render_GameObject()
         m_ItemTexCom->Set_Texture(m_index);
         m_BufferCom->Render_Buffer();
 
-        cout << m_ItemInst.itemId << endl;
+        //cout << m_ItemInst.itemId << endl;
     }
 
     //TODO 유림 : 외곽선 그리기 인벤토리에서 셀 위치 확인해서 m_IsHovered 세팅하기

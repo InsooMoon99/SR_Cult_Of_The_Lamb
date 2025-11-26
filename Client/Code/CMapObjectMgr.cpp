@@ -13,7 +13,7 @@ IMPLEMENT_SINGLETON(CMapObjectMgr)
 
 CMapObjectMgr::CMapObjectMgr()
 {
-
+  
 }
 
 CMapObjectMgr::~CMapObjectMgr()
@@ -26,6 +26,8 @@ void CMapObjectMgr::Ready_MapObjectMgr(DEVICE graphicDev)
     m_GraphicDev = graphicDev;
 
     m_MapPlacer = CMapEditorPlacer::Create(graphicDev);
+
+    
 
     Refresh_MapObjectList();
 }
@@ -41,18 +43,26 @@ void CMapObjectMgr::Update_MapObjectMgr(const _float& timeDelta)
 
 void CMapObjectMgr::Render_MapObjectWindow()
 {
-    bool isGrassSelected =
-        (m_MapPlacer && m_MapPlacer->IsPlacing() && m_MapPlacer->Get_CurType() == MAPOBJTYPE::GRASS);
+    bool bCheck = m_MapPlacer && m_MapPlacer->IsPlacing();
 
-    // Grass 풀때기만 일단
-    if (ImGui::Selectable("Grass", isGrassSelected))
-    {
-        m_ShowGrass = true;
+    ImGui::SeparatorText(u8"맵 오브젝트 리스트");
 
-    }
+    auto Render_ObjectButton = [&](const char* name, MAPOBJTYPE type, bool& showFlag)
+        {
+            bool isSelected = (bCheck && m_MapPlacer->Get_CurType() == type);
+
+            if (ImGui::Selectable(name, isSelected))
+            {
+                showFlag = true;
+            }
+        };
+
+    Render_ObjectButton("Grass", MAPOBJTYPE::GRASS, m_ShowGrass);
+    Render_ObjectButton("Rubble", MAPOBJTYPE::RUBBLE, m_ShowGrass);
+    Render_ObjectButton("Deco", MAPOBJTYPE::DECO, m_ShowGrass);
 
     // TODO 추가 예정) Rock, Tree 등등
-
+    ImGui::Separator();
     ImGui::Text(u8"맵 오브젝트 파일명 : "); ImGui::SameLine();
     ImGui::InputText("##MapObjectName", m_MapObjFileName, 128);
 

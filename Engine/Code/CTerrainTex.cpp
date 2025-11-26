@@ -157,7 +157,13 @@ void CTerrainTex::ApplyTileSetting(const vector<_int>& tileIndices, _int atlasCo
         {
             const _ulong cellIndex = z * cellCountX + x;
             _int tileIndex = tileIndices[cellIndex];
-            if (tileIndex < 0) tileIndex = 0;
+
+            const _ulong baseIndex = (z * cellCountX + x) * 4;
+
+            if (tileIndex < 0)
+            {
+                continue;
+            }
 
             const _int tileX = tileIndex % atlasCols;
             const _int tileY = tileIndex / atlasCols;
@@ -170,8 +176,6 @@ void CTerrainTex::ApplyTileSetting(const vector<_int>& tileIndices, _int atlasCo
             // 경계에서 한 픽셀 안쪽으로
             u0 += epsU * 1.1f;  u1 -= epsU * 1.1f;
             v0 += epsV * 1.1f;  v1 -= epsV * 1.1f;
-
-            const _ulong baseIndex = (z * cellCountX + x) * 4;
 
             vertex[baseIndex + 0].texUV = { u0, v1 }; // 좌상
             vertex[baseIndex + 1].texUV = { u1, v1 }; // 우상

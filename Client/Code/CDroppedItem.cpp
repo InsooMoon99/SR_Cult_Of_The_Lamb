@@ -131,7 +131,7 @@ void CDroppedItem::OnBeginOverlap(CCollider* self, CCollider* other)
         }
     }
 
-    cout << "item Hit" << endl;
+    //cout << "item Hit" << endl;
 }
 
 void CDroppedItem::OnEndOverlap(CCollider* self, CCollider* other)

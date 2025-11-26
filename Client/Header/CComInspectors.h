@@ -322,39 +322,73 @@ static void Terrain_Inspector(CTerrainRenderer* renderer)
     if (renderer == nullptr)
         return;
 
-    ImGui::PushID("Terrain_Resize");
+    if(ImGui::BeginTabBar("Terrain_TabBar"))
     {
-        renderer->Render_Editor();
-
-        ImGui::Separator();
-        ImGui::Text(u8"=== Terrain 크기 설정 ===");
-        ImGui::NewLine();
-
-        static _int resizeX = TILE_CNT_X;
-        static _int resizeZ = TILE_CNT_Z;
-
-        const _int width = 65.f;
-
-        ImGui::Text("Size X :"); ImGui::SameLine();
-        ImGui::SetNextItemWidth(width);
-        ImGui::DragInt("##Terrain_SizeX", &resizeX, 1, 10, 129);
-
-        ImGui::SameLine();
-
-        ImGui::Text("Size Z :"); ImGui::SameLine();
-        ImGui::SetNextItemWidth(width);
-        ImGui::DragInt("##Terrain_SizeZ", &resizeZ, 1, 10, 129);
-
-        ImGui::NewLine();
-        if (ImGui::Button(u8"Terrain 재생성"))
+        if (ImGui::BeginTabItem(u8"타일 종류"))
         {
-            renderer->Resize_Terrain(resizeX, resizeZ);
+            renderer->Render_Editor();
+
+            ImGui::EndTabItem();
         }
 
-        ImGui::SameLine();
-        ImGui::Text(u8"현재 %d x %d", renderer->Get_SizeX(), renderer->Get_SizeZ());
+        if (ImGui::BeginTabItem(u8"타일 사이즈"))
+        {
+            ImGui::PushID("Terrain_Resize");
+            {
+                ImGui::SeparatorText(u8"Terrain 개수 설정");
+                ImGui::NewLine();
+
+                static _int resizeX = TILE_CNT_X;
+                static _int resizeZ = TILE_CNT_Z;
+                static _float cellSize = 1.f;
+
+                const _int textWidth = 65.f;
+                const _int boxwidth = 65.f;
+
+                ImGui::Columns(2, nullptr, false);
+                ImGui::SetColumnWidth(0, textWidth);
+
+                ImGui::Text("Size X :");
+                ImGui::NextColumn();
+                ImGui::SetNextItemWidth(boxwidth);
+                ImGui::DragInt("##Terrain_SizeX", &resizeX, 1, 10, 129);
+                ImGui::NextColumn();
+
+                ImGui::Text("Size Z :");
+                ImGui::NextColumn();
+                ImGui::SetNextItemWidth(boxwidth);
+                ImGui::DragInt("##Terrain_SizeZ", &resizeZ, 1, 10, 129);
+                ImGui::NextColumn();
+                
+                ImGui::Text(u8"셀 크기 :");
+                ImGui::NextColumn();
+                ImGui::SetNextItemWidth(boxwidth);
+                ImGui::DragFloat("##Terrain_CellSize", &cellSize, 0.1f, 0.1f, 10.f);
+
+                ImGui::Columns(1);
+
+                ImGui::NewLine();
+                if (ImGui::Button(u8"Terrain 재생성"))
+                {
+                    renderer->Resize_Terrain(resizeX, resizeZ, cellSize);
+                }
+
+                ImGui::NewLine();
+
+                ImGui::SeparatorText(u8"타일 정보");
+
+                ImGui::Text(u8"현재 %d x %d (셀크기: %.1f)",
+                    renderer->Get_SizeX(), renderer->Get_SizeZ(), renderer->Get_CellSize());
+                
+            }
+            ImGui::PopID();
+
+
+            ImGui::EndTabItem();
+        }
+
+        ImGui::EndTabBar();
     }
-    ImGui::PopID();
 }
 
 static void BoxColl_Inspector(CBoxCollider* collider)

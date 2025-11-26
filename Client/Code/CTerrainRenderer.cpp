@@ -7,7 +7,7 @@
 #include "CTerrainTex.h"
 #include "CPickingHelper.h"
 
-static const int ATLAS_COLS_284 = 5;  // 가로 5칸
+static const int ATLAS_COLS_284 = 6;  // 가로 6칸
 static const int ATLAS_ROWS_284 = 1;  // 세로 1칸
 
 CTerrainRenderer::CTerrainRenderer(DEVICE graphicDev)
@@ -19,7 +19,7 @@ CTerrainRenderer::CTerrainRenderer(DEVICE graphicDev)
       m_PaintX(0),
       m_PaintZ(0),
       m_MapName{"Terrain_"},
-      m_SelectedMapIndex(0), m_SizeX(TILE_CNT_X), m_SizeZ(TILE_CNT_Z)
+      m_SelectedMapIndex(0), m_SizeX(TILE_CNT_X), m_SizeZ(TILE_CNT_Z), m_CellSize(1.f)
 {
 }
 
@@ -32,7 +32,7 @@ CTerrainRenderer::CTerrainRenderer(const CTerrainRenderer& rhs)
       m_SelectedTile(rhs.m_SelectedTile),
       m_PaintX(rhs.m_PaintX),
       m_PaintZ(rhs.m_PaintZ),
-      m_SelectedMapIndex(rhs.m_SelectedMapIndex), m_SizeX(TILE_CNT_X), m_SizeZ(TILE_CNT_Z),
+      m_SelectedMapIndex(rhs.m_SelectedMapIndex), m_SizeX(TILE_CNT_X), m_SizeZ(TILE_CNT_Z), m_CellSize(rhs.m_CellSize),
       m_MapList(rhs.m_MapList)
 {
     memcpy(m_MapName, rhs.m_MapName, sizeof(m_MapName));
@@ -62,8 +62,8 @@ HRESULT CTerrainRenderer::Ready_TerrainRenderer()
 
     m_BufferCom->AddRef();
 
-    const int iCellCntX = TILE_CNT_X - 1;
-    const int iCellCntZ = TILE_CNT_Z - 1;
+    const int iCellCntX = m_SizeX - 1;
+    const int iCellCntZ = m_SizeZ - 1;
 
     m_TileIndices.resize(iCellCntX * iCellCntZ, 0);
 
@@ -83,13 +83,13 @@ _int CTerrainRenderer::Update_Component(const _float& timeDelta)
         int cellX, cellZ;
         if (PickCellMousePos(cellX, cellZ))
         {
-            if (CDInputMgr::GetInstance()->Get_DIMouseState(DIM_LB) & 0x80)
+            const int iCellCntX = m_SizeX - 1;
+            const int index = cellZ * iCellCntX + cellX;
+
+            if (CDInputMgr::GetInstance()->MousePress(DIM_LB))
             {
                 m_PaintX = cellX;
                 m_PaintZ = cellZ;
-
-                const int iCellCntX = TILE_CNT_X - 1;
-                const int index = cellZ * iCellCntX + cellX;
 
                 if (index >= 0 && index < (int)m_TileIndices.size())
                     m_TileIndices[index] = m_SelectedTile;
@@ -119,10 +119,17 @@ void CTerrainRenderer::Render_TerrainRenderer()
     m_GraphicDev->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
     m_GraphicDev->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
 
+    // 알파블렌딩 안켜주면 투명타일 검은색으로 나옴
+    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+    m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
     m_BufferCom->ApplyTileSetting(m_TileIndices, ATLAS_COLS_284, ATLAS_ROWS_284);
 
     m_TextureCom->Set_Texture(0);
     m_BufferCom->Render_Buffer();
+
+    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 }
 
 void CTerrainRenderer::Render_Editor()
@@ -135,8 +142,8 @@ void CTerrainRenderer::Render_Editor()
     // --- 타일 버튼 ---
     if (m_TextureCom)
     {
-        const _uint  tileCount = 5;
-        const _uint  tilePerRow = 5;
+        const _uint  tileCount = 6;
+        const _uint  tilePerRow = 6;
         const ImVec2 tileSize(32.f, 32.f);
 
         IDirect3DBaseTexture9* baseTexture = m_TextureCom->Get_BaseTexture(0);
@@ -199,7 +206,7 @@ void CTerrainRenderer::Render_Editor()
     ImGui::SameLine();
     if (ImGui::Button(u8"Save"))
     {
-        string fullPath = "../Bin/Resource/Texture/Terrain/";
+        string fullPath = "../Bin/Resource/Data/Terrain/";
         fullPath += m_MapName;
         fullPath += ".map";
 
@@ -221,7 +228,7 @@ void CTerrainRenderer::Render_Editor()
                 {
                     m_SelectedMapIndex = i;
 
-                    string fullPath = "../Bin/Resource/Texture/Terrain/";
+                    string fullPath = "../Bin/Resource/Data/Terrain/";
                     fullPath += m_MapList[i];
 
                     LoadMap(fullPath.c_str());
@@ -243,16 +250,18 @@ HRESULT CTerrainRenderer::SaveMap(const char* filePath)
         return E_FAIL;
 
     uint32_t magic = 0x54494C45; // 'TILE'
-    uint32_t version = 1;
+    uint32_t version = 2;
 
-    uint32_t cellCntX = TILE_CNT_X - 1;
-    uint32_t cellCntZ = TILE_CNT_Z - 1;
+    uint32_t cellCntX = m_SizeX - 1;
+    uint32_t cellCntZ = m_SizeZ - 1;
     uint32_t tileSize = static_cast<uint32_t>(m_TileIndices.size());
+    _float cellSize = m_CellSize;
 
     ofs.write(reinterpret_cast<char*>(&magic), sizeof(magic));
     ofs.write(reinterpret_cast<char*>(&version), sizeof(version));
     ofs.write(reinterpret_cast<char*>(&cellCntX), sizeof(cellCntX));
     ofs.write(reinterpret_cast<char*>(&cellCntZ), sizeof(cellCntZ));
+    ofs.write(reinterpret_cast<char*>(&cellSize), sizeof(cellSize));
 
     if (tileSize > 0)
     {
@@ -288,11 +297,16 @@ HRESULT CTerrainRenderer::LoadMap(const char* filePath)
         return E_FAIL;
     }
 
-    // 현재 지형 셀 개수와 다르면 일단 실패 처리
-    if (cellCntX != (TILE_CNT_X - 1) || cellCntZ != (TILE_CNT_Z - 1))
+    float cellSize = 1.f;  // 기본값
+
+    if (version >= 2)
     {
-        ifs.close();
-        return E_FAIL;
+        ifs.read(reinterpret_cast<char*>(&cellSize), sizeof(cellSize));
+    }
+
+    if (cellCntX + 1 != m_SizeX || cellCntZ + 1 != m_SizeZ || cellSize != m_CellSize)
+    {
+        Resize_Terrain(cellCntX + 1, cellCntZ + 1, cellSize);
     }
 
     const size_t tileSize = static_cast<size_t>(cellCntX) * cellCntZ;
@@ -310,7 +324,7 @@ HRESULT CTerrainRenderer::LoadMap(const char* filePath)
 
 _vec3 CTerrainRenderer::GetCellCenterWorld(_uint cellX, _uint cellZ) const
 {
-    const _float vtxItv = 1.f;
+    const _float vtxItv = m_CellSize;
 
     return _vec3(
         cellX * vtxItv + vtxItv * 0.5f,
@@ -343,13 +357,13 @@ bool CTerrainRenderer::PickCellMousePos(_int& outX, _int& outZ)
 	_vec3 hitLocal;
 	D3DXVec3TransformCoord(&hitLocal, &hitWorld, &matInvWorld);
 
-	const float cellSize = (float)VTX_IV;
-	_int cellX = (_int)floorf(hitLocal.x / cellSize);
-	_int cellZ = (_int)floorf(hitLocal.z / cellSize);
+    const float cellSize = m_CellSize;  
+    _int cellX = (_int)floorf(hitLocal.x / cellSize);
+    _int cellZ = (_int)floorf(hitLocal.z / cellSize);
 
-	if (cellX < 0 || cellX >= (int)TILE_CNT_X - 1 ||
-		cellZ < 0 || cellZ >= (int)TILE_CNT_Z - 1)
-		return false;
+    if (cellX < 0 || cellX >= m_SizeX - 1 || 
+        cellZ < 0 || cellZ >= m_SizeZ - 1)   
+        return false;
 
 	outX = cellX;
 	outZ = cellZ;
@@ -360,7 +374,7 @@ HRESULT CTerrainRenderer::Refresh_MapFileList()
 {
     m_MapList.clear();
 
-    const char* mapDir = "../Bin/Resource/Texture/Terrain";
+    const char* mapDir = "../Bin/Resource/Data/Terrain";
 
     filesystem::path dirPath(mapDir);
     if (!filesystem::exists(dirPath) || !filesystem::is_directory(dirPath))
@@ -391,14 +405,20 @@ HRESULT CTerrainRenderer::Refresh_MapFileList()
     return S_OK;
 }
 
-void CTerrainRenderer::Resize_Terrain(_int sizeX, _int sizeZ)
+void CTerrainRenderer::Resize_Terrain(_int sizeX, _int sizeZ, _float cellSize)
 {
-    m_SizeX = sizeX, m_SizeZ = sizeZ;
+    m_SizeX = sizeX;
+    m_SizeZ = sizeZ;
+
+    m_CellSize = cellSize;
 
     // 기존 버퍼 메모리 해제
     Safe_Release(m_BufferCom);
 
-    m_BufferCom = CTerrainTex::Create(m_GraphicDev, sizeX, sizeZ, 1);
+    _ulong vtxItv = static_cast<_ulong>(cellSize + 0.5f);
+    m_CellSize = static_cast<_float>(vtxItv);
+
+    m_BufferCom = CTerrainTex::Create(m_GraphicDev, sizeX, sizeZ, vtxItv);
 }
 
 CTerrainRenderer* CTerrainRenderer::Create(DEVICE graphicDev)

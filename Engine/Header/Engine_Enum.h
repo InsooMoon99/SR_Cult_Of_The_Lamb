@@ -135,7 +135,8 @@ namespace Engine
         // MapObject ///
         ////////////////
         TEX_GRASS,
-        TEX_ROCK,
+        TEX_RUBBLE,
+        TEX_DECO,
 
         COMPONENT_END
     };

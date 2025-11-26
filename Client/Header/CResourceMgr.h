@@ -26,6 +26,7 @@ private:
     HRESULT Ready_Common(DEVICE graphicDev);
 
     HRESULT Ready_Terrain(DEVICE graphicDev);
+    HRESULT Ready_Decoration(DEVICE graphicDev);
 
 public:
     void Free() override;

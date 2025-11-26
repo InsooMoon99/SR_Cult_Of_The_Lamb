@@ -87,7 +87,23 @@ void CMapEditorPlacer::Render_Privew()
     if (!m_Placing || m_PreviewObj == nullptr)
         return;
 
+    // 알파 테스트 끄기. 꺼줘야 블렌딩과 충돌이 나지 않는다.
+    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+
+    // 알파 블렌딩
+    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+    m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR);
+    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(128, 255, 255, 255)); 
+
     m_PreviewObj->Render_GameObject();
+
+    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(255, 255, 255, 255));
 }
 
 void CMapEditorPlacer::Start_Place(MAPOBJTYPE type)
@@ -101,6 +117,7 @@ void CMapEditorPlacer::Start_Place(MAPOBJTYPE type)
     m_PreviewObj = CreateMapObjectType(m_GraphicDev, type);
     if (m_PreviewObj)
     {
+        m_PreviewObj->Set_Preview(true);
         m_PreviewObj->Set_TextureIndex(m_GrassIndex);
         m_Placing = true;
         return;

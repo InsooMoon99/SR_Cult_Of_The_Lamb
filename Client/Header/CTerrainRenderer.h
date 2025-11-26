@@ -38,10 +38,11 @@ public:
     HRESULT Refresh_MapFileList();
 
     // Terrain 사이즈 조절
-    void    Resize_Terrain(_int sizeX, _int sizeZ);
+    void    Resize_Terrain(_int sizeX, _int sizeZ, _float cellSize);
 
     _int    Get_SizeX() { return m_SizeX; }
     _int    Get_SizeZ() { return m_SizeZ; }
+    _float  Get_CellSize() { return m_CellSize; }
 
     void    Set_SizeX(_int sizeX) { m_SizeX = sizeX; }
     void    Set_SizeZ(_int sizeZ) { m_SizeX = sizeZ; }
@@ -68,4 +69,5 @@ private:
     _int            m_SelectedMapIndex;
 
     _int            m_SizeX, m_SizeZ;
+    _float            m_CellSize;
 };

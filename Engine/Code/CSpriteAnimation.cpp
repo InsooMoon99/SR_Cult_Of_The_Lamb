@@ -1,13 +1,11 @@
 ﻿#include "CSpriteAnimation.h"
 
 CSpriteAnimation::CSpriteAnimation()
-    : m_MaxFrameX(1),
+    : m_MaxFrame(1),
       m_MaxFrameY(1),
-      m_StartFrameX(0),
-      m_StartFrameY(0),
-      m_FrameX(0),
-      m_FrameY(0),
-      m_State(ANIMSTATE::STOP),
+      m_StartFrame(0),
+      m_Frame(0),
+      m_AnimState(ANIMSTATE::STOP),
       m_XAxis(true),
       m_Interval(0.f),
       m_AccTime(0.f)
@@ -15,15 +13,13 @@ CSpriteAnimation::CSpriteAnimation()
 
 CSpriteAnimation::CSpriteAnimation(const CSpriteAnimation& rhs)
 {
-    m_MaxFrameX = rhs.m_MaxFrameX;
+    m_MaxFrame = rhs.m_MaxFrame;
     m_MaxFrameY = rhs.m_MaxFrameY;
 
-    m_StartFrameX = rhs.m_StartFrameX;
-    m_StartFrameY = rhs.m_StartFrameY;
+    m_StartFrame = rhs.m_StartFrame;
 
-    m_FrameX   = rhs.m_FrameX;
-    m_FrameY   = rhs.m_FrameY;
-    m_State    = rhs.m_State;
+    m_Frame   = rhs.m_Frame;
+    m_AnimState    = rhs.m_AnimState;
     m_XAxis    = rhs.m_XAxis;
     m_Interval = rhs.m_Interval;
     m_AccTime  = 0.f;
@@ -38,15 +34,14 @@ HRESULT CSpriteAnimation::Ready_SpriteAnim(
     _uint  frameCount,
     _float interval)
 {
-    m_MaxFrameX = static_cast<_int>(frameCount);
+    m_MaxFrame = static_cast<_int>(frameCount);
     m_MaxFrameY = 1;
 
-    m_FrameX = 0;
-    m_FrameY = 0;
+    m_Frame = 0;
 
     m_Interval = interval;
     m_XAxis    = true;
-    m_State    = ANIMSTATE::STOP;
+    m_AnimState    = ANIMSTATE::STOP;
     m_AccTime  = 0.f;
 
     return S_OK;
@@ -55,13 +50,12 @@ HRESULT CSpriteAnimation::Ready_SpriteAnim(
 void CSpriteAnimation::Reset()
 {
     m_AccTime = 0.f;
-    m_FrameX  = m_StartFrameX;
-    m_FrameY  = m_StartFrameY;
+    m_Frame  = m_StartFrame;
 }
 
 void CSpriteAnimation::Update(const _float& timeDelta)
 {
-    if (m_State == ANIMSTATE::STOP) // Stop이면 스프라이트 재생 X
+    if (m_AnimState == ANIMSTATE::STOP) // Stop이면 스프라이트 재생 X
         return;
 
     m_AccTime += timeDelta;
@@ -73,79 +67,41 @@ void CSpriteAnimation::Update(const _float& timeDelta)
 
         if (m_XAxis) // 가로 재생
         {
-            if (m_State == ANIMSTATE::LOOP) // 계속 반복
+            if (m_AnimState == ANIMSTATE::LOOP) // 계속 반복
             {
-                m_FrameX++;
+                m_Frame++;
 
-                if (m_FrameX >= m_MaxFrameX)
-                    m_FrameX = 0;
+                if (m_Frame >= m_MaxFrame)
+                    m_Frame = 0;
             }
 
-            else if (m_State == ANIMSTATE::ONCE) // 한번만 재생 후 Stop
+            else if (m_AnimState == ANIMSTATE::ONCE) // 한번만 재생 후 Stop
             {
-                m_FrameX++;
+                m_Frame++;
 
-                if (m_FrameX >= m_MaxFrameX)
+                if (m_Frame >= m_MaxFrame)
                 {
-                    m_FrameX = m_MaxFrameX - 1;
-                    m_State  = ANIMSTATE::STOP;
+                    m_Frame = m_MaxFrame - 1;
+                    m_AnimState  = ANIMSTATE::STOP;
                 }
             }
 
-            else if (m_State == ANIMSTATE::REVERSE_LOOP)    // 반대로 반복재생
+            else if (m_AnimState == ANIMSTATE::REVERSE_LOOP)    // 반대로 반복재생
             {
-                m_FrameX--;
+                m_Frame--;
 
-                if (m_FrameX < 0)
-                    m_FrameX = m_MaxFrameX - 1;
+                if (m_Frame < 0)
+                    m_Frame = m_MaxFrame - 1;
             }
 
-            else if (m_State == ANIMSTATE::REVERSE_ONCE)    // 반대로 한번만 재생
+            else if (m_AnimState == ANIMSTATE::REVERSE_ONCE)    // 반대로 한번만 재생
             {
-                m_FrameX--;
+                m_Frame--;
 
-                if (m_FrameX < 0)
+                if (m_Frame < 0)
                 {
-                    m_FrameX = 0;
-                    m_State  = ANIMSTATE::STOP;
-                }
-            }
-        }
-
-        else // 세로 재생
-        {
-            if (m_State == ANIMSTATE::LOOP)
-            {
-                m_FrameY++;
-
-                if (m_FrameY >= m_MaxFrameY)
-                    m_FrameY = 0;
-            }
-            else if (m_State == ANIMSTATE::ONCE)
-            {
-                m_FrameY++;
-
-                if (m_FrameY >= m_MaxFrameY)
-                {
-                    m_FrameY = m_MaxFrameY - 1;
-                    m_State  = ANIMSTATE::STOP;
-                }
-            }
-            else if (m_State == ANIMSTATE::REVERSE_LOOP)
-            {
-                m_FrameY--;
-
-                if (m_FrameY < 0)
-                    m_FrameY = m_MaxFrameY - 1;
-            }
-            else if (m_State == ANIMSTATE::REVERSE_ONCE)
-            {
-                m_FrameY--;
-
-                if (m_FrameY < 0)
-                {
-                    m_FrameY = 0;
-                    m_State  = ANIMSTATE::STOP;
+                    m_Frame = 0;
+                    m_AnimState  = ANIMSTATE::STOP;
                 }
             }
         }
@@ -154,10 +110,12 @@ void CSpriteAnimation::Update(const _float& timeDelta)
 
 void CSpriteAnimation::Get_UV(_float& u0, _float& v0, _float& u1, _float& v1) const
 {
-    if (m_MaxFrameX > 1)
+#pragma region Sprite 방식 이제 안써서 삭제 예정
+
+    /*if (m_MaxFrame > 1)
     {
-        u0 = (m_FrameX) / static_cast<float>(m_MaxFrameX);
-        u1 = (m_FrameX + 1.f) / static_cast<float>(m_MaxFrameX);
+        u0 = (m_Frame) / static_cast<float>(m_MaxFrame);
+        u1 = (m_Frame + 1.f) / static_cast<float>(m_MaxFrame);
     }
 
     else
@@ -175,7 +133,10 @@ void CSpriteAnimation::Get_UV(_float& u0, _float& v0, _float& u1, _float& v1) co
     {
         v0 = 0.f;
         v1 = 1.f;
-    }
+    }*/
+#pragma endregion
+
+    
 }
 
 CSpriteAnimation* CSpriteAnimation::Create(_uint frameCount, _float interval)
