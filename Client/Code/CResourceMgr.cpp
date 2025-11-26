@@ -47,10 +47,57 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
     if (FAILED(Ready_Item(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Common(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Terrain(graphicDev))) return E_FAIL;
+    if (FAILED(Ready_BossP1(graphicDev))) return E_FAIL;
 
     return S_OK;
 }
+HRESULT CResourceMgr::Ready_BossP1(DEVICE graphicDev)
+{
+    auto protoMgr = CProtoMgr::GetInstance();
 
+    CTexture* BossP1Tex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(BossP1Tex, E_FAIL);
+
+    if (FAILED(BossP1Tex->Add_Texture(L"BossIdle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-animation/TOWW-Spirit-animation%d.png", 100)))
+        return E_FAIL;
+    if (FAILED(BossP1Tex->Add_Texture(L"BossAwake", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-transform2/TOWW-Spirit-transform%d.png", 105)))
+        return E_FAIL;
+
+    if (FAILED(BossP1Tex->Add_Texture(L"BossAttack", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-shoot/TOWW-Spirit-shoot%d.png", 97)))
+        return E_FAIL;
+
+    if (FAILED(BossP1Tex->Add_Texture(L"BossDead", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-hurt-talk/TOWW-Spirit-hurt-talk%d.png", 167)))
+        return E_FAIL;
+
+    if (FAILED(BossP1Tex->Add_Texture(L"BossMove_up", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-appear/TOWW-Spirit-appear%d.png", 50)))
+        return E_FAIL;
+
+    if (FAILED(BossP1Tex->Add_Texture(L"BossMove_Down", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-disappear/TOWW-Spirit-disappear%d.png", 28)))
+        return E_FAIL;
+
+    if (FAILED(BossP1Tex->Add_Texture(L"BossGroggy_start", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-hurt/TOWW-Spirit-hurt%d.png", 115)))
+        return E_FAIL;
+
+    if (FAILED(BossP1Tex->Add_Texture(L"BossGroggy_loop", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-loop/TOWW-Spirit-loop%d.png", 84)))
+        return E_FAIL;
+
+    if (FAILED(BossP1Tex->Add_Texture(L"BossGroggy_end", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-hurt-stop/TOWW-Spirit-hurt-stop%d.png", 67)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_BOSSPHASE1, BossP1Tex)))
+        return E_FAIL;
+
+}
 HRESULT CResourceMgr::Ready_Common(DEVICE graphicDev)
 {
     auto protoMgr = CProtoMgr::GetInstance();

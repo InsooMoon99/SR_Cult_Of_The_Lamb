@@ -171,7 +171,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Header\CBossAwake.h" />
+    <ClInclude Include="..\Header\CBossBulletAttack.h" />
+    <ClInclude Include="..\Header\CBossChainAttack.h" />
+    <ClInclude Include="..\Header\CBossDead.h" />
+    <ClInclude Include="..\Header\CBossGroggy.h" />
+    <ClInclude Include="..\Header\CBossIdle.h" />
+    <ClInclude Include="..\Header\CBossMove.h" />
     <ClInclude Include="..\Header\CBossPhase1.h" />
+    <ClInclude Include="..\Header\CBossStateMachine.h" />
     <ClInclude Include="..\Header\CComInspectors.h" />
     <ClInclude Include="..\Header\CDroppedItem.h" />
     <ClInclude Include="..\Header\CDropSystem.h" />
@@ -192,11 +200,14 @@
     <ClInclude Include="..\Header\CMapObject_Grass.h" />
     <ClInclude Include="..\Header\CMenuChar.h" />
     <ClInclude Include="..\Header\CMonster.h" />
+    <ClInclude Include="..\Header\CMonsterState.h" />
     <ClInclude Include="..\Header\CPlayer.h" />
     <ClInclude Include="..\Header\CPlayerController.h" />
     <ClInclude Include="..\Header\CResourceMgr.h" />
     <ClInclude Include="..\Header\CSceneMgr.h" />
     <ClInclude Include="..\Header\CStage.h" />
+    <ClInclude Include="..\Header\CBaseState.h" />
+    <ClInclude Include="..\Header\CStateMachine.h" />
     <ClInclude Include="..\Header\CTerrainRenderer.h" />
     <ClInclude Include="..\Header\CTestMonster.h" />
     <ClInclude Include="..\Header\CTerrain.h" />
@@ -220,7 +231,15 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Code\CBossAwake.cpp" />
+    <ClCompile Include="..\Code\CBossBulletAttack.cpp" />
+    <ClCompile Include="..\Code\CBossChainAttack.cpp" />
+    <ClCompile Include="..\Code\CBossDead.cpp" />
+    <ClCompile Include="..\Code\CBossGroggy.cpp" />
+    <ClCompile Include="..\Code\CBossIdle.cpp" />
+    <ClCompile Include="..\Code\CBossMove.cpp" />
     <ClCompile Include="..\Code\CBossPhase1.cpp" />
+    <ClCompile Include="..\Code\CBossStateMachine.cpp" />
     <ClCompile Include="..\Code\CDroppedItem.cpp" />
     <ClCompile Include="..\Code\CDropSystem.cpp" />
     <ClCompile Include="..\Code\CEdit.cpp" />
@@ -240,11 +259,14 @@
     <ClCompile Include="..\Code\CMapObject_Grass.cpp" />
     <ClCompile Include="..\Code\CMenuChar.cpp" />
     <ClCompile Include="..\Code\CMonster.cpp" />
+    <ClCompile Include="..\Code\CMonsterState.cpp" />
     <ClCompile Include="..\Code\CPlayer.cpp" />
     <ClCompile Include="..\Code\CPlayerController.cpp" />
     <ClCompile Include="..\Code\CResourceMgr.cpp" />
     <ClCompile Include="..\Code\CSceneMgr.cpp" />
     <ClCompile Include="..\Code\CStage.cpp" />
+    <ClCompile Include="..\Code\CBaseState.cpp" />
+    <ClCompile Include="..\Code\CStateMachine.cpp" />
     <ClCompile Include="..\Code\CTerrainRenderer.cpp" />
     <ClCompile Include="..\Code\CTestMonster.cpp" />
     <ClCompile Include="..\Code\CTerrain.cpp" />

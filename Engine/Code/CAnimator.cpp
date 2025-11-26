@@ -169,6 +169,14 @@ _int CAnimator::Get_CurFrame()
     return m_CurAnimation->Get_Frame();
 }
 
+_int CAnimator::Get_MaxFrame()
+{
+    if (m_CurAnimation == nullptr)
+        return 0;
+
+    return m_CurAnimation->Get_MaxFrameX();
+}
+
 void CAnimator::Set_TextureType(COMPONENTTYPE type)
 {
     m_TextureType = type;
