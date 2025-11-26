@@ -52,7 +52,7 @@ HRESULT CUIInventoryCell::Ready_GameObject()
         return E_FAIL;
 
     //m_TransformCom->Set_Pos(_vec3(-550.f, 270.f, 0.f));
-    m_TransformCom->Set_Scale(_vec3(40.f, 40.f, 0.f));
+    m_TransformCom->Set_Scale(_vec3(30.f, 30.f, 0.f));
 
     return S_OK;
 }
