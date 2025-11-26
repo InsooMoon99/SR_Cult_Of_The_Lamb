@@ -6,9 +6,15 @@ CTerrainTex::CTerrainTex(DEVICE graphicDev)
 }
 
 CTerrainTex::CTerrainTex(const CTerrainTex& rhs)
-    : CVIBuffer(rhs), m_Pos(rhs.m_Pos), m_CntX(rhs.m_CntX), m_CntZ(rhs.m_CntZ)
+    : CVIBuffer(rhs), m_Pos(nullptr), m_CntX(rhs.m_CntX), m_CntZ(rhs.m_CntZ)
 {
+    // 깊은 복사
+    if (rhs.m_Pos != nullptr && m_VtxCnt > 0)
+    {
+        m_Pos = new _vec3[m_VtxCnt];
 
+        memcpy(m_Pos, rhs.m_Pos, sizeof(_vec3) * m_VtxCnt);
+    }
 }
 
 CTerrainTex::~CTerrainTex()
@@ -196,12 +202,17 @@ CTerrainTex* CTerrainTex::Create(LPDIRECT3DDEVICE9 graphicDev, const _ulong& Cnt
 CComponent* CTerrainTex::Clone()
 {
     return new CTerrainTex(*this);
+
+    //MSG_BOX("TerrainTex should not be colned");
+    //
+    //return nullptr;
 }
 
 void CTerrainTex::Free()
 {
-    if (m_IsClone == false)
-        Safe_Delete_Array(m_Pos);
+    //if (m_IsClone == false)
+    Safe_Delete_Array(m_Pos);
+    m_Pos = nullptr;
 
     CVIBuffer::Free();
 }

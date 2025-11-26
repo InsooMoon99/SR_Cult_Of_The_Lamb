@@ -60,6 +60,8 @@ HRESULT CTerrainRenderer::Ready_TerrainRenderer()
     NULL_CHECK_RETURN(m_BufferCom, E_FAIL);
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
 
+    m_BufferCom->AddRef();
+
     const int iCellCntX = TILE_CNT_X - 1;
     const int iCellCntZ = TILE_CNT_Z - 1;
 
@@ -423,5 +425,7 @@ CComponent* CTerrainRenderer::Clone()
 
 void CTerrainRenderer::Free()
 {
+    Safe_Release(m_BufferCom);
+
     CComponent::Free();
 }
