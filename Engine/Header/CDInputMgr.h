@@ -33,6 +33,7 @@ public:
         return *(reinterpret_cast<_long*>(&m_MouseState) + mouseMoveState);
     }
 
+    // ---------- 키보드 ----------
     bool KeyDown(_ubyte key)
     {
         return  (m_KeyState[key] & 0x80) && !(m_PrevKeyState[key] & 0x80);
@@ -46,6 +47,24 @@ public:
     bool KeyUp(_ubyte key)
     {
         return !(m_KeyState[key] & 0x80) && (m_PrevKeyState[key] & 0x80);
+    }
+
+    // ---------- 마우스 ----------
+    bool MouseDown(MOUSEKEYSTATE btn)
+    {
+        return  (m_MouseState.rgbButtons[btn] & 0x80)
+            && !(m_PrevMouseState.rgbButtons[btn] & 0x80);
+    }
+
+    bool MousePress(MOUSEKEYSTATE btn)
+    {
+        return (m_MouseState.rgbButtons[btn] & 0x80) != 0;
+    }
+
+    bool MouseUp(MOUSEKEYSTATE btn)
+    {
+        return !(m_MouseState.rgbButtons[btn] & 0x80)
+            && (m_PrevMouseState.rgbButtons[btn] & 0x80);
     }
     
     HWND Get_HWND() { return m_hWnd; }
@@ -64,6 +83,7 @@ private:
     _ubyte m_PrevKeyState[256];
 
     DIMOUSESTATE m_MouseState;
+    DIMOUSESTATE m_PrevMouseState;
 
     HWND m_hWnd;
 

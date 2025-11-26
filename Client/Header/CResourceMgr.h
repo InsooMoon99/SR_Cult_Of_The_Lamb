@@ -14,7 +14,9 @@ private:
 public:
     HRESULT Ready_Resource(DEVICE graphicDev);
 
+
 private:
+    HRESULT Ready_BossP1(DEVICE graphicDev);
     HRESULT Ready_Buffer(DEVICE graphicDev);
     HRESULT Ready_Player(DEVICE graphicDev);
     HRESULT Ready_Monster(DEVICE graphicDev);

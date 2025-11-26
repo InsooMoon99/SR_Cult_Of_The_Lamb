@@ -4,7 +4,7 @@ IMPLEMENT_SINGLETON(CDInputMgr)
 
 CDInputMgr::CDInputMgr()
     : m_InputSDK(nullptr), m_KeyBoardDev(nullptr), m_MouseDev(nullptr),
-      m_KeyState{}, m_PrevKeyState{}, m_MouseState{}
+      m_KeyState{}, m_PrevKeyState{}, m_MouseState{}, m_PrevMouseState{}, m_hWnd(nullptr)
 {
 }
 
@@ -47,8 +47,11 @@ HRESULT CDInputMgr::Ready_InputDev(HINSTANCE hInst, HWND hWnd)
 
 void CDInputMgr::Update_InputDev()
 {
-    // 이전 프레임 상태 백업
+    // 키보드 이전 프레임 상태 백업
     memcpy(m_PrevKeyState, m_KeyState, sizeof(m_KeyState));
+
+    // 마우스 이전 프레임 상태 백업
+    m_PrevMouseState = m_MouseState;
 
     // 키보드
     if (FAILED(m_KeyBoardDev->GetDeviceState(256, m_KeyState)))

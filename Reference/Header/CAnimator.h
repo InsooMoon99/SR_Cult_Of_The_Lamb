@@ -51,6 +51,8 @@ public:
     // 현재 재생중인 프레임
     _int Get_CurFrame();
 
+    _int Get_MaxFrame();
+
     // 주의! Object마다 Set_TextureType 설정 꼭 해줘야함
     void Set_TextureType(COMPONENTTYPE type);
 
