@@ -86,8 +86,10 @@ enum class COMPONENTTYPE
     COMBATSTAT,
     INVENTORY,
     TERRAIN_RENDER,
+
     CONTROLLER_PLAYER,
     WEAPON_EQUIP,
+
     RIGIDBODY,
 
     TEXTURE,
@@ -115,7 +117,13 @@ enum class ACTORSTATE
     IDLE,
     RUN,
     ATTACK,
-    ROLL,
+
+    // TODO : 플레이어 상태 계속 추가
+    PLAYER_ROLL,
+    PLAYER_SWORD_COMBO1,
+    PLAYER_SWORD_COMBO2,
+    PLAYER_SWORD_COMBO3,
+
     HIT,
     DEAD,
 
@@ -147,6 +155,5 @@ enum class SCENETYPE
     SC_EDIT,
     SC_END
 };
-
 }
 #endif // Engine_Enum_h__

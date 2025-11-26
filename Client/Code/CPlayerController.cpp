@@ -192,7 +192,7 @@ void CPlayerController::Calc_InputVector()
 _bool CPlayerController::CanApplyDirection(ACTORSTATE currentState)
 {
     //!! ROLL, ATTACK, DEAD 에서 방향 변경 금지
-    if (ACTORSTATE::ROLL == currentState ||
+    if (ACTORSTATE::PLAYER_ROLL == currentState ||
         ACTORSTATE::ATTACK == currentState ||
         ACTORSTATE::DEAD == currentState)
         return false;
@@ -288,7 +288,7 @@ void CPlayerController::Determine_State()
 
         D3DXVec3Normalize(&m_RollData.rollDir, &m_RollData.rollDir);
 
-        nextState = ACTORSTATE::ROLL;
+        nextState = ACTORSTATE::PLAYER_ROLL;
     }
 
     // 구르기 중
@@ -308,7 +308,7 @@ void CPlayerController::Determine_State()
 _bool CPlayerController::CanApplyMovement(ACTORSTATE currentState)
 {
     //!! ROLL, DEAD 에서 수동 이동 금지
-    if (ACTORSTATE::ROLL == currentState ||
+    if (ACTORSTATE::PLAYER_ROLL == currentState ||
         ACTORSTATE::DEAD == currentState)
         return false;
 

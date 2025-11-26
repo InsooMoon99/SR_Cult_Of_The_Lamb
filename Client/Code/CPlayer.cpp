@@ -2,23 +2,23 @@
 #include "CPlayer.h"
 
 #include "CAnimator.h"
+#include "CAttackBox.h"
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
 #include "CCreateHelper.h"
 #include "CDInputMgr.h"
 #include "CEnumHelper.h"
 #include "CInventory.h"
+#include "CManagement.h"
 #include "CPlayerController.h"
 #include "CRcTex.h"
 #include "CRenderer.h"
 #include "CRigidbody.h"
+#include "CScene.h"
 #include "CState.h"
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CWeaponEquip.h"
-#include "CAttackBox.h"
-#include "CManagement.h"
-#include "CScene.h"
 
 CPlayer::CPlayer(DEVICE graphicDev)
     : CGameObject(graphicDev),
@@ -98,12 +98,8 @@ _int CPlayer::Update_GameObject(const _float& timeDelta)
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 
-
-
     if (CDInputMgr::GetInstance()->KeyDown(DIK_5))
-    {
         Test_Attack();
-    }
 
     return exit;
 }
@@ -165,7 +161,7 @@ void CPlayer::Test_Attack()
 
     // 2. 구조체 데이터 세팅
     HITDATA hit{};
-    hit.damage = 12;
+    hit.damage    = 12;
     hit.knockback = 50.f;
     obj->Set_HitDesc(hit);
 
@@ -291,14 +287,22 @@ void CPlayer::Animation_Setting()
 #pragma endregion
 
 #pragma region ------   ROLL    ------
-    m_AnimatorCom->Create_Animation(L"PlayerRoll_LEFT", 19, 0.02f,
-        _vec2(1.3f, 1.3f),       // Scale
-        _vec2(0.f, 0.f));  // Offset
+    m_AnimatorCom->Create_Animation(L"PlayerRoll_LEFT",
+                                    19,
+                                    0.02f,
+                                    _vec2(1.3f, 1.3f), // Scale
+                                    _vec2(0.f, 0.f));  // Offset
 
     m_AnimatorCom->Create_Animation(L"PlayerRoll_UP", 16, 0.02f * 19 / 16);
     m_AnimatorCom->Create_Animation(L"PlayerRoll_DOWN", 16, 0.02f * 19 / 16);
 
-    m_StateCom->Set_AnimInfo(ACTORSTATE::ROLL, L"PlayerRoll", ANIMSTATE::ONCE);
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_ROLL, L"PlayerRoll", ANIMSTATE::ONCE);
+#pragma endregion
+
+#pragma region ------   Sword_Combo1    ------
+    m_AnimatorCom->Create_Animation(L"PlayerSwordCombo1", 31, 0.02f);
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::ATTACK, L"PlayerSwordCombo1", ANIMSTATE::ONCE);
 #pragma endregion
 }
 

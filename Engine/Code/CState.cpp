@@ -192,7 +192,7 @@ pair<wstring, bool> CState::Get_AnimDirInfo(ACTORSTATE state, ACTORDIR dir)
         }
         break;
 
-    case ACTORSTATE::ROLL: // 4방향 (UP, DOWN, LEFT 애니메이션 보유)
+    case ACTORSTATE::PLAYER_ROLL: // 4방향 (UP, DOWN, LEFT 애니메이션 보유)
         switch (dir)
         {
         case ACTORDIR::UP:
