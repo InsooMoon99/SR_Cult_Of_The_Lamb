@@ -50,7 +50,7 @@ void CMapEditorPlacer::Update_MapPlacer(const _float& timeDelta)
     // 좌클릭 하면 배치하기
     auto input = CDInputMgr::GetInstance();
 
-    if (input->Get_DIMouseState(MOUSEKEYSTATE::DIM_LB) & 0x80)
+    if (input->MouseDown(DIM_LB))
     {
         CScene* scene = CManagement::GetInstance()->Get_Scene();
         if (scene)
@@ -69,7 +69,7 @@ void CMapEditorPlacer::Update_MapPlacer(const _float& timeDelta)
     }
 
     // 우클릭 : 배치 종료
-    if (input->Get_DIMouseState(MOUSEKEYSTATE::DIM_RB) & 0x80)
+    if (input->MouseDown(DIM_RB))
     {
         m_Placing = false;
         Safe_Release(m_PreviewObj);
