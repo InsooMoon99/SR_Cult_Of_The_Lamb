@@ -158,6 +158,8 @@ void CMapObjectMgr::Render_GrassWindow()
                 }
 
             }
+
+            Safe_Release(grassTexture);
         }
 
     }
@@ -325,6 +327,8 @@ void CMapObjectMgr::Refresh_MapObjectList()
 
 void CMapObjectMgr::Free()
 {
+    m_MapObjList.clear();
+
     Safe_Release(m_MapPlacer);
     Safe_Release(m_GraphicDev);
 }

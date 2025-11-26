@@ -45,7 +45,6 @@ private:
 
     char                m_MapObjFileName[128] = "MapObject_";
 
-
 };
 
 END
