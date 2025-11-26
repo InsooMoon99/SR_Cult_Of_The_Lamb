@@ -179,7 +179,7 @@ void CPlayer::Test_Attack()
 
     // 4. 레이어에 추가, 헬퍼 함수 SpawnAttackObject 사용
     //CManagement::GetInstance()->Get_Scene()->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, obj, OBJTYPE::ATTACK_COL);
-    SpawnAttackObject(obj);
+    SpawnAttackObject(obj); // TYPE , BOX SPHERE
 }
 
 void CPlayer::OnBeginOverlap(CCollider* self, CCollider* other)
