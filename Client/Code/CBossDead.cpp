@@ -21,7 +21,7 @@ CBossDead::~CBossDead()
 void CBossDead::Enter()
 {
     CMonsterState::Enter();
-    m_pOwnerAnimatorCom->Play_Animation(L"BossMove_Down", ANIMSTATE::ONCE);
+    m_pOwnerAnimatorCom->Play_Animation(L"BossGroggy_start", ANIMSTATE::ONCE);
     m_ePhase = PHASE::DOWN;
 }
 
@@ -71,8 +71,6 @@ _int CBossDead::Update_State(const _float& timeDelta)
             return CBossPhase1::BOSSPHASE1::BOSS_END;// 보스 끝남 
         break;
     }
-
-
 
     return CBossPhase1::BOSSPHASE1::BOSSDEAD;
 }

@@ -84,6 +84,21 @@ void CBossPhase1::Render_GameObject()
     m_BoxColCom->Render(); // Render Reset 이후 호출해야함
 }
 
+void CBossPhase1::Render_Editor()
+{
+    ImGui::Text("=== BossP1 ===");
+
+    _int num = m_StateMachine->GetCurStateNum();
+
+    for (int i = 0; i < BOSS_END; i++)
+    {
+        if (ImGui::Button(GetBossStateName(i)))
+        {
+            m_StateMachine->Change_State(i);
+        }
+    }
+}
+
 HRESULT CBossPhase1::Add_Component()
 {
     // buffer
@@ -135,10 +150,10 @@ HRESULT CBossPhase1::Add_Component()
 void CBossPhase1::Animation_Setting()
 {
 
-    m_AnimatorCom->Create_Animation(L"BossIdle", 100, 0.03f);
+    m_AnimatorCom->Create_Animation(L"BossIdle", 100, 0.02f);
 
-    m_AnimatorCom->Create_Animation(L"BossAwake", 105, 0.03f);
-    m_AnimatorCom->Create_Animation(L"BossAttack", 97, 0.03f);
+    m_AnimatorCom->Create_Animation(L"BossAwake", 105, 0.02f);
+    m_AnimatorCom->Create_Animation(L"BossAttack", 97, 0.02f);
     m_AnimatorCom->Create_Animation(L"BossDead", 167, 0.02f);
     m_AnimatorCom->Create_Animation(L"BossMove_up", 50, 0.02f);
     m_AnimatorCom->Create_Animation(L"BossMove_Down", 28, 0.02f);
@@ -146,8 +161,25 @@ void CBossPhase1::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"BossGroggy_start", 115, 0.02f);
     
     m_AnimatorCom->Create_Animation(L"BossGroggy_loop", 84, 0.02f);
-    m_AnimatorCom->Create_Animation(L"BossGroggy_end", 67, 0.02f);
+    m_AnimatorCom->Create_Animation(L"BossGroggy_end", 67, 0.01f);
 
+}
+
+const char* CBossPhase1::GetBossStateName(_int StateNum)
+{
+    
+    switch (StateNum)
+    {
+    case BOSSAWAKE:         return "BOSSAWAKE";
+    case BULLETATTACK:          return "BULLETATTACK";
+    case CHAINATTACK:  return "CHAINATTACK";
+    case BOSSDEAD: return "BOSSDEAD";
+    case BOSSIDLE:          return "BOSSIDLE";
+    case BOSSMOVE:          return "BOSSMOVE";
+    case BOSSGROGGRY:          return "BOSSGROGGRY";
+    case BOSS_END:          return "BOSS_END";
+    }
+    return "UNKNOWN";
 }
 
 CBossPhase1* CBossPhase1::Create(DEVICE graphicDev)

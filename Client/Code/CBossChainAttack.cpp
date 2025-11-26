@@ -5,6 +5,7 @@
 #include "CBossStateMachine.h"
 #include "CTransform.h"
 #include "CAnimator.h"
+#include "CSpriteAnimation.h"
 
 CBossChainAttack::CBossChainAttack(CBossPhase1* pOwner, CBossStateMachine* pStateMachine)
 {
@@ -44,13 +45,13 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
     CMonsterState::Update_State(timeDelta);
 
     if (m_pOwnerAnimatorCom->Get_CurAnimation() == nullptr)
-        return CBossPhase1::BOSSPHASE1::BOSSMOVE;
+        return CBossPhase1::BOSSPHASE1::CHAINATTACK;
 
     switch (m_ePhase)
     {
-    case PHASE::CIRCLE:
+    case PHASE::PLAYERLINE:
 
-        m_fElapsedTime[(int)PHASE::CIRCLE] += timeDelta;
+        m_fElapsedTime[(int)PHASE::PLAYERLINE] += timeDelta;
 
 
         //
@@ -58,18 +59,18 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
 
         if (m_fCurStateElapsedTime >= 1.0f)
         {
-            m_fElapsedTime[(int)PHASE::CIRCLE] = 0;
+            m_fElapsedTime[(int)PHASE::PLAYERLINE] = 0;
             return CBossPhase1::BOSSPHASE1::BOSSIDLE;
 
         }
         break;
 
 
-    case PHASE::ROTCROSS_SPREAD: //움직임
+    case PHASE::CROSS: //움직임
 
-        m_pOwnerAnimatorCom->Play_Animation(L"BossAttack", ANIMSTATE::LOOP);
+        m_pOwnerAnimatorCom->Play_Animation(L"BossAttack", ANIMSTATE::ONCE); 
 
-        m_fElapsedTime[(int)PHASE::ROTCROSS_SPREAD] += timeDelta;
+        m_fElapsedTime[(int)PHASE::CROSS] += timeDelta;
 
 
         //
@@ -77,16 +78,16 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
 
         if (m_fCurStateElapsedTime >= 1.0f)
         {
-            m_fElapsedTime[(int)PHASE::ROTCROSS_SPREAD] = 0;
+            m_fElapsedTime[(int)PHASE::CROSS] = 0;
             return CBossPhase1::BOSSPHASE1::BOSSIDLE;
         }
         break;
 
-    case PHASE::SPREAD://움직임 + idle
+    case PHASE::RANDCHAIN://움직임 + idle
 
-        m_pOwnerAnimatorCom->Play_Animation(L"BossMove_up", ANIMSTATE::ONCE);
+        m_pOwnerAnimatorCom->Play_Animation(L"BossAttack", ANIMSTATE::ONCE);
 
-        m_fElapsedTime[(int)PHASE::SPREAD] += timeDelta;
+        m_fElapsedTime[(int)PHASE::RANDCHAIN] += timeDelta;
 
 
         //
@@ -94,7 +95,7 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
 
         if (m_fCurStateElapsedTime >= 1.0f)
         {
-            m_fElapsedTime[(int)PHASE::SPREAD] = 0;
+            m_fElapsedTime[(int)PHASE::RANDCHAIN] = 0;
             return CBossPhase1::BOSSPHASE1::BOSSIDLE;
         }
         break;
@@ -102,10 +103,14 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
 
 
 
-    return CBossPhase1::BOSSPHASE1::BOSSMOVE;
+    return CBossPhase1::BOSSPHASE1::CHAINATTACK;
 }
 
 void CBossChainAttack::LateUpdate_State(const _float& timeDelta)
+{
+}
+
+void CBossChainAttack::Render_State()
 {
 }
 

@@ -7,13 +7,16 @@ class CBossStateMachine;
 class CBossIdle :
     public CMonsterState
 {
+public:
+    //enum class PHASE { DOWN, TALK, DISAPPEAR };
+    //PHASE m_ePhase;
+private:
     explicit CBossIdle(CBossPhase1* pOwner, CBossStateMachine* pStateMachine);
     virtual ~CBossIdle();
 
 public:
     virtual void Enter();
     virtual void Exit();
-
 
 public:
     virtual HRESULT Ready_State();

@@ -9,7 +9,7 @@ class CBossBulletAttack :
 {
 public:
     enum class PHASE { CIRCLE, ROTCROSS_SPREAD, SPREAD ,PHASE_END};
-    PHASE m_ePhase;
+
 private:
     explicit CBossBulletAttack(CBossPhase1* pOwner, CBossStateMachine* pStateMachine);
     virtual ~CBossBulletAttack();
@@ -31,8 +31,8 @@ private:
 public:
     static CBossBulletAttack* Create(CBossPhase1* pOwner, CBossStateMachine* pStateMachine);
 
-
 private:
+    PHASE m_ePhase;
     float m_fElapsedTime[(int)PHASE::PHASE_END];
 private:
     virtual void Free();

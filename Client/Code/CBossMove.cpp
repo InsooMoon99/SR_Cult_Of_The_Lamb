@@ -60,8 +60,9 @@ _int CBossMove::Update_State(const _float& timeDelta)
         //m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::ONCE);
         m_fCurStateElapsedTime += timeDelta;
 
-        if (m_fCurStateElapsedTime >= 1.0f)
+        if (m_fCurStateElapsedTime >= 3.0f)
         {
+            m_fCurStateElapsedTime = 0;
             m_ePhase = PHASE::UP;
         }
         break;
@@ -70,11 +71,9 @@ _int CBossMove::Update_State(const _float& timeDelta)
   
         m_pOwnerAnimatorCom->Play_Animation(L"BossMove_up", ANIMSTATE::ONCE);
         if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
-            return CBossPhase1::BOSSPHASE1::BULLETATTACK;// 이거 아님 공격상태전환 아이들로 
+            return CBossPhase1::BOSSPHASE1::BOSSIDLE;// 이거 아님 공격상태전환 아이들로 
         break;
     }
-
-
 
     return CBossPhase1::BOSSPHASE1::BOSSMOVE;
 }

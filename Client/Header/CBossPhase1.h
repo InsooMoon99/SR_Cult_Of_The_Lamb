@@ -29,6 +29,7 @@ public:
     _int    Update_GameObject(const _float& timeDelta) override;
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
+    void Render_Editor() override;
 
 public:
     void OnBeginOverlap(CCollider* self, CCollider* other) override {}
@@ -37,6 +38,8 @@ public:
 private:
     HRESULT Add_Component();
     void    Animation_Setting();
+
+    const char* GetBossStateName(_int StateNum);
 
 private:
     Engine::CRcTex* m_BufferCom;

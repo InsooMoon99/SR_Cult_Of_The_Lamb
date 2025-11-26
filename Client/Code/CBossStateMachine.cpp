@@ -11,7 +11,7 @@
 #include "CBossIdle.h"
 #include "CBossMove.h"
 
-CBossStateMachine::CBossStateMachine(CBossPhase1* owner) : m_pOwner(owner), m_dwPrevStateKey(0),m_dwCurStateKey(0), m_pCurState(nullptr)
+CBossStateMachine::CBossStateMachine(CBossPhase1* owner) : m_pOwner(owner)
 {
 }
 
@@ -68,6 +68,11 @@ void CBossStateMachine::Change_State(_uint changeStateKey)
     m_pCurState = m_vecState[changeStateKey];
     m_pCurState->Enter();
 
+}
+
+_int CBossStateMachine::GetCurStateNum()
+{
+    { return m_pCurState->Get_StateKey(); }
 }
 
 HRESULT CBossStateMachine::Ready_BossStates()
@@ -128,6 +133,5 @@ CBossStateMachine* CBossStateMachine::Create(CBossPhase1* owner)
 
 void CBossStateMachine::Free()
 {
-    for_each(m_vecState.begin(), m_vecState.end(), CDeleteObj());
-    m_vecState.clear();
+    CStateMachine::Free();
 }

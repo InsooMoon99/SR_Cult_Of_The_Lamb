@@ -61,7 +61,7 @@ _int CBossAwake::Update_State(const _float& timeDelta)
 
         m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::ONCE);
         if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
-            return CBossPhase1::BOSSPHASE1::BULLETATTACK;// 이거 아님 공격상태전환 아이들로 
+            return CBossPhase1::BOSSPHASE1::BOSSIDLE;// 이거 아님 공격상태전환 아이들로 
             break;
     }
 

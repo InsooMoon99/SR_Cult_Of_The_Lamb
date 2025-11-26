@@ -1,11 +1,12 @@
 ﻿#pragma once
 #include "CBase.h"
-#include "Engine_Define.h"
+#include "CStateMachine.h"
 
 class CBossPhase1;
 class CMonsterState;
+
 class CBossStateMachine :
-    public CBase
+    public CStateMachine
 {
 protected:
     explicit CBossStateMachine(CBossPhase1* owner);
@@ -15,21 +16,16 @@ public:
     virtual HRESULT Ready_StateMachine();
     _int    Update_StateMachine(const _float& timeDelta);
     virtual void Change_State(_uint changeStateKey);
+    _int GetCurStateNum();
 
-
-    CMonsterState* Get_CurState() { return m_pCurState; }
-protected:
-    vector<CMonsterState*> m_vecState;
-    CMonsterState* m_pCurState;
-
-    _uint                   m_dwPrevStateKey;
-    _uint                   m_dwCurStateKey;
+    CBaseState* Get_CurState() { return m_pCurState; }
 
 private:
     CBossPhase1* m_pOwner;
 
 protected:
     HRESULT Ready_BossStates();
+
 public:
     static CBossStateMachine* Create(CBossPhase1* owner);
 

@@ -5,7 +5,8 @@
 #include "CTransform.h"
 #include "CAnimator.h"
 
-CMonsterState::CMonsterState()
+CMonsterState::CMonsterState() : m_pPlayer(nullptr), m_pPlayerTransformCom(nullptr), m_pOwnerTransformCom(nullptr), m_pOwnerAnimatorCom(nullptr),
+m_fMinStateTime(0.f), m_fCurStateElapsedTime(0.f), m_bMinStateTimePassed(false)
 {
 }
 
@@ -27,13 +28,6 @@ void CMonsterState::Exit()
 {
     m_bStarted = false;
     m_bExited = true;
-}
-
-_int CMonsterState::Update_State(const _float& timeDelta)
-{
- 
-
-    return 0;
 }
 
 void CMonsterState::Find_Player()

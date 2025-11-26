@@ -315,6 +315,12 @@
     <ClInclude Include="..\Header\CUIInventoryCell.h">
       <Filter>05. UI\01. UI</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CStateMachine.h">
+      <Filter>03. GameObject\04. Boss\01. Boss1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBaseState.h">
+      <Filter>03. GameObject\04. Boss\01. Boss1</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -478,6 +484,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\CUIInventoryCell.cpp">
       <Filter>05. UI\01. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CStateMachine.cpp">
+      <Filter>03. GameObject\04. Boss\01. Boss1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBaseState.cpp">
+      <Filter>03. GameObject\04. Boss\01. Boss1</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

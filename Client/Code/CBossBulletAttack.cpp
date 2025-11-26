@@ -44,7 +44,7 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
     CMonsterState::Update_State(timeDelta);
 
     if (m_pOwnerAnimatorCom->Get_CurAnimation() == nullptr)
-        return CBossPhase1::BOSSPHASE1::BOSSMOVE;
+        return CBossPhase1::BOSSPHASE1::BULLETATTACK;
 
     switch (m_ePhase)
     {
@@ -84,7 +84,7 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
 
     case PHASE::SPREAD://움직임 + idle
 
-        m_pOwnerAnimatorCom->Play_Animation(L"BossMove_up", ANIMSTATE::ONCE);
+        m_pOwnerAnimatorCom->Play_Animation(L"BossAttack", ANIMSTATE::ONCE);
 
         m_fElapsedTime[(int)PHASE::SPREAD] += timeDelta;
 
@@ -102,7 +102,7 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
 
 
 
-    return CBossPhase1::BOSSPHASE1::BOSSMOVE;
+    return CBossPhase1::BOSSPHASE1::BULLETATTACK;
 }
 
 void CBossBulletAttack::LateUpdate_State(const _float& timeDelta)

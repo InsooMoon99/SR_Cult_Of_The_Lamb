@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "CBase.h"
 #include "Engine_Define.h"
-
+#include "CBaseState.h"
 
 namespace Engine
 {
@@ -13,7 +13,7 @@ namespace Engine
 class CPlayer;
 
 class CMonsterState :
-    public CBase
+    public CBaseState
 {
 protected:
     explicit CMonsterState();
@@ -25,23 +25,10 @@ public:
 
 
 public:
-     virtual HRESULT Ready_State() { return S_OK; }
-     virtual _int    Update_State(const _float& timeDelta);
-     virtual void    LateUpdate_State(const _float& timeDelta) {}
-     virtual void    Render_State() {}
-
-public:
-    virtual _uint Get_StateKey() const { return m_dwCurStateKey; }
-
-protected:
-    _uint m_dwCurStateKey;
-
-    _bool m_bStarted;
-    _bool m_bExited;
-    _bool m_bCanTransit;
-
-
-// 여기까지 스테이트 필수 //
+     //virtual HRESULT Ready_State() { return S_OK; }
+     //virtual _int    Update_State(const _float& timeDelta) { return 0; }
+     //virtual void    LateUpdate_State(const _float& timeDelta) {}
+     //virtual void    Render_State() {}
 
 protected:
     virtual void    Find_Player();
@@ -49,7 +36,6 @@ protected:
     CPlayer* m_pPlayer;
     CTransform* m_pPlayerTransformCom;
     CTransform* m_pOwnerTransformCom;
-    //CTexture* m_pOwnerTextureCom
     CAnimator* m_pOwnerAnimatorCom;
 
 
