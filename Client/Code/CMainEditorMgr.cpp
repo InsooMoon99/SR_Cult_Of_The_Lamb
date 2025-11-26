@@ -89,6 +89,8 @@ void CMainEditorMgr::Render_MainEditor()
     ImGui::End();
 
     CMapObjectMgr::GetInstance()->Render_GrassWindow();
+    CMapObjectMgr::GetInstance()->Render_RubbleWindow();
+    CMapObjectMgr::GetInstance()->Render_DecoWindow();
 
 }
 

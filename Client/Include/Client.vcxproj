@@ -180,7 +180,7 @@
     <ClInclude Include="..\Header\CBossMove.h" />
     <ClInclude Include="..\Header\CBossPhase1.h" />
     <ClInclude Include="..\Header\CBossStateMachine.h" />
-    <ClInclude Include="..\Header\CClient_CreateHelper.h" />
+    <ClInclude Include="..\Header\CMapObject_Helper.h" />
     <ClInclude Include="..\Header\CComInspectors.h" />
     <ClInclude Include="..\Header\CDroppedItem.h" />
     <ClInclude Include="..\Header\CDropSystem.h" />

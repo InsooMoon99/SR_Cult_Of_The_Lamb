@@ -24,6 +24,10 @@ public:
 
     virtual void Render_Editor() override;
 
+    void Render_TileWindow();
+    void Render_Tile284();
+    void Render_Tile1024();
+
 public:
     HRESULT SaveMap(const char* filePath);
     HRESULT LoadMap(const char* filePath);
@@ -69,5 +73,9 @@ private:
     _int            m_SelectedMapIndex;
 
     _int            m_SizeX, m_SizeZ;
-    _float            m_CellSize;
+    _float          m_CellSize;
+
+    _bool           m_ShowTile;  
+
+    _int            m_TileTypeIndex;
 };

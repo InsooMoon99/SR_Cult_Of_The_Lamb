@@ -27,8 +27,11 @@ public:
     void Update_MapObjectMgr(const _float& timeDelta);
 
     // Map Object 배치
-    void    Render_MapObjectWindow(); // Map Object Render
+    void    Render_MapObjectWindow();
+
     void    Render_GrassWindow();
+    void    Render_RubbleWindow();
+    void    Render_DecoWindow();
 
     HRESULT SaveMapObject(const char* filePath);
     HRESULT LoadMapObject(const char* filePath);

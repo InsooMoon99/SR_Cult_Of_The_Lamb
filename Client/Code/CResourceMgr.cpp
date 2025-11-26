@@ -407,10 +407,22 @@ HRESULT CResourceMgr::Ready_Terrain(DEVICE graphicDev)
 {
     auto protoMgr = CProtoMgr::GetInstance();
 
-    // Terrain
+    // Terrain_284
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_TILE_284, CTexture::Create(graphicDev, TEX_NORMAL,
             L"../Bin/Resource/Texture/Terrain/TileAtlas_284_Blank.png", 1))))
+        return E_FAIL;
+
+    // Terrain_1024
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_TILE_1024, CTexture::Create(graphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/Terrain/TileAtlas_1024.png", 1))))
+        return E_FAIL;
+
+    // Terrain_1024
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_TILE_OUTLINE, CTexture::Create(graphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/Terrain/TileOutline1.png", 1))))
         return E_FAIL;
 
 

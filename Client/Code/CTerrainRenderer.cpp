@@ -19,7 +19,8 @@ CTerrainRenderer::CTerrainRenderer(DEVICE graphicDev)
       m_PaintX(0),
       m_PaintZ(0),
       m_MapName{"Terrain_"},
-      m_SelectedMapIndex(0), m_SizeX(TILE_CNT_X), m_SizeZ(TILE_CNT_Z), m_CellSize(1.f)
+      m_SelectedMapIndex(0), m_SizeX(TILE_CNT_X), m_SizeZ(TILE_CNT_Z), m_CellSize(1.f), m_ShowTile(false),
+      m_TileTypeIndex(0)
 {
 }
 
@@ -33,6 +34,7 @@ CTerrainRenderer::CTerrainRenderer(const CTerrainRenderer& rhs)
       m_PaintX(rhs.m_PaintX),
       m_PaintZ(rhs.m_PaintZ),
       m_SelectedMapIndex(rhs.m_SelectedMapIndex), m_SizeX(TILE_CNT_X), m_SizeZ(TILE_CNT_Z), m_CellSize(rhs.m_CellSize),
+      m_ShowTile(false), m_TileTypeIndex(0),
       m_MapList(rhs.m_MapList)
 {
     memcpy(m_MapName, rhs.m_MapName, sizeof(m_MapName));
@@ -110,6 +112,7 @@ void CTerrainRenderer::Render_TerrainRenderer()
     if (m_BufferCom == nullptr || m_TextureCom == nullptr || m_TransformCom == nullptr)
         return;
 
+
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
     m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
@@ -136,66 +139,20 @@ void CTerrainRenderer::Render_Editor()
 {
     CComponent::Render_Editor();
 
-    ImGui::Text(u8"선택된 타일 : %d", m_SelectedTile + 1);
-    ImGui::Separator();
+	Render_TileWindow();
 
-    // --- 타일 버튼 ---
-    if (m_TextureCom)
+    if (ImGui::Selectable("Tile_284"))
     {
-        const _uint  tileCount = 6;
-        const _uint  tilePerRow = 6;
-        const ImVec2 tileSize(32.f, 32.f);
-
-        IDirect3DBaseTexture9* baseTexture = m_TextureCom->Get_BaseTexture(0);
-        if (baseTexture)
-        {
-            ImTextureID texID = (ImTextureID)baseTexture;
-
-            for (_uint i = 0; i < tileCount; i++)
-            {
-                if (i > 0 && (i % tilePerRow) != 0)
-                    ImGui::SameLine();
-
-                _int tileX = i;
-                _int tileY = 0;
-
-                _float du = 1.f / (float)ATLAS_COLS_284;
-                _float dv = 1.f / (float)ATLAS_ROWS_284;
-
-                ImVec2 uv0(tileX * du, tileY * dv);
-                ImVec2 uv1((tileX + 1) * du, (tileY + 1) * dv);
-
-                ImGui::PushID((int)i);
-
-                const _bool isSelected = (i == (_uint)m_SelectedTile);
-
-                if (isSelected)
-                {
-                    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.7f, 0.7f, 0.2f, 1.f));
-                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.8f, 0.8f, 0.3f, 1.0f));
-                }
-
-                if (ImGui::ImageButton("Tile", texID, tileSize, uv0, uv1))
-                {
-                    m_SelectedTile = (int)i;
-                }
-
-                if (isSelected)
-                    ImGui::PopStyleColor(2);
-
-                ImGui::PopID();
-            }
-        }
+        m_ShowTile = true;
     }
-
-    ImGui::Separator();
-    if (ImGui::Button(u8"전체 타일을 선택된 타일로"))
+  
+    if (ImGui::Selectable("Tile_Outline"))
     {
-        for (size_t i = 0; i < m_TileIndices.size(); ++i)
-            m_TileIndices[i] = m_SelectedTile;
+		
     }
 
     ImGui::NewLine();
+	ImGui::Separator();
     // --- Save / Load ---
     ImGui::Text(u8"저장할 맵 이름 : ");
     ImGui::SameLine();
@@ -241,6 +198,103 @@ void CTerrainRenderer::Render_Editor()
         }
     }
     
+}
+
+void CTerrainRenderer::Render_TileWindow()
+{
+	if (!m_ShowTile)
+		return;
+
+	ImGui::PushID("Tile_Render");
+	{
+		if (ImGui::Begin("Tile", &m_ShowTile))
+		{
+			const char* tileItems[] = { "Tile_284", "Tile_1024" };
+
+			ImGui::Combo("##Combo Tile", &m_TileTypeIndex, tileItems, IM_ARRAYSIZE(tileItems));
+
+			ImGui::Separator();
+
+			if (m_TileTypeIndex == 0)
+			{
+				Render_Tile284();
+			}
+			else if (m_TileTypeIndex == 1)
+			{
+				Render_Tile1024();
+			}
+		}
+
+		ImGui::End();
+	}
+	ImGui::PopID();
+
+}
+
+void CTerrainRenderer::Render_Tile284()
+{
+	ImGui::Text(u8"선택된 타일 : %d", m_SelectedTile + 1);
+	ImGui::Separator();
+
+	// --- 타일 버튼 ---
+	if (m_TextureCom)
+	{
+		const _uint  tileCount = 6;
+		const _uint  tilePerRow = 6;
+		const ImVec2 tileSize(32.f, 32.f);
+
+		IDirect3DBaseTexture9* baseTexture = m_TextureCom->Get_BaseTexture(0);
+		if (baseTexture)
+		{
+			ImTextureID texID = (ImTextureID)baseTexture;
+
+			for (_uint i = 0; i < tileCount; i++)
+			{
+				if (i > 0 && (i % tilePerRow) != 0)
+					ImGui::SameLine();
+
+				_int tileX = i;
+				_int tileY = 0;
+
+				_float du = 1.f / (float)ATLAS_COLS_284;
+				_float dv = 1.f / (float)ATLAS_ROWS_284;
+
+				ImVec2 uv0(tileX * du, tileY * dv);
+				ImVec2 uv1((tileX + 1) * du, (tileY + 1) * dv);
+
+				ImGui::PushID((int)i);
+
+				const _bool isSelected = (i == (_uint)m_SelectedTile);
+
+				if (isSelected)
+				{
+					ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.7f, 0.7f, 0.2f, 1.f));
+					ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.8f, 0.8f, 0.3f, 1.0f));
+				}
+
+				if (ImGui::ImageButton("Tile", texID, tileSize, uv0, uv1))
+				{
+					m_SelectedTile = (int)i;
+				}
+
+				if (isSelected)
+					ImGui::PopStyleColor(2);
+
+				ImGui::PopID();
+			}
+		}
+
+		ImGui::Separator();
+		if (ImGui::Button(u8"전체 타일을 선택된 타일로"))
+		{
+			for (size_t i = 0; i < m_TileIndices.size(); ++i)
+				m_TileIndices[i] = m_SelectedTile;
+		}
+	}
+}
+
+void CTerrainRenderer::Render_Tile1024()
+{
 }
 
 HRESULT CTerrainRenderer::SaveMap(const char* filePath)
