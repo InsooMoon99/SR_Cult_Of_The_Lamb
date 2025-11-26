@@ -50,7 +50,7 @@ void CMapEditorPlacer::Update_MapPlacer(const _float& timeDelta)
     // 좌클릭 하면 배치하기
     auto input = CDInputMgr::GetInstance();
 
-    if (input->KeyDown(VK_LBUTTON))
+    if (input->Get_DIMouseState(MOUSEKEYSTATE::DIM_LB) & 0x80)
     {
         CScene* scene = CManagement::GetInstance()->Get_Scene();
         if (scene)
@@ -58,10 +58,10 @@ void CMapEditorPlacer::Update_MapPlacer(const _float& timeDelta)
             CLayer* layer = scene->Get_Layer(LAYERTYPE::ENVIRONMENT);
             if (layer)
             {
-                CMapObjectBase* newObj = CreateMapObjectType(m_GraphicDev, m_SelectedType);
+                CMapObjectBase* newObj = CreateMapObjectType(m_GraphicDev, MAPOBJTYPE::GRASS);
                 if (newObj)
                 {
-                    newObj->Set_WorldPos(worldPos);
+                    newObj->Set_WorldPos(_vec3(worldPos.x, worldPos.y + 0.2f, worldPos.z));
                     layer->Add_GameObject(OBJTYPE::PLACEMENT, newObj);
                 }
             }
@@ -69,7 +69,7 @@ void CMapEditorPlacer::Update_MapPlacer(const _float& timeDelta)
     }
 
     // 우클릭 : 배치 종료
-    if (input->KeyDown(VK_RBUTTON) || input->KeyDown(VK_ESCAPE))
+    if (input->Get_DIMouseState(MOUSEKEYSTATE::DIM_RB) & 0x80)
     {
         m_Placing = false;
         Safe_Release(m_PreviewObj);

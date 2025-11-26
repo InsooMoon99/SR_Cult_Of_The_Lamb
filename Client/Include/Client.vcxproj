@@ -188,11 +188,13 @@
     <ClInclude Include="..\Header\CMainMenu.h" />
     <ClInclude Include="..\Header\CMapEditorPlacer.h" />
     <ClInclude Include="..\Header\CMapObjectBase.h" />
+    <ClInclude Include="..\Header\CMapObjectMgr.h" />
     <ClInclude Include="..\Header\CMapObject_Grass.h" />
     <ClInclude Include="..\Header\CMenuChar.h" />
     <ClInclude Include="..\Header\CMonster.h" />
     <ClInclude Include="..\Header\CPlayer.h" />
     <ClInclude Include="..\Header\CPlayerController.h" />
+    <ClInclude Include="..\Header\CResourceMgr.h" />
     <ClInclude Include="..\Header\CSceneMgr.h" />
     <ClInclude Include="..\Header\CStage.h" />
     <ClInclude Include="..\Header\CTerrainRenderer.h" />
@@ -234,11 +236,13 @@
     <ClCompile Include="..\Code\CMainMenu.cpp" />
     <ClCompile Include="..\Code\CMapEditorPlacer.cpp" />
     <ClCompile Include="..\Code\CMapObjectBase.cpp" />
+    <ClCompile Include="..\Code\CMapObjectMgr.cpp" />
     <ClCompile Include="..\Code\CMapObject_Grass.cpp" />
     <ClCompile Include="..\Code\CMenuChar.cpp" />
     <ClCompile Include="..\Code\CMonster.cpp" />
     <ClCompile Include="..\Code\CPlayer.cpp" />
     <ClCompile Include="..\Code\CPlayerController.cpp" />
+    <ClCompile Include="..\Code\CResourceMgr.cpp" />
     <ClCompile Include="..\Code\CSceneMgr.cpp" />
     <ClCompile Include="..\Code\CStage.cpp" />
     <ClCompile Include="..\Code\CTerrainRenderer.cpp" />

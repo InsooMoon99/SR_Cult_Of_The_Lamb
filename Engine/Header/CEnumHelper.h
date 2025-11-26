@@ -143,71 +143,60 @@ static const char* ToString(COMPONENTTYPE type)
 {
     switch (type)
     {
-    // Geometry/Mesh Components
-    case COMPONENTTYPE::TRI_COLOR:
-        return "TriColor";
-    case COMPONENTTYPE::RC_COLOR:
-        return "RcColor";
-    case COMPONENTTYPE::BOX_COLOR:
-        return "BoxColor";
-    case COMPONENTTYPE::RC_TEX:
-        return "RcTex";
-    case COMPONENTTYPE::BOX_TEX:
-        return "BoxTex";
-    case COMPONENTTYPE::TERRAIN_TEX:
-        return "TerrainTex";
+        // Geometry/Mesh Components
+    case COMPONENTTYPE::TRI_COLOR: return "TriColor";
+    case COMPONENTTYPE::RC_COLOR: return "RcColor";
+    case COMPONENTTYPE::BOX_COLOR: return "BoxColor";
+    case COMPONENTTYPE::RC_TEX: return "RcTex";
+    case COMPONENTTYPE::BOX_TEX: return "BoxTex";
+    case COMPONENTTYPE::TERRAIN_TEX: return "TerrainTex";
 
-    // Core Components
-    case COMPONENTTYPE::TRANSFORM:
-        return "Transform";
-    case COMPONENTTYPE::STATE:
-        return "State";
-    case COMPONENTTYPE::COMBATSTAT:
-        return "CombatStat";
-    case COMPONENTTYPE::INVENTORY:
-        return "Inventory";
-    case COMPONENTTYPE::ANIMATOR:
-        return "Animator";
-    case COMPONENTTYPE::CAMERA:
-        return "Camera";
-    case COMPONENTTYPE::TERRAIN_RENDER:
-        return "TerrainRender";
+        // Core Components
+    case COMPONENTTYPE::TRANSFORM: return "Transform";
+    case COMPONENTTYPE::STATE: return "State";
+    case COMPONENTTYPE::COMBATSTAT: return "CombatStat";
+    case COMPONENTTYPE::INVENTORY: return "Inventory";
+    case COMPONENTTYPE::ANIMATOR: return "Animator";
+    case COMPONENTTYPE::CAMERA: return "Camera";
+    case COMPONENTTYPE::TERRAIN_RENDER: return "TerrainRender";
 
-    // Texture Components (General & Specific)
-    case COMPONENTTYPE::TEXTURE:
-        return "Texture";
-    case COMPONENTTYPE::TEX_GRASS:
-        return "TexGrass";
-    case COMPONENTTYPE::TEX_ROCK:
-        return "TexRock";
+        // Texture Components (General & Specific)
+    case COMPONENTTYPE::TEXTURE: return "Texture";
+    case COMPONENTTYPE::TEX_PLAYER: return "TexPlayer";
+    case COMPONENTTYPE::TEX_MAINBG: return "TexMainBg";
+    case COMPONENTTYPE::TEX_MONSTER: return "TexMonster";
+    case COMPONENTTYPE::TEX_HUMAN_MONSTER: return "TexHumanMonster";
+    case COMPONENTTYPE::TEX_ITEM: return "TexItem";
+    case COMPONENTTYPE::TEX_GRASS: return "TexGrass";
+    case COMPONENTTYPE::TEX_ROCK: return "TexRock";
 
-    // UI Texture Components
+        // UI Texture Components
+    case COMPONENTTYPE::TEX_UI_CIRCLE: return "UI_Circle";
+    case COMPONENTTYPE::TEX_UI_COLOR: return "UI_Color";
+    case COMPONENTTYPE::TEX_UI_HEART: return "UI_Heart";
+    case COMPONENTTYPE::TEX_UI_WEAPON: return "UI_Weapon";
+    case COMPONENTTYPE::TEX_MENU_CHAR: return "UI_ManuChaR";
+    case COMPONENTTYPE::TEX_UI_ICON: return "UI_Icon";
 
-    // Tile Texture Components
+        // Tile Texture Components
+    case COMPONENTTYPE::TEX_TILE_284: return "TexTile284";
+    case COMPONENTTYPE::TEX_TILE_1024: return "TexTile1024";
 
     // Collider Components
-    case COMPONENTTYPE::RECT_COLL:
-        return "RectColl";
-    case COMPONENTTYPE::CIRCLE_COLL:
-        return "CircleColl";
-    case COMPONENTTYPE::BOX_COLL:
-        return "BoxColl";
-    case COMPONENTTYPE::SPHERE_COLL:
-        return "SphereColl";
+    case COMPONENTTYPE::RECT_COLL: return "RectColl";
+    case COMPONENTTYPE::CIRCLE_COLL: return "CircleColl";
+    case COMPONENTTYPE::BOX_COLL: return "BoxColl";
+    case COMPONENTTYPE::SPHERE_COLL: return "SphereColl";
 
     // Player Components
-    case COMPONENTTYPE::CONTROLLER_PLAYER:
-        return "PlayerController";
-    case COMPONENTTYPE::WEAPON_EQUIP:
-        return "WeaponEquip";
+    case COMPONENTTYPE::CONTROLLER_PLAYER: return "PlayerController";
+    case COMPONENTTYPE::WEAPON_EQUIP: return "WeaponEquip";
 
     // Physics Component
-    case COMPONENTTYPE::RIGIDBODY:
-        return "Rigidbody";
+    case COMPONENTTYPE::RIGIDBODY: return "Rigidbody";
 
     // End Marker
-    case COMPONENTTYPE::COMPONENT_END:
-        return "ComponentEnd";
+    case COMPONENTTYPE::COMPONENT_END: return "ComponentEnd";
 
     default:
         return "UnknownComponent";

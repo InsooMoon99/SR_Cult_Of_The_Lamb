@@ -71,9 +71,9 @@ HRESULT CTerrain::Add_Component()
     NULL_CHECK_RETURN(m_TransformCom, E_FAIL);
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
-    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEXTURE, L"Terrain_284");
+    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_TILE_284);
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEXTURE, m_TextureCom });
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_TILE_284, m_TextureCom });
 
     m_TerrainRendererCom = CreateProtoComponent<CTerrainRenderer>(this, COMPONENTTYPE::TERRAIN_RENDER);
     NULL_CHECK_RETURN(m_TerrainRendererCom, E_FAIL);
@@ -89,7 +89,7 @@ void CTerrain::Render_Editor()
     CGameObject::Render_Editor();
 
     ImGui::Text("=== Terrain ===");
-    
+
 }
 
 CTerrain* CTerrain::Create(DEVICE GraphicDev)

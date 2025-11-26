@@ -8,12 +8,12 @@
 
 CAnimator::CAnimator(DEVICE graphicDev)
     : CComponent(graphicDev),
-      m_CurAnimation(nullptr), m_Play(false), m_BufferCom(nullptr), m_Texture(nullptr)
+    m_CurAnimation(nullptr), m_Play(false), m_BufferCom(nullptr), m_Texture(nullptr), m_TextureType(COMPONENTTYPE::COMPONENT_END)
 { }
 
 CAnimator::CAnimator(const CAnimator& rhs)
     : CComponent(rhs),
-      m_CurAnimation(nullptr), m_Play(false), m_BufferCom(nullptr), m_Texture(nullptr)
+    m_CurAnimation(nullptr), m_Play(false), m_BufferCom(nullptr), m_Texture(nullptr), m_TextureType(rhs.m_TextureType)
 { }
 
 CAnimator::~CAnimator()
@@ -27,7 +27,10 @@ HRESULT CAnimator::Ready_Animator()
     m_BufferCom = dynamic_cast<CRcTex*>(m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::RC_TEX));
     NULL_CHECK_RETURN(m_BufferCom, E_FAIL);
 
-    m_Texture = dynamic_cast<CTexture*>(m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::TEXTURE));
+    // 주의! Object마다 Set_TextureType 설정 꼭 해줘야함
+    // ex) Player -> m_AnimatorCom->Set_TextureType(COMPONENTTYPE::TEX_PLAYER);
+
+    m_Texture = dynamic_cast<CTexture*>(m_Owner->Get_Component(ID_STATIC, m_TextureType));
     NULL_CHECK_RETURN(m_Texture, E_FAIL);
 
     return S_OK;
@@ -41,7 +44,7 @@ _int CAnimator::Update_Component(const _float& timeDelta)
     _int exit = CComponent::Update_Component(timeDelta);
 
     // 애니메이션 업데이트
-    m_CurAnimation->Update(timeDelta);                                                                                                                                                  
+    m_CurAnimation->Update(timeDelta);
 
     return exit;
 }
@@ -131,7 +134,7 @@ void CAnimator::Play_Animation(const wstring& key, ANIMSTATE state, bool reset)
         return;
 
     m_CurAnimation = anim;
-    m_CurKey       = key;
+    m_CurKey = key;
 
     m_CurAnimation->SetState(state);
 
@@ -164,6 +167,20 @@ _int CAnimator::Get_CurFrame()
         return 0;
 
     return m_CurAnimation->Get_Frame();
+}
+
+void CAnimator::Set_TextureType(COMPONENTTYPE type)
+{
+    m_TextureType = type;
+
+    if (m_Owner && m_Initialized == false)
+    {
+        if (SUCCEEDED(Ready_Animator()))
+            m_Initialized = true;
+
+        else
+            MSG_BOX("Animator Ready Failed");
+    }
 }
 
 CAnimator* CAnimator::Create(DEVICE graphicDev)
@@ -206,4 +223,3 @@ void CAnimator::Free()
 
     m_Animations.clear();
 }
-

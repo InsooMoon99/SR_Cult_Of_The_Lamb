@@ -4,6 +4,7 @@
 #include "CGameObject.h"
 
 BEGIN(Engine)
+
 // const char* -> wstring 변환
 static wstring CharToWString(const char* cstr)
 {
@@ -22,14 +23,8 @@ static wstring CharToWString(const char* cstr)
     result.resize(required);
 
     // 실제 변환
-    int converted = MultiByteToWideChar(
-        CP_UTF8,
-        0,
-        cstr,
-        srcLen,
-        &result[0],
-        required);
-
+    int converted = MultiByteToWideChar(CP_UTF8, 0, cstr, srcLen,
+        &result[0], required);
     if (converted <= 0)
         return L"";    // 변환 실패
 
@@ -43,28 +38,19 @@ static string WStringToUtf8(const wstring& wstr)
         return {};
 
     int sizeNeeded = WideCharToMultiByte(
-        CP_UTF8,
-        0,
-        wstr.c_str(),
-        static_cast<int>(wstr.size()),
-        nullptr,
-        0,
-        nullptr,
-        nullptr);
+        CP_UTF8, 0,
+        wstr.c_str(), (int)wstr.size(),
+        nullptr, 0, nullptr, nullptr);
 
     if (sizeNeeded <= 0)
         return {};
 
     string result(sizeNeeded, 0);
     WideCharToMultiByte(
-        CP_UTF8,
-        0,
-        wstr.c_str(),
-        static_cast<int>(wstr.size()),
-        result.data(),
-        sizeNeeded,
-        nullptr,
-        nullptr);
+        CP_UTF8, 0,
+        wstr.c_str(), (int)wstr.size(),
+        result.data(), sizeNeeded,
+        nullptr, nullptr);
 
     return result;
 }
@@ -89,17 +75,8 @@ static const char* ToString(ACTORSTATE state)
     case ACTORSTATE::DEAD:
         return "Dead";
 
-    case ACTORSTATE::PLAYER_ROLL:
+    case ACTORSTATE::ROLL:
         return "Roll";
-
-    case ACTORSTATE::PLAYER_SWORD_COMBO1:
-        return "Sword_Combo1";
-
-    case ACTORSTATE::PLAYER_SWORD_COMBO2:
-        return "Sword_Combo2";
-
-    case ACTORSTATE::PLAYER_SWORD_COMBO3:
-        return "Sword_Combo3";
 
     default:
         return "UnknownState";
@@ -143,71 +120,56 @@ static const char* ToString(COMPONENTTYPE type)
 {
     switch (type)
     {
-    // Geometry/Mesh Components
-    case COMPONENTTYPE::TRI_COLOR:
-        return "TriColor";
-    case COMPONENTTYPE::RC_COLOR:
-        return "RcColor";
-    case COMPONENTTYPE::BOX_COLOR:
-        return "BoxColor";
-    case COMPONENTTYPE::RC_TEX:
-        return "RcTex";
-    case COMPONENTTYPE::BOX_TEX:
-        return "BoxTex";
-    case COMPONENTTYPE::TERRAIN_TEX:
-        return "TerrainTex";
+        // Geometry/Mesh Components
+    case COMPONENTTYPE::TRI_COLOR: return "TriColor";
+    case COMPONENTTYPE::RC_COLOR: return "RcColor";
+    case COMPONENTTYPE::BOX_COLOR: return "BoxColor";
+    case COMPONENTTYPE::RC_TEX: return "RcTex";
+    case COMPONENTTYPE::BOX_TEX: return "BoxTex";
+    case COMPONENTTYPE::TERRAIN_TEX: return "TerrainTex";
 
-    // Core Components
-    case COMPONENTTYPE::TRANSFORM:
-        return "Transform";
-    case COMPONENTTYPE::STATE:
-        return "State";
-    case COMPONENTTYPE::COMBATSTAT:
-        return "CombatStat";
-    case COMPONENTTYPE::INVENTORY:
-        return "Inventory";
-    case COMPONENTTYPE::ANIMATOR:
-        return "Animator";
-    case COMPONENTTYPE::CAMERA:
-        return "Camera";
-    case COMPONENTTYPE::TERRAIN_RENDER:
-        return "TerrainRender";
+        // Core Components
+    case COMPONENTTYPE::TRANSFORM: return "Transform";
+    case COMPONENTTYPE::STATE: return "State";
+    case COMPONENTTYPE::COMBATSTAT: return "CombatStat";
+    case COMPONENTTYPE::INVENTORY: return "Inventory";
+    case COMPONENTTYPE::ANIMATOR: return "Animator";
+    case COMPONENTTYPE::CAMERA: return "Camera";
+    case COMPONENTTYPE::TERRAIN_RENDER: return "TerrainRender";
 
-    // Texture Components (General & Specific)
-    case COMPONENTTYPE::TEXTURE:
-        return "Texture";
-    case COMPONENTTYPE::TEX_GRASS:
-        return "TexGrass";
-    case COMPONENTTYPE::TEX_ROCK:
-        return "TexRock";
+        // Texture Components (General & Specific)
+    case COMPONENTTYPE::TEXTURE: return "Texture";
+    case COMPONENTTYPE::TEX_PLAYER: return "TexPlayer";
+    case COMPONENTTYPE::TEX_MAINBG: return "TexMainBg";
+    case COMPONENTTYPE::TEX_MONSTER: return "TexMonster";
+    case COMPONENTTYPE::TEX_HUMAN_MONSTER: return "TexHumanMonster";
+    case COMPONENTTYPE::TEX_ITEM: return "TexItem";
+    case COMPONENTTYPE::TEX_GRASS: return "TexGrass";
+    case COMPONENTTYPE::TEX_ROCK: return "TexRock";
 
-    // UI Texture Components
+        // UI Texture Components
+    case COMPONENTTYPE::TEX_UI_CIRCLE: return "UI_Circle";
+    case COMPONENTTYPE::TEX_UI_COLOR: return "UI_Color";
+    case COMPONENTTYPE::TEX_UI_HEART: return "UI_Heart";
+    case COMPONENTTYPE::TEX_UI_WEAPON: return "UI_Weapon";
+    case COMPONENTTYPE::TEX_MENU_CHAR: return "UI_ManuChaR";
+    case COMPONENTTYPE::TEX_UI_ICON: return "UI_Icon";
 
-    // Tile Texture Components
+        // Tile Texture Components
+    case COMPONENTTYPE::TEX_TILE_284: return "TexTile284";
+    case COMPONENTTYPE::TEX_TILE_1024: return "TexTile1024";
 
-    // Collider Components
-    case COMPONENTTYPE::RECT_COLL:
-        return "RectColl";
-    case COMPONENTTYPE::CIRCLE_COLL:
-        return "CircleColl";
-    case COMPONENTTYPE::BOX_COLL:
-        return "BoxColl";
-    case COMPONENTTYPE::SPHERE_COLL:
-        return "SphereColl";
+        // Collider Components
+    case COMPONENTTYPE::RECT_COLL: return "RectColl";
+    case COMPONENTTYPE::CIRCLE_COLL: return "CircleColl";
+    case COMPONENTTYPE::BOX_COLL: return "BoxColl";
+    case COMPONENTTYPE::SPHERE_COLL: return "SphereColl";
 
-    // Player Components
-    case COMPONENTTYPE::CONTROLLER_PLAYER:
-        return "PlayerController";
-    case COMPONENTTYPE::WEAPON_EQUIP:
-        return "WeaponEquip";
+        // End Marker
+    case COMPONENTTYPE::COMPONENT_END: return "ComponentEnd";
 
-    // Physics Component
-    case COMPONENTTYPE::RIGIDBODY:
-        return "Rigidbody";
-
-    // End Marker
-    case COMPONENTTYPE::COMPONENT_END:
-        return "ComponentEnd";
+    case COMPONENTTYPE::CONTROLLER_PLAYER: return "PlayerController";
+    case COMPONENTTYPE::WEAPON_EQUIP: return "WeaponEquip";
 
     default:
         return "UnknownComponent";
@@ -218,16 +180,11 @@ static const char* ToString(LAYERTYPE type)
 {
     switch (type)
     {
-    case LAYERTYPE::ENVIRONMENT:
-        return "Environment";
-    case LAYERTYPE::GAMELOGIC:
-        return "GameLogic";
-    case LAYERTYPE::CAMERA:
-        return "Camera";
-    case LAYERTYPE::UI:
-        return "UI";
-    case LAYERTYPE::LAYER_END:
-        return "LayerEnd";
+    case LAYERTYPE::ENVIRONMENT: return "Environment";
+    case LAYERTYPE::GAMELOGIC: return "GameLogic";
+    case LAYERTYPE::CAMERA: return "Camera";
+    case LAYERTYPE::UI: return "UI";
+    case LAYERTYPE::LAYER_END: return "LayerEnd";
 
     default:
         return "UnknownLayerType";
@@ -238,29 +195,18 @@ static const char* ToString(OBJTYPE type)
 {
     switch (type)
     {
-    case OBJTYPE::PLAYER:
-        return "Player";
-    case OBJTYPE::MONSTER:
-        return "Monster";
-    case OBJTYPE::CAMERA:
-        return "Camera";
-    case OBJTYPE::ITEM:
-        return "Item";
-    case OBJTYPE::UI:
-        return "Ui";
-    case OBJTYPE::BOSS2:
-        return "Boss2";
-    case OBJTYPE::HUMANMONSTER:
-        return "HumanMonster";
-    case OBJTYPE::TERRAIN:
-        return "Terrain";
+    case OBJTYPE::PLAYER:       return "Player";
+    case OBJTYPE::MONSTER:      return "Monster";
+    case OBJTYPE::CAMERA:       return "Camera";
+    case OBJTYPE::ITEM:         return "Item";
+    case OBJTYPE::UI:           return "Ui";
+    case OBJTYPE::BOSS2:        return "Boss2";
+    case OBJTYPE::HUMANMONSTER: return "HumanMonster";
+    case OBJTYPE::TERRAIN:      return "Terrain";
 
-    case OBJTYPE::PLACEMENT:
-        return "Placement";
-    case OBJTYPE::ATTACK_COL:
-        return "Attack_Collider";
-    case OBJTYPE::OBJ_END:
-        return "Obj_End";
+    case OBJTYPE::PLACEMENT:    return "Placement";
+    case OBJTYPE::ATTACK_COL:   return "Attack_Collider";
+    case OBJTYPE::OBJ_END:      return "Obj_End";
     default:
         return "UnknownObjectType";
     }
@@ -270,10 +216,11 @@ static void SetNameFromComponentType(CGameObject* obj, COMPONENTTYPE type)
 {
     if (!obj) return;
 
-    const char* base  = ToString(type);
-    wstring     wBase = CharToWString(base);
+    const char* base = ToString(type);
+    wstring wBase = CharToWString(base);
 
     obj->Set_Name(wBase);
 }
+
 
 END

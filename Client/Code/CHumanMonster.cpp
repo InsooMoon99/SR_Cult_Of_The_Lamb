@@ -162,10 +162,10 @@ HRESULT CHumanMonster::Add_Component()
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
     // texture
-    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEXTURE, L"Human_Monster");
+    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_HUMAN_MONSTER);
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
 
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEXTURE, m_TextureCom });
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_HUMAN_MONSTER, m_TextureCom });
 
     // Animator
     m_AnimatorCom = CreateProtoComponent<CAnimator>(this, COMPONENTTYPE::ANIMATOR);
@@ -173,7 +173,7 @@ HRESULT CHumanMonster::Add_Component()
 
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::ANIMATOR, m_AnimatorCom });
 
-    m_AnimatorCom->Ready_Animator();
+    m_AnimatorCom->Set_TextureType(COMPONENTTYPE::TEX_HUMAN_MONSTER);
 
     // RectCol Component
     m_BoxColCom = CreateProtoComponent<CBoxCollider>(this, COMPONENTTYPE::BOX_COLL);

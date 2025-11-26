@@ -224,10 +224,23 @@ static void Camera_Inspector(CCameraCom* camera)
     if (camera == nullptr)
         return;
 
-    const float column_width = 100.0f;
-
     ImGui::PushID("Camera_Inspector");
     {
+        ImGui::NewLine();
+
+        _vec3 offset = camera->Get_Offset();
+
+        ImGui::Text("Offset : "); ImGui::SameLine();
+        if (ImGui::DragFloat3("##Camera_Offset", &offset.x, 0.001f))
+        {
+            camera->Set_Offset(offset);
+        }
+
+        ImGui::NewLine();
+        ImGui::Separator();
+
+        const float column_width = 100.0f;
+
         // ------------------------
         // CAM_MODE 편집
         // ------------------------
@@ -310,7 +323,7 @@ static void Terrain_Inspector(CTerrainRenderer* renderer)
     {
         renderer->Render_Editor();
 
-        CMainEditorMgr::GetInstance()->Render_MapObjectWindow();
+        //CMainEditorMgr::GetInstance()->Render_MapObjectWindow();
     }
 }
 
