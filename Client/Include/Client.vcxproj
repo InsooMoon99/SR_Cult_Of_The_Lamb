@@ -188,6 +188,7 @@
     <ClInclude Include="..\Header\CMainMenu.h" />
     <ClInclude Include="..\Header\CMapEditorPlacer.h" />
     <ClInclude Include="..\Header\CMapObjectBase.h" />
+    <ClInclude Include="..\Header\CMapObjectMgr.h" />
     <ClInclude Include="..\Header\CMapObject_Grass.h" />
     <ClInclude Include="..\Header\CMenuChar.h" />
     <ClInclude Include="..\Header\CMonster.h" />
@@ -235,6 +236,7 @@
     <ClCompile Include="..\Code\CMainMenu.cpp" />
     <ClCompile Include="..\Code\CMapEditorPlacer.cpp" />
     <ClCompile Include="..\Code\CMapObjectBase.cpp" />
+    <ClCompile Include="..\Code\CMapObjectMgr.cpp" />
     <ClCompile Include="..\Code\CMapObject_Grass.cpp" />
     <ClCompile Include="..\Code\CMenuChar.cpp" />
     <ClCompile Include="..\Code\CMonster.cpp" />

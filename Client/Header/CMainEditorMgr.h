@@ -57,33 +57,16 @@ private:
 
     CTerrainRenderer* Find_TerrainRenderer();
 
-public:
-    // Map Object 배치
-    void Render_MapObjectWindow(); // Map Object Render
-
-    HRESULT SaveMapObject(const char* filePath);
-    HRESULT LoadMapObject(const char* filePath);
-    void    Clear_PlacedObjects(); // 로드 전 기존 오브젝트 정리
-
-    void Refresh_MapObjectList();
-
 protected:
     virtual void Free() override;
 
 private:
-    vector<string> m_MapObjList {};
-    _int m_SelectMapObjIndex = 0;
-
-    char m_MapObjFileName[128] = "MapObject_";
-
-private:
     DEVICE              m_GraphicDev = nullptr;
     CEditContext*       m_Context = nullptr;
-    CMapEditorPlacer*   m_MapPlacer = nullptr; // MapObject 배치
     CCameraCom*         m_MainCamera = nullptr;
 
     _bool               m_IsPlaying = true;
 
-    MAPTOOL_VIEW m_MapToolView = MAPTOOL_VIEW::MAP_OBJECT;
+    MAPTOOL_VIEW        m_MapToolView = MAPTOOL_VIEW::TERRAIN;
 };
 

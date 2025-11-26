@@ -130,7 +130,7 @@ void CTerrainRenderer::Render_Editor()
     ImGui::Text(u8"선택된 타일 : %d", m_SelectedTile + 1);
     ImGui::Separator();
 
-    // --- 타일 버튼들 ---
+    // --- 타일 버튼 ---
     if (m_TextureCom)
     {
         const _uint  tileCount = 5;
