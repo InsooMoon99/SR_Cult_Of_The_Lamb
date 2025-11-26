@@ -7,27 +7,36 @@
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CDInputMgr.h"
+#include "CFontMgr.h"
 
-int CUIButton::m_nextID = 0;
+int CUIButton::m_NextID = 0;
 
 // 일단 대기 rcTex 고치고 보자
 
-CUIButton::CUIButton(DEVICE graphicDev, int texOn, int texOff) : CUI(graphicDev), m_textureOn(texOn), m_textureOff(texOff)
+CUIButton::CUIButton(DEVICE graphicDev, int texOn, int texOff)
+    : CUI(graphicDev),
+      m_TextureOn(texOn),
+      m_TextureOff(texOff),
+      m_HasText(false)
 {
-    m_ID = ++m_nextID;
+    m_ID = ++m_NextID;
 
-    m_textureOn = texOn;
-    m_textureOff = texOff;
+    m_TextureOn  = texOn;
+    m_TextureOff = texOff;
 }
 
 CUIButton::CUIButton(const CUIButton& rhs, int texOn, int texOff)
-: CUI(rhs) , m_textureOn(texOn), m_textureOff(texOff)
+    : CUI(rhs),
+      m_TextureOn(texOn),
+      m_TextureOff(texOff),
+      m_HasText(false)
 {
-    m_ID = ++m_nextID;
+    m_ID = ++m_NextID;
 
-    m_textureOn = texOn;
-    m_textureOff = texOff;
+    m_TextureOn  = texOn;
+    m_TextureOff = texOff;
 }
+
 CUIButton::~CUIButton()
 {
 }
@@ -38,16 +47,14 @@ HRESULT CUIButton::Ready_GameObject()
         return E_FAIL;
 
     m_TransformCom->Set_Pos(_vec3(0.f, 0.f, 1.f));
-   // m_TransformCom->Set_Scale(_vec3(100.f, 100.f, 1.f));
-    //if (false == SetTexAspectInit(m_TextureCom, m_TransformCom, 1))
-    //    return E_FAIL;
-    if (m_textureOn == 1)
+
+    if (m_TextureOn == 1)
     {
-        m_textureIndex = 0;
+        m_TextureIndex = 0;
     }
-    if (m_textureOn == 3)
+    if (m_TextureOn == 3)
     {
-        m_textureIndex = 2;
+        m_TextureIndex = 2;
     }
     return S_OK;
 }
@@ -65,10 +72,10 @@ _int CUIButton::Update_GameObject(const _float& timeDelta)
     float screenY = WINCY * 0.5f - pos.y;     // 위가 + → 아래가 +로 뒤집기
 
     // 3) 버튼 화면 Rect 계산 (센터 기준)
-    m_tRect.left = (LONG)(screenX - size.x);
-    m_tRect.top = (LONG)(screenY - size.y);
-    m_tRect.right = (LONG)(screenX + size.x);
-    m_tRect.bottom = (LONG)(screenY + size.y);
+    m_Rect.left = (LONG)(screenX - size.x);
+    m_Rect.top = (LONG)(screenY - size.y);
+    m_Rect.right = (LONG)(screenX + size.x);
+    m_Rect.bottom = (LONG)(screenY + size.y);
 
     // 4) 마우스 좌표 (클라이언트 기준)
     POINT pt;
@@ -76,32 +83,45 @@ _int CUIButton::Update_GameObject(const _float& timeDelta)
     ScreenToClient(CDInputMgr::GetInstance()->Get_HWND(), &pt);
     //cout << pt.x << " , " << pt.y << endl;
 
-    bool hoveredNow = PtInRect(&m_tRect, pt) != 0;
+    bool hoveredNow = PtInRect(&m_Rect, pt) != 0;
 
     // 4) Hover 변화 감지
-    if (hoveredNow != m_bHovered)
+    if (hoveredNow != m_Hovered)
     {
-        m_bHovered = hoveredNow;
+        m_Hovered = hoveredNow;
 
-        if (m_bHovered) OnHoverStart();
+        if (m_Hovered) OnHoverStart();
         else            OnHoverEnd();
     }
 
     // 5) 클릭 (괄호 주의)
-    if (m_bHovered &&
+    if (m_Hovered &&
         (CDInputMgr::GetInstance()->Get_DIMouseState(MOUSEKEYSTATE::DIM_LB) & 0x80))
     {
-        
-        m_OnClick();
+        if (m_OnClick)
+        {
+            m_OnClick();
+
+        }
         // OnClick(); 같은 거 여기서 호출해도 됨
     }
 
-    if (m_bHovered == true)
+    if (m_Hovered == true)
     {
         int i = 0;
     }
 
-
+    if(m_HasText)
+    {
+        if(m_Selected||m_Hovered)
+        {
+            m_D3dxColor = { 1.f, 1.f, 1.f, 1.f };
+        }
+        else
+        {
+            m_D3dxColor = { 0.f, 0.f, 0.f, 1.f };
+        }
+    }
 
     return exit;
 }
@@ -118,10 +138,21 @@ void CUIButton::Render_GameObject()
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
-    m_TextureCom->Set_Texture(m_textureIndex);
+    m_TextureCom->Set_Texture(m_TextureIndex);
 
     m_BufferCom->Render_Buffer();
 
+    m_TextOffset = { m_TransformCom->Get_Pos().x,m_TransformCom->Get_Pos().y };
+
+    _vec2 screen = { m_TextOffset.x + WINCX * 0.5f ,WINCY * 0.5f - m_TextOffset.y };
+
+    if(m_HasText)
+    {
+    CFontMgr::GetInstance()->Render_Font(L"LaptureDisplay-Regular",
+        m_Text,
+        &screen,
+        m_D3dxColor);
+    }
    
 }
 
@@ -148,15 +179,35 @@ HRESULT CUIButton::Add_Component()
     return S_OK;
 }
 
+void CUIButton::Set_Selected(bool tf)
+{
+    m_Selected = tf;
+
+    if (m_Selected)
+    {
+        m_TextureIndex = m_TextureOn;
+    }
+    else
+    {
+        m_TextureIndex = m_TextureOff;
+    }
+
+}
+
 void CUIButton::OnHoverStart()
 {
-    m_textureIndex = m_textureOn;
-
+    if (!m_Selected)
+    {
+        m_TextureIndex = m_TextureOn;
+    }
 }
 
 void CUIButton::OnHoverEnd()
 {
-    m_textureIndex = m_textureOff;
+    if(!m_Selected)
+    {
+    m_TextureIndex = m_TextureOff;
+    }
 
 }
 

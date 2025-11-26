@@ -14,24 +14,27 @@
 
 CUIInventoryCell::CUIInventoryCell(DEVICE pGraphicDev)
     : CUI(pGraphicDev),
-      uiIcon(nullptr),
-      m_ItemTexCom(nullptr),
-      m_HighlightTexCom(nullptr),
-      m_Count(0),
-      m_IsHovered(false)
-{}
+    uiIcon(nullptr),
+    m_ItemTexCom(nullptr),
+    m_HighlightTexCom(nullptr),
+    m_Count(0),
+    m_IsHovered(false)
+{
+}
 
 CUIInventoryCell::CUIInventoryCell(const CUIInventoryCell& rhs)
     : CUI(rhs),
-      uiIcon(nullptr),
-      m_ItemTexCom(nullptr),
-      m_HighlightTexCom(nullptr),
-      m_Count(0),
-      m_IsHovered(false)
-{}
+    uiIcon(nullptr),
+    m_ItemTexCom(nullptr),
+    m_HighlightTexCom(nullptr),
+    m_Count(0),
+    m_IsHovered(false)
+{
+}
 
 CUIInventoryCell::~CUIInventoryCell()
-{ }
+{
+}
 
 void CUIInventoryCell::OnBeginOverlap(CCollider* self, CCollider* other)
 {
@@ -55,7 +58,7 @@ HRESULT CUIInventoryCell::Ready_GameObject()
 
 
     m_TransformCom->Set_Scale(45.f, 45.f, 0.f);
-    uiIcon = CUIIcon::Create(m_GraphicDev,L"Texture_Item");
+    uiIcon = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_ITEM);
     uiIcon->SetRegister(false); // 아이템 텍스처 렌더 그룹에 중복 등록되는 것 막기 위한 플래그
 
     return S_OK;
@@ -84,7 +87,7 @@ void CUIInventoryCell::LateUpdate_GameObject(const _float& timeDelta)
 
 void CUIInventoryCell::Render_GameObject()
 {
-        CUI::Render_GameObject();
+    CUI::Render_GameObject();
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
@@ -103,7 +106,7 @@ void CUIInventoryCell::Render_GameObject()
 
     if (!(m_ItemInst.itemId == -1))
     {
-    
+
         int TextureIndex = CItemDB::GetInstance()->GetIndexById(m_ItemInst.itemId);
         uiIcon->Set_TextureIndex(TextureIndex);
         auto iconTransform = uiIcon->Get_Transform();
@@ -118,36 +121,36 @@ void CUIInventoryCell::Render_GameObject()
     float numberOffsetX = 30.f;
     float numberOffsetY = 25.f;
 
-    if(m_Count>0)
+    if (m_Count > 0)
     {
-        _vec2 cellPos = { m_TransformCom->Get_Pos().x + WINCX/2, WINCY/2 - m_TransformCom->Get_Pos().y};
-        
-        _vec2 number = { cellPos.x+numberOffsetX, cellPos.y + numberOffsetY };
+        _vec2 cellPos = { m_TransformCom->Get_Pos().x + WINCX / 2, WINCY / 2 - m_TransformCom->Get_Pos().y };
+
+        _vec2 number = { cellPos.x + numberOffsetX, cellPos.y + numberOffsetY };
         CFontMgr::GetInstance()->Render_FontOutlined(L"LaptureDisplay-Bold", to_wstring(m_Count), &number, D3DXCOLOR(1.f, 1.f, 1.f, 1.f), D3DXCOLOR(0.f, 0.f, 0.f, 1.f), 3);
     }
 
     //외곽선 그리기
-    if(m_IsHovered)
+    if (m_IsHovered)
     {
         m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-    m_HighlightTexCom->Set_Texture(1);
+        m_HighlightTexCom->Set_Texture(1);
 
         //외곽선 빨강으로 바꾸기
-    D3DCOLOR color = D3DCOLOR_ARGB(255, 160, 0, 0);
-    
-    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, color);
-    
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE); //색상을 곱하기 방식으로 처리하곘다는 뜻
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE); //첫번째 인자는 텍스처
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR); //두번째 인자는 색상
-    m_BufferCom->Render_Buffer();
-    
-    //RenderState 원상태로 돌리기
-    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR,D3DCOLOR_ARGB(255, 255, 255, 255));
-    
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+        D3DCOLOR color = D3DCOLOR_ARGB(255, 160, 0, 0);
+
+        m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, color);
+
+        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE); //색상을 곱하기 방식으로 처리하곘다는 뜻
+        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE); //첫번째 인자는 텍스처
+        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR); //두번째 인자는 색상
+        m_BufferCom->Render_Buffer();
+
+        //RenderState 원상태로 돌리기
+        m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(255, 255, 255, 255));
+
+        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
     }
 }
 

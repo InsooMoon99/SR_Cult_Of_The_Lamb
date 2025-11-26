@@ -9,14 +9,14 @@ private:
     ~CUIIcon() override;
 
 public:
-    HRESULT Ready_GameObject(const wstring& texProtoTag);
+    HRESULT Ready_GameObject(COMPONENTTYPE texProtoTag);
     _int    Update_GameObject(const _float& timeDelta) override;
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
-    HRESULT Add_Component(const wstring& texProtoTag);
+    HRESULT Add_Component(COMPONENTTYPE texProtoTag);
 
 public:
-    static CUIIcon* Create(DEVICE graphicDev, const wstring& texProtoTag);
+    static CUIIcon* Create(DEVICE graphicDev, COMPONENTTYPE texProtoTag);
 
     void        Set_TextureIndex(int textureIndex) { m_textureIndex = textureIndex; }
     CTransform* Get_Transform() const { return m_TransformCom; }

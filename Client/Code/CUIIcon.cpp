@@ -25,7 +25,7 @@ CUIIcon::CUIIcon(const CUIIcon& rhs)
 CUIIcon::~CUIIcon()
 {}
 
-HRESULT CUIIcon::Ready_GameObject(const wstring& texProtoTag)
+HRESULT CUIIcon::Ready_GameObject(COMPONENTTYPE texProtoTag)
 {
     if (FAILED(Add_Component(texProtoTag)))
         return E_FAIL;
@@ -73,7 +73,7 @@ void CUIIcon::Render_GameObject()
     m_BufferCom->Render_Buffer();
 }
 
-HRESULT CUIIcon::Add_Component(const wstring& texProtoTag)
+HRESULT CUIIcon::Add_Component(COMPONENTTYPE texProtoTag)
 {
     // buffer
     m_BufferCom = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
@@ -88,15 +88,15 @@ HRESULT CUIIcon::Add_Component(const wstring& texProtoTag)
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
     // texture
-    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEXTURE, texProtoTag);
+    m_TextureCom = CreateProtoComponent<CTexture>(this, texProtoTag);
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
 
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_UI_ICON, m_TextureCom });
+    m_Components[ID_STATIC].insert({ texProtoTag, m_TextureCom });
 
     return S_OK;
 }
 
-CUIIcon* CUIIcon::Create(DEVICE graphicDev, const wstring& texProtoTag)
+CUIIcon* CUIIcon::Create(DEVICE graphicDev, COMPONENTTYPE texProtoTag)
 {
     auto Icon = new CUIIcon(graphicDev);
     if (FAILED(Icon->Ready_GameObject(texProtoTag)))
