@@ -51,6 +51,8 @@ public:
     // 현재 재생중인 프레임
     _int Get_CurFrame();
 
+    _int Get_MaxFrame();
+
     static CAnimator* Create(DEVICE graphicDev);
     CComponent*       Clone() override;
 

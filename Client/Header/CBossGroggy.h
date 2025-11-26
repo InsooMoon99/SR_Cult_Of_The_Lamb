@@ -7,6 +7,10 @@ class CBossStateMachine;
 class CBossGroggy :
     public CMonsterState
 {
+public:
+    enum class PHASE { DOWN, LOOP, UP };
+    PHASE m_ePhase;
+private:
     explicit CBossGroggy(CBossPhase1* pOwner, CBossStateMachine* pStateMachine);
     virtual ~CBossGroggy();
 
@@ -19,7 +23,7 @@ public:
     virtual HRESULT Ready_State();
     virtual _int    Update_State(const _float& timeDelta);
     virtual void    LateUpdate_State(const _float& timeDelta);
-    virtual void    Render_State() {}
+    virtual void    Render_State();
 
 private:
     CBossPhase1* m_pOwner;

@@ -166,6 +166,14 @@ _int CAnimator::Get_CurFrame()
     return m_CurAnimation->Get_Frame();
 }
 
+_int CAnimator::Get_MaxFrame()
+{
+    if (m_CurAnimation == nullptr)
+        return 0;
+
+    return m_CurAnimation->Get_MaxFrameX();
+}
+
 CAnimator* CAnimator::Create(DEVICE graphicDev)
 {
     auto animator = new CAnimator(graphicDev);

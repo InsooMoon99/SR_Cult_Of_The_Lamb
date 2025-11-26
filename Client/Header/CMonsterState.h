@@ -57,6 +57,8 @@ protected:
     _float      m_fMinStateTime;
     _bool  m_bMinStateTimePassed;
 
+    _bool DoneAnim = false;
+
 private:
     // CBase을(를) 통해 상속됨
     //void Free() override;

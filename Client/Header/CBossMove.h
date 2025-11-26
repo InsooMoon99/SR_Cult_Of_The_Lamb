@@ -7,6 +7,10 @@ class CBossStateMachine;
 class CBossMove :
     public CMonsterState
 {
+public:
+    enum class PHASE { DOWN, WAIT,UP };
+    PHASE m_ePhase;
+private:
     explicit CBossMove(CBossPhase1* pOwner, CBossStateMachine* pStateMachine);
     virtual ~CBossMove();
 

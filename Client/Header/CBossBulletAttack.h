@@ -7,6 +7,10 @@ class CBossStateMachine;
 class CBossBulletAttack :
     public CMonsterState
 {
+public:
+    enum class PHASE { CIRCLE, ROTCROSS_SPREAD, SPREAD ,PHASE_END};
+    PHASE m_ePhase;
+private:
     explicit CBossBulletAttack(CBossPhase1* pOwner, CBossStateMachine* pStateMachine);
     virtual ~CBossBulletAttack();
 
@@ -19,7 +23,7 @@ public:
     virtual HRESULT Ready_State();
     virtual _int    Update_State(const _float& timeDelta);
     virtual void    LateUpdate_State(const _float& timeDelta);
-    virtual void    Render_State() {}
+    virtual void    Render_State();
 
 private:
     CBossPhase1* m_pOwner;
@@ -27,6 +31,9 @@ private:
 public:
     static CBossBulletAttack* Create(CBossPhase1* pOwner, CBossStateMachine* pStateMachine);
 
+
+private:
+    float m_fElapsedTime[(int)PHASE::PHASE_END];
 private:
     virtual void Free();
 

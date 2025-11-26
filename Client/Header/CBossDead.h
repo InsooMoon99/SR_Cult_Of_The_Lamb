@@ -7,6 +7,10 @@ class CBossStateMachine;
 class CBossDead :
     public CMonsterState
 {
+public:
+    enum class PHASE { DOWN, TALK , DISAPPEAR };
+    PHASE m_ePhase;
+private:
     explicit CBossDead(CBossPhase1* pOwner, CBossStateMachine* pStateMachine);
     virtual ~CBossDead();
 

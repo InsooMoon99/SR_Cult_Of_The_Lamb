@@ -17,15 +17,16 @@ CBossStateMachine::CBossStateMachine(CBossPhase1* owner) : m_pOwner(owner), m_dw
 
 CBossStateMachine::~CBossStateMachine()
 {
+    Free();
 }
 
 HRESULT CBossStateMachine::Ready_StateMachine()
 {
     Ready_BossStates();
 
-    m_pCurState = m_vecState[CBossPhase1::BOSSPHASE1::AWAKE];
+    m_pCurState = m_vecState[CBossPhase1::BOSSPHASE1::BOSSAWAKE];
 
-    // 엔터를 안해도될려나??
+    m_pCurState->Enter();
 
     return S_OK;
 }
@@ -72,13 +73,14 @@ void CBossStateMachine::Change_State(_uint changeStateKey)
 HRESULT CBossStateMachine::Ready_BossStates()
 {
     m_vecState.resize(CBossPhase1::BOSSPHASE1::BOSS_END);
+    //m_vecState.resize(2);
 
     CMonsterState* pState = nullptr;
 
     if (!(pState = CBossAwake::Create(m_pOwner, this)))
         return E_FAIL;
 
-    m_vecState[CBossPhase1::BOSSPHASE1::AWAKE] = pState;
+    m_vecState[CBossPhase1::BOSSPHASE1::BOSSAWAKE] = pState;
 
     if (!(pState = CBossBulletAttack::Create(m_pOwner, this)))
         return E_FAIL;
@@ -87,19 +89,19 @@ HRESULT CBossStateMachine::Ready_BossStates()
     if (!(pState = CBossChainAttack::Create(m_pOwner, this)))
         return E_FAIL;
     m_vecState[CBossPhase1::BOSSPHASE1::CHAINATTACK] = pState;
-
+    
     if (!(pState = CBossDead::Create(m_pOwner, this)))
         return E_FAIL;
     m_vecState[CBossPhase1::BOSSPHASE1::BOSSDEAD] = pState;
-
+    
     if (!(pState = CBossIdle::Create(m_pOwner, this)))
         return E_FAIL;
     m_vecState[CBossPhase1::BOSSPHASE1::BOSSIDLE] = pState;
-
+    
     if (!(pState = CBossMove::Create(m_pOwner, this)))
         return E_FAIL;
     m_vecState[CBossPhase1::BOSSPHASE1::BOSSMOVE] = pState;
-
+    
     if (!(pState = CBossGroggy::Create(m_pOwner, this)))
         return E_FAIL;
     m_vecState[CBossPhase1::BOSSPHASE1::BOSSGROGGRY] = pState;

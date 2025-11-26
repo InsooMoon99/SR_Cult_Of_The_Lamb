@@ -7,6 +7,10 @@ class CBossStateMachine;
 class CBossChainAttack :
     public CMonsterState
 {
+public:
+    enum class PHASE { CIRCLE, CROSS, SPREAD, PHASE_END };
+    PHASE m_ePhase;
+private:
     explicit CBossChainAttack(CBossPhase1* pOwner, CBossStateMachine* pStateMachine);
     virtual ~CBossChainAttack();
 

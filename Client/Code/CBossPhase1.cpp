@@ -35,7 +35,7 @@ HRESULT CBossPhase1::Ready_GameObject()
 
     m_StateMachine = CBossStateMachine::Create(this);
 
-    m_TransformCom->Set_Scale({ 3,3,1 });
+    m_TransformCom->Set_Scale({ 10,10,1 });
 
     return S_OK;
 }
@@ -135,28 +135,18 @@ HRESULT CBossPhase1::Add_Component()
 void CBossPhase1::Animation_Setting()
 {
 
-    m_AnimatorCom->Create_Animation(L"BossIdle", 100, 0.02f);
+    m_AnimatorCom->Create_Animation(L"BossIdle", 100, 0.03f);
 
-    //m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"BossIdle", ANIMSTATE::LOOP);
-
-
-
-    //m_AnimatorCom->Create_Animation(L"BossAwake", 83, 0.02f);
-    //m_AnimatorCom->Create_Animation(L"BossAttack", 97, 0.02f);
-    //m_AnimatorCom->Create_Animation(L"BossDead", 167, 0.02f);
-    //m_AnimatorCom->Create_Animation(L"BossMove_up", 50, 0.02f);
-    //m_AnimatorCom->Create_Animation(L"BossMove_Down", 28, 0.02f);
-
-    //m_StateCom->Set_AnimInfo(ACTORSTATE::RUN, L"PlayerRun", ANIMSTATE::LOOP);
-
-
-
-    //m_AnimatorCom->Create_Animation(L"BossGroggy_start", 115, 0.02f);
-    //
-    //m_AnimatorCom->Create_Animation(L"BossGroggy_loop", 84, 0.02f);
-    //m_AnimatorCom->Create_Animation(L"BossGroggy_end", 67, 0.02f);
-
-    //m_StateCom->Set_AnimInfo(ACTORSTATE::ROLL, L"PlayerRoll", ANIMSTATE::ONCE);
+    m_AnimatorCom->Create_Animation(L"BossAwake", 105, 0.03f);
+    m_AnimatorCom->Create_Animation(L"BossAttack", 97, 0.03f);
+    m_AnimatorCom->Create_Animation(L"BossDead", 167, 0.02f);
+    m_AnimatorCom->Create_Animation(L"BossMove_up", 50, 0.02f);
+    m_AnimatorCom->Create_Animation(L"BossMove_Down", 28, 0.02f);
+    
+    m_AnimatorCom->Create_Animation(L"BossGroggy_start", 115, 0.02f);
+    
+    m_AnimatorCom->Create_Animation(L"BossGroggy_loop", 84, 0.02f);
+    m_AnimatorCom->Create_Animation(L"BossGroggy_end", 67, 0.02f);
 
 }
 
@@ -176,6 +166,8 @@ CBossPhase1* CBossPhase1::Create(DEVICE graphicDev)
 
 void CBossPhase1::Free()
 {
+    //m_StateMachine->Release();
+    Safe_Release(m_StateMachine);
     CGameObject::Free();
 
 }

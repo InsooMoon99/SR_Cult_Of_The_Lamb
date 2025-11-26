@@ -7,6 +7,10 @@ class CBossStateMachine;
 class CBossAwake :
     public CMonsterState
 {
+public:
+    enum class PHASE {AWAKE,MOVE };
+    PHASE m_ePhase;
+private:
     explicit CBossAwake(CBossPhase1* pOwner, CBossStateMachine* pStateMachine);
     virtual ~CBossAwake();
 
@@ -24,6 +28,8 @@ public:
 private:
     CBossPhase1* m_pOwner;
     CBossStateMachine* m_pStateMachine;
+
+
 public:
     static CBossAwake* Create(CBossPhase1* pOwner, CBossStateMachine* pStateMachine);
 
