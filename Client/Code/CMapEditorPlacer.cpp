@@ -61,7 +61,7 @@ void CMapEditorPlacer::Update_MapPlacer(const _float& timeDelta)
                 CMapObjectBase* newObj = CreateMapObjectType(m_GraphicDev, MAPOBJTYPE::GRASS);
                 if (newObj)
                 {
-                    newObj->Set_WorldPos(worldPos);
+                    newObj->Set_WorldPos(_vec3(worldPos.x, worldPos.y + 0.2f, worldPos.z));
                     layer->Add_GameObject(OBJTYPE::PLACEMENT, newObj);
                 }
             }

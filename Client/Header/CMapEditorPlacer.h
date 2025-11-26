@@ -5,7 +5,7 @@
 
 /**
  * @brief 에디터 전용 맵 오브젝트 배치 헬퍼
- * CMainEditor에서만 사용 하는 클래스임
+ * CMainEditor에서 사용 하는 클래스임
  */
 class CMapEditorPlacer : public CBase
 {

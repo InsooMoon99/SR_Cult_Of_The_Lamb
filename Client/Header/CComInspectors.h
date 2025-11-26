@@ -310,7 +310,7 @@ static void Terrain_Inspector(CTerrainRenderer* renderer)
     {
         renderer->Render_Editor();
 
-        CMainEditorMgr::GetInstance()->Render_MapObjectWindow();
+        //CMainEditorMgr::GetInstance()->Render_MapObjectWindow();
     }
 }
 

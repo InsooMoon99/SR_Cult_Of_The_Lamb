@@ -33,7 +33,6 @@ public:
     // 매 프레임 ImGui로 메인 에디터 창 그리는 부분
     void Update_MainEditor(const _float& timeDelta);
     void Render_MainEditor();
-    void Render_MapObjectWindow(); // Map Object Render
 
     void Set_MainCamera(CCameraCom* cam) { m_MainCamera = cam; }
 
@@ -64,11 +63,10 @@ protected:
 private:
     DEVICE              m_GraphicDev = nullptr;
     CEditContext*       m_Context = nullptr;
-    CMapEditorPlacer*   m_MapPlacer = nullptr; // MapObject 배치
     CCameraCom*         m_MainCamera = nullptr;
 
     _bool               m_IsPlaying = true;
 
-    MAPTOOL_VIEW m_MapToolView = MAPTOOL_VIEW::MAP_OBJECT;
+    MAPTOOL_VIEW        m_MapToolView = MAPTOOL_VIEW::TERRAIN;
 };
 

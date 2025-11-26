@@ -273,6 +273,12 @@
     <ClInclude Include="..\Header\CUIInventoryCell.h">
       <Filter>05. UI\01. UI</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CResourceMgr.h">
+      <Filter>01. Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMapObjectMgr.h">
+      <Filter>99. ImGui_Editor\01. EditorScript</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -397,6 +403,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\CUIInventoryCell.cpp">
       <Filter>05. UI\01. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CResourceMgr.cpp">
+      <Filter>01. Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMapObjectMgr.cpp">
+      <Filter>99. ImGui_Editor\01. EditorScript</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

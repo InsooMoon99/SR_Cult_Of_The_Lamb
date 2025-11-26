@@ -3,7 +3,6 @@
 #include "CDInputMgr.h"
 #include "CBoxCollider.h"
 #include "CCameraCom.h"
-#include "CClient_CreateHelper.h"
 #include "CCombatStat.h"
 #include "CComInspectors.h"
 #include "CComponent.h"
@@ -14,8 +13,7 @@
 #include "CLayer.h"
 #include "CManagement.h"
 #include "CMapEditorPlacer.h"
-#include "CMapObjectBase.h"
-#include "CMapObject_Grass.h"
+#include "CMapObjectMgr.h"
 #include "CScene.h"
 #include "CState.h"
 #include "CTerrainRenderer.h"
@@ -36,15 +34,12 @@ void CMainEditorMgr::Ready_MainEditor(DEVICE graphicDev, CEditContext* ctx)
 
     Set_EditContext(ctx);
 
-    m_MapPlacer = CMapEditorPlacer::Create(m_GraphicDev);
+    CMapObjectMgr::GetInstance()->Ready_MapObjectMgr(graphicDev);
 }
 
 void CMainEditorMgr::Update_MainEditor(const _float& timeDelta)
 {
-    if (m_MapPlacer)
-    {
-        m_MapPlacer->Update_MapPlacer(timeDelta);
-    }
+    CMapObjectMgr::GetInstance()->Update_MapObjectMgr(timeDelta);
 }
 
 void CMainEditorMgr::Set_EditContext(CEditContext* ctx)
@@ -103,9 +98,9 @@ void CMainEditorMgr::Render_MapToolTab()
 
     ImGui::EndChild();
 
-    // =======================
-    // 오른쪽 : 내용 (선택된 메뉴에 따라 변경)
-    // =======================
+    // ==========
+    // 오른쪽 세팅
+    // ==========
     ImGui::SameLine();
 
     ImGui::BeginChild("[ MapTool_Content ]", ImVec2(0, 0), true);
@@ -123,18 +118,20 @@ void CMainEditorMgr::Render_MapToolTab()
         }
         else
         {
-            ImGui::Text("TerrainRenderer 를 찾을 수 없습니다.");
+            ImGui::Text("TerrainRenderer 를 찾을 수 없음");
         }
         break;
     }
 
     case MAPTOOL_VIEW::MAP_OBJECT:
     {
-        Render_MapObjectWindow();   // 기존 맵 오브젝트 배치 UI
+        CMapObjectMgr::GetInstance()->Render_MapObjectWindow();
         break;
     }
 
     case MAPTOOL_VIEW::NONE:
+        break;
+
     default:
         ImGui::Text("왼쪽에서 툴을 선택하세요.");
         break;
@@ -156,9 +153,9 @@ void CMainEditorMgr::Render_MainEditor()
         MSG_BOX("Scene Is Where ? ");
 
     // 프리뷰 오브젝트 렌더
-    if (m_MapPlacer)
+    if (CMapObjectMgr::GetInstance()->Get_MapPlacer())
     {
-        m_MapPlacer->Render_Privew();
+        CMapObjectMgr::GetInstance()->Get_MapPlacer()->Render_Privew();
     }
 
     ImGui::Begin("MainEditor");
@@ -181,6 +178,9 @@ void CMainEditorMgr::Render_MainEditor()
     }
 
     ImGui::End();
+
+    CMapObjectMgr::GetInstance()->Render_GrassWindow();
+
 }
 
 void CMainEditorMgr::Render_ToolBar()
@@ -487,39 +487,9 @@ CTerrainRenderer* CMainEditorMgr::Find_TerrainRenderer()
     return nullptr;
 }
 
-
-void CMainEditorMgr::Render_MapObjectWindow()
-{
-    bool isGrassSelected =
-        (m_MapPlacer && m_MapPlacer->IsPlacing() && m_MapPlacer->Get_CurType() == MAPOBJTYPE::GRASS);
-
-    // Grass 풀때기만 일단
-    if (ImGui::Selectable("Grass", isGrassSelected))
-    {
-        if (m_MapPlacer)
-            m_MapPlacer->Start_Place(MAPOBJTYPE::GRASS);
-    }
-
-    // 추가 예정) Rock, Tree 등등
-
-    // 배치 취소 -> MapEditorPlacer에서 진행가능
-    //if (m_MapPlacer && m_MapPlacer->IsPlacing())
-    //{
-    //    if (CDInputMgr::GetInstance()->Get_DIMouseState(MOUSEKEYSTATE::DIM_RB))
-    //    {
-    //        cout << "Check" << endl;
-    //        m_MapPlacer->Cancel_Place();
-    //    }
-    //    //if (ImGui::Button("Cancel Place"))
-    //    //{
-    //    //    m_MapPlacer->Cancel_Place();
-    //    //}
-    //}
-}
-
 void CMainEditorMgr::Free()
 {
-    Safe_Release(m_MapPlacer);
+    CMapObjectMgr::DestroyInstance();
 
     Safe_Release(m_Context);
     Safe_Release(m_GraphicDev);
