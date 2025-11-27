@@ -315,19 +315,31 @@ void CPlayer::Animation_Setting()
 #pragma endregion
 
 #pragma region ------   SWORD    ------
-    m_AnimatorCom->Create_Animation(L"PlayerSwordCombo1", 31, 0.02f);
+    m_AnimatorCom->Create_Animation(L"PlayerSwordCombo1",
+                                    31,
+                                    0.02f,
+                                    _vec2(2.f, 2.f),
+                                    _vec2(0.f, 0.f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SWORD_COMBO1,
                              L"PlayerSwordCombo1",
                              ANIMSTATE::ONCE);
 
-    m_AnimatorCom->Create_Animation(L"PlayerSwordCombo2", 38, 0.02f);
+    m_AnimatorCom->Create_Animation(L"PlayerSwordCombo2",
+                                    38,
+                                    0.02f,
+                                    _vec2(2.f, 2.f),
+                                    _vec2(0.f, 0.f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SWORD_COMBO2,
                              L"PlayerSwordCombo2",
                              ANIMSTATE::ONCE);
 
-    m_AnimatorCom->Create_Animation(L"PlayerSwordCombo3", 38, 0.02f);
+    m_AnimatorCom->Create_Animation(L"PlayerSwordCombo3",
+                                    38,
+                                    0.02f,
+                                    _vec2(2.f, 2.f),
+                                    _vec2(0.f, 0.f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SWORD_COMBO3,
                              L"PlayerSwordCombo3",
