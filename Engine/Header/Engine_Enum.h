@@ -118,6 +118,7 @@ namespace Engine
         TEX_UI_ICON,
         TEX_UI_BUTTON,
         TEX_BOSSPHASE1,
+        TEX_OUT,
 
         // TODO : Test Tile -> 은수 Texture 버전이랑 합치면 고치기
         TEX_TILE_284,

@@ -194,9 +194,9 @@ _uint CTexture::Get_TextureIndex() const
     return static_cast<_uint>(m_Textures.size());
 }
 
-bool CTexture::Get_TextureSize(int index, float& outWidth, float& outHeight)
+bool CTexture::Get_TextureSize(int index, float& outWidth, float& outHeight, wstring* key)
 {
-    IDirect3DBaseTexture9* tex= nullptr;
+    IDirect3DBaseTexture9* tex = nullptr;
     // 애니메이션인지 아닌지 구분 애니메이션이면 처음의 처음 반환
     if ((int)m_Textures.size() == 0)
     {
@@ -204,11 +204,16 @@ bool CTexture::Get_TextureSize(int index, float& outWidth, float& outHeight)
             return false;
         else
         {
-            auto it = m_AnimTextures.begin();
-            if (!it->second.empty())
+
+            auto it  = find_if(m_AnimTextures.begin(), m_AnimTextures.end(), CTag_Finder(*key));
+
+            if (it != m_AnimTextures.end())
             {
                 tex = it->second[0];
             }
+            else
+                return false;
+
         }
     }
     else

@@ -173,6 +173,7 @@
   <ItemGroup>
     <ClInclude Include="..\Header\CBossAwake.h" />
     <ClInclude Include="..\Header\CBossBulletAttack.h" />
+    <ClInclude Include="..\Header\CBossChain.h" />
     <ClInclude Include="..\Header\CBossChainAttack.h" />
     <ClInclude Include="..\Header\CBossDead.h" />
     <ClInclude Include="..\Header\CBossGroggy.h" />
@@ -220,6 +221,7 @@
     <ClInclude Include="..\Header\CUIPlayerPanel.h" />
     <ClInclude Include="..\Header\CUISkillCount.h" />
     <ClInclude Include="..\Header\CUIWeapon.h" />
+    <ClInclude Include="..\Header\CWarningChain.h" />
     <ClInclude Include="..\Header\CWeaponEquip.h" />
     <ClInclude Include="..\Header\ItemData.h" />
     <ClInclude Include="..\Header\ItemInstance.h" />
@@ -233,6 +235,7 @@
   <ItemGroup>
     <ClCompile Include="..\Code\CBossAwake.cpp" />
     <ClCompile Include="..\Code\CBossBulletAttack.cpp" />
+    <ClCompile Include="..\Code\CBossChain.cpp" />
     <ClCompile Include="..\Code\CBossChainAttack.cpp" />
     <ClCompile Include="..\Code\CBossDead.cpp" />
     <ClCompile Include="..\Code\CBossGroggy.cpp" />
@@ -280,6 +283,7 @@
     <ClCompile Include="..\Code\CUIMp.cpp" />
     <ClCompile Include="..\Code\CUISkillCount.cpp" />
     <ClCompile Include="..\Code\CUIWeapon.cpp" />
+    <ClCompile Include="..\Code\CWarningChain.cpp" />
     <ClCompile Include="..\Code\CWeaponEquip.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">

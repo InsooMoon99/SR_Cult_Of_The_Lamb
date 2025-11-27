@@ -37,6 +37,12 @@ HRESULT CBossPhase1::Ready_GameObject()
 
     m_TransformCom->Set_Scale({ 10,10,1 });
 
+    m_CombatStatCom->Set_Hp(200.f);
+    m_CombatStatCom->Set_MaxHp(200.f);
+    m_CombatStatCom->Set_Attack(10.f);
+    m_CombatStatCom->Set_Mp(5.f);
+    m_CombatStatCom->Set_Speed(5.f);
+
     return S_OK;
 }
 
@@ -163,6 +169,9 @@ void CBossPhase1::Animation_Setting()
     
     m_AnimatorCom->Create_Animation(L"BossGroggy_loop", 84, 0.02f);
     m_AnimatorCom->Create_Animation(L"BossGroggy_end", 67, 0.01f);
+
+    m_AnimatorCom->Create_Animation(L"BossChainEff", 34, 0.02f);
+    m_AnimatorCom->Create_Animation(L"ChainGroundEff",1, 0.02f);
 
 }
 
