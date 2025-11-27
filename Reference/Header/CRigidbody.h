@@ -65,7 +65,7 @@ private:
     _vec3 m_Force;
     _vec3 m_Accel;
     _vec3 m_Vel;
-    _vec3 m_VelLimit;       // 속력 상한
+    _vec3 m_VelLimit;       // 속도 상한
     _vec3 m_Gravity;
 
 public:
