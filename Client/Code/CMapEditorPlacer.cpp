@@ -5,6 +5,7 @@
 #include "CGameObject.h"
 #include "CLayer.h"
 #include "CManagement.h"
+#include "CMapObjectMgr.h"
 #include "CPickingHelper.h"
 #include "CScene.h"
 
@@ -68,6 +69,8 @@ void CMapEditorPlacer::Update_MapPlacer(const _float& timeDelta)
                     newObj->Set_TextureIndex(Get_CurTextureIndex());
                     newObj->Set_WorldPos(_vec3(worldPos.x, worldPos.y + 0.2f, worldPos.z));
                     layer->Add_GameObject(OBJTYPE::PLACEMENT, newObj);
+
+                    CMapObjectMgr::GetInstance()->Add_Placement(newObj);
                 }
             }
         }

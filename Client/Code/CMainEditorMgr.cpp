@@ -166,7 +166,7 @@ void CMainEditorMgr::Render_MapToolTab()
             Terrain_Inspector(terrain);
         }
         else
-            ImGui::Text("TerrainRenderer 를 찾을 수 없음");
+            ImGui::Text(u8"TerrainRenderer 를 찾을 수 없음");
         break;
     }
 
