@@ -1,6 +1,11 @@
 ﻿#pragma once
 #include "CUI.h"
 #include "CInventory.h"
+
+// TAB 누를 시 나오는 창을 관리하는 최상위 패널
+// 버튼 UI 생성 직접 생성/관리, 페이지 생성/관리, 인벤토리 UI 관리
+// 인벤토리 
+
 class CUIPlayerPage;
 class CUIInventory;
 class CUIButton;
@@ -37,6 +42,8 @@ class CUITabMenu : public CUI
         UITabCategory   m_Current;
         CUIButton* m_InvenBtn;
         CUIButton* m_PlayerBtn;
+        CUIButton* m_GyodanBtn;
+        CUIButton* m_QuestBtn;
         CInventory* m_Inventory;
         CUIInventory* m_InventoryPage;
         CUIPlayerPage* m_PlayerPage;
@@ -45,6 +52,8 @@ class CUITabMenu : public CUI
         CTransform* m_InvenBtnTransformCom;
         CTransform* m_PlayerBtnTransformCom;
         CTransform* m_PlayerPageTransformCom;
+        CTransform* m_GyodanBtnTransformCom;
+        CTransform* m_QuestBtnTransformCom;
 
         float m_TargetX;
         float m_ClosedX;

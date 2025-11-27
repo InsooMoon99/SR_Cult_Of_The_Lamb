@@ -1,6 +1,5 @@
 ﻿#include "pch.h"
 #include "CUIInventory.h"
-
 #include "CCreateHelper.h"
 #include "CDInputMgr.h"
 #include "CFontMgr.h"
@@ -85,7 +84,7 @@ void CUIInventory::Render_GameObject()
     float materialOffsetX = -250.f;
     float materialOffsetY = 130.f;
     float foodOffsetX = -250.f;
-    float foodOffsetY = -35.f;
+    float foodOffsetY = -40.f;
 
     _vec2 material = { invenPos.x + materialOffsetX, invenPos.y + materialOffsetY };
     _vec2 food = { invenPos.x + foodOffsetX , invenPos.y + foodOffsetY };
@@ -98,12 +97,12 @@ void CUIInventory::Render_GameObject()
      m_BufferCom->Render_Buffer();
 
     //폰트 그리기
-     CFontMgr::GetInstance()->Render_Font(L"LaptureDisplay-Regular",
+     CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Regular",
          L"재화",
          &screenMaterial,
          D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.f));
 
-     CFontMgr::GetInstance()->Render_Font(L"LaptureDisplay-Regular",
+     CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Regular",
             L"음식",
             &screenFood,
             D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.f));
@@ -156,7 +155,7 @@ void CUIInventory::SetPositions()
     for (int i = 0; i < slotCount / 2; i++)
     {
             int col = materialRenderCount % m_Cols;
-            float startOffset = -240.f;
+            float startOffset = -230.f;
             float materialOffsetX = startOffset +col * m_CellWidth;
             CTransform* transform = dynamic_cast<CTransform*>(m_Cells[i]->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
 
@@ -169,7 +168,7 @@ void CUIInventory::SetPositions()
     for (int i = slotCount / 2; i < slotCount; i++)
     {
             int col = foodRenderCount % m_Cols;
-            float startOffset = -240.f;
+            float startOffset = -230.f;
             float foodOffsetX = startOffset + col * m_CellWidth;
             CTransform* transform = dynamic_cast<CTransform*>(m_Cells[i]->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
 
@@ -204,7 +203,7 @@ HRESULT CUIInventory::Add_Component()
     return S_OK;
 }
 
-void CUIInventory::Check_Hovered()
+void CUIInventory::Check_Hovered() //셀 선택 체크는 인벤토리 UI 클래스에서 하고, 상태 변화에 따른 변경은 셀 클래스에서 함
 {
     const vector<InventorySlot>& slots = m_Inventory->GetVector();
     for(int i = 0; i < slots.size();i++)

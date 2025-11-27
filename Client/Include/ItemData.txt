@@ -25,7 +25,7 @@
       "UIFileName": "Berries",
       "UIPath": "../Bin/Resource/ItemUI/Berries.png",
 
-      "additionalDesc": "요리 에 맛있는 재료입니다 .",
+      "additionalDesc": "요리에 맛있는 재료입니다 .",
 
       "stackable": true,
       "maxStack": 99,
@@ -37,7 +37,7 @@
       "id": 1003,
       "type": "FoodMaterial",
       "name": "잔디",
-      "desc": "신사 나 성막 에서 연료 로 사용되는 단순한 재료 .",
+      "desc": "신사나 성막 에서 연료로 사용되는 단순한 재료 .",
       "UIFileName": "Grass",
       "UIPath": "../Bin/Resource/ItemUI/Grass.png",
 
@@ -116,7 +116,7 @@
       "id": 1008,
       "type": "FoodMaterial",
       "name": "베리 부시 씨앗",
-      "desc": "농장 에 심으세요 .",
+      "desc": "농장에 심으세요 .",
       "UIFileName": "FarmCrop_Berries_2",
       "UIPath": "../Bin/Resource/ItemUI/FarmCrop_Berries_2.png",
 

@@ -33,16 +33,18 @@ public:
         m_Count    = count;
     }
 
-    CUIIcon* Get_Icon() { return uiIcon; }
+    CUIIcon* Get_Icon() { return m_ItemIcon; }
 
 protected:
     void Free() override;
 
 private:
-    CUIIcon*        uiIcon;
-    CTexture*       m_ItemTexCom;
+    CUIIcon*        m_ItemIcon;
+    CUIIcon*        m_CardIcon;
+    CUIIcon*        m_CardItemIcon;
     CTexture*       m_HighlightTexCom;
     ItemInstance    m_ItemInst;
+    D3DXCOLOR       m_D3dxColor;
     int             m_Count;
     bool            m_IsHovered; //외곽선 그리기 여부 판단용
 };
