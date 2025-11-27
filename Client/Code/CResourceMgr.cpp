@@ -42,12 +42,12 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
     if (FAILED(Ready_Buffer(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Player(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Monster(graphicDev))) return E_FAIL;
-    if (FAILED(Ready_Boss(graphicDev))) return E_FAIL;
+   // if (FAILED(Ready_Boss(graphicDev))) return E_FAIL;
     if (FAILED(Ready_UI(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Item(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Common(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Terrain(graphicDev))) return E_FAIL;
-    if (FAILED(Ready_BossP1(graphicDev))) return E_FAIL;
+   // if (FAILED(Ready_BossP1(graphicDev))) return E_FAIL;
 
     return S_OK;
 }
@@ -354,6 +354,8 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     vector<wstring> pathVec2;
     pathVec2.push_back(L"../Bin/Resource/Texture/UI/MainMenu/Null.png");
     pathVec2.push_back(L"../Bin/Resource/Texture/UI/MainMenu/Button Black.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/Inventory/ButtonTab0.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/Inventory/ButtonTab1.png");
 
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_BUTTON, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec2))))
