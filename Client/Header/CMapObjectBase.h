@@ -1,11 +1,12 @@
 ﻿#pragma once
 #include "CGameObject.h"
 
+class CTerrain;
+
 BEGIN(Engine)
 class CRcTex;
 class CTransform;
 class CTexture;
-class CTerrain;
 END
 
 enum class MAPOBJTYPE
@@ -47,7 +48,7 @@ public:
         m_CellZ = z;
     }
 
-    void Set_Terrain(Engine::CTerrain* terrain) { m_Terrain = terrain; }
+    void Set_Terrain(CTerrain* terrain) { m_Terrain = terrain; }
 
     void Set_TextureIndex(_int index) { m_TextureIndex = index; }
     _int Get_TextureIndex() const { return m_TextureIndex; }
@@ -71,7 +72,7 @@ protected:
     _int  m_CellX = -1;
     _int  m_CellZ = -1;
 
-    Engine::CTerrain* m_Terrain;
+    CTerrain* m_Terrain;
 
     _int m_TextureIndex = 0;
     

@@ -59,21 +59,22 @@ void CMapObjectBase::Render_GameObject()
         return;
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-
     m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
-    // 알파 테스트 
     m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
     m_GraphicDev->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-    m_GraphicDev->SetRenderState(D3DRS_ALPHAREF, 0);
+    m_GraphicDev->SetRenderState(D3DRS_ALPHAREF, 50);  
+
+    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+    m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
     m_TextureCom->Set_Texture(m_TextureIndex);
     m_BufferCom->Render_Buffer();
 
-    //m_GraphicDev->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+    // 원상복구
     m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-    //m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-    m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 }
 
 void CMapObjectBase::Set_WorldPos(const _vec3& pos)
