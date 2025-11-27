@@ -33,6 +33,7 @@ HRESULT CLayer::Add_GameObject(OBJTYPE objType, CGameObject* gameObject)
 
     Object_NameSetting(objType, gameObject);
 
+
     m_Objects[objType].push_back(gameObject);
 
     return S_OK;
@@ -45,28 +46,28 @@ HRESULT CLayer::Ready_Layer()
 
 _int CLayer::Update_Layer(const _float& timeDelta)
 {
-    _int result = 0;
+	_int result = 0;
 
-    for (auto& pair : m_Objects)
-    {
-        for (auto* obj : pair.second)
-        {
-            if (obj == (CGameObject*)0xFFFFFFFFFFFFFFFF)
-            {
-                int dummy = 0; // 여기에 브레이크포인트(F9)
-            }
+	for (auto& pair : m_Objects)
+	{
+		vector<CGameObject*> objectsCopy = pair.second;
 
-            if (obj == nullptr)
-                continue;
+		for (auto* obj : objectsCopy)
+		{
+			if (obj == nullptr || obj == (CGameObject*)0xFFFFFFFFFFFFFFFF)
+				continue;
 
-            result = obj->Update_GameObject(timeDelta);
+			if (obj->Is_PendingDestroy())
+				continue;
 
-            if (result & 0x80000000)
-                return result;
-        }
-    }
+			result = obj->Update_GameObject(timeDelta);
 
-    return result;
+			if (result & 0x80000000)
+				return result;
+		}
+	}
+
+	return result;
 }
 
 void CLayer::LateUpdate_Layer(const _float& timeDelta)

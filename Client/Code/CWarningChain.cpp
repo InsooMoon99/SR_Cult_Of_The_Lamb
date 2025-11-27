@@ -56,13 +56,11 @@ _int CWarningChain::Update_GameObject(const _float& timeDelta)
 
     m_fElapsedTime += timeDelta;
 
-
-
     if (m_fElapsedTime > 0.2f && m_flag == false)
     {
         CBossPhase1* owner = dynamic_cast<CBossPhase1*>(m_pOwner);
 
-        chain = CBossChain::Create(owner->Get_GraphicDev(), owner);
+        CBossChain* chain = CBossChain::Create(owner->Get_GraphicDev(), owner);
 
         CTransform* ChainTransform =
             dynamic_cast<CTransform*>(chain->Get_Component(
@@ -76,7 +74,7 @@ _int CWarningChain::Update_GameObject(const _float& timeDelta)
         ChainTransform->Set_Pos(offset);
 
         SpawnAttackObject(chain);
-       // chain->AddRef();
+        //chain->AddRef();
 
         m_fElapsedTime =0;
         m_flag = true;
@@ -187,8 +185,6 @@ HRESULT CWarningChain::Add_Component()
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_OUT, m_TextureCom });
 
-
-
     // CombatStat
     m_CombatStatCom = CreateProtoComponent<CCombatStat>(this, COMPONENTTYPE::COMBATSTAT);
     NULL_CHECK_RETURN(m_CombatStatCom, E_FAIL);
@@ -213,7 +209,7 @@ CWarningChain* CWarningChain::Create(DEVICE graphicDev, CGameObject* owner)
 
 void CWarningChain::Free()
 {
-    /*Safe_Release(m_pOwner);*/
-   // Safe_Release(chain);
+    Safe_Release(m_pOwner);
+
     CGameObject::Free();
 }

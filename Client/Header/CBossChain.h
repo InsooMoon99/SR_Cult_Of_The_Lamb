@@ -48,7 +48,8 @@ protected:
 
     CGameObject* m_pOwner;
     bool m_flag = false;
-    CAttackBox* ATBox;
+
+    //CAttackBox* ATBox = nullptr;
 
 private:
     void Free() override;
