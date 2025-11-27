@@ -82,7 +82,7 @@ void CLogo::Render_Scene()
     // debug 용
     _vec2 pos{ 100.f, 100.f };
 
-    CFontMgr::GetInstance()->Render_Font(L"견명조",
+    CFontMgr::GetInstance()->Render_Font(L"LaptureDisplay-Bold",
                                          m_Loading->Get_String(),
                                          &pos,
                                          D3DXCOLOR(1.f, 0.f, 1.f, 1.f));

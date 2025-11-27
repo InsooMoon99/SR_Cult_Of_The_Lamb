@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CUI.h"
 
+class CUIButton;
 class CUIIcon;
 class CUIInventoryCell;
 class CInventory;
@@ -13,18 +14,18 @@ private:
     ~CUIInventory() override;
 
 public:
-    void    OnBeginOverlap(CCollider* self, CCollider* other) override;
-    void    OnEndOverlap(CCollider* self, CCollider* other) override;
-    void    Render_Editor() override;
-    HRESULT Ready_GameObject() override;
-    _int    Update_GameObject(const _float& timeDelta) override;
-    void    LateUpdate_GameObject(const _float& timeDelta) override;
-    void    Render_GameObject() override;
-    void    SetInventory(CInventory* inventory) { m_Inventory = inventory; }
-    HRESULT Add_Component();
+void    Render_Editor() override;
+HRESULT Ready_GameObject() override;
+_int    Update_GameObject(const _float& timeDelta) override;
+void    LateUpdate_GameObject(const _float& timeDelta) override;
+void    Render_GameObject() override;
 
-    void Check_If_Empty();
-    void CreateCells();
+public:
+void     SetInventory(CInventory* inventory);
+void    SetPositions();
+HRESULT  Add_Component();
+void    Check_Hovered();
+void CreateCells();
 
     static CUIInventory* Create(DEVICE graphicDev);
 
@@ -32,13 +33,11 @@ protected:
     void Free() override;
 
 private:
-    int   m_Cols;                         // 한 줄에 몇 칸?
-    float m_CellWidth;                    // 셀 가로 이동거리
-    float m_CellHeight;                   // 셀 세로 이동거리
-    bool  m_IsOpen;
-    bool  m_IsEmpty;
+    int     m_Cols;                         // 한 줄에 몇 칸?
+    float   m_CellWidth;                    // 셀 가로 이동거리
+    float   m_CellHeight;                   // 셀 세로 이동거리
 
+    CUIButton* m_Button;        
     CInventory* m_Inventory;
-
     vector<CUIInventoryCell*> m_Cells;
 };

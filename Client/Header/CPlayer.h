@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CGameObject.h"
 
+class CUIInventory;
 BEGIN(Engine)
 class CRigidbody;
 class CRcTex;
@@ -32,17 +33,16 @@ public:
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
 
-    void        OnBeginOverlap(CCollider* self, CCollider* other) override;
-    void        OnEndOverlap(CCollider* self, CCollider* other) override;
+    void    OnBeginOverlap(CCollider* self, CCollider* other) override;
+    void    OnEndOverlap(CCollider* self, CCollider* other) override;
 
-    void Render_Editor() override;
+    void    Render_Editor() override;
 
 private:
     HRESULT Add_Component();
     void    Animation_Setting();
-
-    void Render_Setting();
-    void Render_Reset();
+    void    Render_Setting();
+    void    Render_Reset();
 
     // 테스트 공격용
     // 나중에 Compoennt를 새로 만들던, 클래스로 나누던 자유
@@ -66,7 +66,7 @@ private:
     CWeaponEquip*      m_WeaponEquipCom;
     CInventory*        m_InventoryCom;
     CPlayerController* m_PlayerControllerCom;
-
+    CUIInventory*       m_UIInventory;
 #pragma endregion
 
     map<ACTORSTATE, wstring> m_StateAnim;

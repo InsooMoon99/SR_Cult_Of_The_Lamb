@@ -28,7 +28,7 @@ HRESULT CFontMgr::Ready_Font(DEVICE         graphicDev,
 
     if (nullptr == font)
         return E_FAIL;
-
+    
     m_Fonts.insert({ fontTag, font });
 
     return S_OK;
@@ -39,6 +39,15 @@ void CFontMgr::Render_Font(const wstring& fontTag, const wstring& text, const _v
     CFont* font = Find_Font(move(fontTag));
 
     font->Render_Font(text, pos, color);
+}
+
+void CFontMgr::Render_FontOutlined(const wstring& fontTag, const wstring& text, const _vec2* pos, D3DXCOLOR textColor, D3DXCOLOR outlineColor, int thickness)
+{
+    CFont* font = Find_Font(fontTag);
+    if (!font)
+        return;
+
+    font->Render_FontOutlined(text, pos, textColor, outlineColor, thickness);
 }
 
 CFont* CFontMgr::Find_Font(const wstring& fontTag)

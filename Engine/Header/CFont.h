@@ -27,7 +27,11 @@ public:
     void Render_Font(const wstring& text,
                      const _vec2*   pos,
                      D3DXCOLOR      color);
-
+    void Render_FontOutlined(const wstring& text,
+                             const _vec2* pos,
+                             D3DXCOLOR textColor,
+                             D3DXCOLOR outlineColor,
+                             int thickness);
 private:
     DEVICE       m_GraphicDev;
     LPD3DXSPRITE m_Sprite;    // 2D 렌더링용 스프라이트 객체
