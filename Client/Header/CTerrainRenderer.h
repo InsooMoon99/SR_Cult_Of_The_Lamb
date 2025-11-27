@@ -90,7 +90,7 @@ private:
     _int            m_PaintX, m_PaintZ;
 
     vector<string>  m_MapList{};
-    char            m_MapName[64];
+    char            m_MapName[64]{};
     _int            m_SelectedMapIndex;
 
     _int            m_SizeX, m_SizeZ;

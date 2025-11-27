@@ -31,6 +31,12 @@ public:
     void        Set_RubbleIndex(_int index) { m_RubbleIndex = index; }
     void        Set_DecoIndex(_int index) { m_DecoIndex = index; }
 
+public:
+    static CMapEditorPlacer* Create(DEVICE graphicDev);
+
+protected:
+    void Free() override;
+
 private:
     DEVICE          m_GraphicDev;
     CMapObjectBase* m_PreviewObj;
@@ -41,10 +47,7 @@ private:
     _int            m_RubbleIndex;
     _int            m_DecoIndex;
 
-public:
-    static CMapEditorPlacer* Create(DEVICE graphicDev);
+    _float          m_PreviewScale;
 
-protected:
-    void Free() override;
 };
 

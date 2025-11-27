@@ -13,7 +13,7 @@ CMapEditorPlacer::CMapEditorPlacer(DEVICE graphicDev)
     : m_GraphicDev(graphicDev),
       m_PreviewObj(nullptr),
       m_SelectedType(MAPOBJTYPE::MAPOBJ_END),
-      m_Placing(false), m_GrassIndex(0), m_RubbleIndex(0), m_DecoIndex(0)
+      m_Placing(false), m_GrassIndex(0), m_RubbleIndex(0), m_DecoIndex(0), m_PreviewScale(1.f)
 {
     if (m_GraphicDev)
         m_GraphicDev->AddRef();
@@ -23,7 +23,7 @@ CMapEditorPlacer::CMapEditorPlacer(const CMapEditorPlacer& rhs)
     : m_GraphicDev(rhs.m_GraphicDev),
       m_PreviewObj(nullptr),
       m_SelectedType(MAPOBJTYPE::MAPOBJ_END),
-      m_Placing(false), m_GrassIndex(0), m_RubbleIndex(0), m_DecoIndex(0)
+      m_Placing(false), m_GrassIndex(0), m_RubbleIndex(0), m_DecoIndex(0), m_PreviewScale(1.f)
 {
     if (m_GraphicDev)
         m_GraphicDev->AddRef();
@@ -54,6 +54,14 @@ void CMapEditorPlacer::Update_MapPlacer(const _float& timeDelta)
 
     // 좌클릭 하면 배치하기
     auto input = CDInputMgr::GetInstance();
+
+    _long wheelDelta = input->Get_DIMouseMove(DIMS_Z);
+    if (wheelDelta != 0)
+    {
+        // 양수면 확대, 음수면 축소
+        _float scaleChange = (wheelDelta > 0 ? 0.1f : -0.1f);
+        m_PreviewScale = max(0.1f, min(5.f, m_PreviewScale));
+    }
 
     if (input->MouseDown(DIM_LB))
     {
