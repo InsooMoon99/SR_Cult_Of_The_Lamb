@@ -204,8 +204,11 @@
     <ClInclude Include="..\Header\CMenuChar.h" />
     <ClInclude Include="..\Header\CMonster.h" />
     <ClInclude Include="..\Header\CMonsterState.h" />
+    <ClInclude Include="..\header\CPlayerCombat.h" />
+    <ClInclude Include="..\header\CPlayerInput.h" />
     <ClInclude Include="..\Header\CPlayer.h" />
     <ClInclude Include="..\Header\CPlayerController.h" />
+    <ClInclude Include="..\header\CPlayerMovement.h" />
     <ClInclude Include="..\Header\CResourceMgr.h" />
     <ClInclude Include="..\Header\CSceneMgr.h" />
     <ClInclude Include="..\Header\CStage.h" />
@@ -267,8 +270,11 @@
     <ClCompile Include="..\Code\CMenuChar.cpp" />
     <ClCompile Include="..\Code\CMonster.cpp" />
     <ClCompile Include="..\Code\CMonsterState.cpp" />
+    <ClCompile Include="..\code\CPlayerCombat.cpp" />
+    <ClCompile Include="..\code\CPlayerInput.cpp" />
     <ClCompile Include="..\Code\CPlayer.cpp" />
     <ClCompile Include="..\Code\CPlayerController.cpp" />
+    <ClCompile Include="..\code\CPlayerMovement.cpp" />
     <ClCompile Include="..\Code\CResourceMgr.cpp" />
     <ClCompile Include="..\Code\CSceneMgr.cpp" />
     <ClCompile Include="..\Code\CStage.cpp" />

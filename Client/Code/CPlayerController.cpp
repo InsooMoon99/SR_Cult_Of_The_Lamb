@@ -1,7 +1,6 @@
 ﻿#include "pch.h"
 #include "CPlayerController.h"
 
-#include "CAttackBox.h"
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
 #include "CDInputMgr.h"
@@ -492,6 +491,7 @@ CComponent* CPlayerController::Clone()
 
 void CPlayerController::Free()
 {
+    //!! Safe_Release() 등을 호출해 원본을 부수지 말고, nullptr로 빌려온 주소를 반납만 한다. 
     m_OwnerStateCom      = nullptr;
     m_OwnerCombatStatCom = nullptr;
     m_OwnerRigidbodyCom  = nullptr;

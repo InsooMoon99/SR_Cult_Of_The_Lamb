@@ -133,6 +133,18 @@
     <Filter Include="05. UI\01. UI\04. UITabMenu">
       <UniqueIdentifier>{f5ba0def-b59a-4d45-9d5e-3212b4671db6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97. Component\03. Player Controller\00. Controller">
+      <UniqueIdentifier>{e4558995-8de9-408a-9c16-0e1a35d1d07a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Component\03. Player Controller\01. Input">
+      <UniqueIdentifier>{cff18376-e62f-46d6-a00f-7cb48f7f951d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Component\03. Player Controller\02. Movement">
+      <UniqueIdentifier>{c335eac9-1f8a-4cad-9c20-9760b6b18d8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Component\03. Player Controller\03. Combat">
+      <UniqueIdentifier>{47ab0db8-6150-437b-b3f7-2f492e5e5f43}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -227,9 +239,6 @@
     </ClInclude>
     <ClInclude Include="..\Header\CComInspectors.h">
       <Filter>99. ImGui_Editor\01. EditorScript</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\CPlayerController.h">
-      <Filter>97. Component\03. Player Controller</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CInventory.h">
       <Filter>97. Component\00. Inventory</Filter>
@@ -342,6 +351,18 @@
     <ClInclude Include="..\Header\CUIPlayerPage.h">
       <Filter>05. UI\01. UI\04. UITabMenu</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CPlayerController.h">
+      <Filter>97. Component\03. Player Controller\00. Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\CPlayerInput.h">
+      <Filter>97. Component\03. Player Controller\01. Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\CPlayerMovement.h">
+      <Filter>97. Component\03. Player Controller\02. Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\CPlayerCombat.h">
+      <Filter>97. Component\03. Player Controller\03. Combat</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -418,9 +439,6 @@
     </ClCompile>
     <ClCompile Include="..\Code\CMainEditorMgr.cpp">
       <Filter>99. ImGui_Editor\00. MainEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\CPlayerController.cpp">
-      <Filter>97. Component\03. Player Controller</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CInventory.cpp">
       <Filter>97. Component\00. Inventory</Filter>
@@ -529,6 +547,18 @@
     </ClCompile>
     <ClCompile Include="..\Code\CUIPlayerPage.cpp">
       <Filter>05. UI\01. UI\04. UITabMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CPlayerController.cpp">
+      <Filter>97. Component\03. Player Controller\00. Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\CPlayerInput.cpp">
+      <Filter>97. Component\03. Player Controller\01. Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\CPlayerMovement.cpp">
+      <Filter>97. Component\03. Player Controller\02. Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\CPlayerCombat.cpp">
+      <Filter>97. Component\03. Player Controller\03. Combat</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

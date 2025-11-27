@@ -113,15 +113,15 @@ public:
     _int    Update_Component(const _float& timeDelta) override;
     void    LateUpdate_Component() override;
 
+public:
+    // m_OwnerStateCom 등 Owner의 컴포넌트를 가져와 사용하기 위한 초기 세팅 함수
+    HRESULT Init_OwnerComponent();
+
 public: // Getter
     _float Get_RollDuration() const { return m_StateData.rollDuration; }
 
 public: // Setter
     void Set_RollDuration(_float duration) { m_StateData.rollDuration = duration; }
-
-public:
-    // m_OwnerStateCom 등 Owner의 컴포넌트를 가져와 사용하기 위한 초기 세팅 함수
-    HRESULT Init_OwnerComponent();
 
 private:
     // --- [핵심 로직 파이프라인] ---

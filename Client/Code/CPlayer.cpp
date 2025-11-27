@@ -33,7 +33,8 @@ CPlayer::CPlayer(DEVICE graphicDev)
       m_RigidbodyCom(nullptr),
       m_WeaponEquipCom(nullptr),
       m_InventoryCom(nullptr),
-      m_PlayerControllerCom(nullptr)
+      m_PlayerControllerCom(nullptr),
+      m_UIInventory(nullptr)
 {}
 
 CPlayer::CPlayer(const CPlayer& rhs)
@@ -48,7 +49,8 @@ CPlayer::CPlayer(const CPlayer& rhs)
       m_RigidbodyCom(nullptr),
       m_WeaponEquipCom(nullptr),
       m_InventoryCom(nullptr),
-      m_PlayerControllerCom(nullptr)
+      m_PlayerControllerCom(nullptr),
+      m_UIInventory(nullptr)
 {}
 
 CPlayer::~CPlayer()
