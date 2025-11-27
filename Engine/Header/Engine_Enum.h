@@ -113,6 +113,7 @@ namespace Engine
         TEX_UI_SKILLCOUNT,
         TEX_UI_HIGHLIGHT,
         TEX_UI_INVEN,
+        TEX_UI_RITUALCARD,
         TEX_ITEM,
         TEX_MENU_CHAR,
         TEX_UI_ICON,

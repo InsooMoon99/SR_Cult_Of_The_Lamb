@@ -63,8 +63,6 @@ HRESULT CLoading::Ready_Loading(LOADINGID eID)
 
 _uint CLoading::Loading_ForState()
 {
-    auto pProtoMgr = CProtoMgr::GetInstance();
-
     m_LoadingText = L"LOADING...";
 
     // 이제 리소스 추가는 Resource Manager에서 진행

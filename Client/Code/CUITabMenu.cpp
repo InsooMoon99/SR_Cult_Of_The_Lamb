@@ -14,6 +14,8 @@ CUITabMenu::CUITabMenu(DEVICE graphicDev)
       m_Current(UITabCategory::INVENTORY),
       m_InvenBtn(nullptr),
       m_PlayerBtn(nullptr),
+      m_GyodanBtn(nullptr),
+      m_QuestBtn(nullptr),
       m_Inventory(nullptr),
       m_InventoryPage(nullptr),
       m_InvenTransformCom(nullptr),
@@ -31,6 +33,8 @@ CUITabMenu::CUITabMenu(const CUI& rhs)
       m_Current(UITabCategory::INVENTORY),
       m_InvenBtn(nullptr),
       m_PlayerBtn(nullptr),
+      m_GyodanBtn(nullptr),
+      m_QuestBtn(nullptr),
       m_Inventory(nullptr),
       m_InventoryPage(nullptr),
       m_InvenTransformCom(nullptr),
@@ -70,17 +74,27 @@ HRESULT CUITabMenu::Ready_GameObject()
     m_PlayerBtn = CUIButton::Create(m_GraphicDev, 3, 2);
     m_PlayerBtn->Set_HasText();
     m_PlayerBtn->Set_Text(L"플레이어");
+    m_GyodanBtn = CUIButton::Create(m_GraphicDev, 3, 2);
+    m_GyodanBtn->Set_HasText();
+    m_GyodanBtn->Set_Text(L"교단");
+    m_QuestBtn = CUIButton::Create(m_GraphicDev, 3, 2);
+    m_QuestBtn->Set_HasText();
+    m_QuestBtn->Set_Text(L"임무");
+
 
     m_InvenTransformCom = dynamic_cast<CTransform*>(m_InventoryPage->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-    m_PlayerPageTransformCom= dynamic_cast<CTransform*>(m_PlayerPage->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+    m_PlayerPageTransformCom = dynamic_cast<CTransform*>(m_PlayerPage->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
     m_InvenBtnTransformCom = dynamic_cast<CTransform*>(m_InvenBtn->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
     m_PlayerBtnTransformCom = dynamic_cast<CTransform*>(m_PlayerBtn->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+    m_GyodanBtnTransformCom = dynamic_cast<CTransform*>(m_GyodanBtn->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+    m_QuestBtnTransformCom = dynamic_cast<CTransform*>(m_QuestBtn->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
 
     m_TransformCom->Set_Pos(m_ClosedX, 0.f, 0.f);
-    m_InvenBtn->SetCloneTexAspectScale({ 0.2f, 0.2f, 0.f });
+    m_InvenBtn->SetCloneTexAspectScale({ 0.16f, 0.16f, 0.f });
     m_InvenBtn->Set_Selected(true);
-    m_PlayerBtn->SetCloneTexAspectScale({ 0.2f, 0.2f, 0.f });
- 
+    m_PlayerBtn->SetCloneTexAspectScale({ 0.16f, 0.16f, 0.f });
+    m_GyodanBtn->SetCloneTexAspectScale({ 0.16f, 0.16f, 0.f });
+    m_QuestBtn->SetCloneTexAspectScale({ 0.16f, 0.16f, 0.f });
     m_InvenBtn->SetOnClick([this]() {ChangePage(UITabCategory::INVENTORY); });
     m_PlayerBtn->SetOnClick([this]() { ChangePage(UITabCategory::PLAYER); });
 
@@ -115,16 +129,13 @@ _int CUITabMenu::Update_GameObject(const _float& timeDelta)
         m_TransformCom->Set_Pos(pos);
     }
     _vec2 invenOffset = { -300.f, 0.f };
-    _vec2 invenButtonOffset = { -400.f, 250.f };
-    _vec2 playerButtonOffset = { -200.f, 250.f };
+    _vec2 invenButtonOffset = { -500.f, 250.f };
+    _vec2 playerButtonOffset = { -350.f, 250.f };
+    _vec2 GyodanButtonOffset = { -200.f, 250.f };
+    _vec2 QuestButtonOffset = { -50.f, 250.f };
 
     if(m_IsOpen||m_IsAnimating)
     {
-        m_InvenBtnTransformCom->Set_Pos(pos.x + invenButtonOffset.x, pos.y + invenButtonOffset.y, 0.f);
-        m_InvenBtn->Update_GameObject(timeDelta);
-        m_PlayerBtnTransformCom->Set_Pos(pos.x + playerButtonOffset.x, pos.y + playerButtonOffset.y, 0.f);
-        m_PlayerBtn->Update_GameObject(timeDelta);
-      
         switch (m_Current)
         {
         case UITabCategory::INVENTORY:
@@ -137,6 +148,17 @@ _int CUITabMenu::Update_GameObject(const _float& timeDelta)
             m_PlayerPage->Update_GameObject(timeDelta);
             break;
         }
+
+        m_InvenBtnTransformCom->Set_Pos(pos.x + invenButtonOffset.x, pos.y + invenButtonOffset.y, 0.f);
+        m_InvenBtn->Update_GameObject(timeDelta);
+        m_PlayerBtnTransformCom->Set_Pos(pos.x + playerButtonOffset.x, pos.y + playerButtonOffset.y, 0.f);
+        m_PlayerBtn->Update_GameObject(timeDelta);
+        m_GyodanBtnTransformCom->Set_Pos(pos.x + GyodanButtonOffset.x, pos.y + GyodanButtonOffset.y, 0.f);
+        m_GyodanBtn->Update_GameObject(timeDelta);
+        m_QuestBtnTransformCom->Set_Pos(pos.x + QuestButtonOffset.x, pos.y + QuestButtonOffset.y, 0.f);
+        m_QuestBtn->Update_GameObject(timeDelta);
+
+
     }
 
     return exit;
@@ -181,6 +203,8 @@ void CUITabMenu::Render_GameObject()
 
     m_InvenBtn->Render_GameObject();
     m_PlayerBtn->Render_GameObject();
+    m_GyodanBtn->Render_GameObject();
+    m_QuestBtn->Render_GameObject();
 
 }
 void CUITabMenu::SetInventory(CInventory* inventory)
@@ -214,6 +238,8 @@ void CUITabMenu::Free()
 {
     Safe_Release(m_InvenBtn);
     Safe_Release(m_PlayerBtn);
+    Safe_Release(m_GyodanBtn);
+    Safe_Release(m_QuestBtn);
     Safe_Release(m_Inventory);
     Safe_Release(m_InventoryPage);
     Safe_Release(m_PlayerPage);
@@ -221,6 +247,7 @@ void CUITabMenu::Free()
     Safe_Release(m_InvenBtnTransformCom);
     Safe_Release(m_PlayerBtnTransformCom);
     Safe_Release(m_PlayerPageTransformCom);
-
+    Safe_Release(m_GyodanBtnTransformCom);
+    Safe_Release(m_QuestBtnTransformCom);
     CUI::Free();
 }
