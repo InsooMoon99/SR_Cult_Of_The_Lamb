@@ -61,7 +61,9 @@ protected:
 private:
     CTransform*     m_TransformCom;
     CTerrainTex*    m_BufferCom;
-    CTexture*       m_TextureCom;
+
+    CTexture*       m_TextureCom284;
+    CTexture*       m_TextureCom1024;
 
     // 타일 데이터
     vector<_int>    m_TileIndices{};
@@ -75,7 +77,8 @@ private:
     _int            m_SizeX, m_SizeZ;
     _float          m_CellSize;
 
-    _bool           m_ShowTile;  
+    _bool           m_ShowTile;
+    _bool           m_ShowOutline;
 
     _int            m_TileTypeIndex;
 };

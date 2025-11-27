@@ -421,7 +421,7 @@ HRESULT CResourceMgr::Ready_Terrain(DEVICE graphicDev)
             L"../Bin/Resource/Texture/Terrain/TileAtlas_1024.png", 1))))
         return E_FAIL;
 
-    // Terrain_1024
+    // Terrain_Outline
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_TILE_OUTLINE, CTexture::Create(graphicDev, TEX_NORMAL,
             L"../Bin/Resource/Texture/Terrain/TileOutline1.png", 1))))
