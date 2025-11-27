@@ -187,14 +187,14 @@ void CPlayer::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CGameObject::OnBeginOverlap(self, other);
 
-    cout << "Player Hit" << endl;
+    //cout << "Player Hit" << endl;
 }
 
 void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)
 {
     CGameObject::OnEndOverlap(self, other);
 
-    cout << "Player HitOut" << endl;
+    //cout << "Player HitOut" << endl;
 }
 
 void CPlayer::Render_Editor()

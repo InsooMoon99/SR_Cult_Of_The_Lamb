@@ -47,7 +47,8 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
     if (FAILED(Ready_Item(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Common(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Terrain(graphicDev))) return E_FAIL;
-   // if (FAILED(Ready_BossP1(graphicDev))) return E_FAIL;
+    //if (FAILED(Ready_BossP1(graphicDev))) return E_FAIL;
+    if (FAILED(Ready_Decoration(graphicDev))) return E_FAIL;
 
     return S_OK;
 }
@@ -408,16 +409,48 @@ HRESULT CResourceMgr::Ready_Terrain(DEVICE graphicDev)
 {
     auto protoMgr = CProtoMgr::GetInstance();
 
-    // Terrain
+    // Terrain_284
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_TILE_284, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/Terrain/TileAtlas_284.png", 1))))
+            L"../Bin/Resource/Texture/Terrain/TileAtlas_284_Blank.png", 1))))
         return E_FAIL;
+
+    // Terrain_1024
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_TILE_1024, CTexture::Create(graphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/Terrain/TileAtlas_1024.png", 1))))
+        return E_FAIL;
+
+    // Terrain_Outline
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_TILE_OUTLINE, CTexture::Create(graphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/Terrain/TileOutline1.png", 1))))
+        return E_FAIL;
+
+
+    return S_OK;
+}
+
+HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
+{
+    auto protoMgr = CProtoMgr::GetInstance();
 
     // Grass
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_GRASS, CTexture::Create(graphicDev, TEX_NORMAL,
             L"../Bin/Resource/Texture/MapObject/WeedShrub/WeedShrub%d.png", 20))))
+        return E_FAIL;
+
+    // Rubble
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_RUBBLE, CTexture::Create(graphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/MapObject/Rubble/Rubble%d.png", 6))))
+        return E_FAIL;
+
+    // Deco
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_DECO, CTexture::Create(graphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/MapObject/Deco/Village_Deco%d.png", 77))))
         return E_FAIL;
 
     return S_OK;

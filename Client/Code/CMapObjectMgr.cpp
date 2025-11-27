@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include "CMapObjectMgr.h"
-#include "CClient_CreateHelper.h"
+#include "CMapObject_Helper.h"
 #include "CProtoMgr.h"
 #include "CTexture.h"
 #include "CMapEditorPlacer.h"
@@ -13,7 +13,7 @@ IMPLEMENT_SINGLETON(CMapObjectMgr)
 
 CMapObjectMgr::CMapObjectMgr()
 {
-
+  
 }
 
 CMapObjectMgr::~CMapObjectMgr()
@@ -26,6 +26,8 @@ void CMapObjectMgr::Ready_MapObjectMgr(DEVICE graphicDev)
     m_GraphicDev = graphicDev;
 
     m_MapPlacer = CMapEditorPlacer::Create(graphicDev);
+
+    
 
     Refresh_MapObjectList();
 }
@@ -41,43 +43,33 @@ void CMapObjectMgr::Update_MapObjectMgr(const _float& timeDelta)
 
 void CMapObjectMgr::Render_MapObjectWindow()
 {
-    bool isGrassSelected =
-        (m_MapPlacer && m_MapPlacer->IsPlacing() && m_MapPlacer->Get_CurType() == MAPOBJTYPE::GRASS);
+    bool bCheck = m_MapPlacer && m_MapPlacer->IsPlacing();
 
-    // Grass 풀때기만 일단
-    if (ImGui::Selectable("Grass", isGrassSelected))
-    {
-        m_ShowGrass = true;
+    ImGui::SeparatorText(u8"[ 맵 오브젝트 리스트 ]");
 
-        //if (m_MapPlacer)
-        //    m_MapPlacer->Start_Place(MAPOBJTYPE::GRASS);
+    auto Render_ObjectButton = [&](const char* name, MAPOBJTYPE type, bool& showFlag)
+        {
+            bool isSelected = (bCheck && m_MapPlacer->Get_CurType() == type);
 
-    }
+            if (ImGui::Selectable(name, isSelected))
+            {
+                showFlag = !showFlag;
+            }
+        };
 
-    // 추가 예정) Rock, Tree 등등
+    Render_ObjectButton("Grass", MAPOBJTYPE::GRASS, m_ShowGrass);
+    Render_ObjectButton("Rubble", MAPOBJTYPE::RUBBLE, m_ShowRubble);
+    Render_ObjectButton("Deco", MAPOBJTYPE::DECO, m_ShowDeco);
 
-#pragma region Legacy
+    // TODO 추가 예정) Rock, Tree 등등
+    ImGui::SeparatorText(u8"[ 저장 파일명 ]");
 
-     // 배치 취소 -> MapEditorPlacer에서 진행가능
-    //if (m_MapPlacer && m_MapPlacer->IsPlacing())
-    //{
-    //    if (CDInputMgr::GetInstance()->Get_DIMouseState(MOUSEKEYSTATE::DIM_RB))
-    //    {
-    //        cout << "Check" << endl;
-    //        m_MapPlacer->Cancel_Place();
-    //    }
-    //    //if (ImGui::Button("Cancel Place"))
-    //    //{
-    //    //    m_MapPlacer->Cancel_Place();
-    //    //}
-    //}
-
-#pragma endregion
-
-    ImGui::Text(u8"맵 오브젝트 파일명 : "); ImGui::SameLine();
+    ImGui::SetNextItemWidth(150.f);
     ImGui::InputText("##MapObjectName", m_MapObjFileName, 128);
 
-    if (ImGui::Button(u8"Save MapObjects"))
+    ImGui::SameLine();
+
+    if (ImGui::Button(u8"Save"))
     {
         string path = "../Bin/Resource/Data/MapObject/";
         path += m_MapObjFileName;
@@ -88,6 +80,8 @@ void CMapObjectMgr::Render_MapObjectWindow()
             Refresh_MapObjectList(); // 저장하고, 새로고침하기
         }
     }
+
+    ImGui::NewLine();
 
     // 저장 파일 리스트
     if (ImGui::CollapsingHeader(u8"저장된 맵오브젝트"))
@@ -113,7 +107,8 @@ void CMapObjectMgr::Render_GrassWindow()
 
     if (ImGui::Begin(u8"풀때기 배치", &m_ShowGrass))
     {
-        CTexture* grassTexture = dynamic_cast<CTexture*>(CProtoMgr::GetInstance()->Clone_Prototype(COMPONENTTYPE::TEX_GRASS));
+        CTexture* grassTexture =
+            dynamic_cast<CTexture*>(CProtoMgr::GetInstance()->Clone_Prototype(COMPONENTTYPE::TEX_GRASS));
 
         if (grassTexture)
         {
@@ -131,37 +126,161 @@ void CMapObjectMgr::Render_GrassWindow()
 
                     ImGui::PushID(i);
 
-                    //_bool isSelected = (i == m_SelectMapObjIndex);
-                    //if (isSelected)
-                    //{
-                    //    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.2f, 0.2f, 1.f));
-                    //}
+                    _bool isSelected = (i == m_SelectGrassIndex);
+                    if (isSelected)
+                    {
+                        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.2f, 0.2f, 1.f));
+                    }
 
                     if (ImGui::ImageButton("Grass", texID, buttonSize))
                     {
                         if (m_MapPlacer)
                         {
+                            m_SelectGrassIndex = i;
+                            m_MapPlacer->Set_GrassIndex(i);
                             m_MapPlacer->Start_Place(MAPOBJTYPE::GRASS);
                         }
 
                     }
 
-                    //if (isSelected)
-                    //{
-                    //    ImGui::PopStyleColor();
-                    //}
+                    if (isSelected)
+                    {
+                        ImGui::PopStyleColor();
+                    }
 
                     if (((i + 1) % COLS != 0))
                         ImGui::SameLine();
 
                     ImGui::PopID();
                 }
-
             }
 
             Safe_Release(grassTexture);
         }
+    }
 
+    ImGui::End();
+}
+
+void CMapObjectMgr::Render_RubbleWindow()
+{
+    if (m_ShowRubble == false)
+        return;
+
+    if (ImGui::Begin(u8"잔해 배치", &m_ShowRubble))
+    {
+        CTexture* rubbleTexture =
+            dynamic_cast<CTexture*>(CProtoMgr::GetInstance()->Clone_Prototype(COMPONENTTYPE::TEX_RUBBLE));
+
+        if (rubbleTexture)
+        {
+
+            const _int TOTAL_RUBBLE = 6;
+            const _int COLS = 4;
+            const ImVec2 buttonSize(50.f, 50.f);
+
+            for (_int i = 0; i < TOTAL_RUBBLE; i++)
+            {
+                IDirect3DBaseTexture9* baseTexture = rubbleTexture->Get_BaseTexture(i);
+
+                if (baseTexture)
+                {
+                    ImTextureID texID = (ImTextureID)baseTexture;
+
+                    ImGui::PushID(i);
+
+                    _bool isSelected = (i == m_SelectRubbleIndex);
+                    if (isSelected)
+                    {
+                        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.2f, 0.2f, 1.f));
+                    }
+
+                    if (ImGui::ImageButton("Rubble", texID, buttonSize))
+                    {
+                        if (m_MapPlacer)
+                        {
+                            m_SelectGrassIndex = i;
+                            m_MapPlacer->Set_RubbleIndex(i);
+                            m_MapPlacer->Start_Place(MAPOBJTYPE::RUBBLE);
+                        }
+
+                    }
+
+                    if (isSelected)
+                    {
+                        ImGui::PopStyleColor();
+                    }
+
+                    if (((i + 1) % COLS != 0))
+                        ImGui::SameLine();
+
+                    ImGui::PopID();
+                }
+            }
+
+            Safe_Release(rubbleTexture);
+        }
+    }
+
+    ImGui::End();
+}
+
+void CMapObjectMgr::Render_DecoWindow()
+{
+    if (m_ShowDeco == false)
+        return;
+
+    if (ImGui::Begin(u8"장식 배치", &m_ShowDeco))
+    {
+        CTexture* decoTexture =
+            dynamic_cast<CTexture*>(CProtoMgr::GetInstance()->Clone_Prototype(COMPONENTTYPE::TEX_DECO));
+
+        if (decoTexture)
+        {
+            const _int TOTAL_DECO = 76; 
+            const _int COLS = 5;
+            const ImVec2 buttonSize(50.f, 50.f);
+
+            for (_int i = 0; i < TOTAL_DECO; i++)
+            {
+                IDirect3DBaseTexture9* baseTexture = decoTexture->Get_BaseTexture(i);
+
+                if (baseTexture)
+                {
+                    ImTextureID texID = (ImTextureID)baseTexture;
+
+                    ImGui::PushID(i);
+
+                    _bool isSelected = (i == m_SelectDecoIndex);
+                    if (isSelected)
+                    {
+                        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.2f, 0.2f, 1.f));
+                    }
+
+                    if (ImGui::ImageButton("Deco", texID, buttonSize))
+                    {
+                        if (m_MapPlacer)
+                        {
+                            m_SelectDecoIndex = i;
+                            m_MapPlacer->Set_DecoIndex(i);
+                            m_MapPlacer->Start_Place(MAPOBJTYPE::DECO);
+                        }
+                    }
+
+                    if (isSelected)
+                    {
+                        ImGui::PopStyleColor();
+                    }
+
+                    if (((i + 1) % COLS != 0))
+                        ImGui::SameLine();
+
+                    ImGui::PopID();
+                }
+            }
+
+            Safe_Release(decoTexture);
+        }
     }
 
     ImGui::End();

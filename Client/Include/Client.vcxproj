@@ -180,6 +180,7 @@
     <ClInclude Include="..\Header\CBossMove.h" />
     <ClInclude Include="..\Header\CBossPhase1.h" />
     <ClInclude Include="..\Header\CBossStateMachine.h" />
+    <ClInclude Include="..\Header\CMapObject_Helper.h" />
     <ClInclude Include="..\Header\CComInspectors.h" />
     <ClInclude Include="..\Header\CDroppedItem.h" />
     <ClInclude Include="..\Header\CDropSystem.h" />
@@ -197,7 +198,9 @@
     <ClInclude Include="..\Header\CMapEditorPlacer.h" />
     <ClInclude Include="..\Header\CMapObjectBase.h" />
     <ClInclude Include="..\Header\CMapObjectMgr.h" />
+    <ClInclude Include="..\Header\CMapObject_Deco.h" />
     <ClInclude Include="..\Header\CMapObject_Grass.h" />
+    <ClInclude Include="..\Header\CMapObject_Rubble.h" />
     <ClInclude Include="..\Header\CMenuChar.h" />
     <ClInclude Include="..\Header\CMonster.h" />
     <ClInclude Include="..\Header\CMonsterState.h" />
@@ -258,7 +261,9 @@
     <ClCompile Include="..\Code\CMapEditorPlacer.cpp" />
     <ClCompile Include="..\Code\CMapObjectBase.cpp" />
     <ClCompile Include="..\Code\CMapObjectMgr.cpp" />
+    <ClCompile Include="..\Code\CMapObject_Deco.cpp" />
     <ClCompile Include="..\Code\CMapObject_Grass.cpp" />
+    <ClCompile Include="..\Code\CMapObject_Rubble.cpp" />
     <ClCompile Include="..\Code\CMenuChar.cpp" />
     <ClCompile Include="..\Code\CMonster.cpp" />
     <ClCompile Include="..\Code\CMonsterState.cpp" />

@@ -71,9 +71,13 @@ HRESULT CTerrain::Add_Component()
     NULL_CHECK_RETURN(m_TransformCom, E_FAIL);
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
-    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_TILE_284);
-    NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_TILE_284, m_TextureCom });
+    m_TextureCom284 = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_TILE_284);
+    NULL_CHECK_RETURN(m_TextureCom284, E_FAIL);
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_TILE_284, m_TextureCom284 });
+
+    m_TextureCom1024 = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_TILE_1024);
+    NULL_CHECK_RETURN(m_TextureCom1024, E_FAIL);
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_TILE_1024, m_TextureCom1024 });
 
     m_TerrainRendererCom = CreateProtoComponent<CTerrainRenderer>(this, COMPONENTTYPE::TERRAIN_RENDER);
     NULL_CHECK_RETURN(m_TerrainRendererCom, E_FAIL);

@@ -1,8 +1,16 @@
 ﻿#pragma once
 
 #include "CBase.h"
+#include "CMapObjectBase.h"
 
 class CMapEditorPlacer;
+
+struct MapObjectInfo
+{
+    const char* name;
+    MAPOBJTYPE  type;
+    bool*       showFlag;
+};
 
 BEGIN(Engine)
 
@@ -19,8 +27,11 @@ public:
     void Update_MapObjectMgr(const _float& timeDelta);
 
     // Map Object 배치
-    void    Render_MapObjectWindow(); // Map Object Render
+    void    Render_MapObjectWindow();
+
     void    Render_GrassWindow();
+    void    Render_RubbleWindow();
+    void    Render_DecoWindow();
 
     HRESULT SaveMapObject(const char* filePath);
     HRESULT LoadMapObject(const char* filePath);
@@ -38,12 +49,19 @@ private:
     CMapEditorPlacer*   m_MapPlacer = nullptr;
 
     vector<string>      m_MapObjList{};
+
     _int                m_SelectMapObjIndex = 0;
+
     _int                m_SelectGrassIndex = 0;
+    _int                m_SelectRubbleIndex = 0;
+    _int                m_SelectDecoIndex = 0;
 
     _bool               m_ShowGrass = false;
+    _bool               m_ShowRubble = false;
+    _bool               m_ShowDeco = false;
 
     char                m_MapObjFileName[128] = "MapObject_";
+
 
 };
 

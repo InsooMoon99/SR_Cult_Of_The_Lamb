@@ -207,23 +207,11 @@
     <ClInclude Include="..\Header\CHumanMonster.h">
       <Filter>03. GameObject\02. Monster</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CMapObjectBase.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\CMapObject_Grass.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\CUIMp.h">
       <Filter>05. UI\01. UI\02. UIMp</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CUICircle.h">
       <Filter>05. UI\01. UI\01. UICircle</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\CMapObjectBase.h">
-      <Filter>02. GameObject\09. MapObject</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\CMapObject_Grass.h">
-      <Filter>02. GameObject\09. MapObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CUIWeapon.h">
       <Filter>05. UI\01. UI\03. UIWeapon</Filter>
@@ -318,6 +306,27 @@
     <ClInclude Include="..\Header\CMapObjectMgr.h">
       <Filter>99. ImGui_Editor\01. EditorScript</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CMapObject_Grass.h">
+      <Filter>03. GameObject\09. MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMapObjectBase.h">
+      <Filter>03. GameObject\09. MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMapObject_Helper.h">
+      <Filter>98. Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMapObject_Rubble.h">
+      <Filter>03. GameObject\09. MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMapObject_Deco.h">
+      <Filter>03. GameObject\09. MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMapObjectBase.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMapObject_Grass.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
     <ClInclude Include="..\Header\CMenuChar.h">
       <Filter>05. UI\01. UI</Filter>
     </ClInclude>
@@ -392,26 +401,14 @@
     <ClCompile Include="..\Code\CHumanMonster.cpp">
       <Filter>03. GameObject\02. Monster</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CMapObject_Grass.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\CUIMp.cpp">
       <Filter>05. UI\01. UI\02. UIMp</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CUICircle.cpp">
       <Filter>05. UI\01. UI\01. UICircle</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CMapObject_Grass.cpp">
-      <Filter>02. GameObject\09. MapObject</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\CUIWeapon.cpp">
       <Filter>05. UI\01. UI\03. UIWeapon</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\CMapObjectBase.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\CMapObjectBase.cpp">
-      <Filter>02. GameObject\09. MapObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CMainMenu.cpp">
       <Filter>02. Scene\03.MainMenu</Filter>
@@ -499,6 +496,24 @@
     </ClCompile>
     <ClCompile Include="..\Code\CMapObjectMgr.cpp">
       <Filter>99. ImGui_Editor\01. EditorScript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMapObject_Grass.cpp">
+      <Filter>03. GameObject\09. MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMapObjectBase.cpp">
+      <Filter>03. GameObject\09. MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMapObject_Rubble.cpp">
+      <Filter>03. GameObject\09. MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMapObject_Deco.cpp">
+      <Filter>03. GameObject\09. MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMapObjectBase.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMapObject_Grass.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CMenuChar.cpp">
       <Filter>05. UI\01. UI</Filter>
