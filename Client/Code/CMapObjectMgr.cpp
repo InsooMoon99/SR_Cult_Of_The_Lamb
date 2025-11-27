@@ -62,6 +62,14 @@ void CMapObjectMgr::Render_MapObjectWindow()
     Render_ObjectButton("Deco", MAPOBJTYPE::DECO, m_ShowDeco);
 
     // TODO 추가 예정) Rock, Tree 등등
+    ImGui::SeparatorText(u8"되돌리기");
+
+    if(ImGui::Button(u8"Return"))
+    {
+        Undo_LastPlacement();
+    }
+    ImGui::Separator();
+
     ImGui::SeparatorText(u8"[ 저장 파일명 ]");
 
     ImGui::SetNextItemWidth(150.f);
@@ -344,6 +352,8 @@ HRESULT CMapObjectMgr::SaveMapObject(const char* filePath)
 
 HRESULT CMapObjectMgr::LoadMapObject(const char* filePath)
 {
+    Clear_PlacedObjects();
+
     ifstream ifs(filePath, ios_base::binary);
     if (!ifs.is_open())
         return E_FAIL;
@@ -391,12 +401,19 @@ HRESULT CMapObjectMgr::LoadMapObject(const char* filePath)
         }
     }
 
+    for (auto& obj : m_PlacedObjects)
+    {
+        Add_Placement(obj);
+    }
+
     return S_OK;
 }
 
 void CMapObjectMgr::Clear_PlacedObjects()
 {
-    // TODO : 클리어 만들어줄 지?
+    // TODO : 기능 확장해야함
+
+    m_PlacedObjects.clear();
 }
 
 void CMapObjectMgr::Refresh_MapObjectList()
@@ -441,6 +458,30 @@ void CMapObjectMgr::Refresh_MapObjectList()
     else if (m_SelectMapObjIndex >= (_int)m_MapObjList.size())
     {
         m_SelectMapObjIndex = (_int)m_MapObjList.size() - 1;
+    }
+}
+
+void CMapObjectMgr::Undo_LastPlacement()
+{
+    if (m_PlacedObjects.empty())
+        return;
+
+    // 마지막 오브젝트 가져오기
+    CGameObject* lastObj = m_PlacedObjects.back();
+    m_PlacedObjects.pop_back();
+
+    if (lastObj)
+    {
+        lastObj->Mark_As_PendingKill();
+    }
+
+}
+
+void CMapObjectMgr::Add_Placement(CGameObject* object)
+{
+    if (object)
+    {
+        m_PlacedObjects.push_back(object);
     }
 }
 
