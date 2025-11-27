@@ -190,7 +190,7 @@ void CPlayerController::CheckStateTransition()
                 if (m_OwnerRigidbodyCom) m_OwnerRigidbodyCom->Set_Friction(0.2f); // 기본 마찰력 복구
             }
         }
-        // TODO : PLAYER_ROLL, RUN 의 경우 대쉬 공격으로 가도록
+        // TODO : PLAYER_ROLL, RUN 의 경우 대쉬 공격으로 가도록 
         else if (IsAttacking(curState))
         {
             if (m_StateData.canNextCombo)

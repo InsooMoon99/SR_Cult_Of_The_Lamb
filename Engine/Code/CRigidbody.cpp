@@ -147,9 +147,11 @@ _int CRigidbody::Update_Component(const _float& timeDelta)
     return 0;
 }
 
-void CRigidbody::LateUpdate_Component() {}
+void CRigidbody::LateUpdate_Component()
+{ }
 
-void CRigidbody::Render_Editor() {}
+void CRigidbody::Render_Editor()
+{ }
 
 CRigidbody* CRigidbody::Create(DEVICE graphicDev)
 {
@@ -167,4 +169,7 @@ CRigidbody* CRigidbody::Create(DEVICE graphicDev)
 
 CComponent* CRigidbody::Clone() { return new CRigidbody(*this); }
 
-void CRigidbody::Free() { CComponent::Free(); }
+void CRigidbody::Free()
+{
+    CComponent::Free();
+}
