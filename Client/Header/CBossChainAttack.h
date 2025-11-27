@@ -23,7 +23,7 @@ public:
     virtual _int    Update_State(const _float& timeDelta);
 
     void PlayerLine(_vec3 PlayerDir, _int MaxCount, _float m_Offset, float Speed);
-    bool PlayerLineUpdate(const _float& timeDelta);
+    bool PlayerLineUpdate(const _float& timeDelta, _int MaxCount, _float m_Offset, float Speed);
     virtual void    LateUpdate_State(const _float& timeDelta);
     virtual void    Render_State();
 

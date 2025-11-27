@@ -67,11 +67,11 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
         m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::ONCE);
 
 
-        if (PlayerLineUpdate(timeDelta) == true)
+        if (PlayerLineUpdate(timeDelta, 10, 3, .2f) == true)
         {
             LineCount++;
         }
-             //경고이팩트다 나가면 -> 다음 플레이어 위치 캐싱 -> 
+        //경고이팩트다 나가면 -> 다음 플레이어 위치 캐싱 -> 
 
 
 
@@ -93,15 +93,38 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
 
     case PHASE::CROSS: //움직임
 
-        m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::ONCE); 
+        m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::ONCE);
 
         m_fElapsedTime[(int)PHASE::CROSS] += timeDelta;
 
 
-        //
 
+        if (m_fElapsedTime[(int)PHASE::PLAYERLINE] > .5 && m_Count < 10)
+        {
+            for (int i = 0;i < 4; i++)
+            {
+                _vec3 PlayerDir = m_PlayerDir;
+                int offset = 5;
 
-        if (m_fCurStateElapsedTime >= 1.0f)
+                CWarningChain* WarningChain = CWarningChain::Create(m_pOwner->Get_GraphicDev(), m_pOwner);
+                const auto ChainTransform =
+                    dynamic_cast<CTransform*>(WarningChain->Get_Component(
+                        ID_DYNAMIC,
+                        COMPONENTTYPE::TRANSFORM));
+                _vec3 CurPos = ChainTransform->Get_Pos();
+                _vec3 AddPos = { PlayerDir.x * (m_Count * offset), 0.f, PlayerDir.z * (m_Count * offset) };
+                ChainTransform->Set_Pos(CurPos + AddPos);
+
+                SpawnAttackObject(WarningChain);
+
+            }
+
+            m_fElapsedTime[(int)PHASE::PLAYERLINE] = 0;
+            m_Count++;
+
+        }
+
+        if (m_Count>=10)
         {
             m_fElapsedTime[(int)PHASE::CROSS] = 0;
             return CBossPhase1::BOSSPHASE1::BOSSIDLE;
@@ -131,34 +154,34 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
     return CBossPhase1::BOSSPHASE1::CHAINATTACK;
 }
 
-void CBossChainAttack::PlayerLine(_vec3 PlayerDir, _int  MaxCount, _float m_Offset, float Speed)
-{
-
-    // 지금 안되는거 TODO:: 플레이어 위치 캐싱 , 충돌박스 없음 이슈
-
-        auto chain = CBossChain::Create(m_pOwner->Get_GraphicDev(), m_pOwner);
-        const auto ChainTransform =
-            dynamic_cast<CTransform*>(chain->Get_Component(
-                ID_DYNAMIC,
-                COMPONENTTYPE::TRANSFORM));
-
-        //_vec3 dir;
-        //_vec3 tmp = m_pPlayerTransformCom->Get_Pos() - m_pOwnerTransformCom->Get_Pos();
-        //D3DXVec3Normalize(&dir, &tmp);
-
-
-        _vec3 CurPos = ChainTransform->Get_Pos();
-        _vec3 AddPos = { PlayerDir.x + (m_Count * m_Offset), 0.f, PlayerDir.z + (m_Count * m_Offset) };
-        ChainTransform->Set_Pos(CurPos + AddPos);
-
-        SpawnAttackObject(chain);
-
-        m_fElapsedTime[(int)PHASE::PLAYERLINE] = 0;
-
-        m_Count++;
- 
-}
-bool CBossChainAttack::PlayerLineUpdate(const _float& timeDelta)
+//void CBossChainAttack::PlayerLine(_vec3 PlayerDir, _int  MaxCount, _float m_Offset, float Speed)
+//{
+//
+//    // 지금 안되는거 TODO:: 플레이어 위치 캐싱 , 충돌박스 없음 이슈
+//
+//        auto chain = CBossChain::Create(m_pOwner->Get_GraphicDev(), m_pOwner);
+//        const auto ChainTransform =
+//            dynamic_cast<CTransform*>(chain->Get_Component(
+//                ID_DYNAMIC,
+//                COMPONENTTYPE::TRANSFORM));
+//
+//        //_vec3 dir;
+//        //_vec3 tmp = m_pPlayerTransformCom->Get_Pos() - m_pOwnerTransformCom->Get_Pos();
+//        //D3DXVec3Normalize(&dir, &tmp);
+//
+//
+//        _vec3 CurPos = ChainTransform->Get_Pos();
+//        _vec3 AddPos = { PlayerDir.x + (m_Count * m_Offset), 0.f, PlayerDir.z + (m_Count * m_Offset) };
+//        ChainTransform->Set_Pos(CurPos + AddPos);
+//
+//        SpawnAttackObject(chain);
+//
+//        m_fElapsedTime[(int)PHASE::PLAYERLINE] = 0;
+//
+//        m_Count++;
+// 
+//}
+bool CBossChainAttack::PlayerLineUpdate(const _float& timeDelta, _int  MaxCount, _float m_Offset, float Speed)
 {
     m_fElapsedTime[(int)PHASE::PLAYERLINE] += timeDelta;
 
@@ -170,10 +193,8 @@ bool CBossChainAttack::PlayerLineUpdate(const _float& timeDelta)
         m_LineFlag = true;
     }
 
-    if (m_fElapsedTime[(int)PHASE::PLAYERLINE] > .5 && m_Count < 10)
+    if (m_fElapsedTime[(int)PHASE::PLAYERLINE] > Speed && m_Count < MaxCount)
     {
-        _vec3 PlayerDir = m_PlayerDir;
-        int offset = 5;
 
         CWarningChain* WarningChain = CWarningChain::Create(m_pOwner->Get_GraphicDev(), m_pOwner);
         const auto ChainTransform =
@@ -181,7 +202,7 @@ bool CBossChainAttack::PlayerLineUpdate(const _float& timeDelta)
                 ID_DYNAMIC,
                 COMPONENTTYPE::TRANSFORM));
         _vec3 CurPos = ChainTransform->Get_Pos();
-        _vec3 AddPos = { PlayerDir.x * (m_Count * offset), 0.f, PlayerDir.z * (m_Count * offset) };
+        _vec3 AddPos = { m_PlayerDir.x * (m_Count * m_Offset), 0.f, m_PlayerDir.z * (m_Count * m_Offset) };
         ChainTransform->Set_Pos(CurPos + AddPos);
 
         SpawnAttackObject(WarningChain);
@@ -192,7 +213,7 @@ bool CBossChainAttack::PlayerLineUpdate(const _float& timeDelta)
 
     }
 
-    if (m_Count >= 10)
+    if (m_Count >= MaxCount)
     {
         // 다음 패턴을 위해 초기화
         m_Count = 0;

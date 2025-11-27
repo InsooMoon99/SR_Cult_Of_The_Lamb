@@ -51,6 +51,14 @@ _int CLayer::Update_Layer(const _float& timeDelta)
     {
         for (auto* obj : pair.second)
         {
+            if (obj == (CGameObject*)0xFFFFFFFFFFFFFFFF)
+            {
+                int dummy = 0; // 여기에 브레이크포인트(F9)
+            }
+
+            if (obj == nullptr)
+                continue;
+
             result = obj->Update_GameObject(timeDelta);
 
             if (result & 0x80000000)
@@ -70,7 +78,11 @@ void CLayer::LateUpdate_Layer(const _float& timeDelta)
         for (auto iter = objList.begin(); iter != objList.end(); )
         {
             CGameObject* obj = *iter;
-
+            if (obj == (CGameObject*)0xFFFFFFFFFFFFFFFF)
+            {
+                // 여기에 브레이크포인트를 한 번 건다.
+                int dummy = 0; // 의미 없는 코드
+            }
             if (obj == nullptr)
             {
                 iter = objList.erase(iter);
