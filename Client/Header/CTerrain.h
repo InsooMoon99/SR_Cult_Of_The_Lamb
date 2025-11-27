@@ -40,10 +40,12 @@ public:
 protected:
     void Free() override;
 
-private:
+private:    
     Engine::CTerrainTex*        m_BufferCom;
     Engine::CTransform*         m_TransformCom;
-    Engine::CTexture*           m_TextureCom;
+
+    Engine::CTexture*           m_TextureCom284;
+    Engine::CTexture*           m_TextureCom1024;
 
     CTerrainRenderer*   m_TerrainRendererCom;
 

@@ -123,6 +123,7 @@ namespace Engine
         // TODO : Test Tile -> 은수 Texture 버전이랑 합치면 고치기
         TEX_TILE_284,
         TEX_TILE_1024,
+        TEX_TILE_OUTLINE,
 
         ANIMATOR,
         CAMERA,
@@ -136,7 +137,8 @@ namespace Engine
         // MapObject ///
         ////////////////
         TEX_GRASS,
-        TEX_ROCK,
+        TEX_RUBBLE,
+        TEX_DECO,
 
         COMPONENT_END
     };

@@ -9,13 +9,15 @@
 int CUIIcon::m_nextID = 0;
 
 CUIIcon::CUIIcon(DEVICE pGraphicDev)
-    : CUI(pGraphicDev)
+    : CUI(pGraphicDev),
+      m_Register(true)
 {
     m_ID = ++m_nextID;
 }
 
 CUIIcon::CUIIcon(const CUIIcon& rhs)
-    : CUI(rhs)
+    : CUI(rhs),
+      m_Register(true)
 {
     m_ID = ++m_nextID;
 }
@@ -23,9 +25,9 @@ CUIIcon::CUIIcon(const CUIIcon& rhs)
 CUIIcon::~CUIIcon()
 {}
 
-HRESULT CUIIcon::Ready_GameObject()
+HRESULT CUIIcon::Ready_GameObject(COMPONENTTYPE texProtoTag)
 {
-    if (FAILED(Add_Component()))
+    if (FAILED(Add_Component(texProtoTag)))
         return E_FAIL;
 
     m_TransformCom->Set_Pos(_vec3(0.f, 0.f, 1.f));
@@ -49,8 +51,10 @@ bool CUIIcon::SetCloneTexAspectScale(_vec3 vec) // 텍스쳐 등록후
 _int CUIIcon::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
-
+    if(m_Register)
+    {
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+    }
 
     return exit;
 }
@@ -66,11 +70,10 @@ void CUIIcon::Render_GameObject()
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
     m_TextureCom->Set_Texture(m_textureIndex);
-
     m_BufferCom->Render_Buffer();
 }
 
-HRESULT CUIIcon::Add_Component()
+HRESULT CUIIcon::Add_Component(COMPONENTTYPE texProtoTag)
 {
     // buffer
     m_BufferCom = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
@@ -85,18 +88,18 @@ HRESULT CUIIcon::Add_Component()
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
     // texture
-    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_UI_ICON);
+    m_TextureCom = CreateProtoComponent<CTexture>(this, texProtoTag);
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
 
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_UI_ICON, m_TextureCom });
+    m_Components[ID_STATIC].insert({ texProtoTag, m_TextureCom });
 
     return S_OK;
 }
 
-CUIIcon* CUIIcon::Create(DEVICE graphicDev)
+CUIIcon* CUIIcon::Create(DEVICE graphicDev, COMPONENTTYPE texProtoTag)
 {
     auto Icon = new CUIIcon(graphicDev);
-    if (FAILED(Icon->Ready_GameObject()))
+    if (FAILED(Icon->Ready_GameObject(texProtoTag)))
     {
         Safe_Release(Icon);
         MSG_BOX("Icon Created Failed");

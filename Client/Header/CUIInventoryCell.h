@@ -2,6 +2,8 @@
 #include "CUI.h"
 #include "ItemInstance.h"
 
+class CUIIcon;
+
 class CUIInventoryCell : public CUI
 {
 private:
@@ -18,25 +20,29 @@ public:
 
     void OnBeginOverlap(CCollider* self, CCollider* other) override;
     void OnEndOverlap(CCollider* self, CCollider* other) override;
-
+    
     HRESULT Add_Component();
 
     static CUIInventoryCell* Create(DEVICE graphicDev);
 
+    void    Set_IsHovered(bool tf) { m_IsHovered = tf; }
+    bool    Get_IsHovered() { return m_IsHovered; }
     void SetInventoryCell(const ItemInstance& itemInstance, int count)
     {
         m_ItemInst = itemInstance;
         m_Count    = count;
     }
 
+    CUIIcon* Get_Icon() { return uiIcon; }
+
 protected:
     void Free() override;
 
 private:
-    CTexture*    m_ItemTexCom;
-    CTexture*    m_HighlightTexCom;
-    ItemInstance m_ItemInst;
-    int          m_index;
-    int          m_Count;
-    bool         m_IsHovered; //외곽선 그리기 여부 판단용
+    CUIIcon*        uiIcon;
+    CTexture*       m_ItemTexCom;
+    CTexture*       m_HighlightTexCom;
+    ItemInstance    m_ItemInst;
+    int             m_Count;
+    bool            m_IsHovered; //외곽선 그리기 여부 판단용
 };

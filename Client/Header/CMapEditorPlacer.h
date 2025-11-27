@@ -15,23 +15,31 @@ private:
     ~CMapEditorPlacer();
 
 public:
-    void Update_MapPlacer(const _float& timeDelta);
-    void Render_Privew();
+    void        Update_MapPlacer(const _float& timeDelta);
+    void        Render_Privew();
 
-    void Start_Place(MAPOBJTYPE type);  // 배치 시작
-    void Cancel_Place();                // 배치 취소
+    void        Start_Place(MAPOBJTYPE type);  // 배치 시작
+    void        Cancel_Place();                // 배치 취소
 
-    bool IsPlacing() { return m_Placing; }
+    _bool       IsPlacing() { return m_Placing; }
+    _bool       Get_MouseWorldPos(_vec3& outPos);
+    MAPOBJTYPE  Get_CurType() { return m_SelectedType; }
 
-    bool Get_MouseWorldPos(_vec3& outPos);
+    _int        Get_CurTextureIndex();
 
-    MAPOBJTYPE Get_CurType() { return m_SelectedType; }
+    void        Set_GrassIndex(_int index) { m_GrassIndex = index; }
+    void        Set_RubbleIndex(_int index) { m_RubbleIndex = index; }
+    void        Set_DecoIndex(_int index) { m_DecoIndex = index; }
 
 private:
     DEVICE          m_GraphicDev;
     CMapObjectBase* m_PreviewObj;
     MAPOBJTYPE      m_SelectedType;
-    bool            m_Placing;
+    _bool           m_Placing;
+
+    _int            m_GrassIndex;
+    _int            m_RubbleIndex;
+    _int            m_DecoIndex;
 
 public:
     static CMapEditorPlacer* Create(DEVICE graphicDev);

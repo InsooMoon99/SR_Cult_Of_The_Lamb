@@ -1,9 +1,9 @@
 ﻿#include "pch.h"
 #include "CLoading.h"
-
+#include "CAnimator.h"
+#include "CBoxCol.h"
 #include "CProtoMgr.h"
 #include "CResourceMgr.h"
-
 
 CLoading::CLoading(DEVICE pGraphicDev)
     : m_GraphicDev(pGraphicDev),

@@ -135,7 +135,8 @@ static const char* ToString(COMPONENTTYPE type)
     case COMPONENTTYPE::TEX_HUMAN_MONSTER:  return "TexHumanMonster";
     case COMPONENTTYPE::TEX_ITEM:           return "TexItem";
     case COMPONENTTYPE::TEX_GRASS:          return "TexGrass";
-    case COMPONENTTYPE::TEX_ROCK:           return "TexRock";
+    case COMPONENTTYPE::TEX_RUBBLE:         return "TexRubble";
+    case COMPONENTTYPE::TEX_DECO:           return "TexDeco";
 
     // UI Texture Components
     case COMPONENTTYPE::TEX_UI_CIRCLE:      return "UI_Circle";

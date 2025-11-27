@@ -126,12 +126,11 @@ void CDroppedItem::OnBeginOverlap(CCollider* self, CCollider* other)
             {
             //*** 아이템 지우기 ***
             Mark_As_PendingKill();
-
             }
         }
     }
 
-    cout << "item Hit" << endl;
+    //cout << "item Hit" << endl;
 }
 
 void CDroppedItem::OnEndOverlap(CCollider* self, CCollider* other)

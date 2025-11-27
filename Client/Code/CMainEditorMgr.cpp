@@ -52,6 +52,51 @@ void CMainEditorMgr::Set_EditContext(CEditContext* ctx)
     m_Context = ctx;
 }
 
+void CMainEditorMgr::Render_MainEditor()
+{
+    if (!m_Context)
+        return;
+
+    CScene* scene = CManagement::GetInstance()->Get_Scene();
+    if (scene)
+        m_Context->Set_ActiveScene(scene);
+
+    else
+        MSG_BOX("Scene Is Where ? ");
+
+    // 프리뷰 오브젝트 렌더
+    if (CMapObjectMgr::GetInstance()->Get_MapPlacer())
+    {
+        CMapObjectMgr::GetInstance()->Get_MapPlacer()->Render_Privew();
+    }
+
+    ImGui::Begin("MainEditor");
+
+    if (ImGui::BeginTabBar("MainEditorTabs"))
+    {
+        if (ImGui::BeginTabItem("Scene"))
+        {
+            Render_SceneTab();
+            ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("MapTool"))
+        {
+            Render_MapToolTab();
+            ImGui::EndTabItem();
+        }
+
+        ImGui::EndTabBar();
+    }
+
+    ImGui::End();
+
+    CMapObjectMgr::GetInstance()->Render_GrassWindow();
+    CMapObjectMgr::GetInstance()->Render_RubbleWindow();
+    CMapObjectMgr::GetInstance()->Render_DecoWindow();
+
+}
+
 void CMainEditorMgr::Render_SceneTab()
 {
     ImGui::BeginChild("[ Tool bar ]", ImVec2(0, 40), true);
@@ -113,6 +158,7 @@ void CMainEditorMgr::Render_MapToolTab()
     case MAPTOOL_VIEW::TERRAIN:
     {
         CTerrainRenderer* terrain = Find_TerrainRenderer();
+
         if (terrain)
         {
             ImGui::Text("Terrain Renderer");
@@ -139,46 +185,6 @@ void CMainEditorMgr::Render_MapToolTab()
     }
 
     ImGui::EndChild();
-}
-
-void CMainEditorMgr::Render_MainEditor()
-{
-    if (!m_Context)
-        return;
-
-    CScene* scene = CManagement::GetInstance()->Get_Scene();
-    if (scene)
-        m_Context->Set_ActiveScene(scene);
-
-    else
-        MSG_BOX("Scene Is Where ? ");
-
-    // 프리뷰 오브젝트 렌더
-    if (CMapObjectMgr::GetInstance()->Get_MapPlacer())
-        CMapObjectMgr::GetInstance()->Get_MapPlacer()->Render_Privew();
-
-    ImGui::Begin("MainEditor");
-
-    if (ImGui::BeginTabBar("MainEditorTabs"))
-    {
-        if (ImGui::BeginTabItem("Scene"))
-        {
-            Render_SceneTab();
-            ImGui::EndTabItem();
-        }
-
-        if (ImGui::BeginTabItem("MapTool"))
-        {
-            Render_MapToolTab();
-            ImGui::EndTabItem();
-        }
-
-        ImGui::EndTabBar();
-    }
-
-    ImGui::End();
-
-    CMapObjectMgr::GetInstance()->Render_GrassWindow();
 }
 
 void CMainEditorMgr::Render_ToolBar()

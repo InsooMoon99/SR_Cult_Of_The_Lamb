@@ -158,7 +158,7 @@ HRESULT CMainMenu::Ready_UI_Layer(LAYERTYPE layerType)
         return E_FAIL;
     //////////////////////////////////////////////////////////////////////////////////
     //아이콘
-    CUIIcon* pGameObject = CUIIcon::Create(m_GraphicDev);
+    CUIIcon* pGameObject = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_ICON);
     pGameObject->Set_TextureIndex(0);
     //pGameObject->Get_Transform()->Set_Scale(262.f / 1.3f,143.f / 1.3f,1.f);
     pGameObject->SetCloneTexAspectScale({.2f,.2f, 1 });
@@ -172,8 +172,8 @@ HRESULT CMainMenu::Ready_UI_Layer(LAYERTYPE layerType)
     float scaleX = 0.20f;
     float scaleY = 0.25f;
     // 버튼.
-    bt = CUIButton::Create(m_GraphicDev);
-    bt->Set_TextureIndex(1,0);
+    bt = CUIButton::Create(m_GraphicDev,1,0);
+    //bt->Set_TextureIndex(1,0);
     bt->SetCloneTexAspectScale({ scaleX, scaleY, 1 });
     bt->Get_Transform()->Set_Pos(-WINCX / 3, -0, .3);
     bt->SetOnClick([]() {CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_STAGE);});
@@ -182,8 +182,8 @@ HRESULT CMainMenu::Ready_UI_Layer(LAYERTYPE layerType)
         L"CMainMenu::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUIIcon) failed");
     ///////////////////////////////////////////////////////////////////////////////////
      // 버튼
-    bt1 = CUIButton::Create(m_GraphicDev);
-    bt1->Set_TextureIndex(1, 0);
+    bt1 = CUIButton::Create(m_GraphicDev,1,0);
+    //bt1->Set_TextureIndex(1, 0);
     bt1->SetCloneTexAspectScale({ scaleX, scaleY, 1 });
     bt1->Get_Transform()->Set_Pos(-WINCX / 3, -WINCX / 18, .3);
     bt1->SetOnClick([]() {CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_EDIT);});
@@ -192,8 +192,8 @@ HRESULT CMainMenu::Ready_UI_Layer(LAYERTYPE layerType)
         L"CMainMenu::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUIIcon) failed");
     ///////////////////////////////////////////////////////////////////////////////////
     // 버튼
-    bt2 = CUIButton::Create(m_GraphicDev);
-    bt2->Set_TextureIndex(1, 0);
+    bt2 = CUIButton::Create(m_GraphicDev,1,0);
+    //bt2->Set_TextureIndex(1, 0);
     bt2->SetCloneTexAspectScale({ scaleX, scaleY, 1 });
     bt2->Get_Transform()->Set_Pos(-WINCX / 3, -WINCX / 9, .3);
     bt2->SetOnClick([]() {CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_STAGE1);});
@@ -202,7 +202,7 @@ HRESULT CMainMenu::Ready_UI_Layer(LAYERTYPE layerType)
         L"CMainMenu::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUIIcon) failed");
     ///////////////////////////////////////////////////////////////////////////////////
         // 버튼
-    bt3 = CUIButton::Create(m_GraphicDev);
+    bt3 = CUIButton::Create(m_GraphicDev,1,0);
     bt3->Set_TextureIndex(1, 0);
     bt3->SetCloneTexAspectScale({ scaleX, scaleY, 1 });
     bt3->Get_Transform()->Set_Pos(-WINCX / 3, -WINCX / 6, .3);
