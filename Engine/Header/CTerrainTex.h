@@ -3,6 +3,7 @@
 #include "CVIBuffer.h"
 
 BEGIN(Engine)
+
 class ENGINE_DLL CTerrainTex : public CVIBuffer
 {
 private:
@@ -19,7 +20,12 @@ public:
     void Render_Buffer() override;
 
 public:
-    void ApplyTileSetting(const vector<_int>& tileIndices, _int atlasCols, _int atlasRows);
+    void ApplyTileSetting(
+        const vector<_int>& tileIndices,
+        _int atlasCols,
+        _int atlasRows,
+        _float texWidth,
+        _float texHeight);
 
     const _vec3* Get_VtxPos() { return m_Pos; }
 

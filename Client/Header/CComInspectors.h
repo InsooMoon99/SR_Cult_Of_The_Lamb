@@ -325,7 +325,7 @@ static void Terrain_Inspector(CTerrainRenderer* renderer)
 
     if(ImGui::BeginTabBar("Terrain_TabBar"))
     {
-        if (ImGui::BeginTabItem(u8"타일 종류"))
+        if (ImGui::BeginTabItem(u8"타일"))
         {
             renderer->Render_Editor();
 

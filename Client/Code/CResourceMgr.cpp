@@ -400,6 +400,18 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
             1))))
         return E_FAIL;
 
+
+    // Texture : Inventory BackGround
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_RITUALCARD,
+        Engine::CTexture::Create(
+            graphicDev,
+            TEX_NORMAL,
+            L"../Bin/Resource/Texture/UI/Inventory/RitualCard.png",
+            1))))
+        return E_FAIL;
+
+
+
     return S_OK;
 }
 
@@ -442,7 +454,7 @@ HRESULT CResourceMgr::Ready_Terrain(DEVICE graphicDev)
     // Terrain_Outline
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_TILE_OUTLINE, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/Terrain/TileOutline1.png", 1))))
+            L"../Bin/Resource/Texture/Terrain/TileOutline%d.png", 3))))
         return E_FAIL;
 
 
