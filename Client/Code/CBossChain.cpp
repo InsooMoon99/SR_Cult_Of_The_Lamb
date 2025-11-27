@@ -46,8 +46,8 @@ HRESULT CBossChain::Ready_GameObject()
             COMPONENTTYPE::TRANSFORM));
 
     //TODO:: 나중에 땅의 위치를 알게 되면 수정 
-    m_TransformCom->Set_Pos({ ownerTransform->Get_Pos().x, -ownerTransform->Get_Scale().y * .5f,ownerTransform->Get_Pos().z });
-
+    //m_TransformCom->Set_Pos({ ownerTransform->Get_Pos().x, -ownerTransform->Get_Scale().y * .5f,ownerTransform->Get_Pos().z });
+    //m_TransformCom->Set_Pos
     //충돌박스 CAttackBox 생성
     {
         // 1. 공격 박스 생성

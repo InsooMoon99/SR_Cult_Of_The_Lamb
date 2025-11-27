@@ -10,6 +10,8 @@ class CBoxCollider;
 class CCombatStat;
 END
 
+class CBossChain;
+
 class CWarningChain :
     public CGameObject
 {
@@ -48,8 +50,10 @@ protected:
     float m_fAlpha = 1;
     float m_fElapsedTime = 0;
 
-    CTransform* m_ChainTransformCom;
-    CAnimator* m_ChainAnimatorCom;
+    //CTransform* m_ChainTransformCom  = nullptr;
+    //CAnimator* m_ChainAnimatorCom = nullptr;
+    CBossChain* chain = nullptr;
+    bool m_flag = false;
 private:
     void Free() override;
 

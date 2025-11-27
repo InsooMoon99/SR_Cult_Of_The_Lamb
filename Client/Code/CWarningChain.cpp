@@ -32,7 +32,7 @@ HRESULT CWarningChain::Ready_GameObject()
 
     SetTexAspectInit(m_TextureCom, m_TransformCom, 0);
 
-    SetAspectScale(m_TransformCom, { .5f,.5f,0.f });
+    SetAspectScale(m_TransformCom, { 1.f,1.f,0.f });
 
     const auto ownerTransform =
         dynamic_cast<CTransform*>(m_pOwner->Get_Component(
@@ -40,9 +40,9 @@ HRESULT CWarningChain::Ready_GameObject()
             COMPONENTTYPE::TRANSFORM));
 
     //TODO:: 나중에 땅의 위치를 알게 되면 수정 
-    m_TransformCom->Set_Pos({ ownerTransform->Get_Pos().x, -ownerTransform->Get_Scale().y * .5f,ownerTransform->Get_Pos().z });
+    m_TransformCom->Set_Pos({ ownerTransform->Get_Pos().x, -ownerTransform->Get_Scale().y*.5f,ownerTransform->Get_Pos().z });
 
-
+    m_TransformCom->Set_Rotation({ D3DXToRadian(90),0,0 });
 
     return S_OK;
 
@@ -56,41 +56,57 @@ _int CWarningChain::Update_GameObject(const _float& timeDelta)
 
     m_fElapsedTime += timeDelta;
 
-    CBossChain* chain = nullptr;
-    if (m_fElapsedTime > 0.5f)
-    {
 
+
+    if (m_fElapsedTime > 0.2f && m_flag == false)
+    {
         CBossPhase1* owner = dynamic_cast<CBossPhase1*>(m_pOwner);
+
         chain = CBossChain::Create(owner->Get_GraphicDev(), owner);
-        const auto ChainTransform =
+
+        CTransform* ChainTransform =
             dynamic_cast<CTransform*>(chain->Get_Component(
                 ID_DYNAMIC,
                 COMPONENTTYPE::TRANSFORM));
-        ChainTransform->Set_Pos(m_TransformCom->Get_Pos());
+
+        _vec3 tmp = { 0.f,ChainTransform->Get_Scale().y,0.f };
+            _vec3 offset = m_TransformCom->Get_Pos() + tmp;
+        ChainTransform->Set_Pos(offset);
 
         SpawnAttackObject(chain);
-    }
-    if (chain != nullptr)
-    {
+       // chain->AddRef();
 
-    const auto ChainAni =
-        dynamic_cast<CAnimator*>(chain->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
-    if (ChainAni->Get_CurFrame() == ChainAni->Get_MaxFrame() - 2) // 혹시 사슬객체가 먼저 사라지는지 확인 필요
+        m_fElapsedTime =0;
+        m_flag = true;
+    }
+    //
+    //if (chain != nullptr)
+    //{
+
+    //    CAnimator* ChainAni =
+    //        dynamic_cast<CAnimator*>(chain->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+    //    if (ChainAni->Get_CurFrame() == ChainAni->Get_MaxFrame() - 2) // 혹시 사슬객체가 먼저 사라지는지 확인 필요
+    //    {
+    //        m_bFade = true;
+    //    }
+    //}
+
+    if (m_fElapsedTime > 1.f )
     {
         m_bFade = true;
     }
 
-    if (m_bFade)
+    if (m_bFade == true)
     {
-        m_fAlpha -= timeDelta * 0.3;
-        if (m_fAlpha == 0)
+        m_fAlpha -= timeDelta * 1;
+        if (m_fAlpha <= 0)
         {
             m_fAlpha = 0;
             Mark_As_PendingKill();
         }
     }
-    }
     // 해당 프레임이 끝나면 자기삭제
+      
 
     return exit;
 }
@@ -118,12 +134,18 @@ void CWarningChain::Render_GameObject()
     m_TextureCom->Set_Texture(0);
 
     m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB((int)(m_fAlpha * 255), 255, 255, 255));
+    //
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR); // ← texturefactor.alpha 사용
 
     m_BufferCom->Render_Buffer();
     //
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
+    //
     m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 
 
@@ -131,10 +153,12 @@ void CWarningChain::Render_GameObject()
 
 void CWarningChain::OnBeginOverlap(CCollider* self, CCollider* other)
 {
+    CGameObject::OnBeginOverlap(self, other);
 }
 
 void CWarningChain::OnEndOverlap(CCollider* self, CCollider* other)
 {
+    CGameObject::OnEndOverlap(self, other);
 }
 
 void CWarningChain::Animation_Setting()
@@ -184,5 +208,7 @@ CWarningChain* CWarningChain::Create(DEVICE graphicDev, CGameObject* owner)
 
 void CWarningChain::Free()
 {
+    Safe_Release(m_pOwner);
+   // Safe_Release(chain);
     CGameObject::Free();
 }

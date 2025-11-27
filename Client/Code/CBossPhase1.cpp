@@ -73,6 +73,10 @@ void CBossPhase1::Render_GameObject()
     m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
     m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
+    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+    m_GraphicDev->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+    m_GraphicDev->SetRenderState(D3DRS_ALPHAREF, 0);
+
     //
     if (m_TextureCom && m_AnimatorCom)
     {
@@ -84,8 +88,10 @@ void CBossPhase1::Render_GameObject()
 
     m_BufferCom->Render_Buffer();
     //
-
+    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+
     //
     m_BoxColCom->Render(); // Render Reset 이후 호출해야함
 }

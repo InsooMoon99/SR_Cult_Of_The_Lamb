@@ -77,11 +77,13 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
 
         if (/*m_RandCount*/3 <= LineCount)
         {
-            m_Count = 0;
-            m_fElapsedTime[(int)PHASE::PLAYERLINE] = 0;
+
             m_fCurStateElapsedTime = 0;
             m_fExtraElapsedTime[(int)PHASE::PLAYERLINE] = 0;
-
+            m_Count = 0;
+            m_LineFlag = false;
+            m_fElapsedTime[(int)PHASE::PLAYERLINE] = 0.f;
+            LineCount = 0;
             return CBossPhase1::BOSSPHASE1::BOSSIDLE;
 
         }
@@ -173,16 +175,16 @@ bool CBossChainAttack::PlayerLineUpdate(const _float& timeDelta)
         _vec3 PlayerDir = m_PlayerDir;
         int offset = 5;
 
-        auto chain = CBossChain::Create(m_pOwner->Get_GraphicDev(), m_pOwner);
+        CWarningChain* WarningChain = CWarningChain::Create(m_pOwner->Get_GraphicDev(), m_pOwner);
         const auto ChainTransform =
-            dynamic_cast<CTransform*>(chain->Get_Component(
+            dynamic_cast<CTransform*>(WarningChain->Get_Component(
                 ID_DYNAMIC,
                 COMPONENTTYPE::TRANSFORM));
         _vec3 CurPos = ChainTransform->Get_Pos();
         _vec3 AddPos = { PlayerDir.x * (m_Count * offset), 0.f, PlayerDir.z * (m_Count * offset) };
         ChainTransform->Set_Pos(CurPos + AddPos);
 
-        SpawnAttackObject(chain);
+        SpawnAttackObject(WarningChain);
 
         m_fElapsedTime[(int)PHASE::PLAYERLINE] = 0;
 
