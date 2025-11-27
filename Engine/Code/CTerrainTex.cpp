@@ -6,9 +6,15 @@ CTerrainTex::CTerrainTex(DEVICE graphicDev)
 }
 
 CTerrainTex::CTerrainTex(const CTerrainTex& rhs)
-    : CVIBuffer(rhs), m_Pos(rhs.m_Pos), m_CntX(rhs.m_CntX), m_CntZ(rhs.m_CntZ)
+    : CVIBuffer(rhs), m_Pos(nullptr), m_CntX(rhs.m_CntX), m_CntZ(rhs.m_CntZ)
 {
+    // 깊은 복사
+    if (rhs.m_Pos != nullptr && m_VtxCnt > 0)
+    {
+        m_Pos = new _vec3[m_VtxCnt];
 
+        memcpy(m_Pos, rhs.m_Pos, sizeof(_vec3) * m_VtxCnt);
+    }
 }
 
 CTerrainTex::~CTerrainTex()
@@ -122,7 +128,7 @@ void CTerrainTex::Render_Buffer()
 
 }
 
-void CTerrainTex::ApplyTileSetting(const vector<_int>& tileIndices, _int atlasCols, _int atlasRows)
+void CTerrainTex::ApplyTileSetting(const vector<_int>& tileIndices, _int atlasCols, _int atlasRows, _float texWidth, _float texHeight)
 {
     if (m_VB == nullptr || m_CntX < 2 || m_CntZ < 2)
         return;
@@ -140,8 +146,6 @@ void CTerrainTex::ApplyTileSetting(const vector<_int>& tileIndices, _int atlasCo
     const float du = 1.f / (float)atlasCols;
     const float dv = 1.f / (float)atlasRows;
 
-    const float texWidth = 1420.f;
-    const float texHeight = 284.f;
     const float epsU = 0.5f / texWidth;   
     const float epsV = 0.5f / texHeight;  
 
@@ -151,7 +155,22 @@ void CTerrainTex::ApplyTileSetting(const vector<_int>& tileIndices, _int atlasCo
         {
             const _ulong cellIndex = z * cellCountX + x;
             _int tileIndex = tileIndices[cellIndex];
-            if (tileIndex < 0) tileIndex = 0;
+
+            const _ulong baseIndex = (z * cellCountX + x) * 4;
+
+            if (tileIndex < 0)
+            {
+                vertex[baseIndex + 0].position = { 0.f, 0.f, 0.f };
+                vertex[baseIndex + 1].position = { 0.f, 0.f, 0.f };
+                vertex[baseIndex + 2].position = { 0.f, 0.f, 0.f };
+                vertex[baseIndex + 3].position = { 0.f, 0.f, 0.f };
+                continue;
+            }
+
+            vertex[baseIndex + 0].position = m_Pos[baseIndex + 0];
+            vertex[baseIndex + 1].position = m_Pos[baseIndex + 1];
+            vertex[baseIndex + 2].position = m_Pos[baseIndex + 2];
+            vertex[baseIndex + 3].position = m_Pos[baseIndex + 3];
 
             const _int tileX = tileIndex % atlasCols;
             const _int tileY = tileIndex / atlasCols;
@@ -165,8 +184,6 @@ void CTerrainTex::ApplyTileSetting(const vector<_int>& tileIndices, _int atlasCo
             u0 += epsU * 1.1f;  u1 -= epsU * 1.1f;
             v0 += epsV * 1.1f;  v1 -= epsV * 1.1f;
 
-            const _ulong baseIndex = (z * cellCountX + x) * 4;
-
             vertex[baseIndex + 0].texUV = { u0, v1 }; // 좌상
             vertex[baseIndex + 1].texUV = { u1, v1 }; // 우상
             vertex[baseIndex + 2].texUV = { u0, v0 }; // 좌하 
@@ -176,7 +193,6 @@ void CTerrainTex::ApplyTileSetting(const vector<_int>& tileIndices, _int atlasCo
 
     m_VB->Unlock();
 }
-
 
 CTerrainTex* CTerrainTex::Create(LPDIRECT3DDEVICE9 graphicDev, const _ulong& CntX, const _ulong& CntZ,
                                  const _ulong& VtxItv)
@@ -200,8 +216,9 @@ CComponent* CTerrainTex::Clone()
 
 void CTerrainTex::Free()
 {
-    if (m_IsClone == false)
-        Safe_Delete_Array(m_Pos);
+    //if (m_IsClone == false)
+    Safe_Delete_Array(m_Pos);
+    m_Pos = nullptr;
 
     CVIBuffer::Free();
 }

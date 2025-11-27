@@ -10,7 +10,7 @@ CAttackBox::CAttackBox(DEVICE graphicDev)
     : CGameObject(graphicDev),
       m_BoxColCom(nullptr), m_TransformCom(nullptr),
       m_Instigator(nullptr),
-      m_LifeTime(5.55f) // 테스트용으로 좀 길게
+      m_LifeTime(0.4f) // 테스트용으로 좀 길게
 {
 }
 
@@ -101,7 +101,7 @@ void CAttackBox::OnBeginOverlap(CCollider* self, CCollider* other)
     combat->Take_Damage(hit);
 
     // 데미지를 줬으면, 삭제 요청
-    Mark_As_PendingKill();
+    //Mark_As_PendingKill();
 }
 
 void CAttackBox::OnEndOverlap(CCollider* self, CCollider* other)

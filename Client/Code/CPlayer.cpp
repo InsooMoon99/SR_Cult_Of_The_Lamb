@@ -2,24 +2,24 @@
 #include "CPlayer.h"
 
 #include "CAnimator.h"
+#include "CAttackBox.h"
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
 #include "CCreateHelper.h"
 #include "CDInputMgr.h"
 #include "CEnumHelper.h"
 #include "CInventory.h"
+#include "CManagement.h"
 #include "CPlayerController.h"
 #include "CRcTex.h"
 #include "CRenderer.h"
 #include "CRigidbody.h"
+#include "CScene.h"
 #include "CState.h"
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CUIInventory.h"
 #include "CWeaponEquip.h"
-#include "CAttackBox.h"
-#include "CManagement.h"
-#include "CScene.h"
 
 CPlayer::CPlayer(DEVICE graphicDev)
     : CGameObject(graphicDev),
@@ -71,6 +71,11 @@ HRESULT CPlayer::Ready_GameObject()
 
     m_TransformCom->Set_Pos(_vec3(0.f, 0.f, 1.f));
 
+    //!! Rigidbody에서 중력만 사용 안함
+    m_RigidbodyCom->Set_UseAccel(true);
+    m_RigidbodyCom->Set_UseFriction(true);
+    m_RigidbodyCom->Set_UseGravity(false);
+
     Animation_Setting();
 
     return S_OK;
@@ -99,12 +104,8 @@ _int CPlayer::Update_GameObject(const _float& timeDelta)
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 
-
-
-    if (CDInputMgr::GetInstance()->KeyDown(DIK_5))
-    {
-        Test_Attack();
-    }
+    //if (CDInputMgr::GetInstance()->KeyDown(DIK_5))
+    //    Test_Attack();
 
     return exit;
 }
@@ -160,13 +161,14 @@ void CPlayer::Render_Reset()
 
 void CPlayer::Test_Attack()
 {
+    // TODO : 나중에 무기 컴포넌트 안에 들어가면 좋을듯
     // 1. 공격 박스 생성
     auto obj = CAttackBox::Create(m_GraphicDev);
     obj->Set_Instigator(this);
 
     // 2. 구조체 데이터 세팅
     HITDATA hit{};
-    hit.damage = 12;
+    hit.damage    = 12;
     hit.knockback = 50.f;
     obj->Set_HitDesc(hit);
 
@@ -187,14 +189,14 @@ void CPlayer::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CGameObject::OnBeginOverlap(self, other);
 
-    cout << "Player Hit" << endl;
+    //cout << "Player Hit" << endl;
 }
 
 void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)
 {
     CGameObject::OnEndOverlap(self, other);
 
-    cout << "Player HitOut" << endl;
+    //cout << "Player HitOut" << endl;
 }
 
 void CPlayer::Render_Editor()
@@ -292,14 +294,59 @@ void CPlayer::Animation_Setting()
 #pragma endregion
 
 #pragma region ------   ROLL    ------
-    m_AnimatorCom->Create_Animation(L"PlayerRoll_LEFT", 19, 0.02f,
-        _vec2(1.3f, 1.3f),       // Scale
-        _vec2(0.f, 0.f));  // Offset
+    m_AnimatorCom->Create_Animation(L"PlayerRoll_LEFT",
+                                    19,
+                                    0.02f,
+                                    _vec2(1.3f, 1.3f), // Scale
+                                    _vec2(0.f, 0.f));  // Offset
 
-    m_AnimatorCom->Create_Animation(L"PlayerRoll_UP", 16, 0.02f * 19 / 16);
-    m_AnimatorCom->Create_Animation(L"PlayerRoll_DOWN", 16, 0.02f * 19 / 16);
+    m_AnimatorCom->Create_Animation(L"PlayerRoll_UP",
+                                    16,
+                                    0.02f * 19 / 16,
+                                    _vec2(0.85f, 0.85f),
+                                    _vec2(0.f, 0.f));
 
-    m_StateCom->Set_AnimInfo(ACTORSTATE::ROLL, L"PlayerRoll", ANIMSTATE::ONCE);
+    m_AnimatorCom->Create_Animation(L"PlayerRoll_DOWN",
+                                    16,
+                                    0.02f * 19 / 16,
+                                    _vec2(0.85f, 0.85f),
+                                    _vec2(0.f, 0.f));
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_ROLL, L"PlayerRoll", ANIMSTATE::ONCE);
+#pragma endregion
+
+#pragma region ------   SWORD    ------
+    m_AnimatorCom->Create_Animation(L"PlayerSwordCombo1",
+                                    31,
+                                    0.02f,
+                                    _vec2(2.2f, 2.2f),
+                                    _vec2(0.f, 0.f));
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SWORD_COMBO1,
+                             L"PlayerSwordCombo1",
+                             ANIMSTATE::ONCE);
+
+
+    m_AnimatorCom->Create_Animation(L"PlayerSwordCombo2",
+                                    38,
+                                    0.02f,
+                                    _vec2(2.2f, 2.2f),
+                                    _vec2(0.f, 0.f));
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SWORD_COMBO2,
+                             L"PlayerSwordCombo2",
+                             ANIMSTATE::ONCE);
+
+
+    m_AnimatorCom->Create_Animation(L"PlayerSwordCombo3",
+                                    38,
+                                    0.02f,
+                                    _vec2(2.2f, 2.2f),
+                                    _vec2(0.f, 0.f));
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SWORD_COMBO3,
+                             L"PlayerSwordCombo3",
+                             ANIMSTATE::ONCE);
 #pragma endregion
 }
 

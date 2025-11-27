@@ -155,7 +155,6 @@ pair<wstring, bool> CState::Get_AnimDirInfo(ACTORSTATE state, ACTORDIR dir)
 
     switch (state)
     {
-    // TODO 석호: ACTORSTATE중 애니메이션 방향을 바꿔야 하는 경우, 여기에서 수동으로 추가할 것
     case ACTORSTATE::RUN: // 8방향 (UP, DOWN, LEFT, L_UP, L_DOWN 애니메이션 보유)
         switch (dir)
         {
@@ -192,7 +191,7 @@ pair<wstring, bool> CState::Get_AnimDirInfo(ACTORSTATE state, ACTORDIR dir)
         }
         break;
 
-    case ACTORSTATE::ROLL: // 4방향 (UP, DOWN, LEFT 애니메이션 보유)
+    case ACTORSTATE::PLAYER_ROLL: // 4방향 (UP, DOWN, LEFT 애니메이션 보유)
         switch (dir)
         {
         case ACTORDIR::UP:

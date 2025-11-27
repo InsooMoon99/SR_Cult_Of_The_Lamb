@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "CResourceMgr.h"
+
 #include "CAnimator.h"
 #include "CBoxCol.h"
 #include "CBoxCollider.h"
@@ -29,12 +30,11 @@
 IMPLEMENT_SINGLETON(CResourceMgr)
 
 CResourceMgr::CResourceMgr()
-{
-}
+{ }
 
 CResourceMgr::~CResourceMgr()
 {
-    Free();
+    CResourceMgr::Free();
 }
 
 HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
@@ -47,10 +47,12 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
     if (FAILED(Ready_Item(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Common(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Terrain(graphicDev))) return E_FAIL;
-   // if (FAILED(Ready_BossP1(graphicDev))) return E_FAIL;
+    //if (FAILED(Ready_BossP1(graphicDev))) return E_FAIL;
+    if (FAILED(Ready_Decoration(graphicDev))) return E_FAIL;
 
     return S_OK;
 }
+
 HRESULT CResourceMgr::Ready_BossP1(DEVICE graphicDev)
 {
     auto protoMgr = CProtoMgr::GetInstance();
@@ -97,7 +99,9 @@ HRESULT CResourceMgr::Ready_BossP1(DEVICE graphicDev)
         COMPONENTTYPE::TEX_BOSSPHASE1, BossP1Tex)))
         return E_FAIL;
 
+    return S_OK;
 }
+
 HRESULT CResourceMgr::Ready_Common(DEVICE graphicDev)
 {
     auto protoMgr = CProtoMgr::GetInstance();
@@ -210,44 +214,63 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
     CTexture* playerTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(playerTex, E_FAIL);
 
+    // Idle
+
     if (FAILED(playerTex->Add_Texture(L"PlayerIdle", TEX_NORMAL,
-        L"../Bin/Resource/Texture/Player/Player_Idle/Lamb-idle%d.png", 150)))
+        L"../Bin/Resource/Texture/Player/Idle/Lamb-idle%d.png", 150)))
         return E_FAIL;
 
+    // Run
+
     if (FAILED(playerTex->Add_Texture(L"PlayerRun_LEFT", TEX_NORMAL,
-        L"../Bin/Resource/Texture/Player/Palyer_RunHorizontal/Lamb-run-horizontal%d.png", 19)))
+        L"../Bin/Resource/Texture/Player/RunHorizontal/Lamb-run-horizontal%d.png", 19)))
         return E_FAIL;
 
     if (FAILED(playerTex->Add_Texture(L"PlayerRun_UP", TEX_NORMAL,
-        L"../Bin/Resource/Texture/Player/Player_RunUp/Lamb-run-up%d.png", 19)))
+        L"../Bin/Resource/Texture/Player/RunUp/Lamb-run-up%d.png", 19)))
         return E_FAIL;
 
     if (FAILED(playerTex->Add_Texture(L"PlayerRun_DOWN", TEX_NORMAL,
-        L"../Bin/Resource/Texture/Player/Player_RunDown/Lamb-run-down%d.png", 19)))
+        L"../Bin/Resource/Texture/Player/RunDown/Lamb-run-down%d.png", 19)))
         return E_FAIL;
 
     if (FAILED(playerTex->Add_Texture(L"PlayerRun_LUP", TEX_NORMAL,
-        L"../Bin/Resource/Texture/Player/Player_RunUpDiagonal/Lamb-run-up-diagonal%d.png", 19)))
+        L"../Bin/Resource/Texture/Player/RunUpDiagonal/Lamb-run-up-diagonal%d.png", 19)))
         return E_FAIL;
 
     if (FAILED(playerTex->Add_Texture(L"PlayerRun_LDOWN", TEX_NORMAL,
-        L"../Bin/Resource/Texture/Player/Player_Run/Lamb-run%d.png", 19)))
+        L"../Bin/Resource/Texture/Player/Run/Lamb-run%d.png", 19)))
         return E_FAIL;
 
+    // Roll
+
     if (FAILED(playerTex->Add_Texture(L"PlayerRoll_LEFT", TEX_NORMAL,
-        L"../Bin/Resource/Texture/Player/Palyer_Roll/Lamb-roll%d.png", 19)))
+        L"../Bin/Resource/Texture/Player/Roll/Lamb-roll%d.png", 19)))
         return E_FAIL;
 
     if (FAILED(playerTex->Add_Texture(L"PlayerRoll_UP", TEX_NORMAL,
-        L"../Bin/Resource/Texture/Player/Palyer_RollUp/Lamb-roll-up%d.png", 16)))
+        L"../Bin/Resource/Texture/Player/RollUp/Lamb-roll-up%d.png", 16)))
         return E_FAIL;
 
     if (FAILED(playerTex->Add_Texture(L"PlayerRoll_DOWN", TEX_NORMAL,
-        L"../Bin/Resource/Texture/Player/Palyer_RollDown/Lamb-roll-down%d.png", 16)))
+        L"../Bin/Resource/Texture/Player/RollDown/Lamb-roll-down%d.png", 16)))
         return E_FAIL;
 
-    if (FAILED(protoMgr->Ready_Prototype(
-        COMPONENTTYPE::TEX_PLAYER, playerTex)))
+    // Sword
+
+    if (FAILED(playerTex->Add_Texture(L"PlayerSwordCombo1", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Sword_Combo1/Lamb-attack-combo1-%d.png", 31)))
+        return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"PlayerSwordCombo2", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Sword_Combo2/Lamb-attack-combo2-%d.png", 38)))
+        return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"PlayerSwordCombo3", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Sword_Combo3/Lamb-attack-combo3-%d.png", 38)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
         return E_FAIL;
 
     return S_OK;
@@ -289,26 +312,26 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
 
     //Texture : Player Heart
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_HEART,
-            Engine::CTexture::Create(graphicDev, TEX_NORMAL,
-                L"../Bin/Resource/Texture/UI/PlayerState/Hp/Hp%d.png", 3))))
+        Engine::CTexture::Create(graphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/UI/PlayerState/Hp/Hp%d.png", 3))))
         return E_FAIL;
 
     //circleColorTex
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_COLOR,
-            Engine::CTexture::Create(graphicDev, TEX_NORMAL,
-                L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Circle1.png", 1))))
+        Engine::CTexture::Create(graphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Circle1.png", 1))))
         return E_FAIL;
 
     //circleTex
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_CIRCLE,
-            Engine::CTexture::Create(graphicDev, TEX_NORMAL,
-                L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Circle_Red.png", 1))))
+        Engine::CTexture::Create(graphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Circle_Red.png", 1))))
         return E_FAIL;
 
     //circleTex
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_WEAPON,
-            Engine::CTexture::Create(graphicDev, TEX_NORMAL,
-                L"../Bin/Resource/Texture/UI/PlayerState/Icon/Weapon%d.png", 2))))
+        Engine::CTexture::Create(graphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/UI/PlayerState/Icon/Weapon%d.png", 2))))
         return E_FAIL;
 
     // 메인 메뉴 이미지
@@ -328,7 +351,6 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     vector<wstring> pathVec1;
     pathVec1.push_back(L"../Bin/Resource/Texture/UI/MainMenu/Title0.png");
     pathVec1.push_back(L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Sermon_Icon.png");
-    
 
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_ICON, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec1))))
@@ -338,7 +360,6 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
         COMPONENTTYPE::TEX_UI_SKILLCOUNT, CTexture::Create(graphicDev, TEX_NORMAL,
             L"../Bin/Resource/Texture/UI/PlayerState/Skill/Skillcount%d.png", 2))))
         return E_FAIL;
-
 
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_CELL, CTexture::Create(graphicDev, TEX_NORMAL,
@@ -363,20 +384,20 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
 
     //// Texture : MainMenu BackGround
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_MAINBG,
-            Engine::CTexture::Create(
-                graphicDev,
-                TEX_NORMAL,
-                L"../Bin/Resource/Texture/BackGround/MainMenu/MenuMask1.png",
-                1))))
+        Engine::CTexture::Create(
+            graphicDev,
+            TEX_NORMAL,
+            L"../Bin/Resource/Texture/BackGround/MainMenu/MenuMask1.png",
+            1))))
         return E_FAIL;
 
     // Texture : Inventory BackGround
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_INVEN,
-            Engine::CTexture::Create(
-                graphicDev,
-                TEX_NORMAL,
-                L"../Bin/Resource/Texture/UI/Inventory/Background.png",
-                1))))
+        Engine::CTexture::Create(
+            graphicDev,
+            TEX_NORMAL,
+            L"../Bin/Resource/Texture/UI/Inventory/Background.png",
+            1))))
         return E_FAIL;
 
 
@@ -414,17 +435,35 @@ HRESULT CResourceMgr::Ready_Item(DEVICE graphicDev)
     return S_OK;
 }
 
-
-
 HRESULT CResourceMgr::Ready_Terrain(DEVICE graphicDev)
 {
     auto protoMgr = CProtoMgr::GetInstance();
 
-    // Terrain
+    // Terrain_284
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_TILE_284, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/Terrain/TileAtlas_284.png", 1))))
+            L"../Bin/Resource/Texture/Terrain/TileAtlas_284_Blank.png", 1))))
         return E_FAIL;
+
+    // Terrain_1024
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_TILE_1024, CTexture::Create(graphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/Terrain/TileAtlas_1024.png", 1))))
+        return E_FAIL;
+
+    // Terrain_Outline
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_TILE_OUTLINE, CTexture::Create(graphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/Terrain/TileOutline%d.png", 3))))
+        return E_FAIL;
+
+
+    return S_OK;
+}
+
+HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
+{
+    auto protoMgr = CProtoMgr::GetInstance();
 
     // Grass
     if (FAILED(protoMgr->Ready_Prototype(
@@ -432,9 +471,20 @@ HRESULT CResourceMgr::Ready_Terrain(DEVICE graphicDev)
             L"../Bin/Resource/Texture/MapObject/WeedShrub/WeedShrub%d.png", 20))))
         return E_FAIL;
 
+    // Rubble
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_RUBBLE, CTexture::Create(graphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/MapObject/Rubble/Rubble%d.png", 6))))
+        return E_FAIL;
+
+    // Deco
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_DECO, CTexture::Create(graphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/MapObject/Deco/Village_Deco%d.png", 77))))
+        return E_FAIL;
+
     return S_OK;
 }
 
 void CResourceMgr::Free()
-{
-}
+{ }

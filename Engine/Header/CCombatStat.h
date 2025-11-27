@@ -8,21 +8,21 @@ class CAnimator;
 
 typedef struct tagHitData
 {
-    _vec3        dir;        // 넉백 방향
-    _float       damage;     // 데미지
-    _float       knockback;  // 넉백량
-    _float       duration;   // 넉백 유지 시간(필요하면 사용 ㄱㄱ)
+    _vec3  dir;        // 넉백 방향
+    _float damage;     // 데미지
+    _float knockback;  // 넉백량
+    _float duration;   // 넉백 유지 시간(필요하면 사용 ㄱㄱ)
 
     CGameObject* attacker;   // 때린 놈
     CGameObject* hitter;     // 맞은 놈
 
     tagHitData()
-        : dir(0.f, 0.f, 0.f)
-        , damage(0.f)
-        , knockback(0.f)
-        , duration(0.f)
-        , attacker(nullptr)
-        , hitter(nullptr)
+        : dir(0.f, 0.f, 0.f),
+          damage(0.f),
+          knockback(0.f),
+          duration(0.f),
+          attacker(nullptr),
+          hitter(nullptr)
     {}
 } HITDATA;
 
@@ -43,15 +43,17 @@ public:
 
 public:
     _float Get_Attack() { return m_Attack; }
+    _float Get_AttackSpeed() { return m_AttackSpeed; }
     _float Get_Hp() { return m_Hp; }
     _float Get_MaxHp() { return m_MaxHp; }
     _float Get_Mp() { return m_Mp; }
     _float Get_Speed() { return m_Speed; }
     _float Get_MaxMp() { return m_MaxMp; }
 
-    _bool  Is_Dead() { return m_IsDead; }
+    _bool Is_Dead() { return m_IsDead; }
 
     void Set_Attack(_float attack) { m_Attack = attack; }
+    void Set_AttackSpeed(_float attackSpeed) { m_AttackSpeed = attackSpeed; }
     void Set_Hp(_float hp) { m_Hp = hp; }
     void Set_MaxHp(_float maxHp) { m_MaxHp = maxHp; }
     void Set_Mp(_float mp) { m_Mp = mp; }
@@ -77,6 +79,7 @@ protected:
 
 private:
     _float m_Attack;
+    _float m_AttackSpeed;   // 공격 속도
 
     _float m_Hp;
     _float m_MaxHp = 6.f;

@@ -56,7 +56,6 @@ namespace Engine
     {
         ENVIRONMENT,
         GAMELOGIC,
-        CAMERA,
         UI,
 
         LAYER_END
@@ -96,8 +95,10 @@ namespace Engine
         COMBATSTAT,
         INVENTORY,
         TERRAIN_RENDER,
+
         CONTROLLER_PLAYER,
         WEAPON_EQUIP,
+
         RIGIDBODY,
 
         TEXTURE,
@@ -120,9 +121,9 @@ namespace Engine
         TEX_UI_BUTTON,
         TEX_BOSSPHASE1,
 
-        // TODO : Test Tile -> 은수 Texture 버전이랑 합치면 고치기
         TEX_TILE_284,
         TEX_TILE_1024,
+        TEX_TILE_OUTLINE,
 
         ANIMATOR,
         CAMERA,
@@ -136,20 +137,27 @@ namespace Engine
         // MapObject ///
         ////////////////
         TEX_GRASS,
-        TEX_ROCK,
+        TEX_RUBBLE,
+        TEX_DECO,
 
         COMPONENT_END
     };
 
     enum class ACTORSTATE
     {
-        // 여기 추가할때마다 EnumHelper에 추가해야 Editor에 정상적으로 나옴
-        IDLE,
-        RUN,
-        ATTACK,
-        ROLL,
-        HIT,
-        DEAD,
+    // 여기 추가할때마다 EnumHelper에 추가해야 Editor에 정상적으로 나옴
+    IDLE,
+    RUN,
+    ATTACK,
+
+    // TODO : 플레이어 상태 계속 추가
+    PLAYER_ROLL,
+    PLAYER_SWORD_COMBO1,
+    PLAYER_SWORD_COMBO2,
+    PLAYER_SWORD_COMBO3,
+
+    HIT,
+    DEAD,
 
         STATE_END
     };
@@ -177,6 +185,7 @@ namespace Engine
         SC_STAGE2,
         SC_BOSSSTAGE,
         SC_EDIT,
+        
         SC_END
     };
 

@@ -130,13 +130,13 @@ void CAnimator::Play_Animation(const wstring& key, ANIMSTATE state, bool reset)
     CSpriteAnimation* anim = desc.anim;
 
     // 플레이 중에 같은 애니메이션, 상태가 같으면 변경 X
-    if (m_Play && m_CurAnimation == anim && anim->GetState() == state)
+    if (m_Play && m_CurAnimation == anim && anim->Get_AnimState() == state)
         return;
 
     m_CurAnimation = anim;
     m_CurKey = key;
 
-    m_CurAnimation->SetState(state);
+    m_CurAnimation->Set_AnimState(state);
 
     if (reset)
         m_CurAnimation->Reset();

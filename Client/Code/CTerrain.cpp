@@ -32,7 +32,6 @@ HRESULT CTerrain::Ready_GameObject()
     m_TransformCom->Set_Pos(_vec3(0.f, -1.f, 0.1f));
     m_TransformCom->Set_Scale(_vec3(1.5f, 1.f, 1.5f)); // y축은 1로 고정해야함
 
-
     return S_OK;
 }
 
@@ -71,9 +70,20 @@ HRESULT CTerrain::Add_Component()
     NULL_CHECK_RETURN(m_TransformCom, E_FAIL);
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
-    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_TILE_284);
-    NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_TILE_284, m_TextureCom });
+    // Tile TextureComponent
+    {
+        m_TextureCom284 = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_TILE_284);
+        NULL_CHECK_RETURN(m_TextureCom284, E_FAIL);
+        m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_TILE_284, m_TextureCom284 });
+
+        m_TextureCom1024 = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_TILE_1024);
+        NULL_CHECK_RETURN(m_TextureCom1024, E_FAIL);
+        m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_TILE_1024, m_TextureCom1024 });
+
+        m_TextureComOutline = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_TILE_OUTLINE);
+        NULL_CHECK_RETURN(m_TextureComOutline, E_FAIL);
+        m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_TILE_OUTLINE, m_TextureComOutline });
+    }
 
     m_TerrainRendererCom = CreateProtoComponent<CTerrainRenderer>(this, COMPONENTTYPE::TERRAIN_RENDER);
     NULL_CHECK_RETURN(m_TerrainRendererCom, E_FAIL);
@@ -90,6 +100,14 @@ void CTerrain::Render_Editor()
 
     ImGui::Text("=== Terrain ===");
 
+}
+
+void CTerrain::LoadMapOnStart(const char* filePath)
+{
+    if (m_TerrainRendererCom)
+    {
+        m_TerrainRendererCom->LoadMap(filePath);
+    }
 }
 
 CTerrain* CTerrain::Create(DEVICE GraphicDev)

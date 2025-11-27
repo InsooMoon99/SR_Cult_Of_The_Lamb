@@ -1,16 +1,17 @@
 ﻿#pragma once
 #include "CGameObject.h"
 
+class CTerrain;
+
 BEGIN(Engine)
 class CRcTex;
 class CTransform;
 class CTexture;
-class CTerrain;
 END
 
 enum class MAPOBJTYPE
 {
-    GRASS, ROCK, /* Object 종류 추가하기 */ MAPOBJ_END,
+    GRASS, RUBBLE, DECO, /* Object 종류 추가하기 */ MAPOBJ_END,
 };
 
 typedef struct tagMapData
@@ -34,6 +35,8 @@ public:
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
 
+    virtual MAPOBJTYPE Get_Type() abstract;
+
 public:
     // 에디터 배치용 함수들
     void Set_WorldPos(const _vec3& pos);
@@ -45,9 +48,12 @@ public:
         m_CellZ = z;
     }
 
-    void Set_Terrain(Engine::CTerrain* terrain) { m_Terrain = terrain; }
+    void Set_Terrain(CTerrain* terrain) { m_Terrain = terrain; }
 
-    virtual MAPOBJTYPE Get_Type() abstract;
+    void Set_TextureIndex(_int index) { m_TextureIndex = index; }
+    _int Get_TextureIndex() const { return m_TextureIndex; }
+
+    void Set_Preview(_bool isPreivew) { m_IsPreview = isPreivew; }
 
 protected:
     HRESULT Add_BaseComponent(COMPONENTTYPE InType);
@@ -61,8 +67,13 @@ protected:
     CTexture*   m_TextureCom;
 
     _bool m_AttachTerrain;
+    _bool m_IsPreview;
+
     _int  m_CellX = -1;
     _int  m_CellZ = -1;
 
-    Engine::CTerrain* m_Terrain;
+    CTerrain* m_Terrain;
+
+    _int m_TextureIndex = 0;
+    
 };

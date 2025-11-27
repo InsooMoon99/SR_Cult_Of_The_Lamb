@@ -1,7 +1,5 @@
 ﻿#include "CTexture.h"
 
-#include "CResourceManager.h"
-
 CTexture::CTexture(LPDIRECT3DDEVICE9 graphicDev)
     : CComponent(graphicDev)
 { }

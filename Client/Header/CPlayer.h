@@ -33,24 +33,24 @@ public:
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
 
-    void        OnBeginOverlap(CCollider* self, CCollider* other) override;
-    void        OnEndOverlap(CCollider* self, CCollider* other) override;
+    void OnBeginOverlap(CCollider* self, CCollider* other) override;
+    void OnEndOverlap(CCollider* self, CCollider* other) override;
 
-    void Render_Editor() override;
+    void    Render_Editor() override;
 
-private:
-    HRESULT Add_Component();
-    void    Animation_Setting();
-    void Render_Setting();
-    void Render_Reset();
-
+public:
     // 테스트 공격용
     // 나중에 Compoennt를 새로 만들던, 클래스로 나누던 자유
     void Test_Attack();
 
 private:
-#pragma region Engine Components
+    HRESULT Add_Component();
+    void    Animation_Setting();
+    void    Render_Setting();
+    void    Render_Reset();
 
+private:
+#pragma region Engine Components
     Engine::CRcTex*       m_BufferCom;
     Engine::CTransform*   m_TransformCom;
     Engine::CTexture*     m_TextureCom;
@@ -62,7 +62,6 @@ private:
 
 #pragma endregion
 #pragma region Client Components
-
     CWeaponEquip*      m_WeaponEquipCom;
     CInventory*        m_InventoryCom;
     CPlayerController* m_PlayerControllerCom;

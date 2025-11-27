@@ -31,6 +31,9 @@ public:
 
     virtual void Render_Editor() override;
 
+    void LoadMapOnStart(const char* filePath);
+
+
 private:
     HRESULT Add_Component();
 
@@ -40,10 +43,13 @@ public:
 protected:
     void Free() override;
 
-private:
+private:    
     Engine::CTerrainTex*        m_BufferCom;
     Engine::CTransform*         m_TransformCom;
-    Engine::CTexture*           m_TextureCom;
+
+    Engine::CTexture*           m_TextureCom284;
+    Engine::CTexture*           m_TextureCom1024;
+    Engine::CTexture*           m_TextureComOutline;
 
     CTerrainRenderer*   m_TerrainRendererCom;
 
