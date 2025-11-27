@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CGameObject.h"
 
+class CUIInventory;
 BEGIN(Engine)
 class CRigidbody;
 class CRcTex;
@@ -40,7 +41,6 @@ public:
 private:
     HRESULT Add_Component();
     void    Animation_Setting();
-
     void Render_Setting();
     void Render_Reset();
 
@@ -66,7 +66,7 @@ private:
     CWeaponEquip*      m_WeaponEquipCom;
     CInventory*        m_InventoryCom;
     CPlayerController* m_PlayerControllerCom;
-
+    CUIInventory*       m_UIInventory;
 #pragma endregion
 
     map<ACTORSTATE, wstring> m_StateAnim;

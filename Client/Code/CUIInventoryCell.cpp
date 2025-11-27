@@ -1,35 +1,40 @@
 ﻿#include "pch.h"
 #include "CUIInventoryCell.h"
-
 #include "CCreateHelper.h"
 #include "CDInputMgr.h"
 #include "CEnumHelper.h"
 #include "CItemDB.h"
 #include "CRcTex.h"
 #include "CRenderer.h"
+#include "CUIIcon.h"
+#include <iostream>
 #include "CTexture.h"
 #include "CTransform.h"
+#include "CFontMgr.h"
 
 CUIInventoryCell::CUIInventoryCell(DEVICE pGraphicDev)
     : CUI(pGraphicDev),
-      m_ItemTexCom(nullptr),
-      m_HighlightTexCom(nullptr),
-      m_index(0),
-      m_Count(0),
-      m_IsHovered(false)
-{ }
+    uiIcon(nullptr),
+    m_ItemTexCom(nullptr),
+    m_HighlightTexCom(nullptr),
+    m_Count(0),
+    m_IsHovered(false)
+{
+}
 
 CUIInventoryCell::CUIInventoryCell(const CUIInventoryCell& rhs)
     : CUI(rhs),
-      m_ItemTexCom(nullptr),
-      m_HighlightTexCom(nullptr),
-      m_index(0),
-      m_Count(0),
-      m_IsHovered(false)
-{ }
+    uiIcon(nullptr),
+    m_ItemTexCom(nullptr),
+    m_HighlightTexCom(nullptr),
+    m_Count(0),
+    m_IsHovered(false)
+{
+}
 
 CUIInventoryCell::~CUIInventoryCell()
-{ }
+{
+}
 
 void CUIInventoryCell::OnBeginOverlap(CCollider* self, CCollider* other)
 {
@@ -51,8 +56,10 @@ HRESULT CUIInventoryCell::Ready_GameObject()
     if (FAILED(Add_Component()))
         return E_FAIL;
 
-    //m_TransformCom->Set_Pos(_vec3(-550.f, 270.f, 0.f));
-    m_TransformCom->Set_Scale(_vec3(30.f, 30.f, 0.f));
+
+    m_TransformCom->Set_Scale(45.f, 45.f, 0.f);
+    uiIcon = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_ITEM);
+    uiIcon->SetRegister(false); // 아이템 텍스처 렌더 그룹에 중복 등록되는 것 막기 위한 플래그
 
     return S_OK;
 }
@@ -65,6 +72,10 @@ _int CUIInventoryCell::Update_GameObject(const _float& timeDelta)
 
     if (CDInputMgr::GetInstance()->Get_DIKeyState(DIK_4) & 0x80)
         m_IsHovered = true;
+
+    if (uiIcon)
+        uiIcon->Update_GameObject(timeDelta);
+
     int exit = CUI::Update_GameObject(timeDelta);
     return exit;
 }
@@ -80,40 +91,52 @@ void CUIInventoryCell::Render_GameObject()
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
+    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(180, 100, 100, 100));
+
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG2);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);   // 무시됨
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
+
+    m_TextureCom->Set_Texture(0);
+    m_BufferCom->Render_Buffer();
+
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(255, 255, 255, 255));
+
     if (!(m_ItemInst.itemId == -1))
-
     {
-        m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(180, 100, 100, 100));
 
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG2);
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);   // 무시됨
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
+        int TextureIndex = CItemDB::GetInstance()->GetIndexById(m_ItemInst.itemId);
+        uiIcon->Set_TextureIndex(TextureIndex);
+        auto iconTransform = uiIcon->Get_Transform();
+        iconTransform->Set_Pos(_vec3(
+            m_TransformCom->Get_Pos().x,
+            m_TransformCom->Get_Pos().y,
+            m_TransformCom->Get_Pos().z));
+        iconTransform->Set_Scale(_vec3(30.f, 30.f, 0.f));
+        uiIcon->Render_GameObject();
 
-        m_TextureCom->Set_Texture(0);
-        m_BufferCom->Render_Buffer();
+    }
+    float numberOffsetX = 30.f;
+    float numberOffsetY = 25.f;
 
-        // 되돌리기
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    if (m_Count > 0)
+    {
+        _vec2 cellPos = { m_TransformCom->Get_Pos().x + WINCX / 2, WINCY / 2 - m_TransformCom->Get_Pos().y };
 
-        m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(255, 255, 255, 255));
-
-        m_index = CItemDB::GetInstance()->GetIndexById(m_ItemInst.itemId);
-
-        m_ItemTexCom->Set_Texture(m_index);
-        m_BufferCom->Render_Buffer();
-
-        //cout << m_ItemInst.itemId << endl;
+        _vec2 number = { cellPos.x + numberOffsetX, cellPos.y + numberOffsetY };
+        CFontMgr::GetInstance()->Render_FontOutlined(L"LaptureDisplay-Bold", to_wstring(m_Count), &number, D3DXCOLOR(1.f, 1.f, 1.f, 1.f), D3DXCOLOR(0.f, 0.f, 0.f, 1.f), 3);
     }
 
-    //TODO 유림 : 외곽선 그리기 인벤토리에서 셀 위치 확인해서 m_IsHovered 세팅하기
-    //외곽선 테스트용
+    //외곽선 그리기
     if (m_IsHovered)
     {
+        m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
         m_HighlightTexCom->Set_Texture(1);
 
         //외곽선 빨강으로 바꾸기
-        D3DCOLOR color = D3DCOLOR_ARGB(255, 200, 0, 0);
+        D3DCOLOR color = D3DCOLOR_ARGB(255, 160, 0, 0);
 
         m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, color);
 
@@ -123,7 +146,7 @@ void CUIInventoryCell::Render_GameObject()
         m_BufferCom->Render_Buffer();
 
         //RenderState 원상태로 돌리기
-        m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR,D3DCOLOR_ARGB(255, 255, 255, 255));
+        m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(255, 255, 255, 255));
 
         m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
         m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
@@ -180,5 +203,9 @@ CUIInventoryCell* CUIInventoryCell::Create(DEVICE graphicDev)
 
 void CUIInventoryCell::Free()
 {
+    Safe_Release(uiIcon);
+    Safe_Release(m_ItemTexCom);
+    Safe_Release(m_HighlightTexCom);
+
     CUI::Free();
 }

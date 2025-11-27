@@ -38,6 +38,13 @@ public:
                      const _vec2*   pos,
                      D3DXCOLOR      color);
 
+    void Render_FontOutlined(const wstring& fontTag,
+                                       const wstring& text,
+                                       const _vec2* pos,
+                                       D3DXCOLOR textColor,
+                                       D3DXCOLOR outlineColor,
+                                       int thickness);
+
 private:
     CFont* Find_Font(const wstring& fontTag);
 

@@ -15,6 +15,7 @@
 #include "CState.h"
 #include "CTexture.h"
 #include "CTransform.h"
+#include "CUIInventory.h"
 #include "CWeaponEquip.h"
 #include "CAttackBox.h"
 #include "CManagement.h"

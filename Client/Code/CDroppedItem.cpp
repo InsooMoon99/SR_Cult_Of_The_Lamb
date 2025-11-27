@@ -126,7 +126,6 @@ void CDroppedItem::OnBeginOverlap(CCollider* self, CCollider* other)
             {
             //*** 아이템 지우기 ***
             Mark_As_PendingKill();
-
             }
         }
     }
