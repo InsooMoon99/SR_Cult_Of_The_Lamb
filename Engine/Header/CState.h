@@ -1,5 +1,4 @@
 ﻿#pragma once
-
 #include "CComponent.h"
 #include "Engine_Define.h"
 
