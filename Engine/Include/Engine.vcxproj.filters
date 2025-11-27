@@ -145,9 +145,6 @@
     <Filter Include="02. Prototype\08. Rigidbody">
       <UniqueIdentifier>{e68e5ef7-ba11-4622-a159-024ba3f50365}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00. Manager\11. ResourceMgr">
-      <UniqueIdentifier>{3c0da966-14df-4e34-aa4a-31dbe232ec42}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\Engine_Define.h">
@@ -307,9 +304,6 @@
       <Filter>02. Prototype\01. Transform</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CAttackBox.h" />
-    <ClInclude Include="..\Header\CResourceManager.h">
-      <Filter>00. Manager\11. ResourceMgr</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CGraphicDev.cpp">
@@ -439,8 +433,5 @@
       <Filter>02. Prototype\01. Transform</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CAttackBox.cpp" />
-    <ClCompile Include="..\Code\CResourceManager.cpp">
-      <Filter>00. Manager\11. ResourceMgr</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>
