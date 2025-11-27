@@ -26,6 +26,8 @@ public:
     MAPOBJTYPE  Get_CurType() { return m_SelectedType; }
 
     _int        Get_CurTextureIndex();
+    _float      Get_PreviewScale() { return m_PreviewScale; }
+    _vec3       Get_PreviewRotation() { return m_PreviewRotation; }
 
     void        Set_GrassIndex(_int index) { m_GrassIndex = index; }
     void        Set_RubbleIndex(_int index) { m_RubbleIndex = index; }
@@ -48,6 +50,8 @@ private:
     _int            m_DecoIndex;
 
     _float          m_PreviewScale;
+    _vec3           m_PreviewRotation;
+    _float          m_PreviewYOffset;
 
 };
 
