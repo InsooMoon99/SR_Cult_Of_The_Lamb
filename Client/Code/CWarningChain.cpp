@@ -210,6 +210,6 @@ CWarningChain* CWarningChain::Create(DEVICE graphicDev, CGameObject* owner)
 void CWarningChain::Free()
 {
     Safe_Release(m_pOwner);
-
+   // Safe_Release(chain);
     CGameObject::Free();
 }
