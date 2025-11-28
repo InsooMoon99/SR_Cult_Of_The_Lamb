@@ -53,17 +53,8 @@ unsigned long Safe_Release(T& instance)
     {
         refCnt = instance->Release();
 
-#ifdef _DEBUG
-        instance = reinterpret_cast<T>(0xFFFFFFFFFFFFFFFF);
-
-        // 여기에 브레이크포인트(F9)를 건다
-        int bp = 0;
-#else
         if (0 == refCnt)
             instance = NULL;
-#endif
-        //if (0 == refCnt)
-        //    instance = NULL;
     }
 
     return refCnt;

@@ -10,6 +10,7 @@
 #include "CCreateHelper.h"
 #include "CWarningChain.h"
 
+
 CBossChainAttack::CBossChainAttack(CBossPhase1* pOwner, CBossStateMachine* pStateMachine)
 {
     m_pOwner = pOwner;
@@ -27,7 +28,7 @@ void CBossChainAttack::Enter()
 {
     CMonsterState::Enter();
     m_pOwnerAnimatorCom->Play_Animation(L"BossAttack", ANIMSTATE::ONCE);
-    m_ePhase = PHASE::PLAYERLINE; // 이걸 어케 해야하지??
+    m_ePhase = PHASE::CROSS; // 이걸 어케 해야하지??
 
 
 }
@@ -91,46 +92,67 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
         break;
 
 
-    case PHASE::CROSS: //움직임
-
+    case PHASE::CROSS:
+    {
         m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::ONCE);
 
         m_fElapsedTime[(int)PHASE::CROSS] += timeDelta;
 
+        int offset = 5;// TOOD:: 나중에 맴버 변수로 오프셋 조정 (사슬과 사슬 사이의 거리)
 
 
-        if (m_fElapsedTime[(int)PHASE::PLAYERLINE] > .5 && m_Count < 10)
+        if (m_fElapsedTime[(int)PHASE::CROSS] > .5 && m_Count < 10)
         {
-            for (int i = 0;i < 4; i++)
+            for (int i = 0;i < 4; i++) 
             {
-                _vec3 PlayerDir = m_PlayerDir;
-                int offset = 5;
 
                 CWarningChain* WarningChain = CWarningChain::Create(m_pOwner->Get_GraphicDev(), m_pOwner);
                 const auto ChainTransform =
                     dynamic_cast<CTransform*>(WarningChain->Get_Component(
                         ID_DYNAMIC,
                         COMPONENTTYPE::TRANSFORM));
-                _vec3 CurPos = ChainTransform->Get_Pos();
-                _vec3 AddPos = { PlayerDir.x * (m_Count * offset), 0.f, PlayerDir.z * (m_Count * offset) };
-                ChainTransform->Set_Pos(CurPos + AddPos);
+                
+                _vec3 OwnerPos = m_pOwnerTransformCom->Get_Pos();
+
+                float distance = ((float)m_Count * offset);
+
+
+
+                _vec3 AddPos;
+                switch (i)
+                {
+                case 0: //오
+                    AddPos = { distance, 0.f, -easeInQuint10(m_Count)*offset*5};
+                    break;
+                case 1://왼
+                    AddPos = { -distance, 0.f,  easeInQuint10(m_Count)*offset * 5 };
+                    break;
+                case 2://앞
+                    AddPos = { easeInQuint10(m_Count) * offset * 5, 0.f,distance };
+                    break;
+                case 3://뒤
+                    AddPos = { -easeInQuint10(m_Count) * offset * 5, 0.f, -distance };
+                    break;
+                }
+                ChainTransform->Set_Pos(OwnerPos + AddPos);
 
                 SpawnAttackObject(WarningChain);
 
             }
 
-            m_fElapsedTime[(int)PHASE::PLAYERLINE] = 0;
+            m_fElapsedTime[(int)PHASE::CROSS] = 0;
             m_Count++;
 
         }
 
-        if (m_Count>=10)
+        if (m_Count >= 10)
         {
             m_fElapsedTime[(int)PHASE::CROSS] = 0;
+            m_Count = 0;
             return CBossPhase1::BOSSPHASE1::BOSSIDLE;
         }
         break;
-
+    }
     case PHASE::RANDCHAIN://움직임 + idle
 
         m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::ONCE);
@@ -153,6 +175,7 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
 
     return CBossPhase1::BOSSPHASE1::CHAINATTACK;
 }
+
 
 //void CBossChainAttack::PlayerLine(_vec3 PlayerDir, _int  MaxCount, _float m_Offset, float Speed)
 //{
@@ -225,6 +248,10 @@ bool CBossChainAttack::PlayerLineUpdate(const _float& timeDelta, _int  MaxCount,
     return false;
 
 }
+
+void CBossChainAttack::RandomChain(const _float& timeDelta, _vec2 startLT, _vec2 endRB)
+{
+}
 void CBossChainAttack::LateUpdate_State(const _float& timeDelta)
 {
 }
@@ -232,6 +259,13 @@ void CBossChainAttack::LateUpdate_State(const _float& timeDelta)
 void CBossChainAttack::Render_State()
 {
 }
+
+float CBossChainAttack::easeInQuint10(float x)
+{
+    float tmp = x / 10.f;
+    return pow(tmp, 4.f);
+}
+
 
 CBossChainAttack* CBossChainAttack::Create(CBossPhase1* pOwner, CBossStateMachine* pStateMachine)
 {

@@ -54,8 +54,6 @@ _int CLayer::Update_Layer(const _float& timeDelta)
 
 		for (auto* obj : objectsCopy)
 		{
-			if (obj == nullptr || obj == (CGameObject*)0xFFFFFFFFFFFFFFFF)
-				continue;
 
 			if (obj->Is_PendingDestroy())
 				continue;
@@ -79,11 +77,7 @@ void CLayer::LateUpdate_Layer(const _float& timeDelta)
         for (auto iter = objList.begin(); iter != objList.end(); )
         {
             CGameObject* obj = *iter;
-            if (obj == (CGameObject*)0xFFFFFFFFFFFFFFFF)
-            {
-                // 여기에 브레이크포인트를 한 번 건다.
-                int dummy = 0; // 의미 없는 코드
-            }
+
             if (obj == nullptr)
             {
                 iter = objList.erase(iter);
