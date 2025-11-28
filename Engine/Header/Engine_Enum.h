@@ -75,6 +75,7 @@ namespace Engine
         TERRAIN,
         PLACEMENT,
         ATTACK_COL,
+        WALL,
 
         OBJ_END
     };
@@ -95,6 +96,7 @@ namespace Engine
         COMBATSTAT,
         INVENTORY,
         TERRAIN_RENDER,
+        WALL_RENDERER,
 
         CONTROLLER_PLAYER,
         WEAPON_EQUIP,

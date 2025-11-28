@@ -34,6 +34,7 @@ public:
 
 public:
     virtual void OnBeginOverlap(CCollider* self, CCollider* other) {}
+    virtual void OnStayOverlap(CCollider* self, CCollider* other) {}
     virtual void OnEndOverlap(CCollider* self, CCollider* other) {}
 
     //virtual void TakeDamage(HITSTRUCT hit);

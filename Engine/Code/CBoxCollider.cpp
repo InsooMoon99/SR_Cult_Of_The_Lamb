@@ -118,9 +118,9 @@ const _vec3 CBoxCollider::Get_Size() const
     {
         _vec3 scale = transform->Get_Scale();
 
-        size.x *= scale.x;
-        size.y *= scale.y;
-        size.z *= scale.z;
+        size.x *= abs(scale.x);
+        size.y *= abs(scale.y);
+        size.z *= abs(scale.z);
     }
 
     return size;
