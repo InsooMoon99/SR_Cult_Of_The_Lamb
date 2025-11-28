@@ -137,20 +137,29 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
             &gameObject),
         L"Persistent object setup failed");
 
+    NULL_CHECK_RETURN(gameObject, E_FAIL);
+
     // 플레이어의 Transform 가져오기
     const auto playerTransform =
         dynamic_cast<CTransform*>(gameObject->Get_Component(
             ID_DYNAMIC,
             COMPONENTTYPE::TRANSFORM));
+
+    NULL_CHECK_RETURN(playerTransform, E_FAIL);
+
     m_PlayerInventoryCom =
         dynamic_cast<CInventory*>(gameObject->Get_Component(
             ID_STATIC,
             COMPONENTTYPE::INVENTORY));
 
+    NULL_CHECK_RETURN(m_PlayerInventoryCom, E_FAIL);
+
     m_PlayerCombatStatCom =
         dynamic_cast<CCombatStat*>(gameObject->Get_Component(
             ID_DYNAMIC,
             COMPONENTTYPE::COMBATSTAT));
+
+    NULL_CHECK_RETURN(m_PlayerCombatStatCom, E_FAIL);
 
     // -----------------------------
     // Monster

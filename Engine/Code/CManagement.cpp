@@ -74,7 +74,7 @@ HRESULT CManagement::Cache_PersistentObject(OBJTYPE objType, CGameObject* object
     Safe_Release(*target);
 
     *target = objectToCache;
-    (*target)->AddRef();
+    //(*target)->AddRef();
 
     return S_OK;
 }
