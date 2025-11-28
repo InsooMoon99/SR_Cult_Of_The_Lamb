@@ -363,6 +363,9 @@
     <ClInclude Include="..\Header\CWallRenderer.h">
       <Filter>97. Component\03. Wall</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CRandomMgr.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
     <ClInclude Include="..\Header\CStage_Boss1.h">
       <Filter>02. Scene\01. Stage</Filter>
     </ClInclude>
@@ -574,6 +577,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CWallRenderer.cpp">
       <Filter>97. Component\03. Wall</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CRandomMgr.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CStage_Boss1.cpp">
       <Filter>02. Scene\01. Stage</Filter>

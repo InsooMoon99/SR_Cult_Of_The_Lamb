@@ -40,12 +40,33 @@ HRESULT CWarningChain::Ready_GameObject()
             COMPONENTTYPE::TRANSFORM));
 
     //TODO:: 나중에 땅의 위치를 알게 되면 수정 
-    m_TransformCom->Set_Pos({ ownerTransform->Get_Pos().x, -ownerTransform->Get_Scale().y*.5f, ownerTransform->Get_Pos().z });
+    m_TransformCom->Set_Pos({ ownerTransform->Get_Pos().x, -ownerTransform->Get_Scale().y * .5f, ownerTransform->Get_Pos().z });
 
     m_TransformCom->Set_Rotation({ D3DXToRadian(90),0,0 });
 
+
+
     return S_OK;
 
+}
+
+float CWarningChain::easeOutElastic(float x)
+{
+    // 진동 주기 조정 상수 (2π/3)
+    const float period = (2 * D3DX_PI) / 3;
+
+    // 0~1의 시작/끝 특별 처리
+    if (x == 0.0f) return 0.0f;
+    if (x == 1.0f) return 1.0f;
+
+    // 🔹 1) 감쇠되는 진폭(amplitude decay)
+    const float amplitude = powf(2, -12 * x);
+
+    // 🔹 2) 진동(oscillation) 
+    const float oscillation = sinf((x * 3 - 0.25) * period);
+
+    // 🔹 3) 전체 결과값
+    return amplitude * oscillation + 1 ;
 }
 
 _int CWarningChain::Update_GameObject(const _float& timeDelta)
@@ -53,8 +74,24 @@ _int CWarningChain::Update_GameObject(const _float& timeDelta)
     _int exit = CGameObject::Update_GameObject(timeDelta);
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
-
+    if (m_Sizeflag == false)
+    {
+        // 초기 사이즈 저장
+        m_originSize = m_TransformCom->Get_Scale();
+        m_Sizeflag = true;
+    }
     m_fElapsedTime += timeDelta;
+
+    //if (eff == false)
+    //{
+         float i = Clamp(m_fElapsedTime, 0, 1);
+         float effSize = easeOutElastic(i);
+         //effSize = Clamp(effSize, 0.5, 2);
+
+        m_TransformCom->Set_Scale({ m_originSize.x * effSize,m_originSize.y * effSize,0.f });
+   // }
+
+
 
     if (m_fElapsedTime > 0.2f && m_flag == false)
     {
@@ -76,7 +113,7 @@ _int CWarningChain::Update_GameObject(const _float& timeDelta)
         SpawnAttackObject(chain);
         //chain->AddRef();
 
-        m_fElapsedTime =0;
+        m_fElapsedTime = 0;
         m_flag = true;
     }
     //
@@ -91,7 +128,7 @@ _int CWarningChain::Update_GameObject(const _float& timeDelta)
     //    }
     //}
 
-    if (m_fElapsedTime > 1.f )
+    if (m_fElapsedTime > 1.f)
     {
         m_bFade = true;
     }
@@ -102,11 +139,11 @@ _int CWarningChain::Update_GameObject(const _float& timeDelta)
         if (m_fAlpha <= 0)
         {
             m_fAlpha = 0;
-            this ->Mark_As_PendingKill();
+            this->Mark_As_PendingKill();
         }
     }
     // 해당 프레임이 끝나면 자기삭제
-      
+
 
     return exit;
 }
@@ -210,6 +247,6 @@ CWarningChain* CWarningChain::Create(DEVICE graphicDev, CGameObject* owner)
 void CWarningChain::Free()
 {
     Safe_Release(m_pOwner);
-   // Safe_Release(chain);
+    // Safe_Release(chain);
     CGameObject::Free();
 }
