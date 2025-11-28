@@ -1,6 +1,7 @@
 ﻿#include "CCombatStat.h"
 #include "CAnimator.h"
 #include "CGameObject.h"
+#include "CRigidbody.h"
 #include "CState.h"
 #include "CTransform.h"
 
@@ -13,8 +14,9 @@ CCombatStat::CCombatStat(DEVICE graphicDev)
       m_Mp(0),
       m_MaxMp(10),
       m_Speed(20),
-      m_IsDead(false)
-{}
+      m_IsDead(false), m_IsInvincible(false)
+{
+}
 
 CCombatStat::CCombatStat(const CCombatStat& rhs)
     : CComponent(rhs),
@@ -25,7 +27,7 @@ CCombatStat::CCombatStat(const CCombatStat& rhs)
       m_Mp(0),
       m_MaxMp(rhs.m_MaxMp),
       m_Speed(rhs.m_Speed),
-      m_IsDead(false)
+      m_IsDead(false), m_IsInvincible(false)
 {
     m_Hp = m_MaxHp;
     m_Mp = m_MaxMp;
@@ -49,6 +51,12 @@ _int CCombatStat::Update_Component(const _float& timeDelta)
 {
     _int exit = CComponent::Update_Component(timeDelta);
 
+    if (!m_OwnerRigidbody && m_Owner) // 지연스폰. 지금 구조상 쩔수없나
+    {
+        m_OwnerRigidbody = dynamic_cast<CRigidbody*>(
+            m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::RIGIDBODY));
+    }
+
     return exit;
 }
 
@@ -57,8 +65,11 @@ void CCombatStat::LateUpdate_Component()
     CComponent::LateUpdate_Component();
 }
 
-void CCombatStat::Take_Damage(HITDATA hitData)
+void CCombatStat::Take_Damage(const HITDATA& hitData)
 {
+    if (m_IsInvincible) // 무적 체크
+        return;
+
     if (m_IsDead)
         return;
 
@@ -68,7 +79,7 @@ void CCombatStat::Take_Damage(HITDATA hitData)
     // 데미지
     Apply_Damage(hitData);
 
-    // 넉백 : 추가구현하면 됨 지금 좀 이상함
+    // 넉백
     //Apply_Knockback(hitData);
 }
 
@@ -84,30 +95,11 @@ void CCombatStat::Apply_Damage(const HITDATA& hitData)
 
 void CCombatStat::Apply_Knockback(const HITDATA& hitData)
 {
-    if (hitData.knockback <= 0.f)
-        return;
-
-    if (m_Owner == nullptr)
-        return;
-
-    CTransform* transform = dynamic_cast<CTransform*>(
-        m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-
-    if (!transform)
-        return;
-
-    _vec3 pos = transform->Get_Pos();
-
-    _vec3 dir = hitData.dir;
-
-    if (D3DXVec3LengthSq(&dir) < 1e-6f) //수치가 낮으면 무시
-        return;
-
-    D3DXVec3Normalize(&dir, &dir);
-
-    pos += dir * hitData.knockback;
-
-    transform->Set_Pos(pos);
+    // 리지드 바디 활용 -> 고쳐야할듯 맞은놈도 Rigidbody가 있어야함
+    if (hitData.knockback > 0.f && m_OwnerRigidbody)
+    {
+        m_OwnerRigidbody->Add_Force(hitData.dir * hitData.knockback);
+    }
 }
 
 void CCombatStat::On_Dead()

@@ -18,6 +18,9 @@ CSphereCollider::~CSphereCollider()
 
 HRESULT CSphereCollider::Ready_SphereCollider(DEVICE graphicDev)
 {
+    if (FAILED(CCollider::Ready_Collider()))
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -82,7 +85,11 @@ CSphereCollider* CSphereCollider::Create(DEVICE graphicDev)
 
 CComponent* CSphereCollider::Clone()
 {
-    return new CSphereCollider(*this);
+    auto col = new CSphereCollider(*this);
+
+    col->Ready_Collider();
+
+    return col;
 }
 
 void CSphereCollider::Free()

@@ -3,6 +3,7 @@
 
 #include "CAnimator.h"
 #include "CAttackBox.h"
+#include "CAttackSphere.h"
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
 #include "CCreateHelper.h"
@@ -20,6 +21,7 @@
 #include "CTransform.h"
 #include "CUIInventory.h"
 #include "CWeaponEquip.h"
+#include "CAttackBuilder.h"
 
 CPlayer::CPlayer(DEVICE graphicDev)
     : CGameObject(graphicDev),
@@ -108,6 +110,8 @@ _int CPlayer::Update_GameObject(const _float& timeDelta)
     //if (CDInputMgr::GetInstance()->KeyDown(DIK_5))
     //    Test_Attack();
 
+    cout << m_CombatStatCom->Get_Hp() << endl;
+
     return exit;
 }
 
@@ -162,28 +166,13 @@ void CPlayer::Render_Reset()
 
 void CPlayer::Test_Attack()
 {
-    // TODO : 나중에 무기 컴포넌트 안에 들어가면 좋을듯
-    // 1. 공격 박스 생성
-    auto obj = CAttackBox::Create(m_GraphicDev);
-    obj->Set_Instigator(this);
-
-    // 2. 구조체 데이터 세팅
-    HITDATA hit{};
-    hit.damage    = 12;
-    hit.knockback = 50.f;
-    obj->Set_HitDesc(hit);
-
-    // 3. 공격 박스 위치 설정, 방향값 추가 가능
-    _vec3 pos = m_TransformCom->Get_Pos();
-
-    auto transform = dynamic_cast<CTransform*>(
-        obj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-
-    transform->Set_Pos(pos);
-
-    // 4. 레이어에 추가, 헬퍼 함수 SpawnAttackObject 사용
-    //CManagement::GetInstance()->Get_Scene()->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, obj, OBJTYPE::ATTACK_COL);
-    SpawnAttackObject(obj); // TYPE , BOX SPHERE
+    // 사용 예시
+    CAttackBuilder(m_GraphicDev, this)
+        .Box()
+        .Damage(12.f)
+        .Knockback(50.f)
+        .InstigatorPos()
+        .Spawn();
 }
 
 void CPlayer::OnBeginOverlap(CCollider* self, CCollider* other)

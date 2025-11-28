@@ -1,6 +1,5 @@
 ﻿#include "pch.h"
 #include "CMainEditorMgr.h"
-
 #include "CBoxCollider.h"
 #include "CCameraCom.h"
 #include "CCombatStat.h"
@@ -348,8 +347,14 @@ void CMainEditorMgr::Render_Inspector()
 {
     CGameObject* obj = m_Context->Get_SelectedObject();
 
-    if (obj == nullptr)
+    if (obj == nullptr || obj->Is_PendingDestroy())
     {
+        if (obj && obj->Is_PendingDestroy())
+        {
+            m_Context->Select_Object(nullptr);  // 선택 해제
+            m_Context->Select_Component(nullptr);
+        }
+
         ImGui::Text("Not Object Selected");
         return;
     }
@@ -387,6 +392,9 @@ void CMainEditorMgr::Render_Inspector()
 
 void CMainEditorMgr::Render_DynamicComponents(CGameObject* obj)
 {
+    if (!obj || obj->Is_PendingDestroy())
+        return;
+
     // Dynamic Component
     const auto& dynamicComponents = obj->Get_DynamicComponents();
 
@@ -409,6 +417,9 @@ void CMainEditorMgr::Render_DynamicComponents(CGameObject* obj)
 
 void CMainEditorMgr::Render_StaticComponents(CGameObject* obj)
 {
+    if (!obj || obj->Is_PendingDestroy())
+        return;
+
     // Static Component
     auto inven = obj->Get_Component(ID_STATIC, COMPONENTTYPE::INVENTORY);
     if (inven)
@@ -437,6 +448,18 @@ void CMainEditorMgr::Render_SelectComponent()
 {
     // 선택된 컴포넌트의 인스펙터
     CComponent* selectComponent = m_Context->Get_SelectedComponent();
+
+    if (selectComponent)
+    {
+        CGameObject* owner = selectComponent->Get_Owner();
+
+        if (!owner || owner->Is_PendingDestroy())
+        {
+            m_Context->Select_Component(nullptr);
+            return;
+        }
+    }
+
     if (selectComponent)
     {
         ImGui::Separator();
@@ -504,14 +527,14 @@ void CMainEditorMgr::Render_SelectComponent()
         case COMPONENTTYPE::CONTROLLER_PLAYER:
         {
             auto controller = dynamic_cast<CPlayerController*>(selectComponent);
-            // TODO : 헬퍼함수 만들기
+            PlayerController_Inspector(controller);
         }
         break;
 
         case COMPONENTTYPE::RIGIDBODY:
         {
             auto rigidbody = dynamic_cast<CRigidbody*>(selectComponent);
-            // TODO : 헬퍼함수 만들기
+            RigidBody_Inspector(rigidbody);
         }
         break;
 
