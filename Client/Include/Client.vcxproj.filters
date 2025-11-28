@@ -309,6 +309,18 @@
     <ClInclude Include="..\Header\CMapObjectMgr.h">
       <Filter>99. ImGui_Editor\01. EditorScript</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CBossChain.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CWarningChain.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMapObject_Grass.h">
+      <Filter>03. GameObject\09. MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMapObjectBase.h">
+      <Filter>03. GameObject\09. MapObject</Filter>
+    </ClInclude>
     <ClInclude Include="..\Header\CMapObject_Helper.h">
       <Filter>98. Utility</Filter>
     </ClInclude>
@@ -505,6 +517,18 @@
     </ClCompile>
     <ClCompile Include="..\Code\CMapObjectMgr.cpp">
       <Filter>99. ImGui_Editor\01. EditorScript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBossChain.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CWarningChain.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMapObject_Grass.cpp">
+      <Filter>03. GameObject\09. MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMapObjectBase.cpp">
+      <Filter>03. GameObject\09. MapObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CMapObject_Rubble.cpp">
       <Filter>03. GameObject\09. MapObject</Filter>

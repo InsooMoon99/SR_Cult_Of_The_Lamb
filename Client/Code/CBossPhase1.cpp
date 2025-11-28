@@ -37,6 +37,12 @@ HRESULT CBossPhase1::Ready_GameObject()
 
     m_TransformCom->Set_Scale({ 10,10,1 });
 
+    m_CombatStatCom->Set_Hp(200.f);
+    m_CombatStatCom->Set_MaxHp(200.f);
+    m_CombatStatCom->Set_Attack(10.f);
+    m_CombatStatCom->Set_Mp(5.f);
+    m_CombatStatCom->Set_Speed(5.f);
+
     return S_OK;
 }
 
@@ -67,6 +73,10 @@ void CBossPhase1::Render_GameObject()
     m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
     m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
+    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+    m_GraphicDev->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+    m_GraphicDev->SetRenderState(D3DRS_ALPHAREF, 0);
+
     //
     if (m_TextureCom && m_AnimatorCom)
     {
@@ -78,8 +88,10 @@ void CBossPhase1::Render_GameObject()
 
     m_BufferCom->Render_Buffer();
     //
-
+    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+
     //
     m_BoxColCom->Render(); // Render Reset 이후 호출해야함
 }
@@ -163,6 +175,9 @@ void CBossPhase1::Animation_Setting()
     
     m_AnimatorCom->Create_Animation(L"BossGroggy_loop", 84, 0.02f);
     m_AnimatorCom->Create_Animation(L"BossGroggy_end", 67, 0.01f);
+
+    m_AnimatorCom->Create_Animation(L"BossChainEff", 34, 0.02f);
+    m_AnimatorCom->Create_Animation(L"ChainGroundEff",1, 0.02f);
 
 }
 

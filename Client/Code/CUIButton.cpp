@@ -215,7 +215,7 @@ bool CUIButton::SetCloneTexAspectScale(_vec3 vec) // 텍스쳐 등록후
 {
     float x, y;
     m_TextureCom->Get_TextureSize(0, x, y);
-    if (false == SetTexAspectInit(m_TextureCom, m_TransformCom, 0,true,x))
+    if (false == SetTexAspectInit(m_TextureCom, m_TransformCom, 0,nullptr,true,x))
         return false;
 
     SetAspectScale(m_TransformCom, vec);

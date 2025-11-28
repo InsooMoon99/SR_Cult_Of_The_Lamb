@@ -33,6 +33,7 @@ HRESULT CLayer::Add_GameObject(OBJTYPE objType, CGameObject* gameObject)
 
     Object_NameSetting(objType, gameObject);
 
+
     m_Objects[objType].push_back(gameObject);
 
     return S_OK;
@@ -45,20 +46,26 @@ HRESULT CLayer::Ready_Layer()
 
 _int CLayer::Update_Layer(const _float& timeDelta)
 {
-    _int result = 0;
+	_int result = 0;
 
-    for (auto& pair : m_Objects)
-    {
-        for (auto* obj : pair.second)
-        {
-            result = obj->Update_GameObject(timeDelta);
+	for (auto& pair : m_Objects)
+	{
+		vector<CGameObject*> objectsCopy = pair.second;
 
-            if (result & 0x80000000)
-                return result;
-        }
-    }
+		for (auto* obj : objectsCopy)
+		{
 
-    return result;
+			if (obj->Is_PendingDestroy())
+				continue;
+
+			result = obj->Update_GameObject(timeDelta);
+
+			if (result & 0x80000000)
+				return result;
+		}
+	}
+
+	return result;
 }
 
 void CLayer::LateUpdate_Layer(const _float& timeDelta)
