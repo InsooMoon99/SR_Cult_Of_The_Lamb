@@ -8,12 +8,14 @@
 #include "CMapObjectMgr.h"
 #include "CPickingHelper.h"
 #include "CScene.h"
+#include "CTransform.h"
 
 CMapEditorPlacer::CMapEditorPlacer(DEVICE graphicDev)
     : m_GraphicDev(graphicDev),
       m_PreviewObj(nullptr),
       m_SelectedType(MAPOBJTYPE::MAPOBJ_END),
-      m_Placing(false), m_GrassIndex(0), m_RubbleIndex(0), m_DecoIndex(0)
+      m_Placing(false), m_GrassIndex(0), m_RubbleIndex(0), m_DecoIndex(0), m_PreviewScale(1.f),
+      m_PreviewRotation(0.f, 0.f, 0.f), m_PreviewYOffset(0)
 {
     if (m_GraphicDev)
         m_GraphicDev->AddRef();
@@ -23,7 +25,8 @@ CMapEditorPlacer::CMapEditorPlacer(const CMapEditorPlacer& rhs)
     : m_GraphicDev(rhs.m_GraphicDev),
       m_PreviewObj(nullptr),
       m_SelectedType(MAPOBJTYPE::MAPOBJ_END),
-      m_Placing(false), m_GrassIndex(0), m_RubbleIndex(0), m_DecoIndex(0)
+      m_Placing(false), m_GrassIndex(0), m_RubbleIndex(0), m_DecoIndex(0), m_PreviewScale(1.f),
+      m_PreviewRotation(0.f, 0.f, 0.f), m_PreviewYOffset(0)
 {
     if (m_GraphicDev)
         m_GraphicDev->AddRef();
@@ -41,7 +44,9 @@ void CMapEditorPlacer::Update_MapPlacer(const _float& timeDelta)
     _vec3 worldPos;
     if (Get_MouseWorldPos(worldPos))
     {
-        m_PreviewObj->Set_WorldPos(worldPos);
+        _vec3 previewPos = worldPos;  
+        previewPos.y += m_PreviewYOffset;  
+        m_PreviewObj->Set_WorldPos(previewPos);
     }
 
     m_PreviewObj->Update_GameObject(timeDelta);
@@ -55,6 +60,55 @@ void CMapEditorPlacer::Update_MapPlacer(const _float& timeDelta)
     // 좌클릭 하면 배치하기
     auto input = CDInputMgr::GetInstance();
 
+    // == 마우스 휠 ==
+    _long wheelDelta = input->Get_DIMouseMove(DIMS_Z);
+    if (wheelDelta != 0)
+    {
+        CTransform* transform = dynamic_cast<CTransform*>(
+            m_PreviewObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+        if (transform)
+        {
+            if (input->KeyPress(DIK_LALT) || input->KeyPress(DIK_RALT))
+            {
+                _float rotChange = (wheelDelta > 0 ? 0.1f : -0.1f);
+                m_PreviewRotation.x += rotChange;
+
+                // X축 회전 제한
+                m_PreviewRotation.x = fmodf(m_PreviewRotation.x, D3DX_PI * 2.0f);
+                
+                transform->Set_Rotation(m_PreviewRotation);
+            }
+            else if (input->KeyPress(DIK_LCONTROL) || input->KeyPress(DIK_RCONTROL))
+            {
+                _float rotChange = (wheelDelta > 0 ? 0.1f : -0.1f);
+                m_PreviewRotation.y += rotChange;
+
+                // Y축 회전 제한
+                m_PreviewRotation.y = fmodf(m_PreviewRotation.y, D3DX_PI * 2.0f);
+
+                transform->Set_Rotation(m_PreviewRotation);
+                
+            }
+            // Y값 조절
+            else if (input->KeyPress(DIK_LSHIFT) || input->KeyPress(DIK_RSHIFT))
+            {
+                _float posChange = (wheelDelta > 0 ? 0.1f : -0.1f);
+
+                m_PreviewYOffset += posChange;
+            }
+            else
+            {
+                // 양수면 확대, 음수면 축소
+                _float scaleChange = (wheelDelta > 0 ? 0.1f : -0.1f);
+                m_PreviewScale += scaleChange;
+                m_PreviewScale = max(0.1f, min(5.f, m_PreviewScale));
+
+                transform->Set_Scale(m_PreviewScale, m_PreviewScale, m_PreviewScale);
+            }
+        }
+    }
+
     if (input->MouseDown(DIM_LB))
     {
         CScene* scene = CManagement::GetInstance()->Get_Scene();
@@ -67,7 +121,19 @@ void CMapEditorPlacer::Update_MapPlacer(const _float& timeDelta)
                 if (newObj)
                 {
                     newObj->Set_TextureIndex(Get_CurTextureIndex());
-                    newObj->Set_WorldPos(_vec3(worldPos.x, worldPos.y + 0.2f, worldPos.z));
+                    newObj->Set_WorldPos(_vec3(
+                        worldPos.x,
+                        worldPos.y + m_PreviewYOffset,
+                        worldPos.z));
+
+                    CTransform* newTransform = dynamic_cast<CTransform*>(newObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+                    if (newTransform)
+                    {
+                        newTransform->Set_Scale(m_PreviewScale, m_PreviewScale, m_PreviewScale);
+                        newTransform->Set_Rotation(m_PreviewRotation);
+                    }
+
                     layer->Add_GameObject(OBJTYPE::PLACEMENT, newObj);
 
                     CMapObjectMgr::GetInstance()->Add_Placement(newObj);
@@ -114,6 +180,9 @@ void CMapEditorPlacer::Start_Place(MAPOBJTYPE type)
     Cancel_Place();
 
     m_SelectedType = type;
+    m_PreviewScale = 1.f;         
+    m_PreviewRotation = _vec3(0.f, 0.f, 0.f); 
+    m_PreviewYOffset = 0.f;
 
     // 새 프리뷰 생성
     m_PreviewObj = CreateMapObjectType(m_GraphicDev, type);
@@ -121,6 +190,14 @@ void CMapEditorPlacer::Start_Place(MAPOBJTYPE type)
     {
         m_PreviewObj->Set_Preview(true);
         m_PreviewObj->Set_TextureIndex(Get_CurTextureIndex());
+
+        CTransform* transform = dynamic_cast<CTransform*>(m_PreviewObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+        if (transform)
+        {
+            transform->Set_Scale(m_PreviewScale, m_PreviewScale, m_PreviewScale);
+            transform->Set_Rotation(m_PreviewRotation);
+        }
+
         m_Placing = true;
         return;
     }

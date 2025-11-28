@@ -57,11 +57,11 @@ void CGameObject::LateUpdate_GameObject(const _float& timeDelta)
 void CGameObject::Render_GameObject()
 { }
 
-bool CGameObject::SetTexAspectInit(CTexture* texCom, CTransform* transCom,int index, bool is_width, float lengh)
+bool CGameObject::SetTexAspectInit(CTexture* texCom, CTransform* transCom,int index, wstring*key, bool is_width, float lengh)
 {
     float w = 0, h = 0;
 
-    if (texCom->Get_TextureSize(index, w, h)==false || texCom==nullptr)
+    if (texCom->Get_TextureSize(index, w, h,key)==false || texCom==nullptr)
         return false;
     float aspect;
     if (is_width == true)

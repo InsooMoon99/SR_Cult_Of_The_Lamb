@@ -329,6 +329,8 @@ static void Terrain_Inspector(CTerrainRenderer* renderer)
         {
             renderer->Render_Editor();
 
+            
+
             ImGui::EndTabItem();
         }
 
@@ -397,7 +399,7 @@ static void BoxColl_Inspector(CBoxCollider* collider)
     if (collider == nullptr)
         return;
 
-    ImGui::Text("[ Scale ]");
+    ImGui::Text("[ Size ]");
     ImGui::PushID("BoxColl_Inspector");
     {
         _vec3 scale = collider->Get_Size();
@@ -667,5 +669,13 @@ static void PlayerController_Inspector(CPlayerController* controller)
     //}
     //ImGui::PopID();
 
+}
 
+static void WallRenderer_Inspector(CWallRenderer* wall)
+{
+    NULL_CHECK(wall);
+
+    ImGui::Text("1111");
+
+    
 }

@@ -365,7 +365,7 @@ _bool CPlayerController::IsAttacking(ACTORSTATE state)
 
 void CPlayerController::Action_Idle(const _float& timeDelta)
 {
-    m_OwnerRigidbodyCom->Set_Friction(0.2f);
+    m_OwnerRigidbodyCom->Set_Friction(0.4f);
 }
 
 void CPlayerController::Action_Run(const _float& timeDelta)

@@ -41,7 +41,8 @@ HRESULT CMenuChar::Ready_GameObject()
 
     m_TransformCom->Set_Pos(_vec3(0.f, 0.f, 6.f));
     //m_TransformCom->Set_Scale(_vec3(4.f, 5.5f, 1.f));
-    if (false == SetTexAspectInit(m_TextureCom, m_TransformCom, 1))
+    wstring key = L"MenuChar";
+    if (false == SetTexAspectInit(m_TextureCom, m_TransformCom, 1, &key))
         return E_FAIL;
 
     return S_OK;

@@ -9,14 +9,23 @@
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CTerrainRenderer.h"
+#include "CWallRenderer.h"
 
 CTerrain::CTerrain(DEVICE GraphicDev)
-    : CGameObject(GraphicDev)
+    : CGameObject(GraphicDev), m_BufferCom(nullptr), m_TransformCom(nullptr), m_TextureCom284(nullptr),
+      m_TextureCom1024(nullptr),
+      m_TextureComOutline(nullptr),
+      m_TerrainRendererCom(nullptr),
+      m_WallRendererCom(nullptr)
 {
 }
 
 CTerrain::CTerrain(const CTerrain& rhs)
-    :CGameObject(rhs)
+    : CGameObject(rhs), m_BufferCom(nullptr), m_TransformCom(nullptr), m_TextureCom284(nullptr),
+      m_TextureCom1024(nullptr),
+      m_TextureComOutline(nullptr),
+      m_TerrainRendererCom(nullptr),
+      m_WallRendererCom(nullptr)
 {
 }
 
@@ -91,6 +100,11 @@ HRESULT CTerrain::Add_Component()
 
     FAILED_CHECK_RETURN(m_TerrainRendererCom->Ready_TerrainRenderer(), E_FAIL);
 
+    m_WallRendererCom = CreateProtoComponent<CWallRenderer>(this, COMPONENTTYPE::WALL_RENDERER);
+    NULL_CHECK_RETURN(m_WallRendererCom, E_FAIL);
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::WALL_RENDERER , m_WallRendererCom });
+
+
     return S_OK;
 }
 
@@ -98,7 +112,7 @@ void CTerrain::Render_Editor()
 {
     CGameObject::Render_Editor();
 
-    ImGui::Text("=== Terrain ===");
+    //ImGui::Text("=== Terrain ===");
 
 }
 
@@ -108,6 +122,17 @@ void CTerrain::LoadMapOnStart(const char* filePath)
     {
         m_TerrainRendererCom->LoadMap(filePath);
     }
+}
+
+_vec3 CTerrain::Get_CellCenterWorld(_int cellX, _int cellZ)
+{
+
+    return _vec3(0.f, 0.f, 0.f);
+}
+
+_float CTerrain::Get_CellSize()
+{
+    return 0.f;
 }
 
 CTerrain* CTerrain::Create(DEVICE GraphicDev)
@@ -126,6 +151,7 @@ CTerrain* CTerrain::Create(DEVICE GraphicDev)
 
 void CTerrain::Free()
 {
-    CGameObject::Free();
+    Safe_Release(m_WallRendererCom);
 
+    CGameObject::Free();
 }

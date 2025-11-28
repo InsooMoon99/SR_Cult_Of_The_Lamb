@@ -133,6 +133,9 @@
     <Filter Include="05. UI\01. UI\04. UITabMenu">
       <UniqueIdentifier>{f5ba0def-b59a-4d45-9d5e-3212b4671db6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97. Component\03. Wall">
+      <UniqueIdentifier>{b0c9067d-def9-4e61-954d-f361723e82cf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -306,6 +309,12 @@
     <ClInclude Include="..\Header\CMapObjectMgr.h">
       <Filter>99. ImGui_Editor\01. EditorScript</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CBossChain.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CWarningChain.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
     <ClInclude Include="..\Header\CMapObject_Grass.h">
       <Filter>03. GameObject\09. MapObject</Filter>
     </ClInclude>
@@ -344,6 +353,24 @@
     </ClInclude>
     <ClInclude Include="..\Header\CUIPlayerImage.h">
       <Filter>05. UI\01. UI\04. UITabMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMapObject_Grass.h">
+      <Filter>03. GameObject\09. MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMapObjectBase.h">
+      <Filter>03. GameObject\09. MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CWall.h">
+      <Filter>03. GameObject\09. MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CWallRenderer.h">
+      <Filter>97. Component\03. Wall</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CStage_Boss1.h">
+      <Filter>02. Scene\01. Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CStage_TaroTest.h">
+      <Filter>02. Scene\01. Stage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -500,6 +527,12 @@
     <ClCompile Include="..\Code\CMapObjectMgr.cpp">
       <Filter>99. ImGui_Editor\01. EditorScript</Filter>
     </ClCompile>
+    <ClCompile Include="..\Code\CBossChain.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CWarningChain.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
     <ClCompile Include="..\Code\CMapObject_Grass.cpp">
       <Filter>03. GameObject\09. MapObject</Filter>
     </ClCompile>
@@ -535,6 +568,24 @@
     </ClCompile>
     <ClCompile Include="..\Code\CUIPlayerImage.cpp">
       <Filter>05. UI\01. UI\04. UITabMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMapObject_Grass.cpp">
+      <Filter>03. GameObject\09. MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMapObjectBase.cpp">
+      <Filter>03. GameObject\09. MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CWall.cpp">
+      <Filter>03. GameObject\09. MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CWallRenderer.cpp">
+      <Filter>97. Component\03. Wall</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CStage_Boss1.cpp">
+      <Filter>02. Scene\01. Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CStage_TaroTest.cpp">
+      <Filter>02. Scene\01. Stage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

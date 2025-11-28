@@ -18,10 +18,12 @@
 #include "CPlayerController.h"
 #include "CRigidbody.h"
 #include "CScene.h"
+#include "CSceneMgr.h"
 #include "CState.h"
 #include "CTerrainRenderer.h"
 #include "CTimerMgr.h"
 #include "CTransform.h"
+#include "CWallRenderer.h"
 #include "CWeaponEquip.h"
 
 IMPLEMENT_SINGLETON(CMainEditorMgr)
@@ -36,12 +38,24 @@ void CMainEditorMgr::Ready_MainEditor(DEVICE graphicDev, CEditContext* ctx)
     m_GraphicDev = graphicDev;
 
     Set_EditContext(ctx);
-
     CMapObjectMgr::GetInstance()->Ready_MapObjectMgr(graphicDev);
+
+    ImGuiStyle& style = ImGui::GetStyle();
+    style.Alpha = 0.95f;
+
+    style.WindowBorderSize  = 1.0f;
+    style.WindowRounding    = 4.0f;
+    style.FrameRounding     = 2.0f;
 }
 
 void CMainEditorMgr::Update_MainEditor(const _float& timeDelta)
 {
+    auto inputMgr = CDInputMgr::GetInstance();
+    if (inputMgr->KeyDown(DIK_F1))
+    {
+        Toggle_ImGui();
+    }
+
     CMapObjectMgr::GetInstance()->Update_MapObjectMgr(timeDelta);
 }
 
@@ -57,6 +71,9 @@ void CMainEditorMgr::Render_MainEditor()
     if (!m_Context)
         return;
 
+    if (!m_ShowImGui)
+        return;
+
     CScene* scene = CManagement::GetInstance()->Get_Scene();
     if (scene)
         m_Context->Set_ActiveScene(scene);
@@ -70,7 +87,7 @@ void CMainEditorMgr::Render_MainEditor()
         CMapObjectMgr::GetInstance()->Get_MapPlacer()->Render_Privew();
     }
 
-    ImGui::Begin("MainEditor");
+    ImGui::Begin("MainEditor [ Toggle F1 ]");
 
     if (ImGui::BeginTabBar("MainEditorTabs"))
     {
@@ -83,6 +100,12 @@ void CMainEditorMgr::Render_MainEditor()
         if (ImGui::BeginTabItem("MapTool"))
         {
             Render_MapToolTab();
+            ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("Scene Change"))
+        {
+            Render_SceneChangeTab();
             ImGui::EndTabItem();
         }
 
@@ -133,16 +156,20 @@ void CMainEditorMgr::Render_MapToolTab()
     ImGui::BeginChild("[ MapTool_Menu ]", ImVec2(140, 0), true);
 
     ImGui::Text("Map Tools");
-    ImGui::Separator();
+    ImGui::Separator(); 
 
     bool selTerrain   = (m_MapToolView == MAPTOOL_VIEW::TERRAIN);
     bool selMapObject = (m_MapToolView == MAPTOOL_VIEW::MAP_OBJECT);
+    bool selWall      = (m_MapToolView == MAPTOOL_VIEW::WALL);
 
     if (ImGui::Selectable("Terrain Renderer", selTerrain))
         m_MapToolView = MAPTOOL_VIEW::TERRAIN;
 
     if (ImGui::Selectable("Map Object", selMapObject))
         m_MapToolView = MAPTOOL_VIEW::MAP_OBJECT;
+
+    if (ImGui::Selectable("Wall", selWall))
+        m_MapToolView = MAPTOOL_VIEW::WALL;
 
     ImGui::EndChild();
 
@@ -176,15 +203,55 @@ void CMainEditorMgr::Render_MapToolTab()
         break;
     }
 
-    case MAPTOOL_VIEW::NONE:
-        break;
+    case MAPTOOL_VIEW::WALL:
+        CWallRenderer* wallRenderer = Find_WallRenderer();
 
-    default:
-        ImGui::Text("왼쪽에서 툴을 선택하세요.");
+        if (wallRenderer)
+        {
+            ImGui::SeparatorText("Wall Renderer");
+            WallRenderer_Inspector(wallRenderer);
+        }
+
         break;
+   
     }
 
     ImGui::EndChild();
+}
+
+void CMainEditorMgr::Render_SceneChangeTab()
+{
+    ImGui::PushID("Scene_ChangeTab");
+    {
+        const char* sceneChange[] = { "Main", "Stage", "Edit", "Stage_Boss1", "Stage_TaroTest" };
+
+        SCENETYPE sceneType = CSceneMgr::GetInstance()->Get_SceneType();
+
+        static _int currentSceneIndex = 0;
+
+        ImGui::Text(u8"Cur Scene : %s", ToString(sceneType));
+        ImGui::Separator();
+
+        if (ImGui::Combo(u8"Scene Change", &currentSceneIndex, sceneChange, IM_ARRAYSIZE(sceneChange)))
+        {
+            SCENETYPE newSceneType = SCENETYPE::SC_MAINMENU;  
+
+            switch (currentSceneIndex)
+            {
+            case 0: newSceneType = SCENETYPE::SC_MAINMENU;    break;
+            case 1: newSceneType = SCENETYPE::SC_STAGE;       break;
+            case 2: newSceneType = SCENETYPE::SC_EDIT;        break;
+            case 3: newSceneType = SCENETYPE::SC_BOSS_STAGE;  break;
+            case 4: newSceneType = SCENETYPE::SC_TARO_TEST;   break;
+
+            default: break;
+            }
+
+            CSceneMgr::GetInstance()->Change_SceneMgr(newSceneType);
+        }
+  
+    }
+    ImGui::PopID();
 }
 
 void CMainEditorMgr::Render_ToolBar()
@@ -494,6 +561,23 @@ CTerrainRenderer* CMainEditorMgr::Find_TerrainRenderer()
     }
 
     return nullptr;
+}
+
+CWallRenderer* CMainEditorMgr::Find_WallRenderer()
+{
+    auto texRenderer = Find_TerrainRenderer();
+
+    NULL_CHECK_RETURN(texRenderer, nullptr);
+
+    CGameObject* owner = texRenderer->Get_Owner();
+    NULL_CHECK_RETURN(owner, nullptr);
+
+    auto* wallCom = dynamic_cast<CWallRenderer*>(
+        owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::WALL_RENDERER));
+
+    NULL_CHECK_RETURN(wallCom, nullptr);
+
+    return wallCom;
 }
 
 void CMainEditorMgr::Free()

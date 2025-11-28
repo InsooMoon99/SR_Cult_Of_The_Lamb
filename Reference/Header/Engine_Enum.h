@@ -75,6 +75,7 @@ namespace Engine
         TERRAIN,
         PLACEMENT,
         ATTACK_COL,
+        WALL,
 
         OBJ_END
     };
@@ -95,6 +96,7 @@ namespace Engine
         COMBATSTAT,
         INVENTORY,
         TERRAIN_RENDER,
+        WALL_RENDERER,
 
         CONTROLLER_PLAYER,
         WEAPON_EQUIP,
@@ -120,6 +122,7 @@ namespace Engine
         TEX_UI_ICON,
         TEX_UI_BUTTON,
         TEX_BOSSPHASE1,
+        TEX_OUT,
 
         TEX_TILE_284,
         TEX_TILE_1024,
@@ -182,8 +185,9 @@ namespace Engine
         SC_MAINMENU,
         SC_STAGE,
         SC_STAGE1,
-        SC_STAGE2,
-        SC_BOSSSTAGE,
+        SC_TARO_TEST,
+        SC_BOSS_STAGE,
+
         SC_EDIT,
         
         SC_END

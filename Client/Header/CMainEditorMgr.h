@@ -5,6 +5,7 @@ class CMapEditorPlacer;
 class CMapObjectBase;
 class CMapObjectGrass;
 class CTerrainRenderer;
+class CWallRenderer;
 
 BEGIN(Engine)
 class CEditContext;
@@ -19,6 +20,9 @@ class CMainEditorMgr : public CBase
         NONE,
         TERRAIN,
         MAP_OBJECT,
+        WALL,
+
+        MAPTOOL_END
     };
 
     DECLARE_SINGLETON(CMainEditorMgr)
@@ -38,12 +42,16 @@ public:
 
     _bool IsPlaying() const { return m_IsPlaying; }
 
+    _bool IsGuiVisible() const { return m_ShowImGui; }
+    void  Toggle_ImGui() { m_ShowImGui = !m_ShowImGui; }
+
 private:
     // Context 세팅
     void Set_EditContext(CEditContext* ctx);
 
     void Render_SceneTab();
     void Render_MapToolTab();
+    void Render_SceneChangeTab();
 
     // Editor Render
     void Render_ToolBar();
@@ -56,6 +64,7 @@ private:
     void Render_SelectComponent();
 
     CTerrainRenderer* Find_TerrainRenderer();
+    CWallRenderer*    Find_WallRenderer();
 
 protected:
     virtual void Free() override;
@@ -66,6 +75,7 @@ private:
     CCameraCom*         m_MainCamera = nullptr;
 
     _bool               m_IsPlaying = true;
+    _bool               m_ShowImGui = true;
 
     MAPTOOL_VIEW        m_MapToolView = MAPTOOL_VIEW::TERRAIN;
 };

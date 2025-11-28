@@ -61,9 +61,15 @@ void CMapObjectMgr::Render_MapObjectWindow()
     Render_ObjectButton("Rubble", MAPOBJTYPE::RUBBLE, m_ShowRubble);
     Render_ObjectButton("Deco", MAPOBJTYPE::DECO, m_ShowDeco);
 
-    // TODO 추가 예정) Rock, Tree 등등
-    ImGui::SeparatorText(u8"되돌리기");
+    ImGui::SeparatorText("");
+    ImGui::Text("Preview Scale : %.2f", m_MapPlacer->Get_PreviewScale());
+    ImGui::Text("Preview Rotation:"); ImGui::SameLine();
+    ImGui::Text(u8"  X (Pitch): %.2f°", D3DXToDegree(m_MapPlacer->Get_PreviewRotation().x));
+    ImGui::SameLine();
+    ImGui::Text(u8"  Y (Yaw):   %.2f°", D3DXToDegree(m_MapPlacer->Get_PreviewRotation().y));
 
+    ImGui::NewLine();
+    ImGui::Text(u8"되돌리기 "); ImGui::SameLine();
     if(ImGui::Button(u8"Return"))
     {
         Undo_LastPlacement();
