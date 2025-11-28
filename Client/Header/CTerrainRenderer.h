@@ -82,6 +82,9 @@ private:
     vector<_int>    m_TileIndices1024{};
     vector<_int>    m_TileIndicesOutline{};
 
+    // 충돌체 데이터
+    vector<_bool>   m_WallTiles;
+
     vector<_int>    m_TileTypes{};
 
     _int            m_SelectedTile;

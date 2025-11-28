@@ -126,6 +126,7 @@ static const char* ToString(COMPONENTTYPE type)
     case COMPONENTTYPE::ANIMATOR:           return "Animator";
     case COMPONENTTYPE::CAMERA:             return "Camera";
     case COMPONENTTYPE::TERRAIN_RENDER:     return "TerrainRender";
+    case COMPONENTTYPE::WALL_RENDERER:      return "WallRenderer";
 
     // Texture Components (General & Specific)
     case COMPONENTTYPE::TEXTURE:            return "Texture";
@@ -200,6 +201,9 @@ static const char* ToString(OBJTYPE type)
     case OBJTYPE::ATTACK_COL:       return "Attack_Collider";
 
     case OBJTYPE::OBJ_END:          return "Obj_End";
+    case OBJTYPE::BOSS1:            return "Boss_Phase1";
+    case OBJTYPE::WALL:             return "Wall";
+
     default:                        return "UnknownObjectType";
     }
 }

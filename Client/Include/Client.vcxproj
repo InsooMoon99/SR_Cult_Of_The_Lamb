@@ -225,6 +225,8 @@
     <ClInclude Include="..\Header\CUISkillCount.h" />
     <ClInclude Include="..\Header\CUITabMenu.h" />
     <ClInclude Include="..\Header\CUIWeapon.h" />
+    <ClInclude Include="..\Header\CWall.h" />
+    <ClInclude Include="..\Header\CWallRenderer.h" />
     <ClInclude Include="..\Header\CWeaponEquip.h" />
     <ClInclude Include="..\Header\ItemData.h" />
     <ClInclude Include="..\Header\ItemInstance.h" />
@@ -289,6 +291,8 @@
     <ClCompile Include="..\Code\CUISkillCount.cpp" />
     <ClCompile Include="..\Code\CUITabMenu.cpp" />
     <ClCompile Include="..\Code\CUIWeapon.cpp" />
+    <ClCompile Include="..\Code\CWall.cpp" />
+    <ClCompile Include="..\Code\CWallRenderer.cpp" />
     <ClCompile Include="..\Code\CWeaponEquip.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">

@@ -5,6 +5,7 @@ class CMapEditorPlacer;
 class CMapObjectBase;
 class CMapObjectGrass;
 class CTerrainRenderer;
+class CWallRenderer;
 
 BEGIN(Engine)
 class CEditContext;
@@ -19,6 +20,9 @@ class CMainEditorMgr : public CBase
         NONE,
         TERRAIN,
         MAP_OBJECT,
+        WALL,
+
+        MAPTOOL_END
     };
 
     DECLARE_SINGLETON(CMainEditorMgr)
@@ -56,6 +60,7 @@ private:
     void Render_SelectComponent();
 
     CTerrainRenderer* Find_TerrainRenderer();
+    CWallRenderer*    Find_WallRenderer();
 
 protected:
     virtual void Free() override;

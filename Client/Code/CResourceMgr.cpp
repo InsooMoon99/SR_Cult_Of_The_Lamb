@@ -22,6 +22,7 @@
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CTriCol.h"
+#include "CWallRenderer.h"
 #include "CWeaponEquip.h"
 #include "CWeaponEquip.h"
 #include "ItemData.h"
@@ -144,11 +145,6 @@ HRESULT CResourceMgr::Ready_Common(DEVICE graphicDev)
     // Inventory
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::INVENTORY, CInventory::Create(graphicDev))))
-        return E_FAIL;
-
-    // TerrainRenderer
-    if (FAILED(protoMgr->Ready_Prototype(
-        COMPONENTTYPE::TERRAIN_RENDER, CTerrainRenderer::Create(graphicDev))))
         return E_FAIL;
 
     // Player Controller
@@ -438,6 +434,16 @@ HRESULT CResourceMgr::Ready_Item(DEVICE graphicDev)
 HRESULT CResourceMgr::Ready_Terrain(DEVICE graphicDev)
 {
     auto protoMgr = CProtoMgr::GetInstance();
+
+    // TerrainRenderer
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TERRAIN_RENDER, CTerrainRenderer::Create(graphicDev))))
+        return E_FAIL;
+
+    // WallRenderer
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::WALL_RENDERER, CWallRenderer::Create(graphicDev))))
+        return E_FAIL;
 
     // Terrain_284
     if (FAILED(protoMgr->Ready_Prototype(
