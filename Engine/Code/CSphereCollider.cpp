@@ -1,7 +1,9 @@
 ﻿#include "CSphereCollider.h"
 
 #include "CBoxCollider.h"
+#include "CCreateHelper.h"
 #include "CRectCollider.h"
+#include "CTransform.h"
 
 CSphereCollider::CSphereCollider(DEVICE graphicDev)
     : CCollider(graphicDev, COLLIDERTYPE::SPHERE)
@@ -33,8 +35,18 @@ void CSphereCollider::LateUpdate_Component()
 
 void CSphereCollider::Render()
 {
-    //if (m_ShowDebug == false || m_BufferCom == nullptr)
-    //    return;
+    if (!m_ShowDebug)
+        return;
+
+    CTransform* transform = Get_Transform();
+    NULL_CHECK(transform);
+
+    _vec3 center = transform->Get_Pos();
+    _float radius = this->Get_Radius();
+
+    DWORD color = !m_ColliderSet.empty() ? D3DCOLOR_ARGB(255, 255, 0, 0) : D3DCOLOR_ARGB(255, 255, 255, 255);  
+
+    Engine::DrawDebugSphere(m_GraphicDev, center, radius, color);
 }
 
 bool CSphereCollider::CheckCollision(CCollider* other)

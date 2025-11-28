@@ -21,6 +21,8 @@ public:
     void    Set_Scale(_float width, _float height);
     void    Set_Offset(float x, float y);
 
+    void    Set_FlipX(_bool flip);
+
 private:
     void    Apply_VertexSize();
 
@@ -37,6 +39,8 @@ private:
 
     _float m_OffsetX;
     _float m_OffsetY;
+
+    _bool m_FlipX; // X축 뒤집기
 
 };
 

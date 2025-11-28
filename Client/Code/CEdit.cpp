@@ -14,6 +14,7 @@
 #include "CMainMenu.h"
 #include "CSceneMgr.h"
 #include "CWall.h"
+#include "CSphereCollider.h"
 
 
 CEdit::CEdit(DEVICE graphicDev)
@@ -95,6 +96,10 @@ HRESULT CEdit::Ready_Environment_Layer(LAYERTYPE layerType)
     NULL_CHECK_RETURN(wall, E_FAIL);
 
     layer->Add_GameObject(OBJTYPE::WALL, wall);
+
+    // Test Sphere
+    CSphereCollider* sphere = CSphereCollider::Create(m_GraphicDev);
+    NULL_CHECK_RETURN(sphere, E_FAIL);
 
     m_Layers.insert({ layerType, layer });          // scene -> map
 

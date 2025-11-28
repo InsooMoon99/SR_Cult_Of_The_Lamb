@@ -88,45 +88,34 @@ void CWall::OnStayOverlap(CCollider* self, CCollider* other)
         rigid->Set_Velocity(vel);
     }
 
+    // 2. 위치 밀어내기 (간단 버전)
     CTransform* otherTransform = dynamic_cast<CTransform*>(
         hitObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
 
-    if (!otherTransform) return;
+    CBoxCollider* playerCollider = dynamic_cast<CBoxCollider*>(other);
+
+    if (!otherTransform || !playerCollider) return;
 
     _vec3 wallPos = m_TransformCom->Get_Pos();
     _vec3 objPos = otherTransform->Get_Pos();
-    _vec3 wallSize = m_BoxCollider->Get_Size();
 
-    CBoxCollider* playerCollider = dynamic_cast<CBoxCollider*>(other);
-    if (playerCollider == nullptr) return;
+    // 벽/플레이어 사이즈 합의 절반
+    float halfX = (m_BoxCollider->Get_Size().x + playerCollider->Get_Size().x) * 0.5f;
+    float halfZ = (m_BoxCollider->Get_Size().z + playerCollider->Get_Size().z) * 0.5f;
 
-    _vec3 playerSize = playerCollider->Get_Size();
-
+    // 중심 거리
     float dx = objPos.x - wallPos.x;
     float dz = objPos.z - wallPos.z;
 
-    float halfSumX = (wallSize.x + playerSize.x) * 0.5f;
-    float halfSumZ = (wallSize.z + playerSize.z) * 0.5f;
+    // 침투 깊이 (작을수록 덜 침투)
+    float penX = halfX - abs(dx);
+    float penZ = halfZ - abs(dz);
 
-    float penetrationX = halfSumX - abs(dx);
-    float penetrationZ = halfSumZ - abs(dz);
-
-    _vec3 originalPos = objPos;  // 원래 위치 저장
-
-    if (penetrationX < penetrationZ)
-    {
-        if (dx > 0) // 오른쪽
-            objPos.x = wallPos.x + halfSumX + 0.01f;
-        else        // 왼쪽
-            objPos.x = wallPos.x - halfSumX - 0.01f;
-    }
+    // 덜 침투한 축으로 밀어냄
+    if (penX < penZ)
+        objPos.x = wallPos.x + (dx > 0 ? halfX : -halfX) + (dx > 0 ? 0.01f : -0.01f);
     else
-    {
-        if (dz > 0) 
-            objPos.z = wallPos.z + halfSumZ + 0.01f;
-        else        
-            objPos.z = wallPos.z - halfSumZ - 0.01f;
-    }
+        objPos.z = wallPos.z + (dz > 0 ? halfZ : -halfZ) + (dz > 0 ? 0.01f : -0.01f);
 
     otherTransform->Set_Pos(objPos);
 }
