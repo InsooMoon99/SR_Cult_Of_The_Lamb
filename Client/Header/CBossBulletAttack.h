@@ -25,6 +25,7 @@ public:
     virtual void    LateUpdate_State(const _float& timeDelta);
     virtual void    Render_State();
 
+    bool CircleBullet(const _float& timeDelta, int num, int length, float interval);
 private:
     CBossPhase1* m_pOwner;
     CBossStateMachine* m_pStateMachine;
@@ -35,7 +36,7 @@ private:
     PHASE m_ePhase;
     float m_fElapsedTime;
 
-
+    bool m_StartFlag = false;
 private:
     virtual void Free();
 

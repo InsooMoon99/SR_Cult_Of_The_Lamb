@@ -10,10 +10,10 @@
 #include "CAttackBox.h"
 #include "CBossPhase1.h"
 
-CBossBullet::CBossBullet(DEVICE graphicDev, CGameObject* owner)
-    : CGameObject(graphicDev), m_pOwner(owner)
+CBossBullet::CBossBullet(DEVICE graphicDev, CGameObject* owner, _vec3 TargetVec)
+    : CGameObject(graphicDev), m_pOwner(owner), m_TargetDir(TargetVec)
 {
-        m_pOwner->AddRef();
+   m_pOwner->AddRef();
 }
 
 CBossBullet::CBossBullet(const CBossBullet& rhs) : CGameObject(rhs)
@@ -46,12 +46,63 @@ HRESULT CBossBullet::Ready_GameObject()
 
 _int CBossBullet::Update_GameObject(const _float& timeDelta)
 {
-   
-    return _int();
+    _int exit = CGameObject::Update_GameObject(timeDelta);
+
+
+    // 업데이트 입장시
+    if (m_flag == false)
+    {
+        // 생성시의 위치 값 저장
+        m_StartPos = m_TransformCom->Get_Pos();
+
+        // 공격 박스 생성
+        CAttackBox* ATBox = CAttackBox::Create(m_GraphicDev);
+
+        if (ATBox != nullptr)
+        {
+            ATBox->Set_Instigator(m_pOwner); // 공격의 주체를 넣음 - 난 보스를 넣어야 하는듯? 
+            ATBox->Set_LifeTime(10.f); // 근데 어짜피 사슬이 사라지면 사라짐 
+
+
+            // 2. 구조체 데이터 세팅
+            HITDATA hit{};
+            hit.damage = 1;
+            hit.knockback = 0.f;
+            ATBox->Set_HitDesc(hit);
+
+            // 3. 공격 박스 위치 설정, 방향값 추가 가능
+            _vec3 pos = m_TransformCom->Get_Pos();
+
+            m_ATKBoxTransformCom = dynamic_cast<CTransform*>(
+                ATBox->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+            m_ATKBoxTransformCom->Set_Pos(pos);
+            m_ATKBoxTransformCom->Set_Scale(m_TransformCom->Get_Scale());
+
+            // 4. 레이어에 추가, 헬퍼 함수 SpawnAttackObject 사용
+            //CManagement::GetInstance()->Get_Scene()->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, obj, OBJTYPE::ATTACK_COL);
+            SpawnAttackObject(ATBox); // TYPE , BOX SPHERE
+        }
+
+        m_flag = true;
+    }
+
+
+    if (m_StartShoot)
+    {
+        _vec3 moveVec = m_StartPos + m_TargetDir * timeDelta;
+        m_TransformCom->Set_Pos(moveVec);
+        m_ATKBoxTransformCom->Set_Pos(moveVec);
+    }
+
+
+    return exit;
 }
 
 void CBossBullet::LateUpdate_GameObject(const _float& timeDelta)
 {
+    CGameObject::LateUpdate_GameObject(timeDelta);
+
 }
 
 void CBossBullet::Render_GameObject()
@@ -62,10 +113,47 @@ void CBossBullet::Render_GameObject()
 
 void CBossBullet::Render_Core()
 {
+    m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
+    //
+
+    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    //m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+    //m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+    m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
+    m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+
+    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+    m_GraphicDev->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+    m_GraphicDev->SetRenderState(D3DRS_ALPHAREF, 0);
+    //
+
+    m_TextureCom->Set_Texture(0);
+
+    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB((int)(m_fAlpha * 255), 255, 255, 255));
+    //
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR); // ← texturefactor.alpha 사용
+
+    m_BufferCom->Render_Buffer();
+    //
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
+    //
+    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+    //
+    m_GraphicDev->SetRenderState(
+        D3DRS_TEXTUREFACTOR,
+        D3DCOLOR_ARGB(255, 255, 255, 255)); // 알파 1.0, 색 그대로
 }
 
 void CBossBullet::Render_Trail()
 {
+    // 불랫용 포즈 계산
+    _vec3 TrailPos = 
+
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
     //
 
@@ -104,6 +192,8 @@ void CBossBullet::Render_Trail()
 void CBossBullet::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CGameObject::OnBeginOverlap(self, other);
+
+    Mark_As_PendingKill();
 }
 
 void CBossBullet::OnEndOverlap(CCollider* self, CCollider* other)
@@ -128,9 +218,9 @@ HRESULT CBossBullet::Add_Component()
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
     // texture
-    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_OUT);
+    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_BULLET);
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_OUT, m_TextureCom });
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_BULLET, m_TextureCom });
 
     // CombatStat
     m_CombatStatCom = CreateProtoComponent<CCombatStat>(this, COMPONENTTYPE::COMBATSTAT);
@@ -141,9 +231,9 @@ HRESULT CBossBullet::Add_Component()
 }
 
 
-CBossBullet* CBossBullet::Create(DEVICE graphicDev, CGameObject* owner)
+CBossBullet* CBossBullet::Create(DEVICE graphicDev, CGameObject* owner, _vec3 TargetVec)
 {
-    auto BossBullet = new CBossBullet(graphicDev, owner);
+    auto BossBullet = new CBossBullet(graphicDev, owner, TargetVec);
 
     if (FAILED(BossBullet->Ready_GameObject()))
     {
@@ -153,4 +243,9 @@ CBossBullet* CBossBullet::Create(DEVICE graphicDev, CGameObject* owner)
     }
 
     return BossBullet;
+}
+
+void CBossBullet::Free()
+{
+    CGameObject::Free();
 }

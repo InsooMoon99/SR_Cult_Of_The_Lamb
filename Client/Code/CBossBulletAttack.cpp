@@ -6,6 +6,9 @@
 #include "CTransform.h"
 #include "CAnimator.h"
 #include "CRandomMgr.h"
+#include "CBossBullet.h"
+#include "CCreateHelper.h"
+#include "CRandomMgr.h"
 
 CBossBulletAttack::CBossBulletAttack(CBossPhase1* pOwner, CBossStateMachine* pStateMachine)
 {
@@ -33,7 +36,7 @@ void CBossBulletAttack::Enter()
 void CBossBulletAttack::Exit()
 {
     CMonsterState::Exit();
-
+    m_StartFlag = false;
 }
 
 HRESULT CBossBulletAttack::Ready_State()
@@ -50,18 +53,31 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
 {
     CMonsterState::Update_State(timeDelta);
 
-    if (m_pOwnerAnimatorCom->Get_CurAnimation() == nullptr)
+    // 처음 애니는 무조건 공격모션 이어야 함
+    if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1 && m_StartFlag == false)
+    {
+        m_StartFlag = true;
+    }
+
+
+    if (m_pOwnerAnimatorCom->Get_CurAnimation() == nullptr|| m_StartFlag != true)
         return CBossPhase1::BOSSPHASE1::BULLETATTACK;
+
+
 
     switch (m_ePhase)
     {
     case PHASE::CIRCLE:
 
-        m_fElapsedTime+= timeDelta;
+        m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::ONCE);
 
 
-        //
+            m_fElapsedTime += timeDelta;
 
+            if (CircleBullet(timeDelta, 9, 10, 0.1) == true)
+            {
+                //
+            }
 
         if (m_fCurStateElapsedTime >= 1.0f)
         {
@@ -111,7 +127,43 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
 
     return CBossPhase1::BOSSPHASE1::BULLETATTACK;
 }
+bool CBossBulletAttack::CircleBullet(const _float& timeDelta, int num, int length, float interval)
+{
 
+    if (m_fElapsedTime >= interval)
+    {
+        {
+
+            //for (int i = 0; i < num; i++)
+            //{
+            CBossBullet* BossBullet = CBossBullet::Create(m_pOwner->Get_GraphicDev(), m_pOwner);
+            const auto ChainTransform =
+                dynamic_cast<CTransform*>(BossBullet->Get_Component(
+                    ID_DYNAMIC,
+                    COMPONENTTYPE::TRANSFORM));
+
+
+            _vec3 ownerPos = m_pOwnerTransformCom->Get_Pos();
+
+            //_vec3 baseDir = { 0,0,1 };
+
+            float rad = D3DXToRadian(360.f / (num));
+
+            float addRad = rad * m_Count;
+
+            _vec3 circle = { cos(addRad) * length, 0.f, sin(addRad) * length };
+
+            ChainTransform->Set_Pos(ownerPos + circle);
+
+            SpawnAttackObject(WarningChain);
+
+
+            m_Count++;
+            m_fElapsedTime = 0;
+            //}
+        }
+    }
+}
 void CBossBulletAttack::LateUpdate_State(const _float& timeDelta)
 {
     

@@ -15,7 +15,7 @@ class CBossBullet :
     public CGameObject
 {
 private:
-    explicit CBossBullet(DEVICE graphicDev, CGameObject* owner);
+    explicit CBossBullet(DEVICE graphicDev, CGameObject* owner, _vec3 TargetVec);
     explicit CBossBullet(const CBossBullet& rhs);
     virtual ~CBossBullet();
 
@@ -36,8 +36,9 @@ public:
     HRESULT Add_Component();
 public:
 
-    static CBossBullet* Create(DEVICE graphicDev, CGameObject* owner);
+    static CBossBullet* Create(DEVICE graphicDev, CGameObject* owner, _vec3 TargetVec);
 
+    void Start_Shoot() { m_StartShoot = true; }
 protected:
 
     CRcTex* m_BufferCom;
@@ -48,11 +49,16 @@ protected:
     CCombatStat* m_CombatStatCom;
 
     CGameObject* m_pOwner;
+   // CAttackBox* ATBox = nullptr;
+    CTransform* m_ATKBoxTransformCom;
+
     bool m_flag = false;
 
-    //CAttackBox* ATBox = nullptr;
-    float m_fAlpha;
+    _vec3 m_StartPos;
+    _vec3 m_TargetDir;
+    bool m_StartShoot = false;
 
+    float m_fAlpha = 0;
 private:
     void Free() override;
 

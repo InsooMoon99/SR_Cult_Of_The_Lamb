@@ -163,7 +163,7 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
         if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1 && m_StartPhase == false)
         {
             m_StartPhase = true;
-        }
+        }// TODO:: 이걸 공통으로 뺴면 될듯???
 
         if (m_StartPhase == true)
             m_fElapsedTime+= timeDelta;
