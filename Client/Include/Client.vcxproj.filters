@@ -342,6 +342,9 @@
     <ClInclude Include="..\Header\CUIPlayerPage.h">
       <Filter>05. UI\01. UI\04. UITabMenu</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CUIPlayerImage.h">
+      <Filter>05. UI\01. UI\04. UITabMenu</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -528,6 +531,9 @@
       <Filter>05. UI\01. UI\04. UITabMenu</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CUIPlayerPage.cpp">
+      <Filter>05. UI\01. UI\04. UITabMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUIPlayerImage.cpp">
       <Filter>05. UI\01. UI\04. UITabMenu</Filter>
     </ClCompile>
   </ItemGroup>

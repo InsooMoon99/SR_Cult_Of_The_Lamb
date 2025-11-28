@@ -351,6 +351,10 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     vector<wstring> pathVec1;
     pathVec1.push_back(L"../Bin/Resource/Texture/UI/MainMenu/Title0.png");
     pathVec1.push_back(L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Sermon_Icon.png");
+    pathVec1.push_back(L"../Bin/Resource/Texture/UI/Inventory/PlayerBG.png");
+    pathVec1.push_back(L"../Bin/Resource/Texture/UI/Inventory/Lock.png");
+    pathVec1.push_back(L"../Bin/Resource/Texture/UI/Inventory/OutfitCell.png");
+    pathVec1.push_back(L"../Bin/Resource/Texture/UI/Inventory/Unlock.png");
 
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_ICON, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec1))))
@@ -409,6 +413,7 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
             L"../Bin/Resource/Texture/UI/Inventory/RitualCard.png",
             1))))
         return E_FAIL;
+
 
 
 

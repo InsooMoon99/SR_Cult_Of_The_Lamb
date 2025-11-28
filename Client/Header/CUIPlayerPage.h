@@ -1,10 +1,16 @@
 ﻿#pragma once
 #include "CUI.h"
+#include "CUIPlayerImage.h"
+
+class CUITabMenu;
+class CUIPlayerPanel;
+class CUIIcon;
+
 class CUIPlayerPage : public CUI
 {
 private:
-    explicit CUIPlayerPage(DEVICE pGraphicDev);
-    explicit CUIPlayerPage(const CUIPlayerPage& rhs);
+    explicit CUIPlayerPage(DEVICE pGraphicDev,CUI* owner);
+    explicit CUIPlayerPage(const CUIPlayerPage& rhs, CUI* owner);
     ~CUIPlayerPage();
 
 public:
@@ -13,8 +19,17 @@ public:
     _int           Update_GameObject(const _float& timeDelta) override;
     void           LateUpdate_GameObject(const _float& timeDelta) override;
     void           Render_GameObject() override;
-
-    static CUIPlayerPage* Create(DEVICE graphicDev);
+    void Initialize();
+    static CUIPlayerPage* Create(DEVICE graphicDev,CUI* onwer);
     void                  Free() override;
+
+private:
+    CUIPlayerImage* m_PlayerUI;
+    CUIIcon* m_PlayerBG;
+    CUIIcon* m_LockUI;
+    CUIIcon* m_UnlockUI;
+    CUIIcon* m_OutfitUI;
+    CUIPlayerPanel* m_PlayerPanel;
+    CUI* m_Owner;
 };
 

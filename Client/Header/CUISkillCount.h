@@ -6,6 +6,8 @@
 //    class CCombatStat;
 //}
 
+class CUICircle;
+
 class CUISkillCount : public CUI
 {
 public:
@@ -32,5 +34,6 @@ protected:
 
 private:
     int m_SkillCount;
+    CUICircle* m_UICircle;
     //CCombatStat* m_CombatStatCom;
 };

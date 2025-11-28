@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include "CUICircle.h"
-
+#include "CFontMgr.h"
 #include "CCreateHelper.h"
 #include "CRcTex.h"
 #include "CRenderer.h"
@@ -57,6 +57,12 @@ void CUICircle::Render_GameObject()
     m_TextureCom->Set_Texture(0);
 
     m_BufferCom->Render_Buffer();
+
+    _vec3 pos = m_TransformCom->Get_Pos();
+    _vec2 fontOffset = { -20.f,0.f };
+    _vec2 screen = { WINCX / 2 + pos.x,WINCY / 2 - pos.y };
+
+    CFontMgr::GetInstance()->Render_FontOutlined(L"NanumSquare_Number", to_wstring(m_SkillCount), &screen, D3DXCOLOR(1.f, 1.f, 1.f, 1.f), D3DXCOLOR(0.f, 0.f, 0.f, 1.f), 3);
 }
 
 HRESULT CUICircle::Add_Component()

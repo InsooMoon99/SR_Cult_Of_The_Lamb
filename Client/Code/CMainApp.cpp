@@ -133,7 +133,12 @@ HRESULT CMainApp::Ready_DefaultSetting(DEVICE* graphicDev)
 
     //아이템 숫자 출력용 폰트
     if (FAILED(CFontMgr::GetInstance()->Ready_Font(
-        *graphicDev, L"NanumSquare_Heavy", L"나눔스퀘어 네오 Heavy", 35, 35, FW_HEAVY)))
+        *graphicDev, L"NanumSquare_Heavy", L"나눔스퀘어 네오 Heavy", 33, 35, FW_HEAVY)))
+        return E_FAIL;
+
+    //아이템 숫자 출력용 폰트
+    if (FAILED(CFontMgr::GetInstance()->Ready_Font(
+        *graphicDev, L"NanumSquare_Number", L"나눔스퀘어 네오 Heavy", 18, 20, FW_HEAVY)))
         return E_FAIL;
 
     //중간 크기 폰트
@@ -143,7 +148,7 @@ HRESULT CMainApp::Ready_DefaultSetting(DEVICE* graphicDev)
 
 	//아이템 카드 설명용 폰트
 	if (FAILED(CFontMgr::GetInstance()->Ready_Font(
-		*graphicDev, L"카드 설명", L"나눔스퀘어 네오 Regular", 16, 20, FW_MEDIUM)))
+		*graphicDev, L"카드 설명", L"나눔스퀘어 네오 Regular", 16, 19, FW_MEDIUM)))
 		return E_FAIL;
 
 	//아이템 카드 부연 설명용 폰트
@@ -155,7 +160,6 @@ HRESULT CMainApp::Ready_DefaultSetting(DEVICE* graphicDev)
 	if (FAILED(CFontMgr::GetInstance()->Ready_Font(
 		*graphicDev, L"아이템 이름", L"나눔스퀘어 네오 Regular", 20, 24, FW_SEMIBOLD)))
 		return E_FAIL;
-
 
     // DInput
     if (FAILED(CDInputMgr::GetInstance()->Ready_InputDev(g_hInst, g_hWnd)))

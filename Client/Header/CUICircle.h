@@ -21,7 +21,7 @@ public:
 
 private:
     static int         m_nextID;
-
+    int                 m_SkillCount=3;
 protected:
     void Free() override;
 

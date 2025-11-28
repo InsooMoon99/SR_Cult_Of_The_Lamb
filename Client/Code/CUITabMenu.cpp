@@ -65,7 +65,7 @@ HRESULT CUITabMenu::Ready_GameObject()
 
     m_InventoryPage = CUIInventory::Create(m_GraphicDev);
     NULL_CHECK_RETURN(m_InventoryPage, E_FAIL);
-    m_PlayerPage = CUIPlayerPage::Create(m_GraphicDev);
+    m_PlayerPage = CUIPlayerPage::Create(m_GraphicDev,this);
     NULL_CHECK_RETURN(m_PlayerPage, E_FAIL);
 
     m_InvenBtn = CUIButton::Create(m_GraphicDev, 3, 2);
@@ -232,6 +232,12 @@ CUITabMenu* CUITabMenu::Create(DEVICE graphicDev)
     }
 
     return tabMenu;
+}
+
+void CUITabMenu::Initialize()
+{
+    m_PlayerPage->Initialize();
+
 }
 
 void CUITabMenu::Free()

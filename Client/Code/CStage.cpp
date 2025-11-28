@@ -220,7 +220,7 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     CUIPlayerPanel* playerPanel = dynamic_cast<CUIPlayerPanel*>(gameObject);
 
     playerPanel->Set_PlayerCombatStat(m_PlayerCombatStatCom);
-
+    playerPanel->Set_Resister(true);
     gameObject = CUIMp::Create(m_GraphicDev);
 
     FAILED_CHECK_MSG(
@@ -252,11 +252,11 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
         layer->Add_GameObject(OBJTYPE::UI, pgameObject),
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUIIcon) failed");
 
-    CUISkillCount* uiSkillCount = CUISkillCount::Create(m_GraphicDev);
-
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::UI, uiSkillCount),
-        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUISKillCount) failed");
+    //CUISkillCount* uiSkillCount = CUISkillCount::Create(m_GraphicDev);
+    //
+    //FAILED_CHECK_MSG(
+    //    layer->Add_GameObject(OBJTYPE::UI, uiSkillCount),
+    //    L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUISKillCount) failed");
 
     /////Inventory UI
     //CUIInventory* uiInventory = CUIInventory::Create(m_GraphicDev);
@@ -266,6 +266,8 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     //CUITabMenu
     CUITabMenu* uiTabMenu = CUITabMenu::Create(m_GraphicDev);
     uiTabMenu->SetInventory(m_PlayerInventoryCom);
+    uiTabMenu->Set_PlayerCombatStat(m_PlayerCombatStatCom);
+    uiTabMenu->Initialize();
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiTabMenu),
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UITabMenu) failed");
 
