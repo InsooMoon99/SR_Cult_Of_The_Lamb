@@ -184,8 +184,9 @@ namespace Engine
         SC_MAINMENU,
         SC_STAGE,
         SC_STAGE1,
-        SC_STAGE2,
-        SC_BOSSSTAGE,
+        SC_TARO_TEST,
+        SC_BOSS_STAGE,
+
         SC_EDIT,
         
         SC_END

@@ -351,6 +351,12 @@
     <ClInclude Include="..\Header\CWallRenderer.h">
       <Filter>97. Component\03. Wall</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CStage_Boss1.h">
+      <Filter>02. Scene\01. Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CStage_TaroTest.h">
+      <Filter>02. Scene\01. Stage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -544,6 +550,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\CWallRenderer.cpp">
       <Filter>97. Component\03. Wall</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CStage_Boss1.cpp">
+      <Filter>02. Scene\01. Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CStage_TaroTest.cpp">
+      <Filter>02. Scene\01. Stage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
