@@ -15,7 +15,7 @@ CPlayerMovement::CPlayerMovement(DEVICE graphicDev)
       m_OwnerRigidbodyCom(nullptr),
 
       m_RollDir(0.f, 0.f, 0.f),
-      m_RollTimer(0.f),
+      m_Timer(0.f),
       m_RollDuration(0.4f),
       m_RollInvincibleTime(0.3f),
       m_IsInvincibleEnded(false)
@@ -29,7 +29,7 @@ CPlayerMovement::CPlayerMovement(const CPlayerMovement& rhs)
       m_OwnerRigidbodyCom(nullptr),
 
       m_RollDir(rhs.m_RollDir),
-      m_RollTimer(rhs.m_RollTimer),
+      m_Timer(rhs.m_Timer),
       m_RollDuration(rhs.m_RollDuration),
       m_RollInvincibleTime(rhs.m_RollInvincibleTime),
       m_IsInvincibleEnded(rhs.m_IsInvincibleEnded)
@@ -38,15 +38,14 @@ CPlayerMovement::CPlayerMovement(const CPlayerMovement& rhs)
 CPlayerMovement::~CPlayerMovement()
 { }
 
-HRESULT CPlayerMovement::Ready_PlayerMovement(DEVICE graphicDev)
+HRESULT CPlayerMovement::Ready_PlayerMovement()
 {
     return S_OK;
 }
 
 _int CPlayerMovement::Update_Component(const _float& timeDelta)
 {
-    //!! Movement는 Controller의 명령(함수 호출)에 의해 수동적으로 동작하므로
-    //!! 여기서 능동적으로 업데이트할 내용은 없음
+    // 매 프레임 작업 없음. 스태틱 컴포넌트로 사용할 것
     return 0;
 }
 
@@ -55,6 +54,8 @@ void CPlayerMovement::LateUpdate_Component()
 
 HRESULT CPlayerMovement::Init_OwnerComponent()
 {
+    HRESULT result = S_OK;
+
     m_OwnerStateCom = dynamic_cast<CState*>(
         m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
 
@@ -64,86 +65,171 @@ HRESULT CPlayerMovement::Init_OwnerComponent()
     m_OwnerRigidbodyCom = dynamic_cast<CRigidbody*>(
         m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::RIGIDBODY));
 
-    NULL_CHECK_RETURN_MSG(
-        m_OwnerStateCom,
-        E_FAIL,
-        L"CPlayerMovement: Owner State Null");
+    if (nullptr == m_OwnerStateCom)
+    {
+        MessageBoxW(nullptr,
+                    L"CPlayerMovement: Owner State Not Found",
+                    L"System Message",
+                    MB_ICONERROR);
 
-    NULL_CHECK_RETURN_MSG(
-        m_OwnerCombatStatCom,
-        E_FAIL,
-        L"CPlayerMovement: Owner CombatStat Null");
+        result = E_FAIL;
+    }
 
-    NULL_CHECK_RETURN_MSG(
-        m_OwnerRigidbodyCom,
-        E_FAIL,
-        L"CPlayerMovement: Owner Rigidbody Null");
+    if (nullptr == m_OwnerCombatStatCom)
+    {
+        MessageBoxW(nullptr,
+                    L"CPlayerMovement: Owner CombatStat Not Found",
+                    L"System Message",
+                    MB_ICONERROR);
 
-    return S_OK;
+        result = E_FAIL;
+    }
+
+    if (nullptr == m_OwnerRigidbodyCom)
+    {
+        MessageBoxW(nullptr,
+                    L"CPlayerMovement: Owner Rigidbody Not Found",
+                    L"System Message",
+                    MB_ICONERROR);
+
+        result = E_FAIL;
+    }
+
+    return result;
 }
 
 void CPlayerMovement::Run(const _vec3& moveDir, const _float& timeDelta)
-{ }
+{
+    m_OwnerRigidbodyCom->Set_Friction(0.05f);
+
+    ChangeDir(moveDir);
+
+    _float speed = m_OwnerCombatStatCom->Get_Speed();
+    m_OwnerRigidbodyCom->Add_Force(moveDir * speed * 20.f);
+}
 
 void CPlayerMovement::Stop()
-{ }
+{
+    m_OwnerRigidbodyCom->Set_Friction(0.2f);
+}
 
 void CPlayerMovement::Start_Roll(const _vec3& moveDir)
-{ }
-
-HRESULT CPlayerMovement::Update_Roll(const _float& timeDelta)
 {
-    m_RollTimer += timeDelta;
+    m_Timer             = 0.f;
+    m_IsInvincibleEnded = false;
 
-    // 1. 구르기 종료 체크
-    if (m_RollTimer >= m_RollDuration)
+    if (D3DXVec3LengthSq(&moveDir) > 0.001f)
+        m_RollDir = moveDir;
+    else
+        m_RollDir = CalcWorldDir(m_OwnerStateCom->Get_Dir());
+
+    m_OwnerRigidbodyCom->Set_Friction(0.f);
+    m_OwnerRigidbodyCom->Set_UseAccel(false);
+}
+
+_bool CPlayerMovement::Update_Roll(const _float& timeDelta)
+{
+    m_Timer += timeDelta;
+
+    // 구르기 종료 체크
+    if (m_Timer >= m_RollDuration)
     {
-        if (m_OwnerRigidbodyCom)
-        {
-            m_OwnerRigidbodyCom->Set_UseAccel(true);
-            m_OwnerRigidbodyCom->Set_Friction(0.2f);
-        }
-        return true; // 구르기 끝남
+        m_OwnerRigidbodyCom->Set_UseAccel(true);
+        m_OwnerRigidbodyCom->Set_Friction(0.2f);
+
+        return false; // 구르기 종료
     }
 
-    // 2. 무적 시간 종료 체크
-    if (!m_IsInvincibleEnded && m_RollTimer >= m_RollInvincibleTime)
+    // 무적 시간 종료 체크
+    if (!m_IsInvincibleEnded && m_Timer >= m_RollInvincibleTime)
     {
         m_IsInvincibleEnded = true;
         // TODO: 무적 상태 해제 로직
     }
 
-    // 3. 구르기 이동 (좌표 직접 이동)
+    // 구르기 이동
     _float rollSpeed = m_OwnerCombatStatCom->Get_Speed() * 3.f;
     m_TransformCom->Move_Pos(m_RollDir, timeDelta, rollSpeed);
 
-    return S_OK;
+    return true; // 구르기 지속
 }
 
-_bool CPlayerMovement::CanChangeDir()
-{
-    return false;
-}
+// @formatter:off
 
 void CPlayerMovement::ChangeDir(const _vec3& dir)
-{ }
+{
+    if (D3DXVec3LengthSq(&dir) <= 0.001f) return;
+
+    ACTORDIR newActorDir = m_OwnerStateCom->Get_Dir();
+
+    if (dir.x > 0.1f)
+    {
+        if (dir.z > 0.1f)       newActorDir = ACTORDIR::R_UP;
+        else if (dir.z < -0.1f) newActorDir = ACTORDIR::R_DOWN;
+        else                    newActorDir = ACTORDIR::RIGHT;
+    }
+    else if (dir.x < -0.1f)
+    {
+        if (dir.z > 0.1f)       newActorDir = ACTORDIR::L_UP;
+        else if (dir.z < -0.1f) newActorDir = ACTORDIR::L_DOWN;
+        else                    newActorDir = ACTORDIR::LEFT;
+    }
+    else
+    {
+        if (dir.z > 0.1f)       newActorDir = ACTORDIR::UP;
+        else if (dir.z < -0.1f) newActorDir = ACTORDIR::DOWN;
+    }
+
+    m_OwnerStateCom->Change_Dir(newActorDir);
+}
 
 _vec3 CPlayerMovement::CalcWorldDir(ACTORDIR dir)
 {
-    return {};
+    _vec3 vDir;
+
+    switch (dir)
+    {
+    case ACTORDIR::LEFT:   vDir = { -1.f, 0.f, 0.f };  break;
+    case ACTORDIR::RIGHT:  vDir = { 1.f, 0.f, 0.f };   break;
+    case ACTORDIR::UP:     vDir = { 0.f, 0.f, 1.f };   break;
+    case ACTORDIR::DOWN:   vDir = { 0.f, 0.f, -1.f };  break;
+    case ACTORDIR::L_UP:   vDir = { -1.f, 0.f, 1.f };  break;
+    case ACTORDIR::R_UP:   vDir = { 1.f, 0.f, 1.f };   break;
+    case ACTORDIR::L_DOWN: vDir = { -1.f, 0.f, -1.f }; break;
+    case ACTORDIR::R_DOWN: vDir = { 1.f, 0.f, -1.f };  break;
+    default:               vDir = { 0.f, 0.f, 1.f };   break;
+    }
+
+    D3DXVec3Normalize(&vDir, &vDir);
+    return vDir;
 }
+
+// @formatter:on
 
 CPlayerMovement* CPlayerMovement::Create(DEVICE graphicDev)
 {
-    return nullptr;
+    auto plMovement = new CPlayerMovement(graphicDev);
+
+    if (FAILED(plMovement->Ready_PlayerMovement()))
+    {
+        Safe_Release(plMovement);
+        MSG_BOX("PlayerMovement Create Failed");
+        return nullptr;
+    }
+
+    return plMovement;
 }
 
 CComponent* CPlayerMovement::Clone()
 {
-    return nullptr;
+    return new CPlayerMovement(*this);
 }
 
 void CPlayerMovement::Free()
 {
+    m_OwnerStateCom      = nullptr;
+    m_OwnerCombatStatCom = nullptr;
+    m_OwnerRigidbodyCom  = nullptr;
+
     CComponent::Free();
 }

@@ -163,7 +163,6 @@ void CPlayer::Render_Reset()
 
 void CPlayer::Test_Attack()
 {
-    // TODO : 나중에 무기 컴포넌트 안에 들어가면 좋을듯
     // 1. 공격 박스 생성
     auto obj = CAttackBox::Create(m_GraphicDev);
     obj->Set_Instigator(this);

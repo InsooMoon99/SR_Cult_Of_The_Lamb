@@ -304,6 +304,7 @@
       <Filter>02. Prototype\01. Transform</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CAttackBox.h" />
+    <ClInclude Include="..\Header\CPickingHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CGraphicDev.cpp">

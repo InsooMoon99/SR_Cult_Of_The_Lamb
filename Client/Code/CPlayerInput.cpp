@@ -6,19 +6,19 @@
 CPlayerInput::CPlayerInput(DEVICE graphicDev)
     : CComponent(graphicDev),
       m_MoveDir(0.f, 0.f, 0.f),
-      m_AttackDir(0.f, 0.f, 0.f)
+      m_MouseDir(0.f, 0.f, 0.f)
 { }
 
 CPlayerInput::CPlayerInput(const CPlayerInput& rhs)
     : CComponent(rhs),
       m_MoveDir(rhs.m_MoveDir),
-      m_AttackDir(rhs.m_AttackDir)
+      m_MouseDir(rhs.m_MouseDir)
 { }
 
 CPlayerInput::~CPlayerInput()
 { }
 
-HRESULT CPlayerInput::Ready_PlayerInput(DEVICE graphicDev)
+HRESULT CPlayerInput::Ready_PlayerInput()
 {
     return S_OK;
 }
@@ -52,7 +52,7 @@ CPlayerInput* CPlayerInput::Create(DEVICE graphicDev)
 {
     auto plInput = new CPlayerInput(graphicDev);
 
-    if (FAILED(plInput->Ready_PlayerInput(graphicDev)))
+    if (FAILED(plInput->Ready_PlayerInput()))
     {
         Safe_Release(plInput);
         MSG_BOX("PlayerInput Create Failed");

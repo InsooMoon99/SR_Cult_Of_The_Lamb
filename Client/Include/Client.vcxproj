@@ -204,7 +204,7 @@
     <ClInclude Include="..\Header\CMenuChar.h" />
     <ClInclude Include="..\Header\CMonster.h" />
     <ClInclude Include="..\Header\CMonsterState.h" />
-    <ClInclude Include="..\header\CPlayerCombat.h" />
+    <ClInclude Include="..\header\CPlayerAttack.h" />
     <ClInclude Include="..\header\CPlayerInput.h" />
     <ClInclude Include="..\Header\CPlayer.h" />
     <ClInclude Include="..\Header\CPlayerController.h" />
@@ -270,7 +270,7 @@
     <ClCompile Include="..\Code\CMenuChar.cpp" />
     <ClCompile Include="..\Code\CMonster.cpp" />
     <ClCompile Include="..\Code\CMonsterState.cpp" />
-    <ClCompile Include="..\code\CPlayerCombat.cpp" />
+    <ClCompile Include="..\code\CPlayerAttack.cpp" />
     <ClCompile Include="..\code\CPlayerInput.cpp" />
     <ClCompile Include="..\Code\CPlayer.cpp" />
     <ClCompile Include="..\Code\CPlayerController.cpp" />

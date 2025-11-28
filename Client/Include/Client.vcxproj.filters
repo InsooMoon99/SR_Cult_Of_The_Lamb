@@ -360,7 +360,7 @@
     <ClInclude Include="..\header\CPlayerMovement.h">
       <Filter>97. Component\03. Player Controller\02. Movement</Filter>
     </ClInclude>
-    <ClInclude Include="..\header\CPlayerCombat.h">
+    <ClInclude Include="..\header\CPlayerAttack.h">
       <Filter>97. Component\03. Player Controller\03. Combat</Filter>
     </ClInclude>
   </ItemGroup>
@@ -557,7 +557,7 @@
     <ClCompile Include="..\code\CPlayerMovement.cpp">
       <Filter>97. Component\03. Player Controller\02. Movement</Filter>
     </ClCompile>
-    <ClCompile Include="..\code\CPlayerCombat.cpp">
+    <ClCompile Include="..\code\CPlayerAttack.cpp">
       <Filter>97. Component\03. Player Controller\03. Combat</Filter>
     </ClCompile>
   </ItemGroup>
