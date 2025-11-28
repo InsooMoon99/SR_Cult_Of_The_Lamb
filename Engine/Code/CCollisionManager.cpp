@@ -64,6 +64,15 @@ void CCollisionManager::Update()
                     src->AddOverlap(dst);
                     dst->AddOverlap(src);
                 }
+                // 이미 겹쳐 있을 때
+                else
+                {
+                    if (CGameObject* ownerSrc = src->Get_Owner())
+                        ownerSrc->OnStayOverlap(src, dst);
+
+                    if (CGameObject* ownerDst = dst->Get_Owner())
+                        ownerDst->OnStayOverlap(dst, src);
+                }
             }
 
             else

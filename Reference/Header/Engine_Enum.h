@@ -75,6 +75,7 @@ namespace Engine
         TERRAIN,
         PLACEMENT,
         ATTACK_COL,
+        WALL,
 
         OBJ_END
     };
@@ -95,6 +96,7 @@ namespace Engine
         COMBATSTAT,
         INVENTORY,
         TERRAIN_RENDER,
+        WALL_RENDERER,
 
         CONTROLLER_PLAYER,
         WEAPON_EQUIP,
@@ -114,6 +116,7 @@ namespace Engine
         TEX_UI_SKILLCOUNT,
         TEX_UI_HIGHLIGHT,
         TEX_UI_INVEN,
+        TEX_UI_RITUALCARD,
         TEX_ITEM,
         TEX_MENU_CHAR,
         TEX_UI_ICON,
@@ -121,7 +124,6 @@ namespace Engine
         TEX_BOSSPHASE1,
         TEX_OUT,
 
-        // TODO : Test Tile -> 은수 Texture 버전이랑 합치면 고치기
         TEX_TILE_284,
         TEX_TILE_1024,
         TEX_TILE_OUTLINE,

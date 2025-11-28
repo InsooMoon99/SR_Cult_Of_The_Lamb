@@ -174,6 +174,11 @@ void CPlayerController::CheckStateTransition()
     // - 구르기 상태여도 공격으로 이행 (캔슬)
     else if (inputMgr->MouseDown(DIM_LB))
     {
+        // ImGui 클릭 시 무시
+        ImGuiIO& io = ImGui::GetIO();
+        if (io.WantCaptureMouse)
+            return;
+
         if (curState == ACTORSTATE::PLAYER_ROLL ||
             curState == ACTORSTATE::IDLE ||
             curState == ACTORSTATE::RUN)
@@ -360,7 +365,7 @@ _bool CPlayerController::IsAttacking(ACTORSTATE state)
 
 void CPlayerController::Action_Idle(const _float& timeDelta)
 {
-    m_OwnerRigidbodyCom->Set_Friction(0.2f);
+    m_OwnerRigidbodyCom->Set_Friction(0.4f);
 }
 
 void CPlayerController::Action_Run(const _float& timeDelta)

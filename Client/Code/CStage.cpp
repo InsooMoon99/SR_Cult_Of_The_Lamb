@@ -24,11 +24,12 @@
 #include "CUIWeapon.h"
 #include "ItemInstance.h"
 #include "CBossPhase1.h"
-
-
+#include "CTerrain.h"
 #include "CDInputMgr.h"
+#include "CMapEditorPlacer.h"
 #include "CSceneMgr.h"
 #include "CUITabMenu.h"
+#include "CWall.h"
 
 CStage::CStage(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -54,6 +55,7 @@ HRESULT CStage::Ready_Scene()
 
     if (FAILED(Ready_UI_Layer(LAYERTYPE::UI)))
         return E_FAIL;
+
     // 안은수 test
     CDropSystem::GetInstance()->SetCurrentScene(this);
 
@@ -99,7 +101,12 @@ HRESULT CStage::Ready_Environment_Layer(LAYERTYPE layerType)
     if (nullptr == layer)
         return E_FAIL;
 
-    Engine::CGameObject* pGameObject = nullptr;
+    CTerrain* terrain = CTerrain::Create(m_GraphicDev);
+    NULL_CHECK_RETURN(terrain, E_FAIL);
+
+    // 초기 맵 불러오기
+    terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_OutlineTest.map");
+    layer->Add_GameObject(OBJTYPE::TERRAIN, terrain);
 
     m_Layers.insert({ layerType, layer });          // scene -> map
 
@@ -167,6 +174,7 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
         FAILED_CHECK_MSG(
             layer->Add_GameObject(OBJTYPE::BOSS1, gameObject),
             L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
+
 
     // -----------------------------
     // Camera

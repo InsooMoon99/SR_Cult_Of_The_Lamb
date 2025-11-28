@@ -22,6 +22,7 @@
 #include "CTerrainRenderer.h"
 #include "CTimerMgr.h"
 #include "CTransform.h"
+#include "CWallRenderer.h"
 #include "CWeaponEquip.h"
 
 IMPLEMENT_SINGLETON(CMainEditorMgr)
@@ -137,12 +138,16 @@ void CMainEditorMgr::Render_MapToolTab()
 
     bool selTerrain   = (m_MapToolView == MAPTOOL_VIEW::TERRAIN);
     bool selMapObject = (m_MapToolView == MAPTOOL_VIEW::MAP_OBJECT);
+    bool selWall      = (m_MapToolView == MAPTOOL_VIEW::WALL);
 
     if (ImGui::Selectable("Terrain Renderer", selTerrain))
         m_MapToolView = MAPTOOL_VIEW::TERRAIN;
 
     if (ImGui::Selectable("Map Object", selMapObject))
         m_MapToolView = MAPTOOL_VIEW::MAP_OBJECT;
+
+    if (ImGui::Selectable("Wall", selWall))
+        m_MapToolView = MAPTOOL_VIEW::WALL;
 
     ImGui::EndChild();
 
@@ -166,7 +171,7 @@ void CMainEditorMgr::Render_MapToolTab()
             Terrain_Inspector(terrain);
         }
         else
-            ImGui::Text("TerrainRenderer 를 찾을 수 없음");
+            ImGui::Text(u8"TerrainRenderer 를 찾을 수 없음");
         break;
     }
 
@@ -176,12 +181,17 @@ void CMainEditorMgr::Render_MapToolTab()
         break;
     }
 
-    case MAPTOOL_VIEW::NONE:
-        break;
+    case MAPTOOL_VIEW::WALL:
+        CWallRenderer* wallRenderer = Find_WallRenderer();
 
-    default:
-        ImGui::Text("왼쪽에서 툴을 선택하세요.");
+        if (wallRenderer)
+        {
+            ImGui::SeparatorText("Wall Renderer");
+            WallRenderer_Inspector(wallRenderer);
+        }
+
         break;
+   
     }
 
     ImGui::EndChild();
@@ -494,6 +504,23 @@ CTerrainRenderer* CMainEditorMgr::Find_TerrainRenderer()
     }
 
     return nullptr;
+}
+
+CWallRenderer* CMainEditorMgr::Find_WallRenderer()
+{
+    auto texRenderer = Find_TerrainRenderer();
+
+    NULL_CHECK_RETURN(texRenderer, nullptr);
+
+    CGameObject* owner = texRenderer->Get_Owner();
+    NULL_CHECK_RETURN(owner, nullptr);
+
+    auto* wallCom = dynamic_cast<CWallRenderer*>(
+        owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::WALL_RENDERER));
+
+    NULL_CHECK_RETURN(wallCom, nullptr);
+
+    return wallCom;
 }
 
 void CMainEditorMgr::Free()

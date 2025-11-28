@@ -148,7 +148,7 @@ void CUIButton::Render_GameObject()
 
     if(m_HasText)
     {
-    CFontMgr::GetInstance()->Render_Font(L"LaptureDisplay-Regular",
+    CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Regular",
         m_Text,
         &screen,
         m_D3dxColor);
