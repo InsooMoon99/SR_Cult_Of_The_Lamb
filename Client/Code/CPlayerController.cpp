@@ -39,7 +39,7 @@ _int CPlayerController::Update_Component(const _float& timeDelta)
 {
     // 일시정지 -> 입력 무시
     if (!CMainEditorMgr::GetInstance()->IsPlaying())
-        return 0;
+        return -1;
 
     // 1. 입력 수집
     Update_Input();

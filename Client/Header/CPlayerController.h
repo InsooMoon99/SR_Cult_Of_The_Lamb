@@ -114,7 +114,7 @@ public:
     void    LateUpdate_Component() override;
 
 public:
-    // m_OwnerStateCom 등 Owner의 컴포넌트를 가져와 사용하기 위한 초기 세팅 함수
+    // Owner의 컴포넌트를 가져와 사용하기 위한 초기 세팅 함수
     HRESULT Init_OwnerComponent();
 
 public: // Getter
