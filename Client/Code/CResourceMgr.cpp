@@ -101,11 +101,6 @@ HRESULT CResourceMgr::Ready_BossP1(DEVICE graphicDev)
         L"../Bin/Resource/Texture/BossPhase1/ChainAttack/Summon_Chain%d.png", 34)))
         return E_FAIL;
 
-    //// 바닥 이팩트
-    //if (FAILED(BossP1Tex->Add_Texture(L"ChainGroundEff", TEX_NORMAL,
-    //    L"../Bin/Resource/Texture/BossPhase1/ChainAttackGround.png", 1)))
-    //    return E_FAIL;
-
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_BOSSPHASE1, BossP1Tex)))
         return E_FAIL;
@@ -121,6 +116,17 @@ HRESULT CResourceMgr::Ready_BossP1(DEVICE graphicDev)
 	if (FAILED(protoMgr->Ready_Prototype(
 		COMPONENTTYPE::TEX_OUT, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec1))))
 		return E_FAIL;
+
+    ///////////////////////////////////////////////////////////////////////
+
+    vector<wstring> pathVec2;
+    pathVec2.push_back(L"../Bin/Resource/Texture/BossPhase1/Bullet/Bullet.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/BossPhase1/Bullet/Bullet0.png");
+
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_BULLET, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec2))))
+        return E_FAIL;
 
     return S_OK;
 }

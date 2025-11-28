@@ -33,7 +33,9 @@ public:
 
 private:
     PHASE m_ePhase;
-    float m_fElapsedTime[(int)PHASE::PHASE_END];
+    float m_fElapsedTime;
+
+
 private:
     virtual void Free();
 

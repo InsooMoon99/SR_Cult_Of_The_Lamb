@@ -124,6 +124,7 @@ HRESULT CStage_Boss1::Ready_GameLogic_Layer(LAYERTYPE layerType)
         dynamic_cast<CTransform*>(gameObject->Get_Component(
             ID_DYNAMIC,
             COMPONENTTYPE::TRANSFORM));
+   
 
     // -----------------------------
     // Boss
@@ -181,7 +182,8 @@ HRESULT CStage_Boss1::Ready_GameLogic_Layer(LAYERTYPE layerType)
         dynamic_cast<CTransform*>(gameObject->Get_Component(
             ID_DYNAMIC,
             COMPONENTTYPE::TRANSFORM));
-    BossTransform->Set_Pos({ 200,0,200 });
+
+    BossTransform->Set_Pos({ 50.f,BossTransform->Get_Scale().y*0.5f,50.f });
 
     return S_OK;
  

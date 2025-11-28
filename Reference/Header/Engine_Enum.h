@@ -123,6 +123,7 @@ namespace Engine
         TEX_UI_BUTTON,
         TEX_BOSSPHASE1,
         TEX_OUT,
+        TEX_BULLET,
 
         TEX_TILE_284,
         TEX_TILE_1024,

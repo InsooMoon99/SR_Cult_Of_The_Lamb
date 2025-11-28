@@ -5,6 +5,7 @@
 #include "CBossStateMachine.h"
 #include "CTransform.h"
 #include "CAnimator.h"
+#include "CRandomMgr.h"
 
 CBossBulletAttack::CBossBulletAttack(CBossPhase1* pOwner, CBossStateMachine* pStateMachine)
 {
@@ -20,7 +21,13 @@ void CBossBulletAttack::Enter()
 {
     CMonsterState::Enter();
     m_pOwnerAnimatorCom->Play_Animation(L"BossAttack", ANIMSTATE::ONCE);
-    //m_ePhase = PHASE::DOWN; // 이걸 어케 해야하지??
+    // TODO:: 지금 이게 안들어오거든 바로 상태안의 애니로 감 어칼까
+
+    m_ePhase = PHASE::CIRCLE; // 이걸 어케 해야하지??
+    int RandPhase = CRandomMgr::GetInstance()->Get_Int_Random(0, ((int)PHASE::PHASE_END) - 1); // 페이즈 랜덤
+    m_ePhase = (PHASE)RandPhase;
+
+
 }
 
 void CBossBulletAttack::Exit()
@@ -50,7 +57,7 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
     {
     case PHASE::CIRCLE:
 
-        m_fElapsedTime[(int)PHASE::CIRCLE] += timeDelta;
+        m_fElapsedTime+= timeDelta;
 
 
         //
@@ -58,7 +65,7 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
 
         if (m_fCurStateElapsedTime >= 1.0f)
         {
-            m_fElapsedTime[(int)PHASE::CIRCLE] = 0;
+            m_fElapsedTime= 0;
             return CBossPhase1::BOSSPHASE1::BOSSIDLE;
 
         }
@@ -69,7 +76,7 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
 
         m_pOwnerAnimatorCom->Play_Animation(L"BossAttack", ANIMSTATE::LOOP);
 
-        m_fElapsedTime[(int)PHASE::ROTCROSS_SPREAD] += timeDelta;
+        m_fElapsedTime += timeDelta;
 
 
         //
@@ -77,7 +84,7 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
 
         if (m_fCurStateElapsedTime >= 1.0f)
         {
-            m_fElapsedTime[(int)PHASE::ROTCROSS_SPREAD] = 0;
+            m_fElapsedTime = 0;
             return CBossPhase1::BOSSPHASE1::BOSSIDLE;
         }
         break;
@@ -86,7 +93,7 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
 
         m_pOwnerAnimatorCom->Play_Animation(L"BossAttack", ANIMSTATE::ONCE);
 
-        m_fElapsedTime[(int)PHASE::SPREAD] += timeDelta;
+        m_fElapsedTime += timeDelta;
 
 
         //
@@ -94,7 +101,7 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
 
         if (m_fCurStateElapsedTime >= 1.0f)
         {
-            m_fElapsedTime[(int)PHASE::SPREAD] = 0;
+            m_fElapsedTime = 0;
             return CBossPhase1::BOSSPHASE1::BOSSIDLE;
         }
         break;

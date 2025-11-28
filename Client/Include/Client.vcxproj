@@ -172,6 +172,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\CBossAwake.h" />
+    <ClInclude Include="..\Header\CBossBullet.h" />
     <ClInclude Include="..\Header\CBossBulletAttack.h" />
     <ClInclude Include="..\Header\CBossChain.h" />
     <ClInclude Include="..\Header\CBossChainAttack.h" />
@@ -244,6 +245,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CBossAwake.cpp" />
+    <ClCompile Include="..\Code\CBossBullet.cpp" />
     <ClCompile Include="..\Code\CBossBulletAttack.cpp" />
     <ClCompile Include="..\Code\CBossChain.cpp" />
     <ClCompile Include="..\Code\CBossChainAttack.cpp" />
