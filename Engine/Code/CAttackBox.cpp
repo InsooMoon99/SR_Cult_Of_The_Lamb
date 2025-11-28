@@ -86,8 +86,14 @@ void CAttackBox::OnBeginOverlap(CCollider* self, CCollider* other)
     _vec3 atkPos = dynamic_cast<CTransform*>(
         m_Instigator->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Get_Pos();
 
+    if (!atkPos)
+        return;
+
     _vec3 hitterPos = dynamic_cast<CTransform*>(
         hitter->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Get_Pos();
+
+    if (!hitterPos)
+        return;
 
     _vec3 dir = hitterPos - atkPos;
     if (D3DXVec3LengthSq(&dir) > 0.0001f)

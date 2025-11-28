@@ -22,10 +22,13 @@ public:
     virtual HRESULT Ready_State();
     virtual _int    Update_State(const _float& timeDelta);
 
-    void PlayerLine(_vec3 PlayerDir, _int MaxCount, _float m_Offset, float Speed);
-    bool PlayerLineUpdate(const _float& timeDelta);
+    //void PlayerLine(_vec3 PlayerDir, _int MaxCount, _float m_Offset, float Speed);
+    bool PlayerLineUpdate(const _float& timeDelta, _int MaxCount, _float m_Offset, float Speed);
+    void RandomChain(const _float& timeDelta, _vec2 startLT, _vec2 endRB);
     virtual void    LateUpdate_State(const _float& timeDelta);
     virtual void    Render_State();
+
+    float easeInQuint10(float x);
 
 private:
     CBossPhase1* m_pOwner;

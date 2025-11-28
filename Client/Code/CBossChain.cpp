@@ -49,31 +49,31 @@ HRESULT CBossChain::Ready_GameObject()
     //m_TransformCom->Set_Pos({ ownerTransform->Get_Pos().x, -ownerTransform->Get_Scale().y * .5f,ownerTransform->Get_Pos().z });
     //m_TransformCom->Set_Pos
     //충돌박스 CAttackBox 생성
-    {
-        // 1. 공격 박스 생성
-        auto obj = CAttackBox::Create(m_GraphicDev);
-        obj->Set_Instigator(m_pOwner); // 공격의 주체를 넣음 - 난 보스를 넣어야 하는듯? 
-        obj->Set_LifeTime(10.f); // 근데 어짜피 사슬이 사라지면 사라짐 
+    //{
+    //    // 1. 공격 박스 생성
+    //    auto obj = CAttackBox::Create(m_GraphicDev);
+    //    obj->Set_Instigator(m_pOwner); // 공격의 주체를 넣음 - 난 보스를 넣어야 하는듯? 
+    //    obj->Set_LifeTime(10.f); // 근데 어짜피 사슬이 사라지면 사라짐 
 
 
-        // 2. 구조체 데이터 세팅
-        HITDATA hit{};
-        hit.damage = 5;
-        hit.knockback = 0.f;
-        obj->Set_HitDesc(hit);
+    //    // 2. 구조체 데이터 세팅
+    //    HITDATA hit{};
+    //    hit.damage = 1;
+    //    hit.knockback = 0.f;
+    //    obj->Set_HitDesc(hit);
 
-        // 3. 공격 박스 위치 설정, 방향값 추가 가능
-        _vec3 pos = m_TransformCom->Get_Pos();
+    //    // 3. 공격 박스 위치 설정, 방향값 추가 가능
+    //    _vec3 pos = m_TransformCom->Get_Pos();
 
-        auto transform = dynamic_cast<CTransform*>(
-            obj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+    //    auto transform = dynamic_cast<CTransform*>(
+    //        obj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
 
-        transform->Set_Pos(pos);
+    //    transform->Set_Pos(pos);
 
-        // 4. 레이어에 추가, 헬퍼 함수 SpawnAttackObject 사용
-        //CManagement::GetInstance()->Get_Scene()->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, obj, OBJTYPE::ATTACK_COL);
-        SpawnAttackObject(obj); // TYPE , BOX SPHERE
-    }
+    //    // 4. 레이어에 추가, 헬퍼 함수 SpawnAttackObject 사용
+    //    //CManagement::GetInstance()->Get_Scene()->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, obj, OBJTYPE::ATTACK_COL);
+    //    SpawnAttackObject(obj); // TYPE , BOX SPHERE
+    //}
 
     return S_OK;
 }
@@ -84,15 +84,47 @@ _int CBossChain::Update_GameObject(const _float& timeDelta)
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 
+    if (m_flag == false)
+    {
+        {
+            // 1. 공격 박스 생성
+            CAttackBox* ATBox = CAttackBox::Create(m_GraphicDev);
 
+            if (ATBox != nullptr)
+            {
+                ATBox->Set_Instigator(m_pOwner); // 공격의 주체를 넣음 - 난 보스를 넣어야 하는듯? 
+                ATBox->Set_LifeTime(10.f); // 근데 어짜피 사슬이 사라지면 사라짐 
+
+
+                // 2. 구조체 데이터 세팅
+                HITDATA hit{};
+                hit.damage = 1;
+                hit.knockback = 0.f;
+                ATBox->Set_HitDesc(hit);
+
+                // 3. 공격 박스 위치 설정, 방향값 추가 가능
+                _vec3 pos = m_TransformCom->Get_Pos();
+
+                auto transform = dynamic_cast<CTransform*>(
+                    ATBox->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+                transform->Set_Pos(pos);
+                transform->Set_Scale(m_TransformCom->Get_Scale());
+
+                // 4. 레이어에 추가, 헬퍼 함수 SpawnAttackObject 사용
+                //CManagement::GetInstance()->Get_Scene()->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, obj, OBJTYPE::ATTACK_COL);
+                SpawnAttackObject(ATBox); // TYPE , BOX SPHERE
+            }
+            
+        }
+        m_flag = true;
+    }
 
     // 해당 프레임이 끝나면 자기삭제
     if (m_AnimatorCom->Get_CurFrame() == m_AnimatorCom->Get_MaxFrame() - 1)
     {
-        Mark_As_PendingKill();
+		this->Mark_As_PendingKill();
     }
-
-
 
     return exit;
 }
@@ -106,7 +138,6 @@ void CBossChain::Render_GameObject()
 {
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
     //
-
 
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
     m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
@@ -201,5 +232,6 @@ HRESULT CBossChain::Add_Component()
 void CBossChain::Free()
 {
     Safe_Release(m_pOwner);
+
     CGameObject::Free();
 }

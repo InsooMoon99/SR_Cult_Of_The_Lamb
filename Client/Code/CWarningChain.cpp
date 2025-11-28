@@ -40,7 +40,7 @@ HRESULT CWarningChain::Ready_GameObject()
             COMPONENTTYPE::TRANSFORM));
 
     //TODO:: 나중에 땅의 위치를 알게 되면 수정 
-    m_TransformCom->Set_Pos({ ownerTransform->Get_Pos().x, -ownerTransform->Get_Scale().y*.5f,ownerTransform->Get_Pos().z });
+    m_TransformCom->Set_Pos({ ownerTransform->Get_Pos().x, -ownerTransform->Get_Scale().y*.5f, ownerTransform->Get_Pos().z });
 
     m_TransformCom->Set_Rotation({ D3DXToRadian(90),0,0 });
 
@@ -56,13 +56,11 @@ _int CWarningChain::Update_GameObject(const _float& timeDelta)
 
     m_fElapsedTime += timeDelta;
 
-
-
     if (m_fElapsedTime > 0.2f && m_flag == false)
     {
         CBossPhase1* owner = dynamic_cast<CBossPhase1*>(m_pOwner);
 
-        chain = CBossChain::Create(owner->Get_GraphicDev(), owner);
+        CBossChain* chain = CBossChain::Create(owner->Get_GraphicDev(), owner);
 
         CTransform* ChainTransform =
             dynamic_cast<CTransform*>(chain->Get_Component(
@@ -70,11 +68,13 @@ _int CWarningChain::Update_GameObject(const _float& timeDelta)
                 COMPONENTTYPE::TRANSFORM));
 
         _vec3 tmp = { 0.f,ChainTransform->Get_Scale().y,0.f };
-            _vec3 offset = m_TransformCom->Get_Pos() + tmp;
+
+        _vec3 offset = m_TransformCom->Get_Pos() + tmp;
+
         ChainTransform->Set_Pos(offset);
 
         SpawnAttackObject(chain);
-       // chain->AddRef();
+        //chain->AddRef();
 
         m_fElapsedTime =0;
         m_flag = true;
@@ -102,7 +102,7 @@ _int CWarningChain::Update_GameObject(const _float& timeDelta)
         if (m_fAlpha <= 0)
         {
             m_fAlpha = 0;
-            Mark_As_PendingKill();
+            this ->Mark_As_PendingKill();
         }
     }
     // 해당 프레임이 끝나면 자기삭제
@@ -147,7 +147,10 @@ void CWarningChain::Render_GameObject()
     //
     m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-
+    //
+    m_GraphicDev->SetRenderState(
+        D3DRS_TEXTUREFACTOR,
+        D3DCOLOR_ARGB(255, 255, 255, 255)); // 알파 1.0, 색 그대로
 
 }
 
@@ -181,8 +184,6 @@ HRESULT CWarningChain::Add_Component()
     m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_OUT);
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_OUT, m_TextureCom });
-
-
 
     // CombatStat
     m_CombatStatCom = CreateProtoComponent<CCombatStat>(this, COMPONENTTYPE::COMBATSTAT);

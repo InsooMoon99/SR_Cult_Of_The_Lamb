@@ -8,7 +8,9 @@ class CTexture;
 class CAnimator;
 class CBoxCollider;
 class CCombatStat;
+class CAttackBox;
 END
+
 
 class CBossChain :
     public CGameObject
@@ -45,6 +47,10 @@ protected:
     CCombatStat* m_CombatStatCom;
 
     CGameObject* m_pOwner;
+    bool m_flag = false;
+
+    //CAttackBox* ATBox = nullptr;
+
 private:
     void Free() override;
 

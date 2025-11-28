@@ -52,7 +52,7 @@ protected:
 
     //CTransform* m_ChainTransformCom  = nullptr;
     //CAnimator* m_ChainAnimatorCom = nullptr;
-    CBossChain* chain = nullptr;
+    //CBossChain* chain = nullptr;
     bool m_flag = false;
 private:
     void Free() override;
