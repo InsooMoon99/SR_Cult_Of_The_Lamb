@@ -3,16 +3,12 @@
 
 #include "CLayer.h"
 #include "CMainCamera.h"
-#include "CManagement.h"
 #include "CMonster.h"
 #include "CPersistentObjectHelper.h"
 #include "CPlayer.h"
 #include "CState.h"
 #include "CTerrain.h"
-#include "CTestMonster.h"
 #include "CTransform.h"
-#include "CTriCol.h"
-
 #include "CDInputMgr.h"
 #include "CMainEditorMgr.h"
 #include "CMainMenu.h"

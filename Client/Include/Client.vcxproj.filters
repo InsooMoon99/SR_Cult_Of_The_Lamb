@@ -366,6 +366,12 @@
     <ClInclude Include="..\Header\CRandomMgr.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CStage_Boss1.h">
+      <Filter>02. Scene\01. Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CStage_TaroTest.h">
+      <Filter>02. Scene\01. Stage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -574,6 +580,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\CRandomMgr.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CStage_Boss1.cpp">
+      <Filter>02. Scene\01. Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CStage_TaroTest.cpp">
+      <Filter>02. Scene\01. Stage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
