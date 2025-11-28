@@ -57,7 +57,6 @@ private:
     Engine::CTexture*            m_TextureCom;
     Engine::CAnimator*           m_AnimatorCom;
     Engine::CBoxCollider*        m_BoxColCom;
-    Engine::CSphereCollider*     m_SphereColCom;
     Engine::CState*              m_StateCom;
     Engine::CCombatStat*         m_CombatStatCom;
     Engine::CRigidbody*          m_RigidbodyCom;

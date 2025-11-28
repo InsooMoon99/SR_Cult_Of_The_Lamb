@@ -41,10 +41,13 @@ void CCollisionManager::Update()
             if (ownerDst == nullptr || ownerDst->Is_PendingDestroy()) // 소멸 예정인 애들은 충돌 X
                 continue;
 
+            // TODO : 충돌체 꺼져있는거 말고, 무적판정도 추가하기
+
             if (dst->IsCollisionActive() == false) // 충돌체 Active가 꺼져있다면 무시
                 continue;
 
-            // TODO : Owner 세팅 후 비교
+            if (ownerSrc == ownerDst)
+                continue;
 
             bool isColliding = src->CheckCollision(dst);
 
@@ -103,12 +106,27 @@ void CCollisionManager::AddCollider(CCollider* collider)
 
     m_Colliders.push_back(collider);
 }
-// 충돌체 제거
+
 void CCollisionManager::RemoveCollider(CCollider* collider)
 {
     if (collider == nullptr)
         return;
 
+    for (CCollider* other : m_Colliders)
+    {
+        if (other && other != collider)
+        {
+            if (other->IsOverlapping(collider))
+            {
+                other->RemoveOverlap(collider);
+
+                if (CGameObject* owner = other->Get_Owner())
+                    owner->OnEndOverlap(other, collider);
+            }
+        }
+    }
+
+    // 리스트에서 제거
     auto iter = remove(m_Colliders.begin(), m_Colliders.end(), collider);
     m_Colliders.erase(iter, m_Colliders.end());
 }

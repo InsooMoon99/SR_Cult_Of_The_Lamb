@@ -123,7 +123,6 @@ static void DrawDebugBox(DEVICE graphicDv, const _vec3& center, const _vec3& siz
     graphicDv->SetRenderState(D3DRS_LIGHTING, bPrevLighting);
 }
 
-
 static void DrawDebugSphere(DEVICE graphicDev, const _vec3& center, _float radius, DWORD color, _int segments = 32)
 {
     if (!graphicDev) return;

@@ -208,7 +208,6 @@ void CMainEditorMgr::Render_MapToolTab()
 
         if (wallRenderer)
         {
-            ImGui::SeparatorText("Wall Renderer");
             WallRenderer_Inspector(wallRenderer);
         }
 

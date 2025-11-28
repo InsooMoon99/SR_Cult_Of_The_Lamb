@@ -15,7 +15,8 @@
 #include "CSceneMgr.h"
 #include "CWall.h"
 #include "CSphereCollider.h"
-
+#include "CWallRenderer.h"
+#include "CBoxCollider.h"
 
 CEdit::CEdit(DEVICE graphicDev)
     : Engine::CScene(graphicDev)
@@ -46,13 +47,7 @@ _int CEdit::Update_Scene(const _float& timeDelta)
 {
     _int exit = Engine::CScene::Update_Scene(timeDelta);
 
-
-    //안은수 테스트
-    // Stage
-    if (CDInputMgr::GetInstance()->Get_DIKeyState(DIK_0) & 0x80)
-    {
-        CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_MAINMENU);
-    }
+   
     return exit;
 }
 
@@ -79,29 +74,14 @@ HRESULT CEdit::Ready_Environment_Layer(LAYERTYPE layerType)
     // -----------------------------
     // Tile
     // -----------------------------
-    gameObject = CTerrain::Create(m_GraphicDev);
+    CTerrain* terrain = CTerrain::Create(m_GraphicDev);
 
-    NULL_CHECK_RETURN_MSG(
-        gameObject,
-        E_FAIL,
-        L"CEdit::Ready_GameLogic_Layer() failed: CTerrain::Create() returned null");
+    NULL_CHECK_RETURN_MSG(terrain, E_FAIL, L"Terrain create failed");
+    terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_WallTest1.map");
 
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::TERRAIN, gameObject),
-        L"CEdit::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Tile) failed");
+    layer->Add_GameObject(OBJTYPE::TERRAIN, terrain);
 
-
-    // Wall
-    CWall* wall = CWall::Create(m_GraphicDev);
-    NULL_CHECK_RETURN(wall, E_FAIL);
-
-    layer->Add_GameObject(OBJTYPE::WALL, wall);
-
-    // Test Sphere
-    CSphereCollider* sphere = CSphereCollider::Create(m_GraphicDev);
-    NULL_CHECK_RETURN(sphere, E_FAIL);
-
-    m_Layers.insert({ layerType, layer });          // scene -> map
+    m_Layers.insert({ layerType, layer });
 
     return S_OK;
 }

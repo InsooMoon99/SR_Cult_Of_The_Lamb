@@ -10,6 +10,7 @@
 #include "CTerrainRenderer.h"
 #include "CTransform.h"
 #include "CWeaponEquip.h"
+#include "CWallRenderer.h"
 
 USING(Engine)
 
@@ -580,7 +581,6 @@ static void Weapon_Inspector(CWeaponEquip* weapon)
     ImGui::PopID();
 }
 
-
 static void PlayerController_Inspector(CPlayerController* controller)
 {
     NULL_CHECK(controller);
@@ -675,7 +675,7 @@ static void WallRenderer_Inspector(CWallRenderer* wall)
 {
     NULL_CHECK(wall);
 
-    ImGui::Text("1111");
+    wall->Render_Editor();
 
     
 }

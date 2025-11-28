@@ -105,10 +105,12 @@ HRESULT CStage::Ready_Environment_Layer(LAYERTYPE layerType)
     NULL_CHECK_RETURN(terrain, E_FAIL);
 
     // 초기 맵 불러오기
-    terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_OutlineTest.map");
+    terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_WallTest1.map");
     layer->Add_GameObject(OBJTYPE::TERRAIN, terrain);
 
-    m_Layers.insert({ layerType, layer });          // scene -> map
+    //terrain->Spawn_Walls(layer); 스폰시기가 꼬인다.. Update에서 일단 지연스폰
+
+    m_Layers.insert({ layerType, layer });
 
     return S_OK;
 }

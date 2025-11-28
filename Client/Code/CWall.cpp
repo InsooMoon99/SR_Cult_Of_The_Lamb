@@ -25,9 +25,9 @@ HRESULT CWall::Ready_GameObject()
         return E_FAIL;
 
     m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
-    m_TransformCom->Set_Pos(_vec3(10.f, 0.f, 10.f));
-
-    m_BoxCollider->Set_Size(_vec3(3.f, 3.f, 3.f));
+    //m_TransformCom->Set_Pos(_vec3(10.f, 0.f, 10.f));
+    //
+    //m_BoxCollider->Set_Size(_vec3(3.f, 3.f, 3.f));
 
     return S_OK;
 }
@@ -87,6 +87,9 @@ void CWall::OnStayOverlap(CCollider* self, CCollider* other)
         vel.z = 0.f;
         rigid->Set_Velocity(vel);
     }
+
+    else
+        return;
 
     // 2. 위치 밀어내기 (간단 버전)
     CTransform* otherTransform = dynamic_cast<CTransform*>(

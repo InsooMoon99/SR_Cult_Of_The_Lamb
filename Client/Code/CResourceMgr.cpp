@@ -401,7 +401,6 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
             1))))
         return E_FAIL;
 
-
     // Texture : Inventory BackGround
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_RITUALCARD,
         Engine::CTexture::Create(
@@ -410,8 +409,6 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
             L"../Bin/Resource/Texture/UI/Inventory/RitualCard.png",
             1))))
         return E_FAIL;
-
-
 
     return S_OK;
 }

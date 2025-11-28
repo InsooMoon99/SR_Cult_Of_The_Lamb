@@ -7,6 +7,7 @@ class CRcTex;
 class CTerrainTex;
 class CTransform;
 class CTexture;
+class CLayer;
 END
 
 class CTerrainRenderer;
@@ -33,6 +34,7 @@ public:
     void    Render_Editor() override;
 
     void    LoadMapOnStart(const char* filePath);
+    void Spawn_Walls(CLayer* layer);
 
 public:
     // 벽만들기
@@ -58,7 +60,7 @@ private:
     Engine::CTexture*           m_TextureComOutline;
 
     CTerrainRenderer*           m_TerrainRendererCom;
-    CWallRenderer*                  m_WallRendererCom;
+    CWallRenderer*              m_WallRendererCom;
 
 };
 
