@@ -75,7 +75,7 @@ _int CStage::Update_Scene(const _float& timeDelta)
     _int exit = Engine::CScene::Update_Scene(timeDelta);
 
     //안은수 테스트
-    if (CDInputMgr::GetInstance()->Get_DIKeyState(DIK_0) & 0x80)
+    if (CDInputMgr::GetInstance()->Get_DIKeyState(DIK_ADD) & 0x80)
     {
         CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_MAINMENU);
     }
