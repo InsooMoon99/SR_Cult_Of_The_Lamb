@@ -17,6 +17,7 @@
 #include "CMainEditorMgr.h"
 #include "CMainMenu.h"
 #include "CSceneMgr.h"
+#include "CWall.h"
 
 
 CEdit::CEdit(DEVICE graphicDev)
@@ -77,7 +78,27 @@ HRESULT CEdit::Ready_Environment_Layer(LAYERTYPE layerType)
     if (nullptr == layer)
         return E_FAIL;
 
-    Engine::CGameObject* pGameObject = nullptr;
+    CGameObject* gameObject = nullptr;
+    // -----------------------------
+    // Tile
+    // -----------------------------
+    gameObject = CTerrain::Create(m_GraphicDev);
+
+    NULL_CHECK_RETURN_MSG(
+        gameObject,
+        E_FAIL,
+        L"CEdit::Ready_GameLogic_Layer() failed: CTerrain::Create() returned null");
+
+    FAILED_CHECK_MSG(
+        layer->Add_GameObject(OBJTYPE::TERRAIN, gameObject),
+        L"CEdit::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Tile) failed");
+
+
+    // Wall
+    CWall* wall = CWall::Create(m_GraphicDev);
+    NULL_CHECK_RETURN(wall, E_FAIL);
+
+    layer->Add_GameObject(OBJTYPE::WALL, wall);
 
     m_Layers.insert({ layerType, layer });          // scene -> map
 
@@ -165,20 +186,6 @@ HRESULT CEdit::Ready_GameLogic_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::BOSS2, gameObject),
         L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(BOSS2) failed");*/
-
-    // -----------------------------
-    // Tile
-    // -----------------------------
-    gameObject = CTerrain::Create(m_GraphicDev);
-
-    NULL_CHECK_RETURN_MSG(
-        gameObject,
-        E_FAIL,
-        L"CEdit::Ready_GameLogic_Layer() failed: CTerrain::Create() returned null");
-
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::TERRAIN, gameObject),
-        L"CEdit::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Tile) failed");
 
     m_Layers.insert({ layerType, layer });
 

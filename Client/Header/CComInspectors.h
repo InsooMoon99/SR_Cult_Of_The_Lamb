@@ -5,6 +5,7 @@
 #include "CComponent.h"
 #include "CEnumHelper.h"
 #include "CInventory.h"
+#include "CPlayerController.h"
 #include "CState.h"
 #include "CTerrainRenderer.h"
 #include "CTransform.h"
@@ -324,9 +325,11 @@ static void Terrain_Inspector(CTerrainRenderer* renderer)
 
     if(ImGui::BeginTabBar("Terrain_TabBar"))
     {
-        if (ImGui::BeginTabItem(u8"타일 종류"))
+        if (ImGui::BeginTabItem(u8"타일"))
         {
             renderer->Render_Editor();
+
+            
 
             ImGui::EndTabItem();
         }
@@ -396,7 +399,7 @@ static void BoxColl_Inspector(CBoxCollider* collider)
     if (collider == nullptr)
         return;
 
-    ImGui::Text("[ Scale ]");
+    ImGui::Text("[ Size ]");
     ImGui::PushID("BoxColl_Inspector");
     {
         _vec3 scale = collider->Get_Size();
@@ -575,4 +578,104 @@ static void Weapon_Inspector(CWeaponEquip* weapon)
         }
     }
     ImGui::PopID();
+}
+
+
+static void PlayerController_Inspector(CPlayerController* controller)
+{
+    NULL_CHECK(controller);
+
+    //_float maxHp = controller->Get_MaxHp();
+    //_float hp = controller->Get_Hp();
+    //
+    //_float maxMp = controller->Get_MaxMp();
+    //_float mp = controller->Get_Mp();
+    //
+    //_float speed = controller->Get_Speed();
+    //_float attack = controller->Get_Attack();
+    //
+    //ImGui::PushID("CombatStat_Inspector");
+    //{
+    //    const float column_width = 80.0f;
+    //
+    //    ImGui::Columns(2, "HpColumns", false);
+    //    ImGui::SetColumnWidth(0, column_width);
+    //
+    //    // --- Hp ---
+    //    ImGui::Text("Max Hp : ");
+    //    ImGui::NextColumn();
+    //    if (ImGui::DragFloat("##MaxHp", &maxHp, 0.1f))
+    //    {
+    //        controller->Set_MaxHp(maxHp);
+    //    }
+    //    ImGui::NextColumn();
+    //
+    //    ImGui::Text("Hp : ");
+    //    ImGui::NextColumn();
+    //    if(ImGui::DragFloat("##CurHp", &hp, 0.1f))
+    //    {
+    //        controller->Set_Hp(hp);
+    //    }
+    //    ImGui::NextColumn();
+    //
+    //    ImGui::Columns(1);
+    //
+    //    ImGui::NewLine();
+    //
+    //    // --- Mp ---
+    //    ImGui::Columns(2, "MpColumns", false);
+    //    ImGui::SetColumnWidth(0, column_width);
+    //
+    //    ImGui::Text("Max Mp : ");
+    //    ImGui::NextColumn();
+    //    if(ImGui::DragFloat("##MaxMp", &maxMp, 0.1f))
+    //    {
+    //        controller->Set_MaxMp(maxMp);
+    //    }
+    //    ImGui::NextColumn();
+    //
+    //    ImGui::Text("Mp : ");
+    //    ImGui::NextColumn();
+    //    if(ImGui::DragFloat("##CurMp", &mp, 0.1f))
+    //    {
+    //        controller->Set_Mp(mp);
+    //    }
+    //    ImGui::NextColumn();
+    //
+    //    ImGui::Columns(1);
+    //
+    //    // --- Speed ---
+    //    ImGui::Columns(2, "EtcColums", false);
+    //    ImGui::SetColumnWidth(0, column_width);
+    //
+    //    ImGui::Text("Speed : ");
+    //    ImGui::NextColumn();
+    //    if(ImGui::DragFloat("##Speed", &speed, 0.1f))
+    //    {
+    //        controller->Set_Speed(speed);
+    //    }
+    //    ImGui::NextColumn();
+    //
+    //    // --- Attack ---
+    //    ImGui::Text("Attack : ");
+    //    ImGui::NextColumn();
+    //    if(ImGui::DragFloat("##Attack", &attack, 0.1f))
+    //    {
+    //        controller->Set_Attack(attack);
+    //    }
+    //    ImGui::NextColumn();
+    //
+    //    ImGui::Columns(1);
+    //}
+    //ImGui::PopID();
+
+}
+
+static void WallRenderer_Inspector(CWallRenderer* wall)
+{
+    NULL_CHECK(wall);
+
+    ImGui::Text("1111");
+
+    
 }

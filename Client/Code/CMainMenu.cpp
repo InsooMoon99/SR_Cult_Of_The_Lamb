@@ -50,11 +50,11 @@ void CMainMenu::LateUpdate_Scene(const _float& timeDelta)
 
 void CMainMenu::Render_Scene()
 {
-    RenderFont(L"LaptureDisplay-Regular", L"플레이", bt);
-    RenderFont(L"LaptureDisplay-Regular", L"맵툴", bt1);
+    RenderFont(L"NanumSquare_Regular", L"플레이", bt);
+    RenderFont(L"NanumSquare_Regular", L"맵툴", bt1);
    // RenderFont(L"견명조", L"설정", bt);
-    RenderFont(L"LaptureDisplay-Regular", L"제작진", bt2);
-    RenderFont(L"LaptureDisplay-Regular", L"종료", bt3);
+    RenderFont(L"NanumSquare_Regular", L"제작진", bt2);
+    RenderFont(L"NanumSquare_Regular", L"종료", bt3);
 
 
 }

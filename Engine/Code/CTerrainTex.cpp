@@ -128,7 +128,7 @@ void CTerrainTex::Render_Buffer()
 
 }
 
-void CTerrainTex::ApplyTileSetting(const vector<_int>& tileIndices, _int atlasCols, _int atlasRows)
+void CTerrainTex::ApplyTileSetting(const vector<_int>& tileIndices, _int atlasCols, _int atlasRows, _float texWidth, _float texHeight)
 {
     if (m_VB == nullptr || m_CntX < 2 || m_CntZ < 2)
         return;
@@ -146,8 +146,6 @@ void CTerrainTex::ApplyTileSetting(const vector<_int>& tileIndices, _int atlasCo
     const float du = 1.f / (float)atlasCols;
     const float dv = 1.f / (float)atlasRows;
 
-    const float texWidth = 1420.f;
-    const float texHeight = 284.f;
     const float epsU = 0.5f / texWidth;   
     const float epsV = 0.5f / texHeight;  
 
@@ -162,8 +160,17 @@ void CTerrainTex::ApplyTileSetting(const vector<_int>& tileIndices, _int atlasCo
 
             if (tileIndex < 0)
             {
+                vertex[baseIndex + 0].position = { 0.f, 0.f, 0.f };
+                vertex[baseIndex + 1].position = { 0.f, 0.f, 0.f };
+                vertex[baseIndex + 2].position = { 0.f, 0.f, 0.f };
+                vertex[baseIndex + 3].position = { 0.f, 0.f, 0.f };
                 continue;
             }
+
+            vertex[baseIndex + 0].position = m_Pos[baseIndex + 0];
+            vertex[baseIndex + 1].position = m_Pos[baseIndex + 1];
+            vertex[baseIndex + 2].position = m_Pos[baseIndex + 2];
+            vertex[baseIndex + 3].position = m_Pos[baseIndex + 3];
 
             const _int tileX = tileIndex % atlasCols;
             const _int tileY = tileIndex / atlasCols;
@@ -187,7 +194,6 @@ void CTerrainTex::ApplyTileSetting(const vector<_int>& tileIndices, _int atlasCo
     m_VB->Unlock();
 }
 
-
 CTerrainTex* CTerrainTex::Create(LPDIRECT3DDEVICE9 graphicDev, const _ulong& CntX, const _ulong& CntZ,
                                  const _ulong& VtxItv)
 {
@@ -206,10 +212,6 @@ CTerrainTex* CTerrainTex::Create(LPDIRECT3DDEVICE9 graphicDev, const _ulong& Cnt
 CComponent* CTerrainTex::Clone()
 {
     return new CTerrainTex(*this);
-
-    //MSG_BOX("TerrainTex should not be colned");
-    //
-    //return nullptr;
 }
 
 void CTerrainTex::Free()
