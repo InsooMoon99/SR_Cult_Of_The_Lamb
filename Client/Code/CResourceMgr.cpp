@@ -48,7 +48,7 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
     if (FAILED(Ready_Item(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Common(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Terrain(graphicDev))) return E_FAIL;
-    //if (FAILED(Ready_BossP1(graphicDev))) return E_FAIL;
+    if (FAILED(Ready_BossP1(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Decoration(graphicDev))) return E_FAIL;
 
     return S_OK;
@@ -96,9 +96,31 @@ HRESULT CResourceMgr::Ready_BossP1(DEVICE graphicDev)
         L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-hurt-stop/TOWW-Spirit-hurt-stop%d.png", 67)))
         return E_FAIL;
 
+    // 사슬
+    if (FAILED(BossP1Tex->Add_Texture(L"BossChainEff", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/ChainAttack/Summon_Chain%d.png", 34)))
+        return E_FAIL;
+
+    //// 바닥 이팩트
+    //if (FAILED(BossP1Tex->Add_Texture(L"ChainGroundEff", TEX_NORMAL,
+    //    L"../Bin/Resource/Texture/BossPhase1/ChainAttackGround.png", 1)))
+    //    return E_FAIL;
+
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_BOSSPHASE1, BossP1Tex)))
         return E_FAIL;
+
+	///////////////////////////////////////////////////////////////////////
+	
+	//FadeOut Tex
+	vector<wstring> pathVec1;
+	pathVec1.push_back(L"../Bin/Resource/Texture/BossPhase1/ChainAttackGround.png");
+	pathVec1.push_back(L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Sermon_Icon.png");
+
+
+	if (FAILED(protoMgr->Ready_Prototype(
+		COMPONENTTYPE::TEX_OUT, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec1))))
+		return E_FAIL;
 
     return S_OK;
 }

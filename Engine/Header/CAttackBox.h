@@ -29,6 +29,8 @@ public:
     void Set_HitDesc(const HITDATA& hit) { m_HitDesc = hit; }
     void Set_Instigator(CGameObject* inst) { m_Instigator = inst; }
 
+    void Set_LifeTime(float LifeTime) {m_LifeTime = LifeTime;}
+
     static CAttackBox* Create(DEVICE graphicDev);
 
 private:
