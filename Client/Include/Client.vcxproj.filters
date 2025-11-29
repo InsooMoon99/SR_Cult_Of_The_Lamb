@@ -375,6 +375,9 @@
     <ClInclude Include="..\Header\CBossBullet.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CProjectaile.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -591,6 +594,9 @@
       <Filter>02. Scene\01. Stage</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CBossBullet.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CProjectaile.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

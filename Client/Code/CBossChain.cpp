@@ -93,7 +93,7 @@ _int CBossChain::Update_GameObject(const _float& timeDelta)
             if (ATBox != nullptr)
             {
                 ATBox->Set_Instigator(m_pOwner); // 공격의 주체를 넣음 - 난 보스를 넣어야 하는듯? 
-                ATBox->Set_LifeTime(10.f); // 근데 어짜피 사슬이 사라지면 사라짐 
+                ATBox->Set_LifeTime(5.f); // 근데 어짜피 사슬이 사라지면 사라짐 
 
 
                 // 2. 구조체 데이터 세팅
@@ -232,6 +232,5 @@ HRESULT CBossChain::Add_Component()
 void CBossChain::Free()
 {
     Safe_Release(m_pOwner);
-
     CGameObject::Free();
 }

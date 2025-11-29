@@ -15,7 +15,7 @@ class CBossBullet :
     public CGameObject
 {
 private:
-    explicit CBossBullet(DEVICE graphicDev, CGameObject* owner, _vec3 TargetVec);
+    explicit CBossBullet(DEVICE graphicDev, CGameObject* owner, CGameObject* Target);
     explicit CBossBullet(const CBossBullet& rhs);
     virtual ~CBossBullet();
 
@@ -34,11 +34,14 @@ public:
 
     void Animation_Setting();
     HRESULT Add_Component();
+
+    void SetPendingKill() { Mark_As_PendingKill(); }
 public:
 
-    static CBossBullet* Create(DEVICE graphicDev, CGameObject* owner, _vec3 TargetVec);
+    static CBossBullet* Create(DEVICE graphicDev, CGameObject* owner, CGameObject* Target);
 
     void Start_Shoot() { m_StartShoot = true; }
+    void Set_TargetDir(_vec3 dir) { m_TargetDir = dir; }
 protected:
 
     CRcTex* m_BufferCom;
@@ -49,6 +52,7 @@ protected:
     CCombatStat* m_CombatStatCom;
 
     CGameObject* m_pOwner;
+    CGameObject* m_pTarget;
    // CAttackBox* ATBox = nullptr;
     CTransform* m_ATKBoxTransformCom;
 
@@ -57,8 +61,16 @@ protected:
     _vec3 m_StartPos;
     _vec3 m_TargetDir;
     bool m_StartShoot = false;
+    bool m_TargetFlag = false;
+    _vec3 m_MoveLength ;
 
     float m_fAlpha = 0;
+
+    /// 실제 움직이는 변수/ ///
+
+    float m_Speed = 15;
+
+
 private:
     void Free() override;
 

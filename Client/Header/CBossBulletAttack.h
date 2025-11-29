@@ -3,6 +3,7 @@
 
 class CBossPhase1;
 class CBossStateMachine;
+class CBossBullet;
 
 class CBossBulletAttack :
     public CMonsterState
@@ -34,9 +35,15 @@ public:
 
 private:
     PHASE m_ePhase;
-    float m_fElapsedTime;
+    float m_fElapsedTime =0;
 
     bool m_StartFlag = false;
+    int m_Count = 0;
+
+    vector<CBossBullet*> tmpBullet;
+    bool m_TargetFlag = false;
+
+
 private:
     virtual void Free();
 

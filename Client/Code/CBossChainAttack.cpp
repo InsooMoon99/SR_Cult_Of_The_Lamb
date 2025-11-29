@@ -210,11 +210,8 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
                 return CBossPhase1::BOSSPHASE1::BOSSIDLE;
             }
         }
-
         break;
     }
-
-
 
     return CBossPhase1::BOSSPHASE1::CHAINATTACK;
 }

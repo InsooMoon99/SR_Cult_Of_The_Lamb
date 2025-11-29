@@ -121,7 +121,7 @@ HRESULT CResourceMgr::Ready_BossP1(DEVICE graphicDev)
 
     vector<wstring> pathVec2;
     pathVec2.push_back(L"../Bin/Resource/Texture/BossPhase1/Bullet/Bullet.png");
-    pathVec2.push_back(L"../Bin/Resource/Texture/BossPhase1/Bullet/Bullet0.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/BossPhase1/Bullet/Bullet1.png");
 
 
     if (FAILED(protoMgr->Ready_Prototype(
