@@ -19,10 +19,10 @@ private:
     explicit CWarningChain(DEVICE graphicDev, CGameObject* owner);
     explicit CWarningChain(const CWarningChain& rhs);
     virtual ~CWarningChain();
-
 public:
 
     virtual HRESULT Ready_GameObject() override;
+    float easeOutElastic(float x);
     virtual _int    Update_GameObject(const _float& timeDelta) override;
     virtual void    LateUpdate_GameObject(const _float& timeDelta) override;
     virtual void    Render_GameObject() override;
@@ -54,6 +54,8 @@ protected:
     //CAnimator* m_ChainAnimatorCom = nullptr;
     //CBossChain* chain = nullptr;
     bool m_flag = false;
+    bool m_Sizeflag = false;
+    _vec3 m_originSize;
 private:
     void Free() override;
 
