@@ -56,7 +56,17 @@ HRESULT CPlayer::Ready_GameObject()
     m_RigidbodyCom->Set_UseFriction(true);
     m_RigidbodyCom->Set_UseGravity(false);
 
+    if (m_BoxColCom)
+        m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::PLAYER);
+
     return S_OK;
+}
+
+void CPlayer::Initialize_GameObject()
+{
+    CCharacterBase::Initialize_GameObject();
+
+   
 }
 
 _int CPlayer::Update_GameObject(const _float& timeDelta)

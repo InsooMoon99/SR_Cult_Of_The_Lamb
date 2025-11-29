@@ -61,6 +61,7 @@ _int CTerrain::Update_GameObject(const _float& timeDelta)
         }
     }
 
+
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_NONALPHA, this);
 
     if (m_WallRendererCom && m_WallRendererCom->Get_EditMode())
@@ -198,6 +199,9 @@ void CTerrain::Spawn_Walls(CLayer* layer)
                     wallCollider->Set_Size(_vec3(cellSize, 2.f, cellSize));
 
                     layer->Add_GameObject(OBJTYPE::WALL, wall);
+
+                    wall->Initialize_GameObject();
+
                     wallCount++;
                 }
             }

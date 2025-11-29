@@ -1,10 +1,8 @@
 ﻿#include "pch.h"
 #include "CMonsterBase.h"
-
-#include <CCombatStat.h>
-
+#include "CCombatStat.h"
 #include "CTransform.h"
-#include "CManagement.h"
+#include "CBoxCollider.h"
 
 CMonsterBase::CMonsterBase(DEVICE graphicDev)
     : CCharacterBase(graphicDev), m_Target(nullptr), m_TargetTransform(nullptr)
@@ -27,6 +25,11 @@ HRESULT CMonsterBase::Ready_GameObject()
 
     m_CombatStatCom->Set_Speed(3.f);
 
+    if (m_BoxColCom)
+    {
+        m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::ENEMY);
+    }
+
     return S_OK;
 }
 
@@ -34,7 +37,7 @@ void CMonsterBase::Initialize_GameObject()
 {
     CCharacterBase::Initialize_GameObject();
 
-
+   
 }
 
 _int CMonsterBase::Update_GameObject(const _float& timeDelta)

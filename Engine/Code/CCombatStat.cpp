@@ -79,8 +79,8 @@ void CCombatStat::Take_Damage(const HITDATA& hitData)
     // 데미지
     Apply_Damage(hitData);
 
-    // 넉백
-    //Apply_Knockback(hitData);
+    // 넉백. 여기 왜 터지는지
+    // Apply_Knockback(hitData);
 }
 
 void CCombatStat::Apply_Damage(const HITDATA& hitData)

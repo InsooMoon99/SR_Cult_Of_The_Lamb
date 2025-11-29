@@ -52,8 +52,6 @@ CUITabMenu::~CUITabMenu()
     
 }
 
-
-
 HRESULT CUITabMenu::Ready_GameObject()
 {
     if (FAILED(Add_Component()))
@@ -243,11 +241,13 @@ void CUITabMenu::Free()
     Safe_Release(m_Inventory);
     Safe_Release(m_InventoryPage);
     Safe_Release(m_PlayerPage);
-    Safe_Release(m_InvenTransformCom);
-    Safe_Release(m_InvenBtnTransformCom);
-    Safe_Release(m_PlayerBtnTransformCom);
-    Safe_Release(m_PlayerPageTransformCom);
-    Safe_Release(m_GyodanBtnTransformCom);
-    Safe_Release(m_QuestBtnTransformCom);
+
+    //Safe_Release(m_InvenTransformCom);
+    //Safe_Release(m_InvenBtnTransformCom);
+    //Safe_Release(m_PlayerBtnTransformCom);
+    //Safe_Release(m_PlayerPageTransformCom);
+    //Safe_Release(m_GyodanBtnTransformCom);
+    //Safe_Release(m_QuestBtnTransformCom); <-- 이거 위험. 컴포넌트를 여기서 해제시키는게 맞는지??
+
     CUI::Free();
 }

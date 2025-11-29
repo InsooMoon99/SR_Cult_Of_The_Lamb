@@ -61,6 +61,18 @@ namespace Engine
         LAYER_END
     };
 
+    enum class COLLISION_LAYERTYPE
+    {
+        DEFAULT, // 모든 충돌
+        PLAYER,
+        ENEMY,
+        WALL,
+        PROJECTILE,
+        ITEM,
+
+        COL_LAYER_END
+    };
+
     enum class OBJTYPE
     {
         PLAYER,
@@ -148,19 +160,19 @@ namespace Engine
 
     enum class ACTORSTATE
     {
-    // 여기 추가할때마다 EnumHelper에 추가해야 Editor에 정상적으로 나옴
-    IDLE,
-    RUN,
-    ATTACK,
+        // 여기 추가할때마다 EnumHelper에 추가해야 Editor에 정상적으로 나옴
+        IDLE,
+        RUN,
+        ATTACK,
 
-    // TODO : 플레이어 상태 계속 추가
-    PLAYER_ROLL,
-    PLAYER_SWORD_COMBO1,
-    PLAYER_SWORD_COMBO2,
-    PLAYER_SWORD_COMBO3,
+        // TODO : 플레이어 상태 계속 추가
+        PLAYER_ROLL,
+        PLAYER_SWORD_COMBO1,
+        PLAYER_SWORD_COMBO2,
+        PLAYER_SWORD_COMBO3,
 
-    HIT,
-    DEAD,
+        HIT,
+        DEAD,
 
         STATE_END
     };

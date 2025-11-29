@@ -7,10 +7,12 @@
 #include "CTransform.h"
 
 CCollider::CCollider(DEVICE graphicDev, COLLIDERTYPE colliderType)
-    : CComponent(graphicDev),
-    m_ColliderType(colliderType),
-    m_ShowDebug(true),
-    m_IsColliderActive(true)
+    : CComponent(graphicDev), 
+      m_ColliderType(colliderType),
+      m_ShowDebug(true),
+      m_IsColliderActive(true),
+      m_CollisionLayer(COLLISION_LAYERTYPE::DEFAULT)
+
 {
 }
 
@@ -18,7 +20,8 @@ CCollider::CCollider(const CCollider& rhs)
     : CComponent(rhs),
     m_ColliderType(rhs.m_ColliderType),
     m_ShowDebug(rhs.m_ShowDebug),
-    m_IsColliderActive(true)
+    m_IsColliderActive(true),
+	m_CollisionLayer(COLLISION_LAYERTYPE::DEFAULT)
 {
 }
 

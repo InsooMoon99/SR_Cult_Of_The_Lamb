@@ -101,7 +101,7 @@ void CAttackBase::OnBeginOverlap(CCollider* self, CCollider* other)
 
     combat->Take_Damage(hit);
 
-    // 데미지를 줬으면, 삭제 요청
+    // 데미지를 줬으면, 삭제 요청 -> AttackBuilder에서 세팅
     if (m_DestroyOnHit)
     {
         Mark_As_PendingKill();

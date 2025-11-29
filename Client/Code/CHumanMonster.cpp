@@ -8,6 +8,7 @@
 #include "CState.h"
 #include "CTexture.h"
 #include "CTransform.h"
+#include "CRigidbody.h"
 
 CHumanMonster::CHumanMonster(DEVICE graphicDev)
     : CMonsterBase(graphicDev)
@@ -32,6 +33,11 @@ HRESULT CHumanMonster::Ready_GameObject()
 
     m_CombatStatCom->Set_MaxHp(50.f);
     m_CombatStatCom->Set_Hp(50);
+
+    //!! Rigidbody에서 중력만 사용 안함
+    m_RigidbodyCom->Set_UseAccel(true);
+    m_RigidbodyCom->Set_UseFriction(true);
+    m_RigidbodyCom->Set_UseGravity(false);
 
     return S_OK;
 }
@@ -121,6 +127,11 @@ HRESULT CHumanMonster::Add_Component()
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_HUMAN_MONSTER, m_TextureCom });
 
     m_AnimatorCom->Set_TextureType(COMPONENTTYPE::TEX_HUMAN_MONSTER);
+
+    // Rigidbody
+    m_RigidbodyCom = CreateProtoComponent<CRigidbody>(this, COMPONENTTYPE::RIGIDBODY);
+    NULL_CHECK_RETURN(m_RigidbodyCom, E_FAIL);
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::RIGIDBODY, m_RigidbodyCom });
 
     return S_OK;
 }

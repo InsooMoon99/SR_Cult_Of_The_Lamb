@@ -29,6 +29,9 @@ public:
     void            Set_ShowDebug(bool show) { m_ShowDebug = show; }
     void            Set_CollisionActive(bool active) { m_IsColliderActive = active; }
 
+    COLLISION_LAYERTYPE Get_CollisionLayer() const { return m_CollisionLayer; }  
+    void Set_CollisionLayer(COLLISION_LAYERTYPE layer) { m_CollisionLayer = layer; }  
+
     // [충돌 상태 관리] - CollisionManager에서 사용
     bool IsOverlapping(CCollider* other);
     void AddOverlap(CCollider* other);      // 충돌시작
@@ -48,7 +51,7 @@ protected:
     void Free() override;
 
 protected:
-    // TODO : 충돌처리 조건 더 필요하면 추가하기
+    COLLISION_LAYERTYPE m_CollisionLayer; // 충돌 레이어
 
     COLLIDERTYPE  m_ColliderType;
     _bool         m_ShowDebug;        // 디버그 렌더링 여부

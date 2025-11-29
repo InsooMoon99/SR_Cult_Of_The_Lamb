@@ -4,6 +4,7 @@
 
 BEGIN(Engine)
 class CTexture;
+class CRigidbody;
 END
 
 class CHumanMonster : public CMonsterBase
@@ -37,5 +38,6 @@ protected:
     void Free() override;
 
 private:
+    Engine::CRigidbody* m_RigidbodyCom;
 
 };
