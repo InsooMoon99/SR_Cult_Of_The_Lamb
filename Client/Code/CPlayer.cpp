@@ -107,11 +107,6 @@ _int CPlayer::Update_GameObject(const _float& timeDelta)
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 
-    //if (CDInputMgr::GetInstance()->KeyDown(DIK_5))
-    //    Test_Attack();
-
-    cout << m_CombatStatCom->Get_Hp() << endl;
-
     return exit;
 }
 
@@ -166,12 +161,18 @@ void CPlayer::Render_Reset()
 
 void CPlayer::Test_Attack()
 {
+    auto playerDir = m_PlayerControllerCom->Get_MoveDir();
+
+    cout << playerDir.x << playerDir.y << playerDir.z << endl;
+
     // 사용 예시
     CAttackBuilder(m_GraphicDev, this)
-        .Box()
+        .Sphere()
         .Damage(12.f)
         .Knockback(50.f)
+        .Scale(5.f)
         .InstigatorPos()
+        .Offset(_vec3(2.f, 0.f, 0.f))
         .Spawn();
 }
 
