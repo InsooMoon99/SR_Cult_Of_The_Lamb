@@ -17,8 +17,10 @@ enum class MAPOBJTYPE
 typedef struct tagMapData
 {
     MAPOBJTYPE type;
+    _int textureIndex;
     _vec3 pos;
     _vec3 scale;
+    _vec3 rotation;
 
 } MapObjectData;
 

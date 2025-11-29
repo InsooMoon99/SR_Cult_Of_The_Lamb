@@ -57,6 +57,12 @@ void CGameObject::LateUpdate_GameObject(const _float& timeDelta)
 void CGameObject::Render_GameObject()
 { }
 
+CTransform* CGameObject::Get_Transform()
+{
+    return dynamic_cast<CTransform*>(
+        Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+}
+
 bool CGameObject::SetTexAspectInit(CTexture* texCom, CTransform* transCom,int index, wstring*key, bool is_width, float lengh)
 {
     float w = 0, h = 0;

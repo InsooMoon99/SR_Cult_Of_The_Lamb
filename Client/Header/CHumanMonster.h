@@ -1,17 +1,12 @@
 ﻿#pragma once
-#include "CGameObject.h"
+
+#include "CMonsterBase.h"
 
 BEGIN(Engine)
-class CAnimator;
 class CTexture;
-class CState;
-class CTransform;
-class CRcTex;
-class CBoxCollider;
-class CCombatStat;
 END
 
-class CHumanMonster : public CGameObject
+class CHumanMonster : public CMonsterBase
 {
 private:
     explicit CHumanMonster(DEVICE graphicDev);
@@ -20,35 +15,27 @@ private:
 
 public:
     HRESULT Ready_GameObject() override;
+    void    Initialize_GameObject() override;
     _int    Update_GameObject(const _float& timeDelta) override;
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
-
-private:
-    void    Animation_Setting();
-    HRESULT Add_Component();
-
-    void Render_Setting();
-    void Render_Reset();
 
 public:
     void OnBeginOverlap(CCollider* self, CCollider* other) override;
     void OnEndOverlap(CCollider* self, CCollider* other) override;
 
+    void Chase_Target(const float& timeDelta, _float speed) override;
+
 private:
-    CRcTex*       m_BufferCom;
-    CTransform*   m_TransformCom;
-    CBoxCollider* m_BoxColCom;
-    CState*       m_StateCom;
-    CTexture*     m_TextureCom;
-    CAnimator*    m_AnimatorCom;
-    CCombatStat*  m_CombatStatCom;
+    void     Animation_Setting() override;
+    HRESULT  Add_Component() override;
+
 public:
     static CHumanMonster* Create(DEVICE graphicDev);
 
-private:
-    ACTORSTATE m_State;
-
 protected:
     void Free() override;
+
+private:
+
 };

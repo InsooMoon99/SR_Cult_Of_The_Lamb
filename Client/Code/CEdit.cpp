@@ -77,7 +77,7 @@ HRESULT CEdit::Ready_Environment_Layer(LAYERTYPE layerType)
     CTerrain* terrain = CTerrain::Create(m_GraphicDev);
 
     NULL_CHECK_RETURN_MSG(terrain, E_FAIL, L"Terrain create failed");
-    terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_WallTest1.map");
+    //terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_WallTest1.map");
 
     layer->Add_GameObject(OBJTYPE::TERRAIN, terrain);
 

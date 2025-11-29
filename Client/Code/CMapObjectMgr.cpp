@@ -320,6 +320,7 @@ HRESULT CMapObjectMgr::SaveMapObject(const char* filePath)
             {
                 MapObjectData data;
                 data.type = mapObj->Get_Type();
+                data.textureIndex = mapObj->Get_TextureIndex();
 
                 CTransform* objTransform = dynamic_cast<CTransform*>(mapObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
 
@@ -327,6 +328,8 @@ HRESULT CMapObjectMgr::SaveMapObject(const char* filePath)
                     continue;
 
                 data.pos = objTransform->Get_Pos();
+                data.scale = objTransform->Get_Scale();
+                data.rotation = objTransform->Get_Rotation();
 
                 objects.push_back(data);
             }
@@ -339,7 +342,7 @@ HRESULT CMapObjectMgr::SaveMapObject(const char* filePath)
         return E_FAIL;
 
     uint32_t magic = 0x4D415042; // 'MAPB'
-    uint32_t version = 1;
+    uint32_t version = 2;
     uint32_t count = objects.size();
 
     ofs.write((char*)&magic, sizeof(magic));
@@ -397,7 +400,7 @@ HRESULT CMapObjectMgr::LoadMapObject(const char* filePath)
 
     for (const auto& data : objectsData)
     {
-        CMapObjectBase* newObj = CreateMapObjectType(m_GraphicDev, data.type);
+        CMapObjectBase* newObj = CreateMapObjectType(m_GraphicDev, data.type, data.textureIndex);
         if (newObj)
         {
             newObj->Set_WorldPos(data.pos);
@@ -410,6 +413,90 @@ HRESULT CMapObjectMgr::LoadMapObject(const char* filePath)
     for (auto& obj : m_PlacedObjects)
     {
         Add_Placement(obj);
+    }
+
+    return S_OK;
+}
+
+HRESULT CMapObjectMgr::Save_ToStream(ofstream& ofs)
+{
+    CScene* scene = CManagement::GetInstance()->Get_Scene();
+    CLayer* layer_Enviroment = scene->Get_Layer(LAYERTYPE::ENVIRONMENT);
+
+    vector<MapObjectData> objects;
+
+    for (auto& layerPair : layer_Enviroment->Get_Objects())
+    {
+        for (auto& obj : layerPair.second)
+        {
+            CMapObjectBase* mapObj = dynamic_cast<CMapObjectBase*>(obj);
+            if (mapObj)
+            {
+                MapObjectData data;
+                data.type = mapObj->Get_Type();
+                data.textureIndex = mapObj->Get_TextureIndex();
+
+                CTransform* objTransform = dynamic_cast<CTransform*>(
+                    mapObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+                if (objTransform)
+                {
+                    data.pos = objTransform->Get_Pos();
+                    data.scale = objTransform->Get_Scale();        
+                    data.rotation = objTransform->Get_Rotation();  
+
+                    objects.push_back(data);
+                }
+            }
+        }
+    }
+
+    // Stream에 쓰기
+    uint32_t count = objects.size();
+    ofs.write((char*)&count, sizeof(count));
+
+    if (count > 0)
+    {
+        ofs.write((char*)objects.data(), sizeof(MapObjectData) * count);
+    }
+
+    return S_OK;
+}
+
+HRESULT CMapObjectMgr::Load_FromStream(ifstream& ifs)
+{
+    uint32_t count = 0;
+    ifs.read((char*)&count, sizeof(count));
+
+    vector<MapObjectData> objectsData(count);
+    if (count > 0)
+    {
+        ifs.read((char*)objectsData.data(), sizeof(MapObjectData) * count);
+    }
+
+    CScene* scene = CManagement::GetInstance()->Get_Scene();
+    if (!scene) return E_FAIL;
+
+    CLayer* layer = scene->Get_Layer(LAYERTYPE::ENVIRONMENT);
+    if (!layer) return E_FAIL;
+
+    for (const auto& data : objectsData)
+    {
+        CMapObjectBase* newObj = CreateMapObjectType(m_GraphicDev, data.type, data.textureIndex);
+        if (newObj)
+        {
+            CTransform* transform = dynamic_cast<CTransform*>(
+                newObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+            if (transform)
+            {
+                transform->Set_Pos(data.pos);
+                transform->Set_Scale(data.scale);  
+                transform->Set_Rotation(data.rotation);
+            }
+
+            layer->Add_GameObject(OBJTYPE::PLACEMENT, newObj);
+        }
     }
 
     return S_OK;

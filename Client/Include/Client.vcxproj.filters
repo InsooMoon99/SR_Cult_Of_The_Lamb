@@ -136,6 +136,9 @@
     <Filter Include="97. Component\03. Wall">
       <UniqueIdentifier>{b0c9067d-def9-4e61-954d-f361723e82cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="96. Base">
+      <UniqueIdentifier>{4574c831-331d-4517-b972-c4e997802ca0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -375,6 +378,15 @@
     <ClInclude Include="..\Header\CStage_Boss2.h">
       <Filter>02. Scene\01. Stage</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CCharacterBase.h">
+      <Filter>96. Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMonsterBase.h">
+      <Filter>96. Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CNPCBase.h">
+      <Filter>96. Base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -592,6 +604,15 @@
     </ClCompile>
     <ClCompile Include="..\Code\CStage_Boss2.cpp">
       <Filter>02. Scene\01. Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CCharacterBase.cpp">
+      <Filter>96. Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMonsterBase.cpp">
+      <Filter>96. Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CNPCBase.cpp">
+      <Filter>96. Base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

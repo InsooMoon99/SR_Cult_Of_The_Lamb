@@ -148,6 +148,12 @@
     <Filter Include="02. Prototype\04. Collider\03. Attack Collider">
       <UniqueIdentifier>{a9235b16-8ae5-4671-ac3c-c9888f9865e4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Logic\06. Renderable">
+      <UniqueIdentifier>{c091d5bc-1f3b-45c6-b255-ec112271b893}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Logic\07. NonRenderable">
+      <UniqueIdentifier>{d1ba0322-deec-4eaf-ad2f-d7cc40ecf4cb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\Engine_Define.h">
@@ -318,6 +324,7 @@
     <ClInclude Include="..\Header\CAttackBuilder.h">
       <Filter>98. Utility</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CRenderObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CGraphicDev.cpp">
@@ -458,5 +465,6 @@
     <ClCompile Include="..\Code\CAttackBuilder.cpp">
       <Filter>98. Utility</Filter>
     </ClCompile>
+    <ClCompile Include="..\Code\CRenderObject.cpp" />
   </ItemGroup>
 </Project>

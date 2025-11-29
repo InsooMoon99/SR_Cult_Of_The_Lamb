@@ -1,13 +1,23 @@
 ﻿#include "pch.h"
 #include "CTerrainRenderer.h"
+
+#include <CLayer.h>
+
+#include "CManagement.h"
 #include "CTransform.h"
 #include "CTexture.h"
 #include "CDInputMgr.h"
 #include "CGameObject.h"
+#include "CMapObjectBase.h"
+#include "CMapObjectMgr.h"
+#include "CMapObject_Deco.h"
+#include "CMapObject_Grass.h"
+#include "CMapObject_Rubble.h"
 #include "CTerrainTex.h"
 #include "CPickingHelper.h"
 #include "CTerrain.h"
 #include "CWallRenderer.h"
+#include "../../Engine/Header/CScene.h"
 
 CTerrainRenderer::CTerrainRenderer(DEVICE graphicDev)
     : CComponent(graphicDev),
@@ -19,7 +29,6 @@ CTerrainRenderer::CTerrainRenderer(DEVICE graphicDev)
       m_PaintZ(0),
       m_MapName{"Terrain_"},
       m_SelectedMapIndex(0), m_SizeX(TILE_CNT_X), m_SizeZ(TILE_CNT_Z), m_CellSize(1.f), m_ShowTile(false),
-      m_ShowOutline(false),
       m_TileTypeIndex(0)
 {
 }
@@ -34,7 +43,7 @@ CTerrainRenderer::CTerrainRenderer(const CTerrainRenderer& rhs)
       m_PaintX(rhs.m_PaintX),
       m_PaintZ(rhs.m_PaintZ),
       m_SelectedMapIndex(rhs.m_SelectedMapIndex), m_SizeX(TILE_CNT_X), m_SizeZ(TILE_CNT_Z), m_CellSize(rhs.m_CellSize),
-      m_ShowTile(false), m_ShowOutline(false), m_TileTypeIndex(0),
+      m_ShowTile(false), m_TileTypeIndex(0),
       m_MapList(rhs.m_MapList)
 {
     memcpy(m_MapName, rhs.m_MapName, sizeof(m_MapName));
@@ -99,7 +108,7 @@ _int CTerrainRenderer::Update_Component(const _float& timeDelta)
             const int iCellCntX = m_SizeX - 1;
             const int index = cellZ * iCellCntX + cellX;
 
-            if (CDInputMgr::GetInstance()->MousePress(DIM_LB))
+            if (m_ShowTile && CDInputMgr::GetInstance()->MousePress(DIM_LB))
             {
                 m_PaintX = cellX;
                 m_PaintZ = cellZ;
@@ -495,7 +504,7 @@ HRESULT CTerrainRenderer::SaveMap(const char* filePath)
         return E_FAIL;
 
     uint32_t magic = 0x54494C45; // 'TILE'
-    uint32_t version = 7;
+    uint32_t version = 8;
 
     uint32_t cellCntX = m_SizeX - 1;
     uint32_t cellCntZ = m_SizeZ - 1;
@@ -526,6 +535,11 @@ HRESULT CTerrainRenderer::SaveMap(const char* filePath)
                 wallRenderer->Save_Walls(ofs);
             }
         }
+    }
+
+    if (version >= 8)
+    {
+        CMapObjectMgr::GetInstance()->Save_ToStream(ofs);
     }
 
     ofs.close();
@@ -602,6 +616,12 @@ HRESULT CTerrainRenderer::LoadMap(const char* filePath)
         }
     }
 
+    if (version >= 8)
+    {
+        CMapObjectMgr::GetInstance()->Load_FromStream(ifs);
+    }
+
+
     ifs.close();
     return S_OK;
 }
@@ -621,17 +641,6 @@ _vec3 CTerrainRenderer::GetCellCenterWorld(_uint cellX, _uint cellZ) const
         m_TransformCom->Get_Info(INFO_POS, &pos);
         scale = m_TransformCom->Get_Scale();
 
-        // ✅ pos와 scale 값 출력 (첫 1번만)
-        static bool logged = false;
-        if (!logged)
-        {
-            char msg[256];
-            sprintf_s(msg, "Terrain Transform - Pos: (%.2f, %.2f, %.2f), Scale: (%.2f, %.2f, %.2f)\n",
-                pos.x, pos.y, pos.z, scale.x, scale.y, scale.z);
-            OutputDebugStringA(msg);
-            logged = true;
-        }
-
         _vec3 worldPos;
         worldPos.x = localPos.x * scale.x + pos.x;
         worldPos.y = localPos.y * scale.y + pos.y;
@@ -641,14 +650,6 @@ _vec3 CTerrainRenderer::GetCellCenterWorld(_uint cellX, _uint cellZ) const
     }
 
     return localPos;
-}
-
-void CTerrainRenderer::SelectPlaceObject(_uint cellX, _uint cellZ)
-{
-    const _vec3 pos = GetCellCenterWorld(cellX, cellZ);
-
-    // TODO : 배치할 건물 하나 만들어보기
-    //CGameObject* object = 건물 배치?
 }
 
 bool CTerrainRenderer::PickCellMousePos(_int& outX, _int& outZ)

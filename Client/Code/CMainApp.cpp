@@ -31,8 +31,6 @@ CMainApp::~CMainApp()
 
 HRESULT CMainApp::Ready_MainApp()
 {
-    
-
     if (FAILED(Ready_DefaultSetting(&m_GraphicDev)))
         return E_FAIL;
 

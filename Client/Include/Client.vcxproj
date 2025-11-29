@@ -181,6 +181,7 @@
     <ClInclude Include="..\Header\CBossMove.h" />
     <ClInclude Include="..\Header\CBossPhase1.h" />
     <ClInclude Include="..\Header\CBossStateMachine.h" />
+    <ClInclude Include="..\Header\CCharacterBase.h" />
     <ClInclude Include="..\Header\CMapObject_Helper.h" />
     <ClInclude Include="..\Header\CComInspectors.h" />
     <ClInclude Include="..\Header\CDroppedItem.h" />
@@ -204,7 +205,9 @@
     <ClInclude Include="..\Header\CMapObject_Rubble.h" />
     <ClInclude Include="..\Header\CMenuChar.h" />
     <ClInclude Include="..\Header\CMonster.h" />
+    <ClInclude Include="..\Header\CMonsterBase.h" />
     <ClInclude Include="..\Header\CMonsterState.h" />
+    <ClInclude Include="..\Header\CNPCBase.h" />
     <ClInclude Include="..\Header\CPlayer.h" />
     <ClInclude Include="..\Header\CPlayerController.h" />
     <ClInclude Include="..\Header\CRandomMgr.h" />
@@ -254,6 +257,7 @@
     <ClCompile Include="..\Code\CBossMove.cpp" />
     <ClCompile Include="..\Code\CBossPhase1.cpp" />
     <ClCompile Include="..\Code\CBossStateMachine.cpp" />
+    <ClCompile Include="..\Code\CCharacterBase.cpp" />
     <ClCompile Include="..\Code\CDroppedItem.cpp" />
     <ClCompile Include="..\Code\CDropSystem.cpp" />
     <ClCompile Include="..\Code\CEdit.cpp" />
@@ -275,7 +279,9 @@
     <ClCompile Include="..\Code\CMapObject_Rubble.cpp" />
     <ClCompile Include="..\Code\CMenuChar.cpp" />
     <ClCompile Include="..\Code\CMonster.cpp" />
+    <ClCompile Include="..\Code\CMonsterBase.cpp" />
     <ClCompile Include="..\Code\CMonsterState.cpp" />
+    <ClCompile Include="..\Code\CNPCBase.cpp" />
     <ClCompile Include="..\Code\CPlayer.cpp" />
     <ClCompile Include="..\Code\CPlayerController.cpp" />
     <ClCompile Include="..\Code\CRandomMgr.cpp" />

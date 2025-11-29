@@ -12,7 +12,7 @@ public:
     HRESULT        Ready_GameObject() override;
     _int           Update_GameObject(const _float& timeDelta) override;
     void           LateUpdate_GameObject(const _float& timeDelta) override;
-    void           Render_GameObject() override;
+    void           Render_GameObject() override ;
 
     static CUIPlayerPage* Create(DEVICE graphicDev);
     void                  Free() override;

@@ -27,10 +27,10 @@ public:
 
 public:
     virtual HRESULT Ready_GameObject();
+    virtual void    Initialize_GameObject() {} // Ready보다 한 단계 아래 생명주기
     virtual _int    Update_GameObject(const _float& timeDelta);
     virtual void    LateUpdate_GameObject(const _float& timeDelta);
     virtual void    Render_GameObject() PURE;
-
 
 public:
     virtual void OnBeginOverlap(CCollider* self, CCollider* other) {}
@@ -44,6 +44,9 @@ public:
 
     const map<COMPONENTTYPE, CComponent*>&
         Get_StaticComponents() const { return m_Components[ID_STATIC]; }
+
+    // 자주 사용해서 추가함
+    CTransform* Get_Transform();
 
     virtual wstring Get_Name() { return m_Name; }
     void Set_Name(wstring name) { m_Name = name; }
