@@ -124,7 +124,7 @@ enum class COMPONENTTYPE
     TEX_UI_ICON,
     TEX_UI_BUTTON,
     TEX_BOSSPHASE1,
-    TEX_OUT,    
+    TEX_OUT,
 
     ANIMATOR,
     CAMERA,
@@ -189,7 +189,7 @@ enum class SCENETYPE
     SC_BOSS_STAGE2,
 
     SC_EDIT,
-        
+
     SC_END
 };
 }

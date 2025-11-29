@@ -5,9 +5,9 @@ class CPlayerInput;
 class CWeaponEquip;
 
 BEGIN(Engine)
+class CAttackBase;
 class CCombatStat;
 class CState;
-class CAttackBox;
 END
 
 /// @brief 플레이어의 무기 공격을 담당하는 스태틱 컴포넌트
@@ -25,8 +25,8 @@ public:
 
         _float damageMultiplier;    //TODO 공격력 배율. 나중에 아이템 정보와 연동하기
         _float knockbackPower;      // 넉백 힘
-        _float spawnOffset;         // 플레이어 전방 생성 거리
-        _vec3  hitboxScale;         // 히트박스 크기 (예: 1, 1, 1)
+        _float spawnOffset;         // 플레이어 전방 생성  (비율)
+        _vec3  hitboxScale;         // 공격 오브젝트 크기 (예: 1, 1, 1)
     };
 
     // [AttackInfo 관리용] 무기 종류 enum
@@ -79,10 +79,10 @@ private: // --- 내부 로직 ---
     _int Get_WeaponIndex(_int weaponID);
     void Reset_AttackData();
 
-    /// @brief 공격 정보 구조체와 계산된 방향을 받아 히트박스 생성
+    /// @brief 공격 정보 구조체와 계산된 방향을 받아 공격 오브젝트 생성
     /// @param attackInfo 현재 공격의 설정 데이터 (데미지 배율, 크기, 오프셋 등)
     /// @param vAttackDir 계산된 공격 방향 벡터
-    void Create_Hitbox(const AttackInfo& attackInfo, const _vec3& vAttackDir);
+    void Create_AttackObj(const AttackInfo& attackInfo, const _vec3& vAttackDir);
 
 private: // --- Owner Component 캐싱 ---
     Engine::CState*      m_OwnerStateCom;
@@ -91,7 +91,7 @@ private: // --- Owner Component 캐싱 ---
     CPlayerInput*        m_OwnerInputCom;
 
 private: // --- 다른 오브젝트 캐싱 ---
-    Engine::CAttackBox* m_CurrentHitbox; // 현재 활성화된 히트박스
+    Engine::CAttackBase* m_CurrentAttackObj; // 현재 활성화된 공격 오브젝트
 
 private: // --- 멤버 변수 ---
     // 무기 공격 데이터 저장소

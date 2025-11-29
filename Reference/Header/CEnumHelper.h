@@ -148,10 +148,6 @@ static const char* ToString(COMPONENTTYPE type)
     case COMPONENTTYPE::TEX_MENU_CHAR:      return "UI_ManuChaR";
     case COMPONENTTYPE::TEX_UI_ICON:        return "UI_Icon";
 
-    // Tile Texture Components
-    case COMPONENTTYPE::TEX_TILE_284:       return "TexTile284";
-    case COMPONENTTYPE::TEX_TILE_1024:      return "TexTile1024";
-
     // Collider Components
     case COMPONENTTYPE::RECT_COLL:          return "RectColl";
     case COMPONENTTYPE::CIRCLE_COLL:        return "CircleColl";

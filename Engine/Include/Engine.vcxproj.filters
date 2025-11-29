@@ -318,6 +318,9 @@
     <ClInclude Include="..\Header\CAttackBuilder.h">
       <Filter>98. Utility</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CPickingHelper.h">
+      <Filter>98. Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CGraphicDev.cpp">

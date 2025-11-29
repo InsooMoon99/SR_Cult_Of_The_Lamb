@@ -1,10 +1,7 @@
 ﻿#pragma once
-//TODO ↓↓↓↓↓
-#include <utility>
-
-#include "CCombatStat.h"
 #include "CAttackBase.h"
 #include "CBoxCollider.h"
+#include "CCombatStat.h"
 
 BEGIN(Engine)
 

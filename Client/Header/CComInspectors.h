@@ -586,29 +586,31 @@ static void PlayerController_Inspector(CPlayerController* controller)
 {
     NULL_CHECK(controller);
 
-    ImGui::PushID("PlayerController_Inspector");
-    {
-        ImGui::Text("[ Player Controller ]");
-        ImGui::Separator();
+    //TODO 나중에 수정
 
-        const float column_width = 120.0f;
-        
-        ImGui::Columns(2, "PlayerColumns", false);
-        ImGui::SetColumnWidth(0, column_width);
-
-        // Roll Duration
-        _float rollDuration = controller->Get_RollDuration();
-        ImGui::Text("Roll Duration");
-        ImGui::NextColumn();
-        if (ImGui::DragFloat("##RollDuration", &rollDuration, 0.01f, 0.1f, 2.0f))
-        {
-            controller->Set_RollDuration(rollDuration);
-        }
-        ImGui::NextColumn();
-
-        ImGui::Columns(1);
-    }
-    ImGui::PopID();
+    //ImGui::PushID("PlayerController_Inspector");
+    //{
+    //    ImGui::Text("[ Player Controller ]");
+    //    ImGui::Separator();
+    //
+    //    const float column_width = 120.0f;
+    //    
+    //    ImGui::Columns(2, "PlayerColumns", false);
+    //    ImGui::SetColumnWidth(0, column_width);
+    //
+    //    // Roll Duration
+    //    _float rollDuration = controller->Get_RollDuration();
+    //    ImGui::Text("Roll Duration");
+    //    ImGui::NextColumn();
+    //    if (ImGui::DragFloat("##RollDuration", &rollDuration, 0.01f, 0.1f, 2.0f))
+    //    {
+    //        controller->Set_RollDuration(rollDuration);
+    //    }
+    //    ImGui::NextColumn();
+    //
+    //    ImGui::Columns(1);
+    //}
+    //ImGui::PopID();
 }
 
 static void RigidBody_Inspector(CRigidbody* rigid)

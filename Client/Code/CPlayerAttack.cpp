@@ -1,13 +1,11 @@
 ﻿#include "pch.h"
 #include "CPlayerAttack.h"
 
-#include "CAttackBox.h"
+#include "CAttackBuilder.h"
 #include "CCombatStat.h"
-#include "CCreateHelper.h"
 #include "CGameObject.h"
 #include "CPlayerInput.h"
 #include "CState.h"
-#include "CTransform.h"
 #include "CWeaponEquip.h"
 
 CPlayerAttack::CPlayerAttack(DEVICE graphicDev)
@@ -18,7 +16,7 @@ CPlayerAttack::CPlayerAttack(DEVICE graphicDev)
       m_OwnerWeaponCom(nullptr),
       m_OwnerInputCom(nullptr),
 
-      m_CurrentHitbox(nullptr),
+      m_CurrentAttackObj(nullptr),
 
       m_AttackInfo{},
       m_ComboIndex(0),
@@ -37,7 +35,7 @@ CPlayerAttack::CPlayerAttack(const CPlayerAttack& rhs)
       m_OwnerWeaponCom(nullptr),
       m_OwnerInputCom(nullptr),
 
-      m_CurrentHitbox(nullptr),
+      m_CurrentAttackObj(nullptr),
 
       m_ComboIndex(rhs.m_ComboIndex),
 
@@ -213,7 +211,7 @@ _bool CPlayerAttack::Update_NormalAttack(const _float& timeDelta)
     _float atkSpeed = m_OwnerCombatStatCom->Get_AttackSpeed();
     if (atkSpeed < 0.1f) atkSpeed = 0.1f;
 
-    // 히트박스 제어
+    // 공격 오브젝트 제어
     if (m_Timer >= info.hitboxStartTime / atkSpeed &&
         m_Timer <= info.hitboxEndTime / atkSpeed)
     {
@@ -226,7 +224,7 @@ _bool CPlayerAttack::Update_NormalAttack(const _float& timeDelta)
             mouseDir.z     = 0.f;
             D3DXVec3Normalize(&mouseDir, &mouseDir);
 
-            Create_Hitbox(info, mouseDir);
+            Create_AttackObj(info, mouseDir);
         }
     }
     else
@@ -288,14 +286,14 @@ _bool CPlayerAttack::Update_HeavyAttack(const _float& timeDelta)
     _float atkSpeed = m_OwnerCombatStatCom->Get_AttackSpeed();
     if (atkSpeed < 0.1f) atkSpeed = 0.1f;
 
-    // 히트박스 제어
+    // 공격 오브젝트 제어
     if (m_Timer >= info.hitboxStartTime / atkSpeed &&
         m_Timer <= info.hitboxEndTime / atkSpeed)
     {
         if (!m_IsHitboxActive)
         {
             m_IsHitboxActive = true;
-            Create_Hitbox(info, m_OwnerInputCom->Get_MouseDir());
+            Create_AttackObj(info, m_OwnerInputCom->Get_MouseDir());
         }
     }
     else
@@ -337,13 +335,13 @@ void CPlayerAttack::Reset_AttackData()
     {
         m_IsHitboxActive = false;
 
-        // 히트박스 수명이 아직 남아있으면, 강제로 히트박스를 소멸
+        // 공격 오브젝트 수명이 아직 남아있으면, 강제로 히트박스를 소멸
         // 소멸 시, Create_Hitbox() 에서 등록해놓은 콜백 함수가 자동으로 실행되어
         // m_CurrentHitbox = nullptr로 안전하게 초기화함
-        if (m_CurrentHitbox)
+        if (m_CurrentAttackObj)
         {
-            m_CurrentHitbox->Mark_As_PendingKill();
-            m_CurrentHitbox = nullptr;
+            m_CurrentAttackObj->Mark_As_PendingKill();
+            m_CurrentAttackObj = nullptr;
         }
     }
 
@@ -351,17 +349,43 @@ void CPlayerAttack::Reset_AttackData()
     m_IsNextComboReserved = false;
 }
 
-void CPlayerAttack::Create_Hitbox(const AttackInfo& attackInfo, const _vec3& vAttackDir)
+void CPlayerAttack::Create_AttackObj(const AttackInfo& attackInfo, const _vec3& vAttackDir)
 {
     if (!m_OwnerCombatStatCom) return;
 
-    // 히트박스 생성
+    CAttackBuilder(m_GraphicDev, m_Owner)
+        .Box()
+        // 박스 콜라이더 사용
+        .Track(m_CurrentAttackObj)
+        //!! 실제 공격 오브젝트를 여기서 직접 관리하고 싶어서 가져옴. 다른 곳에선 안쓸거면 필요 없음
+        .Damage(m_OwnerCombatStatCom->Get_Attack() * attackInfo.damageMultiplier)
+        // 데미지 설정
+        .Knockback(attackInfo.knockbackPower)
+        // 넉백 설정
+        .Duration(attackInfo.hitboxEndTime - attackInfo.hitboxStartTime)
+        // 지속시간 설정
+        .Scale(_vec3())
+        // 공격 오브젝트 크기 설정
+        .InstigatorPos()                
+        // 공격하는 쪽을 기준으로 위치를 지정하겠다
+        // 반대되는 기능으로 절대 위치 기준을 정하는 Position(_vec3)가 있다
+        .Offset(vAttackDir * attackInfo.spawnOffset)
+        // 공격자로부터 얼마나 떨어져 있는지 설정
+        .DestroyOnHit(false)
+        // 콜라이더 충돌 시 바로 파괴되어야 하는지 설정
+        // 투사체 공격의 경우 이를 사용하는게 좋을수도
+        .Spawn();
+        // 모든 설정을 마치고 생성
+
+    /*
+    
+    // 공격 오브젝트 생성
     auto attackBox = CAttackBox::Create(m_GraphicDev);
     NULL_CHECK(attackBox);
 
     attackBox->Set_Instigator(m_Owner);
 
-    // 히트박스 데이터 세팅
+    // 공격 오브젝트 데이터 세팅
     HITDATA hitData{};
     hitData.damage    = m_OwnerCombatStatCom->Get_Attack() * attackInfo.damageMultiplier;
     hitData.knockback = attackInfo.knockbackPower;
@@ -381,18 +405,24 @@ void CPlayerAttack::Create_Hitbox(const AttackInfo& attackInfo, const _vec3& vAt
 
     hitboxTransform->Set_Scale(attackInfo.hitboxScale);
 
-    // 현재 씬의 레이어에 히트박스 오브젝트를 추가
+    // 현재 씬의 레이어에 공격 오브젝트 오브젝트를 추가
     SpawnAttackObject(attackBox);
 
     m_CurrentHitbox = attackBox;
 
+    */
+
     // 현재 attackBox가 죽을 때, 이쪽의 m_CurrentHitbox가 아직 현재 attackBox를 가리키고 있으면
     // 이를 nullptr로 안전하게 초기화하는 람다함수를 등록
-    m_CurrentHitbox->Set_OnDestroyCallback([this, attackBox]()
+    if (m_CurrentAttackObj)
     {
-        if (m_CurrentHitbox == attackBox)
-            m_CurrentHitbox = nullptr;
-    });
+        CAttackBase* pBox = m_CurrentAttackObj;
+        m_CurrentAttackObj->Set_OnDestroyCallback([this, pBox]()
+        {
+            if (m_CurrentAttackObj == pBox)
+                m_CurrentAttackObj = nullptr;
+        });
+    }
 }
 
 CPlayerAttack* CPlayerAttack::Create(DEVICE graphicDev)
@@ -423,10 +453,10 @@ void CPlayerAttack::Free()
 
     // CPlayerAttack이 현재 히트박스보다 먼저 죽는 경우
     // Set_OnDestroyCallback이 아무것도 실행하지 말도록 nullptr로 콜백할 함수를 지움
-    if (m_CurrentHitbox)
+    if (m_CurrentAttackObj)
     {
-        m_CurrentHitbox->Set_OnDestroyCallback(nullptr);
-        m_CurrentHitbox = nullptr;
+        m_CurrentAttackObj->Set_OnDestroyCallback(nullptr);
+        m_CurrentAttackObj = nullptr;
     }
 
     CComponent::Free();

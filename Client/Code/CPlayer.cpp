@@ -3,6 +3,7 @@
 
 #include "CAnimator.h"
 #include "CAttackBox.h"
+#include "CAttackBuilder.h"
 #include "CAttackSphere.h"
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
@@ -24,7 +25,6 @@
 #include "CTransform.h"
 #include "CUIInventory.h"
 #include "CWeaponEquip.h"
-#include "CAttackBuilder.h"
 
 CPlayer::CPlayer(DEVICE graphicDev)
     : CGameObject(graphicDev),
