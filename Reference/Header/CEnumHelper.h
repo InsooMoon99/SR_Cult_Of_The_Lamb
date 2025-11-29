@@ -85,6 +85,7 @@ static const char* ToString(ACTORSTATE state)
     case ACTORSTATE::PLAYER_SWORD_COMBO1:   return "Sword_Combo1";
     case ACTORSTATE::PLAYER_SWORD_COMBO2:   return "Sword_Combo2";
     case ACTORSTATE::PLAYER_SWORD_COMBO3:   return "Sword_Combo3";
+    case ACTORSTATE::PLAYER_SWORD_HEAVY:    return "Sword_Heavy";
 
     default:                                return "UnknownState";
     }
@@ -156,13 +157,15 @@ static const char* ToString(COMPONENTTYPE type)
     case COMPONENTTYPE::BOX_COLL:           return "BoxColl";
     case COMPONENTTYPE::SPHERE_COLL:        return "SphereColl";
 
-    // Player Components
-    case COMPONENTTYPE::CONTROLLER_PLAYER:  return "PlayerController";
-    case COMPONENTTYPE::WEAPON_EQUIP:       return "WeaponEquip";
-
     // Physics Component
     case COMPONENTTYPE::RIGIDBODY:          return "Rigidbody";
 
+    // Player Components
+    case COMPONENTTYPE::WEAPON_EQUIP:       return "WeaponEquip";
+    case COMPONENTTYPE::PL_CONTROLLER:      return "PlayerController";
+    case COMPONENTTYPE::PL_INPUT:           return "PlayerInput";
+    case COMPONENTTYPE::PL_MOVEMENT:        return "PlayerMovement";
+    case COMPONENTTYPE::PL_ATTACK:          return "PlayerAttack";
 
     // End Marker
     case COMPONENTTYPE::COMPONENT_END:      return "ComponentEnd";

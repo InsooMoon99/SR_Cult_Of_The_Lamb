@@ -6,7 +6,7 @@
 BEGIN(Engine)
 
 class CBoxCollider;
-class CTrnasform;
+class CTransform;
 
 class ENGINE_DLL CAttackBox : public CGameObject
 {

@@ -16,11 +16,11 @@ public:
 
 public:     // --- Getter ---
     const _vec3& Get_MoveDir() const { return m_MoveDir; }
-    const _vec3& Get_AttackDir() const { return m_MouseDir; }
+    const _vec3& Get_MouseDir() const { return m_MouseDir; } // 플레이어 -> 마우스 방향벡터 반환
 
 private:    // --- 멤버 변수 ---
     _vec3 m_MoveDir;    // 이동 방향
-    _vec3 m_MouseDir;   // 마우스 방향. 공격 등에 사용
+    _vec3 m_MouseDir;   // 플레이어 -> 마우스 방향
 
 public:
     static CPlayerInput* Create(DEVICE graphicDev);

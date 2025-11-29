@@ -2,6 +2,8 @@
 #include "CPlayerInput.h"
 
 #include "CDInputMgr.h"
+#include "CPickingHelper.h"
+#include "CTransform.h"
 
 CPlayerInput::CPlayerInput(DEVICE graphicDev)
     : CComponent(graphicDev),
@@ -42,6 +44,22 @@ _int CPlayerInput::Update_Component(const _float& timeDelta)
     if (D3DXVec3LengthSq(&m_MoveDir) > 0.001f)
         D3DXVec3Normalize(&m_MoveDir, &m_MoveDir);
 
+    // MouseDir 벡터 생성 (Picking)
+    _vec3 vHitPos;
+
+    if (Engine::PickPlaneY(m_GraphicDev, g_hWnd, 0.f, vHitPos))
+    {
+        if (m_TransformCom)
+        {
+            const _vec3 vPlayerPos = m_TransformCom->Get_Pos();
+            m_MouseDir = vHitPos - vPlayerPos;
+            m_MouseDir.y = 0.f; // 평면 상의 방향이므로 y는 0으로 고정 (PickPlaneY가 이미 y=0 평면이긴 하지만 안전하게)
+    
+            if (D3DXVec3LengthSq(&m_MouseDir) > 0.001f)
+                D3DXVec3Normalize(&m_MouseDir, &m_MouseDir);
+        }
+    }
+
     return 0;
 }
 
@@ -50,16 +68,16 @@ void CPlayerInput::LateUpdate_Component()
 
 CPlayerInput* CPlayerInput::Create(DEVICE graphicDev)
 {
-    auto plInput = new CPlayerInput(graphicDev);
+    auto playerInput = new CPlayerInput(graphicDev);
 
-    if (FAILED(plInput->Ready_PlayerInput()))
+    if (FAILED(playerInput->Ready_PlayerInput()))
     {
-        Safe_Release(plInput);
+        Safe_Release(playerInput);
         MSG_BOX("PlayerInput Create Failed");
         return nullptr;
     }
 
-    return plInput;
+    return playerInput;
 }
 
 CComponent* CPlayerInput::Clone()

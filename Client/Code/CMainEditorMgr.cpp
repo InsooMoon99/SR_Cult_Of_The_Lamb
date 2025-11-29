@@ -435,7 +435,7 @@ void CMainEditorMgr::Render_SelectComponent()
             break;
         }
 
-        case COMPONENTTYPE::CONTROLLER_PLAYER:
+        case COMPONENTTYPE::PL_CONTROLLER:
         {
             auto controller = dynamic_cast<CPlayerController*>(selectComponent);
             // TODO : 헬퍼함수 만들기

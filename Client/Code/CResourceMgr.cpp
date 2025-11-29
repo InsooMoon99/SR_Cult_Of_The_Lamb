@@ -10,7 +10,10 @@
 #include "CEnumHelper.h"
 #include "CInventory.h"
 #include "CItemDB.h"
+#include "CPlayerAttack.h"
 #include "CPlayerController.h"
+#include "CPlayerInput.h"
+#include "CPlayerMovement.h"
 #include "CProtoMgr.h"
 #include "CRcCol.h"
 #include "CRectCollider.h"
@@ -42,7 +45,7 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
     if (FAILED(Ready_Buffer(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Player(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Monster(graphicDev))) return E_FAIL;
-   // if (FAILED(Ready_Boss(graphicDev))) return E_FAIL;
+    // if (FAILED(Ready_Boss(graphicDev))) return E_FAIL;
     if (FAILED(Ready_UI(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Item(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Common(graphicDev))) return E_FAIL;
@@ -151,15 +154,7 @@ HRESULT CResourceMgr::Ready_Common(DEVICE graphicDev)
         COMPONENTTYPE::TERRAIN_RENDER, CTerrainRenderer::Create(graphicDev))))
         return E_FAIL;
 
-    // Player Controller
-    if (FAILED(protoMgr->Ready_Prototype(
-        COMPONENTTYPE::CONTROLLER_PLAYER, CPlayerController::Create(graphicDev))))
-        return E_FAIL;
-
-    // weapon equip
-    if (FAILED(protoMgr->Ready_Prototype(
-        COMPONENTTYPE::WEAPON_EQUIP, CWeaponEquip::Create(graphicDev))))
-        return E_FAIL;
+    
 
     // Rigidbody
     if (FAILED(protoMgr->Ready_Prototype(
@@ -210,6 +205,31 @@ HRESULT CResourceMgr::Ready_Buffer(DEVICE graphicDev)
 HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
 {
     auto protoMgr = CProtoMgr::GetInstance();
+
+    // Player Controller
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::PL_CONTROLLER, CPlayerController::Create(graphicDev))))
+        return E_FAIL;
+
+    // Player Input
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::PL_INPUT, CPlayerInput::Create(graphicDev))))
+        return E_FAIL;
+
+    // Player Movement
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::PL_MOVEMENT, CPlayerMovement::Create(graphicDev))))
+        return E_FAIL;
+
+    // Player Attack
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::PL_ATTACK, CPlayerAttack::Create(graphicDev))))
+        return E_FAIL;
+
+    // weapon equip
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::WEAPON_EQUIP, CWeaponEquip::Create(graphicDev))))
+        return E_FAIL;
 
     CTexture* playerTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(playerTex, E_FAIL);
@@ -400,7 +420,6 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
             1))))
         return E_FAIL;
 
-
     // Texture : Inventory BackGround
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_RITUALCARD,
         Engine::CTexture::Create(
@@ -409,8 +428,6 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
             L"../Bin/Resource/Texture/UI/Inventory/RitualCard.png",
             1))))
         return E_FAIL;
-
-
 
     return S_OK;
 }
@@ -456,7 +473,6 @@ HRESULT CResourceMgr::Ready_Terrain(DEVICE graphicDev)
         COMPONENTTYPE::TEX_TILE_OUTLINE, CTexture::Create(graphicDev, TEX_NORMAL,
             L"../Bin/Resource/Texture/Terrain/TileOutline%d.png", 3))))
         return E_FAIL;
-
 
     return S_OK;
 }

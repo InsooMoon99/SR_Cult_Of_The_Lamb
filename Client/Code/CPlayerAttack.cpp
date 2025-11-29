@@ -5,6 +5,7 @@
 #include "CCombatStat.h"
 #include "CCreateHelper.h"
 #include "CGameObject.h"
+#include "CPlayerInput.h"
 #include "CState.h"
 #include "CTransform.h"
 #include "CWeaponEquip.h"
@@ -123,6 +124,8 @@ HRESULT CPlayerAttack::Init_OwnerComponent()
     m_OwnerWeaponCom = dynamic_cast<CWeaponEquip*>(
         m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::WEAPON_EQUIP));
 
+
+
     if (nullptr == m_OwnerStateCom)
     {
         MessageBoxW(nullptr,
@@ -201,7 +204,7 @@ _bool CPlayerAttack::Update_NormalAttack(const _float& timeDelta)
         if (!m_IsHitboxActive)
         {
             m_IsHitboxActive = true;
-            // TODO: 히트박스 만드는 함수. 지속 시간을 세팅하는 방식
+            //Create_Hitbox(info, )
         }
     }
     else
@@ -320,6 +323,9 @@ void CPlayerAttack::Reset_AttackData()
 
 void CPlayerAttack::Create_Hitbox(const AttackInfo& attackInfo, const _vec3& vAttackDir)
 {
+    //TODO 검 기본공격의 경우 좌우만 판단해서 히트박스를 만들면 되기에 mouseDir의 x 성분만 가져와 사용
+    //TODO 검 강공격의 경우 마우스 방향으로 히트박스 오프셋만큼 떨어져 생성되어야 하기에 mouseDir 을 전부 가져오면 됨
+
     if (!m_OwnerCombatStatCom) return;
 
     // 히트박스 생성
@@ -348,27 +354,22 @@ void CPlayerAttack::Create_Hitbox(const AttackInfo& attackInfo, const _vec3& vAt
 
     hitboxTransform->Set_Scale(attackInfo.hitboxScale);
 
-    // (옵션) 강공격 등 방향에 따라 히트박스 회전이 필요하면
-    // pBoxTransform->LookAt(vSpawnPos + vAttackDir);
-    //TODO 일반 공격은 좌/우 판단만, 강공격만 CPlayerInput::m_MouseDir * 오프셋
-    //TODO CPlayerInput의 m_MouseDir은 PickPlaneY() 를 사용하면 됨
-
     // 현재 씬의 레이어에 히트박스 오브젝트를 추가
     SpawnAttackObject(attackBox);
 }
 
 CPlayerAttack* CPlayerAttack::Create(DEVICE graphicDev)
 {
-    auto plAttack = new CPlayerAttack(graphicDev);
+    auto playerAttack = new CPlayerAttack(graphicDev);
 
-    if (FAILED(plAttack->Ready_PlayerCombat()))
+    if (FAILED(playerAttack->Ready_PlayerCombat()))
     {
-        Safe_Release(plAttack);
+        Safe_Release(playerAttack);
         MSG_BOX("PlayerCombat Create Failed");
         return nullptr;
     }
 
-    return plAttack;
+    return playerAttack;
 }
 
 CComponent* CPlayerAttack::Clone()

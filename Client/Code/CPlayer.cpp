@@ -33,9 +33,12 @@ CPlayer::CPlayer(DEVICE graphicDev)
       m_RigidbodyCom(nullptr),
       m_WeaponEquipCom(nullptr),
       m_InventoryCom(nullptr),
+      m_UIInventory(nullptr),
       m_PlayerControllerCom(nullptr),
-      m_UIInventory(nullptr)
-{}
+      m_PlayerInputCom(nullptr),
+      m_PlayerMovementCom(nullptr),
+      m_PlayerAttackCom(nullptr)
+{ }
 
 CPlayer::CPlayer(const CPlayer& rhs)
     : CGameObject(rhs),
@@ -49,9 +52,12 @@ CPlayer::CPlayer(const CPlayer& rhs)
       m_RigidbodyCom(nullptr),
       m_WeaponEquipCom(nullptr),
       m_InventoryCom(nullptr),
+      m_UIInventory(nullptr),
       m_PlayerControllerCom(nullptr),
-      m_UIInventory(nullptr)
-{}
+      m_PlayerInputCom(nullptr),
+      m_PlayerMovementCom(nullptr),
+      m_PlayerAttackCom(nullptr)
+{ }
 
 CPlayer::~CPlayer()
 { }
@@ -267,11 +273,22 @@ HRESULT CPlayer::Add_Component()
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::RIGIDBODY, m_RigidbodyCom });
 
     // Player Controller
-    m_PlayerControllerCom = CreateProtoComponent<CPlayerController>(this, COMPONENTTYPE::CONTROLLER_PLAYER);
+    m_PlayerControllerCom = CreateProtoComponent<CPlayerController>(this, COMPONENTTYPE::PL_CONTROLLER);
     NULL_CHECK_RETURN(m_PlayerControllerCom, E_FAIL);
-    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::CONTROLLER_PLAYER, m_PlayerControllerCom });
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::PL_CONTROLLER, m_PlayerControllerCom });
 
     m_PlayerControllerCom->Init_OwnerComponent();
+
+    // Player Input
+    m_PlayerInputCom = CreateProtoComponent<CPlayerInput>(this, COMPONENTTYPE::PL_INPUT);
+    NULL_CHECK_RETURN(m_PlayerInputCom, E_FAIL);
+
+
+    // Player Movement
+
+
+    // Player Attack
+
 
     return S_OK;
 }

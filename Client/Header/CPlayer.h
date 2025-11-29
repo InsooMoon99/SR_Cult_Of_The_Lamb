@@ -1,7 +1,14 @@
 ﻿#pragma once
 #include "CGameObject.h"
 
+class CWeaponEquip;
+class CInventory;
 class CUIInventory;
+class CPlayerController;
+class CPlayerInput;
+class CPlayerMovement;
+class CPlayerAttack;
+
 BEGIN(Engine)
 class CRigidbody;
 class CRcTex;
@@ -14,11 +21,6 @@ class CBoxCollider;
 class CState;
 class CCombatStat;
 END
-
-// Client
-class CWeaponEquip;
-class CPlayerController;
-class CInventory;
 
 class CPlayer : public CGameObject
 {
@@ -36,7 +38,7 @@ public:
     void OnBeginOverlap(CCollider* self, CCollider* other) override;
     void OnEndOverlap(CCollider* self, CCollider* other) override;
 
-    void    Render_Editor() override;
+    void Render_Editor() override;
 
 public:
     // 테스트 공격용
@@ -64,8 +66,12 @@ private:
 #pragma region Client Components
     CWeaponEquip*      m_WeaponEquipCom;
     CInventory*        m_InventoryCom;
+    CUIInventory*      m_UIInventory;
     CPlayerController* m_PlayerControllerCom;
-    CUIInventory*       m_UIInventory;
+    CPlayerInput*      m_PlayerInputCom;
+    CPlayerMovement*   m_PlayerMovementCom;
+    CPlayerAttack*     m_PlayerAttackCom;
+
 #pragma endregion
 
     map<ACTORSTATE, wstring> m_StateAnim;

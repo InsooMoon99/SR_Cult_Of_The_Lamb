@@ -208,16 +208,16 @@ _vec3 CPlayerMovement::CalcWorldDir(ACTORDIR dir)
 
 CPlayerMovement* CPlayerMovement::Create(DEVICE graphicDev)
 {
-    auto plMovement = new CPlayerMovement(graphicDev);
+    auto playerMovement = new CPlayerMovement(graphicDev);
 
-    if (FAILED(plMovement->Ready_PlayerMovement()))
+    if (FAILED(playerMovement->Ready_PlayerMovement()))
     {
-        Safe_Release(plMovement);
+        Safe_Release(playerMovement);
         MSG_BOX("PlayerMovement Create Failed");
         return nullptr;
     }
 
-    return plMovement;
+    return playerMovement;
 }
 
 CComponent* CPlayerMovement::Clone()
