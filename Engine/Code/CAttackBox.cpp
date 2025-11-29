@@ -8,20 +8,27 @@
 
 CAttackBox::CAttackBox(DEVICE graphicDev)
     : CGameObject(graphicDev),
-      m_BoxColCom(nullptr), m_TransformCom(nullptr),
+
+      m_BoxColCom(nullptr),
+      m_TransformCom(nullptr),
+
       m_Instigator(nullptr),
-      m_LifeTime(0.4f) // 테스트용으로 좀 길게
-{
-}
+
+      m_LifeTime(0.5f)
+{ }
 
 CAttackBox::CAttackBox(const CAttackBox& rhs)
     : CGameObject(rhs),
-      m_BoxColCom(nullptr), m_TransformCom(nullptr),
+
+      m_BoxColCom(nullptr),
+      m_TransformCom(nullptr),
+
       m_HitDesc(rhs.m_HitDesc),
+
       m_Instigator(rhs.m_Instigator),
+
       m_LifeTime(rhs.m_LifeTime)
-{
-}
+{ }
 
 CAttackBox::~CAttackBox()
 { }
@@ -94,8 +101,8 @@ void CAttackBox::OnBeginOverlap(CCollider* self, CCollider* other)
         D3DXVec3Normalize(&dir, &dir);
 
     // 파싱된 데이터값으로 세팅?
-    HITDATA hit = m_HitDesc;
-    hit.dir = dir;
+    HITDATA hit  = m_HitDesc;
+    hit.dir      = dir;
     hit.attacker = m_Instigator;
 
     combat->Take_Damage(hit);
@@ -107,8 +114,6 @@ void CAttackBox::OnBeginOverlap(CCollider* self, CCollider* other)
 void CAttackBox::OnEndOverlap(CCollider* self, CCollider* other)
 {
     CGameObject::OnEndOverlap(self, other);
-
-    
 }
 
 HRESULT CAttackBox::Add_Component()
@@ -146,7 +151,9 @@ CAttackBox* CAttackBox::Create(DEVICE graphicDev)
 
 void CAttackBox::Free()
 {
+    // 오브젝트가 해제되기 직전, 등록된 콜백이 있다면 실행
+    if (m_OnDestroyCallback)
+        m_OnDestroyCallback();
+
     CGameObject::Free();
-
-
 }

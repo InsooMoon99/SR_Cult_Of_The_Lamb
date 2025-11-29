@@ -16,12 +16,14 @@ CPlayerAttack::CPlayerAttack(DEVICE graphicDev)
       m_OwnerStateCom(nullptr),
       m_OwnerCombatStatCom(nullptr),
       m_OwnerWeaponCom(nullptr),
+      m_OwnerInputCom(nullptr),
+
+      m_CurrentHitbox(nullptr),
 
       m_AttackInfo{},
-
       m_ComboIndex(0),
-      m_Timer(0.f),
 
+      m_Timer(0.f),
       m_IsHitboxActive(false),
       m_CanNextCombo(false),
       m_IsNextComboReserved(false)
@@ -33,10 +35,13 @@ CPlayerAttack::CPlayerAttack(const CPlayerAttack& rhs)
       m_OwnerStateCom(nullptr),
       m_OwnerCombatStatCom(nullptr),
       m_OwnerWeaponCom(nullptr),
+      m_OwnerInputCom(nullptr),
+
+      m_CurrentHitbox(nullptr),
 
       m_ComboIndex(rhs.m_ComboIndex),
-      m_Timer(rhs.m_Timer),
 
+      m_Timer(rhs.m_Timer),
       m_IsHitboxActive(rhs.m_IsHitboxActive),
       m_CanNextCombo(rhs.m_CanNextCombo),
       m_IsNextComboReserved(rhs.m_IsNextComboReserved)
@@ -113,8 +118,6 @@ void CPlayerAttack::LateUpdate_Component()
 
 HRESULT CPlayerAttack::Init_OwnerComponent()
 {
-    HRESULT result = S_OK;
-
     m_OwnerStateCom = dynamic_cast<CState*>(
         m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
 
@@ -124,12 +127,15 @@ HRESULT CPlayerAttack::Init_OwnerComponent()
     m_OwnerWeaponCom = dynamic_cast<CWeaponEquip*>(
         m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::WEAPON_EQUIP));
 
+    m_OwnerInputCom = dynamic_cast<CPlayerInput*>(
+        m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::PL_INPUT));
 
+    HRESULT result = S_OK;
 
     if (nullptr == m_OwnerStateCom)
     {
         MessageBoxW(nullptr,
-                    L"CPlayerAttack: Owner state Not Found",
+                    L"CPlayerAttack: Owner State Not Found",
                     L"System Message",
                     MB_ICONERROR);
 
@@ -150,6 +156,16 @@ HRESULT CPlayerAttack::Init_OwnerComponent()
     {
         MessageBoxW(nullptr,
                     L"CPlayerAttack: Owner WeaponEquip Not Found",
+                    L"System Message",
+                    MB_ICONERROR);
+
+        result = E_FAIL;
+    }
+
+    if (nullptr == m_OwnerInputCom)
+    {
+        MessageBoxW(nullptr,
+                    L"CPlayerAttack: Owner PlayerInput Not Found",
                     L"System Message",
                     MB_ICONERROR);
 
@@ -204,7 +220,13 @@ _bool CPlayerAttack::Update_NormalAttack(const _float& timeDelta)
         if (!m_IsHitboxActive)
         {
             m_IsHitboxActive = true;
-            //Create_Hitbox(info, )
+
+            //!! 검 기본공격의 경우 좌우만 판단해서 히트박스를 만들면 되기에 mouseDir의 x 성분만 가져와 사용
+            _vec3 mouseDir = m_OwnerInputCom->Get_MouseDir();
+            mouseDir.z     = 0.f;
+            D3DXVec3Normalize(&mouseDir, &mouseDir);
+
+            Create_Hitbox(info, mouseDir);
         }
     }
     else
@@ -273,7 +295,7 @@ _bool CPlayerAttack::Update_HeavyAttack(const _float& timeDelta)
         if (!m_IsHitboxActive)
         {
             m_IsHitboxActive = true;
-            // TODO: 히트박스 만드는 함수. 지속 시간을 세팅하는 방식
+            Create_Hitbox(info, m_OwnerInputCom->Get_MouseDir());
         }
     }
     else
@@ -314,7 +336,15 @@ void CPlayerAttack::Reset_AttackData()
     if (m_IsHitboxActive)
     {
         m_IsHitboxActive = false;
-        //TODO 히트박스를 기억했다가 CGameObject::Mark_As_PendingKill() 해야할듯
+
+        // 히트박스 수명이 아직 남아있으면, 강제로 히트박스를 소멸
+        // 소멸 시, Create_Hitbox() 에서 등록해놓은 콜백 함수가 자동으로 실행되어
+        // m_CurrentHitbox = nullptr로 안전하게 초기화함
+        if (m_CurrentHitbox)
+        {
+            m_CurrentHitbox->Mark_As_PendingKill();
+            m_CurrentHitbox = nullptr;
+        }
     }
 
     m_CanNextCombo        = false;
@@ -323,9 +353,6 @@ void CPlayerAttack::Reset_AttackData()
 
 void CPlayerAttack::Create_Hitbox(const AttackInfo& attackInfo, const _vec3& vAttackDir)
 {
-    //TODO 검 기본공격의 경우 좌우만 판단해서 히트박스를 만들면 되기에 mouseDir의 x 성분만 가져와 사용
-    //TODO 검 강공격의 경우 마우스 방향으로 히트박스 오프셋만큼 떨어져 생성되어야 하기에 mouseDir 을 전부 가져오면 됨
-
     if (!m_OwnerCombatStatCom) return;
 
     // 히트박스 생성
@@ -338,7 +365,7 @@ void CPlayerAttack::Create_Hitbox(const AttackInfo& attackInfo, const _vec3& vAt
     HITDATA hitData{};
     hitData.damage    = m_OwnerCombatStatCom->Get_Attack() * attackInfo.damageMultiplier;
     hitData.knockback = attackInfo.knockbackPower;
-    hitData.duration = attackInfo.hitboxEndTime - attackInfo.hitboxStartTime;
+    hitData.duration  = attackInfo.hitboxEndTime - attackInfo.hitboxStartTime;
     attackBox->Set_HitDesc(hitData);
 
     // 위치 및 크기 설정
@@ -356,6 +383,16 @@ void CPlayerAttack::Create_Hitbox(const AttackInfo& attackInfo, const _vec3& vAt
 
     // 현재 씬의 레이어에 히트박스 오브젝트를 추가
     SpawnAttackObject(attackBox);
+
+    m_CurrentHitbox = attackBox;
+
+    // 현재 attackBox가 죽을 때, 이쪽의 m_CurrentHitbox가 아직 현재 attackBox를 가리키고 있으면
+    // 이를 nullptr로 안전하게 초기화하는 람다함수를 등록
+    m_CurrentHitbox->Set_OnDestroyCallback([this, attackBox]()
+    {
+        if (m_CurrentHitbox == attackBox)
+            m_CurrentHitbox = nullptr;
+    });
 }
 
 CPlayerAttack* CPlayerAttack::Create(DEVICE graphicDev)
@@ -382,6 +419,15 @@ void CPlayerAttack::Free()
     m_OwnerStateCom      = nullptr;
     m_OwnerCombatStatCom = nullptr;
     m_OwnerWeaponCom     = nullptr;
+    m_OwnerInputCom      = nullptr;
+
+    // CPlayerAttack이 현재 히트박스보다 먼저 죽는 경우
+    // Set_OnDestroyCallback이 아무것도 실행하지 말도록 nullptr로 콜백할 함수를 지움
+    if (m_CurrentHitbox)
+    {
+        m_CurrentHitbox->Set_OnDestroyCallback(nullptr);
+        m_CurrentHitbox = nullptr;
+    }
 
     CComponent::Free();
 }

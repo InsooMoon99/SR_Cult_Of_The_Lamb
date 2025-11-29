@@ -1,11 +1,13 @@
 ﻿#pragma once
 #include "CComponent.h"
 
+class CPlayerInput;
 class CWeaponEquip;
 
 BEGIN(Engine)
 class CCombatStat;
 class CState;
+class CAttackBox;
 END
 
 /// @brief 플레이어의 무기 공격을 담당하는 스태틱 컴포넌트
@@ -86,6 +88,10 @@ private: // --- Owner Component 캐싱 ---
     Engine::CState*      m_OwnerStateCom;
     Engine::CCombatStat* m_OwnerCombatStatCom;
     CWeaponEquip*        m_OwnerWeaponCom;
+    CPlayerInput*        m_OwnerInputCom;
+
+private: // --- 다른 오브젝트 캐싱 ---
+    Engine::CAttackBox* m_CurrentHitbox; // 현재 활성화된 히트박스
 
 private: // --- 멤버 변수 ---
     // 무기 공격 데이터 저장소

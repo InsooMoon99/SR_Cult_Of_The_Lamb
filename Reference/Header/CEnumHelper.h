@@ -18,7 +18,7 @@ static wstring CharToWString(const char* cstr)
     if (required <= 0)
         return L"";    // 변환 실패
 
-    std::wstring result;
+    wstring result;
     result.resize(required);
 
     // 실제 변환
