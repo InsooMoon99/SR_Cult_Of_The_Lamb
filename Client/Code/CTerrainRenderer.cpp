@@ -6,6 +6,8 @@
 #include "CGameObject.h"
 #include "CTerrainTex.h"
 #include "CPickingHelper.h"
+#include "CTerrain.h"
+#include "CWallRenderer.h"
 
 CTerrainRenderer::CTerrainRenderer(DEVICE graphicDev)
     : CComponent(graphicDev),
@@ -493,7 +495,7 @@ HRESULT CTerrainRenderer::SaveMap(const char* filePath)
         return E_FAIL;
 
     uint32_t magic = 0x54494C45; // 'TILE'
-    uint32_t version = 6;
+    uint32_t version = 7;
 
     uint32_t cellCntX = m_SizeX - 1;
     uint32_t cellCntZ = m_SizeZ - 1;
@@ -511,6 +513,19 @@ HRESULT CTerrainRenderer::SaveMap(const char* filePath)
         ofs.write(reinterpret_cast<const char*>(m_TileIndices284.data()), sizeof(_int) * tileSize);
         ofs.write(reinterpret_cast<const char*>(m_TileIndices1024.data()), sizeof(_int) * tileSize);
         ofs.write(reinterpret_cast<const char*>(m_TileIndicesOutline.data()), sizeof(_int) * tileSize);
+    }
+
+    if (m_TransformCom && m_TransformCom->Get_Owner())
+    {
+        CTerrain* owner = dynamic_cast<CTerrain*>(m_TransformCom->Get_Owner());
+        if (owner)
+        {
+            CWallRenderer* wallRenderer = owner->Get_WallRenderer();
+            if (wallRenderer)
+            {
+                wallRenderer->Save_Walls(ofs);
+            }
+        }
     }
 
     ofs.close();
@@ -567,8 +582,24 @@ HRESULT CTerrainRenderer::LoadMap(const char* filePath)
 
         if (version >= 6)
             ifs.read(reinterpret_cast<char*>(m_TileIndicesOutline.data()),sizeof(_int) * tileSize);
+    }
 
+    if (version >= 7)
+    {
+        if (m_TransformCom && m_TransformCom->Get_Owner())
+        {
+            CTerrain* owner = dynamic_cast<CTerrain*>(m_TransformCom->Get_Owner());
+            if (owner)
+            {
+                CWallRenderer* wallRenderer = owner->Get_WallRenderer();
+                if (wallRenderer)
+                {
+                    wallRenderer->Clear_All();
 
+                    wallRenderer->Load_Walls(ifs);
+                }
+            }
+        }
     }
 
     ifs.close();
@@ -579,10 +610,37 @@ _vec3 CTerrainRenderer::GetCellCenterWorld(_uint cellX, _uint cellZ) const
 {
     const _float vtxItv = m_CellSize;
 
-    return _vec3(
+    _vec3 localPos(
         cellX * vtxItv + vtxItv * 0.5f,
         0.f,
         cellZ * vtxItv + vtxItv * 0.5f);
+
+    if (m_TransformCom)
+    {
+        _vec3 pos, scale;
+        m_TransformCom->Get_Info(INFO_POS, &pos);
+        scale = m_TransformCom->Get_Scale();
+
+        // ✅ pos와 scale 값 출력 (첫 1번만)
+        static bool logged = false;
+        if (!logged)
+        {
+            char msg[256];
+            sprintf_s(msg, "Terrain Transform - Pos: (%.2f, %.2f, %.2f), Scale: (%.2f, %.2f, %.2f)\n",
+                pos.x, pos.y, pos.z, scale.x, scale.y, scale.z);
+            OutputDebugStringA(msg);
+            logged = true;
+        }
+
+        _vec3 worldPos;
+        worldPos.x = localPos.x * scale.x + pos.x;
+        worldPos.y = localPos.y * scale.y + pos.y;
+        worldPos.z = localPos.z * scale.z + pos.z;
+
+        return worldPos;
+    }
+
+    return localPos;
 }
 
 void CTerrainRenderer::SelectPlaceObject(_uint cellX, _uint cellZ)
@@ -679,7 +737,9 @@ void CTerrainRenderer::Resize_Terrain(_int sizeX, _int sizeZ, _float cellSize)
 
     m_TileIndices284.assign(cellCount, 0);     
     m_TileIndices1024.assign(cellCount, -1);   
-    m_TileIndicesOutline.assign(cellCount, -1);   
+    m_TileIndicesOutline.assign(cellCount, -1);
+
+
 }
 
 CTerrainRenderer* CTerrainRenderer::Create(DEVICE graphicDev)

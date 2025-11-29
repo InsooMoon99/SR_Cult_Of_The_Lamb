@@ -217,7 +217,7 @@ static const char* ToString(SCENETYPE type)
     case SCENETYPE::SC_STAGE:       return "Stage";
     case SCENETYPE::SC_STAGE1:      return "Stage1";
     case SCENETYPE::SC_TARO_TEST:   return "Taro_Test";
-    case SCENETYPE::SC_BOSS_STAGE:  return "Boss_Stage";
+    case SCENETYPE::SC_BOSS_STAGE1:  return "Boss_Stage";
     case SCENETYPE::SC_EDIT:        return "Edit";
     case SCENETYPE::SC_END:         return "SCENE_END";
     }

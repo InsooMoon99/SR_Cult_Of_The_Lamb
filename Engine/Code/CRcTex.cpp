@@ -4,12 +4,12 @@ CRcTex::CRcTex()
 { }
 
 CRcTex::CRcTex(DEVICE graphicDev)
-    : CVIBuffer(graphicDev), m_HalfWidth(1.f), m_HalfHeight(1.f), m_OffsetX(0), m_OffsetY(0)
+    : CVIBuffer(graphicDev), m_HalfWidth(1.f), m_HalfHeight(1.f), m_OffsetX(0), m_OffsetY(0), m_FlipX(false)
 {
 }
 
 CRcTex::CRcTex(const CRcTex& rhs)
-    : CVIBuffer(rhs), m_HalfWidth(1.f), m_HalfHeight(1.f), m_OffsetX(0), m_OffsetY(0)
+    : CVIBuffer(rhs), m_HalfWidth(1.f), m_HalfHeight(1.f), m_OffsetX(0), m_OffsetY(0), m_FlipX(false)
 {
     Safe_Release(m_VB);
     Safe_Release(m_IB);
@@ -107,6 +107,15 @@ void CRcTex::Set_Offset(float x, float y)
     Apply_VertexSize();
 }
 
+void CRcTex::Set_FlipX(_bool flip)
+{
+    if (m_FlipX != flip)
+    {
+        m_FlipX = flip;
+        Apply_VertexSize();
+    }
+}
+
 void CRcTex::Apply_VertexSize()
 {
     if (m_VB == nullptr)
@@ -121,21 +130,24 @@ void CRcTex::Apply_VertexSize()
     const float dx = -m_OffsetX;
     const float dy = m_OffsetY;
 
+    _float u0 = m_FlipX ? 1.f : 0.f;
+    _float u1 = m_FlipX ? 0.f : 1.f;
+
     // 좌상단
     vtxtex[0].position = { -hw + dx,  hh + dy, 0.f };
-    vtxtex[0].texUV = { 0.f, 0.f };
+    vtxtex[0].texUV = { u0, 0.f };
 
     // 우상단
     vtxtex[1].position = { hw + dx,  hh + dy, 0.f };
-    vtxtex[1].texUV = { 1.f, 0.f };
+    vtxtex[1].texUV = { u1, 0.f };
 
     // 우하단
     vtxtex[2].position = { hw + dx, -hh + dy, 0.f };
-    vtxtex[2].texUV = { 1.f, 1.f };
+    vtxtex[2].texUV = { u1, 1.f };
 
     // 좌하단
     vtxtex[3].position = { -hw + dx, -hh + dy, 0.f };
-    vtxtex[3].texUV = { 0.f, 1.f };
+    vtxtex[3].texUV = { u0, 1.f };
 
     m_VB->Unlock();
 }
