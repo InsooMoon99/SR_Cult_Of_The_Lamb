@@ -41,8 +41,6 @@ void CCollisionManager::Update()
             if (ownerDst == nullptr || ownerDst->Is_PendingDestroy()) // 소멸 예정인 애들은 충돌 X
                 continue;
 
-            // TODO : 충돌체 꺼져있는거 말고, 무적판정도 추가하기
-
             if (dst->IsCollisionActive() == false) // 충돌체 Active가 꺼져있다면 무시
                 continue;
 

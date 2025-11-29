@@ -161,10 +161,6 @@ void CPlayer::Render_Reset()
 
 void CPlayer::Test_Attack()
 {
-    auto playerDir = m_PlayerControllerCom->Get_MoveDir();
-
-    cout << playerDir.x << playerDir.y << playerDir.z << endl;
-
     // 사용 예시
     CAttackBuilder(m_GraphicDev, this)
         .Sphere()

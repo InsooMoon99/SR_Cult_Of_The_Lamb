@@ -213,6 +213,7 @@
     <ClInclude Include="..\Header\CStage.h" />
     <ClInclude Include="..\Header\CBaseState.h" />
     <ClInclude Include="..\Header\CStage_Boss1.h" />
+    <ClInclude Include="..\Header\CStage_Boss2.h" />
     <ClInclude Include="..\Header\CStage_TaroTest.h" />
     <ClInclude Include="..\Header\CStateMachine.h" />
     <ClInclude Include="..\Header\CTerrainRenderer.h" />
@@ -283,6 +284,7 @@
     <ClCompile Include="..\Code\CStage.cpp" />
     <ClCompile Include="..\Code\CBaseState.cpp" />
     <ClCompile Include="..\Code\CStage_Boss1.cpp" />
+    <ClCompile Include="..\Code\CStage_Boss2.cpp" />
     <ClCompile Include="..\Code\CStage_TaroTest.cpp" />
     <ClCompile Include="..\Code\CStateMachine.cpp" />
     <ClCompile Include="..\Code\CTerrainRenderer.cpp" />

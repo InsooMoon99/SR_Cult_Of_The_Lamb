@@ -221,7 +221,7 @@ void CMainEditorMgr::Render_SceneChangeTab()
 {
     ImGui::PushID("Scene_ChangeTab");
     {
-        const char* sceneChange[] = { "Main", "Stage", "Edit", "Stage_Boss1", "Stage_TaroTest" };
+        const char* sceneChange[] = { "Main", "Stage", "Edit", "Stage_Boss1", "Stage_Boss2" "Stage_TaroTest" };
 
         SCENETYPE sceneType = CSceneMgr::GetInstance()->Get_SceneType();
 
@@ -239,8 +239,9 @@ void CMainEditorMgr::Render_SceneChangeTab()
             case 0: newSceneType = SCENETYPE::SC_MAINMENU;    break;
             case 1: newSceneType = SCENETYPE::SC_STAGE;       break;
             case 2: newSceneType = SCENETYPE::SC_EDIT;        break;
-            case 3: newSceneType = SCENETYPE::SC_BOSS_STAGE;  break;
-            case 4: newSceneType = SCENETYPE::SC_TARO_TEST;   break;
+            case 3: newSceneType = SCENETYPE::SC_BOSS_STAGE1;  break;
+            case 4: newSceneType = SCENETYPE::SC_BOSS_STAGE2;  break;
+            case 5: newSceneType = SCENETYPE::SC_TARO_TEST;   break;
 
             default: break;
             }

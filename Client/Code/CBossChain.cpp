@@ -119,7 +119,6 @@ _int CBossChain::Update_GameObject(const _float& timeDelta)
             //}
 
 #pragma endregion
-
             CAttackBuilder(m_GraphicDev, m_pOwner)
                 .Box()
                 .Damage(1.f)

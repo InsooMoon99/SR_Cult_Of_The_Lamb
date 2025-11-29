@@ -72,8 +72,13 @@ void CSceneMgr::Change_SceneMgr(SCENETYPE typeInput)
             bFailed = true;
         break;
 
-    case SCENETYPE::SC_BOSS_STAGE:
+    case SCENETYPE::SC_BOSS_STAGE1:
         if (FAILED(CManagement::GetInstance()->Request_ChangeScene(CStage_Boss1::Create(m_pGraphicDev))))
+            bFailed = true;
+        break;
+
+    case SCENETYPE::SC_BOSS_STAGE2:
+        if (FAILED(CManagement::GetInstance()->Request_ChangeScene(CStage_Boss2::Create(m_pGraphicDev))))
             bFailed = true;
         break;
 
