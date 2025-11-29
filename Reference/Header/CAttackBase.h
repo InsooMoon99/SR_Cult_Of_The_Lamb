@@ -1,7 +1,7 @@
 ﻿#pragma once
-
 #include "CCombatStat.h"
 #include "CGameObject.h"
+
 
 BEGIN(Engine)
 class CBoxCollider;

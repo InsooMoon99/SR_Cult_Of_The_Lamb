@@ -7,7 +7,14 @@ class CCombatStat;
 class CRigidbody;
 END
 
-/// @brief 플레이어의 움직임을 기능을 담당하는 스태틱 컴포넌트
+/// @brief 플레이어의 이동 및 물리 동작을 담당하는 컴포넌트
+/// @details
+/// 플레이어의 위치 변경, 회전, 구르기 등 물리적인 움직임을 제어합니다.
+/// - 이동 (Run): 입력된 방향으로 가속도와 마찰력을 적용하여 자연스러운 이동을 구현합니다.
+/// - 구르기 (Roll): 무적 시간과 함께 빠른 속도로 이동하는 회피 동작을 처리합니다.
+/// - 방향 계산: 8방향 이동에 따른 플레이어의 회전 및 애니메이션 방향을 계산합니다.
+/// @note
+/// CPlayerController의 명령을 받아 실제 Transform과 Rigidbody를 조작하는 실행자 역할을 합니다.
 class CPlayerMovement : public CComponent
 {
 private:
@@ -31,6 +38,7 @@ public:  // --- Getter ---
     _bool        Get_IsInvincibleEnded() const { return m_IsInvincibleEnded; }
 
 public:  // --- Setter ---
+    void Set_RollTimer(_float timer) { m_Timer = timer; }
     void Set_RollDuration(_float duration) { m_RollDuration = duration; }
     void Set_RollInvincibleTime(_float invincibleTime) { m_RollInvincibleTime = invincibleTime; }
     void Set_IsInvincibleEnded(_bool InvincibleEnded) { m_IsInvincibleEnded = InvincibleEnded; }
@@ -39,7 +47,7 @@ public:  // --- 동작 명령 함수 (Controller가 호출) ---
     // RUN
     void Run(const _vec3& moveDir, const _float& timeDelta);
 
-    // IDLE
+    // IDLE 상태 등 확실하게 멈추는 경우
     void Stop();
 
     // PLAYER_ROLL 시작
@@ -51,9 +59,10 @@ public:  // --- 동작 명령 함수 (Controller가 호출) ---
 
     //TODO : Impulse(dir, force) 로 공격 등에서 살짝 이동하는거 하기
 
-private: // --- 내부 로직 ---
-    void  ChangeDir(const _vec3& dir); // 플레이어 방향 갱신
     _vec3 CalcWorldDir(ACTORDIR dir);  // 플레이어의 ACTORDIR 상태에 따라 8방향 벡터 반환
+
+private: // --- 내부 로직 ---
+    void ChangeDir(const _vec3& dir); // 플레이어 방향 갱신
 
 private: // --- Owner Component 캐싱 ---
     Engine::CState*      m_OwnerStateCom;

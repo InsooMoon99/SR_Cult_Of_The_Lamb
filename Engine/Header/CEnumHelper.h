@@ -136,6 +136,8 @@ static const char* ToString(COMPONENTTYPE type)
     case COMPONENTTYPE::TEX_MONSTER:        return "TexMonster";
     case COMPONENTTYPE::TEX_HUMAN_MONSTER:  return "TexHumanMonster";
     case COMPONENTTYPE::TEX_ITEM:           return "TexItem";
+    case COMPONENTTYPE::TEX_OUT:            return "TexOut";
+
     case COMPONENTTYPE::TEX_GRASS:          return "TexGrass";
     case COMPONENTTYPE::TEX_RUBBLE:         return "TexRubble";
     case COMPONENTTYPE::TEX_DECO:           return "TexDeco";
@@ -147,6 +149,18 @@ static const char* ToString(COMPONENTTYPE type)
     case COMPONENTTYPE::TEX_UI_WEAPON:      return "UI_Weapon";
     case COMPONENTTYPE::TEX_MENU_CHAR:      return "UI_ManuChaR";
     case COMPONENTTYPE::TEX_UI_ICON:        return "UI_Icon";
+    case COMPONENTTYPE::TEX_UI_CELL:        return "UI_Cell";
+    case COMPONENTTYPE::TEX_UI_SKILLCOUNT:  return "UI_SkillCount";
+    case COMPONENTTYPE::TEX_UI_HIGHLIGHT:   return "UI_Highlight";
+    case COMPONENTTYPE::TEX_UI_INVEN:       return "UI_Inven";
+    case COMPONENTTYPE::TEX_UI_RITUALCARD:  return "UI_RitualCard";
+    case COMPONENTTYPE::TEX_UI_BUTTON:      return "UI_BButton";
+    case COMPONENTTYPE::TEX_BOSSPHASE1:     return "UI_BossPhase1";
+
+    // Tile Texture Components
+    case COMPONENTTYPE::TEX_TILE_284:       return "TexTile284";
+    case COMPONENTTYPE::TEX_TILE_1024:      return "TexTile1024";
+    case COMPONENTTYPE::TEX_TILE_OUTLINE:   return "TexTileOutline";
 
     // Collider Components
     case COMPONENTTYPE::RECT_COLL:          return "RectColl";
@@ -166,6 +180,7 @@ static const char* ToString(COMPONENTTYPE type)
 
     // End Marker
     case COMPONENTTYPE::COMPONENT_END:      return "ComponentEnd";
+
     default:                                return "UnknownComponent";
     }
 }

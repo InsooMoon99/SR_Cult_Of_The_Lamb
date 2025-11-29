@@ -52,9 +52,10 @@ _int CPlayerInput::Update_Component(const _float& timeDelta)
         if (m_TransformCom)
         {
             const _vec3 vPlayerPos = m_TransformCom->Get_Pos();
-            m_MouseDir = vHitPos - vPlayerPos;
+
+            m_MouseDir   = vHitPos - vPlayerPos;
             m_MouseDir.y = 0.f; // 평면 상의 방향이므로 y는 0으로 고정 (PickPlaneY가 이미 y=0 평면이긴 하지만 안전하게)
-    
+
             if (D3DXVec3LengthSq(&m_MouseDir) > 0.001f)
                 D3DXVec3Normalize(&m_MouseDir, &m_MouseDir);
         }

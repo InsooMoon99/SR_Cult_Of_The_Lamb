@@ -10,7 +10,7 @@ IMPLEMENT_SINGLETON(CManagement)
 CManagement::CManagement()
     : m_Scene(nullptr),
       m_NextScene(nullptr),
-      m_ShouldChangeScene(false),
+      m_ShouldChangeScene(false)
 { }
 
 CManagement::~CManagement()

@@ -22,9 +22,7 @@ static HRESULT AcquirePersistentObject(OBJTYPE        objType,
     const auto management = Engine::CManagement::GetInstance();
 
     // 1. 키 값으로 조회
-    FAILED_CHECK(management->Get_PersistentObject(key, outObject));
-
-    if (nullptr == *outObject)
+    if (FAILED(management->Get_PersistentObject(key, outObject)))
     {
         // 2. 없으면 생성
         *outObject = T::Create(graphicDev);

@@ -14,7 +14,6 @@
 #include "CSceneMgr.h"
 #include "CWall.h"
 
-
 CStage_TaroTest::CStage_TaroTest(DEVICE graphicDev)
     : Engine::CScene(graphicDev)
 { }
@@ -40,16 +39,12 @@ _int CStage_TaroTest::Update_Scene(const _float& timeDelta)
 {
     _int exit = Engine::CScene::Update_Scene(timeDelta);
 
-    
-
     return exit;
 }
 
 void CStage_TaroTest::LateUpdate_Scene(const _float& timeDelta)
 {
     Engine::CScene::LateUpdate_Scene(timeDelta);
-
-
 }
 
 void CStage_TaroTest::Render_Scene()
@@ -78,7 +73,6 @@ HRESULT CStage_TaroTest::Ready_Environment_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::TERRAIN, gameObject),
         L"CStage_TaroTest::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Tile) failed");
-
 
     // Wall
     CWall* wall = CWall::Create(m_GraphicDev);
@@ -110,32 +104,33 @@ HRESULT CStage_TaroTest::Ready_GameLogic_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CPlayer>(
             OBJTYPE::PLAYER,
+            L"Player",
             m_GraphicDev,
             layer,
             &gameObject),
         L"Persistent object setup failed");
-    
+
     // 플레이어의 Transform 가져오기
     const auto playerTransform =
         dynamic_cast<CTransform*>(gameObject->Get_Component(
             ID_DYNAMIC,
             COMPONENTTYPE::TRANSFORM));
-    
+
     // -----------------------------
     // Camera
     // -----------------------------
-    
+
     // 카메라 생성
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CMainCamera>(
             OBJTYPE::CAMERA,
+            L"MainCamera",
             m_GraphicDev,
             layer,
             &gameObject),
         L"Persistent object setup failed");
-    
+
     // 카메라 타겟을 플레이어로 설정
-      // 카메라 타겟을 플레이어로 설정
     auto mainCam = dynamic_cast<CMainCamera*>(gameObject);
     if (mainCam)
     {
@@ -148,11 +143,9 @@ HRESULT CStage_TaroTest::Ready_GameLogic_Layer(LAYERTYPE layerType)
             CMainEditorMgr::GetInstance()->Set_MainCamera(camCom); // 에디터에 카메라 설정
     }
 
-
     m_Layers.insert({ layerType, layer });
 
     return S_OK;
- 
 }
 
 HRESULT CStage_TaroTest::Ready_UI_Layer(LAYERTYPE layerType)

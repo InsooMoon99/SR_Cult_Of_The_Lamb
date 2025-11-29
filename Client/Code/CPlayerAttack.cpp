@@ -61,35 +61,35 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     // 1타
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].state            = ACTORSTATE::PLAYER_SWORD_COMBO1;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].duration         = 0.5f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitboxStartTime  = 0.15f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitboxEndTime    = 0.35f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].comboInputTime   = 0.3f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitboxStartTime  = 0.1f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitboxEndTime    = 0.2f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].comboInputTime   = 0.2f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].damageMultiplier = 1.f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].knockbackPower   = 30.f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].spawnOffset      = 5.f; // 가까움
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitboxScale      = _vec3(1.f, 1.f, 1.f);
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].spawnOffset      = 1.2f; // 가까움
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
 
     // 2타
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].state            = ACTORSTATE::PLAYER_SWORD_COMBO2;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].duration         = 0.5f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitboxStartTime  = 0.15f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitboxEndTime    = 0.35f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].comboInputTime   = 0.3f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitboxStartTime  = 0.1f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitboxEndTime    = 0.2f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].comboInputTime   = 0.2f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].damageMultiplier = 1.f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].knockbackPower   = 30.f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].spawnOffset      = 5.0f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitboxScale      = _vec3(1.f, 1.f, 1.f);
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].spawnOffset      = 1.2f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
 
     // 3타
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].state            = ACTORSTATE::PLAYER_SWORD_COMBO3;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].duration         = 0.8f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitboxStartTime  = 0.2f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitboxEndTime    = 0.5f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].comboInputTime   = 0.5f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].damageMultiplier = 1.f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].knockbackPower   = 30.f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].spawnOffset      = 6.0f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitboxScale      = _vec3(1.2f, 1.f, 1.2f);
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitboxStartTime  = 0.1f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitboxEndTime    = 0.2f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].comboInputTime   = 0.2f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].damageMultiplier = 1.f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].knockbackPower   = 30.f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].spawnOffset      = 1.2f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
 
     //TODO 강공격 (HEAVY)
     //m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].state           = ACTORSTATE::PLAYER_SWORD_HEAVY; // 가정
@@ -173,19 +173,21 @@ HRESULT CPlayerAttack::Init_OwnerComponent()
     return result;
 }
 
-void CPlayerAttack::Start_NormalAttack()
+ACTORSTATE CPlayerAttack::Start_NormalAttack()
 {
-    if (!m_OwnerWeaponCom || !m_OwnerWeaponCom->Get_WeaponEquipped()) return;
+    if (!m_OwnerWeaponCom || !m_OwnerWeaponCom->Get_WeaponEquipped()) return ACTORSTATE::STATE_END;
 
     Reset_AttackData();
 
     // 무기가 어떤건지 인덱스 확인
     const _int weaponIdx = Get_WeaponIndex(m_OwnerWeaponCom->Get_CurrentWeaponID());
-    if (weaponIdx < 0) return;
+    if (weaponIdx < 0) return ACTORSTATE::STATE_END;
 
     // 1타(COMBO_1) 시작
     m_ComboIndex = static_cast<_int>(ATTACK_COMBO1);
-    m_OwnerStateCom->Change_State(m_AttackInfo[weaponIdx][ATTACK_COMBO1].state);
+
+    // Controller에서 상태를 변경하도록 상태값 반환
+    return m_AttackInfo[weaponIdx][ATTACK_COMBO1].state;
 }
 
 void CPlayerAttack::Try_NextCombo()
@@ -196,7 +198,14 @@ void CPlayerAttack::Try_NextCombo()
 
 _bool CPlayerAttack::Update_NormalAttack(const _float& timeDelta)
 {
-    if (!m_OwnerWeaponCom || !m_OwnerCombatStatCom) return false;
+    if (!m_OwnerWeaponCom || !m_OwnerCombatStatCom || !m_OwnerInputCom) return false;
+
+    // 마우스 위치 X값이 플레이어보다 작거나 같으면 LEFT, 크면 RIGHT로 설정
+    const _vec3& vMouseDir = m_OwnerInputCom->Get_MouseDir();
+    if (vMouseDir.x <= 0.f)
+        m_OwnerStateCom->Change_Dir(ACTORDIR::LEFT);
+    else
+        m_OwnerStateCom->Change_Dir(ACTORDIR::RIGHT);
 
     const _int weaponIdx = Get_WeaponIndex(m_OwnerWeaponCom->Get_CurrentWeaponID());
     if (weaponIdx < 0) return false;
@@ -274,7 +283,14 @@ void CPlayerAttack::Start_HeavyAttack()
 
 _bool CPlayerAttack::Update_HeavyAttack(const _float& timeDelta)
 {
-    if (!m_OwnerWeaponCom || !m_OwnerCombatStatCom) return false;
+    if (!m_OwnerWeaponCom || !m_OwnerCombatStatCom || !m_OwnerInputCom) return false;
+
+    // 마우스 위치 X값이 플레이어보다 작거나 같으면 LEFT, 크면 RIGHT로 설정
+    const _vec3& vMouseDir = m_OwnerInputCom->Get_MouseDir();
+    if (vMouseDir.x <= 0.f)
+        m_OwnerStateCom->Change_Dir(ACTORDIR::LEFT);
+    else
+        m_OwnerStateCom->Change_Dir(ACTORDIR::RIGHT);
 
     const _int weaponIdx = Get_WeaponIndex(m_OwnerWeaponCom->Get_CurrentWeaponID());
     if (weaponIdx < 0) return false;
@@ -354,63 +370,28 @@ void CPlayerAttack::Create_AttackObj(const AttackInfo& attackInfo, const _vec3& 
     if (!m_OwnerCombatStatCom) return;
 
     CAttackBuilder(m_GraphicDev, m_Owner)
-        .Box()
         // 박스 콜라이더 사용
-        .Track(m_CurrentAttackObj)
+        .Box()
         //!! 실제 공격 오브젝트를 여기서 직접 관리하고 싶어서 가져옴. 다른 곳에선 안쓸거면 필요 없음
-        .Damage(m_OwnerCombatStatCom->Get_Attack() * attackInfo.damageMultiplier)
+        .Track(m_CurrentAttackObj)
         // 데미지 설정
-        .Knockback(attackInfo.knockbackPower)
+        .Damage(m_OwnerCombatStatCom->Get_Attack() * attackInfo.damageMultiplier)
         // 넉백 설정
-        .Duration(attackInfo.hitboxEndTime - attackInfo.hitboxStartTime)
+        .Knockback(attackInfo.knockbackPower)
         // 지속시간 설정
-        .Scale(_vec3())
+        .Duration(attackInfo.hitboxEndTime - attackInfo.hitboxStartTime)
         // 공격 오브젝트 크기 설정
-        .InstigatorPos()                
+        .Scale(_vec3())
         // 공격하는 쪽을 기준으로 위치를 지정하겠다
         // 반대되는 기능으로 절대 위치 기준을 정하는 Position(_vec3)가 있다
-        .Offset(vAttackDir * attackInfo.spawnOffset)
+        .InstigatorPos()
         // 공격자로부터 얼마나 떨어져 있는지 설정
-        .DestroyOnHit(false)
+        .Offset(vAttackDir * attackInfo.spawnOffset)
         // 콜라이더 충돌 시 바로 파괴되어야 하는지 설정
-        // 투사체 공격의 경우 이를 사용하는게 좋을수도
-        .Spawn();
+        // 투사체 공격의 경우 이를 true로 사용하는 게 좋을수도
+        .DestroyOnHit(false)
         // 모든 설정을 마치고 생성
-
-    /*
-    
-    // 공격 오브젝트 생성
-    auto attackBox = CAttackBox::Create(m_GraphicDev);
-    NULL_CHECK(attackBox);
-
-    attackBox->Set_Instigator(m_Owner);
-
-    // 공격 오브젝트 데이터 세팅
-    HITDATA hitData{};
-    hitData.damage    = m_OwnerCombatStatCom->Get_Attack() * attackInfo.damageMultiplier;
-    hitData.knockback = attackInfo.knockbackPower;
-    hitData.duration  = attackInfo.hitboxEndTime - attackInfo.hitboxStartTime;
-    attackBox->Set_HitDesc(hitData);
-
-    // 위치 및 크기 설정
-    _vec3 ownerPos = m_TransformCom->Get_Pos();
-
-    auto hitboxTransform = dynamic_cast<CTransform*>(
-        attackBox->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-    NULL_CHECK(hitboxTransform);
-
-    _vec3 spawnPos = ownerPos + (vAttackDir * attackInfo.spawnOffset);
-
-    hitboxTransform->Set_Pos(spawnPos);
-
-    hitboxTransform->Set_Scale(attackInfo.hitboxScale);
-
-    // 현재 씬의 레이어에 공격 오브젝트 오브젝트를 추가
-    SpawnAttackObject(attackBox);
-
-    m_CurrentHitbox = attackBox;
-
-    */
+        .Spawn();
 
     // 현재 attackBox가 죽을 때, 이쪽의 m_CurrentHitbox가 아직 현재 attackBox를 가리키고 있으면
     // 이를 nullptr로 안전하게 초기화하는 람다함수를 등록

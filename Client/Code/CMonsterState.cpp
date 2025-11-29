@@ -36,7 +36,7 @@ void CMonsterState::Find_Player()
         return;
 
     CGameObject* pObject;
-    CManagement::GetInstance()->Get_PersistentObject(OBJTYPE::PLAYER, &pObject);
+    CManagement::GetInstance()->Get_PersistentObject(L"Player",  &pObject);
 
     if (nullptr == dynamic_cast<CPlayer*>(pObject))
     {
