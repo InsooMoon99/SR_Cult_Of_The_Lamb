@@ -8,6 +8,7 @@
 #include "CStage.h"
 #include "Engine_Enum.h"
 #include "CStage_Boss1.h"
+#include "CStage_Boss2.h"
 #include "CStage_TaroTest.h"
 
 IMPLEMENT_SINGLETON(CSceneMgr)

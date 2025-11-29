@@ -102,7 +102,10 @@ void CAttackBase::OnBeginOverlap(CCollider* self, CCollider* other)
     combat->Take_Damage(hit);
 
     // 데미지를 줬으면, 삭제 요청
-    //Mark_As_PendingKill();
+    if (m_DestroyOnHit)
+    {
+        Mark_As_PendingKill();
+    }
 }
 
 void CAttackBase::OnEndOverlap(CCollider* self, CCollider* other)

@@ -27,6 +27,7 @@ public:
     void Set_AttackData(const ATTACKDATA& hit) { m_AttackData = hit; }
     void Set_Instigator(CGameObject* inst) { m_Instigator = inst; }
     void Set_LifeTime(float LifeTime) {m_LifeTime = LifeTime;}
+    void Set_DestroyOnHit(_bool destroy) { m_DestroyOnHit = destroy; }
 
 protected:
     void Free() override;
@@ -39,6 +40,8 @@ protected:
     ATTACKDATA    m_AttackData;       // 데미지 구조체
     CGameObject*  m_Instigator;       // 공격자 (플레이어)
     float         m_LifeTime;         // 살아있는 시간 ex) 1초뒤 충돌체 삭제
+
+    _bool         m_DestroyOnHit;
 
 };
 

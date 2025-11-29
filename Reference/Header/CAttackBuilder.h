@@ -20,7 +20,7 @@ public:
           , m_LifeTime(0.4f), m_Position(0.f, 0.f, 0.f)
           , m_Offset(0.f, 0.f, 0.f)
           , m_Scale(0.f, 0.f, 0.f)
-          , m_UseInstigatorPos(false)
+          , m_UseInstigatorPos(false), m_DestroyOnHit(false)
     {
     }
 
@@ -102,6 +102,13 @@ public:
         return *this;
     }
 
+    // 공격 후 삭제할지?
+    CAttackBuilder& DestroyOnHit(bool destroy = true)
+    {
+        m_DestroyOnHit = destroy;
+        return *this;
+    }
+
     CAttackBuilder& Scale(_float scale)
     {
         m_Scale = _vec3(scale, scale, scale);
@@ -120,6 +127,9 @@ public:
 
         // LiteTime 설정
         m_AttackObj->Set_LifeTime(m_LifeTime);
+
+        // Destroy
+        m_AttackObj->Set_DestroyOnHit(m_DestroyOnHit);
 
         // Transform 설정
         auto transform = dynamic_cast<CTransform*>(
@@ -169,6 +179,7 @@ private:
     _vec3               m_Offset;
     _vec3               m_Scale;
     _bool               m_UseInstigatorPos; // 공격자의 위치를 사용할지
+    _bool               m_DestroyOnHit;
 };
 
 END

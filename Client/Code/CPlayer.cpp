@@ -169,6 +169,7 @@ void CPlayer::Test_Attack()
         .Scale(5.f)
         .InstigatorPos()
         .Offset(_vec3(2.f, 0.f, 0.f))
+        .DestroyOnHit(true)
         .Spawn();
 }
 
