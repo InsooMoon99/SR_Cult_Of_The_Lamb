@@ -9,7 +9,7 @@ CRigidbody::CRigidbody(DEVICE graphicDev)
       m_UseGravity(true),
       m_OnGround(true),
       m_Mass(1.f),
-      m_Friction(0.05f),
+      m_Friction(0.00f),
       m_Force(0.f, 0.f, 0.f),
       m_Accel(0.f, 0.f, 0.f),
       m_Vel(0.f, 0.f, 0.f),

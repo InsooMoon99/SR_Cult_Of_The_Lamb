@@ -6,10 +6,12 @@
 #include "CEnumHelper.h"
 #include "CInventory.h"
 #include "CPlayerController.h"
+#include "CRigidbody.h"
 #include "CState.h"
 #include "CTerrainRenderer.h"
 #include "CTransform.h"
 #include "CWeaponEquip.h"
+#include "CWallRenderer.h"
 
 USING(Engine)
 
@@ -329,6 +331,8 @@ static void Terrain_Inspector(CTerrainRenderer* renderer)
         {
             renderer->Render_Editor();
 
+            
+
             ImGui::EndTabItem();
         }
 
@@ -397,7 +401,7 @@ static void BoxColl_Inspector(CBoxCollider* collider)
     if (collider == nullptr)
         return;
 
-    ImGui::Text("[ Scale ]");
+    ImGui::Text("[ Size ]");
     ImGui::PushID("BoxColl_Inspector");
     {
         _vec3 scale = collider->Get_Size();
@@ -578,10 +582,132 @@ static void Weapon_Inspector(CWeaponEquip* weapon)
     ImGui::PopID();
 }
 
-//TODO 석호: 플레이어 관련 Inspector 추가하기
 static void PlayerController_Inspector(CPlayerController* controller)
 {
     NULL_CHECK(controller);
+
+    ImGui::PushID("PlayerController_Inspector");
+    {
+        ImGui::Text("[ Player Controller ]");
+        ImGui::Separator();
+
+        const float column_width = 120.0f;
+        
+        ImGui::Columns(2, "PlayerColumns", false);
+        ImGui::SetColumnWidth(0, column_width);
+
+        // Roll Duration
+        _float rollDuration = controller->Get_RollDuration();
+        ImGui::Text("Roll Duration");
+        ImGui::NextColumn();
+        if (ImGui::DragFloat("##RollDuration", &rollDuration, 0.01f, 0.1f, 2.0f))
+        {
+            controller->Set_RollDuration(rollDuration);
+        }
+        ImGui::NextColumn();
+
+        ImGui::Columns(1);
+    }
+    ImGui::PopID();
+}
+
+static void RigidBody_Inspector(CRigidbody* rigid)
+{
+    NULL_CHECK(rigid);
+
+    ImGui::PushID("Rigidbody_Inspector");
+    {
+        ImGui::Text("[ Rigidbody ]");
+        ImGui::Separator();
+
+        const float column_width = 120.0f;
+
+        // Use Flags
+        ImGui::Text("Physics Options:");
+        
+        bool useAccel = rigid->Get_UseAccel();
+        if (ImGui::Checkbox("Use Acceleration", &useAccel))
+        {
+            rigid->Set_UseAccel(useAccel);
+        }
+
+        bool useFriction = rigid->Get_UseFriction();
+        if (ImGui::Checkbox("Use Friction", &useFriction))
+        {
+            rigid->Set_UseFriction(useFriction);
+        }
+
+        bool useGravity = rigid->Get_UseGravity();
+        if (ImGui::Checkbox("Use Gravity", &useGravity))
+        {
+            rigid->Set_UseGravity(useGravity);
+        }
+
+        bool isGround = rigid->Get_IsGround();
+        if (ImGui::Checkbox("Is On Ground", &isGround))
+        {
+            rigid->Set_IsGround(isGround);
+        }
+
+        ImGui::Separator();
+
+        // Physics Properties
+        ImGui::Columns(2, "RigidbodyColumns", false);
+        ImGui::SetColumnWidth(0, column_width);
+
+        // Mass
+        _float mass = rigid->Get_Mass();
+        ImGui::Text("Mass");
+        ImGui::NextColumn();
+        if (ImGui::DragFloat("##Mass", &mass, 0.1f, 0.1f, 100.0f))
+        {
+            rigid->Set_Mass(mass);
+        }
+        ImGui::NextColumn();
+
+        // Friction
+        _float friction = rigid->Get_Friction();
+        ImGui::Text("Friction");
+        ImGui::NextColumn();
+        if (ImGui::DragFloat("##Friction", &friction, 0.1f, 0.0f, 10.0f))
+        {
+            rigid->Set_Friction(friction);
+        }
+        ImGui::NextColumn();
+
+        ImGui::Columns(1);
+        ImGui::Separator();
+
+        // Velocity (Read-only)
+        ImGui::Text("Velocity : ");
+        _vec3 velocity = rigid->Get_Velocity();
+        ImGui::Text("  X: %.2f, Y: %.2f, Z: %.2f", velocity.x, velocity.y, velocity.z);
+
+        // Velocity Limit
+        ImGui::Text("Velocity Limit:");
+        _vec3 velLimit = rigid->Get_VelocityLimit();
+        if (ImGui::DragFloat3("##VelLimit", &velLimit.x, 0.1f, 0.0f, 100.0f))
+        {
+            rigid->Set_VelocityLimit(velLimit);
+        }
+
+        // Gravity
+        ImGui::Text("Gravity:");
+        _vec3 gravity = rigid->Get_Gravity();
+        if (ImGui::DragFloat3("##Gravity", &gravity.x, 0.1f, -100.0f, 100.0f))
+        {
+            rigid->Set_Gravity(gravity);
+        }
+    }
+    ImGui::PopID();
+}
+
+static void WallRenderer_Inspector(CWallRenderer* wall)
+{
+    NULL_CHECK(wall);
+
+    wall->Render_Editor();
+
 }
 
 // TODO 석호 : Rigidbody Inspector 추가하기

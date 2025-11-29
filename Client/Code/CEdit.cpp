@@ -3,21 +3,20 @@
 
 #include "CLayer.h"
 #include "CMainCamera.h"
-#include "CManagement.h"
 #include "CMonster.h"
 #include "CPersistentObjectHelper.h"
 #include "CPlayer.h"
 #include "CState.h"
 #include "CTerrain.h"
-#include "CTestMonster.h"
 #include "CTransform.h"
-#include "CTriCol.h"
-
 #include "CDInputMgr.h"
 #include "CMainEditorMgr.h"
 #include "CMainMenu.h"
 #include "CSceneMgr.h"
-
+#include "CWall.h"
+#include "CSphereCollider.h"
+#include "CWallRenderer.h"
+#include "CBoxCollider.h"
 
 CEdit::CEdit(DEVICE graphicDev)
     : Engine::CScene(graphicDev)
@@ -48,13 +47,7 @@ _int CEdit::Update_Scene(const _float& timeDelta)
 {
     _int exit = Engine::CScene::Update_Scene(timeDelta);
 
-
-    //안은수 테스트
-    // Stage
-    if (CDInputMgr::GetInstance()->Get_DIKeyState(DIK_0) & 0x80)
-    {
-        CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_MAINMENU);
-    }
+   
     return exit;
 }
 
@@ -77,9 +70,18 @@ HRESULT CEdit::Ready_Environment_Layer(LAYERTYPE layerType)
     if (nullptr == layer)
         return E_FAIL;
 
-    Engine::CGameObject* pGameObject = nullptr;
+    CGameObject* gameObject = nullptr;
+    // -----------------------------
+    // Tile
+    // -----------------------------
+    CTerrain* terrain = CTerrain::Create(m_GraphicDev);
 
-    m_Layers.insert({ layerType, layer });          // scene -> map
+    NULL_CHECK_RETURN_MSG(terrain, E_FAIL, L"Terrain create failed");
+    terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_WallTest1.map");
+
+    layer->Add_GameObject(OBJTYPE::TERRAIN, terrain);
+
+    m_Layers.insert({ layerType, layer });
 
     return S_OK;
 }
@@ -165,20 +167,6 @@ HRESULT CEdit::Ready_GameLogic_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::BOSS2, gameObject),
         L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(BOSS2) failed");*/
-
-    // -----------------------------
-    // Tile
-    // -----------------------------
-    gameObject = CTerrain::Create(m_GraphicDev);
-
-    NULL_CHECK_RETURN_MSG(
-        gameObject,
-        E_FAIL,
-        L"CEdit::Ready_GameLogic_Layer() failed: CTerrain::Create() returned null");
-
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::TERRAIN, gameObject),
-        L"CEdit::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Tile) failed");
 
     m_Layers.insert({ layerType, layer });
 

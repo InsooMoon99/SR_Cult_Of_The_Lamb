@@ -7,9 +7,11 @@ class CRcTex;
 class CTerrainTex;
 class CTransform;
 class CTexture;
+class CLayer;
 END
 
 class CTerrainRenderer;
+class CWallRenderer;
 
 enum class EDIT_MODE
 {
@@ -29,10 +31,16 @@ public:
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
 
-    virtual void Render_Editor() override;
+    void    Render_Editor() override;
 
-    void LoadMapOnStart(const char* filePath);
+    void    LoadMapOnStart(const char* filePath);
+    void Spawn_Walls(CLayer* layer);
 
+public:
+    // 벽만들기
+    CWallRenderer* Get_WallRenderer() const { return m_WallRendererCom; }
+    _vec3 Get_CellCenterWorld(_int cellX, _int cellZ);
+    _float Get_CellSize();
 
 private:
     HRESULT Add_Component();
@@ -51,7 +59,8 @@ private:
     Engine::CTexture*           m_TextureCom1024;
     Engine::CTexture*           m_TextureComOutline;
 
-    CTerrainRenderer*   m_TerrainRendererCom;
+    CTerrainRenderer*           m_TerrainRendererCom;
+    CWallRenderer*              m_WallRendererCom;
 
 };
 

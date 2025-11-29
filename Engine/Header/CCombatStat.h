@@ -5,25 +5,52 @@
 
 BEGIN(Engine)
 class CAnimator;
+class CRigidbody;
 
-typedef struct tagHitData
+// 공격 설정용, AttackBuilder로 스폰할 때 사용
+typedef struct tagAttackData
 {
-    _vec3  dir;        // 넉백 방향
     _float damage;     // 데미지
     _float knockback;  // 넉백량
     _float duration;   // 넉백 유지 시간(필요하면 사용 ㄱㄱ)
+
+    tagAttackData()
+        : damage(0.f),
+          knockback(0.f),
+          duration(0.f)
+    {}
+} ATTACKDATA;
+
+// 이건 충돌 구조에서 알아서 채워지는 Hit Data
+typedef struct tagHitData
+{
+    _vec3  dir;              // 넉백 방향
+    _float damage;           // 데미지
+    _float knockback;        // 넉백량
+    _float duration;         // 넉백 유지 시간
 
     CGameObject* attacker;   // 때린 놈
     CGameObject* hitter;     // 맞은 놈
 
     tagHitData()
         : dir(0.f, 0.f, 0.f),
-          damage(0.f),
-          knockback(0.f),
-          duration(0.f),
-          attacker(nullptr),
-          hitter(nullptr)
+        damage(0.f),
+        knockback(0.f),
+        duration(0.f),
+        attacker(nullptr),
+        hitter(nullptr)
     {}
+
+    // AttackData에서 HitData로 변환하는 편의 생성자
+    tagHitData(const ATTACKDATA& attackData)
+        : dir(0.f, 0.f, 0.f),
+        damage(attackData.damage),
+        knockback(attackData.knockback),
+        duration(attackData.duration),
+        attacker(nullptr),
+        hitter(nullptr)
+    {}
+
 } HITDATA;
 
 /**
@@ -51,6 +78,7 @@ public:
     _float Get_MaxMp() { return m_MaxMp; }
 
     _bool Is_Dead() { return m_IsDead; }
+    bool  Is_Invincible() const { return m_IsInvincible; }
 
     void Set_Attack(_float attack) { m_Attack = attack; }
     void Set_AttackSpeed(_float attackSpeed) { m_AttackSpeed = attackSpeed; }
@@ -59,11 +87,12 @@ public:
     void Set_Mp(_float mp) { m_Mp = mp; }
     void Set_MaxMp(_float maxMp) { m_MaxMp = maxMp; }
     void Set_Speed(_float speed) { m_Speed = speed; }
+    void Set_Invincible(bool invincible) { m_IsInvincible = invincible; }
 
     void Add_Attack(float attack) { m_Attack += attack; }
 
 public:
-    void Take_Damage(HITDATA hitData);
+    void Take_Damage(const HITDATA& hitData);
 
     void Apply_Damage(const HITDATA& hitData);
     void Apply_Knockback(const HITDATA& hitData);
@@ -78,6 +107,8 @@ protected:
     void Free() override;
 
 private:
+    CRigidbody* m_OwnerRigidbody;
+
     _float m_Attack;
     _float m_AttackSpeed;   // 공격 속도
 
@@ -88,6 +119,8 @@ private:
     _float m_Speed;
 
     _bool m_IsDead;
+
+    _bool m_IsInvincible; // 무적
 };
 
 END

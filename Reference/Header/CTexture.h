@@ -26,7 +26,7 @@ public:
     IDirect3DBaseTexture9* Get_BaseTexture(_uint index = 0) const;
     // 텍스처 개수
     _uint Get_TextureIndex() const;
-    bool Get_TextureSize(int index, float& outWidth, float& outHeight);
+    bool Get_TextureSize(int index, float& outWidth, float& outHeight, wstring* key = nullptr);
 
 public:
     static CTexture* Create(DEVICE graphicDev, TEXTUREID texType, const wstring& filePath, const _uint& count);

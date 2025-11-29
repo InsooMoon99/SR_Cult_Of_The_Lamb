@@ -44,7 +44,8 @@ void CCollisionManager::Update()
             if (dst->IsCollisionActive() == false) // 충돌체 Active가 꺼져있다면 무시
                 continue;
 
-            // TODO : Owner 세팅 후 비교
+            if (ownerSrc == ownerDst)
+                continue;
 
             bool isColliding = src->CheckCollision(dst);
 
@@ -63,6 +64,15 @@ void CCollisionManager::Update()
                     // 충돌 상태 추가
                     src->AddOverlap(dst);
                     dst->AddOverlap(src);
+                }
+                // 이미 겹쳐 있을 때
+                else
+                {
+                    if (CGameObject* ownerSrc = src->Get_Owner())
+                        ownerSrc->OnStayOverlap(src, dst);
+
+                    if (CGameObject* ownerDst = dst->Get_Owner())
+                        ownerDst->OnStayOverlap(dst, src);
                 }
             }
 
@@ -94,12 +104,27 @@ void CCollisionManager::AddCollider(CCollider* collider)
 
     m_Colliders.push_back(collider);
 }
-// 충돌체 제거
+
 void CCollisionManager::RemoveCollider(CCollider* collider)
 {
     if (collider == nullptr)
         return;
 
+    for (CCollider* other : m_Colliders)
+    {
+        if (other && other != collider)
+        {
+            if (other->IsOverlapping(collider))
+            {
+                other->RemoveOverlap(collider);
+
+                if (CGameObject* owner = other->Get_Owner())
+                    owner->OnEndOverlap(other, collider);
+            }
+        }
+    }
+
+    // 리스트에서 제거
     auto iter = remove(m_Colliders.begin(), m_Colliders.end(), collider);
     m_Colliders.erase(iter, m_Colliders.end());
 }

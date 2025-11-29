@@ -35,11 +35,13 @@ public:
     void OnBeginOverlap(CCollider* self, CCollider* other) override {}
     void OnEndOverlap(CCollider* self, CCollider* other) override {}
 
+    DEVICE Get_GraphicDev() { return m_GraphicDev; } // 이게  괜찬나..??
 private:
     HRESULT Add_Component();
     void    Animation_Setting();
 
     const char* GetBossStateName(_int StateNum);
+
 
 private:
     Engine::CRcTex* m_BufferCom;

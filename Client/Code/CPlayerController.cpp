@@ -142,25 +142,7 @@ void CPlayerController::CheckStateTransition()
             else
                 m_StateData.rollDir = CalcWorldDir(m_OwnerStateCom->Get_Dir());
 
-            // TODO : 문제점 추후 해결
-            /*
-            현재 구르기(ACTORSTATE::PLAYER_ROLL) 진입 시 m_OwnerColliderCom->Set_CollisionActive(false)를 호출하고 있습니다.
-    
-            문제점:
-    
-            이 코드는 플레이어의 모든 충돌을 꺼버립니다. 즉, 적의 공격뿐만 아니라
-            벽이나 장애물도 통과하게 될 가능성이 매우 높습니다.
-    
-            해결 방안:
-            
-            방법 A (추천):
-            충돌체(Collider)는 끄지 말고,PlayerStateData에 isInvincible (무적) 플래그를 두거나
-            CCombatStat 쪽에 무적 상태를 설정하여, 피격 판정 로직에서만 데미지를 무시하도록 처리해야 합니다.
-    
-            방법 B:
-            만약 벽 충돌체와 피격 충돌체가 분리되어 있다면, 피격용 충돌체만 꺼야 합니다.
-            */
-            if (m_OwnerColliderCom) m_OwnerColliderCom->Set_CollisionActive(false);
+            if (m_OwnerCombatStatCom) m_OwnerCombatStatCom->Set_Invincible(true);
 
             // 구를 때는 마찰력 무시
             if (m_OwnerRigidbodyCom) m_OwnerRigidbodyCom->Set_Friction(0.f);
@@ -190,7 +172,7 @@ void CPlayerController::CheckStateTransition()
 
             if (curState == ACTORSTATE::PLAYER_ROLL)
             {
-                if (m_OwnerColliderCom) m_OwnerColliderCom->Set_CollisionActive(true);
+                if (m_OwnerCombatStatCom) m_OwnerCombatStatCom->Set_Invincible(false);
                 if (m_OwnerRigidbodyCom) m_OwnerRigidbodyCom->Set_Friction(0.2f); // 기본 마찰력 복구
             }
         }
@@ -364,7 +346,7 @@ _bool CPlayerController::IsAttacking(ACTORSTATE state)
 
 void CPlayerController::Action_Idle(const _float& timeDelta)
 {
-    m_OwnerRigidbodyCom->Set_Friction(0.2f);
+    m_OwnerRigidbodyCom->Set_Friction(0.4f);
 }
 
 void CPlayerController::Action_Run(const _float& timeDelta)

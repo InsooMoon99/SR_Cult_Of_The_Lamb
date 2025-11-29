@@ -173,6 +173,7 @@
   <ItemGroup>
     <ClInclude Include="..\Header\CBossAwake.h" />
     <ClInclude Include="..\Header\CBossBulletAttack.h" />
+    <ClInclude Include="..\Header\CBossChain.h" />
     <ClInclude Include="..\Header\CBossChainAttack.h" />
     <ClInclude Include="..\Header\CBossDead.h" />
     <ClInclude Include="..\Header\CBossGroggy.h" />
@@ -209,10 +210,14 @@
     <ClInclude Include="..\Header\CPlayer.h" />
     <ClInclude Include="..\Header\CPlayerController.h" />
     <ClInclude Include="..\header\CPlayerMovement.h" />
+    <ClInclude Include="..\Header\CRandomMgr.h" />
     <ClInclude Include="..\Header\CResourceMgr.h" />
     <ClInclude Include="..\Header\CSceneMgr.h" />
     <ClInclude Include="..\Header\CStage.h" />
     <ClInclude Include="..\Header\CBaseState.h" />
+    <ClInclude Include="..\Header\CStage_Boss1.h" />
+    <ClInclude Include="..\Header\CStage_Boss2.h" />
+    <ClInclude Include="..\Header\CStage_TaroTest.h" />
     <ClInclude Include="..\Header\CStateMachine.h" />
     <ClInclude Include="..\Header\CTerrainRenderer.h" />
     <ClInclude Include="..\Header\CTestMonster.h" />
@@ -228,6 +233,9 @@
     <ClInclude Include="..\Header\CUISkillCount.h" />
     <ClInclude Include="..\Header\CUITabMenu.h" />
     <ClInclude Include="..\Header\CUIWeapon.h" />
+    <ClInclude Include="..\Header\CWarningChain.h" />
+    <ClInclude Include="..\Header\CWall.h" />
+    <ClInclude Include="..\Header\CWallRenderer.h" />
     <ClInclude Include="..\Header\CWeaponEquip.h" />
     <ClInclude Include="..\Header\ItemData.h" />
     <ClInclude Include="..\Header\ItemInstance.h" />
@@ -241,6 +249,7 @@
   <ItemGroup>
     <ClCompile Include="..\Code\CBossAwake.cpp" />
     <ClCompile Include="..\Code\CBossBulletAttack.cpp" />
+    <ClCompile Include="..\Code\CBossChain.cpp" />
     <ClCompile Include="..\Code\CBossChainAttack.cpp" />
     <ClCompile Include="..\Code\CBossDead.cpp" />
     <ClCompile Include="..\Code\CBossGroggy.cpp" />
@@ -275,10 +284,14 @@
     <ClCompile Include="..\Code\CPlayer.cpp" />
     <ClCompile Include="..\Code\CPlayerController.cpp" />
     <ClCompile Include="..\code\CPlayerMovement.cpp" />
+    <ClCompile Include="..\Code\CRandomMgr.cpp" />
     <ClCompile Include="..\Code\CResourceMgr.cpp" />
     <ClCompile Include="..\Code\CSceneMgr.cpp" />
     <ClCompile Include="..\Code\CStage.cpp" />
     <ClCompile Include="..\Code\CBaseState.cpp" />
+    <ClCompile Include="..\Code\CStage_Boss1.cpp" />
+    <ClCompile Include="..\Code\CStage_Boss2.cpp" />
+    <ClCompile Include="..\Code\CStage_TaroTest.cpp" />
     <ClCompile Include="..\Code\CStateMachine.cpp" />
     <ClCompile Include="..\Code\CTerrainRenderer.cpp" />
     <ClCompile Include="..\Code\CTestMonster.cpp" />
@@ -295,6 +308,9 @@
     <ClCompile Include="..\Code\CUISkillCount.cpp" />
     <ClCompile Include="..\Code\CUITabMenu.cpp" />
     <ClCompile Include="..\Code\CUIWeapon.cpp" />
+    <ClCompile Include="..\Code\CWarningChain.cpp" />
+    <ClCompile Include="..\Code\CWall.cpp" />
+    <ClCompile Include="..\Code\CWallRenderer.cpp" />
     <ClCompile Include="..\Code\CWeaponEquip.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">

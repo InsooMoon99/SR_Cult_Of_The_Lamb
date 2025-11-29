@@ -75,6 +75,7 @@ enum class OBJTYPE
     TERRAIN,
     PLACEMENT,
     ATTACK_COL,
+    WALL,
 
     OBJ_END
 };
@@ -94,8 +95,9 @@ enum class COMPONENTTYPE
     STATE,
     COMBATSTAT,
     INVENTORY,
-    TERRAIN_RENDER,
     RIGIDBODY,
+    TERRAIN_RENDER,
+    WALL_RENDERER,
 
     WEAPON_EQUIP,
     PL_CONTROLLER,
@@ -122,10 +124,7 @@ enum class COMPONENTTYPE
     TEX_UI_ICON,
     TEX_UI_BUTTON,
     TEX_BOSSPHASE1,
-
-    TEX_TILE_284,
-    TEX_TILE_1024,
-    TEX_TILE_OUTLINE,
+    TEX_OUT,    
 
     ANIMATOR,
     CAMERA,
@@ -185,10 +184,12 @@ enum class SCENETYPE
     SC_MAINMENU,
     SC_STAGE,
     SC_STAGE1,
-    SC_STAGE2,
-    SC_BOSSSTAGE,
-    SC_EDIT,
+    SC_TARO_TEST,
+    SC_BOSS_STAGE1,
+    SC_BOSS_STAGE2,
 
+    SC_EDIT,
+        
     SC_END
 };
 }

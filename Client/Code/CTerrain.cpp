@@ -9,14 +9,26 @@
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CTerrainRenderer.h"
+#include "CWall.h"
+#include "CWallRenderer.h"
+#include "CBoxCollider.h"
+#include "../../Engine/Header/CLayer.h"
 
 CTerrain::CTerrain(DEVICE GraphicDev)
-    : CGameObject(GraphicDev)
+    : CGameObject(GraphicDev), m_BufferCom(nullptr), m_TransformCom(nullptr), m_TextureCom284(nullptr),
+      m_TextureCom1024(nullptr),
+      m_TextureComOutline(nullptr),
+      m_TerrainRendererCom(nullptr),
+      m_WallRendererCom(nullptr)
 {
 }
 
 CTerrain::CTerrain(const CTerrain& rhs)
-    :CGameObject(rhs)
+    : CGameObject(rhs), m_BufferCom(nullptr), m_TransformCom(nullptr), m_TextureCom284(nullptr),
+      m_TextureCom1024(nullptr),
+      m_TextureComOutline(nullptr),
+      m_TerrainRendererCom(nullptr),
+      m_WallRendererCom(nullptr)
 {
 }
 
@@ -39,7 +51,43 @@ _int CTerrain::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CGameObject::Update_GameObject(timeDelta);
 
+    static bool wallsSpawned = false;
+    if (!wallsSpawned)
+    {
+        auto layer = CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::ENVIRONMENT);
+        if (layer)
+        {
+            Spawn_Walls(layer);
+            wallsSpawned = true;
+        }
+    }
+
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_NONALPHA, this);
+
+    if (m_WallRendererCom && m_WallRendererCom->Get_EditMode())
+    {
+        _int cellX, cellZ;
+
+        if (m_TerrainRendererCom && m_TerrainRendererCom->PickCellMousePos(cellX, cellZ))
+        {
+            auto input = CDInputMgr::GetInstance();
+
+            ImGuiIO& io = ImGui::GetIO();
+            if (!io.WantCaptureMouse)
+            {
+                if (input->MousePress(DIM_LB))
+                {
+                    m_WallRendererCom->Set_WallPosition(cellX, cellZ, true);
+                }
+
+                else if (input->MousePress(DIM_RB))
+                {
+                    m_WallRendererCom->Set_WallPosition(cellX, cellZ, false);
+                }
+
+            }
+        }
+    }
 
     return exit;
 }
@@ -91,6 +139,15 @@ HRESULT CTerrain::Add_Component()
 
     FAILED_CHECK_RETURN(m_TerrainRendererCom->Ready_TerrainRenderer(), E_FAIL);
 
+    m_WallRendererCom = CreateProtoComponent<CWallRenderer>(this, COMPONENTTYPE::WALL_RENDERER);
+    NULL_CHECK_RETURN(m_WallRendererCom, E_FAIL);
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::WALL_RENDERER , m_WallRendererCom });
+
+    m_WallRendererCom->Initialize(
+        m_TerrainRendererCom->Get_SizeX(),
+        m_TerrainRendererCom->Get_SizeZ(),
+        m_TerrainRendererCom->Get_CellSize());
+
     return S_OK;
 }
 
@@ -98,7 +155,7 @@ void CTerrain::Render_Editor()
 {
     CGameObject::Render_Editor();
 
-    ImGui::Text("=== Terrain ===");
+    //ImGui::Text("=== Terrain ===");
 
 }
 
@@ -108,6 +165,64 @@ void CTerrain::LoadMapOnStart(const char* filePath)
     {
         m_TerrainRendererCom->LoadMap(filePath);
     }
+}
+
+void CTerrain::Spawn_Walls(CLayer* layer)
+{
+    if (!m_WallRendererCom || !m_TerrainRendererCom || !layer)
+        return;
+
+    const int sizeX = m_WallRendererCom->Get_GridSizeX();
+    const int sizeZ = m_WallRendererCom->Get_GridSizeZ();
+    _float cellSize = m_TerrainRendererCom->Get_CellSize();
+
+    int wallCount = 0;
+
+    for (_int z = 0; z < sizeZ - 1; z++)
+    {
+        for (_int x = 0; x < sizeX - 1; x++)
+        {
+            if (m_WallRendererCom->Has_Wall(x, z))
+            {
+                CWall* wall = CWall::Create(m_GraphicDev);
+
+                _vec3 wallPos = m_TerrainRendererCom->GetCellCenterWorld(x, z);
+
+                auto wallTransform = dynamic_cast<CTransform*>(
+                    wall->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+                if (wallTransform)
+                    wallTransform->Set_Pos(wallPos);
+
+                auto wallCollider = dynamic_cast<CBoxCollider*>(
+                    wall->Get_Component(ID_DYNAMIC, COMPONENTTYPE::BOX_COLL));
+
+                if (wallCollider)
+                {
+                    wallCollider->Set_Size(_vec3(cellSize, 2.f, cellSize));
+
+                    layer->Add_GameObject(OBJTYPE::WALL, wall);
+                    wallCount++;
+                }
+            }
+        }
+    }
+}
+
+_vec3 CTerrain::Get_CellCenterWorld(_int cellX, _int cellZ)
+{
+    if (!m_TerrainRendererCom)
+        return _vec3(0.f, 0.f, 0.f);
+
+    return m_TerrainRendererCom->GetCellCenterWorld(cellX, cellZ);
+}
+
+_float CTerrain::Get_CellSize()
+{
+    if (!m_TerrainRendererCom)
+        return 1.f;
+
+    return m_TerrainRendererCom->Get_CellSize();
 }
 
 CTerrain* CTerrain::Create(DEVICE GraphicDev)
@@ -126,6 +241,7 @@ CTerrain* CTerrain::Create(DEVICE GraphicDev)
 
 void CTerrain::Free()
 {
-    CGameObject::Free();
+    Safe_Release(m_WallRendererCom);
 
+    CGameObject::Free();
 }

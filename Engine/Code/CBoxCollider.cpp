@@ -2,24 +2,23 @@
 
 #include "CBoxCol.h"
 #include "CBoxTex.h"
+#include "CCreateHelper.h"
 #include "CRenderer.h"
 #include "CSphereCollider.h"
 #include "CTransform.h"
 
 CBoxCollider::CBoxCollider(DEVICE graphicDev)
     : CCollider(graphicDev, COLLIDERTYPE::BOX)
-      , m_BufferCom(nullptr), m_Size(1.f, 1.f, 1.f)
+      ,  m_Size(1.f, 1.f, 1.f)
 {
-    if (m_BufferCom)
-        m_BufferCom->AddRef();
+
 
 }
 
 CBoxCollider::CBoxCollider(const CBoxCollider& rhs)
-    : CCollider(rhs), m_BufferCom(rhs.m_BufferCom), m_Size(rhs.m_Size)
+    : CCollider(rhs),  m_Size(rhs.m_Size)
 {
-    if (m_BufferCom)
-        m_BufferCom->AddRef();
+ 
 
 }
 
@@ -29,12 +28,6 @@ CBoxCollider::~CBoxCollider()
 HRESULT CBoxCollider::Ready_BoxCollider(DEVICE graphicDev)
 {
     if (FAILED(CCollider::Ready_Collider()))
-        return E_FAIL;
-
-    // 렌더용 RcCol Create, 일단 테스트 후 프로토타입으로 변경
-    m_BufferCom = CBoxCol::Create(graphicDev);
-
-    if (m_BufferCom == nullptr)
         return E_FAIL;
 
     return S_OK;
@@ -54,41 +47,18 @@ void CBoxCollider::LateUpdate_Component()
 
 void CBoxCollider::Render()
 {
-    if (m_ShowDebug == false || m_BufferCom == nullptr)
+    if (m_ShowDebug == false)
         return;
 
     CTransform* transform = Get_Transform();
-
     if (transform == nullptr)
         return;
 
-    _vec3 pos = transform->Get_Pos();
+    _vec3 center = transform->Get_Pos();
+    _vec3 size = Get_Size();
 
-    _vec3 worldSize = Get_Size();
-
-    _matrix matScale, matTrans, matWorld;
-
-    D3DXMatrixScaling(
-        &matScale,
-        worldSize.x,
-        worldSize.y,
-        worldSize.z);
-
-    D3DXMatrixTranslation(&matTrans, pos.x, pos.y, pos.z);
-
-    matWorld = matScale * matTrans;
-
-    m_GraphicDev->SetTransform(D3DTS_WORLD, &matWorld);
-
-    // Collider는 와이어프레임으로 보이기
-    DWORD prevFillMode = 0; // 현재 FillMode 저장
-    m_GraphicDev->GetRenderState(D3DRS_FILLMODE, &prevFillMode);
-    m_GraphicDev->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
-
-    // Rect 그리기
-    m_BufferCom->Render_Buffer();
-
-    m_GraphicDev->SetRenderState(D3DRS_FILLMODE, prevFillMode); // 복원
+    DWORD color = !m_ColliderSet.empty() ? D3DCOLOR_ARGB(255, 255, 0, 0) : D3DCOLOR_ARGB(255, 255, 255, 255);
+    Engine::DrawDebugBox(m_GraphicDev, center, size, color);
 }
 
 bool CBoxCollider::CheckCollision(CCollider* other)
@@ -118,9 +88,9 @@ const _vec3 CBoxCollider::Get_Size() const
     {
         _vec3 scale = transform->Get_Scale();
 
-        size.x *= scale.x;
-        size.y *= scale.y;
-        size.z *= scale.z;
+        size.x *= abs(scale.x);
+        size.y *= abs(scale.y);
+        size.z *= abs(scale.z);
     }
 
     return size;
@@ -153,5 +123,4 @@ void CBoxCollider::Free()
 {
     CCollider::Free();
 
-    Safe_Release(m_BufferCom);
 }

@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include "CResourceMgr.h"
-
+#include "CSphereCollider.h"
 #include "CAnimator.h"
 #include "CBoxCol.h"
 #include "CBoxCollider.h"
@@ -25,6 +25,7 @@
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CTriCol.h"
+#include "CWallRenderer.h"
 #include "CWeaponEquip.h"
 #include "CWeaponEquip.h"
 #include "ItemData.h"
@@ -98,9 +99,31 @@ HRESULT CResourceMgr::Ready_BossP1(DEVICE graphicDev)
         L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-hurt-stop/TOWW-Spirit-hurt-stop%d.png", 67)))
         return E_FAIL;
 
+    // 사슬
+    if (FAILED(BossP1Tex->Add_Texture(L"BossChainEff", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/ChainAttack/Summon_Chain%d.png", 34)))
+        return E_FAIL;
+
+    //// 바닥 이팩트
+    //if (FAILED(BossP1Tex->Add_Texture(L"ChainGroundEff", TEX_NORMAL,
+    //    L"../Bin/Resource/Texture/BossPhase1/ChainAttackGround.png", 1)))
+    //    return E_FAIL;
+
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_BOSSPHASE1, BossP1Tex)))
         return E_FAIL;
+
+	///////////////////////////////////////////////////////////////////////
+	
+	//FadeOut Tex
+	vector<wstring> pathVec1;
+	pathVec1.push_back(L"../Bin/Resource/Texture/BossPhase1/ChainAttackGround.png");
+	pathVec1.push_back(L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Sermon_Icon.png");
+
+
+	if (FAILED(protoMgr->Ready_Prototype(
+		COMPONENTTYPE::TEX_OUT, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec1))))
+		return E_FAIL;
 
     return S_OK;
 }
@@ -134,6 +157,11 @@ HRESULT CResourceMgr::Ready_Common(DEVICE graphicDev)
         COMPONENTTYPE::BOX_COLL, CBoxCollider::Create(graphicDev))))
         return E_FAIL;
 
+    // Sphere Collider
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::SPHERE_COLL, CSphereCollider::Create(graphicDev))))
+        return E_FAIL;
+
     // State
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::STATE, CState::Create(graphicDev))))
@@ -148,13 +176,6 @@ HRESULT CResourceMgr::Ready_Common(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::INVENTORY, CInventory::Create(graphicDev))))
         return E_FAIL;
-
-    // TerrainRenderer
-    if (FAILED(protoMgr->Ready_Prototype(
-        COMPONENTTYPE::TERRAIN_RENDER, CTerrainRenderer::Create(graphicDev))))
-        return E_FAIL;
-
-    
 
     // Rigidbody
     if (FAILED(protoMgr->Ready_Prototype(
@@ -455,6 +476,16 @@ HRESULT CResourceMgr::Ready_Item(DEVICE graphicDev)
 HRESULT CResourceMgr::Ready_Terrain(DEVICE graphicDev)
 {
     auto protoMgr = CProtoMgr::GetInstance();
+
+    // TerrainRenderer
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TERRAIN_RENDER, CTerrainRenderer::Create(graphicDev))))
+        return E_FAIL;
+
+    // WallRenderer
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::WALL_RENDERER, CWallRenderer::Create(graphicDev))))
+        return E_FAIL;
 
     // Terrain_284
     if (FAILED(protoMgr->Ready_Prototype(

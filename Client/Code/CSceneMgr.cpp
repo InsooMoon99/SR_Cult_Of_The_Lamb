@@ -7,12 +7,16 @@
 #include "CManagement.h"
 #include "CStage.h"
 #include "Engine_Enum.h"
+#include "CStage_Boss1.h"
+#include "CStage_Boss2.h"
+#include "CStage_TaroTest.h"
 
 IMPLEMENT_SINGLETON(CSceneMgr)
 
 CSceneMgr::CSceneMgr()
 {
     m_pGraphicDev = nullptr;
+    m_SceneType = SCENETYPE::SC_END;
 }
 
 CSceneMgr::~CSceneMgr()
@@ -45,8 +49,10 @@ void CSceneMgr::Render_SceneMgr()
 void CSceneMgr::Change_SceneMgr(SCENETYPE typeInput)
 {
     _bool     bFailed = false;
-    SCENETYPE type    = typeInput;
-    switch (type)
+
+    m_SceneType = typeInput;
+
+    switch (m_SceneType)
     {
     case SCENETYPE::SC_MAINMENU:
         if (FAILED(CManagement::GetInstance()
@@ -61,20 +67,22 @@ void CSceneMgr::Change_SceneMgr(SCENETYPE typeInput)
         if (FAILED(CManagement::GetInstance()->Request_ChangeScene(CEdit::Create(m_pGraphicDev))))
             bFailed = true;
         break;
-    //case SC_STAGE1:
-    //    if (FAILED(CManagement::GetInstance()->Request_ChangeScene(CMonsterTestScene::Create(m_pGraphicDev))))
-    //    {
-    //        bFailed = true;
-    //    }
-    //    break;
-    //case SC_STAGE2:
-    //    if (FAILED(CManagement::GetInstance()->Request_ChangeScene(CUITestScene::Create(m_pGraphicDev))))
-    //    {
-    //        bFailed = true;
-    //    }
-    //    break;
-    case SCENETYPE::SC_END:
+    
+    case SCENETYPE::SC_TARO_TEST:
+        if (FAILED(CManagement::GetInstance()->Request_ChangeScene(CStage_TaroTest::Create(m_pGraphicDev))))
+            bFailed = true;
         break;
+
+    case SCENETYPE::SC_BOSS_STAGE1:
+        if (FAILED(CManagement::GetInstance()->Request_ChangeScene(CStage_Boss1::Create(m_pGraphicDev))))
+            bFailed = true;
+        break;
+
+    case SCENETYPE::SC_BOSS_STAGE2:
+        if (FAILED(CManagement::GetInstance()->Request_ChangeScene(CStage_Boss2::Create(m_pGraphicDev))))
+            bFailed = true;
+        break;
+
     default:
         break;
     }

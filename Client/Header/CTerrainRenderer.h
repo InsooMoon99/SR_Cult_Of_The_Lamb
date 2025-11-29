@@ -42,7 +42,6 @@ public:
     HRESULT SaveMap(const char* filePath);
     HRESULT LoadMap(const char* filePath);
 
-
 public:
     // 셀 좌표 -> 월드 좌표로 변환
     _vec3   GetCellCenterWorld(_uint cellX, _uint cellZ) const;
@@ -82,6 +81,9 @@ private:
     vector<_int>    m_TileIndices1024{};
     vector<_int>    m_TileIndicesOutline{};
 
+    // 충돌체 데이터
+    vector<_bool>   m_WallTiles;
+
     vector<_int>    m_TileTypes{};
 
     _int            m_SelectedTile;
@@ -90,7 +92,7 @@ private:
     _int            m_PaintX, m_PaintZ;
 
     vector<string>  m_MapList{};
-    char            m_MapName[64];
+    char            m_MapName[64]{};
     _int            m_SelectedMapIndex;
 
     _int            m_SizeX, m_SizeZ;

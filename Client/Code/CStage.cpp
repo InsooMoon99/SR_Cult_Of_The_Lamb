@@ -29,6 +29,7 @@
 #include "CMapEditorPlacer.h"
 #include "CSceneMgr.h"
 #include "CUITabMenu.h"
+#include "CWall.h"
 
 CStage::CStage(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -73,12 +74,6 @@ _int CStage::Update_Scene(const _float& timeDelta)
 {
     _int exit = Engine::CScene::Update_Scene(timeDelta);
 
-    //안은수 테스트
-    if (CDInputMgr::GetInstance()->Get_DIKeyState(DIK_0) & 0x80)
-    {
-        CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_MAINMENU);
-    }
-
     return exit;
 }
 
@@ -103,10 +98,13 @@ HRESULT CStage::Ready_Environment_Layer(LAYERTYPE layerType)
     CTerrain* terrain = CTerrain::Create(m_GraphicDev);
     NULL_CHECK_RETURN(terrain, E_FAIL);
 
-    terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_OutlineTest.map");
+    // 초기 맵 불러오기
+    terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_WallTest1.map");
     layer->Add_GameObject(OBJTYPE::TERRAIN, terrain);
 
-    m_Layers.insert({ layerType, layer });          // scene -> map
+    //terrain->Spawn_Walls(layer); 스폰시기가 꼬인다.. Update에서 일단 지연스폰
+
+    m_Layers.insert({ layerType, layer });
 
     return S_OK;
 }
@@ -135,20 +133,29 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
             &gameObject),
         L"Persistent object setup failed");
 
+    NULL_CHECK_RETURN(gameObject, E_FAIL);
+
     // 플레이어의 Transform 가져오기
     const auto playerTransform =
         dynamic_cast<CTransform*>(gameObject->Get_Component(
             ID_DYNAMIC,
             COMPONENTTYPE::TRANSFORM));
+
+    NULL_CHECK_RETURN(playerTransform, E_FAIL);
+
     m_PlayerInventoryCom =
         dynamic_cast<CInventory*>(gameObject->Get_Component(
             ID_STATIC,
             COMPONENTTYPE::INVENTORY));
 
+    NULL_CHECK_RETURN(m_PlayerInventoryCom, E_FAIL);
+
     m_PlayerCombatStatCom =
         dynamic_cast<CCombatStat*>(gameObject->Get_Component(
             ID_DYNAMIC,
             COMPONENTTYPE::COMBATSTAT));
+
+    NULL_CHECK_RETURN(m_PlayerCombatStatCom, E_FAIL);
 
     // -----------------------------
     // Monster
@@ -166,12 +173,13 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     // -----------------------------
     // Boss
     // -----------------------------
-    //gameObject = CBossPhase1::Create(m_GraphicDev);
-    //NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase1::Create() returned null")
-    //
-    //    FAILED_CHECK_MSG(
-    //        layer->Add_GameObject(OBJTYPE::BOSS1, gameObject),
-    //        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
+    /*gameObject = CBossPhase1::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase1::Create() returned null")
+    
+        FAILED_CHECK_MSG(
+            layer->Add_GameObject(OBJTYPE::BOSS1, gameObject),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");*/
+
 
     // -----------------------------
     // Camera

@@ -119,6 +119,7 @@ public:
 
 public: // Getter
     _float Get_RollDuration() const { return m_StateData.rollDuration; }
+    _vec3  Get_MoveDir() const { return m_StateData.moveDir; }
 
 public: // Setter
     void Set_RollDuration(_float duration) { m_StateData.rollDuration = duration; }

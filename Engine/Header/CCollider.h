@@ -54,7 +54,7 @@ protected:
     _bool         m_ShowDebug;        // 디버그 렌더링 여부
     _bool         m_IsColliderActive; // 충돌처리용
 
-private:
+protected:
     // 현재 프레임 기준으로 겹쳐있는(충돌중인) 다른 Collider들
     unordered_set<CCollider*> m_ColliderSet;
 };

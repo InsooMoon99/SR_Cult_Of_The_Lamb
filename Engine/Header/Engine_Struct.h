@@ -56,4 +56,5 @@ typedef struct tagSprite
 } SPRITE;
 }
 
+
 #endif // Engine_Struct_h__
