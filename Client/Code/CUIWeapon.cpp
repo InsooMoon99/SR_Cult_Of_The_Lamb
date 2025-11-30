@@ -33,7 +33,7 @@ HRESULT CUIWeapon::Ready_GameObject()
         return E_FAIL;
 
     m_TransformCom->Set_Pos(_vec3(-500.f, 180.f, 0.f));
-    m_TransformCom->Set_Scale(_vec3(25.f, 25.f, 0.f));
+    m_TransformCom->Set_Scale(_vec3(40.f, 40.f, 0.f));
     return S_OK;
 }
 
@@ -52,6 +52,8 @@ _int CUIWeapon::Update_GameObject(const _float& timeDelta)
         m_WeaponID = weaponEquip->Get_CurrentWeaponID();
         m_Invisible = false;
     }
+    else
+        m_Invisible = true;
     return exit;
 }
 
@@ -67,7 +69,18 @@ void CUIWeapon::Render_GameObject()
         CUI::Render_GameObject();
 
         m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
+     //   // 예시: 0번 텍스처 스테이지의 COLOROP 상태 저장
+     //   DWORD dwOldColorOp;
+     //   m_GraphicDev->GetTextureStageState(0, D3DTSS_COLOROP, &dwOldColorOp);
 
+        // --- [2단계: 아이콘 전용 상태 설정] ---------------------------------
+        // 아이콘이 투명하게, 색상 변질 없이 그려지도록 설정합니다.
+        m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+        m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+        m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
+      //  m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+      //  m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
         switch(m_WeaponID)
         {
         case 3001:
@@ -77,9 +90,17 @@ void CUIWeapon::Render_GameObject()
         case 3002:
             m_TextureCom->Set_Texture(1);
             break;
-        }
 
+        }
         m_BufferCom->Render_Buffer();
+    //    // --- [4단계: 원래 상태로 복원] --------------------------------------
+    //// 렌더링이 끝났으므로, 저장해 둔 값으로 상태를 되돌립니다.
+    //    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE); // 또는 저장된 값으로 복원
+    //
+    //    // 저장된 ColorOp 값으로 복원
+    //    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, dwOldColorOp);
+    //
+     
     }
 }
 

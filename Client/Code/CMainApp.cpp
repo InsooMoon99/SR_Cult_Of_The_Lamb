@@ -141,6 +141,12 @@ HRESULT CMainApp::Ready_DefaultSetting(DEVICE* graphicDev)
         *graphicDev, L"NanumSquare_Number", L"나눔스퀘어 네오 Heavy", 18, 20, FW_HEAVY)))
         return E_FAIL;
 
+
+    //스킬 남은 횟수 출력용 폰트
+    if (FAILED(CFontMgr::GetInstance()->Ready_Font(
+        *graphicDev, L"NanumSquare_Skill", L"나눔스퀘어 네오 Heavy", 25, 25, FW_HEAVY)))
+        return E_FAIL;
+
     //중간 크기 폰트
 	if (FAILED(CFontMgr::GetInstance()->Ready_Font(
 		*graphicDev, L"NanumSquare_Regular", L"나눔스퀘어 네오 Regular", 18, 21, FW_MEDIUM)))

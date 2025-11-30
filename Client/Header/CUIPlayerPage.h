@@ -29,6 +29,7 @@ private:
     CUIIcon* m_LockUI;
     CUIIcon* m_UnlockUI;
     CUIIcon* m_OutfitUI;
+    CUIIcon* m_WeaponUI;
     CUIPlayerPanel* m_PlayerPanel;
     CUI* m_Owner;
 };

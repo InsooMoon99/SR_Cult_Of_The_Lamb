@@ -212,8 +212,9 @@
     <ClInclude Include="..\Header\CStage.h" />
     <ClInclude Include="..\Header\CBaseState.h" />
     <ClInclude Include="..\Header\CStage_Boss1.h" />
-    <ClInclude Include="..\Header\CStage_TaroTest.h" />
+    <ClInclude Include="..\Header\CStage_TarotTest.h" />
     <ClInclude Include="..\Header\CStateMachine.h" />
+    <ClInclude Include="..\Header\CUITarotCard.h" />
     <ClInclude Include="..\Header\CTerrainRenderer.h" />
     <ClInclude Include="..\Header\CTestMonster.h" />
     <ClInclude Include="..\Header\CTerrain.h" />
@@ -226,8 +227,9 @@
     <ClInclude Include="..\Header\CUIPlayerImage.h" />
     <ClInclude Include="..\Header\CUIPlayerPage.h" />
     <ClInclude Include="..\Header\CUIPlayerPanel.h" />
-    <ClInclude Include="..\Header\CUISkillCount.h" />
     <ClInclude Include="..\Header\CUITabMenu.h" />
+    <ClInclude Include="..\Header\CTarotStageController.h" />
+    <ClInclude Include="..\Header\CUITarotDescCard.h" />
     <ClInclude Include="..\Header\CUIWeapon.h" />
     <ClInclude Include="..\Header\CWarningChain.h" />
     <ClInclude Include="..\Header\CWall.h" />
@@ -282,8 +284,9 @@
     <ClCompile Include="..\Code\CStage.cpp" />
     <ClCompile Include="..\Code\CBaseState.cpp" />
     <ClCompile Include="..\Code\CStage_Boss1.cpp" />
-    <ClCompile Include="..\Code\CStage_TaroTest.cpp" />
+    <ClCompile Include="..\Code\CStage_TarotTest.cpp" />
     <ClCompile Include="..\Code\CStateMachine.cpp" />
+    <ClCompile Include="..\Code\CUITarotCard.cpp" />
     <ClCompile Include="..\Code\CTerrainRenderer.cpp" />
     <ClCompile Include="..\Code\CTestMonster.cpp" />
     <ClCompile Include="..\Code\CTerrain.cpp" />
@@ -297,8 +300,9 @@
     <ClCompile Include="..\Code\CUIPlayerPage.cpp" />
     <ClCompile Include="..\Code\CUIPlayerPanel.cpp" />
     <ClCompile Include="..\Code\CUIMp.cpp" />
-    <ClCompile Include="..\Code\CUISkillCount.cpp" />
     <ClCompile Include="..\Code\CUITabMenu.cpp" />
+    <ClCompile Include="..\Code\CTarotStageController.cpp" />
+    <ClCompile Include="..\Code\CUITarotDescCard.cpp" />
     <ClCompile Include="..\Code\CUIWeapon.cpp" />
     <ClCompile Include="..\Code\CWarningChain.cpp" />
     <ClCompile Include="..\Code\CWall.cpp" />

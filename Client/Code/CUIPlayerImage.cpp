@@ -50,16 +50,6 @@ void CUIPlayerImage::Render_GameObject()
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
-    m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-
-    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-    m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-    m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-
-    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-    m_GraphicDev->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-    m_GraphicDev->SetRenderState(D3DRS_ALPHAREF, 0);
-
     if (m_TextureCom && m_AnimatorCom)
     {
         const wstring& key = m_AnimatorCom->Get_CurKey();
@@ -69,13 +59,6 @@ void CUIPlayerImage::Render_GameObject()
     }
 
     m_BufferCom->Render_Buffer();
-
-    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-    m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-
-    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 
     cout << m_TransformCom->Get_Pos().x << "\t" << m_TransformCom->Get_Pos().y << endl;
 }
@@ -126,5 +109,10 @@ CUIPlayerImage* CUIPlayerImage::Create(DEVICE graphicDev)
 
 void CUIPlayerImage::Free()
 {
+    Safe_Release(m_BufferCom);
+    Safe_Release(m_TransformCom);
+    Safe_Release(m_TextureCom);
+    Safe_Release(m_AnimatorCom);
+    Safe_Release(m_StateCom);
     CUI::Free();
 }

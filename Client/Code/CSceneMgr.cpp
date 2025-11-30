@@ -8,7 +8,7 @@
 #include "CStage.h"
 #include "Engine_Enum.h"
 #include "CStage_Boss1.h"
-#include "CStage_TaroTest.h"
+#include "CStage_TarotTest.h"
 
 IMPLEMENT_SINGLETON(CSceneMgr)
 
@@ -68,7 +68,7 @@ void CSceneMgr::Change_SceneMgr(SCENETYPE typeInput)
         break;
     
     case SCENETYPE::SC_TARO_TEST:
-        if (FAILED(CManagement::GetInstance()->Request_ChangeScene(CStage_TaroTest::Create(m_pGraphicDev))))
+        if (FAILED(CManagement::GetInstance()->Request_ChangeScene(CStage_TarotTest::Create(m_pGraphicDev))))
             bFailed = true;
         break;
 

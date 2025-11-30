@@ -13,6 +13,7 @@
 #include "CPlayer.h"
 #include "CUI.h"
 #include "CUITabMenu.h"
+#include "CWeaponEquip.h"
 
 CUIPlayerPage::CUIPlayerPage(DEVICE pGraphicDev, CUI* owner)
     : CUI(pGraphicDev)
@@ -58,19 +59,15 @@ HRESULT CUIPlayerPage::Ready_GameObject()
     dynamic_cast<CTransform*>(m_OutfitUI->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Set_Scale(35.f, 35.f, 0.f);
     m_OutfitUI->SetRegister(false);
 
-
     //Unlock UI
     m_UnlockUI = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_ICON);
     dynamic_cast<CTransform*>(m_UnlockUI->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Set_Scale(35.f, 35.f, 0.f);
     m_UnlockUI->SetRegister(false);
 
-  // //TODO 유림 : 플레이어 하트 UI
-  // //? 플레이어 패널을 여기서 생성하게 되면 PlayerCombatStat을 다시 연결해줘야하는데 그럼 어디서 연결해줄 것인지? 플레이어 패널을 생성하는 건 플레이어 페이지고 플레이어 페이지를 생성하는 건 UITavMenu라 꼬이는 문제점?
-  // //플레이어 하트 UI
-  // m_PlayerPanel = CUIPlayerPanel::Create(m_GraphicDev);
-  // CCombatStat* playerCombatstat = dynamic_cast<CUITabMenu*>(m_Owner)->Get_PlayerCombatStat();
-  //  m_PlayerPanel->Set_PlayerCombatStat(playerCombatstat);
-  // dynamic_cast<CTransform*>(m_PlayerPanel->Get_Component(COMPONENTID::ID_DYNAMIC,COMPONENTTYPE::TRANSFORM))->Set_Pos(-390.f, 100.f,0.f);
+    //Weapon UI
+    m_WeaponUI = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_ICON);
+    dynamic_cast<CTransform*>(m_WeaponUI->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Set_Scale(50.f, 50.f, 0.f);
+    m_WeaponUI->SetRegister(false);
   
    return S_OK;
 }
@@ -99,7 +96,8 @@ _int CUIPlayerPage::Update_GameObject(const _float& timeDelta)
     m_OutfitUI->Update_GameObject(timeDelta);
     dynamic_cast<CTransform*>(m_UnlockUI->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Set_Pos(pos.x + UnlockOffset.x, pos.y + UnlockOffset.y, 0.f);
     m_UnlockUI->Update_GameObject(timeDelta);
-
+    dynamic_cast<CTransform*>(m_WeaponUI->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Set_Pos(pos.x + UnlockOffset.x, pos.y + UnlockOffset.y, 0.f);
+    m_WeaponUI->Update_GameObject(timeDelta);
     return exit;
 }
 
@@ -136,6 +134,26 @@ void CUIPlayerPage::Render_GameObject()
     m_UnlockUI->Set_TextureIndex(5);
     m_UnlockUI->Render_GameObject();
 
+    //Weapon UI :
+    CScene* scene = CManagement::GetInstance()->Get_Scene();
+    CWeaponEquip* weaponEquip = dynamic_cast<CWeaponEquip*>(scene->Get_Component(COMPONENTID::ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::WEAPON_EQUIP));
+
+    if (weaponEquip->Get_WeaponEquipped())
+    {
+        switch(weaponEquip->Get_CurrentWeaponID())
+        {
+        case 3001:
+            m_WeaponUI->Set_TextureIndex(6);
+            m_WeaponUI->Render_GameObject();
+            break;
+        case 3002:
+            m_WeaponUI->Set_TextureIndex(7);
+            m_WeaponUI->Render_GameObject();
+            break;
+        }
+    }
+   
+
     //폰트 그리기
     _vec2 invenPos = { m_TransformCom->Get_Pos().x, m_TransformCom->Get_Pos().y };
     _vec2 fontOffset = { 0.f,- 150.f };
@@ -153,8 +171,6 @@ void CUIPlayerPage::Render_GameObject()
 
 void CUIPlayerPage::Initialize()
 {
-    //TODO 유림 : 플레이어 하트 UI
-   //? 플레이어 패널을 여기서 생성하게 되면 PlayerCombatStat을 다시 연결해줘야하는데 그럼 어디서 연결해줄 것인지? 플레이어 패널을 생성하는 건 플레이어 페이지고 플레이어 페이지를 생성하는 건 UITavMenu라 꼬이는 문제점?
    //플레이어 하트 UI
     m_PlayerPanel = CUIPlayerPanel::Create(m_GraphicDev);
     CCombatStat* playerCombatstat = dynamic_cast<CUITabMenu*>(m_Owner)->Get_PlayerCombatStat();
@@ -207,5 +223,12 @@ CUIPlayerPage* CUIPlayerPage::Create(DEVICE graphicDev,CUI* owner)
 
 void CUIPlayerPage::Free()
 {
+    Safe_Release(m_PlayerUI);
+    Safe_Release(m_PlayerBG);
+    Safe_Release(m_LockUI);
+    Safe_Release(m_UnlockUI);
+    Safe_Release(m_OutfitUI);
+    Safe_Release( m_WeaponUI);
+    Safe_Release(m_PlayerPanel);
     CUI::Free();
 }

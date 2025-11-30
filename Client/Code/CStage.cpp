@@ -174,15 +174,15 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
             L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
 
 
-    // -----------------------------
-    // Boss
-    // -----------------------------
-    gameObject = CBossPhase1::Create(m_GraphicDev);
-    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase1::Create() returned null")
-    
-        FAILED_CHECK_MSG(
-            layer->Add_GameObject(OBJTYPE::BOSS1, gameObject),
-            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
+    //// -----------------------------
+    //// Boss
+    //// -----------------------------
+    //gameObject = CBossPhase1::Create(m_GraphicDev);
+    //NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase1::Create() returned null")
+    //
+    //    FAILED_CHECK_MSG(
+    //        layer->Add_GameObject(OBJTYPE::BOSS1, gameObject),
+    //        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
 
 
     // -----------------------------
@@ -243,7 +243,7 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     uiMp->Set_PlayerCombatStat(m_PlayerCombatStatCom);
 
     gameObject = CUICircle::Create(m_GraphicDev);
-
+    dynamic_cast<CUICircle*>(gameObject)->Set_PlayerCombatStat(m_PlayerCombatStatCom);
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::UI, gameObject),
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUICircle) failed");
@@ -257,8 +257,8 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     //왼쪽 상단 스킬 아이콘 UI
     CUIIcon* pgameObject = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_ICON);
     pgameObject->Set_TextureIndex(1);
-    pgameObject->Get_Transform()->Set_Pos(-535.f, 260.f, 0.f);
-    pgameObject->Get_Transform()->Set_Scale(9.5f, 11.f, 0.f);
+    pgameObject->Get_Transform()->Set_Pos(-524.f, 260.f, 0.f);
+    pgameObject->Get_Transform()->Set_Scale(12.5f, 15.f, 0.f);
 
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::UI, pgameObject),

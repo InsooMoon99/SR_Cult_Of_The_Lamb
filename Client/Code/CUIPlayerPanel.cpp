@@ -132,7 +132,6 @@ void CUIPlayerPanel::Render_GameObject()
 {
     CUIPanel::Render_GameObject();
 
-
 }
 
 void CUIPlayerPanel::Render_Editor()
