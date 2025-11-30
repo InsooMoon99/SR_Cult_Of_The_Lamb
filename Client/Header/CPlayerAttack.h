@@ -33,7 +33,7 @@ public:
         _float comboInputTime;      // 다음 콤보 선입력 허용 시작 시간
         _float damageMultiplier;    //TODO 공격력 배율. 나중에 아이템 정보와 연동하기
         _float knockbackPower;      // 넉백 힘
-        _float spawnOffset;         // 플레이어 전방 생성  (비율)
+        _float spawnOffset;         // 생성 거리 오프셋 (얼마나 앞에 생성되는지)
         _vec3  hitboxScale;         // 공격 오브젝트 크기 (예: 1, 1, 1)
     };
 
@@ -52,9 +52,8 @@ public:
         ATTACK_COMBO1,      // 일반 1타
         ATTACK_COMBO2,      // 일반 2타
         ATTACK_COMBO3,      // 일반 3타
+        ATTACK_COMBO4,      // 일반 4타
         ATTACK_HEAVY,       // 강공격
-
-        //TODO 일반공격 및 강공격이 늘어날 경우 여기에 추가할 것
 
         ATTACK_MAX
     };

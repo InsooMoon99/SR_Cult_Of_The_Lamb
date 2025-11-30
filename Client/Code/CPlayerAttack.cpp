@@ -179,7 +179,7 @@ ACTORSTATE CPlayerAttack::Start_NormalAttack()
 
     Reset_AttackData();
 
-    // 무기가 어떤건지 인덱스 확인
+    // 무기가 어떤건지 CWeaponEquip의 ID 확인
     const _int weaponIdx = Get_WeaponIndex(m_OwnerWeaponCom->Get_CurrentWeaponID());
     if (weaponIdx < 0) return ACTORSTATE::STATE_END;
 
@@ -207,11 +207,21 @@ _bool CPlayerAttack::Update_NormalAttack(const _float& timeDelta)
     else
         m_OwnerStateCom->Change_Dir(ACTORDIR::RIGHT);
 
+    // 무기가 어떤건지 CWeaponEquip의 ID 확인
     const _int weaponIdx = Get_WeaponIndex(m_OwnerWeaponCom->Get_CurrentWeaponID());
     if (weaponIdx < 0) return false;
 
     // 콤보 인덱스 유효성 체크
-    if (m_ComboIndex < ATTACK_COMBO1 || m_ComboIndex > ATTACK_COMBO3) return false;
+    switch (weaponIdx)
+    {
+    case WEAPON_SWORD:      // 검 : 최대 3타
+        if (m_ComboIndex < ATTACK_COMBO1 || m_ComboIndex > ATTACK_COMBO3) return false;
+        break;
+    case WEAPON_GAUNTLET:   // 건틀릿 : 최대 4타
+        if (m_ComboIndex < ATTACK_COMBO1 || m_ComboIndex > ATTACK_COMBO4) return false;
+        break;
+    default: return false;
+    }
 
     m_Timer += timeDelta;
 
@@ -228,7 +238,7 @@ _bool CPlayerAttack::Update_NormalAttack(const _float& timeDelta)
         {
             m_IsHitboxActive = true;
 
-            //!! 검 기본공격의 경우 좌우만 판단해서 히트박스를 만들면 되기에 mouseDir의 x 성분만 가져와 사용
+            //!! 검 기본공격의 경우 좌우만 판단해서 히트박스를 만들면 되기에 mouseDir의 x성분만 가져와 사용
             _vec3 mouseDir = m_OwnerInputCom->Get_MouseDir();
             mouseDir.z     = 0.f;
             D3DXVec3Normalize(&mouseDir, &mouseDir);
