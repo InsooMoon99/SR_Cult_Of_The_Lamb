@@ -29,7 +29,7 @@ void CBossBulletAttack::Enter()
     CMonsterState::Enter();
     m_pOwnerAnimatorCom->Play_Animation(L"BossAttack", ANIMSTATE::ONCE);
     // TODO:: 지금 이게 안들어오거든 바로 상태안의 애니로 감 어칼까
-
+    //
     m_ePhase = PHASE::ROTCROSS_SPREAD; // 이걸 어케 해야하지??
     //int RandPhase = CRandomMgr::GetInstance()->Get_Int_Random(0, ((int)PHASE::PHASE_END) - 1); // 페이즈 랜덤
     //m_ePhase = (PHASE)RandPhase;
@@ -149,7 +149,7 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
                 it->Start_Shoot();
             }
 
-            SpreadBullet(timeDelta, 10, 0.8f, 10);
+            SpreadBullet(timeDelta, 10, 1.f, 10);
 
 
             m_fCurStateElapsedTime += timeDelta;
@@ -175,7 +175,7 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
 
     case PHASE::SPREAD://움직임 + idle
 
-        m_pOwnerAnimatorCom->Play_Animation(L"BossAttack", ANIMSTATE::ONCE);
+        m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::ONCE);
 
         m_fElapsedTime += timeDelta;
 
@@ -225,8 +225,6 @@ bool CBossBulletAttack::CircleBullet(const _float& timeDelta, int num, int radiu
 
         _vec3 ownerPos = m_pOwnerTransformCom->Get_Pos();
 
-        //_vec3 baseDir = { 0,0,1 };
-
         float rad = D3DXToRadian(360.f / (num));
 
         float addRad = rad * m_Count;
@@ -237,7 +235,6 @@ bool CBossBulletAttack::CircleBullet(const _float& timeDelta, int num, int radiu
 
         // 레이어 관리로 넘기기
         SpawnAttackObject(BossBullet);
-
 
         tmpBullet.push_back(BossBullet);
 

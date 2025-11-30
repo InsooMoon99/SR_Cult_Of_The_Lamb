@@ -6,6 +6,7 @@
 #include "CTransform.h"
 #include "CAnimator.h"
 #include "CSpriteAnimation.h"
+#include "CRandomMgr.h"
 
 CBossMove::CBossMove(CBossPhase1* pOwner, CBossStateMachine* pStateMachine)
 {
@@ -57,18 +58,24 @@ _int CBossMove::Update_State(const _float& timeDelta)
 
     case PHASE::WAIT: //움직임
 
-        //m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::ONCE);
+
         m_fCurStateElapsedTime += timeDelta;
 
         if (m_fCurStateElapsedTime >= 3.0f)
         {
+            _vec3 BaseCenter = m_pOwner->Get_Center();
+            int BaseLength = m_pOwner->Get_Length();
+            float interval = 1.f;
+            // 일단 나중에 밖으로 뺴서 체인이랑 합치기
+            RandomMove(timeDelta, BaseCenter, BaseLength, interval);
+
             m_fCurStateElapsedTime = 0;
             m_ePhase = PHASE::UP;
         }
         break;
 
     case PHASE::UP://움직임 + idle
-  
+
         m_pOwnerAnimatorCom->Play_Animation(L"BossMove_up", ANIMSTATE::ONCE);
         if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
             return CBossPhase1::BOSSPHASE1::BOSSIDLE;// 이거 아님 공격상태전환 아이들로 
@@ -76,6 +83,26 @@ _int CBossMove::Update_State(const _float& timeDelta)
     }
 
     return CBossPhase1::BOSSPHASE1::BOSSMOVE;
+}
+void CBossMove::RandomMove(const _float& timeDelta, _vec3 BaseCenter, int BaseLenght, float interval)
+{
+    _vec3 LT = { BaseCenter.x - BaseLenght * 0.5f, 0.f, BaseCenter.z + BaseLenght * 0.5f };
+    _vec3 RB = { BaseCenter.x + BaseLenght * 0.5f,0.f,BaseCenter.z - BaseLenght * 0.5f };
+
+    int offset = 5;// TOOD:: 나중에 맴버 변수로 오프셋 조정 (사슬과 사슬 사이의 거리)
+
+    int xCell = BaseLenght / offset;
+    int zCell = BaseLenght / offset;
+
+
+    int tmpx = CRandomMgr::GetInstance()->Get_Int_Random(0, xCell); // x 몇번쨰 칸인지는 랜덤
+    int tmpz = CRandomMgr::GetInstance()->Get_Int_Random(0, zCell); // x 몇번쨰 칸인지는 랜덤
+
+    float xPos = tmpx * (xCell * .5f);
+    float zPos = tmpz * (zCell * .5f);
+
+    m_pOwnerTransformCom->Set_Pos(LT.x + xPos, 0.f, LT.z - zPos);
+
 }
 
 void CBossMove::LateUpdate_State(const _float& timeDelta)

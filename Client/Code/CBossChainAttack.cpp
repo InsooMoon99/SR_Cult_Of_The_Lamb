@@ -12,6 +12,8 @@
 
 #include "CRandomMgr.h"
 
+
+
 CBossChainAttack::CBossChainAttack(CBossPhase1* pOwner, CBossStateMachine* pStateMachine)
 {
     m_pOwner = pOwner;
@@ -41,6 +43,7 @@ void CBossChainAttack::Enter()
 void CBossChainAttack::Exit()
 {
     CMonsterState::Exit();
+    m_StartFlag = false;
 }
 
 HRESULT CBossChainAttack::Ready_State()
@@ -64,11 +67,21 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
     if (m_pOwnerAnimatorCom->Get_CurAnimation() == nullptr)
         return CBossPhase1::BOSSPHASE1::CHAINATTACK;
 
+    // 처음 애니는 무조건 공격모션 이어야 함
+    if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1 && m_StartFlag == false)
+    {
+        m_StartFlag = true;
+    }
+
+    if (m_StartFlag == false)
+        return CBossPhase1::BOSSPHASE1::CHAINATTACK;
+
     switch (m_ePhase)
     {
     case PHASE::PLAYERLINE:
 
-        m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::ONCE);
+            m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::LOOP);
+        
 
 
         if (PlayerLineUpdate(timeDelta, 10, 3, .2f) == true)
@@ -82,8 +95,8 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
         if (/*m_RandCount*/3 <= LineCount)
         {
             // 나가기 
+            m_StartFlag = false; 
             m_fCurStateElapsedTime = 0;
-
             m_Count = 0;
             m_LineFlag = false;
             m_fElapsedTime = 0.f;
@@ -157,12 +170,15 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
     }
     case PHASE::RANDCHAIN://움직임 + idle
 
-        m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::ONCE);
+        if(m_StartPhase == false)
+            m_pOwnerAnimatorCom->Play_Animation(L"BossAttack", ANIMSTATE::ONCE);
 
  /*       cout << m_pOwnerAnimatorCom->Get_CurFrame() << endl;*/
-        if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1 && m_StartPhase == false)
+        if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1 || m_StartPhase == false)
         {
             m_StartPhase = true;
+            m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::ONCE);
+
         }// TODO:: 이걸 공통으로 뺴면 될듯???
 
         if (m_StartPhase == true)
@@ -171,14 +187,16 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
 
         if (m_fElapsedTime < 5.f && m_StartPhase == true)
         {
-            _vec3 BaseCenter = {50 ,0,50 };
-            int BaseLength = 50;
-            float interval =0.5f;
+            _vec3 BaseCenter = m_pOwner->Get_Center();
+            int BaseLength = m_pOwner->Get_Length();
+            float interval = 0.5f;
             RandomChain(timeDelta, BaseCenter, BaseLength, interval);
         }
         else if (m_fElapsedTime >= 5.f && m_StartPhase == true)
         {
-            // 나가기 
+            // 나가기
+            m_StartFlag = false;
+
             m_StartPhase = false;
             m_fElapsedTime = 0;
             return CBossPhase1::BOSSPHASE1::BOSSIDLE;
@@ -203,7 +221,9 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
         {
             if (CircleChain(timeDelta, 9, 10, 0.1) == true)
             {
-                // 나가기 
+                // 나가기
+                m_StartFlag = false;
+
                 m_Count = 0;
                 m_StartPhase = false;
                 m_fElapsedTime = 0;
