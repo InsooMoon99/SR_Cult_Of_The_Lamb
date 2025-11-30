@@ -31,7 +31,8 @@
 IMPLEMENT_SINGLETON(CResourceMgr)
 
 CResourceMgr::CResourceMgr()
-{ }
+{
+}
 
 CResourceMgr::~CResourceMgr()
 {
@@ -43,7 +44,7 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
     if (FAILED(Ready_Buffer(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Player(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Monster(graphicDev))) return E_FAIL;
-   // if (FAILED(Ready_Boss(graphicDev))) return E_FAIL;
+    // if (FAILED(Ready_Boss(graphicDev))) return E_FAIL;
     if (FAILED(Ready_UI(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Item(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Common(graphicDev))) return E_FAIL;
@@ -110,17 +111,17 @@ HRESULT CResourceMgr::Ready_BossP1(DEVICE graphicDev)
         COMPONENTTYPE::TEX_BOSSPHASE1, BossP1Tex)))
         return E_FAIL;
 
-	///////////////////////////////////////////////////////////////////////
-	
-	//FadeOut Tex
-	vector<wstring> pathVec1;
-	pathVec1.push_back(L"../Bin/Resource/Texture/BossPhase1/ChainAttackGround.png");
-	pathVec1.push_back(L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Sermon_Icon.png");
+    ///////////////////////////////////////////////////////////////////////
+
+    //FadeOut Tex
+    vector<wstring> pathVec1;
+    pathVec1.push_back(L"../Bin/Resource/Texture/BossPhase1/ChainAttackGround.png");
+    pathVec1.push_back(L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Sermon_Icon.png");
 
 
-	if (FAILED(protoMgr->Ready_Prototype(
-		COMPONENTTYPE::TEX_OUT, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec1))))
-		return E_FAIL;
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_OUT, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec1))))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -374,6 +375,12 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     vector<wstring> pathVec1;
     pathVec1.push_back(L"../Bin/Resource/Texture/UI/MainMenu/Title0.png");
     pathVec1.push_back(L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Sermon_Icon.png");
+    pathVec1.push_back(L"../Bin/Resource/Texture/UI/Inventory/PlayerBG.png");
+    pathVec1.push_back(L"../Bin/Resource/Texture/UI/Inventory/Lock.png");
+    pathVec1.push_back(L"../Bin/Resource/Texture/UI/Inventory/OutfitCell.png");
+    pathVec1.push_back(L"../Bin/Resource/Texture/UI/Inventory/Unlock.png");
+    pathVec1.push_back(L"../Bin/Resource/Texture/UI/Inventory/Weapon1.png");
+    pathVec1.push_back(L"../Bin/Resource/Texture/UI/Inventory/Weapon2.png");
 
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_ICON, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec1))))
@@ -400,6 +407,7 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     pathVec2.push_back(L"../Bin/Resource/Texture/UI/MainMenu/Button Black.png");
     pathVec2.push_back(L"../Bin/Resource/Texture/UI/Inventory/ButtonTab0.png");
     pathVec2.push_back(L"../Bin/Resource/Texture/UI/Inventory/ButtonTab1.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/Tarot/ExplainBox/HeartExplain.png");
 
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_BUTTON, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec2))))
@@ -431,6 +439,35 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
             L"../Bin/Resource/Texture/UI/Inventory/RitualCard.png",
             1))))
         return E_FAIL;
+
+    CTexture* tarotTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(tarotTex, E_FAIL);
+
+    if (FAILED(tarotTex->Add_Texture(L"Tarot_Heart_Start", TEXTUREID::TEX_NORMAL, L"../Bin/Resource/Texture/UI/Tarot/Animation/Start/HeartCard/HeartCard%d.png", 64)))
+        return E_FAIL;
+
+    if (FAILED(tarotTex->Add_Texture(L"Tarot_Arrow_Start", TEXTUREID::TEX_NORMAL, L"../Bin/Resource/Texture/UI/Tarot/Animation/Start/ArrowCard/ArrowCard%d.png", 64)))
+        return E_FAIL;
+
+    if (FAILED(tarotTex->Add_Texture(L"Tarot_Heart_Choice", TEXTUREID::TEX_NORMAL, L"../Bin/Resource/Texture/UI/Tarot/Animation/Choice/HeartCard_Choice.png", 1)))
+        return E_FAIL;
+
+    if (FAILED(tarotTex->Add_Texture(L"Tarot_Arrow_Choice", TEXTUREID::TEX_NORMAL, L"../Bin/Resource/Texture/UI/Tarot/Animation/Choice/ArrowCard_Choice.png", 1)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_TAROT, tarotTex)))
+        return E_FAIL;
+
+    // Texture : Heart Card Explain
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_EXPLAIN,
+        Engine::CTexture::Create(
+            graphicDev,
+            TEX_NORMAL,
+            L"../Bin/Resource/Texture/UI/Tarot/ExplainBox/HeartExplain.png",
+            1))))
+        return E_FAIL;
+
+    
 
     return S_OK;
 }
@@ -517,4 +554,5 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
 }
 
 void CResourceMgr::Free()
-{ }
+{
+}

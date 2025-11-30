@@ -83,7 +83,7 @@ HRESULT CStage_Boss1::Ready_Environment_Layer(LAYERTYPE layerType)
 
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::TERRAIN, gameObject),
-        L"CStage_TaroTest::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Tile) failed");
+        L"CStage_TarotTest::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Tile) failed");
 
     // Wall
     CWall* wall = CWall::Create(m_GraphicDev);

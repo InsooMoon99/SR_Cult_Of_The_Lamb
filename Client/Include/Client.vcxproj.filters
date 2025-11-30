@@ -136,6 +136,12 @@
     <Filter Include="97. Component\03. Wall">
       <UniqueIdentifier>{b0c9067d-def9-4e61-954d-f361723e82cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\05. Building">
+      <UniqueIdentifier>{d128922c-c4b8-47ce-b6cd-7f14a0378dbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. UI\01. UI\05. UITarot">
+      <UniqueIdentifier>{9199ebfa-8568-467b-b919-ec9ad9ecb39a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -252,9 +258,6 @@
     <ClInclude Include="..\Header\CMapEditorPlacer.h">
       <Filter>99. ImGui_Editor\00. MainEditor</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CUISkillCount.h">
-      <Filter>05. UI</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\CBossPhase1.h">
       <Filter>03. GameObject\04. Boss\01. Boss1</Filter>
     </ClInclude>
@@ -287,9 +290,6 @@
     </ClInclude>
     <ClInclude Include="..\Header\CMapEditorPlacer.h">
       <Filter>99. ImGui_Editor\01. EditorScript</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\CUISkillCount.h">
-      <Filter>05. UI\01. UI</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CUIInventory.h">
       <Filter>05. UI\01. UI</Filter>
@@ -351,6 +351,9 @@
     <ClInclude Include="..\Header\CUIPlayerPage.h">
       <Filter>05. UI\01. UI\04. UITabMenu</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CUIPlayerImage.h">
+      <Filter>05. UI\01. UI\04. UITabMenu</Filter>
+    </ClInclude>
     <ClInclude Include="..\Header\CMapObject_Grass.h">
       <Filter>03. GameObject\09. MapObject</Filter>
     </ClInclude>
@@ -363,14 +366,23 @@
     <ClInclude Include="..\Header\CWallRenderer.h">
       <Filter>97. Component\03. Wall</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CRandomMgr.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\CStage_Boss1.h">
       <Filter>02. Scene\01. Stage</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CStage_TaroTest.h">
+    <ClInclude Include="..\Header\CTarotStageController.h">
+      <Filter>05. UI\01. UI\05. UITarot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUITarotCard.h">
+      <Filter>05. UI\01. UI\05. UITarot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUITarotDescCard.h">
+      <Filter>05. UI\01. UI\05. UITarot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CStage_TarotTest.h">
       <Filter>02. Scene\01. Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CRandomMgr.h">
+      <Filter>01. Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CStage_Boss2.h">
       <Filter>02. Scene\01. Stage</Filter>
@@ -473,9 +485,6 @@
     <ClCompile Include="..\Code\CMapEditorPlacer.cpp">
       <Filter>99. ImGui_Editor\01. EditorScript</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CUISkillCount.cpp">
-      <Filter>05. UI</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\CBossPhase1.cpp">
       <Filter>03. GameObject\04. Boss\01. Boss1</Filter>
     </ClCompile>
@@ -508,9 +517,6 @@
     </ClCompile>
     <ClCompile Include="..\Code\CMapEditorPlacer.cpp">
       <Filter>99. ImGui_Editor\01. EditorScript</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\CUISkillCount.cpp">
-      <Filter>05. UI\01. UI</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CUIInventory.cpp">
       <Filter>05. UI\01. UI</Filter>
@@ -569,6 +575,9 @@
     <ClCompile Include="..\Code\CUIPlayerPage.cpp">
       <Filter>05. UI\01. UI\04. UITabMenu</Filter>
     </ClCompile>
+    <ClCompile Include="..\Code\CUIPlayerImage.cpp">
+      <Filter>05. UI\01. UI\04. UITabMenu</Filter>
+    </ClCompile>
     <ClCompile Include="..\Code\CMapObject_Grass.cpp">
       <Filter>03. GameObject\09. MapObject</Filter>
     </ClCompile>
@@ -581,14 +590,23 @@
     <ClCompile Include="..\Code\CWallRenderer.cpp">
       <Filter>97. Component\03. Wall</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CRandomMgr.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\CStage_Boss1.cpp">
       <Filter>02. Scene\01. Stage</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CStage_TaroTest.cpp">
+    <ClCompile Include="..\Code\CTarotStageController.cpp">
+      <Filter>05. UI\01. UI\05. UITarot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUITarotCard.cpp">
+      <Filter>05. UI\01. UI\05. UITarot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUITarotDescCard.cpp">
+      <Filter>05. UI\01. UI\05. UITarot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CStage_TarotTest.cpp">
       <Filter>02. Scene\01. Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CRandomMgr.cpp">
+      <Filter>01. Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CStage_Boss2.cpp">
       <Filter>02. Scene\01. Stage</Filter>

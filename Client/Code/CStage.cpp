@@ -228,7 +228,7 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     CUIPlayerPanel* playerPanel = dynamic_cast<CUIPlayerPanel*>(gameObject);
 
     playerPanel->Set_PlayerCombatStat(m_PlayerCombatStatCom);
-
+    playerPanel->Set_Resister(true);
     gameObject = CUIMp::Create(m_GraphicDev);
 
     FAILED_CHECK_MSG(
@@ -239,7 +239,7 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     uiMp->Set_PlayerCombatStat(m_PlayerCombatStatCom);
 
     gameObject = CUICircle::Create(m_GraphicDev);
-
+    dynamic_cast<CUICircle*>(gameObject)->Set_PlayerCombatStat(m_PlayerCombatStatCom);
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::UI, gameObject),
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUICircle) failed");
@@ -253,18 +253,18 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     //왼쪽 상단 스킬 아이콘 UI
     CUIIcon* pgameObject = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_ICON);
     pgameObject->Set_TextureIndex(1);
-    pgameObject->Get_Transform()->Set_Pos(-535.f, 260.f, 0.f);
-    pgameObject->Get_Transform()->Set_Scale(9.5f, 11.f, 0.f);
+    pgameObject->Get_Transform()->Set_Pos(-524.f, 260.f, 0.f);
+    pgameObject->Get_Transform()->Set_Scale(12.5f, 15.f, 0.f);
 
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::UI, pgameObject),
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUIIcon) failed");
 
-    CUISkillCount* uiSkillCount = CUISkillCount::Create(m_GraphicDev);
-
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::UI, uiSkillCount),
-        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUISKillCount) failed");
+    //CUISkillCount* uiSkillCount = CUISkillCount::Create(m_GraphicDev);
+    //
+    //FAILED_CHECK_MSG(
+    //    layer->Add_GameObject(OBJTYPE::UI, uiSkillCount),
+    //    L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUISKillCount) failed");
 
     /////Inventory UI
     //CUIInventory* uiInventory = CUIInventory::Create(m_GraphicDev);
@@ -274,6 +274,8 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     //CUITabMenu
     CUITabMenu* uiTabMenu = CUITabMenu::Create(m_GraphicDev);
     uiTabMenu->SetInventory(m_PlayerInventoryCom);
+    uiTabMenu->Set_PlayerCombatStat(m_PlayerCombatStatCom);
+    uiTabMenu->Initialize();
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiTabMenu),
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UITabMenu) failed");
 

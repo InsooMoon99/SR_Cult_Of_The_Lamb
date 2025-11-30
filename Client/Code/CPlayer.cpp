@@ -124,7 +124,7 @@ void CPlayer::Render_GameObject()
     if (m_TextureCom && m_AnimatorCom)
     {
         const wstring& key   = m_AnimatorCom->Get_CurKey();
-        _int           frame = m_AnimatorCom->Get_CurFrame();
+         _int           frame = m_AnimatorCom->Get_CurFrame();
 
         m_TextureCom->Set_Texture(key, frame);
     }
@@ -217,6 +217,7 @@ HRESULT CPlayer::Add_Component()
     // Animator
     m_AnimatorCom = CreateProtoComponent<CAnimator>(this, COMPONENTTYPE::ANIMATOR);
     NULL_CHECK_RETURN(m_AnimatorCom, E_FAIL);
+
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::ANIMATOR, m_AnimatorCom });
 
     m_AnimatorCom->Set_TextureType(COMPONENTTYPE::TEX_PLAYER);

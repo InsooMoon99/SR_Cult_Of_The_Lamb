@@ -37,7 +37,6 @@ private:
     float   m_CellWidth;                    // 셀 가로 이동거리
     float   m_CellHeight;                   // 셀 세로 이동거리
 
-    CUIButton* m_Button;        
     CInventory* m_Inventory;
     vector<CUIInventoryCell*> m_Cells;
 };

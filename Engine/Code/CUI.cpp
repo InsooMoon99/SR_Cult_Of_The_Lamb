@@ -37,7 +37,6 @@ _int CUI::Update_GameObject(const _float& timeDelta)
 void CUI::LateUpdate_GameObject(const _float& timeDelta)
 {
     CGameObject::LateUpdate_GameObject(timeDelta);
-
     
 }
 
