@@ -1,7 +1,6 @@
 ﻿#pragma once
-
-#include "CCombatStat.h"
 #include "CAttackBase.h"
+#include "CCombatStat.h"
 #include "CSphereCollider.h"
 
 BEGIN(Engine)

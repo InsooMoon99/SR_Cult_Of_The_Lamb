@@ -3,6 +3,7 @@
 
 #include "CAnimator.h"
 #include "CAttackBox.h"
+#include "CAttackBuilder.h"
 #include "CAttackSphere.h"
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
@@ -11,7 +12,10 @@
 #include "CEnumHelper.h"
 #include "CInventory.h"
 #include "CManagement.h"
+#include "CPlayerAttack.h"
 #include "CPlayerController.h"
+#include "CPlayerInput.h"
+#include "CPlayerMovement.h"
 #include "CRcTex.h"
 #include "CRenderer.h"
 #include "CRigidbody.h"
@@ -21,7 +25,6 @@
 #include "CTransform.h"
 #include "CUIInventory.h"
 #include "CWeaponEquip.h"
-#include "CAttackBuilder.h"
 
 CPlayer::CPlayer(DEVICE graphicDev)
     : CGameObject(graphicDev),
@@ -35,8 +38,12 @@ CPlayer::CPlayer(DEVICE graphicDev)
       m_RigidbodyCom(nullptr),
       m_WeaponEquipCom(nullptr),
       m_InventoryCom(nullptr),
-      m_PlayerControllerCom(nullptr)
-{}
+      m_UIInventory(nullptr),
+      m_PlayerControllerCom(nullptr),
+      m_PlayerInputCom(nullptr),
+      m_PlayerMovementCom(nullptr),
+      m_PlayerAttackCom(nullptr)
+{ }
 
 CPlayer::CPlayer(const CPlayer& rhs)
     : CGameObject(rhs),
@@ -50,8 +57,12 @@ CPlayer::CPlayer(const CPlayer& rhs)
       m_RigidbodyCom(nullptr),
       m_WeaponEquipCom(nullptr),
       m_InventoryCom(nullptr),
-      m_PlayerControllerCom(nullptr)
-{}
+      m_UIInventory(nullptr),
+      m_PlayerControllerCom(nullptr),
+      m_PlayerInputCom(nullptr),
+      m_PlayerMovementCom(nullptr),
+      m_PlayerAttackCom(nullptr)
+{ }
 
 CPlayer::~CPlayer()
 { }
@@ -255,11 +266,28 @@ HRESULT CPlayer::Add_Component()
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::RIGIDBODY, m_RigidbodyCom });
 
     // Player Controller
-    m_PlayerControllerCom = CreateProtoComponent<CPlayerController>(this, COMPONENTTYPE::CONTROLLER_PLAYER);
+    m_PlayerControllerCom = CreateProtoComponent<CPlayerController>(this, COMPONENTTYPE::PL_CONTROLLER);
     NULL_CHECK_RETURN(m_PlayerControllerCom, E_FAIL);
-    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::CONTROLLER_PLAYER, m_PlayerControllerCom });
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::PL_CONTROLLER, m_PlayerControllerCom });
+
+    // Player Input
+    m_PlayerInputCom = CreateProtoComponent<CPlayerInput>(this, COMPONENTTYPE::PL_INPUT);
+    NULL_CHECK_RETURN(m_PlayerInputCom, E_FAIL);
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::PL_INPUT, m_PlayerInputCom });
+
+    // Player Movement
+    m_PlayerMovementCom = CreateProtoComponent<CPlayerMovement>(this, COMPONENTTYPE::PL_MOVEMENT);
+    NULL_CHECK_RETURN(m_PlayerMovementCom, E_FAIL);
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::PL_MOVEMENT, m_PlayerMovementCom });
+
+    // Player Attack
+    m_PlayerAttackCom = CreateProtoComponent<CPlayerAttack>(this, COMPONENTTYPE::PL_ATTACK);
+    NULL_CHECK_RETURN(m_PlayerAttackCom, E_FAIL);
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::PL_ATTACK, m_PlayerAttackCom });
 
     m_PlayerControllerCom->Init_OwnerComponent();
+    m_PlayerMovementCom->Init_OwnerComponent();
+    m_PlayerAttackCom->Init_OwnerComponent();
 
     return S_OK;
 }
@@ -315,7 +343,6 @@ void CPlayer::Animation_Setting()
                              L"PlayerSwordCombo1",
                              ANIMSTATE::ONCE);
 
-
     m_AnimatorCom->Create_Animation(L"PlayerSwordCombo2",
                                     38,
                                     0.02f,
@@ -325,7 +352,6 @@ void CPlayer::Animation_Setting()
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SWORD_COMBO2,
                              L"PlayerSwordCombo2",
                              ANIMSTATE::ONCE);
-
 
     m_AnimatorCom->Create_Animation(L"PlayerSwordCombo3",
                                     38,

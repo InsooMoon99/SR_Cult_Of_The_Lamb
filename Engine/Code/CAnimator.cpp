@@ -4,7 +4,6 @@
 #include "CRcTex.h"
 #include "CSpriteAnimation.h"
 #include "CTexture.h"
-#include "CTransform.h"
 
 CAnimator::CAnimator(DEVICE graphicDev)
     : CComponent(graphicDev),

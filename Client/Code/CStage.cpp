@@ -1,7 +1,9 @@
 ﻿#include "pch.h"
 #include "CStage.h"
 
+#include "CBossPhase1.h"
 #include "CCombatStat.h"
+#include "CDInputMgr.h"
 #include "CDropSystem.h"
 #include "CEditContext.h"
 #include "CHumanMonster.h"
@@ -10,8 +12,11 @@
 #include "CLayer.h"
 #include "CMainCamera.h"
 #include "CMainEditorMgr.h"
+#include "CMapEditorPlacer.h"
 #include "CPersistentObjectHelper.h"
 #include "CPlayer.h"
+#include "CSceneMgr.h"
+#include "CTerrain.h"
 #include "CTestMonster.h"
 #include "CTransform.h"
 #include "CUICircle.h"
@@ -20,16 +25,11 @@
 #include "CUIInventoryCell.h"
 #include "CUIMp.h"
 #include "CUIPlayerPanel.h"
-#include "CUISKillCount.h"
-#include "CUIWeapon.h"
-#include "ItemInstance.h"
-#include "CBossPhase1.h"
-#include "CTerrain.h"
-#include "CDInputMgr.h"
-#include "CMapEditorPlacer.h"
-#include "CSceneMgr.h"
+#include "CUISkillCount.h"
 #include "CUITabMenu.h"
+#include "CUIWeapon.h"
 #include "CWall.h"
+#include "ItemInstance.h"
 
 CStage::CStage(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -128,6 +128,7 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CPlayer>(
             OBJTYPE::PLAYER,
+            L"Player",
             m_GraphicDev,
             layer,
             &gameObject),
@@ -189,6 +190,7 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CMainCamera>(
             OBJTYPE::CAMERA,
+            L"MainCamera",
             m_GraphicDev,
             layer,
             &gameObject),
@@ -219,36 +221,51 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
 
     CGameObject* gameObject = nullptr;
 
-    gameObject = CUIPlayerPanel::Create(m_GraphicDev);
-
     FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::UI, gameObject),
-        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUIPlayerPanel) failed");
+        Engine::AcquirePersistentObject<CUIPlayerPanel>(
+            OBJTYPE::UI,
+            L"UI_PlayerPanel",
+            m_GraphicDev,
+            layer,
+            &gameObject),
+        L"Persistent object setup failed: UI_PlayerPanel");
 
     CUIPlayerPanel* playerPanel = dynamic_cast<CUIPlayerPanel*>(gameObject);
 
     playerPanel->Set_PlayerCombatStat(m_PlayerCombatStatCom);
     playerPanel->Set_Resister(true);
-    gameObject = CUIMp::Create(m_GraphicDev);
 
     FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::UI, gameObject),
-        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUIMp) failed");
+        Engine::AcquirePersistentObject<CUIMp>(
+            OBJTYPE::UI,
+            L"UI_Mp",
+            m_GraphicDev,
+            layer,
+            &gameObject),
+        L"Persistent object setup failed: UI_Mp");
 
     CUIMp* uiMp = dynamic_cast<CUIMp*>(gameObject);
     uiMp->Set_PlayerCombatStat(m_PlayerCombatStatCom);
 
-    gameObject = CUICircle::Create(m_GraphicDev);
+    FAILED_CHECK_MSG(
+        Engine::AcquirePersistentObject<CUICircle>(
+            OBJTYPE::UI,
+            L"UI_Circle",
+            m_GraphicDev,
+            layer,
+            &gameObject),
+        L"Persistent object setup failed: UI_Circle");
+
     dynamic_cast<CUICircle*>(gameObject)->Set_PlayerCombatStat(m_PlayerCombatStatCom);
+    
     FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::UI, gameObject),
-        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUICircle) failed");
-
-    gameObject = CUIWeapon::Create(m_GraphicDev);
-
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::UI, gameObject),
-        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUIWeapon) failed");
+        Engine::AcquirePersistentObject<CUIWeapon>(
+            OBJTYPE::UI,
+            L"UI_Weapon",
+            m_GraphicDev,
+            layer,
+            &gameObject),
+        L"Persistent object setup failed: UI_Weapon");
 
     //왼쪽 상단 스킬 아이콘 UI
     CUIIcon* pgameObject = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_ICON);
@@ -260,11 +277,14 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
         layer->Add_GameObject(OBJTYPE::UI, pgameObject),
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUIIcon) failed");
 
-    //CUISkillCount* uiSkillCount = CUISkillCount::Create(m_GraphicDev);
-    //
-    //FAILED_CHECK_MSG(
-    //    layer->Add_GameObject(OBJTYPE::UI, uiSkillCount),
-    //    L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUISKillCount) failed");
+    // FAILED_CHECK_MSG(
+    //     Engine::AcquirePersistentObject<CUISkillCount>(
+    //         OBJTYPE::UI,
+    //         L"UI_SkillCount",
+    //         m_GraphicDev,
+    //         layer,
+    //         &gameObject),
+    //     L"Persistent object setup failed: UI_SkillCount");
 
     /////Inventory UI
     //CUIInventory* uiInventory = CUIInventory::Create(m_GraphicDev);

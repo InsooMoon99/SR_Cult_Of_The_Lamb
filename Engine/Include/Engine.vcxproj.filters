@@ -148,6 +148,9 @@
     <Filter Include="02. Prototype\04. Collider\03. Attack Collider">
       <UniqueIdentifier>{a9235b16-8ae5-4671-ac3c-c9888f9865e4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. Manager\11. SoundMgr">
+      <UniqueIdentifier>{7cf50558-580d-41f7-a3a4-90ad63d00805}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\Engine_Define.h">
@@ -303,9 +306,6 @@
     <ClInclude Include="..\header\CRigidbody.h">
       <Filter>02. Prototype\08. Rigidbody</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CTransformAsp.h">
-      <Filter>02. Prototype\01. Transform</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\CAttackBox.h">
       <Filter>02. Prototype\04. Collider\03. Attack Collider</Filter>
     </ClInclude>
@@ -317,6 +317,12 @@
     </ClInclude>
     <ClInclude Include="..\Header\CAttackBuilder.h">
       <Filter>98. Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CPickingHelper.h">
+      <Filter>98. Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CSoundMgr.h">
+      <Filter>00. Manager\11. SoundMgr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -443,9 +449,6 @@
     <ClCompile Include="..\code\CRigidbody.cpp">
       <Filter>02. Prototype\08. Rigidbody</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CTransformAsp.cpp">
-      <Filter>02. Prototype\01. Transform</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\CAttackBox.cpp">
       <Filter>02. Prototype\04. Collider\03. Attack Collider</Filter>
     </ClCompile>
@@ -457,6 +460,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CAttackBuilder.cpp">
       <Filter>98. Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CSoundMgr.cpp">
+      <Filter>00. Manager\11. SoundMgr</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
