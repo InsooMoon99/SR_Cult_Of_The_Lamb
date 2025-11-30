@@ -42,7 +42,7 @@ HRESULT CUIHeartBar::Ready_GameObject()
         return E_FAIL;
 
 
-    switch (m_ID)
+   /* switch (m_ID)
     {
     case 1:
         m_TransformCom->Set_Pos(_vec3(-450.f, 280.f, 0.f));
@@ -54,7 +54,7 @@ HRESULT CUIHeartBar::Ready_GameObject()
         m_TransformCom->Set_Pos(_vec3(-370.f, 280.f, 0.f));
         break;
 
-    }
+    }*/
 
     m_TransformCom->Set_Scale(_vec3(16.f, 16.f, 1.f));
 

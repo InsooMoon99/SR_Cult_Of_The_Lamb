@@ -76,7 +76,7 @@ public:
     _float Get_Mp() { return m_Mp; }
     _float Get_Speed() { return m_Speed; }
     _float Get_MaxMp() { return m_MaxMp; }
-
+    _int   Get_CurrentCharges() { return m_CurrentCharges; }
     _bool Is_Dead() { return m_IsDead; }
     bool  Is_Invincible() const { return m_IsInvincible; }
 
@@ -117,6 +117,9 @@ private:
     _float m_Mp;
     _float m_MaxMp = 10.f;
     _float m_Speed;
+
+    int m_CurrentCharges = 3 ;   // 스킬 사용 가능 횟수
+    int m_MaxCharges = 3;
 
     _bool m_IsDead;
 

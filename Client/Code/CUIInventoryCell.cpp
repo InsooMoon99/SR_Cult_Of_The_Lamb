@@ -191,12 +191,12 @@ void CUIInventoryCell::Render_GameObject()
             CFontMgr::GetInstance()->Render_Font(L"아이템 이름", CItemDB::GetInstance()->Utf8ToWstring(item->name), &screen, D3DXCOLOR{ 1.f,1.f,1.f,1.f });
 
             //아이템 메인 설명 출력
-            descOffset = {0.f, 100.f};
+            descOffset = {0.f, 95.f};
             screen = { WINCX / 2 + pos.x, WINCY / 2 - pos.y + descOffset.y };
             CFontMgr::GetInstance()->Render_Font(L"카드 설명", CItemDB::GetInstance()->Utf8ToWstring(item->desc), &screen, D3DXCOLOR{ 1.f,1.f,1.f,1.f });
 
             //아이템 부연 설명 출력
-            descOffset = { 0.f, 30.f };
+            descOffset = { 0.f, 25.f };
             screen = { WINCX / 2 + pos.x, WINCY / 2 - pos.y + descOffset.y };
             CFontMgr::GetInstance()->Render_Font(L"부연 설명", CItemDB::GetInstance()->Utf8ToWstring(item->additionalDesc), &screen, D3DXCOLOR{ 0.6f,0.6f,0.6f,1.f });
 

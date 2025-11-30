@@ -79,7 +79,7 @@ HRESULT CStage_Boss1::Ready_Environment_Layer(LAYERTYPE layerType)
 
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::TERRAIN, gameObject),
-        L"CStage_TaroTest::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Tile) failed");
+        L"CStage_TarotTest::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Tile) failed");
 
     // Wall
     CWall* wall = CWall::Create(m_GraphicDev);
@@ -122,6 +122,7 @@ HRESULT CStage_Boss1::Ready_GameLogic_Layer(LAYERTYPE layerType)
         dynamic_cast<CTransform*>(gameObject->Get_Component(
             ID_DYNAMIC,
             COMPONENTTYPE::TRANSFORM));
+   
 
     // -----------------------------
     // Boss
@@ -179,7 +180,8 @@ HRESULT CStage_Boss1::Ready_GameLogic_Layer(LAYERTYPE layerType)
         dynamic_cast<CTransform*>(gameObject->Get_Component(
             ID_DYNAMIC,
             COMPONENTTYPE::TRANSFORM));
-    BossTransform->Set_Pos({ 200, 0, 200 });
+
+    BossTransform->Set_Pos({ 50.f,BossTransform->Get_Scale().y*0.5f,50.f });
 
     return S_OK;
 }

@@ -1,11 +1,13 @@
 ﻿#include "pch.h"
 #include "CUICircle.h"
-
+#include "CFontMgr.h"
 #include "CCreateHelper.h"
 #include "CRcTex.h"
 #include "CRenderer.h"
 #include "CTexture.h"
 #include "CTransform.h"
+#include "CCombatStat.h"
+
 
 int CUICircle::m_nextID = 0;
 
@@ -57,6 +59,14 @@ void CUICircle::Render_GameObject()
     m_TextureCom->Set_Texture(0);
 
     m_BufferCom->Render_Buffer();
+
+    _vec3 pos = m_TransformCom->Get_Pos();
+    _vec2 fontOffset = { -5.f,10.f };
+    _vec2 screen = { WINCX / 2 + pos.x + fontOffset.x,WINCY / 2 - pos.y + fontOffset.y };
+
+    int currentCharges = m_CombatStatCom->Get_CurrentCharges();
+
+    CFontMgr::GetInstance()->Render_FontOutlined(L"NanumSquare_Skill", to_wstring(currentCharges), &screen, D3DXCOLOR(1.f, 1.f, 1.f, 1.f), D3DXCOLOR(0.f, 0.f, 0.f, 1.f), 2);
 }
 
 HRESULT CUICircle::Add_Component()

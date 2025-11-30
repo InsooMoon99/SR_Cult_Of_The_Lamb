@@ -20,7 +20,8 @@ public:
     void    Render_GameObject() override;
 
     virtual void Render_Editor() override;
-
+    HRESULT Add_Component();
+    void    Set_Resister(bool tf) { m_Resister = tf; }
 
 public:
     static CUIPlayerPanel* Create(DEVICE graphicDev);
@@ -32,4 +33,5 @@ protected:
 
 private:
     CCombatStat* m_CombatStatCom;
+    bool        m_Resister;
 };

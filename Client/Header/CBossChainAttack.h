@@ -8,7 +8,7 @@ class CBossChainAttack :
     public CMonsterState
 {
 public:
-    enum class PHASE { PLAYERLINE, CROSS, RANDCHAIN,CIRCLE, PHASE_END };
+    enum class PHASE { PLAYERLINE, CROSS, RANDCHAIN, CIRCLE, PHASE_END };
 private:
     explicit CBossChainAttack(CBossPhase1* pOwner, CBossStateMachine* pStateMachine);
     virtual ~CBossChainAttack();
@@ -22,14 +22,12 @@ public:
     virtual HRESULT Ready_State();
     virtual _int    Update_State(const _float& timeDelta);
 
-    //void PlayerLine(_vec3 PlayerDir, _int MaxCount, _float m_Offset, float Speed);
-    bool PlayerLineUpdate(const _float& timeDelta, _int MaxCount, _float m_Offset, float Speed);
-
-    void RandomChain(const _float& timeDelta, _vec3 BaseCenter, int BaseLenght, float interval);
-    //void RandomChain(const _float& timeDelta, int num, int length);
-    bool CircleChain(const _float& timeDelta, int num, int length, float interval);
     virtual void    LateUpdate_State(const _float& timeDelta);
     virtual void    Render_State();
+
+    bool PlayerLineUpdate(const _float& timeDelta, _int MaxCount, _float m_Offset, float Speed);
+    void RandomChain(const _float& timeDelta, _vec3 BaseCenter, int BaseLenght, float interval);
+    bool CircleChain(const _float& timeDelta, int num, int length, float interval);
 
     float easeInQuint10(float x);
 
@@ -41,15 +39,16 @@ public:
     static CBossChainAttack* Create(CBossPhase1* pOwner, CBossStateMachine* pStateMachine);
 private:
     PHASE m_ePhase;
-    float m_fElapsedTime[(int)PHASE::PHASE_END];
-    float m_fExtraElapsedTime[(int)PHASE::PHASE_END];
+    float m_fElapsedTime;
 
     int m_Count = 0;
     _vec3 m_PlayerDir;
     int LineCount = 0;
     bool m_LineFlag = false;
     bool m_StartPhase = false;
-    float m_RandChainTime =0;
+    float m_RandChainTime = 0;
+
+
 private:
     virtual void Free();
 

@@ -68,6 +68,7 @@ enum class OBJTYPE
     CAMERA,
     ITEM,
     /* 오브젝트 타입 종류 추가 */
+    LOGIC,
     UI,
     BOSS2,
     BOSS1,
@@ -98,6 +99,7 @@ enum class COMPONENTTYPE
     RIGIDBODY,
     TERRAIN_RENDER,
     WALL_RENDERER,
+    PROJECTILE,
 
     WEAPON_EQUIP,
     PL_CONTROLLER,
@@ -119,16 +121,16 @@ enum class COMPONENTTYPE
     TEX_UI_HIGHLIGHT,
     TEX_UI_INVEN,
     TEX_UI_RITUALCARD,
+    TEX_UI_HEARTCARD,
+    TEX_UI_EXPLAIN,
+    TEX_UI_TAROT,
     TEX_ITEM,
     TEX_MENU_CHAR,
     TEX_UI_ICON,
     TEX_UI_BUTTON,
     TEX_BOSSPHASE1,
+    TEX_BULLET,
     TEX_OUT,
-
-    TEX_TILE_284,
-    TEX_TILE_1024,
-    TEX_TILE_OUTLINE,
 
     ANIMATOR,
     CAMERA,
@@ -141,6 +143,10 @@ enum class COMPONENTTYPE
     ////////////////
     // MapObject ///
     ////////////////
+    TEX_TILE_284,
+    TEX_TILE_1024,
+    TEX_TILE_OUTLINE,
+
     TEX_GRASS,
     TEX_RUBBLE,
     TEX_DECO,
@@ -188,7 +194,7 @@ enum class SCENETYPE
     SC_MAINMENU,
     SC_STAGE,
     SC_STAGE1,
-    SC_TARO_TEST,
+    SC_TAROT_TEST,
     SC_BOSS_STAGE1,
     SC_BOSS_STAGE2,
 
