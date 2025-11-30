@@ -183,6 +183,8 @@
     <ClInclude Include="..\Header\CBossPhase1.h" />
     <ClInclude Include="..\Header\CBossStateMachine.h" />
     <ClInclude Include="..\Header\CCharacterBase.h" />
+    <ClInclude Include="..\Header\CMapObject_DungeonDeco.h" />
+    <ClInclude Include="..\Header\CMapObject_ETC.h" />
     <ClInclude Include="..\Header\CMapObject_Helper.h" />
     <ClInclude Include="..\Header\CComInspectors.h" />
     <ClInclude Include="..\Header\CDroppedItem.h" />
@@ -285,6 +287,8 @@
     <ClCompile Include="..\Code\CMapObjectBase.cpp" />
     <ClCompile Include="..\Code\CMapObjectMgr.cpp" />
     <ClCompile Include="..\Code\CMapObject_Deco.cpp" />
+    <ClCompile Include="..\Code\CMapObject_DungeonDeco.cpp" />
+    <ClCompile Include="..\Code\CMapObject_ETC.cpp" />
     <ClCompile Include="..\Code\CMapObject_Grass.cpp" />
     <ClCompile Include="..\Code\CMapObject_Rubble.cpp" />
     <ClCompile Include="..\Code\CMenuChar.cpp" />

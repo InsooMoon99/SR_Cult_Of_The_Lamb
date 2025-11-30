@@ -78,8 +78,10 @@ public:
     _float Get_Speed() { return m_Speed; }
     _float Get_MaxMp() { return m_MaxMp; }
     _int   Get_CurrentCharges() { return m_CurrentCharges; }
-    _bool Is_Dead() { return m_IsDead; }
-    bool  Is_Invincible() const { return m_IsInvincible; }
+
+    _bool  Is_Dead() { return m_IsDead; }
+    _bool  Is_Invincible() const { return m_IsInvincible; }
+    _bool  Is_Knockback() const { return m_KnockbackTimer > 0.f; }
 
     void Set_Attack(_float attack) { m_Attack = attack; }
     void Set_AttackSpeed(_float attackSpeed) { m_AttackSpeed = attackSpeed; }
@@ -110,21 +112,23 @@ protected:
 private:
     CRigidbody* m_OwnerRigidbody;
 
-    _float m_Attack;
-    _float m_AttackSpeed;   // 공격 속도
+    _float  m_Attack;
+    _float  m_AttackSpeed;   // 공격 속도
 
-    _float m_Hp;
-    _float m_MaxHp = 6.f;
-    _float m_Mp;
-    _float m_MaxMp = 10.f;
-    _float m_Speed;
+    _float  m_Hp;
+    _float  m_MaxHp = 6.f;
+    _float  m_Mp;
+    _float  m_MaxMp = 10.f;
+    _float  m_Speed;
 
-    int m_CurrentCharges = 3 ;   // 스킬 사용 가능 횟수
-    int m_MaxCharges = 3;
+    _int    m_CurrentCharges = 3 ;   // 스킬 사용 가능 횟수
+    _int    m_MaxCharges = 3;
 
-    _bool m_IsDead;
+    _bool   m_IsDead;
 
-    _bool m_IsInvincible; // 무적
+    _bool   m_IsInvincible; // 무적
+    _float  m_KnockbackTimer;
+
 };
 
 END

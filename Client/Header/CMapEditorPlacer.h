@@ -32,6 +32,8 @@ public:
     void        Set_GrassIndex(_int index) { m_GrassIndex = index; }
     void        Set_RubbleIndex(_int index) { m_RubbleIndex = index; }
     void        Set_DecoIndex(_int index) { m_DecoIndex = index; }
+    void        Set_DungeonDecoIndex(_int index) { m_DungeonDecoIndex = index; }
+    void        Set_ETCIndex(_int index) { m_ETCIndex = index; }
 
 public:
     static CMapEditorPlacer* Create(DEVICE graphicDev);
@@ -48,6 +50,8 @@ private:
     _int            m_GrassIndex;
     _int            m_RubbleIndex;
     _int            m_DecoIndex;
+    _int            m_DungeonDecoIndex;
+    _int            m_ETCIndex;
 
     _float          m_PreviewScale;
     _vec3           m_PreviewRotation;

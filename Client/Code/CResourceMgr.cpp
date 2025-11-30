@@ -573,6 +573,18 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
             L"../Bin/Resource/Texture/MapObject/Deco/Village_Deco%d.png", 77))))
         return E_FAIL;
 
+    // Dungeon_Deco
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_DUNGEON_DECO, CTexture::Create(graphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/MapObject/Dungeon_Deco2/Dungeon_Deco2_%d.png", 139))))
+        return E_FAIL;
+
+    // ETC
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_ETC, CTexture::Create(graphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/MapObject/ETC/ETC%d.png", 40))))
+        return E_FAIL;
+
     return S_OK;
 }
 

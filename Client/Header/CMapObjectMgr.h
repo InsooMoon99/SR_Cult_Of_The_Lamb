@@ -32,6 +32,8 @@ public:
     void    Render_GrassWindow();
     void    Render_RubbleWindow();
     void    Render_DecoWindow();
+    void    Render_DungeonDeco();
+    void    Render_ETC();
 
     HRESULT SaveMapObject(const char* filePath);
     HRESULT LoadMapObject(const char* filePath);
@@ -62,10 +64,14 @@ private:
     _int                    m_SelectGrassIndex = 0;
     _int                    m_SelectRubbleIndex = 0;
     _int                    m_SelectDecoIndex = 0;
+    _int                    m_SelectDungeonDecoIndex = 0;
+    _int                    m_SelectETCIndex = 0;
 
     _bool                   m_ShowGrass = false;
     _bool                   m_ShowRubble = false;
     _bool                   m_ShowDeco = false;
+    _bool                   m_ShowDungeonDeco = false;
+    _bool                   m_ShowETC = false;
 
     char                    m_MapObjFileName[128] = "MapObject_";
 

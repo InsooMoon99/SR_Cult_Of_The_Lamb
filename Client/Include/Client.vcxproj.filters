@@ -157,6 +157,9 @@
     <Filter Include="05. UI\01. UI\05. UITarot">
       <UniqueIdentifier>{9199ebfa-8568-467b-b919-ec9ad9ecb39a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97. Component\05. Projectile">
+      <UniqueIdentifier>{35472784-9a23-45e2-9786-3f248927cb60}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -321,12 +324,6 @@
     <ClInclude Include="..\Header\CMapObjectMgr.h">
       <Filter>99. ImGui_Editor\01. EditorScript</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CBossChain.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\CWarningChain.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\CMapObject_Grass.h">
       <Filter>03. GameObject\09. MapObject</Filter>
     </ClInclude>
@@ -420,14 +417,26 @@
     <ClInclude Include="..\Header\CNPCBase.h">
       <Filter>96. Base</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CBossBullet.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\CProjectile.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Client_Enum.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBossBullet.h">
+      <Filter>03. GameObject\04. Boss\01. Boss1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBossChain.h">
+      <Filter>03. GameObject\04. Boss\01. Boss1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CWarningChain.h">
+      <Filter>03. GameObject\04. Boss\01. Boss1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CProjectile.h">
+      <Filter>97. Component\05. Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMapObject_DungeonDeco.h">
+      <Filter>03. GameObject\09. MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMapObject_ETC.h">
+      <Filter>03. GameObject\09. MapObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -575,12 +584,6 @@
     <ClCompile Include="..\Code\CMapObjectMgr.cpp">
       <Filter>99. ImGui_Editor\01. EditorScript</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CBossChain.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\CWarningChain.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\CMapObject_Grass.cpp">
       <Filter>03. GameObject\09. MapObject</Filter>
     </ClCompile>
@@ -671,11 +674,23 @@
     <ClCompile Include="..\Code\CNPCBase.cpp">
       <Filter>96. Base</Filter>
     </ClCompile>
+    <ClCompile Include="..\Code\CWarningChain.cpp">
+      <Filter>03. GameObject\04. Boss\01. Boss1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBossChain.cpp">
+      <Filter>03. GameObject\04. Boss\01. Boss1</Filter>
+    </ClCompile>
     <ClCompile Include="..\Code\CBossBullet.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>03. GameObject\04. Boss\01. Boss1</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CProjectile.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>97. Component\05. Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMapObject_DungeonDeco.cpp">
+      <Filter>03. GameObject\09. MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMapObject_ETC.cpp">
+      <Filter>03. GameObject\09. MapObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

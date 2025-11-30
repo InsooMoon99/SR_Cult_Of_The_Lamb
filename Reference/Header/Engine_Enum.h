@@ -164,6 +164,10 @@ enum class COMPONENTTYPE
     TEX_RUBBLE,
     TEX_DECO,
 
+    TEX_DUNGEON_DECO,
+    TEX_ETC,
+
+
     COMPONENT_END
 };
 

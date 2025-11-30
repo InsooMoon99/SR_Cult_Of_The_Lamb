@@ -129,6 +129,8 @@ void CMainEditorMgr::Render_MainEditor()
     CMapObjectMgr::GetInstance()->Render_GrassWindow();
     CMapObjectMgr::GetInstance()->Render_RubbleWindow();
     CMapObjectMgr::GetInstance()->Render_DecoWindow();
+    CMapObjectMgr::GetInstance()->Render_DungeonDeco();
+    CMapObjectMgr::GetInstance()->Render_ETC();
 
 }
 

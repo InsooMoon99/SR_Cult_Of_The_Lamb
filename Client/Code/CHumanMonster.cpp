@@ -28,18 +28,18 @@ HRESULT CHumanMonster::Ready_GameObject()
     if (FAILED(CMonsterBase::Ready_GameObject()))
         return E_FAIL;
 
-    m_TransformCom->Set_Pos(_vec3(0.f, 0.f, 0.f));
+    m_TransformCom->Set_Pos(_vec3(5.f, 0.f, 0.f));
     m_TransformCom->Set_Scale(_vec3(1.2f, 1.2f, 1.2f));
 
-    m_CombatStatCom->Set_MaxHp(50.f);
-    m_CombatStatCom->Set_Hp(50);
+    m_CombatStatCom->Set_MaxHp(750.f);
+    m_CombatStatCom->Set_Speed(65.f);
 
     //!! Rigidbody에서 중력만 사용 안함
     m_RigidbodyCom->Set_UseAccel(true);
     m_RigidbodyCom->Set_UseFriction(true);
     m_RigidbodyCom->Set_UseGravity(false);
 
-    m_RigidbodyCom->Set_Friction(1.0f);
+    m_RigidbodyCom->Set_Friction(0.3f);
 
     return S_OK;
 }
@@ -62,10 +62,15 @@ _int CHumanMonster::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CMonsterBase::Update_GameObject(timeDelta);
 
-    _float distance = Get_DistanceToTarget();
+    if (!m_CombatStatCom->Is_Knockback())
+    {
+        _float distance = Get_DistanceToTarget();
 
-    if (1.f < distance && distance < 10.f)
-        Chase_Target(timeDelta, m_CombatStatCom->Get_Speed());
+        if (1.f < distance && distance < 10.f)
+            Chase_Target(timeDelta, m_CombatStatCom->Get_Speed());
+    }
+
+    
 
     return exit;
 }
