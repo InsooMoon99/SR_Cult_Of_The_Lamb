@@ -48,10 +48,12 @@ protected:
     CTransform*  m_TransformCom;
 
     _bool m_IsClone;
-    _bool m_Active;         // 컴포넌트의 업데이트와 렌더를 하면 true, 안할거면 false로 바꾸면 되는 스위치
+
+     // 컴포넌트의 업데이트와 렌더를 하면 true, 안할거면 false로 바꾸면 되는 스위치
+    _bool m_Active; 
 
 public:
-    virtual CComponent* Clone() PURE;		// 프로토타입 사용 예
+    virtual CComponent* Clone() PURE;
 
 protected:
     void Free() override;

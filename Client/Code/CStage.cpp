@@ -1,9 +1,7 @@
 ﻿#include "pch.h"
 #include "CStage.h"
-
 #include "CCombatStat.h"
 #include "CDropSystem.h"
-#include "CEditContext.h"
 #include "CHumanMonster.h"
 #include "CInventory.h"
 #include "CItemDB.h"
@@ -12,28 +10,22 @@
 #include "CMainEditorMgr.h"
 #include "CPersistentObjectHelper.h"
 #include "CPlayer.h"
-#include "CTestMonster.h"
 #include "CTransform.h"
 #include "CUICircle.h"
 #include "CUIIcon.h"
-#include "CUIInventory.h"
-#include "CUIInventoryCell.h"
 #include "CUIMp.h"
 #include "CUIPlayerPanel.h"
 #include "CUISKillCount.h"
 #include "CUIWeapon.h"
 #include "ItemInstance.h"
 #include "CBossPhase1.h"
+#include "CMapObjectMgr.h"
 #include "CTerrain.h"
-#include "CDInputMgr.h"
-#include "CMapEditorPlacer.h"
-#include "CSceneMgr.h"
 #include "CUITabMenu.h"
-#include "CWall.h"
 
 CStage::CStage(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
-    m_PlayerCombatStatCom(nullptr)
+      m_PlayerCombatStatCom(nullptr), m_PlayerInventoryCom(nullptr), m_WeaponEquipCom(nullptr), m_Terrain(nullptr)
 {
 }
 
@@ -43,10 +35,6 @@ CStage::~CStage()
 
 HRESULT CStage::Ready_Scene()
 {
-    // 로딩 스레드로 역할 이동
-    //if (FAILED(Ready_Prototype()))
-    //    return E_FAIL;
-
     if (FAILED(Ready_Environment_Layer(LAYERTYPE::ENVIRONMENT)))
         return E_FAIL;
 
@@ -66,6 +54,7 @@ HRESULT CStage::Ready_Scene()
         CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 5.f, 0.f, 10.f + (i * 3.f) });
         CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 10.f, 0.f, 10.f + (i * 3.f) });
     }
+    
 
     return S_OK;
 }
@@ -74,7 +63,8 @@ void CStage::Initialize_Scene()
 {
     CScene::Initialize_Scene();
 
-
+    // 초기 맵 불러오기 <- 이거 꼭 Initialize에서 진행해야 맵 오브젝트가 잘 불러진다.
+    m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_TestR.map");
 }
 
 _int CStage::Update_Scene(const _float& timeDelta)
@@ -94,7 +84,6 @@ void CStage::Render_Scene()
     // debug 용
 }
 
-
 HRESULT CStage::Ready_Environment_Layer(LAYERTYPE layerType)
 {
     Engine::CLayer* layer = Engine::CLayer::Create();
@@ -102,12 +91,10 @@ HRESULT CStage::Ready_Environment_Layer(LAYERTYPE layerType)
     if (nullptr == layer)
         return E_FAIL;
 
-    CTerrain* terrain = CTerrain::Create(m_GraphicDev);
-    NULL_CHECK_RETURN(terrain, E_FAIL);
+    m_Terrain = CTerrain::Create(m_GraphicDev);
+    NULL_CHECK_RETURN(m_Terrain, E_FAIL);
 
-    // 초기 맵 불러오기
-    terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_TestR.map");
-    layer->Add_GameObject(OBJTYPE::TERRAIN, terrain);
+    layer->Add_GameObject(OBJTYPE::TERRAIN, m_Terrain);
 
     m_Layers.insert({ layerType, layer });
 

@@ -21,6 +21,7 @@ public:
           , m_Offset(0.f, 0.f, 0.f)
           , m_Scale(0.f, 0.f, 0.f)
           , m_UseInstigatorPos(false), m_DestroyOnHit(false)
+          , m_Collision_LayerType(COLLISION_LAYERTYPE::DEFAULT)
     {
     }
 
@@ -115,12 +116,23 @@ public:
         return *this;
     }
 
+    CAttackBuilder& CollisionLayer(COLLISION_LAYERTYPE layerType)
+    {
+        m_Collision_LayerType = layerType;
+        return *this;
+    }
+
     void Spawn()
     {
         NULL_CHECK(m_AttackObj);
 
         // 공격한놈 설정
-        m_AttackObj->Set_Instigator(m_Instigator);
+        CCollider* collider = m_AttackObj->Get_Collider();
+        if (collider)
+        {
+            collider->Set_CollisionLayer(m_Collision_LayerType);
+            collider->Set_Instigator(m_Instigator);
+        }
 
         // AttackData 설정 
         m_AttackObj->Set_AttackData(m_AttackData);
@@ -180,6 +192,8 @@ private:
     _vec3               m_Scale;
     _bool               m_UseInstigatorPos; // 공격자의 위치를 사용할지
     _bool               m_DestroyOnHit;
+
+    COLLISION_LAYERTYPE m_Collision_LayerType;
 };
 
 END

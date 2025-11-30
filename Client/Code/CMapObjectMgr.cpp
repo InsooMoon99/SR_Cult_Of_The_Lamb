@@ -27,8 +27,6 @@ void CMapObjectMgr::Ready_MapObjectMgr(DEVICE graphicDev)
 
     m_MapPlacer = CMapEditorPlacer::Create(graphicDev);
 
-    
-
     Refresh_MapObjectList();
 }
 
@@ -496,6 +494,8 @@ HRESULT CMapObjectMgr::Load_FromStream(ifstream& ifs)
             }
 
             layer->Add_GameObject(OBJTYPE::PLACEMENT, newObj);
+
+            newObj->Initialize_GameObject();
         }
     }
 

@@ -115,6 +115,17 @@ void CAttackBase::OnEndOverlap(CCollider* self, CCollider* other)
     
 }
 
+void CAttackBase::Set_Instigator(CGameObject* instigator)
+{
+    m_Instigator = instigator;
+
+    CCollider* collider = Get_Collider();
+    if (collider)
+    {
+        collider->Set_Instigator(instigator);
+    }
+}
+
 void CAttackBase::Free()
 {
     CGameObject::Free();

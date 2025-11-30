@@ -46,7 +46,17 @@ void CCollisionManager::Update()
             if (dst->IsCollisionActive() == false) // 충돌체 Active가 꺼져있다면 무시
                 continue;
 
+            // Owner가 같으면 무시
             if (ownerSrc == ownerDst)
+                continue;
+
+            // Insigator 체크
+            CGameObject* instigatorSrc = src->Get_Instigator();
+            if (instigatorSrc != nullptr && instigatorSrc == ownerDst)
+                continue;
+
+            CGameObject* instigatorDst = dst->Get_Instigator();
+            if (instigatorDst != nullptr && instigatorDst == ownerSrc)
                 continue;
 
             // 레이어 확인
@@ -159,15 +169,25 @@ void CCollisionManager::Initialize_CollisionMatrix()
     m_CollisionMatrix[wall_Index][wall_Index] = false;
 
     // 적끼리도 충돌 X
-    _int enemyIndex = static_cast<_int>(COLLISION_LAYERTYPE::ENEMY);
-    m_CollisionMatrix[enemyIndex][enemyIndex] = false;
+    _int enemy_Index = static_cast<_int>(COLLISION_LAYERTYPE::ENEMY);
+    m_CollisionMatrix[enemy_Index][enemy_Index] = false;
 
+    // 아이템과 벽은 충돌 ㄴㄴ
     _int item_Index = static_cast<_int>(COLLISION_LAYERTYPE::ITEM);
     m_CollisionMatrix[wall_Index][item_Index] = false;
     m_CollisionMatrix[item_Index][wall_Index] = false;
 
+    // 공격이랑 아이템 충돌 ㄴㄴ
+    _int attack_Index = static_cast<_int>(COLLISION_LAYERTYPE::ATTACK);
+    m_CollisionMatrix[attack_Index][item_Index] = false;
+    m_CollisionMatrix[item_Index][attack_Index] = false;
+
+    // 아이템, 적 충돌 ㄴㄴ
+    m_CollisionMatrix[item_Index][enemy_Index] = false;
+    m_CollisionMatrix[enemy_Index][item_Index] = false;
+
     // TODO : 다른 충돌 상태 판정 추가하기
-    // 내가 이걸 왜 진작에 안했을까
+
 
 }
 

@@ -86,6 +86,7 @@ void CPlayer::Render_GameObject()
 {
 	CCharacterBase::Render_GameObject();
 
+    
 }
 
 void CPlayer::Test_Attack()
@@ -99,6 +100,7 @@ void CPlayer::Test_Attack()
         .InstigatorPos()
         .Offset(_vec3(2.f, 0.f, 0.f))
         .DestroyOnHit(true)
+        .CollisionLayer(COLLISION_LAYERTYPE::ATTACK)
         .Spawn();
 }
 

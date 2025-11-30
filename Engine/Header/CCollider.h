@@ -25,7 +25,10 @@ public:
     COLLIDERTYPE    GetColliderType() const { return m_ColliderType; }
     bool            Get_ShowDebug()   const { return m_ShowDebug; }
     bool            IsCollisionActive() const { return m_IsColliderActive; }
+    CGameObject*    Get_Instigator() { return m_Instigator; }
 
+
+    void            Set_Instigator(CGameObject* instigator) { m_Instigator = instigator; }
     void            Set_ShowDebug(bool show) { m_ShowDebug = show; }
     void            Set_CollisionActive(bool active) { m_IsColliderActive = active; }
 
@@ -56,6 +59,7 @@ protected:
     COLLIDERTYPE  m_ColliderType;
     _bool         m_ShowDebug;        // 디버그 렌더링 여부
     _bool         m_IsColliderActive; // 충돌처리용
+    CGameObject*  m_Instigator;
 
 protected:
     // 현재 프레임 기준으로 겹쳐있는(충돌중인) 다른 Collider들

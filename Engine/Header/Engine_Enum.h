@@ -69,6 +69,7 @@ namespace Engine
         WALL,
         PROJECTILE,
         ITEM,
+        ATTACK,
 
         COL_LAYER_END
     };
