@@ -381,6 +381,8 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     pathVec1.push_back(L"../Bin/Resource/Texture/UI/Inventory/Unlock.png");
     pathVec1.push_back(L"../Bin/Resource/Texture/UI/Inventory/Weapon1.png");
     pathVec1.push_back(L"../Bin/Resource/Texture/UI/Inventory/Weapon2.png");
+    pathVec1.push_back(L"../Bin/Resource/Texture/UI/ItemGet/0.png");
+    pathVec1.push_back(L"../Bin/Resource/Texture/UI/ItemGet/1.png");
 
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_ICON, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec1))))
@@ -466,8 +468,6 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
             L"../Bin/Resource/Texture/UI/Tarot/ExplainBox/HeartExplain.png",
             1))))
         return E_FAIL;
-
-    
 
     return S_OK;
 }

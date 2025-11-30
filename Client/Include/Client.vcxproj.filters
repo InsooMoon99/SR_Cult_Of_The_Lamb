@@ -142,6 +142,9 @@
     <Filter Include="05. UI\01. UI\05. UITarot">
       <UniqueIdentifier>{9199ebfa-8568-467b-b919-ec9ad9ecb39a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. UI\01. UI\06. UIItemGet">
+      <UniqueIdentifier>{724d35f9-bc60-44bd-8d5a-22d341eb1b04}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -387,6 +390,12 @@
     <ClInclude Include="..\Header\CStage_Boss2.h">
       <Filter>02. Scene\01. Stage</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CUIItemGet.h">
+      <Filter>05. UI\01. UI\06. UIItemGet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUIItemGetManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -610,6 +619,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\CStage_Boss2.cpp">
       <Filter>02. Scene\01. Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUIItemGet.cpp">
+      <Filter>05. UI\01. UI\06. UIItemGet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUIItemGetManager.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

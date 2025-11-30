@@ -97,6 +97,8 @@ bool CInventory::AddItem(ItemInstance itemInst)
             if (itemData->maxStack > slot.count)
             {
                 slot.count++;
+
+
                 return true;
             }
         }
