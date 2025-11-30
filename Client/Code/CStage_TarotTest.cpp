@@ -42,15 +42,12 @@ _int CStage_TarotTest::Update_Scene(const _float& timeDelta)
 {
     _int exit = Engine::CScene::Update_Scene(timeDelta);
 
-
     return exit;
 }
 
 void CStage_TarotTest::LateUpdate_Scene(const _float& timeDelta)
 {
     Engine::CScene::LateUpdate_Scene(timeDelta);
-
-
 }
 
 void CStage_TarotTest::Render_Scene()
@@ -79,7 +76,6 @@ HRESULT CStage_TarotTest::Ready_Environment_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::TERRAIN, gameObject),
         L"CStage_TarotTest::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Tile) failed");
-
 
     // Wall
     CWall* wall = CWall::Create(m_GraphicDev);
@@ -111,6 +107,7 @@ HRESULT CStage_TarotTest::Ready_GameLogic_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CPlayer>(
             OBJTYPE::PLAYER,
+            L"Player",
             m_GraphicDev,
             layer,
             &gameObject),
@@ -130,13 +127,13 @@ HRESULT CStage_TarotTest::Ready_GameLogic_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CMainCamera>(
             OBJTYPE::CAMERA,
+            L"MainCamera",
             m_GraphicDev,
             layer,
             &gameObject),
         L"Persistent object setup failed");
 
     // 카메라 타겟을 플레이어로 설정
-      // 카메라 타겟을 플레이어로 설정
     auto mainCam = dynamic_cast<CMainCamera*>(gameObject);
     if (mainCam)
     {

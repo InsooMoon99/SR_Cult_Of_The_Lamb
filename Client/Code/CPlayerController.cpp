@@ -1,23 +1,26 @@
 ﻿#include "pch.h"
 #include "CPlayerController.h"
 
-#include "CAttackBox.h"
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
 #include "CDInputMgr.h"
 #include "CGameObject.h"
 #include "CMainEditorMgr.h"
-#include "CPlayer.h"
+#include "CPlayerAttack.h"
+#include "CPlayerInput.h"
+#include "CPlayerMovement.h"
 #include "CRigidbody.h"
 #include "CState.h"
-#include "CTransform.h"
 
 CPlayerController::CPlayerController(DEVICE graphicDev)
     : CComponent(graphicDev),
       m_OwnerStateCom(nullptr),
       m_OwnerCombatStatCom(nullptr),
       m_OwnerRigidbodyCom(nullptr),
-      m_OwnerColliderCom(nullptr)
+      m_OwnerColliderCom(nullptr),
+      m_OwnerInputCom(nullptr),
+      m_OwnerMovementCom(nullptr),
+      m_OwnerAttackCom(nullptr)
 { }
 
 CPlayerController::CPlayerController(const CPlayerController& rhs)
@@ -25,7 +28,10 @@ CPlayerController::CPlayerController(const CPlayerController& rhs)
       m_OwnerStateCom(nullptr),
       m_OwnerCombatStatCom(nullptr),
       m_OwnerRigidbodyCom(nullptr),
-      m_OwnerColliderCom(nullptr)
+      m_OwnerColliderCom(nullptr),
+      m_OwnerInputCom(nullptr),
+      m_OwnerMovementCom(nullptr),
+      m_OwnerAttackCom(nullptr)
 { }
 
 CPlayerController::~CPlayerController()
@@ -40,10 +46,10 @@ _int CPlayerController::Update_Component(const _float& timeDelta)
 {
     // 일시정지 -> 입력 무시
     if (!CMainEditorMgr::GetInstance()->IsPlaying())
-        return 0;
+        return -1;
 
-    // 1. 입력 수집
-    Update_Input();
+    // 1. 입력 수집 (PlayerInput 컴포넌트가 자동으로 수행함)
+    // Update_Input();
 
     // 2. 상태 전환 판단
     CheckStateTransition();
@@ -71,6 +77,15 @@ HRESULT CPlayerController::Init_OwnerComponent()
     m_OwnerColliderCom = dynamic_cast<CBoxCollider*>(
         m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::BOX_COLL));
 
+    m_OwnerInputCom = dynamic_cast<CPlayerInput*>(
+        m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::PL_INPUT));
+
+    m_OwnerMovementCom = dynamic_cast<CPlayerMovement*>(
+        m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::PL_MOVEMENT));
+
+    m_OwnerAttackCom = dynamic_cast<CPlayerAttack*>(
+        m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::PL_ATTACK));
+
     NULL_CHECK_RETURN_MSG(
         m_OwnerStateCom,
         E_FAIL,
@@ -91,30 +106,22 @@ HRESULT CPlayerController::Init_OwnerComponent()
         E_FAIL,
         L"CPlayerController: Owner's BOXCOLLIDER caching has failed");
 
+    NULL_CHECK_RETURN_MSG(
+        m_OwnerInputCom,
+        E_FAIL,
+        L"CPlayerController: Owner's INPUT caching has failed");
+
+    NULL_CHECK_RETURN_MSG(
+        m_OwnerMovementCom,
+        E_FAIL,
+        L"CPlayerController: Owner's MOVEMENT caching has failed");
+
+    NULL_CHECK_RETURN_MSG(
+        m_OwnerAttackCom,
+        E_FAIL,
+        L"CPlayerController: Owner's ATTACK caching has failed");
+
     return S_OK;
-}
-
-void CPlayerController::Update_Input()
-{
-    const auto inputMgr = CDInputMgr::GetInstance();
-
-    _int axisX = 0;
-    _int axisZ = 0;
-
-    // 키 입력 체크
-    if (inputMgr->KeyPress(DIK_W)) axisZ++;
-    if (inputMgr->KeyPress(DIK_S)) axisZ--;
-    if (inputMgr->KeyPress(DIK_D)) axisX++;
-    if (inputMgr->KeyPress(DIK_A)) axisX--;
-
-    // MoveDir 벡터 생성
-    m_StateData.moveDir = _vec3(static_cast<_float>(axisX),
-                                0.f,
-                                static_cast<_float>(axisZ));
-
-    // 벡터 정규화 및 플래그 설정
-    if (D3DXVec3LengthSq(&m_StateData.moveDir) > 0.001f)
-        D3DXVec3Normalize(&m_StateData.moveDir, &m_StateData.moveDir);
 }
 
 void CPlayerController::CheckStateTransition()
@@ -132,27 +139,26 @@ void CPlayerController::CheckStateTransition()
     {
         if (curState != ACTORSTATE::PLAYER_ROLL)
         {
-            // 구르기 진입 세팅
+            // 공격 중이었다면 공격 취소
+            if (curState == ACTORSTATE::PLAYER_SWORD_COMBO1 ||
+                curState == ACTORSTATE::PLAYER_SWORD_COMBO2 ||
+                curState == ACTORSTATE::PLAYER_SWORD_COMBO3)
+                m_OwnerAttackCom->Cancel_Attack();
+
+            // 구르기 시작 (Movement 컴포넌트에 위임)
+            _vec3 moveDir = m_OwnerInputCom->Get_MoveDir();
+
+            // 이동 중이 아니면 바라보는 방향으로 구르기
+            if (D3DXVec3LengthSq(&moveDir) <= 0.f)
+                moveDir = m_OwnerMovementCom->CalcWorldDir(m_OwnerStateCom->Get_Dir());
+
+            m_OwnerMovementCom->Start_Roll(moveDir);
             m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_ROLL);
-
-            m_StateData.Reset();
-
-            // 구르기 시작 시 방향 결정
-            if (D3DXVec3LengthSq(&m_StateData.moveDir) > 0.f)
-                m_StateData.rollDir = m_StateData.moveDir;
-            else
-                m_StateData.rollDir = CalcWorldDir(m_OwnerStateCom->Get_Dir());
-
-            if (m_OwnerCombatStatCom) m_OwnerCombatStatCom->Set_Invincible(true);
-
-            // 구를 때는 마찰력 무시
-            if (m_OwnerRigidbodyCom) m_OwnerRigidbodyCom->Set_Friction(0.f);
-
             return;
         }
     }
 
-    // [우선순위 2] 공격 입력 처리 (공격 시작 시 방향 보정 로직 포함)
+    // [우선순위 2] 공격 입력 처리
     // - 구르기 상태여도 공격으로 이행 (캔슬)
     else if (inputMgr->MouseDown(DIM_LB))
     {
@@ -165,42 +171,32 @@ void CPlayerController::CheckStateTransition()
             curState == ACTORSTATE::IDLE ||
             curState == ACTORSTATE::RUN)
         {
-            m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SWORD_COMBO1);
-
-            // 공격 시작 시에만 초기화
-            m_StateData.Reset();
-            m_StateData.comboIndex = 1;
-
-            if (curState == ACTORSTATE::PLAYER_ROLL)
-            {
-                if (m_OwnerCombatStatCom) m_OwnerCombatStatCom->Set_Invincible(false);
-                if (m_OwnerRigidbodyCom) m_OwnerRigidbodyCom->Set_Friction(0.2f); // 기본 마찰력 복구
-            }
+            ACTORSTATE nextState = m_OwnerAttackCom->Start_NormalAttack();
+            if (nextState != ACTORSTATE::STATE_END)
+                m_OwnerStateCom->Change_State(nextState);
         }
-        // TODO : PLAYER_ROLL, RUN 의 경우 대쉬 공격으로 가도록 
-        else if (IsAttacking(curState))
+        // 공격 중이라면 콤보 예약 시도
+        else if (curState == ACTORSTATE::PLAYER_SWORD_COMBO1 ||
+                 curState == ACTORSTATE::PLAYER_SWORD_COMBO2 ||
+                 curState == ACTORSTATE::PLAYER_SWORD_COMBO3)
         {
-            if (m_StateData.canNextCombo)
-                m_StateData.isNextComboReserved = true;
-
+            m_OwnerAttackCom->Try_NextCombo();
             return;
         }
     }
 
-    // TODO : 마우스의 월드 좌표를 구해서 마우스 뱡향으로 공격이 되도록 구성하기
-
     //!! 공격 or 구르기 중이라면 이동/대기 상태로 넘어가지 않도록 여기서 리턴
-    if (IsAttacking(curState) || curState == ACTORSTATE::PLAYER_ROLL)
+    if (curState == ACTORSTATE::PLAYER_ROLL ||
+        curState == ACTORSTATE::PLAYER_SWORD_COMBO1 ||
+        curState == ACTORSTATE::PLAYER_SWORD_COMBO2 ||
+        curState == ACTORSTATE::PLAYER_SWORD_COMBO3)
         return;
 
     // [우선순위 3] 이동 (방향 입력)
-    if (D3DXVec3LengthSq(&m_StateData.moveDir) > 0.001f)
+    if (D3DXVec3LengthSq(&m_OwnerInputCom->Get_MoveDir()) > 0.001f)
     {
         if (curState != ACTORSTATE::RUN)
-        {
             m_OwnerStateCom->Change_State(ACTORSTATE::RUN);
-            m_StateData.Reset();
-        }
     }
 
     // [우선순위 4] 대기 (입력 없음)
@@ -209,7 +205,7 @@ void CPlayerController::CheckStateTransition()
         if (curState != ACTORSTATE::IDLE)
         {
             m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
-            m_StateData.Reset();
+            m_OwnerMovementCom->Stop();
         }
     }
 }
@@ -218,7 +214,7 @@ void CPlayerController::Update_State(const _float& timeDelta)
 {
     ACTORSTATE curState = m_OwnerStateCom->Get_State();
 
-    m_StateData.timer += timeDelta; // 타이머 증가
+    // m_StateData.timer += timeDelta; // Removed
 
     switch (curState)
     {
@@ -244,218 +240,30 @@ void CPlayerController::Update_State(const _float& timeDelta)
     }
 }
 
-_bool CPlayerController::CanChangeDir(ACTORSTATE state)
-{
-    //!! 구르기, 사망, 피격, 공격 중에는 방향 전환 불가
-    if (state == ACTORSTATE::PLAYER_ROLL ||
-        state == ACTORSTATE::DEAD ||
-        state == ACTORSTATE::HIT ||
-        state == ACTORSTATE::PLAYER_SWORD_COMBO1 ||
-        state == ACTORSTATE::PLAYER_SWORD_COMBO2 ||
-        state == ACTORSTATE::PLAYER_SWORD_COMBO3)
-        return false;
-
-    return true;
-}
-
-void CPlayerController::ChangeDir()
-{
-    // 입력 없으면 리턴
-    if (D3DXVec3LengthSq(&m_StateData.moveDir) <= 0.001f) return;
-
-    ACTORSTATE curState = m_OwnerStateCom->Get_State();
-
-    // 현재 상태가 방향 전환을 허용하는지 체크
-    if (!CanChangeDir(curState)) return;
-
-    ACTORDIR newDir = m_OwnerStateCom->Get_Dir();
-    _vec3    dir    = m_StateData.moveDir;
-
-    // 방향 판별 로직
-    if (dir.x > 0.1f)
-    {
-        if (dir.z > 0.1f)
-            newDir = ACTORDIR::R_UP;
-        else if (dir.z < -0.1f)
-            newDir = ACTORDIR::R_DOWN;
-        else
-            newDir = ACTORDIR::RIGHT;
-    }
-    else if (dir.x < -0.1f)
-    {
-        if (dir.z > 0.1f)
-            newDir = ACTORDIR::L_UP;
-        else if (dir.z < -0.1f)
-            newDir = ACTORDIR::L_DOWN;
-        else
-            newDir = ACTORDIR::LEFT;
-    }
-    else
-    {
-        if (dir.z > 0.1f)
-            newDir = ACTORDIR::UP;
-        else if (dir.z < -0.1f)
-            newDir = ACTORDIR::DOWN;
-    }
-
-    m_OwnerStateCom->Change_Dir(newDir);
-}
-
-_vec3 CPlayerController::CalcWorldDir(ACTORDIR dir)
-{
-    _vec3 vDir;
-
-    switch (dir)
-    {
-    case ACTORDIR::LEFT:
-    default:
-        vDir = { -1.f, 0.f, 0.f };
-        break;
-    case ACTORDIR::RIGHT:
-        vDir = { 1.f, 0.f, 0.f };
-        break;
-    case ACTORDIR::UP:
-        vDir = { 0.f, 0.f, 1.f };
-        break;
-    case ACTORDIR::DOWN:
-        vDir = { 0.f, 0.f, -1.f };
-        break;
-    case ACTORDIR::L_UP:
-        vDir = { -1.f, 0.f, 1.f };
-        break;
-    case ACTORDIR::R_UP:
-        vDir = { 1.f, 0.f, 1.f };
-        break;
-    case ACTORDIR::L_DOWN:
-        vDir = { -1.f, 0.f, -1.f };
-        break;
-    case ACTORDIR::R_DOWN:
-        vDir = { 1.f, 0.f, -1.f };
-        break;
-    }
-
-    D3DXVec3Normalize(&vDir, &vDir);
-    return vDir;
-}
-
-_bool CPlayerController::IsAttacking(ACTORSTATE state)
-{
-    return (state == ACTORSTATE::PLAYER_SWORD_COMBO1 ||
-            state == ACTORSTATE::PLAYER_SWORD_COMBO2 ||
-            state == ACTORSTATE::PLAYER_SWORD_COMBO3);
-}
-
 void CPlayerController::Action_Idle(const _float& timeDelta)
 {
-    m_OwnerRigidbodyCom->Set_Friction(0.4f);
+    m_OwnerMovementCom->Stop();
 }
 
 void CPlayerController::Action_Run(const _float& timeDelta)
 {
-    m_OwnerRigidbodyCom->Set_Friction(0.05f);
-
-    // 1. 방향 회전
-    ChangeDir();
-
-    // 2. 물리적 이동 (Force 사용)
-    _float speed = m_OwnerCombatStatCom->Get_Speed();
-    m_OwnerRigidbodyCom->Add_Force(m_StateData.moveDir * speed * 20.f);
+    m_OwnerMovementCom->Run(m_OwnerInputCom->Get_MoveDir(), timeDelta);
 }
 
 void CPlayerController::Action_Roll(const _float& timeDelta)
 {
-    // 구르기 종료
-    if (m_StateData.timer >= m_StateData.rollDuration)
-    {
+    // 구르기 업데이트 (false 반환 시 종료)
+    if (!m_OwnerMovementCom->Update_Roll(timeDelta))
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
-        m_OwnerColliderCom->Set_CollisionActive(true);
-        m_OwnerRigidbodyCom->Set_UseAccel(true);
-        m_OwnerRigidbodyCom->Set_Friction(0.2f);
-
-        m_StateData.Reset();
-    }
-    // 구르기 중
-    else
-    {
-        // 구르기 무적시간 종료 체크
-        if (!m_StateData.isRollInvincibleEnded &&
-            m_StateData.timer >= m_StateData.rollInvincibleDuration)
-        {
-            m_OwnerColliderCom->Set_CollisionActive(true);
-
-            m_StateData.isRollInvincibleEnded = true;
-        }
-
-        const _vec3  rollDir   = m_StateData.rollDir;
-        const _float rollSpeed = m_OwnerCombatStatCom->Get_Speed() * 3.f;
-
-        m_OwnerRigidbodyCom->Set_UseAccel(false);
-
-        // 구르기에 한해서는 Move_Pos로 강제 이동
-        m_TransformCom->Move_Pos(rollDir, timeDelta, rollSpeed);
-    }
 }
 
 void CPlayerController::Action_Sword(const _float& timeDelta)
 {
-    m_OwnerRigidbodyCom->Set_Friction(0.2f);
+    m_OwnerMovementCom->Stop();
 
-    ACTORSTATE curState = m_OwnerStateCom->Get_State();
-
-    _float attackSpeed = 1.f;
-    if (m_OwnerCombatStatCom)
-        attackSpeed = m_OwnerCombatStatCom->Get_AttackSpeed();
-
-    _float attackDuration = m_StateData.Get_SwordAttackDuration(attackSpeed);
-
-    // 1. 공격 판정 (Hitbox) 제어
-    if (m_StateData.timer >= attackDuration * 0.2f &&
-        m_StateData.timer <= attackDuration * 0.6f)
-    {
-        if (!m_StateData.isHitboxActive)
-        {
-            m_StateData.isHitboxActive = true;
-            // 예시 : if(m_WeaponCollider) m_WeaponCollider->Set_Active(true);
-
-            dynamic_cast<CPlayer*>(m_Owner)->Test_Attack();
-        }
-    }
-    else
-    {
-        if (m_StateData.isHitboxActive)
-        {
-            m_StateData.isHitboxActive = false;
-            // 예시 : if(m_WeaponCollider) m_WeaponCollider->Set_Active(false);
-        }
-    }
-
-    // 2. 선입력 구간 체크
-    if (m_StateData.timer > attackDuration * 0.4f && m_StateData.comboIndex < 3)
-        m_StateData.canNextCombo = true;
-
-    // 3. 애니메이션 종료 시 처리
-    if (m_StateData.timer >= attackDuration)
-    {
-        if (m_StateData.isNextComboReserved && m_StateData.comboIndex < 3)
-        {
-            // 다음 콤보로 전이
-            ++m_StateData.comboIndex;
-
-            ACTORSTATE nextState = static_cast<ACTORSTATE>(
-                static_cast<_uint>(ACTORSTATE::PLAYER_SWORD_COMBO1)
-                + m_StateData.comboIndex - 1);
-
-            m_OwnerStateCom->Change_State(nextState);
-            m_StateData.Reset();
-        }
-        else
-        {
-            // 콤보 종료 -> IDLE 복귀
-            m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
-            m_StateData.Reset();
-            m_StateData.comboIndex = 0; // 콤보 끝났으므로 0으로 명시적 초기화
-        }
-    }
+    // 일반 공격 업데이트 (false 반환 시 종료)
+    if (!m_OwnerAttackCom->Update_NormalAttack(timeDelta))
+        m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
 }
 
 CPlayerController* CPlayerController::Create(DEVICE graphicDev)
@@ -479,10 +287,14 @@ CComponent* CPlayerController::Clone()
 
 void CPlayerController::Free()
 {
+    //!! Safe_Release() 등을 호출해 원본을 부수지 말고, nullptr로 빌려온 주소를 반납만 한다. 
     m_OwnerStateCom      = nullptr;
     m_OwnerCombatStatCom = nullptr;
     m_OwnerRigidbodyCom  = nullptr;
     m_OwnerColliderCom   = nullptr;
+    m_OwnerInputCom      = nullptr;
+    m_OwnerMovementCom   = nullptr;
+    m_OwnerAttackCom     = nullptr;
 
     CComponent::Free();
 }

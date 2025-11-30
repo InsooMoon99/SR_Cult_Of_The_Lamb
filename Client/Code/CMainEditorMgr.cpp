@@ -525,7 +525,7 @@ void CMainEditorMgr::Render_SelectComponent()
             break;
         }
 
-        case COMPONENTTYPE::CONTROLLER_PLAYER:
+        case COMPONENTTYPE::PL_CONTROLLER:
         {
             auto controller = dynamic_cast<CPlayerController*>(selectComponent);
             PlayerController_Inspector(controller);

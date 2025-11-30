@@ -14,21 +14,21 @@
 #include "CBossBulletAttack.h"
 
 CBossBullet::CBossBullet(DEVICE graphicDev, CGameObject* owner, CGameObject* Target, PROJ_TYPE type)
-    : CGameObject(graphicDev), m_pOwner(owner), m_pTarget(Target), m_type(type)
+    : CGameObject(graphicDev),
+      m_pOwner(owner),
+      m_pTarget(Target),
+      m_type(type)
 {
     m_pOwner->AddRef();
     m_pTarget->AddRef();
 }
 
-CBossBullet::CBossBullet(const CBossBullet& rhs) : CGameObject(rhs)
-{
-    
-}
+CBossBullet::CBossBullet(const CBossBullet& rhs)
+    : CGameObject(rhs)
+{ }
 
 CBossBullet::~CBossBullet()
-{
-   
-}
+{ }
 
 HRESULT CBossBullet::Ready_GameObject()
 {
@@ -37,7 +37,7 @@ HRESULT CBossBullet::Ready_GameObject()
 
     SetTexAspectInit(m_TextureCom, m_TransformCom, 0);
 
-    SetAspectScale(m_TransformCom, { .2f,.2f,.2f });
+    SetAspectScale(m_TransformCom, { .2f, .2f, .2f });
 
     const auto ownerTransform =
         dynamic_cast<CTransform*>(m_pOwner->Get_Component(
@@ -47,7 +47,7 @@ HRESULT CBossBullet::Ready_GameObject()
     //TODO:: 나중에 땅의 위치를 알게 되면 수정 
     m_TransformCom->Set_Pos({ ownerTransform->Get_Pos().x, /*-ownerTransform->Get_Scale().y * .5f*/0.f, ownerTransform->Get_Pos().z });
 
-    m_TransformCom->Set_Rotation({ D3DXToRadian(90),0,0 });
+    m_TransformCom->Set_Rotation({ D3DXToRadian(90), 0, 0 });
 
     return S_OK;
 }
@@ -105,9 +105,8 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
         m_flag = true;
     }
 
-    if (m_StartShoot && m_ProjectileCom->Get_isSetDesc()==true)
+    if (m_StartShoot && m_ProjectileCom->Get_isSetDesc() == true)
     {
-
         switch (m_type)
         {
         case PROJ_TYPE::LINEAR:
@@ -117,13 +116,19 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
 
             break;
         case PROJ_TYPE::ORBIT:
+
             m_ProjectileCom->Update_Component(timeDelta);
             m_ATKBoxTransformCom->Set_Pos(m_TransformCom->Get_Pos());
-            break;
 
+            break;
+        case PROJ_TYPE::HOMING:
+            break;
+        case PROJ_TYPE::TYPE_END:
+            break;
+        default:
+            break;
         }
     }
-
 
     return exit;
 }
@@ -131,7 +136,6 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
 void CBossBullet::LateUpdate_GameObject(const _float& timeDelta)
 {
     CGameObject::LateUpdate_GameObject(timeDelta);
-
 }
 
 void CBossBullet::Render_GameObject()
@@ -157,7 +161,7 @@ void CBossBullet::Render_Core()
 
     m_TextureCom->Set_Texture(0);
 
-   // m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB((int)(m_fAlpha * 255), 255, 255, 255));
+    // m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB((int)(m_fAlpha * 255), 255, 255, 255));
     //
     //m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
     //m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
@@ -181,11 +185,10 @@ void CBossBullet::Render_Core()
 void CBossBullet::Render_Trail()
 {
     // 불랫용 포즈 계산
-   // _vec3 TrailPos = 
+    // _vec3 TrailPos = 
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
     //
-
 
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
     m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
@@ -198,7 +201,7 @@ void CBossBullet::Render_Trail()
 
     m_TextureCom->Set_Texture(1);
 
-    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB((int)(m_fAlpha * 255), 255, 255, 255));
+    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(static_cast<int>(m_fAlpha * 255), 255, 255, 255));
     //
     m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
     m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
@@ -231,8 +234,7 @@ void CBossBullet::OnEndOverlap(CCollider* self, CCollider* other)
 }
 
 void CBossBullet::Animation_Setting()
-{
-}
+{ }
 
 HRESULT CBossBullet::Add_Component()
 {
@@ -263,7 +265,6 @@ HRESULT CBossBullet::Add_Component()
 
     return S_OK;
 }
-
 
 CBossBullet* CBossBullet::Create(DEVICE graphicDev, CGameObject* owner, CGameObject* Target, PROJ_TYPE type)
 {
