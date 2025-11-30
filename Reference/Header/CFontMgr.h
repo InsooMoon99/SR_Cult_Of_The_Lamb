@@ -21,29 +21,32 @@ public:
     /// @param width            글자 폭
     /// @param height           글자 높이
     /// @param weight           글자 굵기
-  HRESULT Ready_Font(DEVICE         graphicDev,
-                       const wstring& fontTag,
-                       const wstring& fontType,
-                       const _uint&   width,
-                       const _uint&   height,
-                       const _uint&   weight);
+    HRESULT Ready_Font(
+        DEVICE         graphicDev,
+        const wstring& fontTag,
+        const wstring& fontType,
+        const _uint&   width,
+        const _uint&   height,
+        const _uint&   weight);
 
     /// @brief 태그를 이용해 문자열을 화면에 출력
     /// @param fontTag          출력에 사용할 폰트의 태그
     /// @param text             출력할 문자열
     /// @param pos              출력 위치 (픽셀 단위)
     /// @param color            색상
-    void Render_Font(const wstring& fontTag,
-                     const wstring& text,
-                     const _vec2*   pos,
-                     D3DXCOLOR      color);
+    void Render_Font(
+        const wstring& fontTag,
+        const wstring& text,
+        const _vec2*   pos,
+        D3DXCOLOR      color);
 
-    void Render_FontOutlined(const wstring& fontTag,
-                                       const wstring& text,
-                                       const _vec2* pos,
-                                       D3DXCOLOR textColor,
-                                       D3DXCOLOR outlineColor,
-                                       int thickness);
+    void Render_FontOutlined(
+        const wstring& fontTag,
+        const wstring& text,
+        const _vec2*   pos,
+        D3DXCOLOR      textColor,
+        D3DXCOLOR      outlineColor,
+        int            thickness);
 
 private:
     CFont* Find_Font(const wstring& fontTag);
