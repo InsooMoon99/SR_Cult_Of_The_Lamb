@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "CStage_Boss1.h"
 
+#include "CBossPhase1.h"
 #include "CLayer.h"
 #include "CMainCamera.h"
 #include "CMonster.h"
@@ -82,7 +83,7 @@ HRESULT CStage_Boss1::Ready_Environment_Layer(LAYERTYPE layerType)
 
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::TERRAIN, gameObject),
-        L"CStage_TaroTest::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Tile) failed");
+        L"CStage_TarotTest::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Tile) failed");
 
     // Wall
     CWall* wall = CWall::Create(m_GraphicDev);
@@ -129,12 +130,12 @@ HRESULT CStage_Boss1::Ready_GameLogic_Layer(LAYERTYPE layerType)
     // -----------------------------
     // Boss
     // -----------------------------
-    //gameObject = CBossPhase1::Create(m_GraphicDev);
-    //NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase1::Create() returned null")
-    //
-    //    FAILED_CHECK_MSG(
-    //        layer->Add_GameObject(OBJTYPE::BOSS1, gameObject),
-    //        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
+    gameObject = CBossPhase1::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase1::Create() returned null")
+    
+        FAILED_CHECK_MSG(
+            layer->Add_GameObject(OBJTYPE::BOSS1, gameObject),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
     
     // -----------------------------
     // Camera

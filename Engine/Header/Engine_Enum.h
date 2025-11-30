@@ -68,6 +68,7 @@ namespace Engine
         CAMERA,
         ITEM,
         /* 오브젝트 타입 종류 추가 */
+        LOGIC,
         UI,
         BOSS2,
         BOSS1,
@@ -118,6 +119,9 @@ namespace Engine
         TEX_UI_HIGHLIGHT,
         TEX_UI_INVEN,
         TEX_UI_RITUALCARD,
+        TEX_UI_HEARTCARD,
+        TEX_UI_EXPLAIN,
+        TEX_UI_TAROT,
         TEX_ITEM,
         TEX_MENU_CHAR,
         TEX_UI_ICON,
@@ -187,8 +191,9 @@ namespace Engine
         SC_MAINMENU,
         SC_STAGE,
         SC_STAGE1,
-        SC_TARO_TEST,
-        SC_BOSS_STAGE,
+        SC_TAROT_TEST,
+        SC_BOSS_STAGE1,
+        SC_BOSS_STAGE2,
 
         SC_EDIT,
         

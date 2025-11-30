@@ -74,12 +74,6 @@ _int CStage::Update_Scene(const _float& timeDelta)
 {
     _int exit = Engine::CScene::Update_Scene(timeDelta);
 
-    //안은수 테스트
-    if (CDInputMgr::GetInstance()->Get_DIKeyState(DIK_ADD) & 0x80)
-    {
-        CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_MAINMENU);
-    }
-
     return exit;
 }
 
@@ -105,10 +99,12 @@ HRESULT CStage::Ready_Environment_Layer(LAYERTYPE layerType)
     NULL_CHECK_RETURN(terrain, E_FAIL);
 
     // 초기 맵 불러오기
-    terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_OutlineTest.map");
+    terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_WallTest1.map");
     layer->Add_GameObject(OBJTYPE::TERRAIN, terrain);
 
-    m_Layers.insert({ layerType, layer });          // scene -> map
+    //terrain->Spawn_Walls(layer); 스폰시기가 꼬인다.. Update에서 일단 지연스폰
+
+    m_Layers.insert({ layerType, layer });
 
     return S_OK;
 }
@@ -177,12 +173,12 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     // -----------------------------
     // Boss
     // -----------------------------
-    gameObject = CBossPhase1::Create(m_GraphicDev);
+    /*gameObject = CBossPhase1::Create(m_GraphicDev);
     NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase1::Create() returned null")
     
         FAILED_CHECK_MSG(
             layer->Add_GameObject(OBJTYPE::BOSS1, gameObject),
-            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");*/
 
 
     // -----------------------------
@@ -232,7 +228,7 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     CUIPlayerPanel* playerPanel = dynamic_cast<CUIPlayerPanel*>(gameObject);
 
     playerPanel->Set_PlayerCombatStat(m_PlayerCombatStatCom);
-
+    playerPanel->Set_Resister(true);
     gameObject = CUIMp::Create(m_GraphicDev);
 
     FAILED_CHECK_MSG(
@@ -243,7 +239,7 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     uiMp->Set_PlayerCombatStat(m_PlayerCombatStatCom);
 
     gameObject = CUICircle::Create(m_GraphicDev);
-
+    dynamic_cast<CUICircle*>(gameObject)->Set_PlayerCombatStat(m_PlayerCombatStatCom);
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::UI, gameObject),
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUICircle) failed");
@@ -257,18 +253,18 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     //왼쪽 상단 스킬 아이콘 UI
     CUIIcon* pgameObject = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_ICON);
     pgameObject->Set_TextureIndex(1);
-    pgameObject->Get_Transform()->Set_Pos(-535.f, 260.f, 0.f);
-    pgameObject->Get_Transform()->Set_Scale(9.5f, 11.f, 0.f);
+    pgameObject->Get_Transform()->Set_Pos(-524.f, 260.f, 0.f);
+    pgameObject->Get_Transform()->Set_Scale(12.5f, 15.f, 0.f);
 
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::UI, pgameObject),
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUIIcon) failed");
 
-    CUISkillCount* uiSkillCount = CUISkillCount::Create(m_GraphicDev);
-
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::UI, uiSkillCount),
-        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUISKillCount) failed");
+    //CUISkillCount* uiSkillCount = CUISkillCount::Create(m_GraphicDev);
+    //
+    //FAILED_CHECK_MSG(
+    //    layer->Add_GameObject(OBJTYPE::UI, uiSkillCount),
+    //    L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUISKillCount) failed");
 
     /////Inventory UI
     //CUIInventory* uiInventory = CUIInventory::Create(m_GraphicDev);
@@ -278,6 +274,8 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     //CUITabMenu
     CUITabMenu* uiTabMenu = CUITabMenu::Create(m_GraphicDev);
     uiTabMenu->SetInventory(m_PlayerInventoryCom);
+    uiTabMenu->Set_PlayerCombatStat(m_PlayerCombatStatCom);
+    uiTabMenu->Initialize();
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiTabMenu),
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UITabMenu) failed");
 

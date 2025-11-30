@@ -80,7 +80,6 @@ void CCollider::RemoveOverlap(CCollider* other)
     m_ColliderSet.erase(other);
 }
 
-// AABB(Box) vs AABB(Box)
 bool CCollider::CheckCollisionRect2Rect(CRectCollider* b1, CRectCollider* b2)
 {
     if (b1 == nullptr || b2 == nullptr)
@@ -118,6 +117,7 @@ bool CCollider::CheckCollisionRect2Rect(CRectCollider* b1, CRectCollider* b2)
     return true;
 }
 
+// AABB(Box) vs AABB(Box)
 bool CCollider::CheckCollisionBox2Box(CBoxCollider* b1, CBoxCollider* b2)
 {
     NULL_CHECK_RETURN(b1, false);
@@ -239,7 +239,7 @@ bool CCollider::CheckCollisionSphere2Sphere(CSphereCollider* s1, CSphereCollider
 
     _vec3 p1, p2;
     p1 = t1->Get_Pos();
-    p2 = t1->Get_Pos();
+    p2 = t2->Get_Pos();
 
     _float r1 = s1->Get_Radius();
     _float r2 = s2->Get_Radius();

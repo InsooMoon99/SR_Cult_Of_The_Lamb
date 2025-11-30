@@ -1,14 +1,12 @@
 ﻿#pragma once
 
 #include "CCombatStat.h"
-#include "CGameObject.h"
+#include "CAttackBase.h"
+#include "CBoxCollider.h"
 
 BEGIN(Engine)
 
-class CBoxCollider;
-class CTrnasform;
-
-class ENGINE_DLL CAttackBox : public CGameObject
+class ENGINE_DLL CAttackBox : public CAttackBase
 {
 private:
     explicit CAttackBox(DEVICE graphicDev);
@@ -16,22 +14,19 @@ private:
     virtual ~CAttackBox();
 
 public:
-
-    virtual HRESULT Ready_GameObject() override;
-    virtual _int    Update_GameObject(const _float& timeDelta) override;
-    virtual void    LateUpdate_GameObject(const _float& timeDelta) override;
-    virtual void    Render_GameObject() override;
+    HRESULT Ready_GameObject() override;
+    _int Update_GameObject(const _float& timeDelta) override;
+    void LateUpdate_GameObject(const _float& timeDelta) override;
+    void Render_GameObject() override;
 
     virtual void OnBeginOverlap(CCollider* self, CCollider* other) override;
     virtual void OnEndOverlap(CCollider* self, CCollider* other) override;
 
 public:
-    void Set_HitDesc(const HITDATA& hit) { m_HitDesc = hit; }
-    void Set_Instigator(CGameObject* inst) { m_Instigator = inst; }
-
-    void Set_LifeTime(float LifeTime) {m_LifeTime = LifeTime;}
-
     static CAttackBox* Create(DEVICE graphicDev);
+
+protected:
+    virtual CCollider* Get_Collider() override { return m_BoxColCom; }
 
 private:
     HRESULT Add_Component();
@@ -39,11 +34,7 @@ private:
 
 private:
     CBoxCollider* m_BoxColCom;
-    CTransform*   m_TransformCom;
-
-    HITDATA       m_HitDesc;          // 데미지 구조체
-    CGameObject*  m_Instigator;       // 공격자 (플레이어)
-    float         m_LifeTime;         // 살아있는 시간 ex) 1초뒤 충돌체 삭제
+  
 
 };
 

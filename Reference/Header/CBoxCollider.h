@@ -31,7 +31,7 @@ protected:
     void Free() override;
 
 private:
-    CBoxCol* m_BufferCom;
+    //CBoxCol* m_BufferCom;
     _vec3    m_Size;
 };
 

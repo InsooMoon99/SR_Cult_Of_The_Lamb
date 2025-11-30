@@ -6,10 +6,12 @@
 #include "CEnumHelper.h"
 #include "CInventory.h"
 #include "CPlayerController.h"
+#include "CRigidbody.h"
 #include "CState.h"
 #include "CTerrainRenderer.h"
 #include "CTransform.h"
 #include "CWeaponEquip.h"
+#include "CWallRenderer.h"
 
 USING(Engine)
 
@@ -580,102 +582,130 @@ static void Weapon_Inspector(CWeaponEquip* weapon)
     ImGui::PopID();
 }
 
-
 static void PlayerController_Inspector(CPlayerController* controller)
 {
     NULL_CHECK(controller);
 
-    //_float maxHp = controller->Get_MaxHp();
-    //_float hp = controller->Get_Hp();
-    //
-    //_float maxMp = controller->Get_MaxMp();
-    //_float mp = controller->Get_Mp();
-    //
-    //_float speed = controller->Get_Speed();
-    //_float attack = controller->Get_Attack();
-    //
-    //ImGui::PushID("CombatStat_Inspector");
-    //{
-    //    const float column_width = 80.0f;
-    //
-    //    ImGui::Columns(2, "HpColumns", false);
-    //    ImGui::SetColumnWidth(0, column_width);
-    //
-    //    // --- Hp ---
-    //    ImGui::Text("Max Hp : ");
-    //    ImGui::NextColumn();
-    //    if (ImGui::DragFloat("##MaxHp", &maxHp, 0.1f))
-    //    {
-    //        controller->Set_MaxHp(maxHp);
-    //    }
-    //    ImGui::NextColumn();
-    //
-    //    ImGui::Text("Hp : ");
-    //    ImGui::NextColumn();
-    //    if(ImGui::DragFloat("##CurHp", &hp, 0.1f))
-    //    {
-    //        controller->Set_Hp(hp);
-    //    }
-    //    ImGui::NextColumn();
-    //
-    //    ImGui::Columns(1);
-    //
-    //    ImGui::NewLine();
-    //
-    //    // --- Mp ---
-    //    ImGui::Columns(2, "MpColumns", false);
-    //    ImGui::SetColumnWidth(0, column_width);
-    //
-    //    ImGui::Text("Max Mp : ");
-    //    ImGui::NextColumn();
-    //    if(ImGui::DragFloat("##MaxMp", &maxMp, 0.1f))
-    //    {
-    //        controller->Set_MaxMp(maxMp);
-    //    }
-    //    ImGui::NextColumn();
-    //
-    //    ImGui::Text("Mp : ");
-    //    ImGui::NextColumn();
-    //    if(ImGui::DragFloat("##CurMp", &mp, 0.1f))
-    //    {
-    //        controller->Set_Mp(mp);
-    //    }
-    //    ImGui::NextColumn();
-    //
-    //    ImGui::Columns(1);
-    //
-    //    // --- Speed ---
-    //    ImGui::Columns(2, "EtcColums", false);
-    //    ImGui::SetColumnWidth(0, column_width);
-    //
-    //    ImGui::Text("Speed : ");
-    //    ImGui::NextColumn();
-    //    if(ImGui::DragFloat("##Speed", &speed, 0.1f))
-    //    {
-    //        controller->Set_Speed(speed);
-    //    }
-    //    ImGui::NextColumn();
-    //
-    //    // --- Attack ---
-    //    ImGui::Text("Attack : ");
-    //    ImGui::NextColumn();
-    //    if(ImGui::DragFloat("##Attack", &attack, 0.1f))
-    //    {
-    //        controller->Set_Attack(attack);
-    //    }
-    //    ImGui::NextColumn();
-    //
-    //    ImGui::Columns(1);
-    //}
-    //ImGui::PopID();
+    ImGui::PushID("PlayerController_Inspector");
+    {
+        ImGui::Text("[ Player Controller ]");
+        ImGui::Separator();
 
+        const float column_width = 120.0f;
+        
+        ImGui::Columns(2, "PlayerColumns", false);
+        ImGui::SetColumnWidth(0, column_width);
+
+        // Roll Duration
+        _float rollDuration = controller->Get_RollDuration();
+        ImGui::Text("Roll Duration");
+        ImGui::NextColumn();
+        if (ImGui::DragFloat("##RollDuration", &rollDuration, 0.01f, 0.1f, 2.0f))
+        {
+            controller->Set_RollDuration(rollDuration);
+        }
+        ImGui::NextColumn();
+
+        ImGui::Columns(1);
+    }
+    ImGui::PopID();
+}
+
+static void RigidBody_Inspector(CRigidbody* rigid)
+{
+    NULL_CHECK(rigid);
+
+    ImGui::PushID("Rigidbody_Inspector");
+    {
+        ImGui::Text("[ Rigidbody ]");
+        ImGui::Separator();
+
+        const float column_width = 120.0f;
+
+        // Use Flags
+        ImGui::Text("Physics Options:");
+        
+        bool useAccel = rigid->Get_UseAccel();
+        if (ImGui::Checkbox("Use Acceleration", &useAccel))
+        {
+            rigid->Set_UseAccel(useAccel);
+        }
+
+        bool useFriction = rigid->Get_UseFriction();
+        if (ImGui::Checkbox("Use Friction", &useFriction))
+        {
+            rigid->Set_UseFriction(useFriction);
+        }
+
+        bool useGravity = rigid->Get_UseGravity();
+        if (ImGui::Checkbox("Use Gravity", &useGravity))
+        {
+            rigid->Set_UseGravity(useGravity);
+        }
+
+        bool isGround = rigid->Get_IsGround();
+        if (ImGui::Checkbox("Is On Ground", &isGround))
+        {
+            rigid->Set_IsGround(isGround);
+        }
+
+        ImGui::Separator();
+
+        // Physics Properties
+        ImGui::Columns(2, "RigidbodyColumns", false);
+        ImGui::SetColumnWidth(0, column_width);
+
+        // Mass
+        _float mass = rigid->Get_Mass();
+        ImGui::Text("Mass");
+        ImGui::NextColumn();
+        if (ImGui::DragFloat("##Mass", &mass, 0.1f, 0.1f, 100.0f))
+        {
+            rigid->Set_Mass(mass);
+        }
+        ImGui::NextColumn();
+
+        // Friction
+        _float friction = rigid->Get_Friction();
+        ImGui::Text("Friction");
+        ImGui::NextColumn();
+        if (ImGui::DragFloat("##Friction", &friction, 0.1f, 0.0f, 10.0f))
+        {
+            rigid->Set_Friction(friction);
+        }
+        ImGui::NextColumn();
+
+        ImGui::Columns(1);
+        ImGui::Separator();
+
+        // Velocity (Read-only)
+        ImGui::Text("Velocity : ");
+        _vec3 velocity = rigid->Get_Velocity();
+        ImGui::Text("  X: %.2f, Y: %.2f, Z: %.2f", velocity.x, velocity.y, velocity.z);
+
+        // Velocity Limit
+        ImGui::Text("Velocity Limit:");
+        _vec3 velLimit = rigid->Get_VelocityLimit();
+        if (ImGui::DragFloat3("##VelLimit", &velLimit.x, 0.1f, 0.0f, 100.0f))
+        {
+            rigid->Set_VelocityLimit(velLimit);
+        }
+
+        // Gravity
+        ImGui::Text("Gravity:");
+        _vec3 gravity = rigid->Get_Gravity();
+        if (ImGui::DragFloat3("##Gravity", &gravity.x, 0.1f, -100.0f, 100.0f))
+        {
+            rigid->Set_Gravity(gravity);
+        }
+    }
+    ImGui::PopID();
 }
 
 static void WallRenderer_Inspector(CWallRenderer* wall)
 {
     NULL_CHECK(wall);
 
-    ImGui::Text("1111");
+    wall->Render_Editor();
 
-    
 }

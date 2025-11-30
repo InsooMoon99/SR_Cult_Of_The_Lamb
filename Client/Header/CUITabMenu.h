@@ -6,6 +6,11 @@
 // 버튼 UI 생성 직접 생성/관리, 페이지 생성/관리, 인벤토리 UI 관리
 // 인벤토리 
 
+namespace Engine
+{
+class CCombatStat;
+}
+
 class CUIPlayerPage;
 class CUIInventory;
 class CUIButton;
@@ -34,8 +39,10 @@ class CUITabMenu : public CUI
         HRESULT Add_Component();
         static CUITabMenu* Create(DEVICE graphicDev);
         void ChangePage(UITabCategory newTab);
-
-    protected:
+        void Set_PlayerCombatStat(CCombatStat* combatStat){m_PlayerCombatStatCom = combatStat;}
+        CCombatStat* Get_PlayerCombatStat() { return m_PlayerCombatStatCom; }
+        void Initialize();
+protected:
         void Free() override;
 
     private:
@@ -47,7 +54,7 @@ class CUITabMenu : public CUI
         CInventory* m_Inventory;
         CUIInventory* m_InventoryPage;
         CUIPlayerPage* m_PlayerPage;
-
+        CCombatStat* m_PlayerCombatStatCom;
         CTransform* m_InvenTransformCom;
         CTransform* m_InvenBtnTransformCom;
         CTransform* m_PlayerBtnTransformCom;

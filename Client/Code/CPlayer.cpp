@@ -3,6 +3,7 @@
 
 #include "CAnimator.h"
 #include "CAttackBox.h"
+#include "CAttackSphere.h"
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
 #include "CCreateHelper.h"
@@ -20,6 +21,7 @@
 #include "CTransform.h"
 #include "CUIInventory.h"
 #include "CWeaponEquip.h"
+#include "CAttackBuilder.h"
 
 CPlayer::CPlayer(DEVICE graphicDev)
     : CGameObject(graphicDev),
@@ -70,6 +72,7 @@ HRESULT CPlayer::Ready_GameObject()
     m_CombatStatCom->Set_Speed(5.f);
 
     m_TransformCom->Set_Pos(_vec3(0.f, 0.f, 1.f));
+    m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
 
     //!! Rigidbody에서 중력만 사용 안함
     m_RigidbodyCom->Set_UseAccel(true);
@@ -104,9 +107,6 @@ _int CPlayer::Update_GameObject(const _float& timeDelta)
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 
-    //if (CDInputMgr::GetInstance()->KeyDown(DIK_5))
-    //    Test_Attack();
-
     return exit;
 }
 
@@ -124,7 +124,7 @@ void CPlayer::Render_GameObject()
     if (m_TextureCom && m_AnimatorCom)
     {
         const wstring& key   = m_AnimatorCom->Get_CurKey();
-        _int           frame = m_AnimatorCom->Get_CurFrame();
+         _int           frame = m_AnimatorCom->Get_CurFrame();
 
         m_TextureCom->Set_Texture(key, frame);
     }
@@ -161,28 +161,16 @@ void CPlayer::Render_Reset()
 
 void CPlayer::Test_Attack()
 {
-    // TODO : 나중에 무기 컴포넌트 안에 들어가면 좋을듯
-    // 1. 공격 박스 생성
-    auto obj = CAttackBox::Create(m_GraphicDev);
-    obj->Set_Instigator(this);
-
-    // 2. 구조체 데이터 세팅
-    HITDATA hit{};
-    hit.damage    = 12;
-    hit.knockback = 50.f;
-    obj->Set_HitDesc(hit);
-
-    // 3. 공격 박스 위치 설정, 방향값 추가 가능
-    _vec3 pos = m_TransformCom->Get_Pos();
-
-    auto transform = dynamic_cast<CTransform*>(
-        obj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-
-    transform->Set_Pos(pos);
-
-    // 4. 레이어에 추가, 헬퍼 함수 SpawnAttackObject 사용
-    //CManagement::GetInstance()->Get_Scene()->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, obj, OBJTYPE::ATTACK_COL);
-    SpawnAttackObject(obj); // TYPE , BOX SPHERE
+    // 사용 예시
+    CAttackBuilder(m_GraphicDev, this)
+        .Sphere()
+        .Damage(12.f)
+        .Knockback(50.f)
+        .Scale(5.f)
+        .InstigatorPos()
+        .Offset(_vec3(2.f, 0.f, 0.f))
+        .DestroyOnHit(true)
+        .Spawn();
 }
 
 void CPlayer::OnBeginOverlap(CCollider* self, CCollider* other)
@@ -229,6 +217,7 @@ HRESULT CPlayer::Add_Component()
     // Animator
     m_AnimatorCom = CreateProtoComponent<CAnimator>(this, COMPONENTTYPE::ANIMATOR);
     NULL_CHECK_RETURN(m_AnimatorCom, E_FAIL);
+
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::ANIMATOR, m_AnimatorCom });
 
     m_AnimatorCom->Set_TextureType(COMPONENTTYPE::TEX_PLAYER);

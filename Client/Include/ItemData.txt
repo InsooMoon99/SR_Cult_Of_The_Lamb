@@ -202,11 +202,11 @@
     {
       "id": 3002,
       "type": "Weapon",
-      "name": "경건한 망치",
+      "name": "신의 건틀릿",
       "desc": "필멸자의 무기보다 훨씬 더 큰 피해를 입힙니다.",
-      "UIFileName": "Icon_Weapon_Hammer_Godly",
-      "UIPath": "../Bin/Resource/ItemUI/Icon_Weapon_Hammer_Godly.png",
-      "additionalDesc": "이 땅을 신들의 뜻에 따라 빚어냈습니다.",
+      "UIFileName": "Icon_Weapon_Gauntlet_Godly",
+      "UIPath": "../Bin/Resource/ItemUI/Icon_Weapon_Gauntlet_Godly.png",
+      "additionalDesc": "고대 신중 한 명의 무덤에서 훔쳐 왔습니다.",
       "stackable": false,
       "price": 10,
 

@@ -182,7 +182,10 @@ xcopy /Y /I "$(SolutionDir)Engine\Header\*.*" "$(SolutionDir)Reference\Header\"<
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\CAnimator.h" />
+    <ClInclude Include="..\Header\CAttackBase.h" />
     <ClInclude Include="..\Header\CAttackBox.h" />
+    <ClInclude Include="..\Header\CAttackBuilder.h" />
+    <ClInclude Include="..\Header\CAttackSphere.h" />
     <ClInclude Include="..\Header\CBoxCol.h" />
     <ClInclude Include="..\Header\CBoxTex.h" />
     <ClInclude Include="..\Header\CBoxCollider.h" />
@@ -237,7 +240,10 @@ xcopy /Y /I "$(SolutionDir)Engine\Header\*.*" "$(SolutionDir)Reference\Header\"<
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CAnimator.cpp" />
+    <ClCompile Include="..\Code\CAttackBase.cpp" />
     <ClCompile Include="..\Code\CAttackBox.cpp" />
+    <ClCompile Include="..\Code\CAttackBuilder.cpp" />
+    <ClCompile Include="..\Code\CAttackSphere.cpp" />
     <ClCompile Include="..\Code\CBoxCol.cpp" />
     <ClCompile Include="..\Code\CBoxTex.cpp" />
     <ClCompile Include="..\Code\CBoxCollider.cpp" />

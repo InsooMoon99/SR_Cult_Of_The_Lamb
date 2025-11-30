@@ -8,7 +8,7 @@
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CAttackBox.h"
-
+#include "CAttackBuilder.h"
 
 CBossChain::CBossChain(DEVICE graphicDev, CGameObject* owner)
     : CGameObject(graphicDev), m_pOwner(owner)
@@ -87,34 +87,46 @@ _int CBossChain::Update_GameObject(const _float& timeDelta)
     if (m_flag == false)
     {
         {
-            // 1. 공격 박스 생성
-            CAttackBox* ATBox = CAttackBox::Create(m_GraphicDev);
+#pragma region 빌더 패턴 사용 전 Legacy
 
-            if (ATBox != nullptr)
-            {
-                ATBox->Set_Instigator(m_pOwner); // 공격의 주체를 넣음 - 난 보스를 넣어야 하는듯? 
-                ATBox->Set_LifeTime(5.f); // 근데 어짜피 사슬이 사라지면 사라짐 
+            //// 1. 공격 박스 생성
+            //CAttackBox* ATBox = CAttackBox::Create(m_GraphicDev);
+
+            //if (ATBox != nullptr)
+            //{
+            //    ATBox->Set_Instigator(m_pOwner); // 공격의 주체를 넣음 - 난 보스를 넣어야 하는듯? 
+            //    ATBox->Set_LifeTime(10.f); // 근데 어짜피 사슬이 사라지면 사라짐 
 
 
-                // 2. 구조체 데이터 세팅
-                HITDATA hit{};
-                hit.damage = 1;
-                hit.knockback = 0.f;
-                ATBox->Set_HitDesc(hit);
+            //    // 2. 구조체 데이터 세팅
+            //    HITDATA hit{};
+            //    hit.damage = 1;
+            //    hit.knockback = 0.f;
+            //    ATBox->Set_HitDesc(hit);
 
-                // 3. 공격 박스 위치 설정, 방향값 추가 가능
-                _vec3 pos = m_TransformCom->Get_Pos();
+            //    // 3. 공격 박스 위치 설정, 방향값 추가 가능
+            //    _vec3 pos = m_TransformCom->Get_Pos();
 
-                auto transform = dynamic_cast<CTransform*>(
-                    ATBox->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+            //    auto transform = dynamic_cast<CTransform*>(
+            //        ATBox->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
 
-                transform->Set_Pos(pos);
-                transform->Set_Scale(m_TransformCom->Get_Scale());
+            //    transform->Set_Pos(pos);
+            //    transform->Set_Scale(m_TransformCom->Get_Scale());
 
-                // 4. 레이어에 추가, 헬퍼 함수 SpawnAttackObject 사용
-                //CManagement::GetInstance()->Get_Scene()->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, obj, OBJTYPE::ATTACK_COL);
-                SpawnAttackObject(ATBox); // TYPE , BOX SPHERE
-            }
+            //    // 4. 레이어에 추가, 헬퍼 함수 SpawnAttackObject 사용
+            //    //CManagement::GetInstance()->Get_Scene()->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, obj, OBJTYPE::ATTACK_COL);
+            //    SpawnAttackObject(ATBox); // TYPE , BOX SPHERE
+            //}
+
+#pragma endregion
+            CAttackBuilder(m_GraphicDev, m_pOwner)
+                .Box()
+                .Damage(1.f)
+                .Knockback(0.f)
+                .LifeTime(10.f)
+                .Position(m_TransformCom->Get_Pos())
+                .Scale(m_TransformCom->Get_Scale())
+                .Spawn();
             
         }
         m_flag = true;
