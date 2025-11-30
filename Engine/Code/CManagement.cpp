@@ -10,9 +10,7 @@ IMPLEMENT_SINGLETON(CManagement)
 CManagement::CManagement()
     : m_Scene(nullptr),
       m_NextScene(nullptr),
-      m_ShouldChangeScene(false),
-      m_PersistentPlayer(nullptr),
-      m_PersistentCamera(nullptr)
+      m_ShouldChangeScene(false)
 { }
 
 CManagement::~CManagement()
@@ -31,50 +29,40 @@ CComponent* CManagement::Get_Component(COMPONENTID   componentID,
     return m_Scene->Get_Component(componentID, layerType, objType, componentType);
 }
 
-//TODO 석호: 지속해야 할 오브젝트가 필요할 경우 여기서도 경우 추가
-HRESULT CManagement::Get_PersistentObject(OBJTYPE objType, CGameObject** outObject)
+HRESULT CManagement::Get_PersistentObject(const wstring& key, CGameObject** outObject)
 {
     NULL_CHECK_RETURN(outObject, E_FAIL);
 
-    switch (objType)
-    {
-    case OBJTYPE::PLAYER:
-        *outObject = m_PersistentPlayer;
-        return S_OK;
-    case OBJTYPE::CAMERA:
-        *outObject = m_PersistentCamera;
-        return S_OK;
-    default:
-        MSG_BOX("CManagement::Get_PersistentObject() failed: invalid OBJTYPE value");
+    // 2. 일반 Map 검색
+    auto iter = m_PersistentObjects.find(key);
+    if (iter == m_PersistentObjects.end())
         return E_FAIL;
-    }
+
+    *outObject = iter->second;
+    return S_OK;
 }
 
-HRESULT CManagement::Cache_PersistentObject(OBJTYPE objType, CGameObject* objectToCache)
+HRESULT CManagement::Cache_PersistentObject(const wstring& key, CGameObject* objectToCache)
 {
     NULL_CHECK_RETURN(objectToCache, E_FAIL);
 
-    CGameObject** target = nullptr;
-
-    switch (objType)
+    // 2. 일반 Map 처리
+    auto iter = m_PersistentObjects.find(key);
+    if (iter != m_PersistentObjects.end())
     {
-    case OBJTYPE::PLAYER:
-        target = &m_PersistentPlayer;
-        break;
-    case OBJTYPE::CAMERA:
-        target = &m_PersistentCamera;
-        break;
-    default:
-        return E_FAIL;
+        // 이미 존재하면 교체
+        if (iter->second == objectToCache) return S_OK;
+
+        Safe_Release(iter->second);
+        iter->second = objectToCache;
+        iter->second->AddRef();
     }
-
-    if (*target == objectToCache)
-        return S_OK;
-
-    Safe_Release(*target);
-
-    *target = objectToCache;
-    (*target)->AddRef();
+    else
+    {
+        // 없으면 추가
+        m_PersistentObjects.insert({ key, objectToCache });
+        objectToCache->AddRef();
+    }
 
     return S_OK;
 }
@@ -118,8 +106,8 @@ HRESULT CManagement::Request_ChangeScene(CScene* nextScene)
 
     if (m_NextScene != nullptr)
         Safe_Release(m_NextScene);
-    m_NextScene         = nextScene;
- 
+    m_NextScene = nextScene;
+
     m_ShouldChangeScene = true;
 
     return S_OK;
@@ -143,6 +131,10 @@ void CManagement::Free()
 {
     Safe_Release(m_Scene);
     Safe_Release(m_NextScene);
-    Safe_Release(m_PersistentPlayer);
-    Safe_Release(m_PersistentCamera);
+
+    for (auto& pair : m_PersistentObjects)
+    {
+        Safe_Release(pair.second);
+    }
+    m_PersistentObjects.clear();
 }

@@ -1,7 +1,6 @@
 ﻿#include "CAttackBox.h"
 
 #include "CBoxCollider.h"
-#include "CCombatStat.h"
 #include "CCreateHelper.h"
 #include "CRenderer.h"
 #include "CTransform.h"

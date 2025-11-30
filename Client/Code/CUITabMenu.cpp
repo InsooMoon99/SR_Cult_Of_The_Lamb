@@ -63,7 +63,7 @@ HRESULT CUITabMenu::Ready_GameObject()
 
     m_InventoryPage = CUIInventory::Create(m_GraphicDev);
     NULL_CHECK_RETURN(m_InventoryPage, E_FAIL);
-    m_PlayerPage = CUIPlayerPage::Create(m_GraphicDev);
+    m_PlayerPage = CUIPlayerPage::Create(m_GraphicDev,this);
     NULL_CHECK_RETURN(m_PlayerPage, E_FAIL);
 
     m_InvenBtn = CUIButton::Create(m_GraphicDev, 3, 2);
@@ -232,22 +232,26 @@ CUITabMenu* CUITabMenu::Create(DEVICE graphicDev)
     return tabMenu;
 }
 
+void CUITabMenu::Initialize()
+{
+    m_PlayerPage->Initialize();
+
+}
+
 void CUITabMenu::Free()
 {
     Safe_Release(m_InvenBtn);
     Safe_Release(m_PlayerBtn);
     Safe_Release(m_GyodanBtn);
     Safe_Release(m_QuestBtn);
-    Safe_Release(m_Inventory);
+    //Safe_Release(m_Inventory);
     Safe_Release(m_InventoryPage);
     Safe_Release(m_PlayerPage);
-
-    //Safe_Release(m_InvenTransformCom);
-    //Safe_Release(m_InvenBtnTransformCom);
-    //Safe_Release(m_PlayerBtnTransformCom);
-    //Safe_Release(m_PlayerPageTransformCom);
-    //Safe_Release(m_GyodanBtnTransformCom);
-    //Safe_Release(m_QuestBtnTransformCom); <-- 이거 위험. 컴포넌트를 여기서 해제시키는게 맞는지??
-
+   // Safe_Release(m_InvenTransformCom);
+   // Safe_Release(m_InvenBtnTransformCom);
+   // Safe_Release(m_PlayerBtnTransformCom);
+   // Safe_Release(m_PlayerPageTransformCom);
+   // Safe_Release(m_GyodanBtnTransformCom);
+   // Safe_Release(m_QuestBtnTransformCom);
     CUI::Free();
 }

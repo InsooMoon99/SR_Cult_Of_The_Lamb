@@ -1,29 +1,28 @@
 ﻿#pragma once
-
 #include "CAttackBase.h"
 #include "CAttackBox.h"
 #include "CAttackSphere.h"
 #include "CCreateHelper.h"
-#include "Engine_Define.h"
 #include "CTransform.h"
+#include "Engine_Define.h"
 
 BEGIN(Engine)
-
 /// @brief Attack 객체 생성을 위한 빌더 클래스
 class ENGINE_DLL CAttackBuilder
 {
 public:
     CAttackBuilder(DEVICE graphicDev, CGameObject* instigator)
-        : m_GraphicDev(graphicDev)
-          , m_Instigator(instigator)
-          , m_AttackObj(nullptr)
-          , m_LifeTime(0.4f), m_Position(0.f, 0.f, 0.f)
-          , m_Offset(0.f, 0.f, 0.f)
-          , m_Scale(0.f, 0.f, 0.f)
-          , m_UseInstigatorPos(false), m_DestroyOnHit(false)
-          , m_Collision_LayerType(COLLISION_LAYERTYPE::DEFAULT)
-    {
-    }
+        : m_GraphicDev(graphicDev),
+          m_Instigator(instigator),
+          m_AttackObj(nullptr),
+          m_LifeTime(0.4f),
+          m_Position(0.f, 0.f, 0.f),
+          m_Offset(0.f, 0.f, 0.f),
+          m_Scale(0.f, 0.f, 0.f),
+          m_UseInstigatorPos(false),
+          m_DestroyOnHit(false),
+          m_Collision_LayerType(COLLISION_LAYERTYPE::DEFAULT)
+    { }
 
     // 공격 타입 ex) Box, Sphere
     CAttackBuilder& Box()
@@ -35,6 +34,15 @@ public:
     CAttackBuilder& Sphere()
     {
         m_AttackObj = CAttackSphere::Create(m_GraphicDev);
+        return *this;
+    }
+
+    // 생성한 m_AttackObj를 외부에서 알수 있도록 outTrack을 통해 건네주는 기능
+    template <typename T>
+    CAttackBuilder& Track(T*& outTrack)
+    {
+        if (m_AttackObj)
+            outTrack = dynamic_cast<T*>(m_AttackObj);
         return *this;
     }
 
@@ -65,7 +73,7 @@ public:
     // 절대 위치 (내가 원하는 위치)
     CAttackBuilder& Position(const _vec3& pos)
     {
-        m_Position = pos;
+        m_Position         = pos;
         m_UseInstigatorPos = false;
         return *this;
     }
@@ -85,31 +93,27 @@ public:
     }
 
     // 앞으로
-    CAttackBuilder& Forward(float distance)
+    CAttackBuilder& Forward(_float distance)
     {
         m_Offset.z += distance;
         return *this;
     }
+
     // 위로
-    CAttackBuilder& Up(float distance)
+    CAttackBuilder& Up(_float distance)
     {
         m_Offset.y += distance;
         return *this;
     }
 
+    // _vec3 스케일 설정
     CAttackBuilder& Scale(const _vec3& scale)
     {
         m_Scale = scale;
         return *this;
     }
 
-    // 공격 후 삭제할지?
-    CAttackBuilder& DestroyOnHit(bool destroy = true)
-    {
-        m_DestroyOnHit = destroy;
-        return *this;
-    }
-
+    // _float값으로 단순 스케일 설정
     CAttackBuilder& Scale(_float scale)
     {
         m_Scale = _vec3(scale, scale, scale);
@@ -119,6 +123,12 @@ public:
     CAttackBuilder& CollisionLayer(COLLISION_LAYERTYPE layerType)
     {
         m_Collision_LayerType = layerType;
+        return *this;
+    }
+
+    CAttackBuilder& DestroyOnHit(_bool destroy = true)
+    {
+        m_DestroyOnHit = destroy;
         return *this;
     }
 
@@ -179,13 +189,12 @@ public:
         m_AttackObj = nullptr;
     }
 
-
 private:
     DEVICE              m_GraphicDev;
     CGameObject*        m_Instigator;
     CAttackBase*        m_AttackObj;
 
-    ATTACKDATA          m_AttackData;  
+    ATTACKDATA          m_AttackData;
     _float              m_LifeTime;
 
     _vec3               m_Position;

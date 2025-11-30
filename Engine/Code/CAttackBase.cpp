@@ -8,20 +8,21 @@
 
 CAttackBase::CAttackBase(DEVICE graphicDev)
     : CGameObject(graphicDev),
-    m_TransformCom(nullptr),
-    m_Instigator(nullptr),
-    m_LifeTime(0.4f)
-{
-}
+      m_TransformCom(nullptr),
+      m_Instigator(nullptr),
+      m_LifeTime(0.4f),
+      m_DestroyOnHit(false)
+{ }
 
 CAttackBase::CAttackBase(const CAttackBase& rhs)
     : CGameObject(rhs),
-    m_TransformCom(nullptr),
-    m_AttackData(rhs.m_AttackData),
-    m_Instigator(rhs.m_Instigator),
-    m_LifeTime(rhs.m_LifeTime)
-{
-}
+      m_TransformCom(nullptr),
+      m_AttackData(rhs.m_AttackData),
+      m_Instigator(rhs.m_Instigator),
+      m_LifeTime(rhs.m_LifeTime),
+      m_DestroyOnHit(rhs.m_DestroyOnHit)
+{ }
+
 CAttackBase::~CAttackBase()
 { }
 
@@ -135,6 +136,9 @@ void CAttackBase::Set_Instigator(CGameObject* instigator)
 
 void CAttackBase::Free()
 {
-    CGameObject::Free();
+    // 오브젝트가 해제되기 직전, 등록된 콜백이 있다면 실행
+    if (m_OnDestroyCallback)
+        m_OnDestroyCallback();
 
+    CGameObject::Free();
 }

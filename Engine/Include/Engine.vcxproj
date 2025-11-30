@@ -199,6 +199,7 @@ xcopy /Y /I "$(SolutionDir)Engine\Header\*.*" "$(SolutionDir)Reference\Header\"<
     <ClInclude Include="..\header\CLight.h" />
     <ClInclude Include="..\header\CLightMgr.h" />
     <ClInclude Include="..\Header\CPersistentObjectHelper.h" />
+    <ClInclude Include="..\Header\CPickingHelper.h" />
     <ClInclude Include="..\Header\CRectCollider.h" />
     <ClInclude Include="..\Header\CCollisionManager.h" />
     <ClInclude Include="..\Header\CCollider.h" />
@@ -217,6 +218,7 @@ xcopy /Y /I "$(SolutionDir)Engine\Header\*.*" "$(SolutionDir)Reference\Header\"<
     <ClInclude Include="..\Header\CRenderObject.h" />
     <ClInclude Include="..\header\CRigidbody.h" />
     <ClInclude Include="..\Header\CScene.h" />
+    <ClInclude Include="..\Header\CSoundMgr.h" />
     <ClInclude Include="..\Header\CSphereCollider.h" />
     <ClInclude Include="..\Header\CSpriteAnimation.h" />
     <ClInclude Include="..\Header\CState.h" />
@@ -225,7 +227,6 @@ xcopy /Y /I "$(SolutionDir)Engine\Header\*.*" "$(SolutionDir)Reference\Header\"<
     <ClInclude Include="..\Header\CTimer.h" />
     <ClInclude Include="..\Header\CTimerMgr.h" />
     <ClInclude Include="..\Header\CTransform.h" />
-    <ClInclude Include="..\Header\CTransformAsp.h" />
     <ClInclude Include="..\Header\CTriCol.h" />
     <ClInclude Include="..\Header\CUI.h" />
     <ClInclude Include="..\Header\CUIPanel.h" />
@@ -273,6 +274,7 @@ xcopy /Y /I "$(SolutionDir)Engine\Header\*.*" "$(SolutionDir)Reference\Header\"<
     <ClCompile Include="..\Code\CRenderObject.cpp" />
     <ClCompile Include="..\code\CRigidbody.cpp" />
     <ClCompile Include="..\Code\CScene.cpp" />
+    <ClCompile Include="..\Code\CSoundMgr.cpp" />
     <ClCompile Include="..\Code\CSphereCollider.cpp" />
     <ClCompile Include="..\Code\CSpriteAnimation.cpp" />
     <ClCompile Include="..\Code\CState.cpp" />
@@ -281,7 +283,6 @@ xcopy /Y /I "$(SolutionDir)Engine\Header\*.*" "$(SolutionDir)Reference\Header\"<
     <ClCompile Include="..\Code\CTimer.cpp" />
     <ClCompile Include="..\Code\CTimerMgr.cpp" />
     <ClCompile Include="..\Code\CTransform.cpp" />
-    <ClCompile Include="..\Code\CTransformAsp.cpp" />
     <ClCompile Include="..\Code\CTriCol.cpp" />
     <ClCompile Include="..\Code\CUI.cpp" />
     <ClCompile Include="..\Code\CUIPanel.cpp" />

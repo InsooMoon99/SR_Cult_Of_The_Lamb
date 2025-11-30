@@ -1,8 +1,7 @@
 ﻿#pragma once
-
-#include "CCombatStat.h"
 #include "CAttackBase.h"
 #include "CBoxCollider.h"
+#include "CCombatStat.h"
 
 BEGIN(Engine)
 
@@ -11,7 +10,7 @@ class ENGINE_DLL CAttackBox : public CAttackBase
 private:
     explicit CAttackBox(DEVICE graphicDev);
     explicit CAttackBox(const CAttackBox& rhs);
-    virtual ~CAttackBox();
+    ~CAttackBox() override;
 
 public:
     HRESULT Ready_GameObject() override;
@@ -30,12 +29,10 @@ protected:
 
 private:
     HRESULT Add_Component();
-    void Free() override;
+    void    Free() override;
 
 private:
     CBoxCollider* m_BoxColCom;
-  
-
 };
 
 END

@@ -2,19 +2,20 @@
 
 #include "CCharacterBase.h"
 
+class CWeaponEquip;
+class CInventory;
 class CUIInventory;
+class CPlayerController;
+class CPlayerInput;
+class CPlayerMovement;
+class CPlayerAttack;
 
 BEGIN(Engine)
 class CRigidbody;
 class CTexture;
 END
 
-// Client
-class CWeaponEquip;
-class CPlayerController;
-class CInventory;
-
-class CPlayer : public CCharacterBase
+class CPlayer : public CGameObject
 {
 private:
     explicit CPlayer(DEVICE graphicDev);
@@ -31,7 +32,7 @@ public:
     void    OnBeginOverlap(CCollider* self, CCollider* other) override;
     void    OnEndOverlap(CCollider* self, CCollider* other) override;
 
-    void    Render_Editor() override;
+    void Render_Editor() override;
 
 public:
     // 테스트 공격용
@@ -48,10 +49,14 @@ private:
 
 #pragma endregion
 #pragma region Client Components
-    CWeaponEquip*       m_WeaponEquipCom;
-    CInventory*         m_InventoryCom;
-    CPlayerController*  m_PlayerControllerCom;
-    CUIInventory*       m_UIInventory;
+    CWeaponEquip*      m_WeaponEquipCom;
+    CInventory*        m_InventoryCom;
+    CUIInventory*      m_UIInventory;
+    CPlayerController* m_PlayerControllerCom;
+    CPlayerInput*      m_PlayerInputCom;
+    CPlayerMovement*   m_PlayerMovementCom;
+    CPlayerAttack*     m_PlayerAttackCom;
+
 #pragma endregion
 
     map<ACTORSTATE, wstring> m_StateAnim;

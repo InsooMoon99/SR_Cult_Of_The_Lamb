@@ -244,6 +244,5 @@ HRESULT CBossChain::Add_Component()
 void CBossChain::Free()
 {
     Safe_Release(m_pOwner);
-
     CGameObject::Free();
 }
