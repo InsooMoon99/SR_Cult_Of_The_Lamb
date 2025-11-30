@@ -1,19 +1,20 @@
 ﻿#include "pch.h"
 #include "CMainMenu.h"
+
 #include "CDInputMgr.h"
 #include "CEdit.h"
+#include "CFontMgr.h"
 #include "CGameObject.h"
 #include "CLayer.h"
+#include "CMainBG.h"
 #include "CMainCamera.h"
 #include "CMenuChar.h"
 #include "CPersistentObjectHelper.h"
 #include "CSceneMgr.h"
 #include "CStage.h"
 #include "CTransform.h"
-#include "CUIIcon.h"
 #include "CUIButton.h"
-#include "CMainBG.h"
-#include "CFontMgr.h"
+#include "CUIIcon.h"
 
 CMainMenu::CMainMenu(DEVICE graphicDev)
     : Engine::CScene(graphicDev)
@@ -114,14 +115,14 @@ HRESULT CMainMenu::Ready_GameLogic_Layer(LAYERTYPE layerType)
 {
     Engine::CLayer* layer = Engine::CLayer::Create();
 
-    Engine::CGameObject* pGameObject = nullptr;
+    Engine::CGameObject* gameObject = nullptr;
 
-    pGameObject = CMenuChar::Create(m_GraphicDev);
-    NULL_CHECK_RETURN_MSG(pGameObject, E_FAIL, L"CMainMenu::Ready_GameLogic_Layer() failed: CMenuChar::Create() returned null")
+    gameObject = CMenuChar::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CMainMenu::Ready_GameLogic_Layer() failed: CMenuChar::Create() returned null")
 
     // TODO ↓ 임시로 구성한, 메인 화면 애니메이션 재생용 더미 플레이어. 나중에 수정할 것
     FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::UI, pGameObject),
+        layer->Add_GameObject(OBJTYPE::UI, gameObject),
         L"CMainMenu::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CMenuChar) failed");
     //const auto playerTransform =
     //    dynamic_cast<CTransform*>(pGameObject->Get_Component(
@@ -134,13 +135,14 @@ HRESULT CMainMenu::Ready_GameLogic_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CMainCamera>(
             OBJTYPE::CAMERA,
+            L"MainCamera",
             m_GraphicDev,
             layer,
-            &pGameObject),
+            &gameObject),
         L"Persistent object setup failed");
 
     // 카메라 타겟을 null로 설정
-    dynamic_cast<CMainCamera*>(pGameObject)->Set_CamTarget(nullptr);
+    dynamic_cast<CMainCamera*>(gameObject)->Set_CamTarget(nullptr);
 
     if (nullptr == layer)
         return E_FAIL;
@@ -196,7 +198,7 @@ HRESULT CMainMenu::Ready_UI_Layer(LAYERTYPE layerType)
     //bt2->Set_TextureIndex(1, 0);
     bt2->SetCloneTexAspectScale({ scaleX, scaleY, 1 });
     bt2->Get_Transform()->Set_Pos(-WINCX / 3, -WINCX / 9, .3);
-    bt2->SetOnClick([]() {CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_STAGE1);});
+    bt2->SetOnClick([]() {CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_BOSS_STAGE1);});
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::UI, bt2),
         L"CMainMenu::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUIIcon) failed");

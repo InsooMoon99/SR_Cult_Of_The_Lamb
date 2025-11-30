@@ -77,7 +77,7 @@ HRESULT CEdit::Ready_Environment_Layer(LAYERTYPE layerType)
     CTerrain* terrain = CTerrain::Create(m_GraphicDev);
 
     NULL_CHECK_RETURN_MSG(terrain, E_FAIL, L"Terrain create failed");
-    terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_WallTest1.map");
+    //terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_WallTest1.map");
 
     layer->Add_GameObject(OBJTYPE::TERRAIN, terrain);
 
@@ -105,6 +105,7 @@ HRESULT CEdit::Ready_GameLogic_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CPlayer>(
             OBJTYPE::PLAYER,
+            L"Player",
             m_GraphicDev,
             layer,
             &gameObject),
@@ -124,13 +125,13 @@ HRESULT CEdit::Ready_GameLogic_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CMainCamera>(
             OBJTYPE::CAMERA,
+            L"MainCamera",
             m_GraphicDev,
             layer,
             &gameObject),
         L"Persistent object setup failed");
     
     // 카메라 타겟을 플레이어로 설정
-      // 카메라 타겟을 플레이어로 설정
     auto mainCam = dynamic_cast<CMainCamera*>(gameObject);
     if (mainCam)
     {

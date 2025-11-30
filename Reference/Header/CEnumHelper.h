@@ -18,7 +18,7 @@ static wstring CharToWString(const char* cstr)
     if (required <= 0)
         return L"";    // 변환 실패
 
-    std::wstring result;
+    wstring result;
     result.resize(required);
 
     // 실제 변환
@@ -85,6 +85,7 @@ static const char* ToString(ACTORSTATE state)
     case ACTORSTATE::PLAYER_SWORD_COMBO1:   return "Sword_Combo1";
     case ACTORSTATE::PLAYER_SWORD_COMBO2:   return "Sword_Combo2";
     case ACTORSTATE::PLAYER_SWORD_COMBO3:   return "Sword_Combo3";
+    case ACTORSTATE::PLAYER_SWORD_HEAVY:    return "Sword_Heavy";
 
     default:                                return "UnknownState";
     }
@@ -135,6 +136,8 @@ static const char* ToString(COMPONENTTYPE type)
     case COMPONENTTYPE::TEX_MONSTER:        return "TexMonster";
     case COMPONENTTYPE::TEX_HUMAN_MONSTER:  return "TexHumanMonster";
     case COMPONENTTYPE::TEX_ITEM:           return "TexItem";
+    case COMPONENTTYPE::TEX_OUT:            return "TexOut";
+
     case COMPONENTTYPE::TEX_GRASS:          return "TexGrass";
     case COMPONENTTYPE::TEX_RUBBLE:         return "TexRubble";
     case COMPONENTTYPE::TEX_DECO:           return "TexDeco";
@@ -146,10 +149,18 @@ static const char* ToString(COMPONENTTYPE type)
     case COMPONENTTYPE::TEX_UI_WEAPON:      return "UI_Weapon";
     case COMPONENTTYPE::TEX_MENU_CHAR:      return "UI_ManuChaR";
     case COMPONENTTYPE::TEX_UI_ICON:        return "UI_Icon";
+    case COMPONENTTYPE::TEX_UI_CELL:        return "UI_Cell";
+    case COMPONENTTYPE::TEX_UI_SKILLCOUNT:  return "UI_SkillCount";
+    case COMPONENTTYPE::TEX_UI_HIGHLIGHT:   return "UI_Highlight";
+    case COMPONENTTYPE::TEX_UI_INVEN:       return "UI_Inven";
+    case COMPONENTTYPE::TEX_UI_RITUALCARD:  return "UI_RitualCard";
+    case COMPONENTTYPE::TEX_UI_BUTTON:      return "UI_BButton";
+    case COMPONENTTYPE::TEX_BOSSPHASE1:     return "UI_BossPhase1";
 
     // Tile Texture Components
     case COMPONENTTYPE::TEX_TILE_284:       return "TexTile284";
     case COMPONENTTYPE::TEX_TILE_1024:      return "TexTile1024";
+    case COMPONENTTYPE::TEX_TILE_OUTLINE:   return "TexTileOutline";
 
     // Collider Components
     case COMPONENTTYPE::RECT_COLL:          return "RectColl";
@@ -157,16 +168,19 @@ static const char* ToString(COMPONENTTYPE type)
     case COMPONENTTYPE::BOX_COLL:           return "BoxColl";
     case COMPONENTTYPE::SPHERE_COLL:        return "SphereColl";
 
-    // Player Components
-    case COMPONENTTYPE::CONTROLLER_PLAYER:  return "PlayerController";
-    case COMPONENTTYPE::WEAPON_EQUIP:       return "WeaponEquip";
-
     // Physics Component
     case COMPONENTTYPE::RIGIDBODY:          return "Rigidbody";
 
+    // Player Components
+    case COMPONENTTYPE::WEAPON_EQUIP:       return "WeaponEquip";
+    case COMPONENTTYPE::PL_CONTROLLER:      return "PlayerController";
+    case COMPONENTTYPE::PL_INPUT:           return "PlayerInput";
+    case COMPONENTTYPE::PL_MOVEMENT:        return "PlayerMovement";
+    case COMPONENTTYPE::PL_ATTACK:          return "PlayerAttack";
 
     // End Marker
     case COMPONENTTYPE::COMPONENT_END:      return "ComponentEnd";
+
     default:                                return "UnknownComponent";
     }
 }

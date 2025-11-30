@@ -40,7 +40,7 @@ HRESULT CWarningChain::Ready_GameObject()
             COMPONENTTYPE::TRANSFORM));
 
     //TODO:: 나중에 땅의 위치를 알게 되면 수정 
-    m_TransformCom->Set_Pos({ ownerTransform->Get_Pos().x, -ownerTransform->Get_Scale().y * .5f, ownerTransform->Get_Pos().z });
+    m_TransformCom->Set_Pos({ ownerTransform->Get_Pos().x, /*-ownerTransform->Get_Scale().y * .5f*/0.f, ownerTransform->Get_Pos().z });
 
     m_TransformCom->Set_Rotation({ D3DXToRadian(90),0,0 });
 
@@ -60,10 +60,10 @@ float CWarningChain::easeOutElastic(float x)
     if (x == 1.0f) return 1.0f;
 
     // 🔹 1) 감쇠되는 진폭(amplitude decay)
-    const float amplitude = powf(2, -12 * x);
+    const float amplitude = powf(2, -10 * x);
 
     // 🔹 2) 진동(oscillation) 
-    const float oscillation = sinf((x * 3 - 0.25) * period);
+    const float oscillation = sinf((x * 3 - 0.1) * period);
 
     // 🔹 3) 전체 결과값
     return amplitude * oscillation + 1 ;

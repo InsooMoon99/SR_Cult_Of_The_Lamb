@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "CGameObject.h"
+#include "CRenderObject.h"
 
 BEGIN(Engine)
 class CRcTex;
@@ -18,7 +18,7 @@ enum class EDIT_MODE
     TILE, OBJECT, EDIT_MODE_END
 };
 
-class CTerrain : public CGameObject
+class CTerrain : public CRenderObject
 {
 private:
     explicit CTerrain(DEVICE GraphicDev);
@@ -34,13 +34,13 @@ public:
     void    Render_Editor() override;
 
     void    LoadMapOnStart(const char* filePath);
-    void Spawn_Walls(CLayer* layer);
+    void    Spawn_Walls(CLayer* layer);
 
 public:
     // 벽만들기
-    CWallRenderer* Get_WallRenderer() const { return m_WallRendererCom; }
-    _vec3 Get_CellCenterWorld(_int cellX, _int cellZ);
-    _float Get_CellSize();
+    CWallRenderer*   Get_WallRenderer() const { return m_WallRendererCom; }
+    _vec3            Get_CellCenterWorld(_int cellX, _int cellZ);
+    _float           Get_CellSize();
 
 private:
     HRESULT Add_Component();
@@ -53,7 +53,6 @@ protected:
 
 private:    
     Engine::CTerrainTex*        m_BufferCom;
-    Engine::CTransform*         m_TransformCom;
 
     Engine::CTexture*           m_TextureCom284;
     Engine::CTexture*           m_TextureCom1024;

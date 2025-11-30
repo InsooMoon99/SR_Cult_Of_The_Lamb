@@ -10,7 +10,10 @@
 #include "CEnumHelper.h"
 #include "CInventory.h"
 #include "CItemDB.h"
+#include "CPlayerAttack.h"
 #include "CPlayerController.h"
+#include "CPlayerInput.h"
+#include "CPlayerMovement.h"
 #include "CProtoMgr.h"
 #include "CRcCol.h"
 #include "CRectCollider.h"
@@ -27,6 +30,7 @@
 #include "CWeaponEquip.h"
 #include "ItemData.h"
 #include "ItemInstance.h"
+#include "CProjectile.h"
 
 IMPLEMENT_SINGLETON(CResourceMgr)
 
@@ -44,84 +48,13 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
     if (FAILED(Ready_Buffer(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Player(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Monster(graphicDev))) return E_FAIL;
-    // if (FAILED(Ready_Boss(graphicDev))) return E_FAIL;
     if (FAILED(Ready_UI(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Item(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Common(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Terrain(graphicDev))) return E_FAIL;
     //if (FAILED(Ready_BossP1(graphicDev))) return E_FAIL;
+    if (FAILED(Ready_BossP2(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Decoration(graphicDev))) return E_FAIL;
-
-    return S_OK;
-}
-
-HRESULT CResourceMgr::Ready_BossP1(DEVICE graphicDev)
-{
-    auto protoMgr = CProtoMgr::GetInstance();
-
-    CTexture* BossP1Tex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
-    NULL_CHECK_RETURN(BossP1Tex, E_FAIL);
-
-    if (FAILED(BossP1Tex->Add_Texture(L"BossIdle", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-animation/TOWW-Spirit-animation%d.png", 100)))
-        return E_FAIL;
-    if (FAILED(BossP1Tex->Add_Texture(L"BossAwake", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-transform2/TOWW-Spirit-transform%d.png", 105)))
-        return E_FAIL;
-
-    if (FAILED(BossP1Tex->Add_Texture(L"BossAttack", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-shoot/TOWW-Spirit-shoot%d.png", 97)))
-        return E_FAIL;
-
-    if (FAILED(BossP1Tex->Add_Texture(L"BossDead", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-hurt-talk/TOWW-Spirit-hurt-talk%d.png", 167)))
-        return E_FAIL;
-
-    if (FAILED(BossP1Tex->Add_Texture(L"BossMove_up", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-appear/TOWW-Spirit-appear%d.png", 50)))
-        return E_FAIL;
-
-    if (FAILED(BossP1Tex->Add_Texture(L"BossMove_Down", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-disappear/TOWW-Spirit-disappear%d.png", 28)))
-        return E_FAIL;
-
-    if (FAILED(BossP1Tex->Add_Texture(L"BossGroggy_start", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-hurt/TOWW-Spirit-hurt%d.png", 115)))
-        return E_FAIL;
-
-    if (FAILED(BossP1Tex->Add_Texture(L"BossGroggy_loop", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-loop/TOWW-Spirit-loop%d.png", 84)))
-        return E_FAIL;
-
-    if (FAILED(BossP1Tex->Add_Texture(L"BossGroggy_end", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-hurt-stop/TOWW-Spirit-hurt-stop%d.png", 67)))
-        return E_FAIL;
-
-    // 사슬
-    if (FAILED(BossP1Tex->Add_Texture(L"BossChainEff", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase1/ChainAttack/Summon_Chain%d.png", 34)))
-        return E_FAIL;
-
-    //// 바닥 이팩트
-    //if (FAILED(BossP1Tex->Add_Texture(L"ChainGroundEff", TEX_NORMAL,
-    //    L"../Bin/Resource/Texture/BossPhase1/ChainAttackGround.png", 1)))
-    //    return E_FAIL;
-
-    if (FAILED(protoMgr->Ready_Prototype(
-        COMPONENTTYPE::TEX_BOSSPHASE1, BossP1Tex)))
-        return E_FAIL;
-
-    ///////////////////////////////////////////////////////////////////////
-
-    //FadeOut Tex
-    vector<wstring> pathVec1;
-    pathVec1.push_back(L"../Bin/Resource/Texture/BossPhase1/ChainAttackGround.png");
-    pathVec1.push_back(L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Sermon_Icon.png");
-
-
-    if (FAILED(protoMgr->Ready_Prototype(
-        COMPONENTTYPE::TEX_OUT, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec1))))
-        return E_FAIL;
 
     return S_OK;
 }
@@ -175,19 +108,14 @@ HRESULT CResourceMgr::Ready_Common(DEVICE graphicDev)
         COMPONENTTYPE::INVENTORY, CInventory::Create(graphicDev))))
         return E_FAIL;
 
-    // Player Controller
-    if (FAILED(protoMgr->Ready_Prototype(
-        COMPONENTTYPE::CONTROLLER_PLAYER, CPlayerController::Create(graphicDev))))
-        return E_FAIL;
-
-    // weapon equip
-    if (FAILED(protoMgr->Ready_Prototype(
-        COMPONENTTYPE::WEAPON_EQUIP, CWeaponEquip::Create(graphicDev))))
-        return E_FAIL;
-
     // Rigidbody
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::RIGIDBODY, CRigidbody::Create(graphicDev))))
+        return E_FAIL;
+
+    // Projectile
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::PROJECTILE, CProjectile::Create(graphicDev))))
         return E_FAIL;
 
     return S_OK;
@@ -234,6 +162,31 @@ HRESULT CResourceMgr::Ready_Buffer(DEVICE graphicDev)
 HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
 {
     auto protoMgr = CProtoMgr::GetInstance();
+
+    // Player Controller
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::PL_CONTROLLER, CPlayerController::Create(graphicDev))))
+        return E_FAIL;
+
+    // Player Input
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::PL_INPUT, CPlayerInput::Create(graphicDev))))
+        return E_FAIL;
+
+    // Player Movement
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::PL_MOVEMENT, CPlayerMovement::Create(graphicDev))))
+        return E_FAIL;
+
+    // Player Attack
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::PL_ATTACK, CPlayerAttack::Create(graphicDev))))
+        return E_FAIL;
+
+    // weapon equip
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::WEAPON_EQUIP, CWeaponEquip::Create(graphicDev))))
+        return E_FAIL;
 
     CTexture* playerTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(playerTex, E_FAIL);
@@ -323,7 +276,78 @@ HRESULT CResourceMgr::Ready_Monster(DEVICE graphicDev)
     return S_OK;
 }
 
-HRESULT CResourceMgr::Ready_Boss(DEVICE graphicDev)
+HRESULT CResourceMgr::Ready_BossP1(DEVICE graphicDev)
+{
+    auto protoMgr = CProtoMgr::GetInstance();
+
+    CTexture* BossP1Tex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(BossP1Tex, E_FAIL);
+
+    if (FAILED(BossP1Tex->Add_Texture(L"BossIdle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-animation/TOWW-Spirit-animation%d.png", 100)))
+        return E_FAIL;
+    if (FAILED(BossP1Tex->Add_Texture(L"BossAwake", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-transform2/TOWW-Spirit-transform%d.png", 105)))
+        return E_FAIL;
+
+    if (FAILED(BossP1Tex->Add_Texture(L"BossAttack", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-shoot/TOWW-Spirit-shoot%d.png", 97)))
+        return E_FAIL;
+
+    if (FAILED(BossP1Tex->Add_Texture(L"BossDead", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-hurt-talk/TOWW-Spirit-hurt-talk%d.png", 167)))
+        return E_FAIL;
+
+    if (FAILED(BossP1Tex->Add_Texture(L"BossMove_up", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-appear/TOWW-Spirit-appear%d.png", 50)))
+        return E_FAIL;
+
+    if (FAILED(BossP1Tex->Add_Texture(L"BossMove_Down", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-disappear/TOWW-Spirit-disappear%d.png", 28)))
+        return E_FAIL;
+
+    if (FAILED(BossP1Tex->Add_Texture(L"BossGroggy_start", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-hurt/TOWW-Spirit-hurt%d.png", 115)))
+        return E_FAIL;
+
+    if (FAILED(BossP1Tex->Add_Texture(L"BossGroggy_loop", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-loop/TOWW-Spirit-loop%d.png", 84)))
+        return E_FAIL;
+
+    if (FAILED(BossP1Tex->Add_Texture(L"BossGroggy_end", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-hurt-stop/TOWW-Spirit-hurt-stop%d.png", 67)))
+        return E_FAIL;
+
+    // 사슬
+    if (FAILED(BossP1Tex->Add_Texture(L"BossChainEff", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/ChainAttack/Summon_Chain%d.png", 34)))
+        return E_FAIL;
+
+    //// 바닥 이팩트
+    //if (FAILED(BossP1Tex->Add_Texture(L"ChainGroundEff", TEX_NORMAL,
+    //    L"../Bin/Resource/Texture/BossPhase1/ChainAttackGround.png", 1)))
+    //    return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_BOSSPHASE1, BossP1Tex)))
+        return E_FAIL;
+
+    ///////////////////////////////////////////////////////////////////////
+
+    //FadeOut Tex
+    vector<wstring> pathVec1;
+    pathVec1.push_back(L"../Bin/Resource/Texture/BossPhase1/ChainAttackGround.png");
+    pathVec1.push_back(L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Sermon_Icon.png");
+
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_OUT, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec1))))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
 {
     auto protoMgr = CProtoMgr::GetInstance();
 
@@ -523,7 +547,6 @@ HRESULT CResourceMgr::Ready_Terrain(DEVICE graphicDev)
         COMPONENTTYPE::TEX_TILE_OUTLINE, CTexture::Create(graphicDev, TEX_NORMAL,
             L"../Bin/Resource/Texture/Terrain/TileOutline%d.png", 3))))
         return E_FAIL;
-
 
     return S_OK;
 }

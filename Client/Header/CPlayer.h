@@ -1,27 +1,21 @@
 ﻿#pragma once
-#include "CGameObject.h"
 
+#include "CCharacterBase.h"
+
+class CWeaponEquip;
+class CInventory;
 class CUIInventory;
+class CPlayerController;
+class CPlayerInput;
+class CPlayerMovement;
+class CPlayerAttack;
+
 BEGIN(Engine)
 class CRigidbody;
-class CRcTex;
-class CTransform;
 class CTexture;
-class CAnimator;
-class CProtoMgr;
-class CRectCollider;
-class CBoxCollider;
-class CSphereCollider;
-class CState;
-class CCombatStat;
 END
 
-// Client
-class CWeaponEquip;
-class CPlayerController;
-class CInventory;
-
-class CPlayer : public CGameObject
+class CPlayer : public CCharacterBase
 {
 private:
     explicit CPlayer(DEVICE graphicDev);
@@ -30,14 +24,15 @@ private:
 
 public:
     HRESULT Ready_GameObject() override;
+    void    Initialize_GameObject() override;
     _int    Update_GameObject(const _float& timeDelta) override;
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
 
-    void OnBeginOverlap(CCollider* self, CCollider* other) override;
-    void OnEndOverlap(CCollider* self, CCollider* other) override;
+    void    OnBeginOverlap(CCollider* self, CCollider* other) override;
+    void    OnEndOverlap(CCollider* self, CCollider* other) override;
 
-    void    Render_Editor() override;
+    void Render_Editor() override;
 
 public:
     // 테스트 공격용
@@ -45,28 +40,23 @@ public:
     void Test_Attack();
 
 private:
-    HRESULT Add_Component();
-    void    Animation_Setting();
-    void    Render_Setting();
-    void    Render_Reset();
+    HRESULT Add_Component()     override;
+    void    Animation_Setting() override;
 
 private:
 #pragma region Engine Components
-    Engine::CRcTex*              m_BufferCom;
-    Engine::CTransform*          m_TransformCom;
-    Engine::CTexture*            m_TextureCom;
-    Engine::CAnimator*           m_AnimatorCom;
-    Engine::CBoxCollider*        m_BoxColCom;
-    Engine::CState*              m_StateCom;
-    Engine::CCombatStat*         m_CombatStatCom;
-    Engine::CRigidbody*          m_RigidbodyCom;
+    Engine::CRigidbody*  m_RigidbodyCom;
 
 #pragma endregion
 #pragma region Client Components
-    CWeaponEquip*       m_WeaponEquipCom;
-    CInventory*         m_InventoryCom;
-    CPlayerController*  m_PlayerControllerCom;
-    CUIInventory*       m_UIInventory;
+    CWeaponEquip*      m_WeaponEquipCom;
+    CInventory*        m_InventoryCom;
+    CUIInventory*      m_UIInventory;
+    CPlayerController* m_PlayerControllerCom;
+    CPlayerInput*      m_PlayerInputCom;
+    CPlayerMovement*   m_PlayerMovementCom;
+    CPlayerAttack*     m_PlayerAttackCom;
+
 #pragma endregion
 
     map<ACTORSTATE, wstring> m_StateAnim;

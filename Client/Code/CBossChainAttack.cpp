@@ -16,8 +16,8 @@ CBossChainAttack::CBossChainAttack(CBossPhase1* pOwner, CBossStateMachine* pStat
 {
     m_pOwner = pOwner;
     m_pStateMachine = pStateMachine;
-    ZeroMemory(m_fElapsedTime, sizeof(m_fElapsedTime));
-    ZeroMemory(m_fExtraElapsedTime, sizeof(m_fExtraElapsedTime));
+    ZeroMemory(&m_fElapsedTime, sizeof(m_fElapsedTime));
+
 
 }
 
@@ -28,13 +28,14 @@ CBossChainAttack::~CBossChainAttack()
 void CBossChainAttack::Enter()
 {
     CMonsterState::Enter();
-    m_pOwnerAnimatorCom->Play_Animation(L"BossAttack", ANIMSTATE::ONCE);
+    m_pOwnerAnimatorCom->Play_Animation(L"BossAttack", ANIMSTATE::ONCE); // 지금 이게 안들어오거든 바로 상태안의 애니로 감
 
-    m_ePhase = PHASE::CIRCLE; // 이걸 어케 해야하지??
+    int RandPhase = CRandomMgr::GetInstance()->Get_Int_Random(0, ((int)PHASE::PHASE_END)-1); // 페이즈 랜덤
+    m_ePhase = (PHASE)RandPhase;
 
 
-
-
+   // m_ePhase = PHASE::RANDCHAIN;
+    //
 }
 
 void CBossChainAttack::Exit()
@@ -48,12 +49,6 @@ HRESULT CBossChainAttack::Ready_State()
 
     m_pOwnerTransformCom = static_cast<CTransform*>(m_pOwner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
     m_pOwnerAnimatorCom = static_cast<CAnimator*>(m_pOwner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
-
-
-    m_fExtraElapsedTime[(int)PHASE::PLAYERLINE] = 0;
-
-
-
 
     return S_OK;
 }
@@ -72,6 +67,7 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
     switch (m_ePhase)
     {
     case PHASE::PLAYERLINE:
+
         m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::ONCE);
 
 
@@ -87,10 +83,10 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
         {
             // 나가기 
             m_fCurStateElapsedTime = 0;
-            m_fExtraElapsedTime[(int)PHASE::PLAYERLINE] = 0;
+
             m_Count = 0;
             m_LineFlag = false;
-            m_fElapsedTime[(int)PHASE::PLAYERLINE] = 0.f;
+            m_fElapsedTime = 0.f;
             LineCount = 0;
             return CBossPhase1::BOSSPHASE1::BOSSIDLE;
 
@@ -103,12 +99,12 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
     {
         m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::ONCE);
 
-        m_fElapsedTime[(int)PHASE::CROSS] += timeDelta;
+        m_fElapsedTime+= timeDelta;
 
         int offset = 5;// TOOD:: 나중에 맴버 변수로 오프셋 조정 (사슬과 사슬 사이의 거리)
 
 
-        if (m_fElapsedTime[(int)PHASE::CROSS] > .5 && m_Count < 10)
+        if (m_fElapsedTime > .2f && m_Count < 10)
         {
             for (int i = 0;i < 4; i++)
             {
@@ -145,7 +141,7 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
 
             }
 
-            m_fElapsedTime[(int)PHASE::CROSS] = 0;
+            m_fElapsedTime= 0;
             m_Count++;
 
         }
@@ -153,7 +149,7 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
         if (m_Count >= 10)
         {
             // 나가기 
-            m_fElapsedTime[(int)PHASE::CROSS] = 0;
+            m_fElapsedTime = 0;
             m_Count = 0;
             return CBossPhase1::BOSSPHASE1::BOSSIDLE;
         }
@@ -163,28 +159,28 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
 
         m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::ONCE);
 
-        cout << m_pOwnerAnimatorCom->Get_CurFrame() << endl;
+ /*       cout << m_pOwnerAnimatorCom->Get_CurFrame() << endl;*/
         if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1 && m_StartPhase == false)
         {
             m_StartPhase = true;
-        }
+        }// TODO:: 이걸 공통으로 뺴면 될듯???
 
         if (m_StartPhase == true)
-            m_fElapsedTime[(int)PHASE::RANDCHAIN] += timeDelta;
+            m_fElapsedTime+= timeDelta;
 
 
-        if (m_fElapsedTime[(int)PHASE::RANDCHAIN] < 5.f && m_StartPhase == true)
+        if (m_fElapsedTime < 5.f && m_StartPhase == true)
         {
-            _vec3 BaseCenter = { 50,50,0 };
+            _vec3 BaseCenter = {50 ,0,50 };
             int BaseLength = 50;
-            float interval = 0.1f;
+            float interval =0.5f;
             RandomChain(timeDelta, BaseCenter, BaseLength, interval);
         }
-        else if (m_fElapsedTime[(int)PHASE::RANDCHAIN] >= 5.f && m_StartPhase == true)
+        else if (m_fElapsedTime >= 5.f && m_StartPhase == true)
         {
             // 나가기 
             m_StartPhase = false;
-            m_fElapsedTime[(int)PHASE::RANDCHAIN] = 0;
+            m_fElapsedTime = 0;
             return CBossPhase1::BOSSPHASE1::BOSSIDLE;
         }
 
@@ -195,7 +191,7 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
         m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::ONCE);
 
         if (m_StartPhase == true)
-            m_fElapsedTime[(int)PHASE::CIRCLE] += timeDelta;
+            m_fElapsedTime += timeDelta;
 
         
         if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1 && m_StartPhase == false)
@@ -210,15 +206,12 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
                 // 나가기 
                 m_Count = 0;
                 m_StartPhase = false;
-                m_fElapsedTime[(int)PHASE::CIRCLE] = 0;
+                m_fElapsedTime = 0;
                 return CBossPhase1::BOSSPHASE1::BOSSIDLE;
             }
         }
-
         break;
     }
-
-
 
     return CBossPhase1::BOSSPHASE1::CHAINATTACK;
 }
@@ -227,7 +220,7 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
 
 bool CBossChainAttack::PlayerLineUpdate(const _float& timeDelta, _int  MaxCount, _float m_Offset, float Speed)
 {
-    m_fElapsedTime[(int)PHASE::PLAYERLINE] += timeDelta;
+    m_fElapsedTime += timeDelta;
 
     if (m_LineFlag == false)
     {
@@ -237,7 +230,7 @@ bool CBossChainAttack::PlayerLineUpdate(const _float& timeDelta, _int  MaxCount,
         m_LineFlag = true;
     }
 
-    if (m_fElapsedTime[(int)PHASE::PLAYERLINE] > Speed && m_Count < MaxCount)
+    if (m_fElapsedTime > Speed && m_Count < MaxCount)
     {
 
         CWarningChain* WarningChain = CWarningChain::Create(m_pOwner->Get_GraphicDev(), m_pOwner);
@@ -251,7 +244,7 @@ bool CBossChainAttack::PlayerLineUpdate(const _float& timeDelta, _int  MaxCount,
 
         SpawnAttackObject(WarningChain);
 
-        m_fElapsedTime[(int)PHASE::PLAYERLINE] = 0;
+        m_fElapsedTime = 0;
 
         m_Count++;
 
@@ -262,7 +255,7 @@ bool CBossChainAttack::PlayerLineUpdate(const _float& timeDelta, _int  MaxCount,
         // 다음 패턴을 위해 초기화
         m_Count = 0;
         m_LineFlag = false;
-        m_fElapsedTime[(int)PHASE::PLAYERLINE] = 0.f;
+        m_fElapsedTime = 0.f;
 
         return true;  // 패턴 1회 완료
     }
@@ -286,10 +279,10 @@ void CBossChainAttack::RandomChain(const _float& timeDelta, _vec3 BaseCenter, in
 
     //if (fabs(r) < 1e-6f)// ㄱ의 절댓값(음수x) 가 0 근사값이면 실행
     //{
-
-    if (m_RandChainTime >= interval);
+    int count = 0;
+    if (m_RandChainTime > interval)
     {
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 10; i++)
         {
             CWarningChain* WarningChain = CWarningChain::Create(m_pOwner->Get_GraphicDev(), m_pOwner);
             const auto ChainTransform =
@@ -307,8 +300,10 @@ void CBossChainAttack::RandomChain(const _float& timeDelta, _vec3 BaseCenter, in
             ChainTransform->Set_Pos(LT.x + xPos, 0.f, LT.z - zPos);
 
             SpawnAttackObject(WarningChain);
-
+  
         }
+            count++;
+            cout << count << endl;
         m_RandChainTime = 0;
     }
 
@@ -320,7 +315,7 @@ void CBossChainAttack::RandomChain(const _float& timeDelta, _vec3 BaseCenter, in
 bool CBossChainAttack::CircleChain(const _float& timeDelta, int num, int length, float interval)
 {
 
-    if (m_fElapsedTime[(int)PHASE::CIRCLE] >= interval)
+    if (m_fElapsedTime >= interval)
     {
 
         //for (int i = 0; i < num; i++)
@@ -348,7 +343,7 @@ bool CBossChainAttack::CircleChain(const _float& timeDelta, int num, int length,
 
         
         m_Count++;
-        m_fElapsedTime[(int)PHASE::CIRCLE] = 0;
+        m_fElapsedTime = 0;
         //}
     }
     if (m_Count == num)

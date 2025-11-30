@@ -1,69 +1,61 @@
 ﻿#include "pch.h"
 #include "CPlayer.h"
-
 #include "CAnimator.h"
 #include "CAttackBox.h"
+#include "CAttackBuilder.h"
 #include "CAttackSphere.h"
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
 #include "CCreateHelper.h"
-#include "CDInputMgr.h"
-#include "CEnumHelper.h"
 #include "CInventory.h"
-#include "CManagement.h"
 #include "CPlayerController.h"
+#include "CManagement.h"
+#include "CPlayerAttack.h"
+#include "CPlayerController.h"
+#include "CPlayerInput.h"
+#include "CPlayerMovement.h"
 #include "CRcTex.h"
 #include "CRenderer.h"
 #include "CRigidbody.h"
-#include "CScene.h"
 #include "CState.h"
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CUIInventory.h"
 #include "CWeaponEquip.h"
-#include "CAttackBuilder.h"
 
 CPlayer::CPlayer(DEVICE graphicDev)
-    : CGameObject(graphicDev),
-      m_BufferCom(nullptr),
-      m_TransformCom(nullptr),
-      m_TextureCom(nullptr),
-      m_AnimatorCom(nullptr),
-      m_BoxColCom(nullptr),
-      m_StateCom(nullptr),
-      m_CombatStatCom(nullptr),
-      m_RigidbodyCom(nullptr),
-      m_WeaponEquipCom(nullptr),
-      m_InventoryCom(nullptr),
-      m_PlayerControllerCom(nullptr)
-{}
+    : CCharacterBase(graphicDev),
+    m_RigidbodyCom(nullptr),
+    m_WeaponEquipCom(nullptr),
+    m_InventoryCom(nullptr),
+    m_PlayerControllerCom(nullptr),
+    m_PlayerInputCom(nullptr),
+    m_PlayerMovementCom(nullptr),
+    m_PlayerAttackCom(nullptr),
+    m_UIInventory(nullptr)
+{
+}
 
 CPlayer::CPlayer(const CPlayer& rhs)
-    : CGameObject(rhs),
-      m_BufferCom(nullptr),
-      m_TransformCom(nullptr),
-      m_TextureCom(nullptr),
-      m_AnimatorCom(nullptr),
-      m_BoxColCom(nullptr),
-      m_StateCom(nullptr),
-      m_CombatStatCom(nullptr),
-      m_RigidbodyCom(nullptr),
-      m_WeaponEquipCom(nullptr),
-      m_InventoryCom(nullptr),
-      m_PlayerControllerCom(nullptr)
-{}
+    : CCharacterBase(rhs),
+    m_RigidbodyCom(nullptr),
+    m_WeaponEquipCom(nullptr),
+    m_InventoryCom(nullptr),
+    m_PlayerControllerCom(nullptr),
+    m_PlayerInputCom(nullptr),
+    m_PlayerMovementCom(nullptr),
+    m_PlayerAttackCom(nullptr),
+    m_UIInventory(nullptr)
+{
+}
 
 CPlayer::~CPlayer()
 { }
 
 HRESULT CPlayer::Ready_GameObject()
 {
-    if (FAILED(Add_Component()))
-        return E_FAIL;
-
-    // 플레이어 상태 초기값
-    m_StateCom->Change_State(ACTORSTATE::IDLE);
-    m_StateCom->Change_Dir(ACTORDIR::LEFT);
+	if (FAILED(CCharacterBase::Ready_GameObject()))
+		return E_FAIL;
 
     m_CombatStatCom->Set_Hp(6.f);
     m_CombatStatCom->Set_MaxHp(100.f);
@@ -79,84 +71,37 @@ HRESULT CPlayer::Ready_GameObject()
     m_RigidbodyCom->Set_UseFriction(true);
     m_RigidbodyCom->Set_UseGravity(false);
 
-    Animation_Setting();
+    if (m_BoxColCom)
+        m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::PLAYER);
 
     return S_OK;
 }
 
+void CPlayer::Initialize_GameObject()
+{
+    CCharacterBase::Initialize_GameObject();
+
+    
+}
+
 _int CPlayer::Update_GameObject(const _float& timeDelta)
 {
-#pragma region 안은수 테스트
+    _int exit = CCharacterBase::Update_GameObject(timeDelta);
 
-    auto inputMgr = CDInputMgr::GetInstance();
-
-    if (inputMgr->Get_DIKeyState(DIK_1) & 0x80)
-    {
-        m_InventoryCom->DropItemfromSlot(
-            1,
-            {
-                m_TransformCom->Get_Pos().x,
-                m_TransformCom->Get_Pos().y,
-                m_TransformCom->Get_Pos().z + 5.f
-            });
-    }
-
-#pragma endregion
-
-    _int exit = CGameObject::Update_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 
     return exit;
 }
 
 void CPlayer::LateUpdate_GameObject(const _float& timeDelta)
 {
-    CGameObject::LateUpdate_GameObject(timeDelta);
+	CCharacterBase::LateUpdate_GameObject(timeDelta);
 }
 
 void CPlayer::Render_GameObject()
 {
-    m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
+	CCharacterBase::Render_GameObject();
 
-    Render_Setting();
-
-    if (m_TextureCom && m_AnimatorCom)
-    {
-        const wstring& key   = m_AnimatorCom->Get_CurKey();
-         _int           frame = m_AnimatorCom->Get_CurFrame();
-
-        m_TextureCom->Set_Texture(key, frame);
-    }
-
-    m_BufferCom->Render_Buffer();
-
-    Render_Reset();
-
-    m_BoxColCom->Render(); // Render Reset 이후 호출해야함
-}
-
-void CPlayer::Render_Setting()
-{
-    m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-
-    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-    m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-    m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-
-    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-    m_GraphicDev->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-    m_GraphicDev->SetRenderState(D3DRS_ALPHAREF, 0);
-}
-
-void CPlayer::Render_Reset()
-{
-    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-    m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-
-    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+    
 }
 
 void CPlayer::Test_Attack()
@@ -170,26 +115,27 @@ void CPlayer::Test_Attack()
         .InstigatorPos()
         .Offset(_vec3(2.f, 0.f, 0.f))
         .DestroyOnHit(true)
+        .CollisionLayer(COLLISION_LAYERTYPE::ATTACK)
         .Spawn();
 }
 
 void CPlayer::OnBeginOverlap(CCollider* self, CCollider* other)
 {
-    CGameObject::OnBeginOverlap(self, other);
+	CCharacterBase::OnBeginOverlap(self, other);
 
     //cout << "Player Hit" << endl;
 }
 
 void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)
 {
-    CGameObject::OnEndOverlap(self, other);
+	CCharacterBase::OnEndOverlap(self, other);
 
     //cout << "Player HitOut" << endl;
 }
 
 void CPlayer::Render_Editor()
 {
-    CGameObject::Render_Editor();
+	CCharacterBase::Render_Editor();
 
     ImGui::Text("=== Player ===");
 
@@ -199,52 +145,25 @@ void CPlayer::Render_Editor()
 
 HRESULT CPlayer::Add_Component()
 {
-    // buffer
-    m_BufferCom = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
-    NULL_CHECK_RETURN(m_BufferCom, E_FAIL);
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::RC_TEX, m_BufferCom });
+	// 부모쪽에 Transform, Buffer, Animator, State, CombatStat, BoxCollider 있음
+	if (FAILED(CCharacterBase::Add_Component()))
+		return E_FAIL;
 
-    // transform
-    m_TransformCom = CreateProtoComponent<CTransform>(this, COMPONENTTYPE::TRANSFORM);
-    NULL_CHECK_RETURN(m_TransformCom, E_FAIL);
-    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
-
-    // texture
+    // Texture
     m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_PLAYER);
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_PLAYER, m_TextureCom });
 
-    // Animator
-    m_AnimatorCom = CreateProtoComponent<CAnimator>(this, COMPONENTTYPE::ANIMATOR);
-    NULL_CHECK_RETURN(m_AnimatorCom, E_FAIL);
-
-    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::ANIMATOR, m_AnimatorCom });
-
     m_AnimatorCom->Set_TextureType(COMPONENTTYPE::TEX_PLAYER);
 
-    // RectCol Componet
-    m_BoxColCom = CreateProtoComponent<CBoxCollider>(this, COMPONENTTYPE::BOX_COLL);
-    NULL_CHECK_RETURN(m_BoxColCom, E_FAIL);
-    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::BOX_COLL, m_BoxColCom });
-
-    // Stat
-    m_StateCom = CreateProtoComponent<CState>(this, COMPONENTTYPE::STATE);
-    NULL_CHECK_RETURN(m_StateCom, E_FAIL);
-    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::STATE, m_StateCom });
-
-    // CombatStat
-    m_CombatStatCom = CreateProtoComponent<CCombatStat>(this, COMPONENTTYPE::COMBATSTAT);
-    NULL_CHECK_RETURN(m_CombatStatCom, E_FAIL);
-    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::COMBATSTAT, m_CombatStatCom });
-
-    // inventory
+    // Inventory
     m_InventoryCom = CreateProtoComponent<CInventory>(this, COMPONENTTYPE::INVENTORY);
     NULL_CHECK_RETURN(m_InventoryCom, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::INVENTORY, m_InventoryCom });
 
     m_InventoryCom->SetInvenSlotNum(12);
 
-    // weaponequip
+    // Weapon Equip
     m_WeaponEquipCom = CreateProtoComponent<CWeaponEquip>(this, COMPONENTTYPE::WEAPON_EQUIP);
     NULL_CHECK_RETURN(m_WeaponEquipCom, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::WEAPON_EQUIP, m_WeaponEquipCom });
@@ -255,11 +174,28 @@ HRESULT CPlayer::Add_Component()
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::RIGIDBODY, m_RigidbodyCom });
 
     // Player Controller
-    m_PlayerControllerCom = CreateProtoComponent<CPlayerController>(this, COMPONENTTYPE::CONTROLLER_PLAYER);
+    m_PlayerControllerCom = CreateProtoComponent<CPlayerController>(this, COMPONENTTYPE::PL_CONTROLLER);
     NULL_CHECK_RETURN(m_PlayerControllerCom, E_FAIL);
-    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::CONTROLLER_PLAYER, m_PlayerControllerCom });
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::PL_CONTROLLER, m_PlayerControllerCom });
+
+    // Player Input
+    m_PlayerInputCom = CreateProtoComponent<CPlayerInput>(this, COMPONENTTYPE::PL_INPUT);
+    NULL_CHECK_RETURN(m_PlayerInputCom, E_FAIL);
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::PL_INPUT, m_PlayerInputCom });
+
+    // Player Movement
+    m_PlayerMovementCom = CreateProtoComponent<CPlayerMovement>(this, COMPONENTTYPE::PL_MOVEMENT);
+    NULL_CHECK_RETURN(m_PlayerMovementCom, E_FAIL);
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::PL_MOVEMENT, m_PlayerMovementCom });
+
+    // Player Attack
+    m_PlayerAttackCom = CreateProtoComponent<CPlayerAttack>(this, COMPONENTTYPE::PL_ATTACK);
+    NULL_CHECK_RETURN(m_PlayerAttackCom, E_FAIL);
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::PL_ATTACK, m_PlayerAttackCom });
 
     m_PlayerControllerCom->Init_OwnerComponent();
+    m_PlayerMovementCom->Init_OwnerComponent();
+    m_PlayerAttackCom->Init_OwnerComponent();
 
     return S_OK;
 }
@@ -315,7 +251,6 @@ void CPlayer::Animation_Setting()
                              L"PlayerSwordCombo1",
                              ANIMSTATE::ONCE);
 
-
     m_AnimatorCom->Create_Animation(L"PlayerSwordCombo2",
                                     38,
                                     0.02f,
@@ -325,7 +260,6 @@ void CPlayer::Animation_Setting()
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SWORD_COMBO2,
                              L"PlayerSwordCombo2",
                              ANIMSTATE::ONCE);
-
 
     m_AnimatorCom->Create_Animation(L"PlayerSwordCombo3",
                                     38,
@@ -355,5 +289,5 @@ CPlayer* CPlayer::Create(DEVICE graphicDev)
 
 void CPlayer::Free()
 {
-    CGameObject::Free();
+	CCharacterBase::Free();
 }

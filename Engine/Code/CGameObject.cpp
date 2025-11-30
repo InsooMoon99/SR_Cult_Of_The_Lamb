@@ -36,6 +36,18 @@ HRESULT CGameObject::Ready_GameObject()
     return S_OK;
 }
 
+void CGameObject::Initialize_GameObject()
+{
+    for (auto& components : m_Components)
+    {
+        for (auto& component : components)
+        {
+            component.second->Initialize_Component();
+        }
+    }
+
+}
+
 _int CGameObject::Update_GameObject(const _float& timeDelta)
 {
     for (auto& component : m_Components[ID_DYNAMIC])
@@ -56,6 +68,12 @@ void CGameObject::LateUpdate_GameObject(const _float& timeDelta)
 
 void CGameObject::Render_GameObject()
 { }
+
+CTransform* CGameObject::Get_Transform()
+{
+    return dynamic_cast<CTransform*>(
+        Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+}
 
 bool CGameObject::SetTexAspectInit(CTexture* texCom, CTransform* transCom,int index, wstring*key, bool is_width, float lengh)
 {

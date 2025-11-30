@@ -8,20 +8,21 @@
 
 CAttackBase::CAttackBase(DEVICE graphicDev)
     : CGameObject(graphicDev),
-    m_TransformCom(nullptr),
-    m_Instigator(nullptr),
-    m_LifeTime(0.4f)
-{
-}
+      m_TransformCom(nullptr),
+      m_Instigator(nullptr),
+      m_LifeTime(0.4f),
+      m_DestroyOnHit(false)
+{ }
 
 CAttackBase::CAttackBase(const CAttackBase& rhs)
     : CGameObject(rhs),
-    m_TransformCom(nullptr),
-    m_AttackData(rhs.m_AttackData),
-    m_Instigator(rhs.m_Instigator),
-    m_LifeTime(rhs.m_LifeTime)
-{
-}
+      m_TransformCom(nullptr),
+      m_AttackData(rhs.m_AttackData),
+      m_Instigator(rhs.m_Instigator),
+      m_LifeTime(rhs.m_LifeTime),
+      m_DestroyOnHit(rhs.m_DestroyOnHit)
+{ }
+
 CAttackBase::~CAttackBase()
 { }
 
@@ -83,11 +84,18 @@ void CAttackBase::OnBeginOverlap(CCollider* self, CCollider* other)
         return;
 
     // 방향 보정
-    _vec3 atkPos = dynamic_cast<CTransform*>(
-        m_Instigator->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Get_Pos();
+    CTransform* atkTransform = dynamic_cast<CTransform*>(
+        m_Instigator->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
 
-    _vec3 hitterPos = dynamic_cast<CTransform*>(
-        hitter->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Get_Pos();
+    _vec3 atkPos = atkTransform->Get_Pos();
+
+    CTransform* hitTransform = dynamic_cast<CTransform*>(
+        hitter->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+    NULL_CHECK(atkTransform);
+    NULL_CHECK(hitTransform);
+
+    _vec3 hitterPos = hitTransform->Get_Pos();
 
     _vec3 dir = hitterPos - atkPos;
     if (D3DXVec3LengthSq(&dir) > 0.0001f)
@@ -101,7 +109,7 @@ void CAttackBase::OnBeginOverlap(CCollider* self, CCollider* other)
 
     combat->Take_Damage(hit);
 
-    // 데미지를 줬으면, 삭제 요청
+    // 데미지를 줬으면, 삭제 요청 -> AttackBuilder에서 세팅
     if (m_DestroyOnHit)
     {
         Mark_As_PendingKill();
@@ -115,8 +123,22 @@ void CAttackBase::OnEndOverlap(CCollider* self, CCollider* other)
     
 }
 
+void CAttackBase::Set_Instigator(CGameObject* instigator)
+{
+    m_Instigator = instigator;
+
+    CCollider* collider = Get_Collider();
+    if (collider)
+    {
+        collider->Set_Instigator(instigator);
+    }
+}
+
 void CAttackBase::Free()
 {
-    CGameObject::Free();
+    // 오브젝트가 해제되기 직전, 등록된 콜백이 있다면 실행
+    if (m_OnDestroyCallback)
+        m_OnDestroyCallback();
 
+    CGameObject::Free();
 }

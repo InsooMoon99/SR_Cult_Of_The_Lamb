@@ -1,9 +1,7 @@
 ﻿#include "pch.h"
 #include "CStage.h"
-
 #include "CCombatStat.h"
 #include "CDropSystem.h"
-#include "CEditContext.h"
 #include "CHumanMonster.h"
 #include "CInventory.h"
 #include "CItemDB.h"
@@ -12,28 +10,19 @@
 #include "CMainEditorMgr.h"
 #include "CPersistentObjectHelper.h"
 #include "CPlayer.h"
-#include "CTestMonster.h"
+#include "CTerrain.h"
 #include "CTransform.h"
 #include "CUICircle.h"
 #include "CUIIcon.h"
-#include "CUIInventory.h"
-#include "CUIInventoryCell.h"
 #include "CUIMp.h"
 #include "CUIPlayerPanel.h"
-#include "CUISKillCount.h"
 #include "CUIWeapon.h"
 #include "ItemInstance.h"
-#include "CBossPhase1.h"
-#include "CTerrain.h"
-#include "CDInputMgr.h"
-#include "CMapEditorPlacer.h"
-#include "CSceneMgr.h"
 #include "CUITabMenu.h"
-#include "CWall.h"
 
 CStage::CStage(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
-    m_PlayerCombatStatCom(nullptr)
+      m_PlayerCombatStatCom(nullptr), m_PlayerInventoryCom(nullptr), m_WeaponEquipCom(nullptr), m_Terrain(nullptr)
 {
 }
 
@@ -43,10 +32,6 @@ CStage::~CStage()
 
 HRESULT CStage::Ready_Scene()
 {
-    // 로딩 스레드로 역할 이동
-    //if (FAILED(Ready_Prototype()))
-    //    return E_FAIL;
-
     if (FAILED(Ready_Environment_Layer(LAYERTYPE::ENVIRONMENT)))
         return E_FAIL;
 
@@ -64,10 +49,28 @@ HRESULT CStage::Ready_Scene()
         int id = CItemDB::GetInstance()->GetVector()[i].id;
         ItemInstance inst = { id, -1, 0 };
         CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 5.f, 0.f, 10.f + (i * 3.f) });
+    }
+
+    int size = CItemDB::GetInstance()->GetVector().size();
+    for (int i = 0; i < size; i++) 
+    {
+        int reverseIndex = size - 1 - i;
+        int id = CItemDB::GetInstance()->GetVector()[reverseIndex].id;  
+
+        ItemInstance inst = { id, -1, 0 };
         CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 10.f, 0.f, 10.f + (i * 3.f) });
     }
 
+
     return S_OK;
+}
+
+void CStage::Initialize_Scene()
+{
+    CScene::Initialize_Scene();
+
+    // 초기 맵 불러오기 <- 이거 꼭 Initialize에서 진행해야 맵 오브젝트가 잘 불러진다.
+    m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_1111111.map");
 }
 
 _int CStage::Update_Scene(const _float& timeDelta)
@@ -87,7 +90,6 @@ void CStage::Render_Scene()
     // debug 용
 }
 
-
 HRESULT CStage::Ready_Environment_Layer(LAYERTYPE layerType)
 {
     Engine::CLayer* layer = Engine::CLayer::Create();
@@ -95,14 +97,10 @@ HRESULT CStage::Ready_Environment_Layer(LAYERTYPE layerType)
     if (nullptr == layer)
         return E_FAIL;
 
-    CTerrain* terrain = CTerrain::Create(m_GraphicDev);
-    NULL_CHECK_RETURN(terrain, E_FAIL);
+    m_Terrain = CTerrain::Create(m_GraphicDev);
+    NULL_CHECK_RETURN(m_Terrain, E_FAIL);
 
-    // 초기 맵 불러오기
-    terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_WallTest1.map");
-    layer->Add_GameObject(OBJTYPE::TERRAIN, terrain);
-
-    //terrain->Spawn_Walls(layer); 스폰시기가 꼬인다.. Update에서 일단 지연스폰
+    layer->Add_GameObject(OBJTYPE::TERRAIN, m_Terrain);
 
     m_Layers.insert({ layerType, layer });
 
@@ -128,6 +126,7 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CPlayer>(
             OBJTYPE::PLAYER,
+            L"Player",
             m_GraphicDev,
             layer,
             &gameObject),
@@ -189,6 +188,7 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CMainCamera>(
             OBJTYPE::CAMERA,
+            L"MainCamera",
             m_GraphicDev,
             layer,
             &gameObject),
@@ -219,36 +219,51 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
 
     CGameObject* gameObject = nullptr;
 
-    gameObject = CUIPlayerPanel::Create(m_GraphicDev);
-
     FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::UI, gameObject),
-        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUIPlayerPanel) failed");
+        Engine::AcquirePersistentObject<CUIPlayerPanel>(
+            OBJTYPE::UI,
+            L"UI_PlayerPanel",
+            m_GraphicDev,
+            layer,
+            &gameObject),
+        L"Persistent object setup failed: UI_PlayerPanel");
 
     CUIPlayerPanel* playerPanel = dynamic_cast<CUIPlayerPanel*>(gameObject);
 
     playerPanel->Set_PlayerCombatStat(m_PlayerCombatStatCom);
     playerPanel->Set_Resister(true);
-    gameObject = CUIMp::Create(m_GraphicDev);
 
     FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::UI, gameObject),
-        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUIMp) failed");
+        Engine::AcquirePersistentObject<CUIMp>(
+            OBJTYPE::UI,
+            L"UI_Mp",
+            m_GraphicDev,
+            layer,
+            &gameObject),
+        L"Persistent object setup failed: UI_Mp");
 
     CUIMp* uiMp = dynamic_cast<CUIMp*>(gameObject);
     uiMp->Set_PlayerCombatStat(m_PlayerCombatStatCom);
 
-    gameObject = CUICircle::Create(m_GraphicDev);
+    FAILED_CHECK_MSG(
+        Engine::AcquirePersistentObject<CUICircle>(
+            OBJTYPE::UI,
+            L"UI_Circle",
+            m_GraphicDev,
+            layer,
+            &gameObject),
+        L"Persistent object setup failed: UI_Circle");
+
     dynamic_cast<CUICircle*>(gameObject)->Set_PlayerCombatStat(m_PlayerCombatStatCom);
+    
     FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::UI, gameObject),
-        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUICircle) failed");
-
-    gameObject = CUIWeapon::Create(m_GraphicDev);
-
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::UI, gameObject),
-        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUIWeapon) failed");
+        Engine::AcquirePersistentObject<CUIWeapon>(
+            OBJTYPE::UI,
+            L"UI_Weapon",
+            m_GraphicDev,
+            layer,
+            &gameObject),
+        L"Persistent object setup failed: UI_Weapon");
 
     //왼쪽 상단 스킬 아이콘 UI
     CUIIcon* pgameObject = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_ICON);
@@ -260,11 +275,14 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
         layer->Add_GameObject(OBJTYPE::UI, pgameObject),
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUIIcon) failed");
 
-    //CUISkillCount* uiSkillCount = CUISkillCount::Create(m_GraphicDev);
-    //
-    //FAILED_CHECK_MSG(
-    //    layer->Add_GameObject(OBJTYPE::UI, uiSkillCount),
-    //    L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUISKillCount) failed");
+    // FAILED_CHECK_MSG(
+    //     Engine::AcquirePersistentObject<CUISkillCount>(
+    //         OBJTYPE::UI,
+    //         L"UI_SkillCount",
+    //         m_GraphicDev,
+    //         layer,
+    //         &gameObject),
+    //     L"Persistent object setup failed: UI_SkillCount");
 
     /////Inventory UI
     //CUIInventory* uiInventory = CUIInventory::Create(m_GraphicDev);

@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include "CDInputMgr.h"
+
 #include "CBoxCollider.h"
 #include "CCameraCom.h"
 #include "CCombatStat.h"
@@ -12,6 +14,9 @@
 #include "CTransform.h"
 #include "CWeaponEquip.h"
 #include "CWallRenderer.h"
+#include "CPlayerInput.h"
+#include "CPlayerMovement.h"
+#include "CPlayerAttack.h"
 
 USING(Engine)
 
@@ -218,6 +223,15 @@ static void Menu_CameraInspector(CCameraCom* camera)
         {
             camera->Set_CamMode(static_cast<CCameraCom::CAM_MODE>(camMode));
         }
+
+        if (CDInputMgr::GetInstance()->KeyDown(DIK_F8))
+        {
+            camMode = (camera->Get_CamMode() == CCameraCom::CAM_MODE::CAM_TARGET) ?
+                CCameraCom::CAM_MODE::CAM_FREE :
+                CCameraCom::CAM_MODE::CAM_TARGET;
+
+            camera->Set_CamMode(static_cast<CCameraCom::CAM_MODE>(camMode));
+        }
     }
     ImGui::PopID();
 }
@@ -306,7 +320,7 @@ static void Camera_Inspector(CCameraCom* camera)
         ImGui::NewLine();
 
         ImGui::Text(u8"[ 이동 ]");
-        ImGui::TextWrapped(u8"[I] 앞 | [K] 뒤 | [J] 좌 | [L] 우");
+        ImGui::TextWrapped(u8"[↑] 앞 | [↓] 뒤 | [←] 좌 | [→] 우");
         ImGui::NewLine();
 
         ImGui::Text(u8"[ 상/하 이동 ]");
@@ -314,8 +328,8 @@ static void Camera_Inspector(CCameraCom* camera)
         ImGui::NewLine();
 
         ImGui::Text(u8"[ 회전 ]");
-        ImGui::TextWrapped(u8"[LShift + I] 상 | [LShift + I] 하");
-        ImGui::TextWrapped(u8"[LShift + J] 좌 | [LShift + L] 우");
+        ImGui::TextWrapped(u8"[LShift + ↑] 상 | [LShift + ↓] 하");
+        ImGui::TextWrapped(u8"[LShift + ←] 좌 | [LShift + →] 우");
     }
     ImGui::PopID();
 }
@@ -582,35 +596,6 @@ static void Weapon_Inspector(CWeaponEquip* weapon)
     ImGui::PopID();
 }
 
-static void PlayerController_Inspector(CPlayerController* controller)
-{
-    NULL_CHECK(controller);
-
-    ImGui::PushID("PlayerController_Inspector");
-    {
-        ImGui::Text("[ Player Controller ]");
-        ImGui::Separator();
-
-        const float column_width = 120.0f;
-        
-        ImGui::Columns(2, "PlayerColumns", false);
-        ImGui::SetColumnWidth(0, column_width);
-
-        // Roll Duration
-        _float rollDuration = controller->Get_RollDuration();
-        ImGui::Text("Roll Duration");
-        ImGui::NextColumn();
-        if (ImGui::DragFloat("##RollDuration", &rollDuration, 0.01f, 0.1f, 2.0f))
-        {
-            controller->Set_RollDuration(rollDuration);
-        }
-        ImGui::NextColumn();
-
-        ImGui::Columns(1);
-    }
-    ImGui::PopID();
-}
-
 static void RigidBody_Inspector(CRigidbody* rigid)
 {
     NULL_CHECK(rigid);
@@ -624,30 +609,22 @@ static void RigidBody_Inspector(CRigidbody* rigid)
 
         // Use Flags
         ImGui::Text("Physics Options:");
-        
+
         bool useAccel = rigid->Get_UseAccel();
         if (ImGui::Checkbox("Use Acceleration", &useAccel))
-        {
             rigid->Set_UseAccel(useAccel);
-        }
 
         bool useFriction = rigid->Get_UseFriction();
         if (ImGui::Checkbox("Use Friction", &useFriction))
-        {
             rigid->Set_UseFriction(useFriction);
-        }
 
         bool useGravity = rigid->Get_UseGravity();
         if (ImGui::Checkbox("Use Gravity", &useGravity))
-        {
             rigid->Set_UseGravity(useGravity);
-        }
 
         bool isGround = rigid->Get_IsGround();
         if (ImGui::Checkbox("Is On Ground", &isGround))
-        {
             rigid->Set_IsGround(isGround);
-        }
 
         ImGui::Separator();
 
@@ -660,9 +637,7 @@ static void RigidBody_Inspector(CRigidbody* rigid)
         ImGui::Text("Mass");
         ImGui::NextColumn();
         if (ImGui::DragFloat("##Mass", &mass, 0.1f, 0.1f, 100.0f))
-        {
             rigid->Set_Mass(mass);
-        }
         ImGui::NextColumn();
 
         // Friction
@@ -670,9 +645,7 @@ static void RigidBody_Inspector(CRigidbody* rigid)
         ImGui::Text("Friction");
         ImGui::NextColumn();
         if (ImGui::DragFloat("##Friction", &friction, 0.1f, 0.0f, 10.0f))
-        {
             rigid->Set_Friction(friction);
-        }
         ImGui::NextColumn();
 
         ImGui::Columns(1);
@@ -687,17 +660,117 @@ static void RigidBody_Inspector(CRigidbody* rigid)
         ImGui::Text("Velocity Limit:");
         _vec3 velLimit = rigid->Get_VelocityLimit();
         if (ImGui::DragFloat3("##VelLimit", &velLimit.x, 0.1f, 0.0f, 100.0f))
-        {
             rigid->Set_VelocityLimit(velLimit);
-        }
 
         // Gravity
         ImGui::Text("Gravity:");
         _vec3 gravity = rigid->Get_Gravity();
         if (ImGui::DragFloat3("##Gravity", &gravity.x, 0.1f, -100.0f, 100.0f))
-        {
             rigid->Set_Gravity(gravity);
-        }
+    }
+    ImGui::PopID();
+}
+
+static void PlayerInput_Inspector(CPlayerInput* input)
+{
+    if (!input) return;
+
+    ImGui::PushID("PlayerInput_Inspector");
+    if (ImGui::CollapsingHeader("Player Input"))
+    {
+        _vec3 moveDir  = input->Get_MoveDir();
+        _vec3 mouseDir = input->Get_MouseDir();
+
+        ImGui::Text("Move Dir  : (%.2f, %.2f, %.2f)", moveDir.x, moveDir.y, moveDir.z);
+        ImGui::Text("Mouse Dir : (%.2f, %.2f, %.2f)", mouseDir.x, mouseDir.y, mouseDir.z);
+    }
+    ImGui::PopID();
+}
+
+static void PlayerMovement_Inspector(CPlayerMovement* movement)
+{
+    if (!movement) return;
+
+    ImGui::PushID("PlayerMovement_Inspector");
+    if (ImGui::CollapsingHeader("Player Movement"))
+    {
+        _float rollTimer       = movement->Get_RollTimer();
+        _float rollDuration    = movement->Get_RollDuration();
+        _float invincibleTime  = movement->Get_RollInvincibleTime();
+        _bool  invincibleEnded = movement->Get_IsInvincibleEnded();
+        _vec3  rollDir         = movement->Get_RollDir();
+
+        ImGui::Text("Roll Dir : (%.2f, %.2f, %.2f)", rollDir.x, rollDir.y, rollDir.z);
+
+        if (ImGui::DragFloat("Roll Timer", &rollTimer, 0.01f, 0.f, 5.f)) movement->Set_RollTimer(rollTimer);
+        if (ImGui::DragFloat("Roll Duration", &rollDuration, 0.01f, 0.f, 5.f)) movement->Set_RollDuration(rollDuration);
+        if (ImGui::DragFloat("Invincible Time", &invincibleTime, 0.01f, 0.f, 5.f)) movement->Set_RollInvincibleTime(invincibleTime);
+        if (ImGui::Checkbox("Invincible Ended", &invincibleEnded)) movement->Set_IsInvincibleEnded(invincibleEnded);
+    }
+    ImGui::PopID();
+}
+
+static void PlayerAttack_Inspector(CPlayerAttack* attack)
+{
+    if (!attack) return;
+
+    ImGui::PushID("PlayerAttack_Inspector");
+    if (ImGui::CollapsingHeader("Player Attack"))
+    {
+        _int   comboIndex     = attack->Get_ComboIndex();
+        _float timer          = attack->Get_CurrentTimer();
+        _bool  isHitboxActive = attack->Get_IsHitboxActive();
+        _bool  canNextCombo   = attack->Get_CanNextCombo();
+        _bool  isNextReserved = attack->Get_IsNextComboReserved();
+
+        if (ImGui::InputInt("Combo Index", &comboIndex)) attack->Set_ComboIndex(comboIndex);
+        if (ImGui::DragFloat("Timer", &timer, 0.01f, 0.f, 5.f)) attack->Set_CurrentTimer(timer);
+        if (ImGui::Checkbox("Hitbox Active", &isHitboxActive)) attack->Set_IsHitboxActive(isHitboxActive);
+        if (ImGui::Checkbox("Can Next Combo", &canNextCombo)) attack->Set_CanNextCombo(canNextCombo);
+        if (ImGui::Checkbox("Next Combo Reserved", &isNextReserved)) attack->Set_IsNextComboReserved(isNextReserved);
+
+        ImGui::Separator();
+        ImGui::Text("Attack Info Data Setting");
+        ImGui::Text("Choose Weapon and Attack. Then you can change values.");
+
+        static int selectedWeapon = 0;
+        static int selectedAttack = 0;
+
+        const char* weaponNames[] = { "Sword", "Gauntlet" };
+        const char* attackNames[] = { "Combo 1", "Combo 2", "Combo 3", "Heavy" };
+
+        ImGui::Combo("Weapon", &selectedWeapon, weaponNames, IM_ARRAYSIZE(weaponNames));
+        ImGui::Combo("Attack Type", &selectedAttack, attackNames, IM_ARRAYSIZE(attackNames));
+
+        CPlayerAttack::AttackInfo& info = attack->Get_AttackInfo_Ref(
+            static_cast<CPlayerAttack::PL_WEAPON_INDEX>(selectedWeapon),
+            static_cast<CPlayerAttack::PL_ATTACK_INDEX>(selectedAttack)
+        );
+
+        ImGui::DragFloat("Duration", &info.duration, 0.01f, 0.f, 5.f);
+        ImGui::DragFloat("Hitbox Start", &info.hitboxStartTime, 0.01f, 0.0f, info.duration);
+        ImGui::DragFloat("Hitbox End", &info.hitboxEndTime, 0.01f, 0.0f, info.duration);
+        ImGui::DragFloat("Combo Input", &info.comboInputTime, 0.01f, 0.0f, info.duration);
+        ImGui::DragFloat("Damage Mult", &info.damageMultiplier, 0.1f, 0.0f, 100.0f);
+        ImGui::DragFloat("Knockback", &info.knockbackPower, 0.1f, 0.0f, 100.0f);
+        ImGui::DragFloat("Spawn Offset", &info.spawnOffset, 0.01f);
+        ImGui::DragFloat3("Hitbox Scale", &info.hitboxScale.x, 0.01f, 0.1f, 10.0f);
+    }
+    ImGui::PopID();
+}
+
+static void PlayerController_Inspector(CPlayerController* controller)
+{
+    NULL_CHECK(controller);
+
+    ImGui::PushID("PlayerController_Inspector");
+    {
+        ImGui::Text("[ Player Controller ]");
+        ImGui::Separator();
+
+        PlayerInput_Inspector(controller->Get_InputCom());
+        PlayerMovement_Inspector(controller->Get_MovementCom());
+        PlayerAttack_Inspector(controller->Get_AttackCom());
     }
     ImGui::PopID();
 }
@@ -709,3 +782,5 @@ static void WallRenderer_Inspector(CWallRenderer* wall)
     wall->Render_Editor();
 
 }
+
+

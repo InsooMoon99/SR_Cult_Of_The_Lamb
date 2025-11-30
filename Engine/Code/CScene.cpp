@@ -29,6 +29,14 @@ HRESULT CScene::Ready_Scene()
     return S_OK;
 }
 
+void CScene::Initialize_Scene()
+{
+    for (auto& pLayer : m_Layers)
+    {
+        pLayer.second->Initialize_Layer();
+    }
+}
+
 void CScene::AddObjectOnLayer(LAYERTYPE layerType, CGameObject* obj, OBJTYPE objType)
 {
     Engine::CLayer* layer = nullptr;

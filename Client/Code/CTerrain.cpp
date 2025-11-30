@@ -15,7 +15,7 @@
 #include "../../Engine/Header/CLayer.h"
 
 CTerrain::CTerrain(DEVICE GraphicDev)
-    : CGameObject(GraphicDev), m_BufferCom(nullptr), m_TransformCom(nullptr), m_TextureCom284(nullptr),
+    : CRenderObject(GraphicDev), m_BufferCom(nullptr), m_TextureCom284(nullptr),
       m_TextureCom1024(nullptr),
       m_TextureComOutline(nullptr),
       m_TerrainRendererCom(nullptr),
@@ -24,7 +24,7 @@ CTerrain::CTerrain(DEVICE GraphicDev)
 }
 
 CTerrain::CTerrain(const CTerrain& rhs)
-    : CGameObject(rhs), m_BufferCom(nullptr), m_TransformCom(nullptr), m_TextureCom284(nullptr),
+    : CRenderObject(rhs), m_BufferCom(nullptr), m_TextureCom284(nullptr),
       m_TextureCom1024(nullptr),
       m_TextureComOutline(nullptr),
       m_TerrainRendererCom(nullptr),
@@ -38,18 +38,17 @@ CTerrain::~CTerrain()
 
 HRESULT CTerrain::Ready_GameObject()
 {
-    if (FAILED(Add_Component()))
+    if (FAILED(CRenderObject::Ready_GameObject()))
         return E_FAIL;
 
-    m_TransformCom->Set_Pos(_vec3(0.f, -1.f, 0.1f));
-    m_TransformCom->Set_Scale(_vec3(1.5f, 1.f, 1.5f)); // y축은 1로 고정해야함
+    m_TransformCom->Set_Pos(_vec3(-10.f, -1.f, -10.f));
 
     return S_OK;
 }
 
 _int CTerrain::Update_GameObject(const _float& timeDelta)
 {
-    _int exit = CGameObject::Update_GameObject(timeDelta);
+    _int exit = CRenderObject::Update_GameObject(timeDelta);
 
     static bool wallsSpawned = false;
     if (!wallsSpawned)
@@ -84,7 +83,6 @@ _int CTerrain::Update_GameObject(const _float& timeDelta)
                 {
                     m_WallRendererCom->Set_WallPosition(cellX, cellZ, false);
                 }
-
             }
         }
     }
@@ -94,8 +92,7 @@ _int CTerrain::Update_GameObject(const _float& timeDelta)
 
 void CTerrain::LateUpdate_GameObject(const _float& timeDelta)
 {
-    CGameObject::LateUpdate_GameObject(timeDelta);
-
+    CRenderObject::LateUpdate_GameObject(timeDelta);
 
 }
 
@@ -105,18 +102,16 @@ void CTerrain::Render_GameObject()
         return;
 
     m_TerrainRendererCom->Render_TerrainRenderer();
-
 }
 
 HRESULT CTerrain::Add_Component()
 {
+    if (FAILED(CRenderObject::Add_Component()))
+        return E_FAIL;
+
     m_BufferCom = CreateProtoComponent<CTerrainTex>(this, COMPONENTTYPE::TERRAIN_TEX);
     NULL_CHECK_RETURN(m_BufferCom, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::TERRAIN_TEX, m_BufferCom });
-
-    m_TransformCom = CreateProtoComponent<CTransform>(this, COMPONENTTYPE::TRANSFORM);
-    NULL_CHECK_RETURN(m_TransformCom, E_FAIL);
-    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
     // Tile TextureComponent
     {
@@ -153,7 +148,7 @@ HRESULT CTerrain::Add_Component()
 
 void CTerrain::Render_Editor()
 {
-    CGameObject::Render_Editor();
+    CRenderObject::Render_Editor();
 
     //ImGui::Text("=== Terrain ===");
 
@@ -202,6 +197,9 @@ void CTerrain::Spawn_Walls(CLayer* layer)
                     wallCollider->Set_Size(_vec3(cellSize, 2.f, cellSize));
 
                     layer->Add_GameObject(OBJTYPE::WALL, wall);
+
+                    wall->Initialize_GameObject();
+
                     wallCount++;
                 }
             }
@@ -243,5 +241,5 @@ void CTerrain::Free()
 {
     Safe_Release(m_WallRendererCom);
 
-    CGameObject::Free();
+    CRenderObject::Free();
 }

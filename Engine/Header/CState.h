@@ -15,6 +15,7 @@ private:
 
 public:
     HRESULT Ready_StateComponent(DEVICE graphicDev);
+    void    Initialize_Component() override;
     _int    Update_Component(const _float& timeDelta) override;
     void    LateUpdate_Component() override;
 

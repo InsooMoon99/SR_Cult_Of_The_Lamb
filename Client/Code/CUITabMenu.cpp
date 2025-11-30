@@ -52,8 +52,6 @@ CUITabMenu::~CUITabMenu()
     
 }
 
-
-
 HRESULT CUITabMenu::Ready_GameObject()
 {
     if (FAILED(Add_Component()))

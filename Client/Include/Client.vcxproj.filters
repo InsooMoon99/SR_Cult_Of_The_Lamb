@@ -133,8 +133,23 @@
     <Filter Include="05. UI\01. UI\04. UITabMenu">
       <UniqueIdentifier>{f5ba0def-b59a-4d45-9d5e-3212b4671db6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="97. Component\03. Wall">
+    <Filter Include="97. Component\03. Player Controller\00. Controller">
+      <UniqueIdentifier>{e4558995-8de9-408a-9c16-0e1a35d1d07a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Component\03. Player Controller\01. Input">
+      <UniqueIdentifier>{cff18376-e62f-46d6-a00f-7cb48f7f951d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Component\03. Player Controller\02. Movement">
+      <UniqueIdentifier>{c335eac9-1f8a-4cad-9c20-9760b6b18d8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Component\03. Player Controller\03. Combat">
+      <UniqueIdentifier>{47ab0db8-6150-437b-b3f7-2f492e5e5f43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Component\04. Wall">
       <UniqueIdentifier>{b0c9067d-def9-4e61-954d-f361723e82cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="96. Base">
+      <UniqueIdentifier>{4574c831-331d-4517-b972-c4e997802ca0}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. GameObject\05. Building">
       <UniqueIdentifier>{d128922c-c4b8-47ce-b6cd-7f14a0378dbd}</UniqueIdentifier>
@@ -177,10 +192,10 @@
     <ClInclude Include="..\Header\CStage.h">
       <Filter>02. Scene\01. Stage</Filter>
     </ClInclude>
-    <ClInclude Include="..\header\CMainCamera.h">
+    <ClInclude Include="..\Header\CMainCamera.h">
       <Filter>03. GameObject\00. Camera\00. Main Camera</Filter>
     </ClInclude>
-    <ClInclude Include="..\header\CLoading.h">
+    <ClInclude Include="..\Header\CLoading.h">
       <Filter>02. Scene\00. Logo\Loading</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CMainBG.h">
@@ -239,9 +254,6 @@
     </ClInclude>
     <ClInclude Include="..\Header\CComInspectors.h">
       <Filter>99. ImGui_Editor\01. EditorScript</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\CPlayerController.h">
-      <Filter>97. Component\03. Player Controller</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CInventory.h">
       <Filter>97. Component\00. Inventory</Filter>
@@ -354,6 +366,18 @@
     <ClInclude Include="..\Header\CUIPlayerPage.h">
       <Filter>05. UI\01. UI\04. UITabMenu</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CPlayerController.h">
+      <Filter>97. Component\03. Player Controller\00. Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CPlayerInput.h">
+      <Filter>97. Component\03. Player Controller\01. Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CPlayerMovement.h">
+      <Filter>97. Component\03. Player Controller\02. Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CPlayerAttack.h">
+      <Filter>97. Component\03. Player Controller\03. Combat</Filter>
+    </ClInclude>
     <ClInclude Include="..\Header\CUIPlayerImage.h">
       <Filter>05. UI\01. UI\04. UITabMenu</Filter>
     </ClInclude>
@@ -367,7 +391,7 @@
       <Filter>03. GameObject\09. MapObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CWallRenderer.h">
-      <Filter>97. Component\03. Wall</Filter>
+      <Filter>97. Component\04. Wall</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CStage_Boss1.h">
       <Filter>02. Scene\01. Stage</Filter>
@@ -394,6 +418,22 @@
       <Filter>05. UI\01. UI\06. UIItemGet</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CUIItemGetManager.h">
+    <ClInclude Include="..\Header\CCharacterBase.h">
+      <Filter>96. Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMonsterBase.h">
+      <Filter>96. Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CNPCBase.h">
+      <Filter>96. Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBossBullet.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CProjectile.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Client_Enum.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -419,10 +459,10 @@
     <ClCompile Include="..\Code\CStage.cpp">
       <Filter>02. Scene\01. Stage</Filter>
     </ClCompile>
-    <ClCompile Include="..\code\CMainCamera.cpp">
+    <ClCompile Include="..\Code\CMainCamera.cpp">
       <Filter>03. GameObject\00. Camera\00. Main Camera</Filter>
     </ClCompile>
-    <ClCompile Include="..\code\CLoading.cpp">
+    <ClCompile Include="..\Code\CLoading.cpp">
       <Filter>02. Scene\00. Logo\Loading</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CMainBG.cpp">
@@ -472,9 +512,6 @@
     </ClCompile>
     <ClCompile Include="..\Code\CMainEditorMgr.cpp">
       <Filter>99. ImGui_Editor\00. MainEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\CPlayerController.cpp">
-      <Filter>97. Component\03. Player Controller</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CInventory.cpp">
       <Filter>97. Component\00. Inventory</Filter>
@@ -584,6 +621,18 @@
     <ClCompile Include="..\Code\CUIPlayerPage.cpp">
       <Filter>05. UI\01. UI\04. UITabMenu</Filter>
     </ClCompile>
+    <ClCompile Include="..\Code\CPlayerController.cpp">
+      <Filter>97. Component\03. Player Controller\00. Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CPlayerInput.cpp">
+      <Filter>97. Component\03. Player Controller\01. Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CPlayerMovement.cpp">
+      <Filter>97. Component\03. Player Controller\02. Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CPlayerAttack.cpp">
+      <Filter>97. Component\03. Player Controller\03. Combat</Filter>
+    </ClCompile>
     <ClCompile Include="..\Code\CUIPlayerImage.cpp">
       <Filter>05. UI\01. UI\04. UITabMenu</Filter>
     </ClCompile>
@@ -597,7 +646,7 @@
       <Filter>03. GameObject\09. MapObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CWallRenderer.cpp">
-      <Filter>97. Component\03. Wall</Filter>
+      <Filter>97. Component\04. Wall</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CStage_Boss1.cpp">
       <Filter>02. Scene\01. Stage</Filter>
@@ -624,6 +673,20 @@
       <Filter>05. UI\01. UI\06. UIItemGet</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CUIItemGetManager.cpp">
+        </ClCompile>
+    <ClCompile Include="..\Code\CCharacterBase.cpp">
+      <Filter>96. Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMonsterBase.cpp">
+      <Filter>96. Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CNPCBase.cpp">
+      <Filter>96. Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBossBullet.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CProjectile.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
