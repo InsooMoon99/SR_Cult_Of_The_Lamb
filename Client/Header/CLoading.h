@@ -20,6 +20,7 @@ public:
 public:
     HRESULT Ready_Loading(LOADINGID eID);
     _uint   Loading_ForState();
+    _uint   Loading_ForBoss();  // 보스 전용 로딩
 
 public:
     static unsigned int __stdcall Thread_Main(void* pArg);

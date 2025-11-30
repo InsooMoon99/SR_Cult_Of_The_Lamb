@@ -106,7 +106,6 @@ void CAttackBase::OnBeginOverlap(CCollider* self, CCollider* other)
     hit.dir = dir;             
     hit.attacker = m_Instigator;
     hit.hitter = hitter;
-    hit.duration = m_AttackData.duration;
 
     combat->Take_Damage(hit);
 

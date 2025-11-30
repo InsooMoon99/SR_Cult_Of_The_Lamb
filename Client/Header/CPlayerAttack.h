@@ -27,12 +27,13 @@ public:
     {
         ACTORSTATE state;           // 해당 공격의 애니메이션 상태
 
-        _float duration;            // 공격 지속 시간
+        _float lifeTime;            // 공격 지속 시간
         _float hitboxStartTime;     // 히트박스가 켜지는 시간
         _float hitboxEndTime;       // 히트박스가 꺼지는 시간
         _float comboInputTime;      // 다음 콤보 선입력 허용 시작 시간
         _float damageMultiplier;    //TODO 공격력 배율. 나중에 아이템 정보와 연동하기
         _float knockbackPower;      // 넉백 힘
+        _float knockbackTimer;      // 넉백 밀려나는 시간
         _float spawnOffset;         // 생성 거리 오프셋 (얼마나 앞에 생성되는지)
         _vec3  hitboxScale;         // 공격 오브젝트 크기 (예: 1, 1, 1)
     };

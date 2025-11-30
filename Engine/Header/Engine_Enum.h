@@ -212,6 +212,7 @@ enum class ACTORDIR
 enum class SCENETYPE
 {
     SC_LOGO,
+    SC_LOGO_BOSS,
     SC_MAINMENU,
     SC_STAGE,
     SC_STAGE1,

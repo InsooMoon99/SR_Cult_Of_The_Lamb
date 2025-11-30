@@ -52,15 +52,11 @@ public:
         return *this;
     }
 
-    CAttackBuilder& Knockback(_float knockback)
+    CAttackBuilder& Knockback(_float knockback, _float knockbackTimer = 0.3f)
     {
         m_AttackData.knockback = knockback;
-        return *this;
-    }
+        m_AttackData.knockbackTimer = knockbackTimer;
 
-    CAttackBuilder& Duration(_float duration)
-    {
-        m_AttackData.duration = duration;
         return *this;
     }
 

@@ -32,6 +32,7 @@ HRESULT CHumanMonster::Ready_GameObject()
     m_TransformCom->Set_Scale(_vec3(1.2f, 1.2f, 1.2f));
 
     m_CombatStatCom->Set_MaxHp(750.f);
+    m_CombatStatCom->Set_Hp(750.f);
     m_CombatStatCom->Set_Speed(65.f);
 
     //!! Rigidbody에서 중력만 사용 안함
@@ -66,11 +67,9 @@ _int CHumanMonster::Update_GameObject(const _float& timeDelta)
     {
         _float distance = Get_DistanceToTarget();
 
-        if (1.f < distance && distance < 10.f)
+        if (2.5f < distance && distance < 10.f)
             Chase_Target(timeDelta, m_CombatStatCom->Get_Speed());
     }
-
-    
 
     return exit;
 }

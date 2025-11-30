@@ -12,12 +12,12 @@ typedef struct tagAttackData
 {
     _float damage;     // 데미지
     _float knockback;  // 넉백량
-    _float duration;   // 넉백 유지 시간(필요하면 사용 ㄱㄱ)
+    _float knockbackTimer;   // 넉백 유지 시간(필요하면 사용 ㄱㄱ)
 
     tagAttackData()
         : damage(0.f),
           knockback(0.f),
-          duration(0.f)
+          knockbackTimer(0.f)
     {}
 } ATTACKDATA;
 
@@ -27,7 +27,7 @@ typedef struct tagHitData
     _vec3  dir;              // 넉백 방향
     _float damage;           // 데미지
     _float knockback;        // 넉백량
-    _float duration;         // 넉백 유지 시간
+    _float knockbackTimer;         // 넉백 유지 시간
 
     CGameObject* attacker;   // 때린 놈
     CGameObject* hitter;     // 맞은 놈
@@ -36,7 +36,7 @@ typedef struct tagHitData
         : dir(0.f, 0.f, 0.f),
         damage(0.f),
         knockback(0.f),
-        duration(0.f),
+        knockbackTimer(0.f),
         attacker(nullptr),
         hitter(nullptr)
     {}
@@ -46,7 +46,7 @@ typedef struct tagHitData
         : dir(0.f, 0.f, 0.f),
         damage(attackData.damage),
         knockback(attackData.knockback),
-        duration(attackData.duration),
+        knockbackTimer(attackData.knockbackTimer),
         attacker(nullptr),
         hitter(nullptr)
     {}

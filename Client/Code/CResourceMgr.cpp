@@ -52,9 +52,16 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
     if (FAILED(Ready_Item(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Common(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Terrain(graphicDev))) return E_FAIL;
-    //if (FAILED(Ready_BossP1(graphicDev))) return E_FAIL;
-    if (FAILED(Ready_BossP2(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Decoration(graphicDev))) return E_FAIL;
+
+    return S_OK;
+}
+
+// 보스 리소스는 별도로 로딩
+HRESULT CResourceMgr::Ready_BossResource(DEVICE graphicDev)
+{
+    if (FAILED(Ready_BossP1(graphicDev))) return E_FAIL;
+    if (FAILED(Ready_BossP2(graphicDev))) return E_FAIL;
 
     return S_OK;
 }

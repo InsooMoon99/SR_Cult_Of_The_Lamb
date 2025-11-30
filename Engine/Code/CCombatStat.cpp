@@ -93,7 +93,7 @@ void CCombatStat::Take_Damage(const HITDATA& hitData)
     // 데미지
     Apply_Damage(hitData);
 
-    // 넉백. 여기 왜 터지는지
+    // 넉백
     Apply_Knockback(hitData);
 }
 
@@ -109,11 +109,12 @@ void CCombatStat::Apply_Damage(const HITDATA& hitData)
 
 void CCombatStat::Apply_Knockback(const HITDATA& hitData)
 {
-    // 리지드 바디 활용
     if (hitData.knockback > 0.f && m_OwnerRigidbody)
     {
-        m_OwnerRigidbody->Add_Force(hitData.dir * hitData.knockback);
-        m_KnockbackTimer = hitData.duration;
+        _vec3 knockbackVel = hitData.dir * hitData.knockback;
+        m_OwnerRigidbody->Set_Velocity(knockbackVel);
+
+        m_KnockbackTimer = hitData.knockbackTimer;
     }
 }
 

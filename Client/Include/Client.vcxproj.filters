@@ -438,6 +438,9 @@
     <ClInclude Include="..\Header\CMapObject_ETC.h">
       <Filter>03. GameObject\09. MapObject</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CLogo_Boss.h">
+      <Filter>02. Scene\00. Logo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -691,6 +694,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CMapObject_ETC.cpp">
       <Filter>03. GameObject\09. MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CLogo_Boss.cpp">
+      <Filter>02. Scene\00. Logo</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
