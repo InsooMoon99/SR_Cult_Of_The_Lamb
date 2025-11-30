@@ -189,7 +189,7 @@ namespace Engine
         SC_MAINMENU,
         SC_STAGE,
         SC_STAGE1,
-        SC_TARO_TEST,
+        SC_TAROT_TEST,
         SC_BOSS_STAGE1,
         SC_BOSS_STAGE2,
 

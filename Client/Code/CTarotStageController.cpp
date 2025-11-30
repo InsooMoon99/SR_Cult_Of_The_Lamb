@@ -120,7 +120,7 @@ CTarotStageController* CTarotStageController::Create(DEVICE graphicDev)
     if (FAILED(tarotStageController->Ready_GameObject()))
     {
         Safe_Release(tarotStageController);
-        MSG_BOX("CUITarotStageController Created Failed");
+        MSG_BOX("CUI_TarotStageController Created Failed");
         return nullptr;
     }
 
