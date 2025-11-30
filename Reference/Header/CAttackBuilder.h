@@ -126,6 +126,7 @@ public:
         return *this;
     }
 
+    // 공격 후 삭제할지?
     CAttackBuilder& DestroyOnHit(_bool destroy = true)
     {
         m_DestroyOnHit = destroy;

@@ -39,6 +39,8 @@ HRESULT CHumanMonster::Ready_GameObject()
     m_RigidbodyCom->Set_UseFriction(true);
     m_RigidbodyCom->Set_UseGravity(false);
 
+    m_RigidbodyCom->Set_Friction(1.0f);
+
     return S_OK;
 }
 

@@ -81,6 +81,7 @@ enum class OBJTYPE
     CAMERA,
     ITEM,
     /* 오브젝트 타입 종류 추가 */
+    LOGIC,
     UI,
     BOSS2,
     BOSS1,

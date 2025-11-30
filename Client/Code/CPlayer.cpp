@@ -24,22 +24,28 @@
 #include "CWeaponEquip.h"
 
 CPlayer::CPlayer(DEVICE graphicDev)
-	: CCharacterBase(graphicDev),
-	m_RigidbodyCom(nullptr),
-	m_WeaponEquipCom(nullptr),
-	m_InventoryCom(nullptr),
-	m_PlayerControllerCom(nullptr),
-	m_UIInventory(nullptr)
+    : CCharacterBase(graphicDev),
+    m_RigidbodyCom(nullptr),
+    m_WeaponEquipCom(nullptr),
+    m_InventoryCom(nullptr),
+    m_PlayerControllerCom(nullptr),
+    m_PlayerInputCom(nullptr),
+    m_PlayerMovementCom(nullptr),
+    m_PlayerAttackCom(nullptr),
+    m_UIInventory(nullptr)
 {
 }
 
 CPlayer::CPlayer(const CPlayer& rhs)
-	: CCharacterBase(rhs),
-	m_RigidbodyCom(nullptr),
-	m_WeaponEquipCom(nullptr),
-	m_InventoryCom(nullptr),
-	m_PlayerControllerCom(nullptr),
-	m_UIInventory(nullptr)
+    : CCharacterBase(rhs),
+    m_RigidbodyCom(nullptr),
+    m_WeaponEquipCom(nullptr),
+    m_InventoryCom(nullptr),
+    m_PlayerControllerCom(nullptr),
+    m_PlayerInputCom(nullptr),
+    m_PlayerMovementCom(nullptr),
+    m_PlayerAttackCom(nullptr),
+    m_UIInventory(nullptr)
 {
 }
 

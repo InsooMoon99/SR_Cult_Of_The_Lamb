@@ -1,8 +1,6 @@
 ﻿#include "pch.h"
 #include "CStage.h"
-#include "CBossPhase1.h"
 #include "CCombatStat.h"
-#include "CDInputMgr.h"
 #include "CDropSystem.h"
 #include "CHumanMonster.h"
 #include "CInventory.h"
@@ -10,29 +8,17 @@
 #include "CLayer.h"
 #include "CMainCamera.h"
 #include "CMainEditorMgr.h"
-#include "CMapEditorPlacer.h"
 #include "CPersistentObjectHelper.h"
 #include "CPlayer.h"
-#include "CSceneMgr.h"
 #include "CTerrain.h"
-#include "CTestMonster.h"
 #include "CTransform.h"
 #include "CUICircle.h"
 #include "CUIIcon.h"
 #include "CUIMp.h"
 #include "CUIPlayerPanel.h"
-#include "CUISKillCount.h"
 #include "CUIWeapon.h"
 #include "ItemInstance.h"
-#include "CBossPhase1.h"
-#include "CMapObjectMgr.h"
-#include "CTerrain.h"
 #include "CUITabMenu.h"
-#include "CUISkillCount.h"
-#include "CUITabMenu.h"
-#include "CUIWeapon.h"
-#include "CWall.h"
-#include "ItemInstance.h"
 
 CStage::CStage(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -63,9 +49,18 @@ HRESULT CStage::Ready_Scene()
         int id = CItemDB::GetInstance()->GetVector()[i].id;
         ItemInstance inst = { id, -1, 0 };
         CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 5.f, 0.f, 10.f + (i * 3.f) });
+    }
+
+    int size = CItemDB::GetInstance()->GetVector().size();
+    for (int i = 0; i < size; i++) 
+    {
+        int reverseIndex = size - 1 - i;
+        int id = CItemDB::GetInstance()->GetVector()[reverseIndex].id;  
+
+        ItemInstance inst = { id, -1, 0 };
         CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 10.f, 0.f, 10.f + (i * 3.f) });
     }
-    
+
 
     return S_OK;
 }

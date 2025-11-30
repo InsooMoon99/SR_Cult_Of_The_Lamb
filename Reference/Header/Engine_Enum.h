@@ -185,8 +185,8 @@ enum class ACTORSTATE
     PLAYER_GAUNTLET_COMBO4,     // 건틀릿 일반공격 콤보 4
     PLAYER_GAUNTLET_HEAVY,      // 건틀릿 강공격
 
-        HIT,
-        DEAD,
+    HIT,
+    DEAD,
 
     STATE_END
 };

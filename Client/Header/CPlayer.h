@@ -15,7 +15,7 @@ class CRigidbody;
 class CTexture;
 END
 
-class CPlayer : public CGameObject
+class CPlayer : public CCharacterBase
 {
 private:
     explicit CPlayer(DEVICE graphicDev);
