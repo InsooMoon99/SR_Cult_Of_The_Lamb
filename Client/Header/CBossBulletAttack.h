@@ -5,6 +5,7 @@ class CBossPhase1;
 class CBossStateMachine;
 class CBossBullet;
 
+
 class CBossBulletAttack :
     public CMonsterState
 {
@@ -26,7 +27,10 @@ public:
     virtual void    LateUpdate_State(const _float& timeDelta);
     virtual void    Render_State();
 
-    bool CircleBullet(const _float& timeDelta, int num, int length, float interval);
+    bool CircleBullet(const _float& timeDelta, int num, int radius, float interval);
+    bool CrossBullet(const _float& timeDelta, int num, int length, float interval);
+    bool SpreadBullet(const _float& timeDelta, int num, float interval, float Speed, int angleOffset = 0);
+   
 private:
     CBossPhase1* m_pOwner;
     CBossStateMachine* m_pStateMachine;
@@ -36,7 +40,7 @@ public:
 private:
     PHASE m_ePhase;
     float m_fElapsedTime =0;
-
+    float m_fExtraElapsedTime = 0;
     bool m_StartFlag = false;
     int m_Count = 0;
 

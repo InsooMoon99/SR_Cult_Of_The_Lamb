@@ -9,9 +9,11 @@
 #include "CTransform.h"
 #include "CAttackBox.h"
 #include "CBossPhase1.h"
+#include "CProjectile.h"
+#include "CBossBulletAttack.h"
 
-CBossBullet::CBossBullet(DEVICE graphicDev, CGameObject* owner, CGameObject* Target)
-    : CGameObject(graphicDev), m_pOwner(owner), m_pTarget(Target)
+CBossBullet::CBossBullet(DEVICE graphicDev, CGameObject* owner, CGameObject* Target, PROJ_TYPE type)
+    : CGameObject(graphicDev), m_pOwner(owner), m_pTarget(Target), m_type(type)
 {
     m_pOwner->AddRef();
     m_pTarget->AddRef();
@@ -89,12 +91,28 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
             SpawnAttackObject(ATBox); // TYPE , BOX SPHERE
         }
 
+
+
         m_flag = true;
     }
 
-
-    if (m_StartShoot && m_pTarget)
+    if (m_StartShoot && m_ProjectileCom->Get_isSetDesc()==true)
     {
+
+        switch (m_type)
+        {
+        case PROJ_TYPE::LINEAR:
+
+            m_ProjectileCom->Update_Component(timeDelta);
+            m_ATKBoxTransformCom->Set_Pos(m_TransformCom->Get_Pos());
+
+            break;
+        case PROJ_TYPE::ORBIT:
+            m_ProjectileCom->Update_Component(timeDelta);
+            m_ATKBoxTransformCom->Set_Pos(m_TransformCom->Get_Pos());
+            break;
+
+        }
         //if (m_TargetFlag == false)
         //{
         //    CTransform* TargetTransform = dynamic_cast<CTransform*>(m_pTarget->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
@@ -105,11 +123,11 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
         //    m_TargetFlag = true;
         //}
 
-        _vec3 dir = m_TargetDir * timeDelta * m_Speed;
+        /*_vec3 dir = m_TargetDir * timeDelta * m_Speed;
         
         m_TransformCom->Set_Pos(m_TransformCom->Get_Pos() + dir);
 
-        m_ATKBoxTransformCom->Set_Pos(m_ATKBoxTransformCom->Get_Pos() + dir);
+        m_ATKBoxTransformCom->Set_Pos(m_ATKBoxTransformCom->Get_Pos() + dir);*/
     }
 
 
@@ -244,13 +262,18 @@ HRESULT CBossBullet::Add_Component()
     NULL_CHECK_RETURN(m_CombatStatCom, E_FAIL);
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::COMBATSTAT, m_CombatStatCom });
 
+    // Projectile
+    m_ProjectileCom = CreateProtoComponent<CProjectile>(this, COMPONENTTYPE::PROJECTILE);
+    NULL_CHECK_RETURN(m_ProjectileCom, E_FAIL);
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::PROJECTILE, m_ProjectileCom });
+
     return S_OK;
 }
 
 
-CBossBullet* CBossBullet::Create(DEVICE graphicDev, CGameObject* owner, CGameObject* Target)
+CBossBullet* CBossBullet::Create(DEVICE graphicDev, CGameObject* owner, CGameObject* Target, PROJ_TYPE type)
 {
-    auto BossBullet = new CBossBullet(graphicDev, owner, Target);
+    auto BossBullet = new CBossBullet(graphicDev, owner, Target, type);
 
     if (FAILED(BossBullet->Ready_GameObject()))
     {

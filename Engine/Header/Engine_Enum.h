@@ -97,6 +97,7 @@ namespace Engine
         INVENTORY,
         TERRAIN_RENDER,
         WALL_RENDERER,
+        PROJECTILE,
 
         CONTROLLER_PLAYER,
         WEAPON_EQUIP,

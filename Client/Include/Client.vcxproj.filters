@@ -375,7 +375,10 @@
     <ClInclude Include="..\Header\CBossBullet.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CProjectaile.h">
+    <ClInclude Include="..\Header\CProjectile.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Client_Enum.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -596,7 +599,7 @@
     <ClCompile Include="..\Code\CBossBullet.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CProjectaile.cpp">
+    <ClCompile Include="..\Code\CProjectile.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "CGameObject.h"
+#include "Client_Enum.h"
 
 BEGIN(Engine)
 class CRcTex;
@@ -11,11 +12,15 @@ class CCombatStat;
 class CAttackBox;
 END
 
+class CProjectile;
+class CBossBulletAttack;
+
+
 class CBossBullet :
     public CGameObject
 {
 private:
-    explicit CBossBullet(DEVICE graphicDev, CGameObject* owner, CGameObject* Target);
+    explicit CBossBullet(DEVICE graphicDev, CGameObject* owner, CGameObject* Target, PROJ_TYPE phase);
     explicit CBossBullet(const CBossBullet& rhs);
     virtual ~CBossBullet();
 
@@ -38,10 +43,13 @@ public:
     void SetPendingKill() { Mark_As_PendingKill(); }
 public:
 
-    static CBossBullet* Create(DEVICE graphicDev, CGameObject* owner, CGameObject* Target);
+    static CBossBullet* Create(DEVICE graphicDev, CGameObject* owner, CGameObject* Target, PROJ_TYPE type);
 
     void Start_Shoot() { m_StartShoot = true; }
     void Set_TargetDir(_vec3 dir) { m_TargetDir = dir; }
+
+
+
 protected:
 
     CRcTex* m_BufferCom;
@@ -55,6 +63,9 @@ protected:
     CGameObject* m_pTarget;
    // CAttackBox* ATBox = nullptr;
     CTransform* m_ATKBoxTransformCom;
+    CProjectile* m_ProjectileCom;
+
+    PROJ_TYPE m_type;
 
     bool m_flag = false;
 
@@ -63,6 +74,8 @@ protected:
     bool m_StartShoot = false;
     bool m_TargetFlag = false;
     _vec3 m_MoveLength ;
+
+
 
     float m_fAlpha = 0;
 

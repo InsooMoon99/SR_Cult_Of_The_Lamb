@@ -27,6 +27,7 @@
 #include "CWeaponEquip.h"
 #include "ItemData.h"
 #include "ItemInstance.h"
+#include "CProjectile.h"
 
 IMPLEMENT_SINGLETON(CResourceMgr)
 
@@ -188,6 +189,11 @@ HRESULT CResourceMgr::Ready_Common(DEVICE graphicDev)
     // Rigidbody
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::RIGIDBODY, CRigidbody::Create(graphicDev))))
+        return E_FAIL;
+
+    // Projectile
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::PROJECTILE, CProjectile::Create(graphicDev))))
         return E_FAIL;
 
     return S_OK;
