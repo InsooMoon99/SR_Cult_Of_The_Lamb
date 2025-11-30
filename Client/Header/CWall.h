@@ -1,13 +1,12 @@
 ﻿#pragma once
 
-#include "CGameObject.h"
+#include "CRenderObject.h"
 
 BEGIN(Engine)
-class CTransform;
 class CBoxCollider;
 END
 
-class CWall : public CGameObject
+class CWall : public CRenderObject
 {
 private:
     explicit CWall(DEVICE graphicDev);
@@ -16,13 +15,14 @@ private:
 
 public:
     HRESULT Ready_GameObject() override;
+    void    Initialize_GameObject() override;
     _int    Update_GameObject(const _float& timeDelta) override;
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
     void    Render_Editor() override;
 
 private:
-    HRESULT Add_Component();
+    HRESULT Add_Component() override;
 
 public:
     void    OnBeginOverlap(CCollider* self, CCollider* other) override;
@@ -34,7 +34,6 @@ protected:
     void Free() override;
 
 private:
-    CTransform*     m_TransformCom;
     CBoxCollider*   m_BoxCollider;
 };
 

@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include "CDInputMgr.h"
+
 #include "CBoxCollider.h"
 #include "CCameraCom.h"
 #include "CCombatStat.h"
@@ -221,6 +223,15 @@ static void Menu_CameraInspector(CCameraCom* camera)
         {
             camera->Set_CamMode(static_cast<CCameraCom::CAM_MODE>(camMode));
         }
+
+        if (CDInputMgr::GetInstance()->KeyDown(DIK_F8))
+        {
+            camMode = (camera->Get_CamMode() == CCameraCom::CAM_MODE::CAM_TARGET) ?
+                CCameraCom::CAM_MODE::CAM_FREE :
+                CCameraCom::CAM_MODE::CAM_TARGET;
+
+            camera->Set_CamMode(static_cast<CCameraCom::CAM_MODE>(camMode));
+        }
     }
     ImGui::PopID();
 }
@@ -309,7 +320,7 @@ static void Camera_Inspector(CCameraCom* camera)
         ImGui::NewLine();
 
         ImGui::Text(u8"[ 이동 ]");
-        ImGui::TextWrapped(u8"[I] 앞 | [K] 뒤 | [J] 좌 | [L] 우");
+        ImGui::TextWrapped(u8"[↑] 앞 | [↓] 뒤 | [←] 좌 | [→] 우");
         ImGui::NewLine();
 
         ImGui::Text(u8"[ 상/하 이동 ]");
@@ -317,8 +328,8 @@ static void Camera_Inspector(CCameraCom* camera)
         ImGui::NewLine();
 
         ImGui::Text(u8"[ 회전 ]");
-        ImGui::TextWrapped(u8"[LShift + I] 상 | [LShift + I] 하");
-        ImGui::TextWrapped(u8"[LShift + J] 좌 | [LShift + L] 우");
+        ImGui::TextWrapped(u8"[LShift + ↑] 상 | [LShift + ↓] 하");
+        ImGui::TextWrapped(u8"[LShift + ←] 좌 | [LShift + →] 우");
     }
     ImGui::PopID();
 }

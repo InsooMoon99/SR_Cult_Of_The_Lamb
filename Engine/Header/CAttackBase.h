@@ -24,10 +24,13 @@ public:
 
 public:
     void Set_AttackData(const ATTACKDATA& hit) { m_AttackData = hit; }
-    void Set_Instigator(CGameObject* inst) { m_Instigator = inst; }
+    void Set_Instigator(CGameObject* instigator);
     void Set_LifeTime(float LifeTime) {m_LifeTime = LifeTime;}
     void Set_DestroyOnHit(_bool destroy) { m_DestroyOnHit = destroy; }
 
+    virtual CCollider* Get_Collider() = 0;
+
+public:
     /// @brief CAttackBox가 소멸할 때 자동으로 호출할 void 반환타입 람다 함수를 등록해두는 Setter
     /// @param callback 소멸시 자동 호출할 람다함수 등록
     void Set_OnDestroyCallback(function<void()> callback) { m_OnDestroyCallback = move(callback); }
@@ -35,7 +38,6 @@ public:
 protected:
     void Free() override;
 
-    virtual CCollider* Get_Collider() = 0;
 
 protected:
     CTransform*     m_TransformCom;

@@ -84,11 +84,18 @@ void CAttackBase::OnBeginOverlap(CCollider* self, CCollider* other)
         return;
 
     // 방향 보정
-    _vec3 atkPos = dynamic_cast<CTransform*>(
-        m_Instigator->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Get_Pos();
+    CTransform* atkTransform = dynamic_cast<CTransform*>(
+        m_Instigator->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
 
-    _vec3 hitterPos = dynamic_cast<CTransform*>(
-        hitter->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Get_Pos();
+    _vec3 atkPos = atkTransform->Get_Pos();
+
+    CTransform* hitTransform = dynamic_cast<CTransform*>(
+        hitter->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+    NULL_CHECK(atkTransform);
+    NULL_CHECK(hitTransform);
+
+    _vec3 hitterPos = hitTransform->Get_Pos();
 
     _vec3 dir = hitterPos - atkPos;
     if (D3DXVec3LengthSq(&dir) > 0.0001f)
@@ -102,7 +109,7 @@ void CAttackBase::OnBeginOverlap(CCollider* self, CCollider* other)
 
     combat->Take_Damage(hit);
 
-    // 데미지를 줬으면, 삭제 요청
+    // 데미지를 줬으면, 삭제 요청 -> AttackBuilder에서 세팅
     if (m_DestroyOnHit)
     {
         Mark_As_PendingKill();
@@ -114,6 +121,17 @@ void CAttackBase::OnEndOverlap(CCollider* self, CCollider* other)
     CGameObject::OnEndOverlap(self, other);
 
     
+}
+
+void CAttackBase::Set_Instigator(CGameObject* instigator)
+{
+    m_Instigator = instigator;
+
+    CCollider* collider = Get_Collider();
+    if (collider)
+    {
+        collider->Set_Instigator(instigator);
+    }
 }
 
 void CAttackBase::Free()

@@ -27,8 +27,6 @@ void CMapObjectMgr::Ready_MapObjectMgr(DEVICE graphicDev)
 
     m_MapPlacer = CMapEditorPlacer::Create(graphicDev);
 
-    
-
     Refresh_MapObjectList();
 }
 
@@ -76,41 +74,45 @@ void CMapObjectMgr::Render_MapObjectWindow()
     }
     ImGui::Separator();
 
-    ImGui::SeparatorText(u8"[ 저장 파일명 ]");
+#pragma region 맵 오브젝트 따로 저장
+    //ImGui::SeparatorText(u8"[ 저장 파일명 ]");
 
-    ImGui::SetNextItemWidth(150.f);
-    ImGui::InputText("##MapObjectName", m_MapObjFileName, 128);
+    //ImGui::SetNextItemWidth(150.f);
+    //ImGui::InputText("##MapObjectName", m_MapObjFileName, 128);
 
-    ImGui::SameLine();
+    //ImGui::SameLine();
 
-    if (ImGui::Button(u8"Save"))
-    {
-        string path = "../Bin/Resource/Data/MapObject/";
-        path += m_MapObjFileName;
-        path += ".mapobj";
+    //if (ImGui::Button(u8"Save"))
+    //{
+    //    string path = "../Bin/Resource/Data/MapObject/";
+    //    path += m_MapObjFileName;
+    //    path += ".mapobj";
 
-        if (SUCCEEDED(SaveMapObject(path.c_str())))
-        {
-            Refresh_MapObjectList(); // 저장하고, 새로고침하기
-        }
-    }
+    //    if (SUCCEEDED(SaveMapObject(path.c_str())))
+    //    {
+    //        Refresh_MapObjectList(); // 저장하고, 새로고침하기
+    //    }
+    //}
 
-    ImGui::NewLine();
+    //ImGui::NewLine();
 
-    // 저장 파일 리스트
-    if (ImGui::CollapsingHeader(u8"저장된 맵오브젝트"))
-    {
-        for (auto& fileName : m_MapObjList)
-        {
-            if (ImGui::Selectable(fileName.c_str()))
-            {
-                string fullPath = "../Bin/Resource/Data/MapObject/";
-                fullPath += fileName;
+    //// 저장 파일 리스트
+    //if (ImGui::CollapsingHeader(u8"저장된 맵오브젝트"))
+    //{
+    //    for (auto& fileName : m_MapObjList)
+    //    {
+    //        if (ImGui::Selectable(fileName.c_str()))
+    //        {
+    //            string fullPath = "../Bin/Resource/Data/MapObject/";
+    //            fullPath += fileName;
 
-                LoadMapObject(fullPath.c_str());
-            }
-        }
-    }
+    //            LoadMapObject(fullPath.c_str());
+    //        }
+    //    }
+    //}
+#pragma endregion
+    
+
 
 }
 
@@ -320,6 +322,7 @@ HRESULT CMapObjectMgr::SaveMapObject(const char* filePath)
             {
                 MapObjectData data;
                 data.type = mapObj->Get_Type();
+                data.textureIndex = mapObj->Get_TextureIndex();
 
                 CTransform* objTransform = dynamic_cast<CTransform*>(mapObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
 
@@ -327,6 +330,8 @@ HRESULT CMapObjectMgr::SaveMapObject(const char* filePath)
                     continue;
 
                 data.pos = objTransform->Get_Pos();
+                data.scale = objTransform->Get_Scale();
+                data.rotation = objTransform->Get_Rotation();
 
                 objects.push_back(data);
             }
@@ -339,7 +344,7 @@ HRESULT CMapObjectMgr::SaveMapObject(const char* filePath)
         return E_FAIL;
 
     uint32_t magic = 0x4D415042; // 'MAPB'
-    uint32_t version = 1;
+    uint32_t version = 2;
     uint32_t count = objects.size();
 
     ofs.write((char*)&magic, sizeof(magic));
@@ -397,7 +402,7 @@ HRESULT CMapObjectMgr::LoadMapObject(const char* filePath)
 
     for (const auto& data : objectsData)
     {
-        CMapObjectBase* newObj = CreateMapObjectType(m_GraphicDev, data.type);
+        CMapObjectBase* newObj = CreateMapObjectType(m_GraphicDev, data.type, data.textureIndex);
         if (newObj)
         {
             newObj->Set_WorldPos(data.pos);
@@ -410,6 +415,92 @@ HRESULT CMapObjectMgr::LoadMapObject(const char* filePath)
     for (auto& obj : m_PlacedObjects)
     {
         Add_Placement(obj);
+    }
+
+    return S_OK;
+}
+
+HRESULT CMapObjectMgr::Save_ToStream(ofstream& ofs)
+{
+    CScene* scene = CManagement::GetInstance()->Get_Scene();
+    CLayer* layer_Enviroment = scene->Get_Layer(LAYERTYPE::ENVIRONMENT);
+
+    vector<MapObjectData> objects;
+
+    for (auto& layerPair : layer_Enviroment->Get_Objects())
+    {
+        for (auto& obj : layerPair.second)
+        {
+            CMapObjectBase* mapObj = dynamic_cast<CMapObjectBase*>(obj);
+            if (mapObj)
+            {
+                MapObjectData data;
+                data.type = mapObj->Get_Type();
+                data.textureIndex = mapObj->Get_TextureIndex();
+
+                CTransform* objTransform = dynamic_cast<CTransform*>(
+                    mapObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+                if (objTransform)
+                {
+                    data.pos = objTransform->Get_Pos();
+                    data.scale = objTransform->Get_Scale();        
+                    data.rotation = objTransform->Get_Rotation();  
+
+                    objects.push_back(data);
+                }
+            }
+        }
+    }
+
+    // Stream에 쓰기
+    uint32_t count = objects.size();
+    ofs.write((char*)&count, sizeof(count));
+
+    if (count > 0)
+    {
+        ofs.write((char*)objects.data(), sizeof(MapObjectData) * count);
+    }
+
+    return S_OK;
+}
+
+HRESULT CMapObjectMgr::Load_FromStream(ifstream& ifs)
+{
+    uint32_t count = 0;
+    ifs.read((char*)&count, sizeof(count));
+
+    vector<MapObjectData> objectsData(count);
+    if (count > 0)
+    {
+        ifs.read((char*)objectsData.data(), sizeof(MapObjectData) * count);
+    }
+
+    CScene* scene = CManagement::GetInstance()->Get_Scene();
+    if (!scene) return E_FAIL;
+
+    CLayer* layer = scene->Get_Layer(LAYERTYPE::ENVIRONMENT);
+    if (!layer) return E_FAIL;
+
+    for (const auto& data : objectsData)
+    {
+        CMapObjectBase* newObj = CreateMapObjectType(m_GraphicDev, data.type, data.textureIndex);
+        if (newObj)
+        {
+            CTransform* transform = dynamic_cast<CTransform*>(
+                newObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+            if (transform)
+            {
+                transform->Set_Pos(data.pos);
+                transform->Set_Scale(data.scale);  
+                transform->Set_Rotation(data.rotation);
+            }
+
+            layer->Add_GameObject(OBJTYPE::PLACEMENT, newObj);
+
+            newObj->Initialize_GameObject();
+        }
     }
 
     return S_OK;

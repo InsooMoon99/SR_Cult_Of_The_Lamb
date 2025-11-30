@@ -57,6 +57,17 @@ HRESULT CDroppedItem::Ready_GameObject(_vec3 pos)
     return S_OK;
 }
 
+void CDroppedItem::Initialize_GameObject()
+{
+    CGameObject::Initialize_GameObject();
+
+    if (m_BoxColCom)
+    {
+        m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::ITEM);
+    }
+    
+}
+
 _int CDroppedItem::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CGameObject::Update_GameObject(timeDelta);

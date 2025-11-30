@@ -168,11 +168,20 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
     AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 
+    int windowWidth = rc.right - rc.left;
+    int windowHeight = rc.bottom - rc.top;
+
+    int screenWidth = GetSystemMetrics(SM_CXSCREEN);  
+    int screenHeight = GetSystemMetrics(SM_CYSCREEN); 
+
+    int centerX = (screenWidth - windowWidth) / 2;
+    int centerY = (screenHeight - windowHeight) / 2;
+
     HWND hWnd = CreateWindowW(szWindowClass,
                               szTitle,
                               WS_OVERLAPPEDWINDOW,
-                              CW_USEDEFAULT,
-                              0,
+                              centerX,
+                              centerY,
                               rc.right - rc.left,
                               rc.bottom - rc.top,
                               nullptr,
@@ -216,6 +225,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         _tfreopen_s(&debug, _T("CONIN$"), _T("r"), stdin);
         _tfreopen_s(&debug, _T("CONERR"), _T("w"), stderr);
         _tsetlocale(LC_ALL, _T(""));
+
+        HWND consoleWindow = GetConsoleWindow();
+        if (consoleWindow)
+        {
+
+            SetWindowPos(consoleWindow,
+                HWND_TOP,
+                50,            //  X 좌표
+                50,            //  Y 좌표
+                800,           //  너비
+                600,           //  높이
+                SWP_SHOWWINDOW);
+        }
     }
     break;
     case WM_CLOSE:

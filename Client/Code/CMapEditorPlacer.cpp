@@ -117,10 +117,10 @@ void CMapEditorPlacer::Update_MapPlacer(const _float& timeDelta)
             CLayer* layer = scene->Get_Layer(LAYERTYPE::ENVIRONMENT);
             if (layer)
             {
-                CMapObjectBase* newObj = CreateMapObjectType(m_GraphicDev, m_SelectedType);
+                CMapObjectBase* newObj = CreateMapObjectType(m_GraphicDev, m_SelectedType, Get_CurTextureIndex());
                 if (newObj)
                 {
-                    newObj->Set_TextureIndex(Get_CurTextureIndex());
+                    //newObj->Set_TextureIndex(Get_CurTextureIndex());
                     newObj->Set_WorldPos(_vec3(
                         worldPos.x,
                         worldPos.y + m_PreviewYOffset,
@@ -185,11 +185,11 @@ void CMapEditorPlacer::Start_Place(MAPOBJTYPE type)
     m_PreviewYOffset = 0.f;
 
     // 새 프리뷰 생성
-    m_PreviewObj = CreateMapObjectType(m_GraphicDev, type);
+    m_PreviewObj = CreateMapObjectType(m_GraphicDev, type, Get_CurTextureIndex());
     if (m_PreviewObj)
     {
         m_PreviewObj->Set_Preview(true);
-        m_PreviewObj->Set_TextureIndex(Get_CurTextureIndex());
+        //m_PreviewObj->Set_TextureIndex(Get_CurTextureIndex());
 
         CTransform* transform = dynamic_cast<CTransform*>(m_PreviewObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
         if (transform)

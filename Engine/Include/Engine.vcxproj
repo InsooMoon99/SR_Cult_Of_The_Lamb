@@ -215,6 +215,7 @@ xcopy /Y /I "$(SolutionDir)Engine\Header\*.*" "$(SolutionDir)Reference\Header\"<
     <ClInclude Include="..\Header\CRcCol.h" />
     <ClInclude Include="..\Header\CRcTex.h" />
     <ClInclude Include="..\Header\CRenderer.h" />
+    <ClInclude Include="..\Header\CRenderObject.h" />
     <ClInclude Include="..\header\CRigidbody.h" />
     <ClInclude Include="..\Header\CScene.h" />
     <ClInclude Include="..\Header\CSoundMgr.h" />
@@ -270,6 +271,7 @@ xcopy /Y /I "$(SolutionDir)Engine\Header\*.*" "$(SolutionDir)Reference\Header\"<
     <ClCompile Include="..\Code\CRcCol.cpp" />
     <ClCompile Include="..\Code\CRcTex.cpp" />
     <ClCompile Include="..\Code\CRenderer.cpp" />
+    <ClCompile Include="..\Code\CRenderObject.cpp" />
     <ClCompile Include="..\code\CRigidbody.cpp" />
     <ClCompile Include="..\Code\CScene.cpp" />
     <ClCompile Include="..\Code\CSoundMgr.cpp" />

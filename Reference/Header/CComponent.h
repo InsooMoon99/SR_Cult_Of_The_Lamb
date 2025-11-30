@@ -20,8 +20,9 @@ protected:
     ~CComponent() override;
 
 public:
-    virtual _int Update_Component(const _float& timeDelta) { return 0; }
-    virtual void LateUpdate_Component() { }
+    virtual void      Initialize_Component() { }
+    virtual _int      Update_Component(const _float& timeDelta) { return 0; }
+    virtual void      LateUpdate_Component() { }
 
     CGameObject*      Get_Owner() { return m_Owner; }
     
@@ -48,10 +49,12 @@ protected:
     CTransform*  m_TransformCom;
 
     _bool m_IsClone;
-    _bool m_Active;         // 컴포넌트의 업데이트와 렌더를 하면 true, 안할거면 false로 바꾸면 되는 스위치
+
+     // 컴포넌트의 업데이트와 렌더를 하면 true, 안할거면 false로 바꾸면 되는 스위치
+    _bool m_Active; 
 
 public:
-    virtual CComponent* Clone() PURE;		// 프로토타입 사용 예
+    virtual CComponent* Clone() PURE;
 
 protected:
     void Free() override;

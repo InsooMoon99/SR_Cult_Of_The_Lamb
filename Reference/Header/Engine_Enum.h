@@ -61,6 +61,19 @@ enum class LAYERTYPE
     LAYER_END
 };
 
+enum class COLLISION_LAYERTYPE
+{
+    DEFAULT, // 모든 충돌
+    PLAYER,
+    ENEMY,
+    WALL,
+    PROJECTILE,
+    ITEM,
+    ATTACK,
+
+    COL_LAYER_END
+};
+
 enum class OBJTYPE
 {
     PLAYER,
