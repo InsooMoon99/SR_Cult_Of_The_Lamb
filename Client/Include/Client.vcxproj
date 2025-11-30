@@ -172,6 +172,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\CBossAwake.h" />
+    <ClInclude Include="..\Header\CBossBullet.h" />
     <ClInclude Include="..\Header\CBossBulletAttack.h" />
     <ClInclude Include="..\Header\CBossChain.h" />
     <ClInclude Include="..\Header\CBossChainAttack.h" />
@@ -207,6 +208,7 @@
     <ClInclude Include="..\Header\CMonsterState.h" />
     <ClInclude Include="..\Header\CPlayer.h" />
     <ClInclude Include="..\Header\CPlayerController.h" />
+    <ClInclude Include="..\Header\CProjectile.h" />
     <ClInclude Include="..\Header\CRandomMgr.h" />
     <ClInclude Include="..\Header\CResourceMgr.h" />
     <ClInclude Include="..\Header\CSceneMgr.h" />
@@ -241,6 +243,7 @@
     <ClInclude Include="..\Header\ItemInstance.h" />
     <ClInclude Include="..\Header\CUIMp.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="Client_Enum.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
@@ -248,6 +251,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CBossAwake.cpp" />
+    <ClCompile Include="..\Code\CBossBullet.cpp" />
     <ClCompile Include="..\Code\CBossBulletAttack.cpp" />
     <ClCompile Include="..\Code\CBossChain.cpp" />
     <ClCompile Include="..\Code\CBossChainAttack.cpp" />
@@ -281,6 +285,7 @@
     <ClCompile Include="..\Code\CMonsterState.cpp" />
     <ClCompile Include="..\Code\CPlayer.cpp" />
     <ClCompile Include="..\Code\CPlayerController.cpp" />
+    <ClCompile Include="..\Code\CProjectile.cpp" />
     <ClCompile Include="..\Code\CRandomMgr.cpp" />
     <ClCompile Include="..\Code\CResourceMgr.cpp" />
     <ClCompile Include="..\Code\CSceneMgr.cpp" />
