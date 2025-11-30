@@ -101,11 +101,11 @@ enum class COMPONENTTYPE
     WALL_RENDERER,
     PROJECTILE,
 
-    WEAPON_EQUIP,
-    PL_CONTROLLER,
-    PL_INPUT,
-    PL_MOVEMENT,
-    PL_ATTACK,
+    WEAPON_EQUIP,           // 플레이어 무기
+    PL_CONTROLLER,          // 플레이어 FSM 컨트롤러
+    PL_INPUT,               // 플레이어 방향 입력
+    PL_MOVEMENT,            // 플레이어 움직임
+    PL_ATTACK,              // 플레이어 공격
 
     TEXTURE,
     TEX_PLAYER,
@@ -161,12 +161,16 @@ enum class ACTORSTATE
     RUN,
     ATTACK,
 
-    PLAYER_ROLL,
-    PLAYER_SWORD_COMBO1,
-    PLAYER_SWORD_COMBO2,
-    PLAYER_SWORD_COMBO3,
-    PLAYER_SWORD_HEAVY,
-    // TODO : 플레이어 상태 계속 추가될 예정
+    PLAYER_ROLL,                // 구르기
+    PLAYER_SWORD_COMBO1,        // 검 일반공격 콤보 1
+    PLAYER_SWORD_COMBO2,        // 검 일반공격 콤보 2
+    PLAYER_SWORD_COMBO3,        // 검 일반공격 콤보 3
+    PLAYER_SWORD_HEAVY,         // 검 강공격
+    PLAYER_GAUNTLET_COMBO1,     // 건틀릿 일반공격 콤보 1
+    PLAYER_GAUNTLET_COMBO2,     // 건틀릿 일반공격 콤보 2
+    PLAYER_GAUNTLET_COMBO3,     // 건틀릿 일반공격 콤보 3
+    PLAYER_GAUNTLET_COMBO4,     // 건틀릿 일반공격 콤보 4
+    PLAYER_GAUNTLET_HEAVY,      // 건틀릿 강공격
 
     HIT,
     DEAD,

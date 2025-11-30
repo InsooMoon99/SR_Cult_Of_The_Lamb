@@ -198,7 +198,7 @@ HRESULT CMainMenu::Ready_UI_Layer(LAYERTYPE layerType)
     //bt2->Set_TextureIndex(1, 0);
     bt2->SetCloneTexAspectScale({ scaleX, scaleY, 1 });
     bt2->Get_Transform()->Set_Pos(-WINCX / 3, -WINCX / 9, .3);
-    bt2->SetOnClick([]() {CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_BOSS_STAGE);});
+    bt2->SetOnClick([]() {CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_BOSS_STAGE1);});
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::UI, bt2),
         L"CMainMenu::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUIIcon) failed");

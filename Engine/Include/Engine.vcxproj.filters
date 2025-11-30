@@ -306,9 +306,6 @@
     <ClInclude Include="..\header\CRigidbody.h">
       <Filter>02. Prototype\08. Rigidbody</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CTransformAsp.h">
-      <Filter>02. Prototype\01. Transform</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\CAttackBox.h">
       <Filter>02. Prototype\04. Collider\03. Attack Collider</Filter>
     </ClInclude>
@@ -451,9 +448,6 @@
     </ClCompile>
     <ClCompile Include="..\code\CRigidbody.cpp">
       <Filter>02. Prototype\08. Rigidbody</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\CTransformAsp.cpp">
-      <Filter>02. Prototype\01. Transform</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CAttackBox.cpp">
       <Filter>02. Prototype\04. Collider\03. Attack Collider</Filter>
