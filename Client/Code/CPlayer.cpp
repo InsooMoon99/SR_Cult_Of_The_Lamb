@@ -38,7 +38,6 @@ CPlayer::~CPlayer()
 
 HRESULT CPlayer::Ready_GameObject()
 {
-	// AddCompnoent가 아닌 부모의 Ready를 호출해야한다. 부모가 알아서 AddComponent 실행함
 	if (FAILED(CCharacterBase::Ready_GameObject()))
 		return E_FAIL;
 
@@ -66,7 +65,7 @@ void CPlayer::Initialize_GameObject()
 {
     CCharacterBase::Initialize_GameObject();
 
-   
+    
 }
 
 _int CPlayer::Update_GameObject(const _float& timeDelta)

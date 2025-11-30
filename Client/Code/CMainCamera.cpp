@@ -117,26 +117,26 @@ void CMainCamera::Key_Input(const _float& timeDelta)
     if (inputMgr->Get_DIKeyState(DIK_LSHIFT) & 0x80)
     {
         // Y축 회전
-        if (inputMgr->Get_DIKeyState(DIK_J) & 0x80)
+        if (inputMgr->Get_DIKeyState(DIK_LEFT) & 0x80)
         {
             m_TransformCom->Rotation(ROT_Y, D3DXToRadian(-180), timeDelta);
             moving = true;
         }
 
-        if (inputMgr->Get_DIKeyState(DIK_L) & 0x80)
+        if (inputMgr->Get_DIKeyState(DIK_RIGHT) & 0x80)
         {
             m_TransformCom->Rotation(ROT_Y, D3DXToRadian(180), timeDelta);
             moving = true;
         }
 
         // X축 회전
-        if (inputMgr->Get_DIKeyState(DIK_I) & 0x80)
+        if (inputMgr->Get_DIKeyState(DIK_UP) & 0x80)
         {
             m_TransformCom->Rotation_World(ROT_X, D3DXToRadian(-180), timeDelta);
             moving = true;
         }
 
-        if (inputMgr->Get_DIKeyState(DIK_K) & 0x80)
+        if (inputMgr->Get_DIKeyState(DIK_DOWN) & 0x80)
         {
             m_TransformCom->Rotation_World(ROT_X, D3DXToRadian(180), timeDelta);
             moving = true;
@@ -146,14 +146,14 @@ void CMainCamera::Key_Input(const _float& timeDelta)
     {
         // 앞뒤
         dir = m_TransformCom->Get_Look();
-        if (inputMgr->Get_DIKeyState(DIK_I) & 0x80)
+        if (inputMgr->Get_DIKeyState(DIK_UP) & 0x80)
         {
             D3DXVec3Normalize(&dir, &dir);
             m_TransformCom->Move_Pos(dir, timeDelta, speed);
             moving = true;
         }
 
-        if (inputMgr->Get_DIKeyState(DIK_K) & 0x80)
+        if (inputMgr->Get_DIKeyState(DIK_DOWN) & 0x80)
         {
             D3DXVec3Normalize(&dir, &dir);
             m_TransformCom->Move_Pos(dir, timeDelta, -speed);
@@ -162,14 +162,14 @@ void CMainCamera::Key_Input(const _float& timeDelta)
 
         // 좌우
         dir = m_TransformCom->Get_Right();
-        if (inputMgr->Get_DIKeyState(DIK_L) & 0x80)
+        if (inputMgr->Get_DIKeyState(DIK_RIGHT) & 0x80)
         {
             D3DXVec3Normalize(&dir, &dir);
             m_TransformCom->Move_Pos(dir, timeDelta, speed);
             moving = true;
         }
 
-        if (inputMgr->Get_DIKeyState(DIK_J) & 0x80)
+        if (inputMgr->Get_DIKeyState(DIK_LEFT) & 0x80)
         {
             D3DXVec3Normalize(&dir, &dir);
             m_TransformCom->Move_Pos(dir, timeDelta, -speed);

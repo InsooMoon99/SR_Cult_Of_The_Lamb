@@ -25,6 +25,8 @@ public:
 
     _bool Can_Collide(COLLISION_LAYERTYPE layer1, COLLISION_LAYERTYPE layer2);
 
+    void Render_Debug(bool& flag);
+
 private:
     void Free() override;
 

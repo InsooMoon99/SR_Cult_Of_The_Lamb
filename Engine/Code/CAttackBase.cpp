@@ -83,11 +83,18 @@ void CAttackBase::OnBeginOverlap(CCollider* self, CCollider* other)
         return;
 
     // 방향 보정
-    _vec3 atkPos = dynamic_cast<CTransform*>(
-        m_Instigator->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Get_Pos();
+    CTransform* atkTransform = dynamic_cast<CTransform*>(
+        m_Instigator->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
 
-    _vec3 hitterPos = dynamic_cast<CTransform*>(
-        hitter->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Get_Pos();
+    _vec3 atkPos = atkTransform->Get_Pos();
+
+    CTransform* hitTransform = dynamic_cast<CTransform*>(
+        hitter->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+    NULL_CHECK(atkTransform);
+    NULL_CHECK(hitTransform);
+
+    _vec3 hitterPos = hitTransform->Get_Pos();
 
     _vec3 dir = hitterPos - atkPos;
     if (D3DXVec3LengthSq(&dir) > 0.0001f)

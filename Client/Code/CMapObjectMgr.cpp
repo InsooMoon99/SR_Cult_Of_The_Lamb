@@ -74,41 +74,45 @@ void CMapObjectMgr::Render_MapObjectWindow()
     }
     ImGui::Separator();
 
-    ImGui::SeparatorText(u8"[ 저장 파일명 ]");
+#pragma region 맵 오브젝트 따로 저장
+    //ImGui::SeparatorText(u8"[ 저장 파일명 ]");
 
-    ImGui::SetNextItemWidth(150.f);
-    ImGui::InputText("##MapObjectName", m_MapObjFileName, 128);
+    //ImGui::SetNextItemWidth(150.f);
+    //ImGui::InputText("##MapObjectName", m_MapObjFileName, 128);
 
-    ImGui::SameLine();
+    //ImGui::SameLine();
 
-    if (ImGui::Button(u8"Save"))
-    {
-        string path = "../Bin/Resource/Data/MapObject/";
-        path += m_MapObjFileName;
-        path += ".mapobj";
+    //if (ImGui::Button(u8"Save"))
+    //{
+    //    string path = "../Bin/Resource/Data/MapObject/";
+    //    path += m_MapObjFileName;
+    //    path += ".mapobj";
 
-        if (SUCCEEDED(SaveMapObject(path.c_str())))
-        {
-            Refresh_MapObjectList(); // 저장하고, 새로고침하기
-        }
-    }
+    //    if (SUCCEEDED(SaveMapObject(path.c_str())))
+    //    {
+    //        Refresh_MapObjectList(); // 저장하고, 새로고침하기
+    //    }
+    //}
 
-    ImGui::NewLine();
+    //ImGui::NewLine();
 
-    // 저장 파일 리스트
-    if (ImGui::CollapsingHeader(u8"저장된 맵오브젝트"))
-    {
-        for (auto& fileName : m_MapObjList)
-        {
-            if (ImGui::Selectable(fileName.c_str()))
-            {
-                string fullPath = "../Bin/Resource/Data/MapObject/";
-                fullPath += fileName;
+    //// 저장 파일 리스트
+    //if (ImGui::CollapsingHeader(u8"저장된 맵오브젝트"))
+    //{
+    //    for (auto& fileName : m_MapObjList)
+    //    {
+    //        if (ImGui::Selectable(fileName.c_str()))
+    //        {
+    //            string fullPath = "../Bin/Resource/Data/MapObject/";
+    //            fullPath += fileName;
 
-                LoadMapObject(fullPath.c_str());
-            }
-        }
-    }
+    //            LoadMapObject(fullPath.c_str());
+    //        }
+    //    }
+    //}
+#pragma endregion
+    
+
 
 }
 

@@ -82,7 +82,7 @@ void CMainApp::LateUpdate_MainApp(const float& timeDelta)
 
 void CMainApp::Render_MainApp()
 {
-    m_DeviceClass->Render_Begin(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.f));
+    m_DeviceClass->Render_Begin(D3DXCOLOR(0.f, 0.f, 0.f, 1.f));
 
     m_ManagementClass->Render_Scene(m_GraphicDev);
 

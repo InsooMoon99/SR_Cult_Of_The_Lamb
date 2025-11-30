@@ -54,8 +54,6 @@ void CHumanMonster::Initialize_GameObject()
 
     if (m_TargetTransform)
         m_Target = m_TargetTransform->Get_Owner();
-
-
 }
 
 _int CHumanMonster::Update_GameObject(const _float& timeDelta)
@@ -111,8 +109,17 @@ void CHumanMonster::Chase_Target(const float& timeDelta, _float speed)
     if (!m_TargetTransform || !m_TransformCom)
         return;
 
+    _vec3 pos = m_TransformCom->Get_Pos();
     _vec3 targetPos = m_TargetTransform->Get_Pos();
-    m_TransformCom->Chase_Target(&targetPos, timeDelta, speed);
+    //m_TransformCom->Chase_Target(&targetPos, timeDelta, speed);
+
+    _vec3 dir = targetPos - pos;
+    dir.y = 0.f;
+
+    D3DXVec3Normalize(&dir, &dir);
+
+    _vec3 moveForce = dir * m_CombatStatCom->Get_Speed();
+    m_RigidbodyCom->Add_Force(moveForce);
 }
 
 HRESULT CHumanMonster::Add_Component()

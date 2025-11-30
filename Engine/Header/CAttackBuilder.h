@@ -127,11 +127,12 @@ public:
         NULL_CHECK(m_AttackObj);
 
         // 공격한놈 설정
+        m_AttackObj->Set_Instigator(m_Instigator);
+
         CCollider* collider = m_AttackObj->Get_Collider();
         if (collider)
         {
             collider->Set_CollisionLayer(m_Collision_LayerType);
-            collider->Set_Instigator(m_Instigator);
         }
 
         // AttackData 설정 

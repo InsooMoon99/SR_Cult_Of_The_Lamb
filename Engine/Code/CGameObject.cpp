@@ -36,6 +36,18 @@ HRESULT CGameObject::Ready_GameObject()
     return S_OK;
 }
 
+void CGameObject::Initialize_GameObject()
+{
+    for (auto& components : m_Components)
+    {
+        for (auto& component : components)
+        {
+            component.second->Initialize_Component();
+        }
+    }
+
+}
+
 _int CGameObject::Update_GameObject(const _float& timeDelta)
 {
     for (auto& component : m_Components[ID_DYNAMIC])

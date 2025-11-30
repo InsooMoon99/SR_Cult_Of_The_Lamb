@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "CMainEditorMgr.h"
+#include "CCollisionManager.h"
 #include "CBoxCollider.h"
 #include "CCameraCom.h"
 #include "CCombatStat.h"
@@ -55,6 +56,18 @@ void CMainEditorMgr::Update_MainEditor(const _float& timeDelta)
         Toggle_ImGui();
     }
 
+    if (m_MainCamera) 
+    {
+        if (!m_IsPlaying) // Pause 상태에서도 카메라는 움직일 수 있도록 Delta값 세팅
+        {
+            _float timeDelta = CTimerMgr::GetInstance()->Get_TimeDelta();
+
+            CGameObject* camera = m_MainCamera->Get_Owner();
+            if (camera)
+                camera->Update_GameObject(timeDelta);
+        }
+    }
+
     CMapObjectMgr::GetInstance()->Update_MapObjectMgr(timeDelta);
 }
 
@@ -86,7 +99,7 @@ void CMainEditorMgr::Render_MainEditor()
         CMapObjectMgr::GetInstance()->Get_MapPlacer()->Render_Privew();
     }
 
-    ImGui::Begin("MainEditor [ Toggle F1 ]");
+    ImGui::Begin("MainEditor [ Toggle F1 ] [ Toggle F8 -> Free Mode]");
 
     if (ImGui::BeginTabBar("MainEditorTabs"))
     {
@@ -221,13 +234,13 @@ void CMainEditorMgr::Render_SceneChangeTab()
 {
     ImGui::PushID("Scene_ChangeTab");
     {
-        const char* sceneChange[] = { "Main", "Stage", "Edit", "Stage_Boss1", "Stage_Boss2" "Stage_TaroTest" };
+        const char* sceneChange[] = { "Main", "Stage", "Edit", "Stage_Boss1", "Stage_Boss2", "Stage_TaroTest" };
 
         SCENETYPE sceneType = CSceneMgr::GetInstance()->Get_SceneType();
 
         static _int currentSceneIndex = 0;
 
-        ImGui::Text(u8"Cur Scene : %s", ToString(sceneType));
+        ImGui::Text(u8"현재 스테이지 : %s", ToString(sceneType));
         ImGui::Separator();
 
         if (ImGui::Combo(u8"Scene Change", &currentSceneIndex, sceneChange, IM_ARRAYSIZE(sceneChange)))
@@ -258,7 +271,7 @@ void CMainEditorMgr::Render_ToolBar()
     float delta = CTimerMgr::GetInstance()->Get_TimeDelta(L"Timer_FPS60");
     float fps   = (delta > 0.f) ? 1.f / delta : 0.f;
 
-    ImGui::Columns(2, "ToolbarCols", false);
+    ImGui::Columns(3, "ToolbarCols", false);
 
     // ============
     // Play / FPS
@@ -286,6 +299,19 @@ void CMainEditorMgr::Render_ToolBar()
         ImGui::SameLine();
 
         Menu_CameraInspector(m_MainCamera);
+    }
+
+    ImGui::NextColumn();
+
+    // ============
+    // Debug Check
+    // ============
+    {
+        static _bool debugCheck = true;
+        ImGui::AlignTextToFramePadding();
+        ImGui::Checkbox("Debugging Mode", &debugCheck);
+
+        CCollisionManager::GetInstance()->Render_Debug(debugCheck);
     }
 
     ImGui::Columns(1);

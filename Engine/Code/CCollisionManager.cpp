@@ -153,6 +153,14 @@ _bool CCollisionManager::Can_Collide(COLLISION_LAYERTYPE layer1, COLLISION_LAYER
     return m_CollisionMatrix[index1][index2];
 }
 
+void CCollisionManager::Render_Debug(bool& flag)
+{
+    for (const auto& collider : m_Colliders)
+    {
+        collider->Set_ShowDebug(flag);
+    }
+}
+
 void CCollisionManager::Initialize_CollisionMatrix()
 {
     // 일단 모든 레이어 충돌 가능하게 설정
