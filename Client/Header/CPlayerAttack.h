@@ -27,7 +27,7 @@ public:
     {
         ACTORSTATE state;           // 해당 공격의 애니메이션 상태
 
-        _float lifeTime;            // 공격 지속 시간
+        _float duration;            // 공격 지속 시간
         _float hitboxStartTime;     // 히트박스가 켜지는 시간
         _float hitboxEndTime;       // 히트박스가 꺼지는 시간
         _float comboInputTime;      // 다음 콤보 선입력 허용 시작 시간

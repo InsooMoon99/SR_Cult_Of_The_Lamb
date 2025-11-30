@@ -13,16 +13,17 @@ class ENGINE_DLL CAttackBuilder
 public:
     CAttackBuilder(DEVICE graphicDev, CGameObject* instigator)
         : m_GraphicDev(graphicDev),
-          m_Instigator(instigator),
-          m_AttackObj(nullptr),
-          m_LifeTime(0.4f),
-          m_Position(0.f, 0.f, 0.f),
-          m_Offset(0.f, 0.f, 0.f),
-          m_Scale(0.f, 0.f, 0.f),
-          m_UseInstigatorPos(false),
-          m_DestroyOnHit(false),
-          m_Collision_LayerType(COLLISION_LAYERTYPE::DEFAULT)
-    { }
+        m_Instigator(instigator),
+        m_AttackObj(nullptr),
+        m_LifeTime(0.4f),
+        m_Position(0.f, 0.f, 0.f),
+        m_Offset(0.f, 0.f, 0.f),
+        m_Scale(0.f, 0.f, 0.f),
+        m_UseInstigatorPos(false),
+        m_DestroyOnHit(false),
+        m_Collision_LayerType(COLLISION_LAYERTYPE::DEFAULT)
+    {
+    }
 
     // 공격 타입 ex) Box, Sphere
     CAttackBuilder& Box()
@@ -52,11 +53,15 @@ public:
         return *this;
     }
 
-    CAttackBuilder& Knockback(_float knockback, _float knockbackTimer = 0.3f)
+    CAttackBuilder& Knockback(_float knockback)
     {
         m_AttackData.knockback = knockback;
-        m_AttackData.knockbackTimer = knockbackTimer;
+        return *this;
+    }
 
+    CAttackBuilder& Duration(_float duration)
+    {
+        m_AttackData.duration = duration;
         return *this;
     }
 
@@ -69,7 +74,7 @@ public:
     // 절대 위치 (내가 원하는 위치)
     CAttackBuilder& Position(const _vec3& pos)
     {
-        m_Position         = pos;
+        m_Position = pos;
         m_UseInstigatorPos = false;
         return *this;
     }
@@ -188,8 +193,8 @@ public:
 
 private:
     DEVICE              m_GraphicDev;
-    CGameObject*        m_Instigator;
-    CAttackBase*        m_AttackObj;
+    CGameObject* m_Instigator;
+    CAttackBase* m_AttackObj;
 
     ATTACKDATA          m_AttackData;
     _float              m_LifeTime;

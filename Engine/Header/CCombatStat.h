@@ -12,12 +12,12 @@ typedef struct tagAttackData
 {
     _float damage;     // 데미지
     _float knockback;  // 넉백량
-    _float knockbackTimer;   // 넉백 유지 시간(필요하면 사용 ㄱㄱ)
+    _float duration;   // 넉백 유지 시간(필요하면 사용 ㄱㄱ)
 
     tagAttackData()
         : damage(0.f),
           knockback(0.f),
-          knockbackTimer(0.f)
+          duration(0.f)
     {}
 } ATTACKDATA;
 
@@ -46,7 +46,7 @@ typedef struct tagHitData
         : dir(0.f, 0.f, 0.f),
         damage(attackData.damage),
         knockback(attackData.knockback),
-        knockbackTimer(attackData.knockbackTimer),
+        knockbackTimer(attackData.duration),
         attacker(nullptr),
         hitter(nullptr)
     {}

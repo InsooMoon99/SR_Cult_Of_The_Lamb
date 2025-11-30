@@ -747,10 +747,10 @@ static void PlayerAttack_Inspector(CPlayerAttack* attack)
             static_cast<CPlayerAttack::PL_ATTACK_INDEX>(selectedAttack)
         );
 
-        ImGui::DragFloat("LifeTime", &info.lifeTime, 0.01f, 0.f, 5.f);
-        ImGui::DragFloat("Hitbox Start", &info.hitboxStartTime, 0.01f, 0.0f, info.lifeTime);
-        ImGui::DragFloat("Hitbox End", &info.hitboxEndTime, 0.01f, 0.0f, info.lifeTime);
-        ImGui::DragFloat("Combo Input", &info.comboInputTime, 0.01f, 0.0f, info.lifeTime);
+        ImGui::DragFloat("Duration", &info.duration, 0.01f, 0.f, 5.f);
+        ImGui::DragFloat("Hitbox Start", &info.hitboxStartTime, 0.01f, 0.0f, info.duration);
+        ImGui::DragFloat("Hitbox End", &info.hitboxEndTime, 0.01f, 0.0f, info.duration);
+        ImGui::DragFloat("Combo Input", &info.comboInputTime, 0.01f, 0.0f, info.duration);
         ImGui::DragFloat("Damage Mult", &info.damageMultiplier, 0.1f, 0.0f, 100.0f);
         ImGui::DragFloat("Knockback", &info.knockbackPower, 0.1f, 0.0f, 100.0f);
         ImGui::DragFloat("Spawn Offset", &info.spawnOffset, 0.01f);
