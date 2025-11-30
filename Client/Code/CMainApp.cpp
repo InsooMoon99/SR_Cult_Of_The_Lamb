@@ -19,6 +19,7 @@
 #include "CResourceMgr.h"
 #include "CSceneMgr.h"
 #include "CTimerMgr.h"
+#include "CRandomMgr.h"
 
 CMainApp::CMainApp()
     : m_ManagementClass(CManagement::GetInstance()),
@@ -30,6 +31,8 @@ CMainApp::~CMainApp()
 
 HRESULT CMainApp::Ready_MainApp()
 {
+    
+
     if (FAILED(Ready_DefaultSetting(&m_GraphicDev)))
         return E_FAIL;
 
@@ -212,6 +215,7 @@ void CMainApp::Free()
     CManagement::DestroyInstance();
     CGraphicDev::DestroyInstance();
     CSceneMgr::DestroyInstance();
+    CRandomMgr::DestroyInstance();
 
 #pragma region 데이터 파싱 테스트
 

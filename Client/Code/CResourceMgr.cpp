@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include "CResourceMgr.h"
-
+#include "CSphereCollider.h"
 #include "CAnimator.h"
 #include "CBoxCol.h"
 #include "CBoxCollider.h"
@@ -153,6 +153,11 @@ HRESULT CResourceMgr::Ready_Common(DEVICE graphicDev)
     // Box Collider
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::BOX_COLL, CBoxCollider::Create(graphicDev))))
+        return E_FAIL;
+
+    // Sphere Collider
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::SPHERE_COLL, CSphereCollider::Create(graphicDev))))
         return E_FAIL;
 
     // State
@@ -425,7 +430,6 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
             L"../Bin/Resource/Texture/UI/Inventory/Background.png",
             1))))
         return E_FAIL;
-
 
     // Texture : Inventory BackGround
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_RITUALCARD,

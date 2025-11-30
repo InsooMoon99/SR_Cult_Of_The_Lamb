@@ -47,4 +47,5 @@ private:
     CCombatStat*  m_PlayerCombatStatCom;
     CInventory*   m_PlayerInventoryCom;
     CWeaponEquip* m_WeaponEquipCom;
+
 };

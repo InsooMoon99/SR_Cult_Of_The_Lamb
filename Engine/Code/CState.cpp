@@ -2,6 +2,7 @@
 #include "CAnimator.h"
 #include "CGameObject.h"
 #include "CTransform.h"
+#include "CRcTex.h"
 
 CState::CState(DEVICE graphicDev)
     : CComponent(graphicDev),
@@ -90,16 +91,25 @@ void CState::Update_Animation()
             bool reset = (m_State != m_PrevState);
             m_Animator->Play_Animation(finalKey, animState, reset);
 
+#pragma region Legacy
             // 스케일 반전 처리
-            _vec3 vScale = m_TransformCom->Get_Scale();
+            //_vec3 vScale = m_TransformCom->Get_Scale();
 
-            // 절대값을 씌워서 기존 스케일 크기는 유지하되 부호만 정리 (기존에 -였을 수도 있으므로)
-            vScale.x = abs(vScale.x);
+            //// 절대값을 씌워서 기존 스케일 크기는 유지하되 부호만 정리 (기존에 -였을 수도 있으므로)
+            //vScale.x = abs(vScale.x);
 
-            if (dirInfo.second == true) // 반전 필요 (Right 계열)
-                vScale.x *= -1.f;
+            //if (dirInfo.second == true) // 반전 필요 (Right 계열)
+            //    vScale.x *= -1.f;
 
-            m_TransformCom->Set_Scale(vScale.x, vScale.y, vScale.z);
+            //m_TransformCom->Set_Scale(vScale.x, vScale.y, vScale.z);
+#pragma endregion
+
+            CComponent* bufferCom = m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::RC_TEX);
+            CRcTex* rcTex = dynamic_cast<CRcTex*>(bufferCom);
+
+            if (rcTex)
+                rcTex->Set_FlipX(dirInfo.second);
+            
         }
 
         m_PrevState = m_State;

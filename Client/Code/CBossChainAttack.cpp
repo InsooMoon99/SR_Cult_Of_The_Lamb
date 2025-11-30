@@ -10,6 +10,7 @@
 #include "CCreateHelper.h"
 #include "CWarningChain.h"
 
+#include "CRandomMgr.h"
 
 CBossChainAttack::CBossChainAttack(CBossPhase1* pOwner, CBossStateMachine* pStateMachine)
 {
@@ -28,7 +29,10 @@ void CBossChainAttack::Enter()
 {
     CMonsterState::Enter();
     m_pOwnerAnimatorCom->Play_Animation(L"BossAttack", ANIMSTATE::ONCE);
-    m_ePhase = PHASE::CROSS; // 이걸 어케 해야하지??
+
+    m_ePhase = PHASE::CIRCLE; // 이걸 어케 해야하지??
+
+
 
 
 }
@@ -47,6 +51,9 @@ HRESULT CBossChainAttack::Ready_State()
 
 
     m_fExtraElapsedTime[(int)PHASE::PLAYERLINE] = 0;
+
+
+
 
     return S_OK;
 }
@@ -78,7 +85,7 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
 
         if (/*m_RandCount*/3 <= LineCount)
         {
-
+            // 나가기 
             m_fCurStateElapsedTime = 0;
             m_fExtraElapsedTime[(int)PHASE::PLAYERLINE] = 0;
             m_Count = 0;
@@ -103,7 +110,7 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
 
         if (m_fElapsedTime[(int)PHASE::CROSS] > .5 && m_Count < 10)
         {
-            for (int i = 0;i < 4; i++) 
+            for (int i = 0;i < 4; i++)
             {
 
                 CWarningChain* WarningChain = CWarningChain::Create(m_pOwner->Get_GraphicDev(), m_pOwner);
@@ -111,21 +118,19 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
                     dynamic_cast<CTransform*>(WarningChain->Get_Component(
                         ID_DYNAMIC,
                         COMPONENTTYPE::TRANSFORM));
-                
+
                 _vec3 OwnerPos = m_pOwnerTransformCom->Get_Pos();
 
                 float distance = ((float)m_Count * offset);
-
-
 
                 _vec3 AddPos;
                 switch (i)
                 {
                 case 0: //오
-                    AddPos = { distance, 0.f, -easeInQuint10(m_Count)*offset*5};
+                    AddPos = { distance, 0.f, -easeInQuint10(m_Count) * offset * 5 };
                     break;
                 case 1://왼
-                    AddPos = { -distance, 0.f,  easeInQuint10(m_Count)*offset * 5 };
+                    AddPos = { -distance, 0.f,  easeInQuint10(m_Count) * offset * 5 };
                     break;
                 case 2://앞
                     AddPos = { easeInQuint10(m_Count) * offset * 5, 0.f,distance };
@@ -147,6 +152,7 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
 
         if (m_Count >= 10)
         {
+            // 나가기 
             m_fElapsedTime[(int)PHASE::CROSS] = 0;
             m_Count = 0;
             return CBossPhase1::BOSSPHASE1::BOSSIDLE;
@@ -157,17 +163,58 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
 
         m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::ONCE);
 
-        m_fElapsedTime[(int)PHASE::RANDCHAIN] += timeDelta;
-
-
-        //
-
-
-        if (m_fCurStateElapsedTime >= 1.0f)
+        cout << m_pOwnerAnimatorCom->Get_CurFrame() << endl;
+        if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1 && m_StartPhase == false)
         {
+            m_StartPhase = true;
+        }
+
+        if (m_StartPhase == true)
+            m_fElapsedTime[(int)PHASE::RANDCHAIN] += timeDelta;
+
+
+        if (m_fElapsedTime[(int)PHASE::RANDCHAIN] < 5.f && m_StartPhase == true)
+        {
+            _vec3 BaseCenter = { 50,50,0 };
+            int BaseLength = 50;
+            float interval = 0.1f;
+            RandomChain(timeDelta, BaseCenter, BaseLength, interval);
+        }
+        else if (m_fElapsedTime[(int)PHASE::RANDCHAIN] >= 5.f && m_StartPhase == true)
+        {
+            // 나가기 
+            m_StartPhase = false;
             m_fElapsedTime[(int)PHASE::RANDCHAIN] = 0;
             return CBossPhase1::BOSSPHASE1::BOSSIDLE;
         }
+
+        break;
+
+    case PHASE::CIRCLE://움직임 + idle
+
+        m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::ONCE);
+
+        if (m_StartPhase == true)
+            m_fElapsedTime[(int)PHASE::CIRCLE] += timeDelta;
+
+        
+        if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1 && m_StartPhase == false)
+        {
+            m_StartPhase = true;
+        }
+
+        if (m_StartPhase == true)
+        {
+            if (CircleChain(timeDelta, 9, 10, 0.1) == true)
+            {
+                // 나가기 
+                m_Count = 0;
+                m_StartPhase = false;
+                m_fElapsedTime[(int)PHASE::CIRCLE] = 0;
+                return CBossPhase1::BOSSPHASE1::BOSSIDLE;
+            }
+        }
+
         break;
     }
 
@@ -177,33 +224,7 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
 }
 
 
-//void CBossChainAttack::PlayerLine(_vec3 PlayerDir, _int  MaxCount, _float m_Offset, float Speed)
-//{
-//
-//    // 지금 안되는거 TODO:: 플레이어 위치 캐싱 , 충돌박스 없음 이슈
-//
-//        auto chain = CBossChain::Create(m_pOwner->Get_GraphicDev(), m_pOwner);
-//        const auto ChainTransform =
-//            dynamic_cast<CTransform*>(chain->Get_Component(
-//                ID_DYNAMIC,
-//                COMPONENTTYPE::TRANSFORM));
-//
-//        //_vec3 dir;
-//        //_vec3 tmp = m_pPlayerTransformCom->Get_Pos() - m_pOwnerTransformCom->Get_Pos();
-//        //D3DXVec3Normalize(&dir, &tmp);
-//
-//
-//        _vec3 CurPos = ChainTransform->Get_Pos();
-//        _vec3 AddPos = { PlayerDir.x + (m_Count * m_Offset), 0.f, PlayerDir.z + (m_Count * m_Offset) };
-//        ChainTransform->Set_Pos(CurPos + AddPos);
-//
-//        SpawnAttackObject(chain);
-//
-//        m_fElapsedTime[(int)PHASE::PLAYERLINE] = 0;
-//
-//        m_Count++;
-// 
-//}
+
 bool CBossChainAttack::PlayerLineUpdate(const _float& timeDelta, _int  MaxCount, _float m_Offset, float Speed)
 {
     m_fElapsedTime[(int)PHASE::PLAYERLINE] += timeDelta;
@@ -243,14 +264,99 @@ bool CBossChainAttack::PlayerLineUpdate(const _float& timeDelta, _int  MaxCount,
         m_LineFlag = false;
         m_fElapsedTime[(int)PHASE::PLAYERLINE] = 0.f;
 
-        return true;  // ← 이 패턴 1회 완료!
+        return true;  // 패턴 1회 완료
     }
     return false;
 
 }
 
-void CBossChainAttack::RandomChain(const _float& timeDelta, _vec2 startLT, _vec2 endRB)
+void CBossChainAttack::RandomChain(const _float& timeDelta, _vec3 BaseCenter, int BaseLenght, float interval)
 {
+    _vec3 LT = { BaseCenter.x - BaseLenght * 0.5f, 0.f, BaseCenter.z + BaseLenght * 0.5f };
+    _vec3 RB = { BaseCenter.x + BaseLenght * 0.5f,0.f,BaseCenter.z - BaseLenght * 0.5f };
+
+    int offset = 5;// TOOD:: 나중에 맴버 변수로 오프셋 조정 (사슬과 사슬 사이의 거리)
+
+    int xCell = BaseLenght / offset;
+    int zCell = BaseLenght / offset;
+
+    //float r = std::fmod((m_fElapsedTime[(int)PHASE::RANDCHAIN]), interval); // 나머지 구하는거, 소숫점에서도 가능
+
+    m_RandChainTime += timeDelta;
+
+    //if (fabs(r) < 1e-6f)// ㄱ의 절댓값(음수x) 가 0 근사값이면 실행
+    //{
+
+    if (m_RandChainTime >= interval);
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            CWarningChain* WarningChain = CWarningChain::Create(m_pOwner->Get_GraphicDev(), m_pOwner);
+            const auto ChainTransform =
+                dynamic_cast<CTransform*>(WarningChain->Get_Component(
+                    ID_DYNAMIC,
+                    COMPONENTTYPE::TRANSFORM));
+
+
+            int tmpx = CRandomMgr::GetInstance()->Get_Int_Random(0, xCell); // x 몇번쨰 칸인지는 랜덤
+            int tmpz = CRandomMgr::GetInstance()->Get_Int_Random(0, zCell); // x 몇번쨰 칸인지는 랜덤
+
+            float xPos = tmpx * (xCell * .5f);
+            float zPos = tmpz * (zCell * .5f);
+
+            ChainTransform->Set_Pos(LT.x + xPos, 0.f, LT.z - zPos);
+
+            SpawnAttackObject(WarningChain);
+
+        }
+        m_RandChainTime = 0;
+    }
+
+
+    //}
+
+}
+
+bool CBossChainAttack::CircleChain(const _float& timeDelta, int num, int length, float interval)
+{
+
+    if (m_fElapsedTime[(int)PHASE::CIRCLE] >= interval)
+    {
+
+        //for (int i = 0; i < num; i++)
+        //{
+        CWarningChain* WarningChain = CWarningChain::Create(m_pOwner->Get_GraphicDev(), m_pOwner);
+        const auto ChainTransform =
+            dynamic_cast<CTransform*>(WarningChain->Get_Component(
+                ID_DYNAMIC,
+                COMPONENTTYPE::TRANSFORM));
+
+
+        _vec3 ownerPos = m_pOwnerTransformCom->Get_Pos();
+
+        //_vec3 baseDir = { 0,0,1 };
+
+        float rad = D3DXToRadian(360.f / (num));
+
+        float addRad = rad * m_Count;
+
+        _vec3 circle = { cos(addRad) * length, 0.f, sin(addRad) * length };
+
+        ChainTransform->Set_Pos(ownerPos + circle);
+
+        SpawnAttackObject(WarningChain);
+
+        
+        m_Count++;
+        m_fElapsedTime[(int)PHASE::CIRCLE] = 0;
+        //}
+    }
+    if (m_Count == num)
+    {
+        m_Count = 0;
+        return true;
+    }
+    return false;
 }
 void CBossChainAttack::LateUpdate_State(const _float& timeDelta)
 {

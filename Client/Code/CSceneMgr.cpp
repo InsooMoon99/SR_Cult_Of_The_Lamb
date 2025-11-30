@@ -8,7 +8,8 @@
 #include "CStage.h"
 #include "Engine_Enum.h"
 #include "CStage_Boss1.h"
-#include "CStage_TarotTest.h"
+#include "CStage_Boss2.h"
+#include "CStage_TaroTest.h"
 
 IMPLEMENT_SINGLETON(CSceneMgr)
 
@@ -72,8 +73,13 @@ void CSceneMgr::Change_SceneMgr(SCENETYPE typeInput)
             bFailed = true;
         break;
 
-    case SCENETYPE::SC_BOSS_STAGE:
+    case SCENETYPE::SC_BOSS_STAGE1:
         if (FAILED(CManagement::GetInstance()->Request_ChangeScene(CStage_Boss1::Create(m_pGraphicDev))))
+            bFailed = true;
+        break;
+
+    case SCENETYPE::SC_BOSS_STAGE2:
+        if (FAILED(CManagement::GetInstance()->Request_ChangeScene(CStage_Boss2::Create(m_pGraphicDev))))
             bFailed = true;
         break;
 

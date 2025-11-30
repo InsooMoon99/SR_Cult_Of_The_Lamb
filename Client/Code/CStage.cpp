@@ -74,12 +74,6 @@ _int CStage::Update_Scene(const _float& timeDelta)
 {
     _int exit = Engine::CScene::Update_Scene(timeDelta);
 
-    //안은수 테스트
-    if (CDInputMgr::GetInstance()->Get_DIKeyState(DIK_0) & 0x80)
-    {
-        CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_MAINMENU);
-    }
-
     return exit;
 }
 
@@ -105,10 +99,12 @@ HRESULT CStage::Ready_Environment_Layer(LAYERTYPE layerType)
     NULL_CHECK_RETURN(terrain, E_FAIL);
 
     // 초기 맵 불러오기
-    terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_OutlineTest.map");
+    terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_WallTest1.map");
     layer->Add_GameObject(OBJTYPE::TERRAIN, terrain);
 
-    m_Layers.insert({ layerType, layer });          // scene -> map
+    //terrain->Spawn_Walls(layer); 스폰시기가 꼬인다.. Update에서 일단 지연스폰
+
+    m_Layers.insert({ layerType, layer });
 
     return S_OK;
 }
@@ -174,15 +170,15 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
             L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
 
 
-    //// -----------------------------
-    //// Boss
-    //// -----------------------------
-    //gameObject = CBossPhase1::Create(m_GraphicDev);
-    //NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase1::Create() returned null")
-    //
-    //    FAILED_CHECK_MSG(
-    //        layer->Add_GameObject(OBJTYPE::BOSS1, gameObject),
-    //        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
+    // -----------------------------
+    // Boss
+    // -----------------------------
+    /*gameObject = CBossPhase1::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase1::Create() returned null")
+    
+        FAILED_CHECK_MSG(
+            layer->Add_GameObject(OBJTYPE::BOSS1, gameObject),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");*/
 
 
     // -----------------------------

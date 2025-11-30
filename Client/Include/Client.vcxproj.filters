@@ -369,6 +369,9 @@
     <ClInclude Include="..\Header\CWallRenderer.h">
       <Filter>97. Component\03. Wall</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CRandomMgr.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
     <ClInclude Include="..\Header\CStage_Boss1.h">
       <Filter>02. Scene\01. Stage</Filter>
     </ClInclude>
@@ -383,6 +386,9 @@
     </ClInclude>
     <ClInclude Include="..\Header\CUITarotDescCard.h">
       <Filter>05. UI\01. UI\05. UITarot</Filter>
+         </ClInclude>
+    <ClInclude Include="..\Header\CStage_Boss2.h">
+      <Filter>02. Scene\01. Stage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -590,6 +596,9 @@
     <ClCompile Include="..\Code\CWallRenderer.cpp">
       <Filter>97. Component\03. Wall</Filter>
     </ClCompile>
+    <ClCompile Include="..\Code\CRandomMgr.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
     <ClCompile Include="..\Code\CStage_Boss1.cpp">
       <Filter>02. Scene\01. Stage</Filter>
     </ClCompile>
@@ -604,6 +613,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CUITarotDescCard.cpp">
       <Filter>05. UI\01. UI\05. UITarot</Filter>
+         </ClCompile>
+    <ClCompile Include="..\Code\CStage_Boss2.cpp">
+      <Filter>02. Scene\01. Stage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

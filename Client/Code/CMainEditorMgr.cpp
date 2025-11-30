@@ -1,6 +1,5 @@
 ﻿#include "pch.h"
 #include "CMainEditorMgr.h"
-
 #include "CBoxCollider.h"
 #include "CCameraCom.h"
 #include "CCombatStat.h"
@@ -208,7 +207,6 @@ void CMainEditorMgr::Render_MapToolTab()
 
         if (wallRenderer)
         {
-            ImGui::SeparatorText("Wall Renderer");
             WallRenderer_Inspector(wallRenderer);
         }
 
@@ -223,7 +221,7 @@ void CMainEditorMgr::Render_SceneChangeTab()
 {
     ImGui::PushID("Scene_ChangeTab");
     {
-        const char* sceneChange[] = { "Main", "Stage", "Edit", "Stage_Boss1", "Stage_TaroTest" };
+        const char* sceneChange[] = { "Main", "Stage", "Edit", "Stage_Boss1", "Stage_Boss2" "Stage_TaroTest" };
 
         SCENETYPE sceneType = CSceneMgr::GetInstance()->Get_SceneType();
 
@@ -241,8 +239,9 @@ void CMainEditorMgr::Render_SceneChangeTab()
             case 0: newSceneType = SCENETYPE::SC_MAINMENU;    break;
             case 1: newSceneType = SCENETYPE::SC_STAGE;       break;
             case 2: newSceneType = SCENETYPE::SC_EDIT;        break;
-            case 3: newSceneType = SCENETYPE::SC_BOSS_STAGE;  break;
-            case 4: newSceneType = SCENETYPE::SC_TARO_TEST;   break;
+            case 3: newSceneType = SCENETYPE::SC_BOSS_STAGE1;  break;
+            case 4: newSceneType = SCENETYPE::SC_BOSS_STAGE2;  break;
+            case 5: newSceneType = SCENETYPE::SC_TARO_TEST;   break;
 
             default: break;
             }
@@ -349,8 +348,14 @@ void CMainEditorMgr::Render_Inspector()
 {
     CGameObject* obj = m_Context->Get_SelectedObject();
 
-    if (obj == nullptr)
+    if (obj == nullptr || obj->Is_PendingDestroy())
     {
+        if (obj && obj->Is_PendingDestroy())
+        {
+            m_Context->Select_Object(nullptr);  // 선택 해제
+            m_Context->Select_Component(nullptr);
+        }
+
         ImGui::Text("Not Object Selected");
         return;
     }
@@ -388,6 +393,9 @@ void CMainEditorMgr::Render_Inspector()
 
 void CMainEditorMgr::Render_DynamicComponents(CGameObject* obj)
 {
+    if (!obj || obj->Is_PendingDestroy())
+        return;
+
     // Dynamic Component
     const auto& dynamicComponents = obj->Get_DynamicComponents();
 
@@ -410,6 +418,9 @@ void CMainEditorMgr::Render_DynamicComponents(CGameObject* obj)
 
 void CMainEditorMgr::Render_StaticComponents(CGameObject* obj)
 {
+    if (!obj || obj->Is_PendingDestroy())
+        return;
+
     // Static Component
     auto inven = obj->Get_Component(ID_STATIC, COMPONENTTYPE::INVENTORY);
     if (inven)
@@ -438,6 +449,18 @@ void CMainEditorMgr::Render_SelectComponent()
 {
     // 선택된 컴포넌트의 인스펙터
     CComponent* selectComponent = m_Context->Get_SelectedComponent();
+
+    if (selectComponent)
+    {
+        CGameObject* owner = selectComponent->Get_Owner();
+
+        if (!owner || owner->Is_PendingDestroy())
+        {
+            m_Context->Select_Component(nullptr);
+            return;
+        }
+    }
+
     if (selectComponent)
     {
         ImGui::Separator();
@@ -505,14 +528,14 @@ void CMainEditorMgr::Render_SelectComponent()
         case COMPONENTTYPE::CONTROLLER_PLAYER:
         {
             auto controller = dynamic_cast<CPlayerController*>(selectComponent);
-            // TODO : 헬퍼함수 만들기
+            PlayerController_Inspector(controller);
         }
         break;
 
         case COMPONENTTYPE::RIGIDBODY:
         {
             auto rigidbody = dynamic_cast<CRigidbody*>(selectComponent);
-            // TODO : 헬퍼함수 만들기
+            RigidBody_Inspector(rigidbody);
         }
         break;
 

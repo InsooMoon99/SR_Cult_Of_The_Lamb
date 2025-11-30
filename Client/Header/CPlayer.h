@@ -11,6 +11,7 @@ class CAnimator;
 class CProtoMgr;
 class CRectCollider;
 class CBoxCollider;
+class CSphereCollider;
 class CState;
 class CCombatStat;
 END
@@ -51,20 +52,20 @@ private:
 
 private:
 #pragma region Engine Components
-    Engine::CRcTex*       m_BufferCom;
-    Engine::CTransform*   m_TransformCom;
-    Engine::CTexture*     m_TextureCom;
-    Engine::CAnimator*    m_AnimatorCom;
-    Engine::CBoxCollider* m_BoxColCom;
-    Engine::CState*       m_StateCom;
-    Engine::CCombatStat*  m_CombatStatCom;
-    Engine::CRigidbody*   m_RigidbodyCom;
+    Engine::CRcTex*              m_BufferCom;
+    Engine::CTransform*          m_TransformCom;
+    Engine::CTexture*            m_TextureCom;
+    Engine::CAnimator*           m_AnimatorCom;
+    Engine::CBoxCollider*        m_BoxColCom;
+    Engine::CState*              m_StateCom;
+    Engine::CCombatStat*         m_CombatStatCom;
+    Engine::CRigidbody*          m_RigidbodyCom;
 
 #pragma endregion
 #pragma region Client Components
-    CWeaponEquip*      m_WeaponEquipCom;
-    CInventory*        m_InventoryCom;
-    CPlayerController* m_PlayerControllerCom;
+    CWeaponEquip*       m_WeaponEquipCom;
+    CInventory*         m_InventoryCom;
+    CPlayerController*  m_PlayerControllerCom;
     CUIInventory*       m_UIInventory;
 #pragma endregion
 

@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "CStage_Boss1.h"
 
+#include "CBossPhase1.h"
 #include "CLayer.h"
 #include "CMainCamera.h"
 #include "CMonster.h"
@@ -14,7 +15,8 @@
 #include "CMainMenu.h"
 #include "CSceneMgr.h"
 #include "CWall.h"
-
+#include "CBossPhase1.h"
+#include "CDropSystem.h"
 
 CStage_Boss1::CStage_Boss1(DEVICE graphicDev)
     : Engine::CScene(graphicDev)
@@ -33,6 +35,9 @@ HRESULT CStage_Boss1::Ready_Scene()
 
     if (FAILED(Ready_UI_Layer(LAYERTYPE::UI)))
         return E_FAIL;
+
+    //아이템 드롭 할거면 씬 셋팅 필수
+    CDropSystem::GetInstance()->SetCurrentScene(this);
 
     return S_OK;
 }
@@ -78,8 +83,7 @@ HRESULT CStage_Boss1::Ready_Environment_Layer(LAYERTYPE layerType)
 
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::TERRAIN, gameObject),
-        L"CStage_Boss1::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Tile) failed");
-
+        L"CStage_TaroTest::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Tile) failed");
 
     // Wall
     CWall* wall = CWall::Create(m_GraphicDev);
@@ -125,12 +129,12 @@ HRESULT CStage_Boss1::Ready_GameLogic_Layer(LAYERTYPE layerType)
     // -----------------------------
     // Boss
     // -----------------------------
-    //gameObject = CBossPhase1::Create(m_GraphicDev);
-    //NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase1::Create() returned null")
-    //
-    //    FAILED_CHECK_MSG(
-    //        layer->Add_GameObject(OBJTYPE::BOSS1, gameObject),
-    //        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
+    gameObject = CBossPhase1::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase1::Create() returned null")
+    
+        FAILED_CHECK_MSG(
+            layer->Add_GameObject(OBJTYPE::BOSS1, gameObject),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
     
     // -----------------------------
     // Camera
@@ -160,6 +164,25 @@ HRESULT CStage_Boss1::Ready_GameLogic_Layer(LAYERTYPE layerType)
     }
 
     m_Layers.insert({ layerType, layer });
+
+
+    // -----------------------------
+    // BossPhase1
+    // -----------------------------
+    
+    // 보스 생성
+    gameObject = CBossPhase1::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase1::Create() returned null")
+
+        FAILED_CHECK_MSG(
+            layer->Add_GameObject(OBJTYPE::BOSS1, gameObject),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
+
+    const auto BossTransform =
+        dynamic_cast<CTransform*>(gameObject->Get_Component(
+            ID_DYNAMIC,
+            COMPONENTTYPE::TRANSFORM));
+    BossTransform->Set_Pos({ 200,0,200 });
 
     return S_OK;
  
