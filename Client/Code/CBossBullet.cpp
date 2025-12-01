@@ -80,7 +80,7 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
             .Offset(_vec3(0.f, 0.f, 0.f))
             .LifeTime(20.f) // 이건 혹시 충돌 안했을경우를 대비 해서
             .DestroyOnHit(true)
-            .CollisionLayer(COLLISION_LAYERTYPE::PROJECTILE)
+            .CollisionLayer(COLLISION_LAYERTYPE::BOSSPROJECTILE)
             .Spawn();
 
 

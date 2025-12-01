@@ -32,12 +32,12 @@ void CBossChainAttack::Enter()
     CMonsterState::Enter();
     m_pOwnerAnimatorCom->Play_Animation(L"BossAttack", ANIMSTATE::ONCE); // 지금 이게 안들어오거든 바로 상태안의 애니로 감
 
-    //int RandPhase = CRandomMgr::GetInstance()->Get_Int_Random(0, ((int)PHASE::PHASE_END)-1); // 페이즈 랜덤
-    //m_ePhase = (PHASE)RandPhase;
+    int RandPhase = CRandomMgr::GetInstance()->Get_Int_Random(0, ((int)PHASE::PHASE_END)-1); // 페이즈 랜덤
+    m_ePhase = (PHASE)RandPhase;
 
 
-    m_ePhase = PHASE::RANDCHAIN;
-    //
+    //m_ePhase = PHASE::RANDCHAIN;
+    ////
 }
 
 void CBossChainAttack::Exit()
@@ -53,7 +53,7 @@ HRESULT CBossChainAttack::Ready_State()
     m_pOwnerTransformCom = static_cast<CTransform*>(m_pOwner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
     m_pOwnerAnimatorCom = static_cast<CAnimator*>(m_pOwner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
 
-    m_CellSize = 1.f;
+    m_CellSize = 2.5f;
     m_DirectionOffset = 2.5f;
     m_MaxLineCount = 7;
     m_Interval = 0.05;

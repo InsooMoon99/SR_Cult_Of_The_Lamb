@@ -100,10 +100,10 @@ _int CBossChain::Update_GameObject(const _float& timeDelta)
                 .Position(m_TransformCom->Get_Pos())
                 .InstigatorPos()
                 .Offset(_vec3(0.f, 0.f, 0.f))
-                //.LifeTime(1.f)
+                .LifeTime(.5f)
                 .DestroyOnHit(true)
-                .CollisionLayer(COLLISION_LAYERTYPE::PROJECTILE)
-                .Scale(/*{ m_TransformCom->Get_Scale().x, m_TransformCom->Get_Scale().y*.5f , m_TransformCom->Get_Scale().z *.5f}*/{0,0,0})
+                .CollisionLayer(COLLISION_LAYERTYPE::BOSSPROJECTILE)
+                .Scale({ m_TransformCom->Get_Scale().x, m_TransformCom->Get_Scale().y*.5f , m_TransformCom->Get_Scale().z *.5f})
                 .Spawn();
             
         }

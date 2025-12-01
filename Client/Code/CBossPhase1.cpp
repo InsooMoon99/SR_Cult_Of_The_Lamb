@@ -38,6 +38,7 @@ HRESULT CBossPhase1::Ready_GameObject()
 
     m_TransformCom->Set_Scale({ 5,5,1 });
 
+    m_BoxColCom->Set_Size({ m_TransformCom->Get_Scale().x*.2f,m_TransformCom->Get_Scale().y ,m_TransformCom->Get_Scale().z*.2f });
 
     BaseCenter.y = m_TransformCom->Get_Scale().y;
     m_TransformCom->Set_Pos(StartPos.x, m_TransformCom->Get_Scale().y, StartPos.z);
