@@ -85,7 +85,7 @@ void CSoundMgr::Play_Once(const wstring& soundFile, SOUNDTYPE soundType, _float 
     }
 }
 
-void CSoundMgr::Play_LoopBGM(const wstring& soundFile,
+void CSoundMgr::Play_BGM(const wstring& soundFile,
                           _float         volume,
                           _bool          stopPrevBGM,
                           _float         fadeOutDuration)

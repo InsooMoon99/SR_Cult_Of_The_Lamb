@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "CStage.h"
+
 #include "CCombatStat.h"
 #include "CDropSystem.h"
 #include "CHumanMonster.h"
@@ -10,25 +11,27 @@
 #include "CMainEditorMgr.h"
 #include "CPersistentObjectHelper.h"
 #include "CPlayer.h"
+#include "CSoundMgr.h"
 #include "CTerrain.h"
 #include "CTransform.h"
 #include "CUICircle.h"
 #include "CUIIcon.h"
 #include "CUIMp.h"
 #include "CUIPlayerPanel.h"
+#include "CUITabMenu.h"
 #include "CUIWeapon.h"
 #include "ItemInstance.h"
-#include "CUITabMenu.h"
 
 CStage::CStage(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
-      m_PlayerCombatStatCom(nullptr), m_PlayerInventoryCom(nullptr), m_WeaponEquipCom(nullptr), m_Terrain(nullptr)
-{
-}
+      m_PlayerCombatStatCom(nullptr),
+      m_PlayerInventoryCom(nullptr),
+      m_WeaponEquipCom(nullptr),
+      m_Terrain(nullptr)
+{}
 
 CStage::~CStage()
-{
-}
+{}
 
 HRESULT CStage::Ready_Scene()
 {
@@ -46,21 +49,23 @@ HRESULT CStage::Ready_Scene()
 
     for (int i = 0; i < CItemDB::GetInstance()->GetVector().size(); i++)
     {
-        int id = CItemDB::GetInstance()->GetVector()[i].id;
+        int          id   = CItemDB::GetInstance()->GetVector()[i].id;
         ItemInstance inst = { id, -1, 0 };
         CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 5.f, 0.f, 10.f + (i * 3.f) });
     }
 
     int size = CItemDB::GetInstance()->GetVector().size();
-    for (int i = 0; i < size; i++) 
+    for (int i = 0; i < size; i++)
     {
         int reverseIndex = size - 1 - i;
-        int id = CItemDB::GetInstance()->GetVector()[reverseIndex].id;  
+        int id           = CItemDB::GetInstance()->GetVector()[reverseIndex].id;
 
         ItemInstance inst = { id, -1, 0 };
         CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 10.f, 0.f, 10.f + (i * 3.f) });
     }
 
+    // BGM Test
+    //CSoundMgr::GetInstance()->Play_Loop()
 
     return S_OK;
 }
@@ -164,10 +169,9 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     gameObject = CHumanMonster::Create(m_GraphicDev);
     NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CHumanMonster::Create() returned null")
 
-        FAILED_CHECK_MSG(
-            layer->Add_GameObject(OBJTYPE::HUMANMONSTER, gameObject),
-            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
-
+    FAILED_CHECK_MSG(
+        layer->Add_GameObject(OBJTYPE::HUMANMONSTER, gameObject),
+        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
 
     // -----------------------------
     // Boss
@@ -178,7 +182,6 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
         FAILED_CHECK_MSG(
             layer->Add_GameObject(OBJTYPE::BOSS1, gameObject),
             L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");*/
-
 
     // -----------------------------
     // Camera
@@ -255,7 +258,7 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
         L"Persistent object setup failed: UI_Circle");
 
     dynamic_cast<CUICircle*>(gameObject)->Set_PlayerCombatStat(m_PlayerCombatStatCom);
-    
+
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CUIWeapon>(
             OBJTYPE::UI,
@@ -295,7 +298,7 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     uiTabMenu->Set_PlayerCombatStat(m_PlayerCombatStatCom);
     uiTabMenu->Initialize();
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiTabMenu),
-        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UITabMenu) failed");
+                     L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UITabMenu) failed");
 
     m_Layers.insert({ layerType, layer });
 
