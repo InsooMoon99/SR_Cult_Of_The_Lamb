@@ -142,7 +142,12 @@ void CPlayerController::CheckStateTransition()
             // 공격 중이었다면 공격 취소
             if (curState == ACTORSTATE::PLAYER_SWORD_COMBO1 ||
                 curState == ACTORSTATE::PLAYER_SWORD_COMBO2 ||
-                curState == ACTORSTATE::PLAYER_SWORD_COMBO3)
+                curState == ACTORSTATE::PLAYER_SWORD_COMBO3 ||
+                curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO1 ||
+                curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO2 ||
+                curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO3 ||
+                curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO4 ||
+                curState == ACTORSTATE::PLAYER_GAUNTLET_HEAVY)
                 m_OwnerAttackCom->Cancel_Attack();
 
             // 구르기 시작 (Movement 컴포넌트에 위임)
@@ -178,8 +183,14 @@ void CPlayerController::CheckStateTransition()
         // 공격 중이라면 콤보 예약 시도
         else if (curState == ACTORSTATE::PLAYER_SWORD_COMBO1 ||
                  curState == ACTORSTATE::PLAYER_SWORD_COMBO2 ||
-                 curState == ACTORSTATE::PLAYER_SWORD_COMBO3)
-        {
+                 curState == ACTORSTATE::PLAYER_SWORD_COMBO3 ||
+                 curState == ACTORSTATE::PLAYER_SWORD_COMBO3 ||
+                 curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO1||
+                 curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO2 ||
+                 curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO3 ||
+                 curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO4 ||
+                 curState == ACTORSTATE::PLAYER_GAUNTLET_HEAVY)
+        {                                                    
             m_OwnerAttackCom->Try_NextCombo();
             return;
         }
@@ -189,7 +200,12 @@ void CPlayerController::CheckStateTransition()
     if (curState == ACTORSTATE::PLAYER_ROLL ||
         curState == ACTORSTATE::PLAYER_SWORD_COMBO1 ||
         curState == ACTORSTATE::PLAYER_SWORD_COMBO2 ||
-        curState == ACTORSTATE::PLAYER_SWORD_COMBO3)
+        curState == ACTORSTATE::PLAYER_SWORD_COMBO3||
+        curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO1 ||
+        curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO2 ||
+        curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO3 ||
+        curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO4 ||
+        curState == ACTORSTATE::PLAYER_GAUNTLET_HEAVY)
         return;
 
     // [우선순위 3] 이동 (방향 입력)
@@ -232,6 +248,11 @@ void CPlayerController::Update_State(const _float& timeDelta)
     case ACTORSTATE::PLAYER_SWORD_COMBO3:
         Action_Sword(timeDelta);
         break;
+    case ACTORSTATE::PLAYER_GAUNTLET_COMBO1:
+    case ACTORSTATE::PLAYER_GAUNTLET_COMBO2:
+    case ACTORSTATE::PLAYER_GAUNTLET_COMBO3:
+    case ACTORSTATE::PLAYER_GAUNTLET_COMBO4:
+		Action_Sword(timeDelta); //? 따로 만들어줘야하나?
     case ACTORSTATE::HIT:
         break;
     case ACTORSTATE::DEAD:
