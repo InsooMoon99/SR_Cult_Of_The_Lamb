@@ -28,6 +28,7 @@ HRESULT CUIPlayerImage::Ready_GameObject()
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"PlayerIdle", ANIMSTATE::LOOP);
 
+    m_AnimatorCom->Play_Animation(L"PlayerIdle", ANIMSTATE::LOOP, false);
     return S_OK;
 }
 
@@ -60,7 +61,7 @@ void CUIPlayerImage::Render_GameObject()
 
     m_BufferCom->Render_Buffer();
 
-    cout << m_TransformCom->Get_Pos().x << "\t" << m_TransformCom->Get_Pos().y << endl;
+   // cout << m_TransformCom->Get_Pos().x << "\t" << m_TransformCom->Get_Pos().y << endl;
 }
 
 HRESULT CUIPlayerImage::Add_Component()

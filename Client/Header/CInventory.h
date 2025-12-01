@@ -34,7 +34,7 @@ public:
     bool AddItem(ItemInstance itemInst);
     int  FindEmptySlot(ItemType itemtype);
     bool RemoveItem(int itemID, int count);
-
+    int Get_AddedCount() { return m_AddedCount; }
     bool RemoveItemBySlot(int slotNum, int count);
 
     const vector<InventorySlot>& GetVector() const { return m_vecInven; }
@@ -44,6 +44,7 @@ public:
 private:
     vector<InventorySlot> m_vecInven;
     int                   invenSlotNum;
+    int                   m_AddedCount;
 
 public:
     void Free() override;

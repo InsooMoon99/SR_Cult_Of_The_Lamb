@@ -102,6 +102,61 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     //TODO [2] 건틀릿 (GAUNTLET) 데이터 설정
     // =========================================================
 
+    //1타
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].state = ACTORSTATE::PLAYER_GAUNTLET_COMBO1;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].duration = 0.7f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].hitboxStartTime = 0.1f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].hitboxEndTime = 0.2f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].comboInputTime = 0.2f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].damageMultiplier = 1.f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].knockbackPower = 30.f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].spawnOffset = 1.2f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].hitboxScale = _vec3(0.85f, 0.85f, 0.85f);
+
+    //2타
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].state = ACTORSTATE::PLAYER_GAUNTLET_COMBO2;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].duration = 0.9f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].hitboxStartTime = 0.1f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].hitboxEndTime = 0.2f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].comboInputTime = 0.2f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].damageMultiplier = 1.f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].knockbackPower = 30.f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].spawnOffset = 1.2f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].hitboxScale = _vec3(0.85f, 0.85f, 0.85f);
+
+    //3타
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].state = ACTORSTATE::PLAYER_GAUNTLET_COMBO3;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].duration = 1.f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].hitboxStartTime = 0.1f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].hitboxEndTime = 0.2f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].comboInputTime = 0.2f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].damageMultiplier = 1.f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].knockbackPower = 30.f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].spawnOffset = 1.2f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].hitboxScale = _vec3(0.85f, 0.85f, 0.85f);
+
+    //4타
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO4].state = ACTORSTATE::PLAYER_GAUNTLET_COMBO4;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO4].duration = 1.f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO4].hitboxStartTime = 0.1f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO4].hitboxEndTime = 0.2f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO4].comboInputTime = 0.2f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO4].damageMultiplier = 1.f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO4].knockbackPower = 30.f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO4].spawnOffset = 1.2f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO4].hitboxScale = _vec3(0.85f, 0.85f, 0.85f);
+
+    //강공격
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].state = ACTORSTATE::PLAYER_GAUNTLET_HEAVY;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].duration = 1.f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].hitboxStartTime = 0.1f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].hitboxEndTime = 0.2f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].comboInputTime = 0.2f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].damageMultiplier = 1.f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].knockbackPower = 30.f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].spawnOffset = 1.2f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].hitboxScale = _vec3(0.85f, 0.85f, 0.85f);
+
     return S_OK;
 }
 
