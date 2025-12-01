@@ -610,7 +610,7 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     // Rubble
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_RUBBLE, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/MapObject/Rubble/Rubble%d.png", 6))))
+            L"../Bin/Resource/Texture/MapObject/Rubble/Rubble%d.png", 46))))
         return E_FAIL;
 
     // Deco

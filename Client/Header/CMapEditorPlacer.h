@@ -22,14 +22,20 @@ public:
     void        Start_Place(MAPOBJTYPE type);  // 배치 시작
     void        Cancel_Place();                // 배치 취소
 
+
     _bool       IsPlacing() { return m_Placing; }
     _bool       Get_MouseWorldPos(_vec3& outPos);
     MAPOBJTYPE  Get_CurType() { return m_SelectedType; }
 
     _int        Get_CurTextureIndex();
-    _float      Get_PreviewScale() { return m_PreviewScale; }
     _vec3       Get_PreviewRotation() { return m_PreviewRotation; }
     _float      Get_PreviewYOffset() { return m_PreviewYOffset; }
+    _float      Get_PreviewScaleX() const { return m_PreviewScaleX; }
+    _float      Get_PreviewScaleY() const { return m_PreviewScaleY; }
+
+    void        Update_PreviewScale();
+    void        Set_PreviewScaleX(_float scaleX);
+    void        Set_PreviewScaleY(_float scaleY);
 
     void        Set_GrassIndex(_int index) { m_GrassIndex = index; }
     void        Set_RubbleIndex(_int index) { m_RubbleIndex = index; }
@@ -62,7 +68,8 @@ private:
     _int            m_DungeonDecoIndex;
     _int            m_ETCIndex;
 
-    _float          m_PreviewScale;
+    _float          m_PreviewScaleX;
+    _float          m_PreviewScaleY;
     _vec3           m_PreviewRotation;
     _float          m_PreviewYOffset;
 
