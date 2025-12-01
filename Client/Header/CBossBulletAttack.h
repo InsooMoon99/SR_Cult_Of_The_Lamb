@@ -27,7 +27,7 @@ public:
     virtual void    LateUpdate_State(const _float& timeDelta);
     virtual void    Render_State();
 
-    bool CircleBullet(const _float& timeDelta, int num, int radius, float interval);
+    bool CircleBullet(const _float& timeDelta, int num, int radius, float interval, float speed);
     bool CrossBullet(const _float& timeDelta, int num, int length, float interval);
     bool SpreadBullet(const _float& timeDelta, int num, float interval, float Speed, int angleOffset = 0);
    
@@ -47,6 +47,14 @@ private:
     vector<CBossBullet*> tmpBullet;
     bool m_TargetFlag = false;
 
+    // 쓸거
+    float m_offset;
+    float m_CircleRadius;
+    float m_Interval;
+    float m_CrossSpreadInterval;
+    float m_SpreadInterval;
+    float m_GroundY;
+    float m_CircleSpeed;
 
 private:
     virtual void Free();

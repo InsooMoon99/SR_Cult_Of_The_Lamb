@@ -32,7 +32,7 @@ HRESULT CWarningChain::Ready_GameObject()
 
     SetTexAspectInit(m_TextureCom, m_TransformCom, 0);
 
-    SetAspectScale(m_TransformCom, { 1.f,1.f,0.f });
+    SetAspectScale(m_TransformCom, { .5f,.5f,0.f });
 
     const auto ownerTransform =
         dynamic_cast<CTransform*>(m_pOwner->Get_Component(
@@ -74,6 +74,7 @@ _int CWarningChain::Update_GameObject(const _float& timeDelta)
     _int exit = CGameObject::Update_GameObject(timeDelta);
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
+
     if (m_Sizeflag == false)
     {
         // 초기 사이즈 저장
@@ -93,7 +94,7 @@ _int CWarningChain::Update_GameObject(const _float& timeDelta)
 
 
 
-    if (m_fElapsedTime > 0.2f && m_flag == false)
+    if (m_fElapsedTime > 0.8f && m_flag == false)
     {
         CBossPhase1* owner = dynamic_cast<CBossPhase1*>(m_pOwner);
 
@@ -128,7 +129,7 @@ _int CWarningChain::Update_GameObject(const _float& timeDelta)
     //    }
     //}
 
-    if (m_fElapsedTime > 1.f)
+    if (m_fElapsedTime > 0.3f&&m_flag==true)
     {
         m_bFade = true;
     }

@@ -29,10 +29,10 @@ void CBossBulletAttack::Enter()
     CMonsterState::Enter();
     m_pOwnerAnimatorCom->Play_Animation(L"BossAttack", ANIMSTATE::ONCE);
     // TODO:: 지금 이게 안들어오거든 바로 상태안의 애니로 감 어칼까
-    //
-    m_ePhase = PHASE::ROTCROSS_SPREAD; // 이걸 어케 해야하지??
-    //int RandPhase = CRandomMgr::GetInstance()->Get_Int_Random(0, ((int)PHASE::PHASE_END) - 1); // 페이즈 랜덤
-    //m_ePhase = (PHASE)RandPhase;
+    ////
+    //m_ePhase = PHASE::ROTCROSS_SPREAD; // 이걸 어케 해야하지??
+    int RandPhase = CRandomMgr::GetInstance()->Get_Int_Random(0, ((int)PHASE::PHASE_END) - 1); // 페이즈 랜덤
+    m_ePhase = (PHASE)RandPhase;
 
 }
 
@@ -53,6 +53,13 @@ HRESULT CBossBulletAttack::Ready_State()
     m_pOwnerTransformCom = static_cast<CTransform*>(m_pOwner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
     m_pOwnerAnimatorCom = static_cast<CAnimator*>(m_pOwner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
 
+    m_offset = 1;
+    m_CircleRadius = 5;
+    m_Interval = 0.1;
+    m_CrossSpreadInterval = 1;
+    m_SpreadInterval = 0.4;
+    m_GroundY = 0.002f;
+    m_CircleSpeed = 10;
     return S_OK;
 }
 
@@ -80,11 +87,9 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
     case PHASE::CIRCLE:
 
         m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::ONCE);
-
-
+        
         m_fElapsedTime += timeDelta;
 
-        if (CircleBullet(timeDelta, 9, 5, 0.1) == true)
         {
             if (m_TargetFlag == false)
             {
@@ -97,7 +102,7 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
                 {
                     // it->Set_TargetDir(tmpdir);
                     BulletDesc d;
-                    d.Direction = tmpdir;
+                    d.Direction = {tmpdir.x, 0.f, tmpdir.y};
                     d.Speed = 10;
                     d.moveType = PROJ_TYPE::LINEAR;
                     d.ProjectileOwner = m_pOwner;
@@ -141,14 +146,14 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
 
         m_fElapsedTime += timeDelta;
 
-        if (CrossBullet(timeDelta, 9, 1, 0.2) == true)
+        if (CrossBullet(timeDelta, 9, m_offset,m_Interval) == true)
         {
             for (auto& it : tmpBullet)
             {
                 it->Start_Shoot();
             }
 
-            SpreadBullet(timeDelta, 10, 1.f, 10);
+            SpreadBullet(timeDelta, 10,m_CrossSpreadInterval, 10);
 
 
             m_fCurStateElapsedTime += timeDelta;
@@ -178,7 +183,7 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
 
         m_fElapsedTime += timeDelta;
 
-        SpreadBullet(timeDelta, 10, 0.4f, 20, 10.f);
+        SpreadBullet(timeDelta, 10, m_SpreadInterval, 20, 10.f);
 
         m_fCurStateElapsedTime += timeDelta;
         //
@@ -206,13 +211,12 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
 
     return CBossPhase1::BOSSPHASE1::BULLETATTACK;
 }
-bool CBossBulletAttack::CircleBullet(const _float& timeDelta, int num, int radius, float interval)
+
+bool CBossBulletAttack::CircleBullet(const _float& timeDelta, int num, int radius, float interval ,float speed)
 {
 
     if (m_fElapsedTime >= interval && m_Count <= num)
     {
-
-
         CBossBullet* BossBullet = CBossBullet::Create(m_pOwner->Get_GraphicDev(), m_pOwner, m_pPlayer, PROJ_TYPE::LINEAR);
 
 
@@ -221,19 +225,30 @@ bool CBossBulletAttack::CircleBullet(const _float& timeDelta, int num, int radiu
                 ID_DYNAMIC,
                 COMPONENTTYPE::TRANSFORM));
 
-
         _vec3 ownerPos = m_pOwnerTransformCom->Get_Pos();
 
         float rad = D3DXToRadian(360.f / (num));
 
         float addRad = rad * m_Count;
 
-        _vec3 circle = { cos(addRad) * radius, 0.f, sin(addRad) * radius };
+        _vec3 circle = { cos(addRad) * radius, 0, sin(addRad) * radius };
+        _vec3 TR = ownerPos + circle;
+        BulletTransform->Set_Pos({ TR.x, m_GroundY,TR.z });
 
-        BulletTransform->Set_Pos(ownerPos + circle);
 
-        // 레이어 관리로 넘기기
-        SpawnAttackObject(BossBullet);
+
+        BulletDesc d;
+        d.Direction = circle;
+        d.Speed = speed;
+        d.moveType = PROJ_TYPE::LINEAR;
+        d.ProjectileOwner = m_pOwner;
+
+        CProjectile* BulletProjectile =
+            dynamic_cast<CProjectile*>(BossBullet->Get_Component(
+                ID_STATIC,
+                COMPONENTTYPE::PROJECTILE));
+
+        BulletProjectile->SetMoveDesc(d);
 
         tmpBullet.push_back(BossBullet);
 
@@ -286,12 +301,12 @@ bool CBossBulletAttack::CrossBullet(const _float& timeDelta, int num, int offset
                 AddPos = { 0.f, 0.f, -distance };
                 break;
             }
-
-            BulletTransform->Set_Pos(OwnerPos + AddPos);
+            _vec3 TR = OwnerPos + AddPos;
+                BulletTransform->Set_Pos({TR.x, m_GroundY,TR.z});
 
             BulletDesc d;
             d.Radius = distance;
-            d.OrbitCenter = OwnerPos;
+            d.OrbitCenter = { OwnerPos.x ,m_GroundY, OwnerPos.x };
             d.StartAngle = 0 + (i * 90);
             d.Speed = 100;
             d.moveType = PROJ_TYPE::ORBIT;
@@ -341,7 +356,7 @@ bool CBossBulletAttack::SpreadBullet(const _float& timeDelta, int num, float int
 
             _vec3 ownerPos = m_pOwnerTransformCom->Get_Pos();
 
-            BulletTransform->Set_Pos(ownerPos);
+            BulletTransform->Set_Pos(ownerPos.x, m_GroundY, ownerPos.z);
             //_vec3 baseDir = { 0,0,1 };
 
             float rad = 360.f / (num);

@@ -61,9 +61,11 @@ protected:
 
     CGameObject* m_pOwner;
     CGameObject* m_pTarget;
-   // CAttackBox* ATBox = nullptr;
+   //CAttackBox* ATBox = nullptr;
     CTransform* m_ATKBoxTransformCom;
     CProjectile* m_ProjectileCom;
+
+
 
     PROJ_TYPE m_type;
 
@@ -76,7 +78,7 @@ protected:
     _vec3 m_MoveLength ;
 
 
-
+	float DieCountForSafe;
     float m_fAlpha = 0;
 
     /// 실제 움직이는 변수/ ///

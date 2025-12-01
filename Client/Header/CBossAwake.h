@@ -33,7 +33,7 @@ private:
     _vec3 dir;
 
     //
-    float m_Speed = 10;
+    float m_Speed = 3;
 public:
     static CBossAwake* Create(CBossPhase1* pOwner, CBossStateMachine* pStateMachine);
 

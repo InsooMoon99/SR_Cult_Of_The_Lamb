@@ -30,6 +30,7 @@ CBossBullet::CBossBullet(const CBossBullet& rhs)
 
 CBossBullet::~CBossBullet()
 {
+    
 }
 
 HRESULT CBossBullet::Ready_GameObject()
@@ -39,7 +40,7 @@ HRESULT CBossBullet::Ready_GameObject()
 
     SetTexAspectInit(m_TextureCom, m_TransformCom, 0);
 
-    SetAspectScale(m_TransformCom, { .2f, .2f, .2f });
+    SetAspectScale(m_TransformCom, { .1f, .1f, .1f });
 
     const auto ownerTransform =
         dynamic_cast<CTransform*>(m_pOwner->Get_Component(
@@ -66,47 +67,27 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
         // 생성시의 위치 값 저장
         m_StartPos = m_TransformCom->Get_Pos();
 
-        // 공격 박스 생성
-       // CAttackBox* ATBox = CAttackBox::Create(m_GraphicDev);
 
-        //if (ATBox != nullptr)
-        //{
-        //    ATBox->Set_Instigator(m_pOwner); // 공격의 주체를 넣음 - 난 보스를 넣어야 하는듯? 
-        //    ATBox->Set_LifeTime(1.f); // 근데 어짜피 사슬이 사라지면 사라짐 
-        //
-        //
-        //    // 2. 구조체 데이터 세팅
-        //    HITDATA hit{};
-        //    hit.damage = 1;
-        //    hit.knockback = 0.f;
-        //    ATBox->Set_HitDesc(hit);
-        //
-        //    // 3. 공격 박스 위치 설정, 방향값 추가 가능
-        //    _vec3 pos = m_TransformCom->Get_Pos();
-        //
-        //    m_ATKBoxTransformCom = dynamic_cast<CTransform*>(
-        //        ATBox->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-        // 
-        //    m_ATKBoxTransformCom->Set_Pos(pos);
-        //    m_ATKBoxTransformCom->Set_Scale(m_TransformCom->Get_Scale());
-        //
-        //    // 4. 레이어에 추가, 헬퍼 함수 SpawnAttackObject 사용
-        //    //CManagement::GetInstance()->Get_Scene()->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, obj, OBJTYPE::ATTACK_COL);
-        //    SpawnAttackObject(ATBox); // TYPE , BOX SPHERE
-        //}
-        CAttackBox* ATBox = nullptr;
-        CAttackBuilder(m_GraphicDev, m_pOwner)
-            .Box()
+
+        CAttackBase* ATBox = nullptr;
+        CAttackBuilder(m_GraphicDev, this)
+            .Sphere()
             .Track(ATBox)
             .Damage(1.f)
             .Knockback(0.f)
-            .LifeTime(2.f)
-            .Position(m_TransformCom->Get_Pos())
-            .Scale(m_TransformCom->Get_Scale())
+            .Scale(0.01f)
+            .InstigatorPos()
+            .Offset(_vec3(0.f, 0.f, 0.f))
+            .LifeTime(20.f) // 이건 혹시 충돌 안했을경우를 대비 해서
+            .DestroyOnHit(true)
+            .CollisionLayer(COLLISION_LAYERTYPE::PROJECTILE)
             .Spawn();
+
+
 
         m_ATKBoxTransformCom = dynamic_cast<CTransform*>(
             ATBox->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+        m_ATKBoxTransformCom->Set_Scale({ 0.1f,0.1f,0.1f });
 
         m_flag = true;
     }
@@ -136,12 +117,18 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
         }
     }
 
+
+
+
     return exit;
 }
 
 void CBossBullet::LateUpdate_GameObject(const _float& timeDelta)
 {
     CGameObject::LateUpdate_GameObject(timeDelta);
+
+
+
 }
 
 void CBossBullet::Render_GameObject()
@@ -231,7 +218,11 @@ void CBossBullet::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CGameObject::OnBeginOverlap(self, other);
 
+    //ATBox->Mark_As_PendingKill();
+
     //Mark_As_PendingKill();
+
+
 }
 
 void CBossBullet::OnEndOverlap(CCollider* self, CCollider* other)
