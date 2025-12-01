@@ -20,6 +20,7 @@ CPlayerAttack::CPlayerAttack(DEVICE graphicDev)
 
       m_AttackInfo{},
       m_ComboIndex(0),
+      m_MaxCombo(0),
 
       m_Timer(0.f),
       m_IsHitboxActive(false),
@@ -38,6 +39,7 @@ CPlayerAttack::CPlayerAttack(const CPlayerAttack& rhs)
       m_CurrentAttackObj(nullptr),
 
       m_ComboIndex(rhs.m_ComboIndex),
+      m_MaxCombo(rhs.m_MaxCombo),
 
       m_Timer(rhs.m_Timer),
       m_IsHitboxActive(rhs.m_IsHitboxActive),
@@ -57,6 +59,18 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     // =========================================================
     // [1] 검 (WEAPON_SWORD) 데이터 설정
     // =========================================================
+
+    // 강공격
+    //TODO 아직 애니메이션과 FSM 조건이 안만들어짐. 추후에 완전 구현 예정
+    m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].state            = ACTORSTATE::PLAYER_SWORD_HEAVY; // 가정
+    m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].duration         = 1.5f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].hitboxStartTime  = 0.5f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].hitboxEndTime    = 0.6f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].comboInputTime   = 0.0f; // 강공격은 연계 없음
+    m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].damageMultiplier = 2.f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].knockbackPower   = 50.f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].spawnOffset      = 1.3f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].hitboxScale      = _vec3(1.f, 1.f, 1.f);
 
     // 1타
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].state            = ACTORSTATE::PLAYER_SWORD_COMBO1;
@@ -90,13 +104,6 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].knockbackPower   = 30.f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].spawnOffset      = 1.2f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
-
-    //TODO 강공격 (HEAVY)
-    //m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].state           = ACTORSTATE::PLAYER_SWORD_HEAVY; // 가정
-    //m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].duration        = 1.5f;
-    //m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].hitboxStartTime = 0.5f;
-    //m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].hitboxEndTime   = 1.2f;
-    //m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].comboInputTime  = 0.0f; // 강공격은 연계 없음
 
     // =========================================================
     //TODO [2] 건틀릿 (GAUNTLET) 데이터 설정
@@ -211,17 +218,20 @@ _bool CPlayerAttack::Update_NormalAttack(const _float& timeDelta)
     const _int weaponIdx = Get_WeaponIndex(m_OwnerWeaponCom->Get_CurrentWeaponID());
     if (weaponIdx < 0) return false;
 
-    // 콤보 인덱스 유효성 체크
+    // 무기 종류에 따라 최대 콤보 허용 설정
     switch (weaponIdx)
     {
-    case WEAPON_SWORD:      // 검 : 최대 3타
-        if (m_ComboIndex < ATTACK_COMBO1 || m_ComboIndex > ATTACK_COMBO3) return false;
+    case WEAPON_SWORD:
+        m_MaxCombo = 3;     // 검 : 최대 3타
         break;
-    case WEAPON_GAUNTLET:   // 건틀릿 : 최대 4타
-        if (m_ComboIndex < ATTACK_COMBO1 || m_ComboIndex > ATTACK_COMBO4) return false;
+    case WEAPON_GAUNTLET:
+        m_MaxCombo = 4;     // 건틀릿 : 최대 4타
         break;
     default: return false;
     }
+
+    // 콤보 인덱스 유효성 체크
+    if (m_ComboIndex < ATTACK_COMBO1 || m_ComboIndex > m_MaxCombo) return false;
 
     m_Timer += timeDelta;
 
@@ -253,13 +263,13 @@ _bool CPlayerAttack::Update_NormalAttack(const _float& timeDelta)
     }
 
     // 선입력 허용
-    if (m_Timer >= info.comboInputTime / atkSpeed && m_ComboIndex < ATTACK_COMBO3)
+    if (m_Timer >= info.comboInputTime / atkSpeed && m_ComboIndex < m_MaxCombo) 
         m_CanNextCombo = true;
 
     // 종료 or 콤보
     if (m_Timer >= info.duration / atkSpeed)
     {
-        if (m_IsNextComboReserved && m_ComboIndex < ATTACK_COMBO3)
+        if (m_IsNextComboReserved && m_ComboIndex < m_MaxCombo)
         {
             ++m_ComboIndex;
             m_Timer               = 0.f;
@@ -389,7 +399,7 @@ void CPlayerAttack::Create_AttackObj(const AttackInfo& attackInfo, const _vec3& 
         // 넉백 설정
         .Knockback(attackInfo.knockbackPower)
         // 지속시간 설정
-        .Duration(attackInfo.hitboxEndTime - attackInfo.hitboxStartTime)
+        .LifeTime(attackInfo.hitboxEndTime - attackInfo.hitboxStartTime)
         // 공격 오브젝트 크기 설정
         .Scale(_vec3())
         // 공격하는 쪽을 기준으로 위치를 지정하겠다

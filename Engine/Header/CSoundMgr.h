@@ -19,7 +19,7 @@ public:
 public:  // --- 주요 기능 ---
 
     /// @brief 일회성 사운드 재생 기능
-    /// @param soundFile  Sound 폴더부터의 주소 (ex. Player/Attack1.wav)
+    /// @param soundFile  Sound 폴더부터의 주소 (ex. Player/Player_Walk2.wav)
     /// @param soundType  사운드 채널 타입
     /// @param volume     볼륨. 0~1 사이로 조절
     /// @note 한번 조건에 한 번만 실행될 수 있도록 구성할 것
@@ -33,9 +33,9 @@ public:  // --- 주요 기능 ---
     /// @param stopPrevBGM      재생중이던 모든 BGM을 끄고 새로 재생할건지 여부. false를 사용하면 이전 BGM과 함께 재생
     /// @param fadeOutDuration  페이드 아웃 시간 (초). 0이면 즉시 정지
     void Play_BGM(const wstring& soundFile,
-                      _float         volume,
-                      _bool          stopPrevBGM     = true,
-                      _float         fadeOutDuration = 0.f);
+                  _float         volume,
+                  _bool          stopPrevBGM     = true,
+                  _float         fadeOutDuration = 0.f);
 
     /// @brief 사운드 채널 단위로 소리를 조절할 때만 사용
     /// @param soundType  사운드 채널 타입

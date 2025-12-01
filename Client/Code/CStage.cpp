@@ -65,7 +65,7 @@ HRESULT CStage::Ready_Scene()
     }
 
     // BGM Test
-    //CSoundMgr::GetInstance()->Play_Loop()
+    CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Intro.wav", 0.5f);
 
     return S_OK;
 }

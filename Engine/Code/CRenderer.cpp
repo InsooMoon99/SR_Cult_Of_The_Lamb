@@ -87,30 +87,21 @@ void CRenderer::Render_Alpha(DEVICE& graphicDev)
 
 void CRenderer::Render_UI(DEVICE& graphicDev)
 {
-    // 직교 투영
     if (m_RenderGroup[RENDER_UI].empty())
         return;
 
     _matrix prevView;
     _matrix prevProj;
 
-    graphicDev->GetTransform(D3DTS_VIEW, &prevView);
-    graphicDev->GetTransform(D3DTS_PROJECTION, &prevProj);
+    graphicDev->GetTransform(D3DTS_VIEW, &prevView);        // 쓰던 뷰 행렬 임시 저장
+    graphicDev->GetTransform(D3DTS_PROJECTION, &prevProj);  // 쓰던 투영 행렬 임시 저장
 
     _matrix uiView;
     _matrix uiProj;
 
-    D3DXMatrixIdentity(&uiView);
+    D3DXMatrixIdentity(&uiView);    // UI용 뷰 행렬은 항등 행렬로 설정
 
-    /*D3DXMatrixOrthoOffCenterLH(
-        &uiProj,
-        0.f,
-        static_cast<_float>(WINCX),
-        static_cast<_float>(WINCY),
-        0.f,
-        0.f,
-        1.f);*/
-
+    // UI 투영 행렬은 직교 투영으로 설정
     D3DXMatrixOrthoLH(
         &uiProj,
         static_cast<_float>(WINCX),
@@ -118,8 +109,8 @@ void CRenderer::Render_UI(DEVICE& graphicDev)
         0.f,
         1.f);
 
-    graphicDev->SetTransform(D3DTS_VIEW, &uiView);
-    graphicDev->SetTransform(D3DTS_PROJECTION, &uiProj);
+    graphicDev->SetTransform(D3DTS_VIEW, &uiView);          // UI 뷰 행렬 사용
+    graphicDev->SetTransform(D3DTS_PROJECTION, &uiProj);    // UI 투영 행렬 사용
 
     // 깊이 끄기
     graphicDev->SetRenderState(D3DRS_ZENABLE, FALSE);

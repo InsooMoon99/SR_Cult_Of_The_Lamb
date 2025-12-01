@@ -58,12 +58,14 @@ public:
         return *this;
     }
 
+    //!! Knockback의 지속시간
     CAttackBuilder& Duration(_float duration)
     {
         m_AttackData.duration = duration;
         return *this;
     }
 
+    //!! Attack Object의 지속시간
     CAttackBuilder& LifeTime(_float lifeTime)
     {
         m_LifeTime = lifeTime;
