@@ -61,6 +61,13 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
 HRESULT CResourceMgr::Ready_BossResource(DEVICE graphicDev)
 {
     if (FAILED(Ready_BossP1(graphicDev))) return E_FAIL;
+    //if (FAILED(Ready_BossP2(graphicDev))) return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CResourceMgr::Ready_BossResource2(DEVICE graphicDev)
+{
     if (FAILED(Ready_BossP2(graphicDev))) return E_FAIL;
 
     return S_OK;

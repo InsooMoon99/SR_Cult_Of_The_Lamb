@@ -1,21 +1,16 @@
 ﻿#include "pch.h"
 #include "CStage_Boss2.h"
-
 #include "CBossPhase1.h"
 #include "CLayer.h"
 #include "CMainCamera.h"
-#include "CMonster.h"
 #include "CPersistentObjectHelper.h"
 #include "CPlayer.h"
 #include "CState.h"
 #include "CTerrain.h"
 #include "CTransform.h"
-#include "CDInputMgr.h"
 #include "CMainEditorMgr.h"
 #include "CMainMenu.h"
-#include "CSceneMgr.h"
 #include "CWall.h"
-#include "CBossPhase1.h"
 #include "CDropSystem.h"
 
 CStage_Boss2::CStage_Boss2(DEVICE graphicDev)

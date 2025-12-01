@@ -68,6 +68,18 @@ _uint CLoading::Loading_ForBoss()
     return S_OK;
 }
 
+_uint CLoading::Loading_ForBoss2()
+{
+    m_LoadingText = L"Boss2 Loading...";
+
+    if (FAILED(CResourceMgr::GetInstance()->Ready_BossResource2(m_GraphicDev)))
+        return E_FAIL;
+
+    m_IsFinish = true;
+
+    return S_OK;
+}
+
 unsigned CLoading::Thread_Main(void* pArg)
 {
     auto pLoading = static_cast<CLoading*>(pArg);
@@ -82,7 +94,7 @@ unsigned CLoading::Thread_Main(void* pArg)
     case LOADING_STAGE:
         iFlag = pLoading->Loading_ForState();
         break;
-    case LOADING_BOSS:
+    case LOADING_BOSS1:
         iFlag = pLoading->Loading_ForBoss();
         break;
     default:

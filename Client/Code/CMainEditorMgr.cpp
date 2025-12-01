@@ -137,7 +137,7 @@ void CMainEditorMgr::Render_MainEditor()
 
 void CMainEditorMgr::Render_SceneTab()
 {
-    ImGui::BeginChild("[ Tool bar ]", ImVec2(0, 40), true);
+    ImGui::BeginChild("[ Tool bar ]", ImVec2(0, 70), true);
     Render_ToolBar();
     ImGui::EndChild();
 
@@ -274,24 +274,24 @@ void CMainEditorMgr::Render_ToolBar()
     float delta = CTimerMgr::GetInstance()->Get_TimeDelta(L"Timer_FPS60");
     float fps   = (delta > 0.f) ? 1.f / delta : 0.f;
 
-    ImGui::Columns(3, "ToolbarCols", false);
+    //ImGui::Columns(3, "ToolbarCols", false);
 
     // ============
     // Play / FPS
     // ============
     {
         ImGui::AlignTextToFramePadding();
-        ImGui::Text("Game");
-        ImGui::SameLine();
 
         if (ImGui::Button(m_IsPlaying ? "Pause" : "Play", ImVec2(60.f, 0.f)))
             m_IsPlaying = !m_IsPlaying;
 
         ImGui::SameLine();
+
         ImGui::Text("FPS : %.1f", fps);
     }
 
-    ImGui::NextColumn();
+    //ImGui::NextColumn();
+    ImGui::SameLine();
 
     // =======
     // Camera
@@ -304,7 +304,7 @@ void CMainEditorMgr::Render_ToolBar()
         Menu_CameraInspector(m_MainCamera);
     }
 
-    ImGui::NextColumn();
+    //ImGui::NextColumn();
 
     // ============
     // Debug Check
@@ -317,7 +317,7 @@ void CMainEditorMgr::Render_ToolBar()
         CCollisionManager::GetInstance()->Render_Debug(debugCheck);
     }
 
-    ImGui::Columns(1);
+    //ImGui::Columns(1);
 }
 
 void CMainEditorMgr::Render_Hierarchy()
