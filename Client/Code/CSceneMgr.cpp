@@ -2,6 +2,7 @@
 #include "CSceneMgr.h"
 #include "CEdit.h"
 #include "CLogo.h"
+#include "CLogo_Boss.h"
 #include "CMainMenu.h"
 #include "CManagement.h"
 #include "CStage.h"
@@ -55,8 +56,7 @@ void CSceneMgr::Change_SceneMgr(SCENETYPE typeInput)
 	switch (m_SceneType)
 	{
 	case SCENETYPE::SC_MAINMENU:
-		if (FAILED(CManagement::GetInstance()
-			->Request_ChangeScene(CMainMenu::Create(m_pGraphicDev))))
+		if (FAILED(CManagement::GetInstance()->Request_ChangeScene(CMainMenu::Create(m_pGraphicDev))))
 			bFailed = true;
 		break;
 	case SCENETYPE::SC_STAGE:
@@ -83,7 +83,12 @@ void CSceneMgr::Change_SceneMgr(SCENETYPE typeInput)
 			bFailed = true;
 		break;
 
-	default:
+    case SCENETYPE::SC_LOGO_BOSS:
+        if (FAILED(CManagement::GetInstance()->Request_ChangeScene(CLogo_Boss::Create(m_pGraphicDev))))
+            bFailed = true;
+        break;
+
+    default:
 		break;
 	}
 }

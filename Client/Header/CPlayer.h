@@ -32,12 +32,7 @@ public:
     void    OnBeginOverlap(CCollider* self, CCollider* other) override;
     void    OnEndOverlap(CCollider* self, CCollider* other) override;
 
-    void Render_Editor() override;
-
-public:
-    // 테스트 공격용
-    // 나중에 Compoennt를 새로 만들던, 클래스로 나누던 자유
-    void Test_Attack();
+    void    Render_Editor() override;
 
 private:
     HRESULT Add_Component()     override;
@@ -51,7 +46,6 @@ private:
 #pragma region Client Components
     CWeaponEquip*      m_WeaponEquipCom;
     CInventory*        m_InventoryCom;
-    CUIInventory*      m_UIInventory;
     CPlayerController* m_PlayerControllerCom;
     CPlayerInput*      m_PlayerInputCom;
     CPlayerMovement*   m_PlayerMovementCom;

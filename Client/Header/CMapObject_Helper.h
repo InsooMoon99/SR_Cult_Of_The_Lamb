@@ -4,6 +4,8 @@
 #include "CMapObject_Grass.h"
 #include "CMapObject_Rubble.h"
 #include "CMapObject_Deco.h"
+#include "CMapObject_DungeonDeco.h"
+#include "CMapObject_ETC.h"
 
 static CMapObjectBase* CreateMapObjectType(DEVICE graphicDev, MAPOBJTYPE type, _int textureIndex)
 {
@@ -19,6 +21,12 @@ static CMapObjectBase* CreateMapObjectType(DEVICE graphicDev, MAPOBJTYPE type, _
         break;
     case MAPOBJTYPE::DECO:
         obj = CMapObject_Deco::Create(graphicDev);
+        break;
+    case MAPOBJTYPE::DUNGEON_DECO:
+        obj = CMapObject_DungeonDeco::Create(graphicDev);
+        break;
+    case MAPOBJTYPE::ETC:
+        obj = CMapObject_ETC::Create(graphicDev);
         break;
     }
 

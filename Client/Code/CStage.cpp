@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "CStage.h"
 
+#include "CDInputMgr.h"
 #include "CCombatStat.h"
 #include "CDropSystem.h"
 #include "CHumanMonster.h"
@@ -12,10 +13,12 @@
 #include "CPersistentObjectHelper.h"
 #include "CPlayer.h"
 #include "CSoundMgr.h"
+#include "CSceneMgr.h"
 #include "CTerrain.h"
 #include "CTransform.h"
 #include "CUICircle.h"
 #include "CUIIcon.h"
+#include "CUIItemGet.h"
 #include "CUIMp.h"
 #include "CUIPlayerPanel.h"
 #include "CUITabMenu.h"
@@ -81,6 +84,11 @@ void CStage::Initialize_Scene()
 _int CStage::Update_Scene(const _float& timeDelta)
 {
     _int exit = Engine::CScene::Update_Scene(timeDelta);
+
+    if (CDInputMgr::GetInstance()->KeyDown(DIK_F))
+    {
+        CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS);
+    }
 
     return exit;
 }
@@ -287,11 +295,6 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     //         &gameObject),
     //     L"Persistent object setup failed: UI_SkillCount");
 
-    /////Inventory UI
-    //CUIInventory* uiInventory = CUIInventory::Create(m_GraphicDev);
-    //uiInventory->SetInventory(m_PlayerInventoryCom);
-    //FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiInventory),
-    //    L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UIInventory) failed");
     //CUITabMenu
     CUITabMenu* uiTabMenu = CUITabMenu::Create(m_GraphicDev);
     uiTabMenu->SetInventory(m_PlayerInventoryCom);
@@ -299,6 +302,12 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     uiTabMenu->Initialize();
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiTabMenu),
                      L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UITabMenu) failed");
+
+    FAILED_CHECK_MSG(Engine::AcquirePersistentObject<CUIItemGet>
+        (OBJTYPE::UI, L"UI_ItemGet",
+            m_GraphicDev,layer,
+            &gameObject), L"Persistent object setup failed: UI_ItemGet")
+
 
     m_Layers.insert({ layerType, layer });
 
