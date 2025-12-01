@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include <CSpriteAnimation.h>
+
 #include "CDInputMgr.h"
 
 #include "CBoxCollider.h"
@@ -17,7 +19,7 @@
 #include "CPlayerInput.h"
 #include "CPlayerMovement.h"
 #include "CPlayerAttack.h"
-#include "../../Engine/Header/CAnimator.h"
+#include "CAnimator.h"
 
 USING(Engine)
 
@@ -791,13 +793,71 @@ static void Animator_Inspector(CAnimator* animator)
 
     NULL_CHECK(animator);
 
-    ImGui::Text("현재 애니메이션 : ");
-    ImGui::SameLine();
+    const wstring& curAnimKey = animator->Get_CurKey();
+    string strCurAnimKey(curAnimKey.begin(), curAnimKey.end());
 
-    const wstring& curAnim = animator->Get_CurKey();
     const _int curFrame = animator->Get_CurFrame();
-    _bool isFinished = animator->
+    const _int maxFrame = animator->Get_MaxFrame();
 
-    ImGui::Text()
+    CSpriteAnimation* curAnimation = animator->Get_CurAnimation();
+    _bool isFinished = false;
+
+    if (curAnimation)
+        isFinished = curAnimation->IsFinished();
+
+    _vec2 size = animator->Get_CurSize();
+    _vec2 offset = animator->Get_CurOffset();
+
+    ImGui::PushID("Animation Inspector");
+    {
+        ImGui::Text(u8"[ 애니메이션 설정 ]");
+
+        ImGui::Text(u8"현재 애니메이션 : ");
+        ImGui::SameLine();
+        ImGui::Text("%s", strCurAnimKey.c_str());
+
+        ImGui::Text(u8"현재 프레임 : ");
+        ImGui::SameLine();
+        ImGui::Text("%d", curFrame);
+
+        ImGui::Text(u8"최대 프레임 : ");
+        ImGui::SameLine();
+        ImGui::Text("%d", maxFrame);
+
+        ImGui::SeparatorText(u8"위치, 크기 조절");
+
+        const float columnsWidth = 80.f;
+
+        ImGui::Columns(2, "##Size");
+        ImGui::SetColumnWidth(0, columnsWidth);
+
+        ImGui::Text("Size : ");
+        ImGui::SameLine();
+
+        ImGui::NextColumn();
+
+        if (ImGui::DragFloat2("##AnimSize", &size.x, 0.01f, -15.f, 15.f))
+        {
+            animator->Set_CurSize(size);
+        }
+
+        ImGui::Columns(1);
+
+        ImGui::Columns(2, "##Offset");
+        ImGui::SetColumnWidth(0, columnsWidth);
+
+        ImGui::Text("Offset : ");
+        ImGui::SameLine();
+
+        ImGui::NextColumn();
+
+        if (ImGui::DragFloat2("##AnimOffset", &offset.x, 0.01f, -15.f, 15.f))
+        {
+            animator->Set_CurOffset(offset);
+        }
+
+        ImGui::Columns(1);
+    }
+    ImGui::PopID();
 
 }
