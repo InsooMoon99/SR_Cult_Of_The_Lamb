@@ -97,6 +97,9 @@ unsigned CLoading::Thread_Main(void* pArg)
     case LOADING_BOSS1:
         iFlag = pLoading->Loading_ForBoss();
         break;
+    case LOADING_BOSS2:
+        iFlag = pLoading->Loading_ForBoss2();
+        break;
     default:
         break;
     }

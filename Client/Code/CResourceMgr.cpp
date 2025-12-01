@@ -31,6 +31,7 @@
 #include "ItemData.h"
 #include "ItemInstance.h"
 #include "CProjectile.h"
+#include "CBossController.h"
 
 IMPLEMENT_SINGLETON(CResourceMgr)
 
@@ -396,6 +397,22 @@ HRESULT CResourceMgr::Ready_BossP1(DEVICE graphicDev)
 HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
 {
     auto protoMgr = CProtoMgr::GetInstance();
+
+    // Boss Controller
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::BOSS2_CONTROLLER,
+        CBossController::Create(graphicDev))))
+        return E_FAIL;
+
+    // Boss Slave
+    CTexture* slaveTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(slaveTex, E_FAIL);
+
+    if(FAILED(slaveTex->Add_Texture(L"Boss_Slave_Appear", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Slave/ChunSik/Follower-finab-loss-appear%d.png", 42)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_SLAVE_TEST, slaveTex)))
+        return E_FAIL;
 
     return S_OK;
 }
