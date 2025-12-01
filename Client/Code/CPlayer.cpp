@@ -62,7 +62,7 @@ HRESULT CPlayer::Ready_GameObject()
     m_CombatStatCom->Set_Mp(5.f);
     m_CombatStatCom->Set_Speed(5.f);
 
-    m_TransformCom->Set_Pos(_vec3(0.f, 0.f, 1.f));
+    m_TransformCom->Set_Pos(_vec3(0.f, 1.f, 1.f));
     m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
 
     //!! Rigidbody에서 중력만 사용 안함

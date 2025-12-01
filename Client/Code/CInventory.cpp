@@ -1,9 +1,9 @@
 ﻿#include "pch.h"
 #include "CInventory.h"
-
 #include "CDropSystem.h"
 #include "CItemDB.h"
 #include "CPlayer.h"
+#include "CUIItemGetManager.h"
 #include "ItemData.h"
 
 CInventory::CInventory(DEVICE graphicDev)
@@ -97,11 +97,10 @@ bool CInventory::AddItem(ItemInstance itemInst)
         {
             if (itemData->maxStack > slot.count)
             {
-                int oldCount = slot.count;
+  
                 slot.count++;
-                m_AddedCount = slot.count - oldCount;
 
-
+                m_ItemAdded(&slot.itemInst, slot.count);
                 return true;
             }
         }
@@ -122,7 +121,7 @@ bool CInventory::AddItem(ItemInstance itemInst)
                 m_vecInven[slot].itemInst = itemInst;
 
                 m_vecInven[slot].count++;
-                m_AddedCount++;
+                m_ItemAdded(&m_vecInven[slot].itemInst, m_vecInven[slot].count);
                 return true;
             }
             break;
@@ -138,7 +137,7 @@ bool CInventory::AddItem(ItemInstance itemInst)
             {
                 m_vecInven[slot].itemInst = itemInst;
                 m_vecInven[slot].count++;
-                m_AddedCount++;
+                m_ItemAdded(&m_vecInven[slot].itemInst, m_vecInven[slot].count);
                 return true;
             }
             break;
@@ -156,9 +155,12 @@ bool CInventory::AddItem(ItemInstance itemInst)
             m_vecInven[slot].itemInst = itemInst;
             m_vecInven[slot].count++;
             m_AddedCount++;
+            m_ItemAdded(&m_vecInven[slot].itemInst,m_vecInven[slot].count);
             return true;
-        }
+        }                                            
     }
+
+
     return false;
 }
 

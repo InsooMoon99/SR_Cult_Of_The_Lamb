@@ -19,6 +19,7 @@
 #include "CUICircle.h"
 #include "CUIIcon.h"
 #include "CUIItemGet.h"
+#include "CUIItemGetManager.h"
 #include "CUIMp.h"
 #include "CUIPlayerPanel.h"
 #include "CUITabMenu.h"
@@ -220,6 +221,9 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
 
     m_Layers.insert({ layerType, layer });
 
+
+
+
     return S_OK;
 }
 
@@ -300,14 +304,20 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     uiTabMenu->SetInventory(m_PlayerInventoryCom);
     uiTabMenu->Set_PlayerCombatStat(m_PlayerCombatStatCom);
     uiTabMenu->Initialize();
+
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiTabMenu),
                      L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UITabMenu) failed");
 
     FAILED_CHECK_MSG(Engine::AcquirePersistentObject<CUIItemGet>
         (OBJTYPE::UI, L"UI_ItemGet",
-            m_GraphicDev,layer,
+            m_GraphicDev, layer,
             &gameObject), L"Persistent object setup failed: UI_ItemGet")
 
+    //FAILED_CHECK_MSG(Engine::AcquirePersistentObject<CUIItemGetManager>
+    //    (OBJTYPE::UI, L"UI_ItemGetManager",
+    //        m_GraphicDev, layer,
+    //        &gameObject), L"Persistent object setup failed: UI_ItemGetManager")
+    //    dynamic_cast<CUIItemGetManager*>(gameObject)->SetInventory(m_PlayerInventoryCom);
 
     m_Layers.insert({ layerType, layer });
 

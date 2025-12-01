@@ -41,8 +41,12 @@ HRESULT CUIItemGet::Ready_GameObject()
 {
     if (FAILED(Add_Component()))
         return E_FAIL;
+    //아이템 텍스처
     m_UIItemIcon = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_ITEM);
     m_UIItemIcon->SetRegister(false);
+    m_UIItemIcon->Get_Transform()->Set_Scale(25.f, 25.f, 0.f);
+
+    //배경 위치
     m_TransformCom->Set_Scale(165.f, 36.9f, 0.f);
     m_TransformCom->Set_Pos(m_ClosedX, 0.f, 0.f);
     return S_OK;
@@ -54,8 +58,10 @@ _int CUIItemGet::Update_GameObject(const _float& timeDelta)
 
     int exit = CUI::Update_GameObject(timeDelta);
 
-    m_UIItemIcon->Set_TextureIndex(1);
+    int  index = CItemDB::GetInstance()->GetIndexById(m_UIItem.itemId);
+    m_UIItemIcon->Set_TextureIndex(index);
     m_UIItemIcon->Update_GameObject(timeDelta);
+
     if (CDInputMgr::GetInstance()->Get_DIKeyState(DIK_5))
         m_IsAnimating = true;
 
@@ -143,13 +149,13 @@ HRESULT CUIItemGet::Add_Component()
 //
 //}
 //
-//void CUIItemGet::Set_UIItem(int itemId, int itemCount)
-//{
-//     m_UIItem.itemId = itemId;
-//     m_UIItem.count += itemCount;
-//     m_UIItem.remainTime = 2.f;
-//
-//}
+void CUIItemGet::Set_UIItem(int itemId, int itemCount)
+{
+     m_UIItem.itemId = itemId;
+     m_UIItem.count += itemCount;
+     m_UIItem.remainTime = 2.f;
+
+}
 
 CUIItemGet* CUIItemGet::Create(DEVICE graphicDev)
 {

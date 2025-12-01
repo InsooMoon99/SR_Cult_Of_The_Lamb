@@ -27,7 +27,7 @@ public:
     HRESULT Add_Component();
     //void    Render_Setting();
     //void    Render_Reset();
-  //  void    Set_UIItem(int itemId, int itemCount);
+    void    Set_UIItem(int itemId, int itemCount);
 
     static CUIItemGet* Create(DEVICE graphicDev);
     void    Render_Editor() override;
