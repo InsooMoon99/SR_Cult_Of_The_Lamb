@@ -1,41 +1,40 @@
 ﻿#include "pch.h"
 #include "CUIInventoryCell.h"
+
 #include "CCreateHelper.h"
 #include "CDInputMgr.h"
 #include "CEnumHelper.h"
+#include "CFontMgr.h"
 #include "CItemDB.h"
 #include "CRcTex.h"
 #include "CRenderer.h"
-#include "CUIIcon.h"
-#include <iostream>
 #include "CTexture.h"
 #include "CTransform.h"
-#include "CFontMgr.h"
+#include "CUIIcon.h"
 #include "ItemData.h"
 
 CUIInventoryCell::CUIInventoryCell(DEVICE pGraphicDev)
     : CUI(pGraphicDev),
-    m_ItemIcon(nullptr),
-    m_CardIcon(nullptr),
-    m_HighlightTexCom(nullptr),
-    m_Count(0),
-    m_IsHovered(false)
-{
-}
+      m_ItemIcon(nullptr),
+      m_CardIcon(nullptr),
+      m_CardItemIcon(nullptr),
+      m_HighlightTexCom(nullptr),
+      m_Count(0),
+      m_IsHovered(false)
+{}
 
 CUIInventoryCell::CUIInventoryCell(const CUIInventoryCell& rhs)
     : CUI(rhs),
-    m_ItemIcon(nullptr),
-    m_CardIcon(nullptr),
-    m_HighlightTexCom(nullptr),
-    m_Count(0),
-    m_IsHovered(false)
-{
-}
+      m_ItemIcon(nullptr),
+      m_CardIcon(nullptr),
+      m_CardItemIcon(nullptr),
+      m_HighlightTexCom(nullptr),
+      m_Count(0),
+      m_IsHovered(rhs.m_IsHovered)
+{}
 
 CUIInventoryCell::~CUIInventoryCell()
-{
-}
+{}
 
 void CUIInventoryCell::OnBeginOverlap(CCollider* self, CCollider* other)
 {
@@ -68,13 +67,12 @@ HRESULT CUIInventoryCell::Ready_GameObject()
     m_CardIcon->Get_Transform()->Set_Scale(250.f, 180.f, 0.f);
     m_CardIcon->Get_Transform()->Set_Pos(370.f, 0.f, 0.f);
 
-
     //카드 아이템 그리기용 객체 생성
     m_CardItemIcon = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_ITEM); //아이템 텍스처
     m_CardItemIcon->SetRegister(false);
-    _vec3 cardPos = m_CardIcon->Get_Transform()->Get_Pos();
-    _vec2 itemOffset = { 0.f,70.f };
-    m_CardItemIcon->Get_Transform()->Set_Pos(cardPos.x+itemOffset.x, cardPos.y+itemOffset.y,0.f);
+    _vec3 cardPos    = m_CardIcon->Get_Transform()->Get_Pos();
+    _vec2 itemOffset = { 0.f, 70.f };
+    m_CardItemIcon->Get_Transform()->Set_Pos(cardPos.x + itemOffset.x, cardPos.y + itemOffset.y, 0.f);
     return S_OK;
 }
 
@@ -127,7 +125,6 @@ void CUIInventoryCell::Render_GameObject()
     //아이템이 있으면 아이템 아이콘 렌더링
     if (!(m_ItemInst.itemId == -1))
     {
-
         int TextureIndex = CItemDB::GetInstance()->GetIndexById(m_ItemInst.itemId);
         m_ItemIcon->Set_TextureIndex(TextureIndex);
         m_CardItemIcon->Set_TextureIndex(TextureIndex);
@@ -140,7 +137,6 @@ void CUIInventoryCell::Render_GameObject()
         m_CardItemIcon->Get_Transform()->Set_Scale(_vec3(30.f, 30.f, 0.f));
 
         m_ItemIcon->Render_GameObject();
-
     }
     float numberOffsetX = 30.f;
     float numberOffsetY = 25.f;
@@ -151,7 +147,12 @@ void CUIInventoryCell::Render_GameObject()
         _vec2 cellPos = { m_TransformCom->Get_Pos().x + WINCX / 2, WINCY / 2 - m_TransformCom->Get_Pos().y };
 
         _vec2 number = { cellPos.x + numberOffsetX, cellPos.y + numberOffsetY };
-        CFontMgr::GetInstance()->Render_FontOutlined(L"NanumSquare_Heavy", to_wstring(m_Count), &number, D3DXCOLOR(1.f, 1.f, 1.f, 1.f), D3DXCOLOR(0.f, 0.f, 0.f, 1.f), 3);
+        CFontMgr::GetInstance()->Render_FontOutlined(L"NanumSquare_Heavy",
+                                                     to_wstring(m_Count),
+                                                     &number,
+                                                     D3DXCOLOR(1.f, 1.f, 1.f, 1.f),
+                                                     D3DXCOLOR(0.f, 0.f, 0.f, 1.f),
+                                                     3);
     }
 
     //셀 선택시 외곽선 그리기
@@ -184,25 +185,32 @@ void CUIInventoryCell::Render_GameObject()
             m_CardItemIcon->Render_GameObject();
 
             //아이템 이름 출력
-            Item* item = CItemDB::GetInstance()->GetItemById(m_ItemInst.itemId);
-            _vec3 pos = m_CardIcon->Get_Transform()->Get_Pos();
+            Item* item       = CItemDB::GetInstance()->GetItemById(m_ItemInst.itemId);
+            _vec3 pos        = m_CardIcon->Get_Transform()->Get_Pos();
             _vec2 descOffset = { 0.f, 0.f };
-            _vec2 screen = { WINCX / 2 + pos.x, WINCY / 2 - pos.y + descOffset.y };
-            CFontMgr::GetInstance()->Render_Font(L"아이템 이름", CItemDB::GetInstance()->Utf8ToWstring(item->name), &screen, D3DXCOLOR{ 1.f,1.f,1.f,1.f });
+            _vec2 screen     = { WINCX / 2 + pos.x, WINCY / 2 - pos.y + descOffset.y };
+            CFontMgr::GetInstance()->Render_Font(L"아이템 이름",
+                                                 CItemDB::GetInstance()->Utf8ToWstring(item->name),
+                                                 &screen,
+                                                 D3DXCOLOR{ 1.f, 1.f, 1.f, 1.f });
 
             //아이템 메인 설명 출력
-            descOffset = {0.f, 95.f};
-            screen = { WINCX / 2 + pos.x, WINCY / 2 - pos.y + descOffset.y };
-            CFontMgr::GetInstance()->Render_Font(L"카드 설명", CItemDB::GetInstance()->Utf8ToWstring(item->desc), &screen, D3DXCOLOR{ 1.f,1.f,1.f,1.f });
+            descOffset = { 0.f, 95.f };
+            screen     = { WINCX / 2 + pos.x, WINCY / 2 - pos.y + descOffset.y };
+            CFontMgr::GetInstance()->Render_Font(L"카드 설명",
+                                                 CItemDB::GetInstance()->Utf8ToWstring(item->desc),
+                                                 &screen,
+                                                 D3DXCOLOR{ 1.f, 1.f, 1.f, 1.f });
 
             //아이템 부연 설명 출력
             descOffset = { 0.f, 25.f };
-            screen = { WINCX / 2 + pos.x, WINCY / 2 - pos.y + descOffset.y };
-            CFontMgr::GetInstance()->Render_Font(L"부연 설명", CItemDB::GetInstance()->Utf8ToWstring(item->additionalDesc), &screen, D3DXCOLOR{ 0.6f,0.6f,0.6f,1.f });
-
+            screen     = { WINCX / 2 + pos.x, WINCY / 2 - pos.y + descOffset.y };
+            CFontMgr::GetInstance()->Render_Font(L"부연 설명",
+                                                 CItemDB::GetInstance()->Utf8ToWstring(item->additionalDesc),
+                                                 &screen,
+                                                 D3DXCOLOR{ 0.6f, 0.6f, 0.6f, 1.f });
         }
     }
-
 }
 
 HRESULT CUIInventoryCell::Add_Component()

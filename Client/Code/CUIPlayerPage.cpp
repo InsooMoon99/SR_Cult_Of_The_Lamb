@@ -16,20 +16,33 @@
 #include "CWeaponEquip.h"
 
 CUIPlayerPage::CUIPlayerPage(DEVICE pGraphicDev, CUI* owner)
-    : CUI(pGraphicDev)
+    : CUI(pGraphicDev),
+      m_PlayerUI(nullptr),
+      m_PlayerBG(nullptr),
+      m_LockUI(nullptr),
+      m_UnlockUI(nullptr),
+      m_OutfitUI(nullptr),
+      m_WeaponUI(nullptr),
+      m_PlayerPanel(nullptr)
 {
     m_Owner = owner;
 }
 
 CUIPlayerPage::CUIPlayerPage(const CUIPlayerPage& rhs, CUI* owner)
-    : CUI(rhs)
+    : CUI(rhs),
+      m_PlayerUI(nullptr),
+      m_PlayerBG(nullptr),
+      m_LockUI(nullptr),
+      m_UnlockUI(nullptr),
+      m_OutfitUI(nullptr),
+      m_WeaponUI(nullptr),
+      m_PlayerPanel(nullptr)
 {
     m_Owner = owner;
 }
 
 CUIPlayerPage::~CUIPlayerPage()
-{
-}
+{}
 
 HRESULT CUIPlayerPage::Ready_GameObject()
 {
@@ -68,35 +81,53 @@ HRESULT CUIPlayerPage::Ready_GameObject()
     m_WeaponUI = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_ICON);
     dynamic_cast<CTransform*>(m_WeaponUI->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Set_Scale(50.f, 50.f, 0.f);
     m_WeaponUI->SetRegister(false);
-  
-   return S_OK;
+
+    return S_OK;
 }
 
 _int CUIPlayerPage::Update_GameObject(const _float& timeDelta)
 {
     int exit = CUI::Update_GameObject(timeDelta);
 
-    _vec3 pos = m_TransformCom->Get_Pos();
-    _vec2 backgroundOffset = {0.f,-80.f};
-    _vec2 playerOffset = {0.f,-80.f};
-    _vec2 LockOffset = { 0.f,-270.f };
-    _vec2 UnlockOffset = { 100.f, -270.f };
-    _vec2 OufitOffset = { -100.f,-270.f };
-    _vec2 HeartOffset = { 0.f,100.f };
+    _vec3 pos              = m_TransformCom->Get_Pos();
+    _vec2 backgroundOffset = { 0.f, -80.f };
+    _vec2 playerOffset     = { 0.f, -80.f };
+    _vec2 LockOffset       = { 0.f, -270.f };
+    _vec2 UnlockOffset     = { 100.f, -270.f };
+    _vec2 OufitOffset      = { -100.f, -270.f };
+    _vec2 HeartOffset      = { 0.f, 100.f };
 
-    dynamic_cast<CTransform*>(m_PlayerUI->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Set_Pos(pos.x, pos.y+ backgroundOffset.y, 0.f);
+    dynamic_cast<CTransform*>(m_PlayerUI->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Set_Pos(
+        pos.x,
+        pos.y + backgroundOffset.y,
+        0.f);
     m_PlayerUI->Update_GameObject(timeDelta);
-    dynamic_cast<CTransform*>(m_PlayerBG->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Set_Pos(pos.x, pos.y+ playerOffset.y, 0.f);
+    dynamic_cast<CTransform*>(m_PlayerBG->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Set_Pos(
+        pos.x,
+        pos.y + playerOffset.y,
+        0.f);
     m_PlayerBG->Update_GameObject(timeDelta);
     dynamic_cast<CTransform*>(m_LockUI->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Set_Pos(pos.x, pos.y + LockOffset.y, 0.f);
     m_LockUI->Update_GameObject(timeDelta);
-    dynamic_cast<CTransform*>(m_PlayerPanel->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Set_Pos(pos.x, pos.y + HeartOffset.y, 0.f);
+    dynamic_cast<CTransform*>(m_PlayerPanel->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Set_Pos(
+        pos.x,
+        pos.y + HeartOffset.y,
+        0.f);
     m_PlayerPanel->Update_GameObject(timeDelta);
-    dynamic_cast<CTransform*>(m_OutfitUI->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Set_Pos(pos.x+ OufitOffset.x, pos.y + OufitOffset.y, 0.f);
+    dynamic_cast<CTransform*>(m_OutfitUI->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Set_Pos(
+        pos.x + OufitOffset.x,
+        pos.y + OufitOffset.y,
+        0.f);
     m_OutfitUI->Update_GameObject(timeDelta);
-    dynamic_cast<CTransform*>(m_UnlockUI->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Set_Pos(pos.x + UnlockOffset.x, pos.y + UnlockOffset.y, 0.f);
+    dynamic_cast<CTransform*>(m_UnlockUI->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Set_Pos(
+        pos.x + UnlockOffset.x,
+        pos.y + UnlockOffset.y,
+        0.f);
     m_UnlockUI->Update_GameObject(timeDelta);
-    dynamic_cast<CTransform*>(m_WeaponUI->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Set_Pos(pos.x + UnlockOffset.x, pos.y + UnlockOffset.y, 0.f);
+    dynamic_cast<CTransform*>(m_WeaponUI->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Set_Pos(
+        pos.x + UnlockOffset.x,
+        pos.y + UnlockOffset.y,
+        0.f);
     m_WeaponUI->Update_GameObject(timeDelta);
     return exit;
 }
@@ -135,12 +166,15 @@ void CUIPlayerPage::Render_GameObject()
     m_UnlockUI->Render_GameObject();
 
     //Weapon UI :
-    CScene* scene = CManagement::GetInstance()->Get_Scene();
-    CWeaponEquip* weaponEquip = dynamic_cast<CWeaponEquip*>(scene->Get_Component(COMPONENTID::ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::WEAPON_EQUIP));
+    CScene*       scene       = CManagement::GetInstance()->Get_Scene();
+    CWeaponEquip* weaponEquip = dynamic_cast<CWeaponEquip*>(scene->Get_Component(COMPONENTID::ID_STATIC,
+                                                                                 LAYERTYPE::GAMELOGIC,
+                                                                                 OBJTYPE::PLAYER,
+                                                                                 COMPONENTTYPE::WEAPON_EQUIP));
 
     if (weaponEquip->Get_WeaponEquipped())
     {
-        switch(weaponEquip->Get_CurrentWeaponID())
+        switch (weaponEquip->Get_CurrentWeaponID())
         {
         case 3001:
             m_WeaponUI->Set_TextureIndex(6);
@@ -152,18 +186,16 @@ void CUIPlayerPage::Render_GameObject()
             break;
         }
     }
-   
 
     //폰트 그리기
-    _vec2 invenPos = { m_TransformCom->Get_Pos().x, m_TransformCom->Get_Pos().y };
-    _vec2 fontOffset = { 0.f,- 150.f };
-    _vec2 screen = { WINCX / 2 + invenPos.x + fontOffset.x, WINCY / 2 - invenPos.y + fontOffset.y }; //폰트 출력을 위해 스크린 좌표로 변환
+    _vec2 invenPos   = { m_TransformCom->Get_Pos().x, m_TransformCom->Get_Pos().y };
+    _vec2 fontOffset = { 0.f, - 150.f };
+    _vec2 screen     = { WINCX / 2 + invenPos.x + fontOffset.x, WINCY / 2 - invenPos.y + fontOffset.y }; //폰트 출력을 위해 스크린 좌표로 변환
 
     CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Heavy",
-        L"쥬신이",
-        &screen,
-        D3DXCOLOR(1.f, 1.f, 1.f, 1.f));
-
+                                         L"쥬신이",
+                                         &screen,
+                                         D3DXCOLOR(1.f, 1.f, 1.f, 1.f));
 
     //하트 그리기
     m_PlayerPanel->Render_GameObject();
@@ -171,8 +203,8 @@ void CUIPlayerPage::Render_GameObject()
 
 void CUIPlayerPage::Initialize()
 {
-   //플레이어 하트 UI
-    m_PlayerPanel = CUIPlayerPanel::Create(m_GraphicDev);
+    //플레이어 하트 UI
+    m_PlayerPanel                 = CUIPlayerPanel::Create(m_GraphicDev);
     CCombatStat* playerCombatstat = dynamic_cast<CUITabMenu*>(m_Owner)->Get_PlayerCombatStat();
     if (!playerCombatstat)
         return;
@@ -182,7 +214,7 @@ void CUIPlayerPage::Initialize()
 
     return;
 }
-    
+
 HRESULT CUIPlayerPage::Add_Component()
 {
     // buffer
@@ -206,8 +238,7 @@ HRESULT CUIPlayerPage::Add_Component()
     return S_OK;
 }
 
-
-CUIPlayerPage* CUIPlayerPage::Create(DEVICE graphicDev,CUI* owner)
+CUIPlayerPage* CUIPlayerPage::Create(DEVICE graphicDev, CUI* owner)
 {
     CUIPlayerPage* uiPlayerPage = new CUIPlayerPage(graphicDev, owner);
 
@@ -228,7 +259,7 @@ void CUIPlayerPage::Free()
     Safe_Release(m_LockUI);
     Safe_Release(m_UnlockUI);
     Safe_Release(m_OutfitUI);
-    Safe_Release( m_WeaponUI);
+    Safe_Release(m_WeaponUI);
     Safe_Release(m_PlayerPanel);
     CUI::Free();
 }
