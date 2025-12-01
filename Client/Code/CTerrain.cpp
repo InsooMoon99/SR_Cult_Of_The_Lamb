@@ -41,7 +41,7 @@ HRESULT CTerrain::Ready_GameObject()
     if (FAILED(CRenderObject::Ready_GameObject()))
         return E_FAIL;
 
-    m_TransformCom->Set_Pos(_vec3(-10.f, -1.f, -10.f));
+    m_TransformCom->Set_Pos(_vec3(0.f, .001f, 0.f));
 
     return S_OK;
 }

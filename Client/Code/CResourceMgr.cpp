@@ -52,9 +52,16 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
     if (FAILED(Ready_Item(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Common(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Terrain(graphicDev))) return E_FAIL;
-    //if (FAILED(Ready_BossP1(graphicDev))) return E_FAIL;
-    if (FAILED(Ready_BossP2(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Decoration(graphicDev))) return E_FAIL;
+
+    return S_OK;
+}
+
+// 보스 리소스는 별도로 로딩
+HRESULT CResourceMgr::Ready_BossResource(DEVICE graphicDev)
+{
+    if (FAILED(Ready_BossP1(graphicDev))) return E_FAIL;
+    if (FAILED(Ready_BossP2(graphicDev))) return E_FAIL;
 
     return S_OK;
 }
@@ -366,6 +373,16 @@ HRESULT CResourceMgr::Ready_BossP1(DEVICE graphicDev)
         COMPONENTTYPE::TEX_OUT, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec1))))
         return E_FAIL;
 
+    ////////////
+    vector<wstring> pathVec2;
+    pathVec2.push_back(L"../Bin/Resource/Texture/BossPhase1/Bullet/Bullet.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/BossPhase1/Bullet/Bullet1.png");
+
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_BULLET, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec2))))
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -593,6 +610,18 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_DECO, CTexture::Create(graphicDev, TEX_NORMAL,
             L"../Bin/Resource/Texture/MapObject/Deco/Village_Deco%d.png", 77))))
+        return E_FAIL;
+
+    // Dungeon_Deco
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_DUNGEON_DECO, CTexture::Create(graphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/MapObject/Dungeon_Deco2/Dungeon_Deco2_%d.png", 139))))
+        return E_FAIL;
+
+    // ETC
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_ETC, CTexture::Create(graphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/MapObject/ETC/ETC%d.png", 40))))
         return E_FAIL;
 
     return S_OK;

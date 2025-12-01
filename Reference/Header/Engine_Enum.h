@@ -164,6 +164,10 @@ enum class COMPONENTTYPE
     TEX_RUBBLE,
     TEX_DECO,
 
+    TEX_DUNGEON_DECO,
+    TEX_ETC,
+
+
     COMPONENT_END
 };
 
@@ -208,6 +212,7 @@ enum class ACTORDIR
 enum class SCENETYPE
 {
     SC_LOGO,
+    SC_LOGO_BOSS,
     SC_MAINMENU,
     SC_STAGE,
     SC_STAGE1,
@@ -218,6 +223,14 @@ enum class SCENETYPE
     SC_EDIT,
 
     SC_END
+};
+
+enum SOUNDTYPE
+{
+	SOUND_BGM,
+	SOUND_EFFECT,
+
+	SOUND_END
 };
 }
 #endif // Engine_Enum_h__

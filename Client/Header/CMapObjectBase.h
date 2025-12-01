@@ -11,7 +11,8 @@ END
 
 enum class MAPOBJTYPE
 {
-    GRASS, RUBBLE, DECO, /* Object 종류 추가하기 */ MAPOBJ_END,
+    /* Object 종류 추가하기 */
+    GRASS, RUBBLE, DECO, DUNGEON_DECO, ETC, MAPOBJ_END,
 };
 
 typedef struct tagMapData

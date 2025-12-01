@@ -57,7 +57,7 @@ HRESULT CPlayer::Ready_GameObject()
 		return E_FAIL;
 
     m_CombatStatCom->Set_Hp(6.f);
-    m_CombatStatCom->Set_MaxHp(100.f);
+    m_CombatStatCom->Set_MaxHp(6.f);
     m_CombatStatCom->Set_Attack(10.f);
     m_CombatStatCom->Set_Mp(5.f);
     m_CombatStatCom->Set_Speed(5.f);
@@ -101,21 +101,6 @@ void CPlayer::Render_GameObject()
 	CCharacterBase::Render_GameObject();
 
     
-}
-
-void CPlayer::Test_Attack()
-{
-    // 사용 예시
-    CAttackBuilder(m_GraphicDev, this)
-        .Sphere()
-        .Damage(12.f)
-        .Knockback(50.f)
-        .Scale(5.f)
-        .InstigatorPos()
-        .Offset(_vec3(2.f, 0.f, 0.f))
-        .DestroyOnHit(true)
-        .CollisionLayer(COLLISION_LAYERTYPE::ATTACK)
-        .Spawn();
 }
 
 void CPlayer::OnBeginOverlap(CCollider* self, CCollider* other)

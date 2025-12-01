@@ -59,9 +59,30 @@ _int CBossAwake::Update_State(const _float& timeDelta)
 
     case PHASE::MOVE://움직임 + idle
 
-        m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::ONCE);
+            _vec3 tmpdir = (m_pOwner->Get_Center() - m_pOwnerTransformCom->Get_Pos());
+        
+        m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::LOOP);
         if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
-            return CBossPhase1::BOSSPHASE1::BOSSIDLE;// 이거 아님 공격상태전환 아이들로 
+        {
+     
+            D3DXVec3Normalize(&dir, &(tmpdir));
+            tmpAniDone = true;
+        }
+
+        float distance = D3DXVec3Length(&tmpdir);
+
+        if (tmpAniDone == true)
+        {
+            m_pOwnerTransformCom->Set_Pos(m_pOwnerTransformCom->Get_Pos() + dir * m_Speed * timeDelta);
+
+            if (distance <= 0.1f)
+            {
+                tmpAniDone = false;
+                m_pOwnerTransformCom->Set_Pos((m_pOwner->Get_Center()));
+                return CBossPhase1::BOSSPHASE1::BOSSIDLE;// 이거 아님 공격상태전환 아이들로 
+
+            }
+        }
             break;
     }
 

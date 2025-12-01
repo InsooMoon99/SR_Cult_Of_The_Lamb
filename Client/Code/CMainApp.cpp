@@ -11,19 +11,20 @@
 #include "CImGuiManager.h"
 #include "CItemDB.h"
 #include "CLightMgr.h"
-#include "CLogo.h"
 #include "CMainEditorMgr.h"
 #include "CManagement.h"
 #include "CProtoMgr.h"
+#include "CRandomMgr.h"
 #include "CRenderer.h"
 #include "CResourceMgr.h"
 #include "CSceneMgr.h"
+#include "CSoundMgr.h"
 #include "CTimerMgr.h"
-#include "CRandomMgr.h"
 
 CMainApp::CMainApp()
     : m_ManagementClass(CManagement::GetInstance()),
-      m_DeviceClass(nullptr), m_GraphicDev(nullptr)
+      m_DeviceClass(nullptr),
+      m_GraphicDev(nullptr)
 { }
 
 CMainApp::~CMainApp()
@@ -45,6 +46,9 @@ HRESULT CMainApp::Ready_MainApp()
         CMainEditorMgr::GetInstance()->Ready_MainEditor(m_GraphicDev, ctx);
     }
 
+    // SoundMgr Init
+    CSoundMgr::GetInstance()->Ready_SoundMgr();
+
 #pragma region 데이터 파싱 테스트
 
     if (FAILED(CItemDB::GetInstance()->LoadFromJson("ItemData.txt")))
@@ -64,6 +68,7 @@ int CMainApp::Update_MainApp(const float& timeDelta)
     m_ManagementClass->Update_Scene(timeDelta);
 
     CCollisionManager::GetInstance()->Update();
+    CSoundMgr::GetInstance()->Update(timeDelta);
 
     // Imgui
     {
@@ -142,31 +147,30 @@ HRESULT CMainApp::Ready_DefaultSetting(DEVICE* graphicDev)
         *graphicDev, L"NanumSquare_Number", L"나눔스퀘어 네오 Heavy", 18, 20, FW_HEAVY)))
         return E_FAIL;
 
-
     //스킬 남은 횟수 출력용 폰트
     if (FAILED(CFontMgr::GetInstance()->Ready_Font(
         *graphicDev, L"NanumSquare_Skill", L"나눔스퀘어 네오 Heavy", 25, 25, FW_HEAVY)))
         return E_FAIL;
 
     //중간 크기 폰트
-	if (FAILED(CFontMgr::GetInstance()->Ready_Font(
-		*graphicDev, L"NanumSquare_Regular", L"나눔스퀘어 네오 Regular", 18, 21, FW_MEDIUM)))
-		return E_FAIL;
+    if (FAILED(CFontMgr::GetInstance()->Ready_Font(
+        *graphicDev, L"NanumSquare_Regular", L"나눔스퀘어 네오 Regular", 18, 21, FW_MEDIUM)))
+        return E_FAIL;
 
-	//아이템 카드 설명용 폰트
-	if (FAILED(CFontMgr::GetInstance()->Ready_Font(
-		*graphicDev, L"카드 설명", L"나눔스퀘어 네오 Regular", 16, 19, FW_MEDIUM)))
-		return E_FAIL;
+    //아이템 카드 설명용 폰트
+    if (FAILED(CFontMgr::GetInstance()->Ready_Font(
+        *graphicDev, L"카드 설명", L"나눔스퀘어 네오 Regular", 16, 19, FW_MEDIUM)))
+        return E_FAIL;
 
-	//아이템 카드 부연 설명용 폰트
-	if (FAILED(CFontMgr::GetInstance()->Ready_Font(
-		*graphicDev, L"부연 설명", L"나눔스퀘어 네오 Regular", 12, 14, FW_MEDIUM)))
-		return E_FAIL;
+    //아이템 카드 부연 설명용 폰트
+    if (FAILED(CFontMgr::GetInstance()->Ready_Font(
+        *graphicDev, L"부연 설명", L"나눔스퀘어 네오 Regular", 12, 14, FW_MEDIUM)))
+        return E_FAIL;
 
-	//아이템 카드 이름 출력용 폰트
-	if (FAILED(CFontMgr::GetInstance()->Ready_Font(
-		*graphicDev, L"아이템 이름", L"나눔스퀘어 네오 Regular", 20, 24, FW_SEMIBOLD)))
-		return E_FAIL;
+    //아이템 카드 이름 출력용 폰트
+    if (FAILED(CFontMgr::GetInstance()->Ready_Font(
+        *graphicDev, L"아이템 이름", L"나눔스퀘어 네오 Regular", 20, 24, FW_SEMIBOLD)))
+        return E_FAIL;
 
     // DInput
     if (FAILED(CDInputMgr::GetInstance()->Ready_InputDev(g_hInst, g_hWnd)))
@@ -199,6 +203,7 @@ void CMainApp::Free()
     Safe_Release(m_GraphicDev);
     Safe_Release(m_DeviceClass);
 
+    CSoundMgr::DestroyInstance();
     CCollisionManager::DestroyInstance();
     CLightMgr::DestroyInstance();
     CDInputMgr::DestroyInstance();
@@ -218,7 +223,7 @@ void CMainApp::Free()
 #pragma region 데이터 파싱 테스트
 
     CItemDB::DestroyInstance();
-    CDropSystem::DestroyInstance(); 
+    CDropSystem::DestroyInstance();
 
 #pragma endregion
 }

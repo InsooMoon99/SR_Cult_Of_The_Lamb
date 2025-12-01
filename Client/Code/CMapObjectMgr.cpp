@@ -58,6 +58,8 @@ void CMapObjectMgr::Render_MapObjectWindow()
     Render_ObjectButton("Grass", MAPOBJTYPE::GRASS, m_ShowGrass);
     Render_ObjectButton("Rubble", MAPOBJTYPE::RUBBLE, m_ShowRubble);
     Render_ObjectButton("Deco", MAPOBJTYPE::DECO, m_ShowDeco);
+    Render_ObjectButton("Dungeon Deco", MAPOBJTYPE::DUNGEON_DECO, m_ShowDungeonDeco);
+    Render_ObjectButton("ETC", MAPOBJTYPE::ETC, m_ShowETC);
 
     ImGui::SeparatorText("");
     ImGui::Text("Preview Scale : %.2f", m_MapPlacer->Get_PreviewScale());
@@ -296,6 +298,128 @@ void CMapObjectMgr::Render_DecoWindow()
             }
 
             Safe_Release(decoTexture);
+        }
+    }
+
+    ImGui::End();
+}
+
+void CMapObjectMgr::Render_DungeonDeco()
+{
+    if (m_ShowDungeonDeco == false)
+        return;
+
+    if (ImGui::Begin(u8"던전 장식 배치", &m_ShowDungeonDeco))
+    {
+        CTexture* decoTexture =
+            dynamic_cast<CTexture*>(CProtoMgr::GetInstance()->Clone_Prototype(COMPONENTTYPE::TEX_DUNGEON_DECO));
+
+        if (decoTexture)
+        {
+            const _int TOTAL_DECO = 139;
+            const _int COLS = 5;
+            const ImVec2 buttonSize(50.f, 50.f);
+
+            for (_int i = 0; i < TOTAL_DECO; i++)
+            {
+                IDirect3DBaseTexture9* baseTexture = decoTexture->Get_BaseTexture(i);
+
+                if (baseTexture)
+                {
+                    ImTextureID texID = (ImTextureID)baseTexture;
+
+                    ImGui::PushID(i);
+
+                    _bool isSelected = (i == m_SelectDungeonDecoIndex);
+                    if (isSelected)
+                    {
+                        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.2f, 0.2f, 1.f));
+                    }
+
+                    if (ImGui::ImageButton("Dungeon Deco", texID, buttonSize))
+                    {
+                        if (m_MapPlacer)
+                        {
+                            m_SelectDungeonDecoIndex = i;
+                            m_MapPlacer->Set_DungeonDecoIndex(i);
+                            m_MapPlacer->Start_Place(MAPOBJTYPE::DUNGEON_DECO);
+                        }
+                    }
+
+                    if (isSelected)
+                    {
+                        ImGui::PopStyleColor();
+                    }
+
+                    if (((i + 1) % COLS != 0))
+                        ImGui::SameLine();
+
+                    ImGui::PopID();
+                }
+            }
+
+            Safe_Release(decoTexture);
+        }
+    }
+
+    ImGui::End();
+}
+
+void CMapObjectMgr::Render_ETC()
+{
+    if (m_ShowETC == false)
+        return;
+
+    if (ImGui::Begin(u8"기타 장식 배치", &m_ShowETC))
+    {
+        CTexture* etc =
+            dynamic_cast<CTexture*>(CProtoMgr::GetInstance()->Clone_Prototype(COMPONENTTYPE::TEX_ETC));
+
+        if (etc)
+        {
+            const _int TOTAL_ETC = 40;
+            const _int COLS = 5;
+            const ImVec2 buttonSize(50.f, 50.f);
+
+            for (_int i = 0; i < TOTAL_ETC; i++)
+            {
+                IDirect3DBaseTexture9* baseTexture = etc->Get_BaseTexture(i);
+
+                if (baseTexture)
+                {
+                    ImTextureID texID = (ImTextureID)baseTexture;
+
+                    ImGui::PushID(i);
+
+                    _bool isSelected = (i == m_SelectETCIndex);
+                    if (isSelected)
+                    {
+                        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.2f, 0.2f, 1.f));
+                    }
+
+                    if (ImGui::ImageButton("ETC", texID, buttonSize))
+                    {
+                        if (m_MapPlacer)
+                        {
+                            m_SelectETCIndex = i;
+                            m_MapPlacer->Set_ETCIndex(i);
+                            m_MapPlacer->Start_Place(MAPOBJTYPE::ETC);
+                        }
+                    }
+
+                    if (isSelected)
+                    {
+                        ImGui::PopStyleColor();
+                    }
+
+                    if (((i + 1) % COLS != 0))
+                        ImGui::SameLine();
+
+                    ImGui::PopID();
+                }
+            }
+
+            Safe_Release(etc);
         }
     }
 

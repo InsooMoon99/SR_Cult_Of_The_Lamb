@@ -14,7 +14,8 @@ CMapEditorPlacer::CMapEditorPlacer(DEVICE graphicDev)
     : m_GraphicDev(graphicDev),
       m_PreviewObj(nullptr),
       m_SelectedType(MAPOBJTYPE::MAPOBJ_END),
-      m_Placing(false), m_GrassIndex(0), m_RubbleIndex(0), m_DecoIndex(0), m_PreviewScale(1.f),
+      m_Placing(false), m_GrassIndex(0), m_RubbleIndex(0), m_DecoIndex(0), m_DungeonDecoIndex(0), m_ETCIndex(0),
+      m_PreviewScale(1.f),
       m_PreviewRotation(0.f, 0.f, 0.f), m_PreviewYOffset(0)
 {
     if (m_GraphicDev)
@@ -25,7 +26,8 @@ CMapEditorPlacer::CMapEditorPlacer(const CMapEditorPlacer& rhs)
     : m_GraphicDev(rhs.m_GraphicDev),
       m_PreviewObj(nullptr),
       m_SelectedType(MAPOBJTYPE::MAPOBJ_END),
-      m_Placing(false), m_GrassIndex(0), m_RubbleIndex(0), m_DecoIndex(0), m_PreviewScale(1.f),
+      m_Placing(false), m_GrassIndex(0), m_RubbleIndex(0), m_DecoIndex(0), m_DungeonDecoIndex(0), m_ETCIndex(0),
+      m_PreviewScale(1.f),
       m_PreviewRotation(0.f, 0.f, 0.f), m_PreviewYOffset(0)
 {
     if (m_GraphicDev)
@@ -234,10 +236,12 @@ _int CMapEditorPlacer::Get_CurTextureIndex()
 {
     switch (m_SelectedType)
     {
-    case MAPOBJTYPE::GRASS:   return m_GrassIndex;
-    case MAPOBJTYPE::RUBBLE:  return m_RubbleIndex;
-    case MAPOBJTYPE::DECO:    return m_DecoIndex;
-    default:                  return 0;
+    case MAPOBJTYPE::GRASS:           return m_GrassIndex;
+    case MAPOBJTYPE::RUBBLE:          return m_RubbleIndex;
+    case MAPOBJTYPE::DECO:            return m_DecoIndex;
+    case MAPOBJTYPE::DUNGEON_DECO:    return m_DungeonDecoIndex;
+    case MAPOBJTYPE::ETC:             return m_ETCIndex;
+    default:                          return 0;
     }
 }
 

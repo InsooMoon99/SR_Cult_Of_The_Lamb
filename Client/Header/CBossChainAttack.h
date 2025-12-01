@@ -47,7 +47,7 @@ private:
     bool m_LineFlag = false;
     bool m_StartPhase = false;
     float m_RandChainTime = 0;
-
+    bool m_StartFlag = false;
 
 private:
     virtual void Free();
