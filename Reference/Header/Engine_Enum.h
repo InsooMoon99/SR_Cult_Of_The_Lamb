@@ -224,5 +224,13 @@ enum class SCENETYPE
 
     SC_END
 };
+
+enum SOUNDTYPE
+{
+	SOUND_BGM,
+	SOUND_EFFECT,
+
+	SOUND_END
+};
 }
 #endif // Engine_Enum_h__

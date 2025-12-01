@@ -41,8 +41,8 @@ public:
     // [AttackInfo 관리용] 무기 종류 enum
     enum PL_WEAPON_INDEX
     {
-        WEAPON_SWORD,      // 무기 : 검
-        WEAPON_GAUNTLET,   // 무기 : 건틀릿
+        WEAPON_SWORD,       // 무기 : 검
+        WEAPON_GAUNTLET,    // 무기 : 건틀릿
 
         WEAPON_MAX
     };
@@ -50,11 +50,11 @@ public:
     // [AttackInfo 관리용] 공격 종류 enum
     enum PL_ATTACK_INDEX
     {
+        ATTACK_HEAVY,       // 강공격
         ATTACK_COMBO1,      // 일반 1타
         ATTACK_COMBO2,      // 일반 2타
         ATTACK_COMBO3,      // 일반 3타
         ATTACK_COMBO4,      // 일반 4타
-        ATTACK_HEAVY,       // 강공격
 
         ATTACK_MAX
     };
@@ -123,7 +123,8 @@ private: // --- 멤버 변수 ---
     // 무기 공격 데이터 저장소
     AttackInfo m_AttackInfo[WEAPON_MAX][ATTACK_MAX];
 
-    _int   m_ComboIndex;            // 0:없음, 1~3:콤보 인덱스
+    _int   m_ComboIndex;            // 현재 PL_ATTACK_INDEX를 int로 저장
+    _int   m_MaxCombo;              // 일반공격 콤보 최대값 설정
     _float m_Timer;                 // 공격 시간 타이머
 
     _bool m_IsHitboxActive;         // 현재 히트박스가 켜져 있는가 여부
