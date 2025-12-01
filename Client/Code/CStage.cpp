@@ -78,7 +78,7 @@ void CStage::Initialize_Scene()
     CScene::Initialize_Scene();
 
     // 초기 맵 불러오기 <- 이거 꼭 Initialize에서 진행해야 맵 오브젝트가 잘 불러진다.
-    m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_ing1.map");
+    m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Default.map");
 }
 
 _int CStage::Update_Scene(const _float& timeDelta)
