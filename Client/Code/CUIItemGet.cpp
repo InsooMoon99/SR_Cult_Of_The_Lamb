@@ -1,12 +1,13 @@
 ﻿#include "pch.h"
 #include "CUIItemGet.h"
+
 #include "CCreateHelper.h"
+#include "CDInputMgr.h"
 #include "CItemDB.h"
-#include "CTexture.h"
-#include "CTransform.h"
 #include "CRcTex.h"
 #include "CRenderer.h"
-#include "CDInputMgr.h"
+#include "CTexture.h"
+#include "CTransform.h"
 #include "CUIIcon.h"
 class CItemDB;
 
@@ -15,10 +16,12 @@ CUIItemGet::CUIItemGet(DEVICE graphicDev)
       m_UIItemIcon(nullptr),
       m_UIItem{},
       m_IsOpen(false),
+      m_IsAnimating(false),
+      m_CloseAnimation(false),
+      m_OpenAnimaiton(false),
       m_TargetX(-550.f),
       m_ClosedX(-1000.f),
-      m_Speed(100.f),
-      m_IsAnimating(false)
+      m_Speed(100.f)
 { }
 
 CUIItemGet::CUIItemGet(const CUIItemGet& rhs)
@@ -27,15 +30,15 @@ CUIItemGet::CUIItemGet(const CUIItemGet& rhs)
       m_UIItem{},
       m_IsOpen(false),
       m_IsAnimating(false),
+      m_CloseAnimation(false),
+      m_OpenAnimaiton(false),
       m_TargetX(-550.f),
       m_ClosedX(-600.f),
       m_Speed(250.f)
 { }
 
 CUIItemGet::~CUIItemGet()
-{
-    
-}
+{ }
 
 HRESULT CUIItemGet::Ready_GameObject()
 {
@@ -77,7 +80,7 @@ _int CUIItemGet::Update_GameObject(const _float& timeDelta)
         if (dir <= 0 && (pos.x <= m_ClosedX) || (dir >= 0 && (m_TargetX <= pos.x)))
 
         {
-           // m_IsAnimating = false;
+            // m_IsAnimating = false;
             m_IsOpen = !m_IsOpen;
         }
     }
@@ -94,7 +97,7 @@ void CUIItemGet::Render_GameObject()
     CUI::Render_GameObject();
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
-    if(m_IsAnimating)
+    if (m_IsAnimating)
     {
         // 배경 이미지 렌더
         m_TextureCom->Set_Texture(8);
@@ -112,21 +115,21 @@ HRESULT CUIItemGet::Add_Component()
     m_BufferCom = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
     NULL_CHECK_RETURN(m_BufferCom, E_FAIL);
 
-    m_Components[ID_STATIC].insert({COMPONENTTYPE::RC_TEX, m_BufferCom});
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::RC_TEX, m_BufferCom });
 
     m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_UI_ICON);
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
 
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_UI_ICON, m_TextureCom });
 
-    m_TransformCom = CreateProtoComponent<CTransform>(this, COMPONENTTYPE::TRANSFORM );
+    m_TransformCom = CreateProtoComponent<CTransform>(this, COMPONENTTYPE::TRANSFORM);
     NULL_CHECK_RETURN(m_TransformCom, E_FAIL);
-    
+
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
     return S_OK;
-
 }
+
 //
 //void CUIItemGet::Render_Setting()
 //{
@@ -153,9 +156,8 @@ HRESULT CUIItemGet::Add_Component()
 
 CUIItemGet* CUIItemGet::Create(DEVICE graphicDev)
 {
-
     auto itemGet = new CUIItemGet(graphicDev);
-    if(FAILED(itemGet->Ready_GameObject()))
+    if (FAILED(itemGet->Ready_GameObject()))
     {
         Safe_Release(itemGet);
         MSG_BOX("CUI_ItemGet Created Failed");
@@ -172,5 +174,7 @@ void CUIItemGet::Render_Editor()
 
 void CUIItemGet::Free()
 {
+    Safe_Release(m_UIItemIcon);
+
     CUI::Free();
 }

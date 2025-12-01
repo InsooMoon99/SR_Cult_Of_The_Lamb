@@ -31,10 +31,10 @@ CStage::CStage(DEVICE graphicDev)
       m_PlayerInventoryCom(nullptr),
       m_WeaponEquipCom(nullptr),
       m_Terrain(nullptr)
-{}
+{ }
 
 CStage::~CStage()
-{}
+{ }
 
 HRESULT CStage::Ready_Scene()
 {
