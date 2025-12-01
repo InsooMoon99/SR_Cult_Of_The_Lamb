@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "CUI.h"
+#include "CUIIcon.h"
 #include "ItemInstance.h"
 
 typedef struct UIItem
@@ -8,6 +9,8 @@ typedef struct UIItem
     float remainTime;
     int   count;
 };
+
+class CUIIcon;
 
 class CUIItemGet : public CUI
 {
@@ -22,16 +25,23 @@ public:
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
     HRESULT Add_Component();
-    void    Add_UIItem(ItemInstance* iteminstance);
-
+    //void    Render_Setting();
+    //void    Render_Reset();
+  //  void    Set_UIItem(int itemId, int itemCount);
 
     static CUIItemGet* Create(DEVICE graphicDev);
     void    Render_Editor() override;
 
 private:
+    CUIIcon*      m_UIItemIcon;
     UIItem      m_UIItem;
-    ItemInstance* m_ItemInstance;
-    list<UIItem> m_UIItems;
+    bool        m_IsOpen;
+    bool        m_IsAnimating;
+    bool        m_CloseAnimation;
+    bool        m_OpenAnimaiton;
+    float       m_TargetX;
+    float       m_ClosedX;
+    float       m_Speed;    
 
 private:
     void Free() override;

@@ -1,14 +1,9 @@
 ﻿#pragma once
 #include "CGameObject.h"
 
+struct ItemInstance;
 class CUIItemGet;
 
-typedef struct UIItem
-{
-    int   itemId;
-    float remainTime;
-    int   count;
-};
 class CUIItemGetManager : public CGameObject
 {
 private:
@@ -23,12 +18,14 @@ public:
     void    Render_GameObject() override;
     void    Render_Editor() override;
 
+    void    Add_UIItemGet(ItemInstance* itemInstance, int itemCount);
+
 protected:
     void Free() override;
 
 private:
+    list<CUIItemGet*> m_UIItemGets;
     CUIItemGet* m_UIItemGet;
-    list<UIItem> m_UIItems;
 
 };
 

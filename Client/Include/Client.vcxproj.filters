@@ -417,7 +417,6 @@
     <ClInclude Include="..\Header\CUIItemGet.h">
       <Filter>05. UI\01. UI\06. UIItemGet</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CUIItemGetManager.h">
     <ClInclude Include="..\Header\CCharacterBase.h">
       <Filter>96. Base</Filter>
     </ClInclude>
@@ -435,6 +434,9 @@
     </ClInclude>
     <ClInclude Include="Client_Enum.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUIItemGetManager.h">
+      <Filter>05. UI\01. UI\06. UIItemGet</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -672,8 +674,6 @@
     <ClCompile Include="..\Code\CUIItemGet.cpp">
       <Filter>05. UI\01. UI\06. UIItemGet</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CUIItemGetManager.cpp">
-        </ClCompile>
     <ClCompile Include="..\Code\CCharacterBase.cpp">
       <Filter>96. Base</Filter>
     </ClCompile>
@@ -688,6 +688,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CProjectile.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUIItemGetManager.cpp">
+      <Filter>05. UI\01. UI\06. UIItemGet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

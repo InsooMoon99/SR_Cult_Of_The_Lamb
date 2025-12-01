@@ -1,5 +1,7 @@
 ﻿#include "pch.h"
+#include "CGameObject.h"
 #include "CUIItemGetManager.h"
+#include "CUIItemGet.h"
 
 CUIItemGetManager::CUIItemGetManager(DEVICE graphicDev): CGameObject(graphicDev)
 {
@@ -21,7 +23,10 @@ HRESULT CUIItemGetManager::Ready_GameObject()
 
 _int CUIItemGetManager::Update_GameObject(const _float& timeDelta)
 {
-    return CGameObject::Update_GameObject(timeDelta);
+    int exit = CGameObject::Update_GameObject(timeDelta);
+
+    
+    return exit;
 }
 void CUIItemGetManager::LateUpdate_GameObject(const _float& timeDelta)
 {
@@ -30,8 +35,6 @@ void CUIItemGetManager::LateUpdate_GameObject(const _float& timeDelta)
 
 void CUIItemGetManager::Render_GameObject()
 {
-    for(int i = 1; m_UIItemGets)
-    m_UIItemGet
 
 }
 
@@ -40,7 +43,19 @@ void CUIItemGetManager::Render_Editor()
     CGameObject::Render_Editor();
 }
 
- void CUIItemGetManager::Free()
+
+void CUIItemGetManager::Free()
 {
     CGameObject::Free();
+}
+
+void CUIItemGetManager:: Add_UIItemGet(ItemInstance* itemInstance, int itemCount)
+
+{
+    m_UIItemGet = CUIItemGet::Create(m_GraphicDev);
+
+    //m_UIItemGet->Set_UIItem(itemInstance->itemId, itemCount);
+
+    m_UIItemGets.push_back(m_UIItemGet);
+
 }

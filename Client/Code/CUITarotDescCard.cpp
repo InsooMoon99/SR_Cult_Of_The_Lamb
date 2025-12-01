@@ -74,28 +74,24 @@ _int CUITarotDescCard::Update_GameObject(const _float& timeDelta)
     _int exit = CUI::Update_GameObject(timeDelta);
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
-    _vec3 pos = m_TransformCom->Get_Pos();   // (0,0) = 화면 중앙, +Y = 위
-    _vec3 size = m_TransformCom->Get_Scale(); // 픽셀 단위 가정
+    _vec3 pos = m_TransformCom->Get_Pos();  
+    _vec3 size = m_TransformCom->Get_Scale(); 
 
-    // 2) 월드(중앙 기준) → 스크린(좌상단 기준) 변환
-    float screenX = pos.x + WINCX * 0.5f;     // 중앙 0 → WINCX/2
-    float screenY = WINCY * 0.5f - pos.y;     // 위가 + → 아래가 +로 뒤집기
 
-    // 3) 버튼 화면 Rect 계산 (센터 기준)
+    float screenX = pos.x + WINCX * 0.5f;     
+    float screenY = WINCY * 0.5f - pos.y;    
     m_Rect.left = (LONG)(screenX - size.x);
     m_Rect.top = (LONG)(screenY - size.y);
     m_Rect.right = (LONG)(screenX + size.x);
     m_Rect.bottom = (LONG)(screenY + size.y);
 
-    // 4) 마우스 좌표 (클라이언트 기준)
     POINT pt;
     GetCursorPos(&pt);
     ScreenToClient(CDInputMgr::GetInstance()->Get_HWND(), &pt);
-    //cout << pt.x << " , " << pt.y << endl;
+
 
     bool hoveredNow = PtInRect(&m_Rect, pt) != 0;
-
-    // 4) Hover 변화 감지
+    
     if (hoveredNow != m_Hovered)
     {
         m_Hovered = hoveredNow;
@@ -104,7 +100,7 @@ _int CUITarotDescCard::Update_GameObject(const _float& timeDelta)
         else            OnHoverEnd();
     }
 
-    // 5) 클릭 (괄호 주의)
+
     if (m_Hovered &&
         (CDInputMgr::GetInstance()->Get_DIMouseState(MOUSEKEYSTATE::DIM_LB) & 0x80))
     {
@@ -113,12 +109,12 @@ _int CUITarotDescCard::Update_GameObject(const _float& timeDelta)
             m_OnClick();
 
         }
-        // OnClick(); 같은 거 여기서 호출해도 됨
+        
     }
 
     if(m_PlaySlide)
     {
-        //TODO 유림 : 슬라이드 애니메이션
+
         if(m_Start)
         {
             m_BaseScale = m_TransformCom->Get_Scale();
