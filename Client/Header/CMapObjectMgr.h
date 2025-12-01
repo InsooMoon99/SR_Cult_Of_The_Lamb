@@ -47,7 +47,13 @@ public:
     void    Undo_LastPlacement();   // 오브젝트 되돌리기
     void    Add_Placement(CGameObject* object);
 
+    void    Remove_Placement(CGameObject* object); // 오브젝트 제거
+
     CMapEditorPlacer* Get_MapPlacer() const { return m_MapPlacer; }
+    const vector<CGameObject*>& Get_PlacedObjects()
+    {
+        return m_PlacedObjects;
+    }
 
 private:
     inline void Free() override;

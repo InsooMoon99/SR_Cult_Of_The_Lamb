@@ -32,10 +32,10 @@ CStage::CStage(DEVICE graphicDev)
       m_PlayerInventoryCom(nullptr),
       m_WeaponEquipCom(nullptr),
       m_Terrain(nullptr)
-{}
+{ }
 
 CStage::~CStage()
-{}
+{ }
 
 HRESULT CStage::Ready_Scene()
 {
@@ -55,7 +55,7 @@ HRESULT CStage::Ready_Scene()
     {
         int          id   = CItemDB::GetInstance()->GetVector()[i].id;
         ItemInstance inst = { id, -1, 0 };
-        CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 5.f, 0.f, 10.f + (i * 3.f) });
+        CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 5.f, 1.f, 10.f + (i * 3.f) });
     }
 
     int size = CItemDB::GetInstance()->GetVector().size();
@@ -65,11 +65,11 @@ HRESULT CStage::Ready_Scene()
         int id           = CItemDB::GetInstance()->GetVector()[reverseIndex].id;
 
         ItemInstance inst = { id, -1, 0 };
-        CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 10.f, 0.f, 10.f + (i * 3.f) });
+        CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 10.f, 1.f, 10.f + (i * 3.f) });
     }
 
     // BGM Test
-    CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Intro.wav", 0.5f);
+    //CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Intro.wav", 0.5f);
 
     return S_OK;
 }
@@ -79,7 +79,7 @@ void CStage::Initialize_Scene()
     CScene::Initialize_Scene();
 
     // 초기 맵 불러오기 <- 이거 꼭 Initialize에서 진행해야 맵 오브젝트가 잘 불러진다.
-    m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_1111111.map");
+    m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Default.map");
 }
 
 _int CStage::Update_Scene(const _float& timeDelta)
