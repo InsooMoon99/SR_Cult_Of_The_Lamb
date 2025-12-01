@@ -58,10 +58,15 @@ void CMapObjectMgr::Render_MapObjectWindow()
     Render_ObjectButton("Grass", MAPOBJTYPE::GRASS, m_ShowGrass);
     Render_ObjectButton("Rubble", MAPOBJTYPE::RUBBLE, m_ShowRubble);
     Render_ObjectButton("Deco", MAPOBJTYPE::DECO, m_ShowDeco);
+    Render_ObjectButton("Dungeon Deco", MAPOBJTYPE::DUNGEON_DECO, m_ShowDungeonDeco);
+    Render_ObjectButton("ETC", MAPOBJTYPE::ETC, m_ShowETC);
 
-    ImGui::SeparatorText("");
+    ImGui::SeparatorText(u8"프리뷰 정보");
+
+    ImGui::Text("Preview YOffset : %.2f", m_MapPlacer->Get_PreviewYOffset());
+
     ImGui::Text("Preview Scale : %.2f", m_MapPlacer->Get_PreviewScale());
-    ImGui::Text("Preview Rotation:"); ImGui::SameLine();
+    ImGui::Text("[ Preview Rotation ]");
     ImGui::Text(u8"  X (Pitch): %.2f°", D3DXToDegree(m_MapPlacer->Get_PreviewRotation().x));
     ImGui::SameLine();
     ImGui::Text(u8"  Y (Yaw):   %.2f°", D3DXToDegree(m_MapPlacer->Get_PreviewRotation().y));
@@ -72,6 +77,18 @@ void CMapObjectMgr::Render_MapObjectWindow()
     {
         Undo_LastPlacement();
     }
+
+    ImGui::SameLine();
+
+    static bool eraseMode = false;
+    if (ImGui::Checkbox(u8"| 지우개 [우클릭]", &eraseMode))
+    {
+        if (m_MapPlacer)
+        {
+            m_MapPlacer->Set_EraseMode(eraseMode);
+        }
+    }
+
     ImGui::Separator();
 
 #pragma region 맵 오브젝트 따로 저장
@@ -302,6 +319,128 @@ void CMapObjectMgr::Render_DecoWindow()
     ImGui::End();
 }
 
+void CMapObjectMgr::Render_DungeonDeco()
+{
+    if (m_ShowDungeonDeco == false)
+        return;
+
+    if (ImGui::Begin(u8"던전 장식 배치", &m_ShowDungeonDeco))
+    {
+        CTexture* decoTexture =
+            dynamic_cast<CTexture*>(CProtoMgr::GetInstance()->Clone_Prototype(COMPONENTTYPE::TEX_DUNGEON_DECO));
+
+        if (decoTexture)
+        {
+            const _int TOTAL_DECO = 139;
+            const _int COLS = 5;
+            const ImVec2 buttonSize(50.f, 50.f);
+
+            for (_int i = 0; i < TOTAL_DECO; i++)
+            {
+                IDirect3DBaseTexture9* baseTexture = decoTexture->Get_BaseTexture(i);
+
+                if (baseTexture)
+                {
+                    ImTextureID texID = (ImTextureID)baseTexture;
+
+                    ImGui::PushID(i);
+
+                    _bool isSelected = (i == m_SelectDungeonDecoIndex);
+                    if (isSelected)
+                    {
+                        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.2f, 0.2f, 1.f));
+                    }
+
+                    if (ImGui::ImageButton("Dungeon Deco", texID, buttonSize))
+                    {
+                        if (m_MapPlacer)
+                        {
+                            m_SelectDungeonDecoIndex = i;
+                            m_MapPlacer->Set_DungeonDecoIndex(i);
+                            m_MapPlacer->Start_Place(MAPOBJTYPE::DUNGEON_DECO);
+                        }
+                    }
+
+                    if (isSelected)
+                    {
+                        ImGui::PopStyleColor();
+                    }
+
+                    if (((i + 1) % COLS != 0))
+                        ImGui::SameLine();
+
+                    ImGui::PopID();
+                }
+            }
+
+            Safe_Release(decoTexture);
+        }
+    }
+
+    ImGui::End();
+}
+
+void CMapObjectMgr::Render_ETC()
+{
+    if (m_ShowETC == false)
+        return;
+
+    if (ImGui::Begin(u8"기타 장식 배치", &m_ShowETC))
+    {
+        CTexture* etc =
+            dynamic_cast<CTexture*>(CProtoMgr::GetInstance()->Clone_Prototype(COMPONENTTYPE::TEX_ETC));
+
+        if (etc)
+        {
+            const _int TOTAL_ETC = 40;
+            const _int COLS = 5;
+            const ImVec2 buttonSize(50.f, 50.f);
+
+            for (_int i = 0; i < TOTAL_ETC; i++)
+            {
+                IDirect3DBaseTexture9* baseTexture = etc->Get_BaseTexture(i);
+
+                if (baseTexture)
+                {
+                    ImTextureID texID = (ImTextureID)baseTexture;
+
+                    ImGui::PushID(i);
+
+                    _bool isSelected = (i == m_SelectETCIndex);
+                    if (isSelected)
+                    {
+                        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.2f, 0.2f, 1.f));
+                    }
+
+                    if (ImGui::ImageButton("ETC", texID, buttonSize))
+                    {
+                        if (m_MapPlacer)
+                        {
+                            m_SelectETCIndex = i;
+                            m_MapPlacer->Set_ETCIndex(i);
+                            m_MapPlacer->Start_Place(MAPOBJTYPE::ETC);
+                        }
+                    }
+
+                    if (isSelected)
+                    {
+                        ImGui::PopStyleColor();
+                    }
+
+                    if (((i + 1) % COLS != 0))
+                        ImGui::SameLine();
+
+                    ImGui::PopID();
+                }
+            }
+
+            Safe_Release(etc);
+        }
+    }
+
+    ImGui::End();
+}
+
 HRESULT CMapObjectMgr::SaveMapObject(const char* filePath)
 {
     // 현재 Scene에서 Enviroment 레이어에 있는 오브젝트 들고오기
@@ -331,7 +470,7 @@ HRESULT CMapObjectMgr::SaveMapObject(const char* filePath)
 
                 data.pos = objTransform->Get_Pos();
                 data.scale = objTransform->Get_Scale();
-                data.rotation = objTransform->Get_Rotation();
+                data.rotation = objTransform->Get_Euler();
 
                 objects.push_back(data);
             }
@@ -494,7 +633,12 @@ HRESULT CMapObjectMgr::Load_FromStream(ifstream& ifs)
             {
                 transform->Set_Pos(data.pos);
                 transform->Set_Scale(data.scale);  
-                transform->Set_Rotation(data.rotation);
+
+                _vec3 loadedRotation = data.rotation;
+                loadedRotation.x = -loadedRotation.x;
+                loadedRotation.y = -loadedRotation.y;
+
+                transform->Set_Rotation(loadedRotation);
             }
 
             layer->Add_GameObject(OBJTYPE::PLACEMENT, newObj);
@@ -580,6 +724,19 @@ void CMapObjectMgr::Add_Placement(CGameObject* object)
     {
         m_PlacedObjects.push_back(object);
     }
+}
+
+void CMapObjectMgr::Remove_Placement(CGameObject* object)
+{
+    if (!object)
+        return;
+
+    auto iter = find(m_PlacedObjects.begin(), m_PlacedObjects.end(), object);
+    if (iter != m_PlacedObjects.end())
+    {
+        m_PlacedObjects.erase(iter);
+    }
+
 }
 
 void CMapObjectMgr::Free()

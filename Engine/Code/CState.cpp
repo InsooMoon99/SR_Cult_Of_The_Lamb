@@ -66,7 +66,6 @@ void CState::Update_Animation()
 {
     wstring str = this->Get_Name();
 
-
     // 상태 혹은 방향이 바뀌었을 때만 로직 수행
     if (m_Animator != nullptr && m_TransformCom != nullptr &&
         (m_State != m_PrevState || m_Dir != m_PrevDir))

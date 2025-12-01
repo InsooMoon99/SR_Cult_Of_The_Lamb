@@ -31,13 +31,8 @@ public:
 
     void    OnBeginOverlap(CCollider* self, CCollider* other) override;
     void    OnEndOverlap(CCollider* self, CCollider* other) override;
-    
-    void Render_Editor() override;
 
-public:
-    // 테스트 공격용
-    // 나중에 Compoennt를 새로 만들던, 클래스로 나누던 자유
-    void Test_Attack();
+    void    Render_Editor() override;
 
 private:
     HRESULT Add_Component()     override;

@@ -1,7 +1,6 @@
 ﻿#include "pch.h"
 #include "CPlayer.h"
 #include "CAnimator.h"
-#include "CAttackBox.h"
 #include "CAttackBuilder.h"
 #include "CAttackSphere.h"
 #include "CBoxCollider.h"
@@ -9,18 +8,13 @@
 #include "CCreateHelper.h"
 #include "CInventory.h"
 #include "CPlayerController.h"
-#include "CManagement.h"
 #include "CPlayerAttack.h"
-#include "CPlayerController.h"
 #include "CPlayerInput.h"
 #include "CPlayerMovement.h"
-#include "CRcTex.h"
-#include "CRenderer.h"
 #include "CRigidbody.h"
 #include "CState.h"
 #include "CTexture.h"
 #include "CTransform.h"
-#include "CUIInventory.h"
 #include "CWeaponEquip.h"
 
 CPlayer::CPlayer(DEVICE graphicDev)
@@ -57,7 +51,7 @@ HRESULT CPlayer::Ready_GameObject()
 		return E_FAIL;
 
     m_CombatStatCom->Set_Hp(6.f);
-    m_CombatStatCom->Set_MaxHp(100.f);
+    m_CombatStatCom->Set_MaxHp(6.f);
     m_CombatStatCom->Set_Attack(10.f);
     m_CombatStatCom->Set_Mp(5.f);
     m_CombatStatCom->Set_Speed(5.f);
@@ -103,21 +97,6 @@ void CPlayer::Render_GameObject()
     
 }
 
-void CPlayer::Test_Attack()
-{
-    // 사용 예시
-    CAttackBuilder(m_GraphicDev, this)
-        .Sphere()
-        .Damage(12.f)
-        .Knockback(50.f)
-        .Scale(5.f)
-        .InstigatorPos()
-        .Offset(_vec3(2.f, 0.f, 0.f))
-        .DestroyOnHit(true)
-        .CollisionLayer(COLLISION_LAYERTYPE::ATTACK)
-        .Spawn();
-}
-
 void CPlayer::OnBeginOverlap(CCollider* self, CCollider* other)
 {
 	CCharacterBase::OnBeginOverlap(self, other);
@@ -138,33 +117,7 @@ void CPlayer::Render_Editor()
 
     ImGui::Text("=== Player ===");
 
-    //
-// 상태 디버그 정보
-//
-    ImGui::Separator();
-    //
-    // 애니메이션 디버그 정보
-    //
-    if (m_AnimatorCom)
-    {
-        const wstring& key = m_AnimatorCom->Get_CurKey();
-        _int curFrame = m_AnimatorCom->Get_CurFrame();
-        _int maxFrame = m_AnimatorCom->Get_MaxFrame();
 
-        // wstring → char 변환 필요
-        std::string animKey = std::string(key.begin(), key.end());
-        ImGui::Text("Animation Key: %s", animKey.c_str());
-
-        ImGui::Text("Animation Key: %s", animKey.c_str());
-        ImGui::Text("Current Frame: %d", curFrame);
-        ImGui::Text("Max Frame:     %d", maxFrame);
-    }
-    else
-    {
-        ImGui::Text("Animator: <null>");
-    }
-    // 이제 ImGui는 GameObject의 OnEditor를 상속받아서 Render하면 된다. 따로 호출해줄 필요도 없음.
-    // 추가로 띄우고 싶은거 있으면 추가하기
 }
 
 HRESULT CPlayer::Add_Component()

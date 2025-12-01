@@ -25,6 +25,7 @@
 #include "CTransform.h"
 #include "CWallRenderer.h"
 #include "CWeaponEquip.h"
+#include "CAnimator.h"
 
 IMPLEMENT_SINGLETON(CMainEditorMgr)
 
@@ -129,6 +130,8 @@ void CMainEditorMgr::Render_MainEditor()
     CMapObjectMgr::GetInstance()->Render_GrassWindow();
     CMapObjectMgr::GetInstance()->Render_RubbleWindow();
     CMapObjectMgr::GetInstance()->Render_DecoWindow();
+    CMapObjectMgr::GetInstance()->Render_DungeonDeco();
+    CMapObjectMgr::GetInstance()->Render_ETC();
 
 }
 
@@ -562,6 +565,13 @@ void CMainEditorMgr::Render_SelectComponent()
         {
             auto rigidbody = dynamic_cast<CRigidbody*>(selectComponent);
             RigidBody_Inspector(rigidbody);
+        }
+        break;
+
+        case COMPONENTTYPE::ANIMATOR:
+        {
+            auto animator = dynamic_cast<CAnimator*>(selectComponent);
+            Animator_Inspector(animator);
         }
         break;
 

@@ -102,7 +102,7 @@ void CAttackBase::OnBeginOverlap(CCollider* self, CCollider* other)
         D3DXVec3Normalize(&dir, &dir);
 
     // 파싱된 데이터값으로 세팅?
-    HITDATA hit(m_AttackData); 
+    HITDATA hit(m_AttackData);
     hit.dir = dir;             
     hit.attacker = m_Instigator;
     hit.hitter = hitter;

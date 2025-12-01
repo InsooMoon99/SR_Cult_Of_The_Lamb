@@ -15,7 +15,7 @@ CCombatStat::CCombatStat(DEVICE graphicDev)
       m_Mp(0),
       m_MaxMp(10),
       m_Speed(20),
-      m_IsDead(false), m_IsInvincible(false)
+      m_IsDead(false), m_IsInvincible(false), m_KnockbackTimer(0)
 {
 }
 
@@ -28,7 +28,7 @@ CCombatStat::CCombatStat(const CCombatStat& rhs)
       m_Mp(0),
       m_MaxMp(rhs.m_MaxMp),
       m_Speed(rhs.m_Speed),
-      m_IsDead(false), m_IsInvincible(false)
+      m_IsDead(false), m_IsInvincible(false), m_KnockbackTimer(0)
 {
     m_Hp = m_MaxHp;
     m_Mp = m_MaxMp;
@@ -63,7 +63,13 @@ _int CCombatStat::Update_Component(const _float& timeDelta)
 {
     _int exit = CComponent::Update_Component(timeDelta);
 
-   
+    // 넉백 타이머 세팅
+    if (m_KnockbackTimer > 0.f)
+    {
+        m_KnockbackTimer -= timeDelta;
+        if (m_KnockbackTimer < 0.f)
+            m_KnockbackTimer = 0.f;
+    }
 
     return exit;
 }
@@ -87,7 +93,7 @@ void CCombatStat::Take_Damage(const HITDATA& hitData)
     // 데미지
     Apply_Damage(hitData);
 
-    // 넉백. 여기 왜 터지는지
+    // 넉백
     Apply_Knockback(hitData);
 }
 
@@ -103,11 +109,12 @@ void CCombatStat::Apply_Damage(const HITDATA& hitData)
 
 void CCombatStat::Apply_Knockback(const HITDATA& hitData)
 {
-    // 리지드 바디 활용
     if (hitData.knockback > 0.f && m_OwnerRigidbody)
     {
-        //m_OwnerRigidbody->Add_Force(hitData.dir * hitData.knockback);
-        m_OwnerRigidbody->Add_Force(hitData.dir * 170.f);
+        _vec3 knockbackVel = hitData.dir * hitData.knockback;
+        m_OwnerRigidbody->Set_Velocity(knockbackVel);
+
+        m_KnockbackTimer = hitData.knockbackTimer;
     }
 }
 

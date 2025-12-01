@@ -3,10 +3,15 @@
 IMPLEMENT_SINGLETON(CDInputMgr)
 
 CDInputMgr::CDInputMgr()
-    : m_InputSDK(nullptr), m_KeyBoardDev(nullptr), m_MouseDev(nullptr),
-      m_KeyState{}, m_PrevKeyState{}, m_MouseState{}, m_PrevMouseState{}, m_hWnd(nullptr)
-{
-}
+    : m_InputSDK(nullptr),
+      m_KeyBoardDev(nullptr),
+      m_MouseDev(nullptr),
+      m_KeyState{},
+      m_PrevKeyState{},
+      m_MouseState{},
+      m_PrevMouseState{},
+      m_hWnd(nullptr)
+{}
 
 CDInputMgr::~CDInputMgr()
 {
@@ -27,7 +32,9 @@ HRESULT CDInputMgr::Ready_InputDev(HINSTANCE hInst, HWND hWnd)
 
     m_KeyBoardDev->SetDataFormat(&c_dfDIKeyboard);
 
-    m_KeyBoardDev->SetCooperativeLevel(hWnd, DISCL_BACKGROUND | DISCL_NONEXCLUSIVE);
+    // 백그라운드 입력 못받게 막기
+    //m_KeyBoardDev->SetCooperativeLevel(hWnd, DISCL_BACKGROUND | DISCL_NONEXCLUSIVE);
+    m_KeyBoardDev->SetCooperativeLevel(hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
 
     m_KeyBoardDev->Acquire();
 
@@ -36,7 +43,8 @@ HRESULT CDInputMgr::Ready_InputDev(HINSTANCE hInst, HWND hWnd)
 
     m_MouseDev->SetDataFormat(&c_dfDIMouse);
 
-    m_MouseDev->SetCooperativeLevel(hWnd, DISCL_BACKGROUND | DISCL_NONEXCLUSIVE);
+    //m_MouseDev->SetCooperativeLevel(hWnd, DISCL_BACKGROUND | DISCL_NONEXCLUSIVE);
+    m_MouseDev->SetCooperativeLevel(hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
 
     m_MouseDev->Acquire();
 
