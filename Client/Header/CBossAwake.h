@@ -29,7 +29,11 @@ private:
     CBossPhase1* m_pOwner;
     CBossStateMachine* m_pStateMachine;
 
+    bool tmpAniDone = false;
+    _vec3 dir;
 
+    //
+    float m_Speed = 10;
 public:
     static CBossAwake* Create(CBossPhase1* pOwner, CBossStateMachine* pStateMachine);
 

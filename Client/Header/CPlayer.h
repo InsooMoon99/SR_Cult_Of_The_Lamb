@@ -46,7 +46,6 @@ private:
 #pragma region Client Components
     CWeaponEquip*      m_WeaponEquipCom;
     CInventory*        m_InventoryCom;
-    CUIInventory*      m_UIInventory;
     CPlayerController* m_PlayerControllerCom;
     CPlayerInput*      m_PlayerInputCom;
     CPlayerMovement*   m_PlayerMovementCom;

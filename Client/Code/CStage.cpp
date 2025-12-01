@@ -16,6 +16,7 @@
 #include "CTransform.h"
 #include "CUICircle.h"
 #include "CUIIcon.h"
+#include "CUIItemGet.h"
 #include "CUIMp.h"
 #include "CUIPlayerPanel.h"
 #include "CUIWeapon.h"
@@ -291,11 +292,6 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     //         &gameObject),
     //     L"Persistent object setup failed: UI_SkillCount");
 
-    /////Inventory UI
-    //CUIInventory* uiInventory = CUIInventory::Create(m_GraphicDev);
-    //uiInventory->SetInventory(m_PlayerInventoryCom);
-    //FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiInventory),
-    //    L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UIInventory) failed");
     //CUITabMenu
     CUITabMenu* uiTabMenu = CUITabMenu::Create(m_GraphicDev);
     uiTabMenu->SetInventory(m_PlayerInventoryCom);
@@ -303,6 +299,12 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     uiTabMenu->Initialize();
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiTabMenu),
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UITabMenu) failed");
+
+    FAILED_CHECK_MSG(Engine::AcquirePersistentObject<CUIItemGet>
+        (OBJTYPE::UI, L"UI_ItemGet",
+            m_GraphicDev,layer,
+            &gameObject), L"Persistent object setup failed: UI_ItemGet")
+
 
     m_Layers.insert({ layerType, layer });
 

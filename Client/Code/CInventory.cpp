@@ -85,6 +85,7 @@ void CInventory::DropItemfromSlot(int slotNum, _vec3 DropPos)
 
 bool CInventory::AddItem(ItemInstance itemInst)
 {
+    m_AddedCount = 0;
     //ItemInstance의 id(= itemId)는 “인스턴스를 만들 때 즉시 넣어준다.”
 
     Item* itemData = CItemDB::GetInstance()->GetItemById(itemInst.itemId);
@@ -96,7 +97,11 @@ bool CInventory::AddItem(ItemInstance itemInst)
         {
             if (itemData->maxStack > slot.count)
             {
+                int oldCount = slot.count;
                 slot.count++;
+                m_AddedCount = slot.count - oldCount;
+
+
                 return true;
             }
         }
@@ -115,8 +120,9 @@ bool CInventory::AddItem(ItemInstance itemInst)
             else
             {
                 m_vecInven[slot].itemInst = itemInst;
-                m_vecInven[slot].count++;
 
+                m_vecInven[slot].count++;
+                m_AddedCount++;
                 return true;
             }
             break;
@@ -132,7 +138,7 @@ bool CInventory::AddItem(ItemInstance itemInst)
             {
                 m_vecInven[slot].itemInst = itemInst;
                 m_vecInven[slot].count++;
-
+                m_AddedCount++;
                 return true;
             }
             break;
@@ -149,7 +155,7 @@ bool CInventory::AddItem(ItemInstance itemInst)
         {
             m_vecInven[slot].itemInst = itemInst;
             m_vecInven[slot].count++;
-
+            m_AddedCount++;
             return true;
         }
     }

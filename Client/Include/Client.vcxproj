@@ -227,6 +227,8 @@
     <ClInclude Include="..\Header\CStage_Boss2.h" />
     <ClInclude Include="..\Header\CStage_TarotTest.h" />
     <ClInclude Include="..\Header\CStateMachine.h" />
+    <ClInclude Include="..\Header\CUIItemGet.h" />
+    <ClInclude Include="..\Header\CUIItemGetManager.h" />
     <ClInclude Include="..\Header\CUITarotCard.h" />
     <ClInclude Include="..\Header\CTerrainRenderer.h" />
     <ClInclude Include="..\Header\CTestMonster.h" />
@@ -313,6 +315,8 @@
     <ClCompile Include="..\Code\CStage_Boss2.cpp" />
     <ClCompile Include="..\Code\CStage_TarotTest.cpp" />
     <ClCompile Include="..\Code\CStateMachine.cpp" />
+    <ClCompile Include="..\Code\CUIItemGet.cpp" />
+    <ClCompile Include="..\Code\CUIItemGetManager.cpp" />
     <ClCompile Include="..\Code\CUITarotCard.cpp" />
     <ClCompile Include="..\Code\CTerrainRenderer.cpp" />
     <ClCompile Include="..\Code\CTestMonster.cpp" />

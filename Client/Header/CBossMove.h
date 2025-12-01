@@ -25,6 +25,7 @@ public:
     virtual void    LateUpdate_State(const _float& timeDelta);
     virtual void    Render_State() {}
 
+    void RandomMove(const _float& timeDelta, _vec3 BaseCenter, int BaseLenght, float interval);
 private:
     CBossPhase1* m_pOwner;
     CBossStateMachine* m_pStateMachine;

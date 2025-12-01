@@ -244,14 +244,8 @@ void CUITabMenu::Free()
     Safe_Release(m_PlayerBtn);
     Safe_Release(m_GyodanBtn);
     Safe_Release(m_QuestBtn);
-    //Safe_Release(m_Inventory);
     Safe_Release(m_InventoryPage);
     Safe_Release(m_PlayerPage);
-   // Safe_Release(m_InvenTransformCom);
-   // Safe_Release(m_InvenBtnTransformCom);
-   // Safe_Release(m_PlayerBtnTransformCom);
-   // Safe_Release(m_PlayerPageTransformCom);
-   // Safe_Release(m_GyodanBtnTransformCom);
-   // Safe_Release(m_QuestBtnTransformCom);
+
     CUI::Free();
 }

@@ -31,8 +31,8 @@ CPlayer::CPlayer(DEVICE graphicDev)
     m_PlayerControllerCom(nullptr),
     m_PlayerInputCom(nullptr),
     m_PlayerMovementCom(nullptr),
-    m_PlayerAttackCom(nullptr),
-    m_UIInventory(nullptr)
+    m_PlayerAttackCom(nullptr)
+
 {
 }
 
@@ -44,8 +44,7 @@ CPlayer::CPlayer(const CPlayer& rhs)
     m_PlayerControllerCom(nullptr),
     m_PlayerInputCom(nullptr),
     m_PlayerMovementCom(nullptr),
-    m_PlayerAttackCom(nullptr),
-    m_UIInventory(nullptr)
+    m_PlayerAttackCom(nullptr)
 {
 }
 
@@ -124,6 +123,31 @@ void CPlayer::Render_Editor()
 
     ImGui::Text("=== Player ===");
 
+    //
+// 상태 디버그 정보
+//
+    ImGui::Separator();
+    //
+    // 애니메이션 디버그 정보
+    //
+    if (m_AnimatorCom)
+    {
+        const wstring& key = m_AnimatorCom->Get_CurKey();
+        _int curFrame = m_AnimatorCom->Get_CurFrame();
+        _int maxFrame = m_AnimatorCom->Get_MaxFrame();
+
+        // wstring → char 변환 필요
+        std::string animKey = std::string(key.begin(), key.end());
+        ImGui::Text("Animation Key: %s", animKey.c_str());
+
+        ImGui::Text("Animation Key: %s", animKey.c_str());
+        ImGui::Text("Current Frame: %d", curFrame);
+        ImGui::Text("Max Frame:     %d", maxFrame);
+    }
+    else
+    {
+        ImGui::Text("Animator: <null>");
+    }
     // 이제 ImGui는 GameObject의 OnEditor를 상속받아서 Render하면 된다. 따로 호출해줄 필요도 없음.
     // 추가로 띄우고 싶은거 있으면 추가하기
 }
@@ -256,6 +280,54 @@ void CPlayer::Animation_Setting()
                              L"PlayerSwordCombo3",
                              ANIMSTATE::ONCE);
 #pragma endregion
+
+
+#pragma region ------   Gauntlet   ------
+    m_AnimatorCom->Create_Animation(L"PlayerGauntletCombo1",
+                                        41,
+                                        0.02f,
+                                        _vec2(2.2f, 2.2f),
+                                        _vec2(0.f, 0.f));
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_COMBO1,
+                                          L"PlayerGauntletCombo1",
+                                          ANIMSTATE::ONCE);
+
+    m_AnimatorCom->Create_Animation(L"PlayerGauntletCombo2",
+                                          43,
+                                          0.02f,
+                                          _vec2(2.2f, 2.2f),
+                                          _vec2(0.f, 0.f));
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_COMBO2,
+                                    L"PlayerGauntletCombo2",
+                                            ANIMSTATE::ONCE);
+
+    m_AnimatorCom->Create_Animation(L"PlayerGauntletCombo3",
+                                            44,
+                                            0.02f,
+                                            _vec2(2.2f, 2.2f),
+                                            _vec2(0.f, 0.f));
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_COMBO3,
+                                             L"PlayerGauntletCombo3",
+                                             ANIMSTATE::ONCE);
+
+    m_AnimatorCom->Create_Animation(L"PlayerGauntletCombo4",
+                                             40,
+                                             0.02f,
+                                             _vec2(2.2f, 2.2f),
+                                             _vec2(0.f, 0.f));
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_COMBO4,
+                                               L"PlayerGauntletCombo4",
+                                               ANIMSTATE::ONCE);
+
+    m_AnimatorCom->Create_Animation(L"PlayerGauntletHeavy",
+                                             70,
+                                             0.02f,
+                                             _vec2(2.2f, 2.2f),
+                                             _vec2(0.f, 0.f));
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_HEAVY,
+                                                 L"PlayerGauntletHeavy",
+                                                ANIMSTATE::ONCE);
+#pragma end
 }
 
 CPlayer* CPlayer::Create(DEVICE graphicDev)

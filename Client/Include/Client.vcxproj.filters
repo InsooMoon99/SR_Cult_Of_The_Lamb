@@ -160,6 +160,9 @@
     <Filter Include="97. Component\05. Projectile">
       <UniqueIdentifier>{35472784-9a23-45e2-9786-3f248927cb60}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. UI\01. UI\06. UIItemGet">
+      <UniqueIdentifier>{724d35f9-bc60-44bd-8d5a-22d341eb1b04}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -408,6 +411,9 @@
     <ClInclude Include="..\Header\CStage_Boss2.h">
       <Filter>02. Scene\01. Stage</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CUIItemGet.h">
+      <Filter>05. UI\01. UI\06. UIItemGet</Filter>
+    </ClInclude>
     <ClInclude Include="..\Header\CCharacterBase.h">
       <Filter>96. Base</Filter>
     </ClInclude>
@@ -440,6 +446,9 @@
     </ClInclude>
     <ClInclude Include="..\Header\CLogo_Boss.h">
       <Filter>02. Scene\00. Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUIItemGetManager.h">
+      <Filter>05. UI\01. UI\06. UIItemGet</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -668,6 +677,9 @@
     <ClCompile Include="..\Code\CStage_Boss2.cpp">
       <Filter>02. Scene\01. Stage</Filter>
     </ClCompile>
+    <ClCompile Include="..\Code\CUIItemGet.cpp">
+      <Filter>05. UI\01. UI\06. UIItemGet</Filter>
+    </ClCompile>
     <ClCompile Include="..\Code\CCharacterBase.cpp">
       <Filter>96. Base</Filter>
     </ClCompile>
@@ -697,6 +709,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CLogo_Boss.cpp">
       <Filter>02. Scene\00. Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUIItemGetManager.cpp">
+      <Filter>05. UI\01. UI\06. UIItemGet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
