@@ -69,11 +69,11 @@ _int CBossAwake::Update_State(const _float& timeDelta)
             tmpAniDone = true;
         }
 
-        float distance = D3DXVec3Length(&(tmpdir));
+        float distance = D3DXVec3Length(&tmpdir);
 
         if (tmpAniDone == true)
         {
-            m_pOwnerTransformCom->Set_Pos(m_pOwnerTransformCom->Get_Pos() + dir * m_Speed);
+            m_pOwnerTransformCom->Set_Pos(m_pOwnerTransformCom->Get_Pos() + dir * m_Speed * timeDelta);
 
             if (distance <= 0.1f)
             {

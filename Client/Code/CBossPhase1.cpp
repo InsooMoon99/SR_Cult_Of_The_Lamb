@@ -36,9 +36,7 @@ HRESULT CBossPhase1::Ready_GameObject()
 
     m_StateMachine = CBossStateMachine::Create(this);
 
-    m_TransformCom->Set_Scale({ 7,7,1 });
-    BaseCenter = { 20 ,m_TransformCom->Get_Scale().y * .5f, 20 };
-    m_TransformCom->Set_Pos(StartPos.x, m_TransformCom->Get_Scale().y * .5f, StartPos.z);
+    m_TransformCom->Set_Scale({ 5,5,1 });
 
 
     m_CombatStatCom->Set_Hp(200.f);
@@ -50,6 +48,13 @@ HRESULT CBossPhase1::Ready_GameObject()
     return S_OK;
 }
 
+void CBossPhase1::Initialize_GameObject()
+{
+   
+    BaseCenter = { 20 ,m_TransformCom->Get_Scale().y, 20 };
+    m_TransformCom->Set_Pos(StartPos.x, m_TransformCom->Get_Scale().y, StartPos.z);
+
+}
 _int CBossPhase1::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CMonsterBase::Update_GameObject(timeDelta);
@@ -86,6 +91,7 @@ void CBossPhase1::Render_Editor()
         }
     }
 }
+
 
 HRESULT CBossPhase1::Add_Component()
 {

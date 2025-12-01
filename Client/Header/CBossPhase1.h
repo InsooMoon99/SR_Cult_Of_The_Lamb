@@ -30,6 +30,7 @@ public:
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
     void    Render_Editor() override;
+    void    Initialize_GameObject() override; // Ready보다 한 단계 아래 생명주기
 
 public:
     void    OnBeginOverlap(CCollider* self, CCollider* other) override {}
