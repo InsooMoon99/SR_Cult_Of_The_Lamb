@@ -24,61 +24,61 @@ private:
     ~CAnimator() override;
 
 public:
-    _int Update_Component(const _float& timeDelta) override;
-    void LateUpdate_Component() override;
-    void Render_Component();
+    _int                Update_Component(const _float& timeDelta) override;
+    void                LateUpdate_Component() override;
+    void                Render_Component();
 
 public:
     // 애니메이션 등록 (이미 만들어진 CSpriteAnimation 넣기)
-    HRESULT Add_Animation(const wstring& key, CSpriteAnimation* animation);
-    HRESULT Create_Animation(const wstring& key, _uint frameCount, _float interval);
+    HRESULT             Add_Animation(const wstring& key, CSpriteAnimation* animation);
+    HRESULT             Create_Animation(const wstring& key, _uint frameCount, _float interval);
 
     // 사이즈 세팅 버전
-    HRESULT Add_Animation(
-        const wstring& key, CSpriteAnimation* animation,
-        const _vec2 size, const _vec2 offset = _vec2(0.f, 0.f));
+    HRESULT             Add_Animation(
+                            const wstring& key, CSpriteAnimation* animation,
+                            const _vec2 size, const _vec2 offset = _vec2(0.f, 0.f));
 
-    HRESULT Create_Animation(const wstring& key, _uint frameCount,
-        _float interval, const _vec2& size, const _vec2 offset = _vec2(0.f, 0.f));
+    HRESULT             Create_Animation(const wstring& key, _uint frameCount,
+                             _float interval, const _vec2& size, const _vec2 offset = _vec2(0.f, 0.f));
 
-    void Play_Animation(const wstring& key, ANIMSTATE state, bool reset = true);
-    void Stop_Animation();
+    void                Play_Animation(const wstring& key, ANIMSTATE state, bool reset = true);
+    void                Stop_Animation();
 
-    CSpriteAnimation* Get_CurAnimation() const { return m_CurAnimation; }
+    CSpriteAnimation*   Get_CurAnimation() const { return m_CurAnimation; } // 현재 재생중인 애니메이션
+    const wstring&      Get_CurKey() { return m_CurKey; } // 현재 재생중인 키값
+    _int                Get_CurFrame(); // 현재 재생중인 프레임
+    _int                Get_MaxFrame(); // 최대 프레임
 
-    // 현재 재생중인 키값
-    const wstring& Get_CurKey() { return m_CurKey; }
-    // 현재 재생중인 프레임
-    _int Get_CurFrame();
+    _vec2               Get_CurSize() const;
+    _vec2               Get_CurOffset() const;
 
-    _int Get_MaxFrame();
+    void                Set_CurSize(const _vec2& size);
+    void                Set_CurOffset(const _vec2& offset);
 
     // 주의! Object마다 Set_TextureType 설정 꼭 해줘야함
-    void Set_TextureType(COMPONENTTYPE type);
+    void                Set_TextureType(COMPONENTTYPE type);
 
-    static CAnimator* Create(DEVICE graphicDev);
-    CComponent* Clone() override;
-
-private:
-    HRESULT           Ready_Animator();
-    CSpriteAnimation* Find_Animation(const wstring& Key);
-
-    void Free() override;
+    static CAnimator*   Create(DEVICE graphicDev);
+    CComponent*         Clone() override;
 
 private:
-    map<wstring, AnimDesc> m_Animations;
-    CSpriteAnimation* m_CurAnimation;
-    wstring                m_CurKey;
+    HRESULT             Ready_Animator();
+    CSpriteAnimation*   Find_Animation(const wstring& Key);
 
-    _bool m_Play;
+    void                Free() override;
 
-    //Engine::CRcTex*   m_BufferCom;
-    Engine::CVIBuffer* m_BufferCom;
-    Engine::CTexture* m_Texture;
+private:
+    map<wstring, AnimDesc>  m_Animations;
+    CSpriteAnimation*       m_CurAnimation;
+    wstring                 m_CurKey;
 
-    bool m_Initialized = false;
+    _bool                   m_Play;
 
-    COMPONENTTYPE m_TextureType;
+    Engine::CVIBuffer*      m_BufferCom;
+    Engine::CTexture*       m_Texture;
+
+    _bool                   m_Initialized = false;
+    COMPONENTTYPE           m_TextureType;
 };
 
 END

@@ -150,7 +150,6 @@ void CAnimator::Play_Animation(const wstring& key, ANIMSTATE state, bool reset)
         }
     }
 
-
     // STOP이면 False, 나머지는 True값 세팅
     m_Play = (state != ANIMSTATE::STOP);
 }
@@ -174,6 +173,80 @@ _int CAnimator::Get_MaxFrame()
         return 0;
 
     return m_CurAnimation->Get_MaxFrameX();
+}
+
+_vec2 CAnimator::Get_CurSize() const
+{
+    if (m_CurKey.empty())
+        return _vec2(1.f, 1.f);
+
+    auto iter = m_Animations.find(m_CurKey);
+    if (iter != m_Animations.end())
+    {
+        return iter->second.size;
+    }
+
+    return _vec2(1.f, 1.f);
+}
+
+_vec2 CAnimator::Get_CurOffset() const
+{
+    if (m_CurKey.empty())
+        return _vec2(1.f, 1.f);
+
+    auto iter = m_Animations.find(m_CurKey);
+    if (iter != m_Animations.end())
+    {
+        return iter->second.offset;
+    }
+
+    return _vec2(1.f, 1.f);
+}
+
+void CAnimator::Set_CurSize(const _vec2& size)
+{
+    if (m_CurKey.empty())
+        return;
+
+    auto iter = m_Animations.find(m_CurKey);
+    if (iter != m_Animations.end())
+    {
+        iter->second.size = size;
+
+        if (m_BufferCom)
+        {
+            CRcTex* rect = static_cast<CRcTex*>(m_BufferCom);
+            if (rect)
+            {
+                rect->Set_Scale(size.x, size.y);
+            }
+        }
+    }
+
+    return;
+}
+
+void CAnimator::Set_CurOffset(const _vec2& offset)
+{
+    if (m_CurKey.empty())
+        return;
+
+    auto iter = m_Animations.find(m_CurKey);
+    if (iter != m_Animations.end())
+    {
+        iter->second.offset = offset;
+
+        if (m_BufferCom)
+        {
+            CRcTex* rect = static_cast<CRcTex*>(m_BufferCom);
+            if (rect)
+            {
+                rect->Set_Offset(offset.x, offset.y);
+            }
+        }
+    }
+
+    return;
 }
 
 void CAnimator::Set_TextureType(COMPONENTTYPE type)

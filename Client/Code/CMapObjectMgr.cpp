@@ -61,9 +61,12 @@ void CMapObjectMgr::Render_MapObjectWindow()
     Render_ObjectButton("Dungeon Deco", MAPOBJTYPE::DUNGEON_DECO, m_ShowDungeonDeco);
     Render_ObjectButton("ETC", MAPOBJTYPE::ETC, m_ShowETC);
 
-    ImGui::SeparatorText("");
+    ImGui::SeparatorText(u8"프리뷰 정보");
+
+    ImGui::Text("Preview YOffset : %.2f", m_MapPlacer->Get_PreviewYOffset());
+
     ImGui::Text("Preview Scale : %.2f", m_MapPlacer->Get_PreviewScale());
-    ImGui::Text("Preview Rotation:"); ImGui::SameLine();
+    ImGui::Text("[ Preview Rotation ]");
     ImGui::Text(u8"  X (Pitch): %.2f°", D3DXToDegree(m_MapPlacer->Get_PreviewRotation().x));
     ImGui::SameLine();
     ImGui::Text(u8"  Y (Yaw):   %.2f°", D3DXToDegree(m_MapPlacer->Get_PreviewRotation().y));
@@ -74,6 +77,18 @@ void CMapObjectMgr::Render_MapObjectWindow()
     {
         Undo_LastPlacement();
     }
+
+    ImGui::SameLine();
+
+    static bool eraseMode = false;
+    if (ImGui::Checkbox(u8"| 지우개 [우클릭]", &eraseMode))
+    {
+        if (m_MapPlacer)
+        {
+            m_MapPlacer->Set_EraseMode(eraseMode);
+        }
+    }
+
     ImGui::Separator();
 
 #pragma region 맵 오브젝트 따로 저장
@@ -455,7 +470,7 @@ HRESULT CMapObjectMgr::SaveMapObject(const char* filePath)
 
                 data.pos = objTransform->Get_Pos();
                 data.scale = objTransform->Get_Scale();
-                data.rotation = objTransform->Get_Rotation();
+                data.rotation = objTransform->Get_Euler();
 
                 objects.push_back(data);
             }
@@ -618,7 +633,12 @@ HRESULT CMapObjectMgr::Load_FromStream(ifstream& ifs)
             {
                 transform->Set_Pos(data.pos);
                 transform->Set_Scale(data.scale);  
-                transform->Set_Rotation(data.rotation);
+
+                _vec3 loadedRotation = data.rotation;
+                loadedRotation.x = -loadedRotation.x;
+                loadedRotation.y = -loadedRotation.y;
+
+                transform->Set_Rotation(loadedRotation);
             }
 
             layer->Add_GameObject(OBJTYPE::PLACEMENT, newObj);
@@ -704,6 +724,19 @@ void CMapObjectMgr::Add_Placement(CGameObject* object)
     {
         m_PlacedObjects.push_back(object);
     }
+}
+
+void CMapObjectMgr::Remove_Placement(CGameObject* object)
+{
+    if (!object)
+        return;
+
+    auto iter = find(m_PlacedObjects.begin(), m_PlacedObjects.end(), object);
+    if (iter != m_PlacedObjects.end())
+    {
+        m_PlacedObjects.erase(iter);
+    }
+
 }
 
 void CMapObjectMgr::Free()
