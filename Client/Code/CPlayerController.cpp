@@ -185,12 +185,12 @@ void CPlayerController::CheckStateTransition()
                  curState == ACTORSTATE::PLAYER_SWORD_COMBO2 ||
                  curState == ACTORSTATE::PLAYER_SWORD_COMBO3 ||
                  curState == ACTORSTATE::PLAYER_SWORD_COMBO3 ||
-                 curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO1||
+                 curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO1 ||
                  curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO2 ||
                  curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO3 ||
                  curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO4 ||
                  curState == ACTORSTATE::PLAYER_GAUNTLET_HEAVY)
-        {                                                    
+        {
             m_OwnerAttackCom->Try_NextCombo();
             return;
         }
@@ -200,7 +200,7 @@ void CPlayerController::CheckStateTransition()
     if (curState == ACTORSTATE::PLAYER_ROLL ||
         curState == ACTORSTATE::PLAYER_SWORD_COMBO1 ||
         curState == ACTORSTATE::PLAYER_SWORD_COMBO2 ||
-        curState == ACTORSTATE::PLAYER_SWORD_COMBO3||
+        curState == ACTORSTATE::PLAYER_SWORD_COMBO3 ||
         curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO1 ||
         curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO2 ||
         curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO3 ||
@@ -252,12 +252,21 @@ void CPlayerController::Update_State(const _float& timeDelta)
     case ACTORSTATE::PLAYER_GAUNTLET_COMBO2:
     case ACTORSTATE::PLAYER_GAUNTLET_COMBO3:
     case ACTORSTATE::PLAYER_GAUNTLET_COMBO4:
-		Action_Sword(timeDelta); //? 따로 만들어줘야하나?
+        Action_Sword(timeDelta); //? 따로 만들어줘야하나?
     case ACTORSTATE::HIT:
         break;
     case ACTORSTATE::DEAD:
+        MSG_BOX("CPlayerController: Player Dead!");
+        m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
         break;
-    default: break;
+    case ACTORSTATE::STATE_END:
+        MSG_BOX("CPlayerController: Warning! Player State is STATE_END");
+        m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+        break;
+    default:
+        MSG_BOX("CPlayerController: Invalid Player State");
+        m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+        break;
     }
 }
 

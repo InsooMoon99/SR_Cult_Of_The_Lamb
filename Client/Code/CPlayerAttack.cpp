@@ -245,6 +245,18 @@ ACTORSTATE CPlayerAttack::Start_NormalAttack()
     const _int weaponIdx = Get_WeaponIndex(m_OwnerWeaponCom->Get_CurrentWeaponID());
     if (weaponIdx < 0) return ACTORSTATE::STATE_END;
 
+    // 무기 종류에 따라 최대 콤보 허용 설정
+    switch (weaponIdx)
+    {
+    case WEAPON_SWORD:
+        m_MaxCombo = 3;     // 검 : 최대 3타
+        break;
+    case WEAPON_GAUNTLET:
+        m_MaxCombo = 4;     // 건틀릿 : 최대 4타
+        break;
+    default: return ACTORSTATE::STATE_END;
+    }
+
     // 1타(COMBO_1) 시작
     m_ComboIndex = static_cast<_int>(ATTACK_COMBO1);
 
@@ -272,18 +284,6 @@ _bool CPlayerAttack::Update_NormalAttack(const _float& timeDelta)
     // 무기가 어떤건지 CWeaponEquip의 ID 확인
     const _int weaponIdx = Get_WeaponIndex(m_OwnerWeaponCom->Get_CurrentWeaponID());
     if (weaponIdx < 0) return false;
-
-    // 무기 종류에 따라 최대 콤보 허용 설정
-    switch (weaponIdx)
-    {
-    case WEAPON_SWORD:
-        m_MaxCombo = 3;     // 검 : 최대 3타
-        break;
-    case WEAPON_GAUNTLET:
-        m_MaxCombo = 4;     // 건틀릿 : 최대 4타
-        break;
-    default: return false;
-    }
 
     // 콤보 인덱스 유효성 체크
     if (m_ComboIndex < ATTACK_COMBO1 || m_ComboIndex > m_MaxCombo) return false;
