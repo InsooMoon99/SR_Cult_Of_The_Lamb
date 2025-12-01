@@ -30,6 +30,7 @@ public:
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
     void    Render_Editor() override;
+    void    Initialize_GameObject() override; // Ready보다 한 단계 아래 생명주기
 
 public:
     void    OnBeginOverlap(CCollider* self, CCollider* other) override {}
@@ -49,6 +50,13 @@ private:
 public:
     static CBossPhase1* Create(DEVICE graphicDev);
 
+    _vec3 Get_Center() { return BaseCenter; }
+    float Get_Length() { return BaseLength; }
+private:
+    _vec3 StartPos = { 20 ,0, 50 };
+    _vec3 BaseCenter;
+    int BaseLength = 50;
+    float interval = 1.f;
 private:
     void Free() override;
 };
