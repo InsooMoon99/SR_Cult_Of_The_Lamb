@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "CStage.h"
+#include "CDInputMgr.h"
 #include "CCombatStat.h"
 #include "CDropSystem.h"
 #include "CHumanMonster.h"
@@ -10,6 +11,7 @@
 #include "CMainEditorMgr.h"
 #include "CPersistentObjectHelper.h"
 #include "CPlayer.h"
+#include "CSceneMgr.h"
 #include "CTerrain.h"
 #include "CTransform.h"
 #include "CUICircle.h"
@@ -77,6 +79,11 @@ void CStage::Initialize_Scene()
 _int CStage::Update_Scene(const _float& timeDelta)
 {
     _int exit = Engine::CScene::Update_Scene(timeDelta);
+
+    if (CDInputMgr::GetInstance()->KeyDown(DIK_F))
+    {
+        CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS);
+    }
 
     return exit;
 }

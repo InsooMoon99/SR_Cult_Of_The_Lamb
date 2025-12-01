@@ -106,6 +106,7 @@ void CPlayerMovement::Run(const _vec3& moveDir, const _float& timeDelta)
 
     _float speed = m_OwnerCombatStatCom->Get_Speed();
     m_OwnerRigidbodyCom->Add_Force(moveDir * speed * 20.f);
+    
 }
 
 void CPlayerMovement::Stop()

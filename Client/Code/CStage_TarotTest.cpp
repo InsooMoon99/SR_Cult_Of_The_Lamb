@@ -8,20 +8,20 @@
 #include "CState.h"
 #include "CTerrain.h"
 #include "CTransform.h"
-#include "CDInputMgr.h"
 #include "CMainEditorMgr.h"
 #include "CMainMenu.h"
-#include "CSceneMgr.h"
 #include "CWall.h"
 #include "CTarotStageController.h"
 
 CStage_TarotTest::CStage_TarotTest(DEVICE graphicDev)
     : Engine::CScene(graphicDev)
 {
+
 }
 
 CStage_TarotTest::~CStage_TarotTest()
 {
+
 }
 
 HRESULT CStage_TarotTest::Ready_Scene()

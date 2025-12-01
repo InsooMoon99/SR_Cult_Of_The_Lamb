@@ -11,46 +11,48 @@
 CPlayerAttack::CPlayerAttack(DEVICE graphicDev)
     : CComponent(graphicDev),
 
-      m_OwnerStateCom(nullptr),
-      m_OwnerCombatStatCom(nullptr),
-      m_OwnerWeaponCom(nullptr),
-      m_OwnerInputCom(nullptr),
+    m_OwnerStateCom(nullptr),
+    m_OwnerCombatStatCom(nullptr),
+    m_OwnerWeaponCom(nullptr),
+    m_OwnerInputCom(nullptr),
 
-      m_CurrentAttackObj(nullptr),
+    m_CurrentAttackObj(nullptr),
 
-      m_AttackInfo{},
-      m_ComboIndex(0),
+    m_AttackInfo{},
+    m_ComboIndex(0),
 
-      m_Timer(0.f),
-      m_IsHitboxActive(false),
-      m_CanNextCombo(false),
-      m_IsNextComboReserved(false)
-{ }
+    m_Timer(0.f),
+    m_IsHitboxActive(false),
+    m_CanNextCombo(false),
+    m_IsNextComboReserved(false)
+{
+}
 
 CPlayerAttack::CPlayerAttack(const CPlayerAttack& rhs)
     : CComponent(rhs),
 
-      m_OwnerStateCom(nullptr),
-      m_OwnerCombatStatCom(nullptr),
-      m_OwnerWeaponCom(nullptr),
-      m_OwnerInputCom(nullptr),
+    m_OwnerStateCom(nullptr),
+    m_OwnerCombatStatCom(nullptr),
+    m_OwnerWeaponCom(nullptr),
+    m_OwnerInputCom(nullptr),
 
-      m_CurrentAttackObj(nullptr),
+    m_CurrentAttackObj(nullptr),
 
-      m_ComboIndex(rhs.m_ComboIndex),
+    m_ComboIndex(rhs.m_ComboIndex),
 
-      m_Timer(rhs.m_Timer),
-      m_IsHitboxActive(rhs.m_IsHitboxActive),
-      m_CanNextCombo(rhs.m_CanNextCombo),
-      m_IsNextComboReserved(rhs.m_IsNextComboReserved)
+    m_Timer(rhs.m_Timer),
+    m_IsHitboxActive(rhs.m_IsHitboxActive),
+    m_CanNextCombo(rhs.m_CanNextCombo),
+    m_IsNextComboReserved(rhs.m_IsNextComboReserved)
 {
     copy_n(&rhs.m_AttackInfo[0][0],
-           static_cast<_int>(WEAPON_MAX) * static_cast<_int>(ATTACK_MAX),
-           &m_AttackInfo[0][0]);
+        static_cast<_int>(WEAPON_MAX) * static_cast<_int>(ATTACK_MAX),
+        &m_AttackInfo[0][0]);
 }
 
 CPlayerAttack::~CPlayerAttack()
-{ }
+{
+}
 
 HRESULT CPlayerAttack::Ready_PlayerCombat()
 {
@@ -59,37 +61,37 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     // =========================================================
 
     // 1타
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].state            = ACTORSTATE::PLAYER_SWORD_COMBO1;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].duration         = 0.5f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitboxStartTime  = 0.1f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitboxEndTime    = 0.2f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].comboInputTime   = 0.2f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].state = ACTORSTATE::PLAYER_SWORD_COMBO1;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].duration = 0.5f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitboxStartTime = 0.1f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitboxEndTime = 0.2f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].comboInputTime = 0.2f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].damageMultiplier = 1.f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].knockbackPower   = 30.f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].spawnOffset      = 1.2f; // 가까움
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].knockbackPower = 30.f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].spawnOffset = 1.2f; // 가까움
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitboxScale = _vec3(0.85f, 0.85f, 0.85f);
 
     // 2타
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].state            = ACTORSTATE::PLAYER_SWORD_COMBO2;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].duration         = 0.5f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitboxStartTime  = 0.1f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitboxEndTime    = 0.2f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].comboInputTime   = 0.2f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].state = ACTORSTATE::PLAYER_SWORD_COMBO2;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].duration = 0.5f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitboxStartTime = 0.1f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitboxEndTime = 0.2f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].comboInputTime = 0.2f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].damageMultiplier = 1.f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].knockbackPower   = 30.f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].spawnOffset      = 1.2f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].knockbackPower = 30.f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].spawnOffset = 1.2f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitboxScale = _vec3(0.85f, 0.85f, 0.85f);
 
     // 3타
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].state            = ACTORSTATE::PLAYER_SWORD_COMBO3;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].duration         = 0.8f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitboxStartTime  = 0.1f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitboxEndTime    = 0.2f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].comboInputTime   = 0.2f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].state = ACTORSTATE::PLAYER_SWORD_COMBO3;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].duration = 0.8f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitboxStartTime = 0.1f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitboxEndTime = 0.2f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].comboInputTime = 0.2f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].damageMultiplier = 1.f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].knockbackPower   = 30.f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].spawnOffset      = 1.2f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].knockbackPower = 30.f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].spawnOffset = 1.2f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitboxScale = _vec3(0.85f, 0.85f, 0.85f);
 
     //TODO 강공격 (HEAVY)
     //m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].state           = ACTORSTATE::PLAYER_SWORD_HEAVY; // 가정
@@ -167,7 +169,8 @@ _int CPlayerAttack::Update_Component(const _float& timeDelta)
 }
 
 void CPlayerAttack::LateUpdate_Component()
-{ }
+{
+}
 
 HRESULT CPlayerAttack::Init_OwnerComponent()
 {
@@ -188,9 +191,9 @@ HRESULT CPlayerAttack::Init_OwnerComponent()
     if (nullptr == m_OwnerStateCom)
     {
         MessageBoxW(nullptr,
-                    L"CPlayerAttack: Owner State Not Found",
-                    L"System Message",
-                    MB_ICONERROR);
+            L"CPlayerAttack: Owner State Not Found",
+            L"System Message",
+            MB_ICONERROR);
 
         result = E_FAIL;
     }
@@ -198,9 +201,9 @@ HRESULT CPlayerAttack::Init_OwnerComponent()
     if (nullptr == m_OwnerCombatStatCom)
     {
         MessageBoxW(nullptr,
-                    L"CPlayerAttack: Owner CombatStat Not Found",
-                    L"System Message",
-                    MB_ICONERROR);
+            L"CPlayerAttack: Owner CombatStat Not Found",
+            L"System Message",
+            MB_ICONERROR);
 
         result = E_FAIL;
     }
@@ -208,9 +211,9 @@ HRESULT CPlayerAttack::Init_OwnerComponent()
     if (nullptr == m_OwnerWeaponCom)
     {
         MessageBoxW(nullptr,
-                    L"CPlayerAttack: Owner WeaponEquip Not Found",
-                    L"System Message",
-                    MB_ICONERROR);
+            L"CPlayerAttack: Owner WeaponEquip Not Found",
+            L"System Message",
+            MB_ICONERROR);
 
         result = E_FAIL;
     }
@@ -218,9 +221,9 @@ HRESULT CPlayerAttack::Init_OwnerComponent()
     if (nullptr == m_OwnerInputCom)
     {
         MessageBoxW(nullptr,
-                    L"CPlayerAttack: Owner PlayerInput Not Found",
-                    L"System Message",
-                    MB_ICONERROR);
+            L"CPlayerAttack: Owner PlayerInput Not Found",
+            L"System Message",
+            MB_ICONERROR);
 
         result = E_FAIL;
     }
@@ -295,7 +298,7 @@ _bool CPlayerAttack::Update_NormalAttack(const _float& timeDelta)
 
             //!! 검 기본공격의 경우 좌우만 판단해서 히트박스를 만들면 되기에 mouseDir의 x성분만 가져와 사용
             _vec3 mouseDir = m_OwnerInputCom->Get_MouseDir();
-            mouseDir.z     = 0.f;
+            mouseDir.z = 0.f;
             D3DXVec3Normalize(&mouseDir, &mouseDir);
 
             Create_AttackObj(info, mouseDir);
@@ -317,9 +320,9 @@ _bool CPlayerAttack::Update_NormalAttack(const _float& timeDelta)
         if (m_IsNextComboReserved && m_ComboIndex < ATTACK_COMBO3)
         {
             ++m_ComboIndex;
-            m_Timer               = 0.f;
-            m_IsHitboxActive      = false;
-            m_CanNextCombo        = false;
+            m_Timer = 0.f;
+            m_IsHitboxActive = false;
+            m_CanNextCombo = false;
             m_IsNextComboReserved = false;
 
             m_OwnerStateCom->Change_State(m_AttackInfo[weaponIdx][m_ComboIndex].state);
@@ -426,7 +429,7 @@ void CPlayerAttack::Reset_AttackData()
         }
     }
 
-    m_CanNextCombo        = false;
+    m_CanNextCombo = false;
     m_IsNextComboReserved = false;
 }
 
@@ -464,10 +467,10 @@ void CPlayerAttack::Create_AttackObj(const AttackInfo& attackInfo, const _vec3& 
     {
         CAttackBase* pBox = m_CurrentAttackObj;
         m_CurrentAttackObj->Set_OnDestroyCallback([this, pBox]()
-        {
-            if (m_CurrentAttackObj == pBox)
-                m_CurrentAttackObj = nullptr;
-        });
+            {
+                if (m_CurrentAttackObj == pBox)
+                    m_CurrentAttackObj = nullptr;
+            });
     }
 }
 
@@ -492,10 +495,10 @@ CComponent* CPlayerAttack::Clone()
 
 void CPlayerAttack::Free()
 {
-    m_OwnerStateCom      = nullptr;
+    m_OwnerStateCom = nullptr;
     m_OwnerCombatStatCom = nullptr;
-    m_OwnerWeaponCom     = nullptr;
-    m_OwnerInputCom      = nullptr;
+    m_OwnerWeaponCom = nullptr;
+    m_OwnerInputCom = nullptr;
 
     // CPlayerAttack이 현재 히트박스보다 먼저 죽는 경우
     // Set_OnDestroyCallback이 아무것도 실행하지 말도록 nullptr로 콜백할 함수를 지움

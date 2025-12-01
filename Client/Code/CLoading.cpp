@@ -40,10 +40,27 @@ HRESULT CLoading::Ready_Loading(LOADINGID eID)
 
 _uint CLoading::Loading_ForState()
 {
-    m_LoadingText = L"LOADING...";
+    m_LoadingText = L"Resource Loading...";
 
     // 이제 리소스 추가는 Resource Manager에서 진행
     if (FAILED(CResourceMgr::GetInstance()->Ready_Resource(m_GraphicDev)))
+        return E_FAIL;
+
+    m_IsFinish = true;
+
+    return S_OK;
+}
+
+_uint CLoading::Loading_ForBoss()
+{
+    m_LoadingText = L"Boss Loading...";
+
+    // 테스트 용으로 일단은 플레이어, 몬스터 이미지까지 로딩 진행
+    // 나중에는 분리를 해야할 것임
+    //if (FAILED(CResourceMgr::GetInstance()->Ready_Resource(m_GraphicDev)))
+    //    return E_FAIL;
+
+    if (FAILED(CResourceMgr::GetInstance()->Ready_BossResource(m_GraphicDev)))
         return E_FAIL;
 
     m_IsFinish = true;
@@ -66,6 +83,7 @@ unsigned CLoading::Thread_Main(void* pArg)
         iFlag = pLoading->Loading_ForState();
         break;
     case LOADING_BOSS:
+        iFlag = pLoading->Loading_ForBoss();
         break;
     default:
         break;
