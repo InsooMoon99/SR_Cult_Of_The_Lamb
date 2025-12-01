@@ -66,19 +66,17 @@ private:
     void Free() override;
 
 private:
-    map<wstring, AnimDesc> m_Animations;
-    CSpriteAnimation* m_CurAnimation;
-    wstring                m_CurKey;
+    map<wstring, AnimDesc>  m_Animations;
+    CSpriteAnimation*       m_CurAnimation;
+    wstring                 m_CurKey;
 
-    _bool m_Play;
+    _bool                   m_Play;
 
-    //Engine::CRcTex*   m_BufferCom;
-    Engine::CVIBuffer* m_BufferCom;
-    Engine::CTexture* m_Texture;
+    Engine::CVIBuffer*      m_BufferCom;
+    Engine::CTexture*       m_Texture;
 
-    bool m_Initialized = false;
-
-    COMPONENTTYPE m_TextureType;
+    _bool                   m_Initialized = false;
+    COMPONENTTYPE           m_TextureType;
 };
 
 END

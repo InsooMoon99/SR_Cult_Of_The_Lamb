@@ -25,6 +25,7 @@
 #include "CTransform.h"
 #include "CWallRenderer.h"
 #include "CWeaponEquip.h"
+#include "CAnimator.h"
 
 IMPLEMENT_SINGLETON(CMainEditorMgr)
 
@@ -564,6 +565,13 @@ void CMainEditorMgr::Render_SelectComponent()
         {
             auto rigidbody = dynamic_cast<CRigidbody*>(selectComponent);
             RigidBody_Inspector(rigidbody);
+        }
+        break;
+
+        case COMPONENTTYPE::ANIMATOR:
+        {
+            auto animator = dynamic_cast<CAnimator*>(selectComponent);
+            Animator_Inspector(animator);
         }
         break;
 

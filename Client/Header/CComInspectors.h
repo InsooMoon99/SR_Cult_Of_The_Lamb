@@ -17,6 +17,7 @@
 #include "CPlayerInput.h"
 #include "CPlayerMovement.h"
 #include "CPlayerAttack.h"
+#include "../../Engine/Header/CAnimator.h"
 
 USING(Engine)
 
@@ -783,4 +784,20 @@ static void WallRenderer_Inspector(CWallRenderer* wall)
 
 }
 
+static void Animator_Inspector(CAnimator* animator)
+{
+    // TODO : 현재 재생되는 애니메이션, Offset, Scale 조절
+    // 현재 프레임이 몇인지, 재생중인 애니메이션이 끝났는지정도 추가해주기
 
+    NULL_CHECK(animator);
+
+    ImGui::Text("현재 애니메이션 : ");
+    ImGui::SameLine();
+
+    const wstring& curAnim = animator->Get_CurKey();
+    const _int curFrame = animator->Get_CurFrame();
+    _bool isFinished = animator->
+
+    ImGui::Text()
+
+}
