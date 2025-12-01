@@ -54,7 +54,7 @@ HRESULT CStage::Ready_Scene()
     {
         int          id   = CItemDB::GetInstance()->GetVector()[i].id;
         ItemInstance inst = { id, -1, 0 };
-        CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 5.f, 0.f, 10.f + (i * 3.f) });
+        CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 5.f, 1.f, 10.f + (i * 3.f) });
     }
 
     int size = CItemDB::GetInstance()->GetVector().size();
@@ -64,7 +64,7 @@ HRESULT CStage::Ready_Scene()
         int id           = CItemDB::GetInstance()->GetVector()[reverseIndex].id;
 
         ItemInstance inst = { id, -1, 0 };
-        CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 10.f, 0.f, 10.f + (i * 3.f) });
+        CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 10.f, 1.f, 10.f + (i * 3.f) });
     }
 
     // BGM Test
