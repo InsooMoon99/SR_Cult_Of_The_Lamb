@@ -148,6 +148,9 @@
     <Filter Include="97. Component\04. Wall">
       <UniqueIdentifier>{b0c9067d-def9-4e61-954d-f361723e82cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="96. Base">
+      <UniqueIdentifier>{4574c831-331d-4517-b972-c4e997802ca0}</UniqueIdentifier>
+    </Filter>
     <Filter Include="03. GameObject\05. Building">
       <UniqueIdentifier>{d128922c-c4b8-47ce-b6cd-7f14a0378dbd}</UniqueIdentifier>
     </Filter>
@@ -408,6 +411,15 @@
     <ClInclude Include="..\Header\CStage_Boss2.h">
       <Filter>02. Scene\01. Stage</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CCharacterBase.h">
+      <Filter>96. Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMonsterBase.h">
+      <Filter>96. Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CNPCBase.h">
+      <Filter>96. Base</Filter>
+    </ClInclude>
     <ClInclude Include="..\Header\CBossBullet.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -649,6 +661,15 @@
     </ClCompile>
     <ClCompile Include="..\Code\CStage_Boss2.cpp">
       <Filter>02. Scene\01. Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CCharacterBase.cpp">
+      <Filter>96. Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMonsterBase.cpp">
+      <Filter>96. Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CNPCBase.cpp">
+      <Filter>96. Base</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CBossBullet.cpp">
       <Filter>소스 파일</Filter>

@@ -7,12 +7,12 @@
 #include "CRigidbody.h"
 
 CWall::CWall(DEVICE graphicDev)
-    : CGameObject(graphicDev), m_TransformCom(nullptr), m_BoxCollider(nullptr)
+    : CRenderObject(graphicDev), m_BoxCollider(nullptr)
 {
 }
 
 CWall::CWall(const CWall& rhs)
-    : CGameObject(rhs), m_TransformCom(nullptr), m_BoxCollider(nullptr)
+    : CRenderObject(rhs), m_BoxCollider(nullptr)
 {
 }
 
@@ -21,20 +21,29 @@ CWall::~CWall()
 
 HRESULT CWall::Ready_GameObject()
 {
-    if (FAILED(Add_Component()))
+    if (FAILED(CRenderObject::Ready_GameObject()))
         return E_FAIL;
 
     m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
-    //m_TransformCom->Set_Pos(_vec3(10.f, 0.f, 10.f));
-    //
-    //m_BoxCollider->Set_Size(_vec3(3.f, 3.f, 3.f));
+
+	if (m_BoxCollider)
+	{
+		m_BoxCollider->Set_CollisionLayer(COLLISION_LAYERTYPE::WALL);
+	}
 
     return S_OK;
 }
 
+void CWall::Initialize_GameObject()
+{
+	CRenderObject::Initialize_GameObject();
+
+   
+}
+
 _int CWall::Update_GameObject(const _float& timeDelta)
 {                                                                                                                                                                                                                                                                                                                                                                                        
-    _int exit = CGameObject::Update_GameObject(timeDelta);
+    _int exit = CRenderObject::Update_GameObject(timeDelta);
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_PRIORITY, this);
 
@@ -43,7 +52,7 @@ _int CWall::Update_GameObject(const _float& timeDelta)
 
 void CWall::LateUpdate_GameObject(const _float& timeDelta)
 {
-    CGameObject::LateUpdate_GameObject(timeDelta);
+	CRenderObject::LateUpdate_GameObject(timeDelta);
 
 }
 
@@ -54,24 +63,23 @@ void CWall::Render_GameObject()
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
     m_BoxCollider->Render();
-
 }
 
 void CWall::Render_Editor()
 {
-    CGameObject::Render_Editor();
+	CRenderObject::Render_Editor();
 }
 
 void CWall::OnBeginOverlap(CCollider* self, CCollider* other)
 {
-    CGameObject::OnBeginOverlap(self, other);
+	CRenderObject::OnBeginOverlap(self, other);
 
     
 }
 
 void CWall::OnStayOverlap(CCollider* self, CCollider* other)
 {
-    CGameObject::OnStayOverlap(self, other);
+	CRenderObject::OnStayOverlap(self, other);
 
     CGameObject* hitObject = other->Get_Owner();
     if (!hitObject) return;
@@ -91,7 +99,6 @@ void CWall::OnStayOverlap(CCollider* self, CCollider* other)
     else
         return;
 
-    // 2. 위치 밀어내기 (간단 버전)
     CTransform* otherTransform = dynamic_cast<CTransform*>(
         hitObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
 
@@ -110,7 +117,6 @@ void CWall::OnStayOverlap(CCollider* self, CCollider* other)
     float dx = objPos.x - wallPos.x;
     float dz = objPos.z - wallPos.z;
 
-    // 침투 깊이 (작을수록 덜 침투)
     float penX = halfX - abs(dx);
     float penZ = halfZ - abs(dz);
 
@@ -125,10 +131,8 @@ void CWall::OnStayOverlap(CCollider* self, CCollider* other)
 
 HRESULT CWall::Add_Component()
 {
-    m_TransformCom = CreateProtoComponent<CTransform>(this, COMPONENTTYPE::TRANSFORM);
-    NULL_CHECK_RETURN(m_TransformCom, E_FAIL);
-
-    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
+    if (FAILED(CRenderObject::Add_Component()))
+		return E_FAIL;
 
     m_BoxCollider = CreateProtoComponent<CBoxCollider>(this, COMPONENTTYPE::BOX_COLL);
     NULL_CHECK_RETURN(m_BoxCollider, E_FAIL);
@@ -154,6 +158,6 @@ CWall* CWall::Create(DEVICE graphicDev)
 
 void CWall::Free()
 {
-    CGameObject::Free();
+	CRenderObject::Free();
 
 }

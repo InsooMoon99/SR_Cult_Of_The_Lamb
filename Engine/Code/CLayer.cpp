@@ -44,6 +44,17 @@ HRESULT CLayer::Ready_Layer()
     return S_OK;
 }
 
+void CLayer::Initialize_Layer()
+{
+    for (auto& pair : m_Objects)
+    {
+        for (auto& obj : pair.second)
+        {
+            obj->Initialize_GameObject();
+        }
+    }
+}
+
 _int CLayer::Update_Layer(const _float& timeDelta)
 {
 	_int result = 0;

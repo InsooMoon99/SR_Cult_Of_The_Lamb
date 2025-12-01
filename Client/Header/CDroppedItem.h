@@ -18,6 +18,7 @@ class CDroppedItem : public CGameObject
 public:
     HRESULT Ready_GameObject() override;
     HRESULT Ready_GameObject(_vec3 pos);
+    void    Initialize_GameObject() override;;
     _int    Update_GameObject(const _float& timeDelta) override;
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;

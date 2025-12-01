@@ -78,5 +78,6 @@ private:
     _bool               m_ShowImGui = true;
 
     MAPTOOL_VIEW        m_MapToolView = MAPTOOL_VIEW::TERRAIN;
+
 };
 

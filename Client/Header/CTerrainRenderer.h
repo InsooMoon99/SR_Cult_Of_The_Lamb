@@ -2,6 +2,8 @@
 
 #include "CComponent.h"
 
+class CMapObjectBase;
+
 BEGIN(Engine)
 
 class CTransform;
@@ -45,7 +47,6 @@ public:
 public:
     // 셀 좌표 -> 월드 좌표로 변환
     _vec3   GetCellCenterWorld(_uint cellX, _uint cellZ) const;
-    void    SelectPlaceObject(_uint cellX, _uint cellZ);
 
     bool    PickCellMousePos(_int& outX, _int& outZ);
 
@@ -99,7 +100,6 @@ private:
     _float          m_CellSize;
 
     _bool           m_ShowTile;
-    _bool           m_ShowOutline;
 
     _int            m_TileTypeIndex;
 

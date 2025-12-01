@@ -20,7 +20,8 @@ public:
           m_Offset(0.f, 0.f, 0.f),
           m_Scale(0.f, 0.f, 0.f),
           m_UseInstigatorPos(false),
-          m_DestroyOnHit(false)
+          m_DestroyOnHit(false),
+          m_Collision_LayerType(COLLISION_LAYERTYPE::DEFAULT)
     { }
 
     // 공격 타입 ex) Box, Sphere
@@ -119,6 +120,12 @@ public:
         return *this;
     }
 
+    CAttackBuilder& CollisionLayer(COLLISION_LAYERTYPE layerType)
+    {
+        m_Collision_LayerType = layerType;
+        return *this;
+    }
+
     // 공격 후 삭제할지?
     CAttackBuilder& DestroyOnHit(_bool destroy = true)
     {
@@ -132,6 +139,12 @@ public:
 
         // 공격한놈 설정
         m_AttackObj->Set_Instigator(m_Instigator);
+
+        CCollider* collider = m_AttackObj->Get_Collider();
+        if (collider)
+        {
+            collider->Set_CollisionLayer(m_Collision_LayerType);
+        }
 
         // AttackData 설정 
         m_AttackObj->Set_AttackData(m_AttackData);
@@ -178,18 +191,20 @@ public:
     }
 
 private:
-    DEVICE       m_GraphicDev;
-    CGameObject* m_Instigator;
-    CAttackBase* m_AttackObj;
+    DEVICE              m_GraphicDev;
+    CGameObject*        m_Instigator;
+    CAttackBase*        m_AttackObj;
 
-    ATTACKDATA m_AttackData;
-    _float     m_LifeTime;
+    ATTACKDATA          m_AttackData;
+    _float              m_LifeTime;
 
-    _vec3 m_Position;
-    _vec3 m_Offset;
-    _vec3 m_Scale;
-    _bool m_UseInstigatorPos; // 공격자의 위치를 사용할지
-    _bool m_DestroyOnHit;
+    _vec3               m_Position;
+    _vec3               m_Offset;
+    _vec3               m_Scale;
+    _bool               m_UseInstigatorPos; // 공격자의 위치를 사용할지
+    _bool               m_DestroyOnHit;
+
+    COLLISION_LAYERTYPE m_Collision_LayerType;
 };
 
 END

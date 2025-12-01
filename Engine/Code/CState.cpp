@@ -36,6 +36,18 @@ HRESULT CState::Ready_StateComponent(DEVICE graphicDev)
     return S_OK;
 }
 
+void CState::Initialize_Component()
+{
+    CComponent::Initialize_Component();
+
+    // Animator를 안 들고 있으면, Owner에서 한번 탐색
+    if (m_Animator == nullptr && m_Owner != nullptr)
+    {
+        m_Animator = dynamic_cast<CAnimator*>(
+            m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+    }
+}
+
 _int CState::Update_Component(const _float& timeDelta)
 {
     _int exit = CComponent::Update_Component(timeDelta);
@@ -54,14 +66,6 @@ void CState::Update_Animation()
 {
     wstring str = this->Get_Name();
 
-    // Animator를 안 들고 있으면, Owner에서 한번 탐색
-    if (m_Animator == nullptr && m_Owner != nullptr)
-    {
-        m_Animator = dynamic_cast<CAnimator*>(
-            m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
-
-        // Animator가 없으면 그냥 넘어감 Null 체크는 아래에서 진행
-    }
 
     // 상태 혹은 방향이 바뀌었을 때만 로직 수행
     if (m_Animator != nullptr && m_TransformCom != nullptr &&

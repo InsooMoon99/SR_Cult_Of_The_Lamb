@@ -36,6 +36,9 @@ public:
     HRESULT SaveMapObject(const char* filePath);
     HRESULT LoadMapObject(const char* filePath);
 
+    HRESULT Save_ToStream(ofstream& ofs);
+    HRESULT Load_FromStream(ifstream& ifs);
+
     void    Clear_PlacedObjects();  // 로드 전 기존 오브젝트 정리
     void    Refresh_MapObjectList();
 

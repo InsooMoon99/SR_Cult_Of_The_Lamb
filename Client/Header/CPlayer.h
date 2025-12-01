@@ -1,5 +1,6 @@
 ﻿#pragma once
-#include "CGameObject.h"
+
+#include "CCharacterBase.h"
 
 class CWeaponEquip;
 class CInventory;
@@ -11,19 +12,10 @@ class CPlayerAttack;
 
 BEGIN(Engine)
 class CRigidbody;
-class CRcTex;
-class CTransform;
 class CTexture;
-class CAnimator;
-class CProtoMgr;
-class CRectCollider;
-class CBoxCollider;
-class CSphereCollider;
-class CState;
-class CCombatStat;
 END
 
-class CPlayer : public CGameObject
+class CPlayer : public CCharacterBase
 {
 private:
     explicit CPlayer(DEVICE graphicDev);
@@ -32,12 +24,13 @@ private:
 
 public:
     HRESULT Ready_GameObject() override;
+    void    Initialize_GameObject() override;
     _int    Update_GameObject(const _float& timeDelta) override;
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
 
-    void OnBeginOverlap(CCollider* self, CCollider* other) override;
-    void OnEndOverlap(CCollider* self, CCollider* other) override;
+    void    OnBeginOverlap(CCollider* self, CCollider* other) override;
+    void    OnEndOverlap(CCollider* self, CCollider* other) override;
 
     void Render_Editor() override;
 
@@ -47,21 +40,12 @@ public:
     void Test_Attack();
 
 private:
-    HRESULT Add_Component();
-    void    Animation_Setting();
-    void    Render_Setting();
-    void    Render_Reset();
+    HRESULT Add_Component()     override;
+    void    Animation_Setting() override;
 
 private:
 #pragma region Engine Components
-    Engine::CRcTex*       m_BufferCom;
-    Engine::CTransform*   m_TransformCom;
-    Engine::CTexture*     m_TextureCom;
-    Engine::CAnimator*    m_AnimatorCom;
-    Engine::CBoxCollider* m_BoxColCom;
-    Engine::CState*       m_StateCom;
-    Engine::CCombatStat*  m_CombatStatCom;
-    Engine::CRigidbody*   m_RigidbodyCom;
+    Engine::CRigidbody*  m_RigidbodyCom;
 
 #pragma endregion
 #pragma region Client Components

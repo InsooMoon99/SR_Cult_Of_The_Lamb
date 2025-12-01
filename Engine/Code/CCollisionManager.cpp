@@ -6,7 +6,9 @@
 IMPLEMENT_SINGLETON(CCollisionManager)
 
 CCollisionManager::CCollisionManager()
-{ }
+{
+    Initialize_CollisionMatrix();
+}
 
 CCollisionManager::~CCollisionManager()
 {
@@ -44,7 +46,21 @@ void CCollisionManager::Update()
             if (dst->IsCollisionActive() == false) // 충돌체 Active가 꺼져있다면 무시
                 continue;
 
+            // Owner가 같으면 무시
             if (ownerSrc == ownerDst)
+                continue;
+
+            // Insigator 체크
+            CGameObject* instigatorSrc = src->Get_Instigator();
+            if (instigatorSrc != nullptr && instigatorSrc == ownerDst)
+                continue;
+
+            CGameObject* instigatorDst = dst->Get_Instigator();
+            if (instigatorDst != nullptr && instigatorDst == ownerSrc)
+                continue;
+
+            // 레이어 확인
+            if (!Can_Collide(src->Get_CollisionLayer(), dst->Get_CollisionLayer()))
                 continue;
 
             bool isColliding = src->CheckCollision(dst);
@@ -127,6 +143,60 @@ void CCollisionManager::RemoveCollider(CCollider* collider)
     // 리스트에서 제거
     auto iter = remove(m_Colliders.begin(), m_Colliders.end(), collider);
     m_Colliders.erase(iter, m_Colliders.end());
+}
+
+_bool CCollisionManager::Can_Collide(COLLISION_LAYERTYPE layer1, COLLISION_LAYERTYPE layer2)
+{
+    _int index1 = static_cast<int>(layer1);
+    _int index2 = static_cast<int>(layer2);
+
+    return m_CollisionMatrix[index1][index2];
+}
+
+void CCollisionManager::Render_Debug(bool& flag)
+{
+    for (const auto& collider : m_Colliders)
+    {
+        collider->Set_ShowDebug(flag);
+    }
+}
+
+void CCollisionManager::Initialize_CollisionMatrix()
+{
+    // 일단 모든 레이어 충돌 가능하게 설정
+    for (_int i = 0; i < static_cast<_int>(COLLISION_LAYERTYPE::COL_LAYER_END); i++)
+    {
+        for (_int j = 0; j < static_cast<_int>(COLLISION_LAYERTYPE::COL_LAYER_END); j++)
+        {
+            m_CollisionMatrix[i][j] = true;
+        }
+    }
+
+    // 벽끼리는 충돌하지 않도록 설정
+    _int wall_Index = static_cast<_int>(COLLISION_LAYERTYPE::WALL);
+    m_CollisionMatrix[wall_Index][wall_Index] = false;
+
+    // 적끼리도 충돌 X
+    _int enemy_Index = static_cast<_int>(COLLISION_LAYERTYPE::ENEMY);
+    m_CollisionMatrix[enemy_Index][enemy_Index] = false;
+
+    // 아이템과 벽은 충돌 ㄴㄴ
+    _int item_Index = static_cast<_int>(COLLISION_LAYERTYPE::ITEM);
+    m_CollisionMatrix[wall_Index][item_Index] = false;
+    m_CollisionMatrix[item_Index][wall_Index] = false;
+
+    // 공격이랑 아이템 충돌 ㄴㄴ
+    _int attack_Index = static_cast<_int>(COLLISION_LAYERTYPE::ATTACK);
+    m_CollisionMatrix[attack_Index][item_Index] = false;
+    m_CollisionMatrix[item_Index][attack_Index] = false;
+
+    // 아이템, 적 충돌 ㄴㄴ
+    m_CollisionMatrix[item_Index][enemy_Index] = false;
+    m_CollisionMatrix[enemy_Index][item_Index] = false;
+
+    // TODO : 다른 충돌 상태 판정 추가하기
+
+
 }
 
 void CCollisionManager::Free()

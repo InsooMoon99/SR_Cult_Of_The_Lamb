@@ -3,10 +3,11 @@
 #include "CGameObject.h"
 #include "CRigidbody.h"
 #include "CState.h"
+#include "CTimerMgr.h"
 #include "CTransform.h"
 
 CCombatStat::CCombatStat(DEVICE graphicDev)
-    : CComponent(graphicDev),
+    : CComponent(graphicDev), m_OwnerRigidbody(nullptr),
       m_Attack(0),
       m_AttackSpeed(1.f),
       m_Hp(0),
@@ -19,7 +20,7 @@ CCombatStat::CCombatStat(DEVICE graphicDev)
 }
 
 CCombatStat::CCombatStat(const CCombatStat& rhs)
-    : CComponent(rhs),
+    : CComponent(rhs), m_OwnerRigidbody(nullptr),
       m_Attack(0),
       m_AttackSpeed(1.f),
       m_Hp(0),
@@ -47,15 +48,22 @@ HRESULT CCombatStat::Ready_StateComponent(DEVICE graphicDev)
     return S_OK;
 }
 
-_int CCombatStat::Update_Component(const _float& timeDelta)
+void CCombatStat::Initialize_Component()
 {
-    _int exit = CComponent::Update_Component(timeDelta);
+    CComponent::Initialize_Component();
 
-    if (!m_OwnerRigidbody && m_Owner) // 지연스폰. 지금 구조상 쩔수없나
+    if (!m_OwnerRigidbody && m_Owner)
     {
         m_OwnerRigidbody = dynamic_cast<CRigidbody*>(
             m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::RIGIDBODY));
     }
+}
+
+_int CCombatStat::Update_Component(const _float& timeDelta)
+{
+    _int exit = CComponent::Update_Component(timeDelta);
+
+   
 
     return exit;
 }
@@ -79,8 +87,8 @@ void CCombatStat::Take_Damage(const HITDATA& hitData)
     // 데미지
     Apply_Damage(hitData);
 
-    // 넉백
-    //Apply_Knockback(hitData);
+    // 넉백. 여기 왜 터지는지
+    Apply_Knockback(hitData);
 }
 
 void CCombatStat::Apply_Damage(const HITDATA& hitData)
@@ -95,10 +103,11 @@ void CCombatStat::Apply_Damage(const HITDATA& hitData)
 
 void CCombatStat::Apply_Knockback(const HITDATA& hitData)
 {
-    // 리지드 바디 활용 -> 고쳐야할듯 맞은놈도 Rigidbody가 있어야함
+    // 리지드 바디 활용
     if (hitData.knockback > 0.f && m_OwnerRigidbody)
     {
-        m_OwnerRigidbody->Add_Force(hitData.dir * hitData.knockback);
+        //m_OwnerRigidbody->Add_Force(hitData.dir * hitData.knockback);
+        m_OwnerRigidbody->Add_Force(hitData.dir * 170.f);
     }
 }
 

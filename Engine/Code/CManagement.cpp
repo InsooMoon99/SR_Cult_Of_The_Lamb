@@ -121,6 +121,10 @@ void CManagement::Commit_ChangeScene()
     m_Scene             = m_NextScene;
     m_NextScene         = nullptr;
     m_ShouldChangeScene = false;
+
+    // 로딩 끝난 후 Initialize 호출
+    if (m_Scene)
+        m_Scene->Initialize_Scene();
 }
 
 void CManagement::Free()

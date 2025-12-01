@@ -19,7 +19,7 @@ public:
     _int           Update_GameObject(const _float& timeDelta) override;
     void           LateUpdate_GameObject(const _float& timeDelta) override;
     void           Render_GameObject() override;
-    void Initialize();
+    void           Initialize();
     static CUIPlayerPage* Create(DEVICE graphicDev,CUI* onwer);
     void                  Free() override;
 
