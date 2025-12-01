@@ -15,9 +15,9 @@
 
 CBossBullet::CBossBullet(DEVICE graphicDev, CGameObject* owner, CGameObject* Target, PROJ_TYPE type)
     : CGameObject(graphicDev),
-      m_pOwner(owner),
-      m_pTarget(Target),
-      m_type(type)
+    m_pOwner(owner),
+    m_pTarget(Target),
+    m_type(type)
 {
     m_pOwner->AddRef();
     m_pTarget->AddRef();
@@ -25,10 +25,12 @@ CBossBullet::CBossBullet(DEVICE graphicDev, CGameObject* owner, CGameObject* Tar
 
 CBossBullet::CBossBullet(const CBossBullet& rhs)
     : CGameObject(rhs)
-{ }
+{
+}
 
 CBossBullet::~CBossBullet()
-{ }
+{
+}
 
 HRESULT CBossBullet::Ready_GameObject()
 {
@@ -65,7 +67,7 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
         m_StartPos = m_TransformCom->Get_Pos();
 
         // 공격 박스 생성
-        CAttackBox* ATBox = CAttackBox::Create(m_GraphicDev);
+       // CAttackBox* ATBox = CAttackBox::Create(m_GraphicDev);
 
         //if (ATBox != nullptr)
         //{
@@ -92,15 +94,19 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
         //    //CManagement::GetInstance()->Get_Scene()->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, obj, OBJTYPE::ATTACK_COL);
         //    SpawnAttackObject(ATBox); // TYPE , BOX SPHERE
         //}
+        CAttackBox* ATBox = nullptr;
+        CAttackBuilder(m_GraphicDev, m_pOwner)
+            .Box()
+            .Track(ATBox)
+            .Damage(1.f)
+            .Knockback(0.f)
+            .LifeTime(2.f)
+            .Position(m_TransformCom->Get_Pos())
+            .Scale(m_TransformCom->Get_Scale())
+            .Spawn();
 
-       CAttackBuilder(m_GraphicDev, m_pOwner)
-           .Box()
-           .Damage(1.f)
-           .Knockback(0.f)
-           .LifeTime(2.f)
-           .Position(m_TransformCom->Get_Pos())
-           .Scale(m_TransformCom->Get_Scale())
-           .Spawn();
+        m_ATKBoxTransformCom = dynamic_cast<CTransform*>(
+            ATBox->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
 
         m_flag = true;
     }
@@ -234,7 +240,8 @@ void CBossBullet::OnEndOverlap(CCollider* self, CCollider* other)
 }
 
 void CBossBullet::Animation_Setting()
-{ }
+{
+}
 
 HRESULT CBossBullet::Add_Component()
 {

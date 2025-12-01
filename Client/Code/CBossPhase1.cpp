@@ -36,6 +36,9 @@ HRESULT CBossPhase1::Ready_GameObject()
     m_StateMachine = CBossStateMachine::Create(this);
 
     m_TransformCom->Set_Scale({ 7,7,1 });
+    BaseCenter = { 20 ,m_TransformCom->Get_Scale().y * .5f, 20 };
+    m_TransformCom->Set_Pos(StartPos.x, m_TransformCom->Get_Scale().y * .5f, StartPos.z);
+
 
     m_CombatStatCom->Set_Hp(200.f);
     m_CombatStatCom->Set_MaxHp(200.f);

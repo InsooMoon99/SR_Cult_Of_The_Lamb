@@ -7,6 +7,7 @@
 #include "CAnimator.h"
 #include "CSpriteAnimation.h"
 #include "CRandomMgr.h"
+#include "CCollider.h"
 
 CBossMove::CBossMove(CBossPhase1* pOwner, CBossStateMachine* pStateMachine)
 {
@@ -53,7 +54,10 @@ _int CBossMove::Update_State(const _float& timeDelta)
     case PHASE::DOWN:
 
         if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
+        {
             m_ePhase = PHASE::WAIT;
+            dynamic_cast<CCollider*>(m_pOwner->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::BOX_COLL))->Set_CollisionActive(false);
+        }
         break;
 
     case PHASE::WAIT: //움직임
@@ -68,6 +72,9 @@ _int CBossMove::Update_State(const _float& timeDelta)
             float interval = 1.f;
             // 일단 나중에 밖으로 뺴서 체인이랑 합치기
             RandomMove(timeDelta, BaseCenter, BaseLength, interval);
+
+            dynamic_cast<CCollider*>(m_pOwner->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::BOX_COLL))->Set_CollisionActive(true);
+
 
             m_fCurStateElapsedTime = 0;
             m_ePhase = PHASE::UP;
@@ -84,6 +91,7 @@ _int CBossMove::Update_State(const _float& timeDelta)
 
     return CBossPhase1::BOSSPHASE1::BOSSMOVE;
 }
+
 void CBossMove::RandomMove(const _float& timeDelta, _vec3 BaseCenter, int BaseLenght, float interval)
 {
     _vec3 LT = { BaseCenter.x - BaseLenght * 0.5f, 0.f, BaseCenter.z + BaseLenght * 0.5f };

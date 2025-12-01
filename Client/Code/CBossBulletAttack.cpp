@@ -34,7 +34,6 @@ void CBossBulletAttack::Enter()
     //int RandPhase = CRandomMgr::GetInstance()->Get_Int_Random(0, ((int)PHASE::PHASE_END) - 1); // 페이즈 랜덤
     //m_ePhase = (PHASE)RandPhase;
 
-
 }
 
 void CBossBulletAttack::Exit()
