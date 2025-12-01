@@ -182,6 +182,8 @@
     <ClInclude Include="..\Header\CBossMove.h" />
     <ClInclude Include="..\Header\CBossPhase1.h" />
     <ClInclude Include="..\Header\CBossStateMachine.h" />
+    <ClInclude Include="..\Header\CCameraController.h" />
+    <ClInclude Include="..\Header\CCameraMovement.h" />
     <ClInclude Include="..\Header\CCharacterBase.h" />
     <ClInclude Include="..\Header\CLogo_Boss.h" />
     <ClInclude Include="..\Header\CMapObject_DungeonDeco.h" />
@@ -272,6 +274,8 @@
     <ClCompile Include="..\Code\CBossMove.cpp" />
     <ClCompile Include="..\Code\CBossPhase1.cpp" />
     <ClCompile Include="..\Code\CBossStateMachine.cpp" />
+    <ClCompile Include="..\Code\CCameraController.cpp" />
+    <ClCompile Include="..\Code\CCameraMovement.cpp" />
     <ClCompile Include="..\Code\CCharacterBase.cpp" />
     <ClCompile Include="..\Code\CDroppedItem.cpp" />
     <ClCompile Include="..\Code\CDropSystem.cpp" />

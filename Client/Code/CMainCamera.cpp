@@ -40,10 +40,10 @@ _int CMainCamera::Update_GameObject(const _float& timeDelta)
 
     switch (m_CameraCom->Get_CamMode())
     {
-    case CCameraCom::CAM_FREE:
+    case CCameraCalc::CAM_FREE:
         Key_Input(timeDelta);
         break;
-    case CCameraCom::CAM_TARGET:
+    case CCameraCalc::CAM_TARGET:
         Chase_CamTarget(timeDelta);
         break;
     default:
@@ -80,10 +80,10 @@ HRESULT CMainCamera::Set_CamTarget(CTransform* targetTransform)
     if (nullptr == m_TargetTransformCom)
     {
         //MSG_BOX("Camera target set to null. Switching to Free Mode.");
-        m_CameraCom->Set_CamMode(CCameraCom::CAM_FREE);
+        m_CameraCom->Set_CamMode(CCameraCalc::CAM_FREE);
     }
     else
-        m_CameraCom->Set_CamMode(CCameraCom::CAM_TARGET);
+        m_CameraCom->Set_CamMode(CCameraCalc::CAM_TARGET);
 
     return S_OK;
 }
@@ -97,7 +97,7 @@ HRESULT CMainCamera::Add_Component()
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
     // Camera Component
-    m_CameraCom = CreateProtoComponent<CCameraCom>(this, COMPONENTTYPE::CAMERA);
+    m_CameraCom = CreateProtoComponent<CCameraCalc>(this, COMPONENTTYPE::CAMERA);
     NULL_CHECK_RETURN(m_CameraCom, E_FAIL);
 
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::CAMERA, m_CameraCom });

@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include "CResourceMgr.h"
-#include "CSphereCollider.h"
+
 #include "CAnimator.h"
 #include "CBoxCol.h"
 #include "CBoxCollider.h"
@@ -14,10 +14,12 @@
 #include "CPlayerController.h"
 #include "CPlayerInput.h"
 #include "CPlayerMovement.h"
+#include "CProjectile.h"
 #include "CProtoMgr.h"
 #include "CRcCol.h"
 #include "CRectCollider.h"
 #include "CRigidbody.h"
+#include "CSphereCollider.h"
 #include "CState.h"
 #include "CTerrain.h"
 #include "CTerrainRenderer.h"
@@ -30,7 +32,6 @@
 #include "CWeaponEquip.h"
 #include "ItemData.h"
 #include "ItemInstance.h"
-#include "CProjectile.h"
 
 IMPLEMENT_SINGLETON(CResourceMgr)
 
@@ -82,7 +83,7 @@ HRESULT CResourceMgr::Ready_Common(DEVICE graphicDev)
 
     // Camera
     if (FAILED(protoMgr->Ready_Prototype(
-        COMPONENTTYPE::CAMERA, Engine::CCameraCom::Create(graphicDev))))
+        COMPONENTTYPE::CAMERA, Engine::CCameraCalc::Create(graphicDev))))
         return E_FAIL;
 
     // Rect Collider

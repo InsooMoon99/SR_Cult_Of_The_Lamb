@@ -1,11 +1,11 @@
-﻿#include "CCameraCom.h"
+﻿#include "CCameraCalc.h"
 
 #include "CDInputMgr.h"
 #include "CTransform.h"
 
 class CMainCamera;
 
-CCameraCom::CCameraCom()
+CCameraCalc::CCameraCalc()
     : m_CamMode(CAM_FREE),
       m_ViewType(VIEW_FPS),
       m_ProjType(PROJ_PERSPECTIVE),
@@ -17,7 +17,7 @@ CCameraCom::CCameraCom()
       m_isDirty(true)
 { }
 
-CCameraCom::CCameraCom(DEVICE graphicDev)
+CCameraCalc::CCameraCalc(DEVICE graphicDev)
     : CComponent(graphicDev),
       m_CamMode(CAM_FREE),
       m_ViewType(VIEW_FPS),
@@ -30,7 +30,7 @@ CCameraCom::CCameraCom(DEVICE graphicDev)
       m_isDirty(true)
 { }
 
-CCameraCom::CCameraCom(const CCameraCom& rhs)
+CCameraCalc::CCameraCalc(const CCameraCalc& rhs)
     : CComponent(rhs),
       m_CamMode(rhs.m_CamMode),
       m_ViewType(rhs.m_ViewType),
@@ -43,22 +43,22 @@ CCameraCom::CCameraCom(const CCameraCom& rhs)
       m_isDirty(true)
 { }
 
-CCameraCom::~CCameraCom()
+CCameraCalc::~CCameraCalc()
 { }
 
-HRESULT CCameraCom::Ready_Camera()
+HRESULT CCameraCalc::Ready_Camera()
 {
     m_Offset = { 0.f, 6.f, -10.f };
 
     return S_OK;
 }
 
-_int CCameraCom::Update_Component(const _float& timeDelta)
+_int CCameraCalc::Update_Component(const _float& timeDelta)
 {
     return 0;
 }
 
-void CCameraCom::LateUpdate_Component()
+void CCameraCalc::LateUpdate_Component()
 {
     if (m_TransformCom != nullptr)
     {
@@ -104,7 +104,7 @@ void CCameraCom::LateUpdate_Component()
     }
 }
 
-void CCameraCom::Set_CamMode(CAM_MODE camMode)
+void CCameraCalc::Set_CamMode(CAM_MODE camMode)
 {
     if (m_CamMode != camMode && camMode < CAM_END)
     {
@@ -117,13 +117,13 @@ void CCameraCom::Set_CamMode(CAM_MODE camMode)
     }
 }
 
-void CCameraCom::Set_ViewType(VIEW_TYPE viewType)
+void CCameraCalc::Set_ViewType(VIEW_TYPE viewType)
 {
     if (m_ViewType != viewType && viewType < VIEW_END)
         m_ViewType = viewType;
 }
 
-void CCameraCom::Set_ProjType(PROJ_TYPE projType)
+void CCameraCalc::Set_ProjType(PROJ_TYPE projType)
 {
     if (m_ProjType != projType && projType < PROJ_END)
     {
@@ -132,7 +132,21 @@ void CCameraCom::Set_ProjType(PROJ_TYPE projType)
     }
 }
 
-void CCameraCom::Compute_View_FPS()
+void CCameraCalc::Set_Offset_Spherical(_float distance, _float angleX, _float angleY)
+{
+    _vec3 baseOffset = _vec3(0.f, 0.f, -distance);
+
+    _matrix matRot;
+    D3DXMatrixRotationYawPitchRoll(
+        &matRot,
+        D3DXToRadian(angleY),
+        D3DXToRadian(angleX),
+        0.f);
+
+    D3DXVec3TransformCoord(&m_Offset, &baseOffset, &matRot);
+}
+
+void CCameraCalc::Compute_View_FPS()
 {
     m_Eye = m_Pos;
     m_At  = m_Pos + m_Look;
@@ -140,7 +154,7 @@ void CCameraCom::Compute_View_FPS()
     D3DXMatrixLookAtLH(&m_matView, &m_Eye, &m_At, &m_Up);
 }
 
-void CCameraCom::Compute_View_TPS()
+void CCameraCalc::Compute_View_TPS()
 {
     _matrix matRotX, matRotY;
     D3DXMatrixRotationX(&matRotX, m_TransformCom->Get_Rotation(ROT_X));
@@ -159,7 +173,7 @@ void CCameraCom::Compute_View_TPS()
     D3DXMatrixLookAtLH(&m_matView, &m_Eye, &m_At, &vWorldUp);
 }
 
-void CCameraCom::Compute_View_QUARTER()
+void CCameraCalc::Compute_View_QUARTER()
 {
     m_Eye = m_Pos + m_Offset;
     m_At  = m_Pos;
@@ -169,44 +183,44 @@ void CCameraCom::Compute_View_QUARTER()
     D3DXMatrixLookAtLH(&m_matView, &m_Eye, &m_At, &vWorldUp);
 }
 
-void CCameraCom::Compute_Proj_Perspective()
+void CCameraCalc::Compute_Proj_Perspective()
 {
     D3DXMatrixPerspectiveFovLH(&m_matProj, m_FOV, m_Aspect, m_Near, m_Far);
 }
 
-void CCameraCom::Compute_Proj_Orthographic()
+void CCameraCalc::Compute_Proj_Orthographic()
 {
     D3DVIEWPORT9 Viewport;
     m_GraphicDev->GetViewport(&Viewport);
 
     D3DXMatrixOrthoLH(
         &m_matProj,
-        static_cast<_float>(Viewport.Width),  
-        static_cast<_float>(Viewport.Height), 
+        static_cast<_float>(Viewport.Width),
+        static_cast<_float>(Viewport.Height),
         0.f,
         1.f);
 }
 
-CCameraCom* CCameraCom::Create(DEVICE graphicDev)
+CCameraCalc* CCameraCalc::Create(DEVICE graphicDev)
 {
-    auto CameraCom = new CCameraCom(graphicDev);
+    auto CameraCom = new CCameraCalc(graphicDev);
 
     if (FAILED(CameraCom->Ready_Camera()))
     {
         Safe_Release(CameraCom);
-        MSG_BOX("CCameraCom Create Failed");
+        MSG_BOX("CameraCalc Create Failed");
         return nullptr;
     }
 
     return CameraCom;
 }
 
-CComponent* CCameraCom::Clone()
+CComponent* CCameraCalc::Clone()
 {
-    return new CCameraCom(*this);
+    return new CCameraCalc(*this);
 }
 
-void CCameraCom::Free()
+void CCameraCalc::Free()
 {
     CComponent::Free();
 }

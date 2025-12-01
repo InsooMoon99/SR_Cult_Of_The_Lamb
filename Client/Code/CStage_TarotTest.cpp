@@ -139,7 +139,7 @@ HRESULT CStage_TarotTest::Ready_GameLogic_Layer(LAYERTYPE layerType)
     {
         mainCam->Set_CamTarget(playerTransform);
 
-        auto camCom = dynamic_cast<CCameraCom*>(
+        auto camCom = dynamic_cast<CCameraCalc*>(
             mainCam->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAMERA));
 
         if (camCom)

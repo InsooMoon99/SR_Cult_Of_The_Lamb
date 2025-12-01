@@ -189,7 +189,7 @@ xcopy /Y /I "$(SolutionDir)Engine\Header\*.*" "$(SolutionDir)Reference\Header\"<
     <ClInclude Include="..\Header\CBoxCol.h" />
     <ClInclude Include="..\Header\CBoxTex.h" />
     <ClInclude Include="..\Header\CBoxCollider.h" />
-    <ClInclude Include="..\header\CCameraCom.h" />
+    <ClInclude Include="..\header\CCameraCalc.h" />
     <ClInclude Include="..\Header\CCombatStat.h" />
     <ClInclude Include="..\header\CDInputMgr.h" />
     <ClInclude Include="..\Header\CEditContext.h" />
@@ -249,7 +249,7 @@ xcopy /Y /I "$(SolutionDir)Engine\Header\*.*" "$(SolutionDir)Reference\Header\"<
     <ClCompile Include="..\Code\CBoxCol.cpp" />
     <ClCompile Include="..\Code\CBoxTex.cpp" />
     <ClCompile Include="..\Code\CBoxCollider.cpp" />
-    <ClCompile Include="..\code\CCameraCom.cpp" />
+    <ClCompile Include="..\code\CCameraCalc.cpp" />
     <ClCompile Include="..\Code\CCombatStat.cpp" />
     <ClCompile Include="..\code\CDInputMgr.cpp" />
     <ClCompile Include="..\Code\CEditContext.cpp" />

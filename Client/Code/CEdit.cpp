@@ -1,22 +1,22 @@
 ﻿#include "pch.h"
 #include "CEdit.h"
 
+#include "CBoxCollider.h"
+#include "CDInputMgr.h"
 #include "CLayer.h"
 #include "CMainCamera.h"
+#include "CMainEditorMgr.h"
+#include "CMainMenu.h"
 #include "CMonster.h"
 #include "CPersistentObjectHelper.h"
 #include "CPlayer.h"
+#include "CSceneMgr.h"
+#include "CSphereCollider.h"
 #include "CState.h"
 #include "CTerrain.h"
 #include "CTransform.h"
-#include "CDInputMgr.h"
-#include "CMainEditorMgr.h"
-#include "CMainMenu.h"
-#include "CSceneMgr.h"
 #include "CWall.h"
-#include "CSphereCollider.h"
 #include "CWallRenderer.h"
-#include "CBoxCollider.h"
 
 CEdit::CEdit(DEVICE graphicDev)
     : Engine::CScene(graphicDev)
@@ -137,7 +137,7 @@ HRESULT CEdit::Ready_GameLogic_Layer(LAYERTYPE layerType)
     {
         mainCam->Set_CamTarget(playerTransform);
 
-        auto camCom = dynamic_cast<CCameraCom*>(
+        auto camCom = dynamic_cast<CCameraCalc*>(
             mainCam->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAMERA));
 
         if (camCom)

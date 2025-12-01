@@ -10,7 +10,7 @@ class CWallRenderer;
 BEGIN(Engine)
 class CEditContext;
 class CGameObject;
-class CCameraCom;
+class CCameraCalc;
 END
 
 class CMainEditorMgr : public CBase
@@ -38,7 +38,7 @@ public:
     void Update_MainEditor(const _float& timeDelta);
     void Render_MainEditor();
 
-    void Set_MainCamera(CCameraCom* cam) { m_MainCamera = cam; }
+    void Set_MainCamera(CCameraCalc* cam) { m_MainCamera = cam; }
 
     _bool IsPlaying() const { return m_IsPlaying; }
 
@@ -72,7 +72,7 @@ protected:
 private:
     DEVICE              m_GraphicDev = nullptr;
     CEditContext*       m_Context = nullptr;
-    CCameraCom*         m_MainCamera = nullptr;
+    CCameraCalc*         m_MainCamera = nullptr;
 
     _bool               m_IsPlaying = true;
     _bool               m_ShowImGui = true;

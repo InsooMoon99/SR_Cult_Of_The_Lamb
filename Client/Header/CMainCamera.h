@@ -20,24 +20,28 @@ public:
     void    Render_GameObject() override;
     void    Render_Editor() override;
 
-public: // Setter
+public:  // --- Setter ---
     HRESULT Set_CamTarget(CTransform* targetTransform); // 카메라가 추적할 타겟 세팅
 
-public: // Getter
+public:  // --- Getter ---
 
-public: // TODO : 카메라 이동, 카메라 쉐이킹 등 기능 함수
+public:  // --- 주요 기능 ---
+    // TODO : 카메라 이동, 카메라 쉐이킹 등 기능 함수
 
-private:
+private: // --- 내부 로직 ---
     HRESULT Add_Component();
 
     void Key_Input(const _float& timeDelta);
     void Chase_CamTarget(const _float& timeDelta);
 
-private:
-    Engine::CCameraCom* m_CameraCom;
+private: // --- 소유 컴포넌트 ---
+    Engine::CCameraCalc* m_CameraCom;
     Engine::CTransform* m_TransformCom;
 
-    Engine::CTransform* m_TargetTransformCom;   // 따라가는 타겟의 Transform에 접근
+private: // --- 외부 컴포넌트 캐싱 ---
+    Engine::CTransform* m_TargetTransformCom;   // 카메라 타겟의 Transform
+
+    _vec3 m_Offset;        // 3인칭 카메라의 타겟 기준 오프셋 (거리)
 
 public:
     static CMainCamera* Create(DEVICE graphicDev);

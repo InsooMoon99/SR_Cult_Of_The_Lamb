@@ -7,16 +7,16 @@
 #include "CComponent.h"
 #include "CEnumHelper.h"
 #include "CInventory.h"
+#include "CPlayerAttack.h"
 #include "CPlayerController.h"
+#include "CPlayerInput.h"
+#include "CPlayerMovement.h"
 #include "CRigidbody.h"
 #include "CState.h"
 #include "CTerrainRenderer.h"
 #include "CTransform.h"
-#include "CWeaponEquip.h"
 #include "CWallRenderer.h"
-#include "CPlayerInput.h"
-#include "CPlayerMovement.h"
-#include "CPlayerAttack.h"
+#include "CWeaponEquip.h"
 
 USING(Engine)
 
@@ -208,7 +208,7 @@ static void CombatStat_Inspector(CCombatStat* stat)
 
 }
 
-static void Menu_CameraInspector(CCameraCom* camera)
+static void Menu_CameraInspector(CCameraCalc* camera)
 {
     if (camera == nullptr)
         return;
@@ -221,22 +221,22 @@ static void Menu_CameraInspector(CCameraCom* camera)
         ImGui::SetNextItemWidth(80.f);
         if (ImGui::Combo("##CamMode", &camMode, camModeItems, IM_ARRAYSIZE(camModeItems)))
         {
-            camera->Set_CamMode(static_cast<CCameraCom::CAM_MODE>(camMode));
+            camera->Set_CamMode(static_cast<CCameraCalc::CAM_MODE>(camMode));
         }
 
         if (CDInputMgr::GetInstance()->KeyDown(DIK_F8))
         {
-            camMode = (camera->Get_CamMode() == CCameraCom::CAM_MODE::CAM_TARGET) ?
-                CCameraCom::CAM_MODE::CAM_FREE :
-                CCameraCom::CAM_MODE::CAM_TARGET;
+            camMode = (camera->Get_CamMode() == CCameraCalc::CAM_MODE::CAM_TARGET) ?
+                CCameraCalc::CAM_MODE::CAM_FREE :
+                CCameraCalc::CAM_MODE::CAM_TARGET;
 
-            camera->Set_CamMode(static_cast<CCameraCom::CAM_MODE>(camMode));
+            camera->Set_CamMode(static_cast<CCameraCalc::CAM_MODE>(camMode));
         }
     }
     ImGui::PopID();
 }
 
-static void Camera_Inspector(CCameraCom* camera)
+static void Camera_Inspector(CCameraCalc* camera)
 {
     if (camera == nullptr)
         return;
@@ -272,7 +272,7 @@ static void Camera_Inspector(CCameraCom* camera)
 
         if (ImGui::Combo("##Combo Camera Mode", &camMode, camModeItems, IM_ARRAYSIZE(camModeItems)))
         {
-            camera->Set_CamMode(static_cast<CCameraCom::CAM_MODE>(camMode));
+            camera->Set_CamMode(static_cast<CCameraCalc::CAM_MODE>(camMode));
         }
 
         ImGui::Columns(1);
@@ -291,7 +291,7 @@ static void Camera_Inspector(CCameraCom* camera)
 
         if (ImGui::Combo("##Combo View Type", &viewType, viewTypeItems, IM_ARRAYSIZE(viewTypeItems)))
         {
-            camera->Set_ViewType(static_cast<CCameraCom::VIEW_TYPE>(viewType));
+            camera->Set_ViewType(static_cast<CCameraCalc::VIEW_TYPE>(viewType));
         }
 
         ImGui::Columns(1);
@@ -310,7 +310,7 @@ static void Camera_Inspector(CCameraCom* camera)
 
         if (ImGui::Combo("##Combo Projection Type", &projType, projTypeItems, IM_ARRAYSIZE(projTypeItems)))
         {
-            camera->Set_ProjType(static_cast<CCameraCom::PROJ_TYPE>(projType));
+            camera->Set_ProjType(static_cast<CCameraCalc::PROJ_TYPE>(projType));
         }
 
         ImGui::Columns(1);

@@ -1,18 +1,18 @@
 ﻿#include "pch.h"
 #include "CTerrain.h"
 
+#include "CBoxCollider.h"
 #include "CCreateHelper.h"
 #include "CDInputMgr.h"
 #include "CEnumHelper.h"
+#include "CLayer.h"
 #include "CRenderer.h"
+#include "CTerrainRenderer.h"
 #include "CTerrainTex.h"
 #include "CTexture.h"
 #include "CTransform.h"
-#include "CTerrainRenderer.h"
 #include "CWall.h"
 #include "CWallRenderer.h"
-#include "CBoxCollider.h"
-#include "../../Engine/Header/CLayer.h"
 
 CTerrain::CTerrain(DEVICE GraphicDev)
     : CRenderObject(GraphicDev), m_BufferCom(nullptr), m_TextureCom284(nullptr),
@@ -41,7 +41,8 @@ HRESULT CTerrain::Ready_GameObject()
     if (FAILED(CRenderObject::Ready_GameObject()))
         return E_FAIL;
 
-    m_TransformCom->Set_Pos(_vec3(0.f, .001f, 0.f));
+    //!! 석호 : 카메라 테스트를 위해 0, 0.001, 0에서 바꿔놓음 !!
+    m_TransformCom->Set_Pos(_vec3(0.f, 0.f, 0.f));
 
     return S_OK;
 }

@@ -124,8 +124,8 @@ void CPlayer::Render_Editor()
     ImGui::Text("=== Player ===");
 
     //
-// 상태 디버그 정보
-//
+    // 상태 디버그 정보
+    //
     ImGui::Separator();
     //
     // 애니메이션 디버그 정보
