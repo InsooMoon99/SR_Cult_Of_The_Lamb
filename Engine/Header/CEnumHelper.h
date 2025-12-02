@@ -218,6 +218,8 @@ static const char* ToString(OBJTYPE type)
     case OBJTYPE::BOSS1:            return "Boss_Phase1";
     case OBJTYPE::WALL:             return "Wall";
 
+    case OBJTYPE::NPC:              return "NPC";
+    case OBJTYPE::LOGIC:            return "Logic";
     default:                        return "UnknownObjectType";
     }
 }

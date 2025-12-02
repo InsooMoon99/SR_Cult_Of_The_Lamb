@@ -32,7 +32,7 @@ HRESULT CLogo_Boss::Ready_Scene()
     if (FAILED(Ready_UI_Layer(LAYERTYPE::UI)))
         return E_FAIL;
 
-    m_Loading = CLoading::Create(m_GraphicDev, CLoading::LOADING_BOSS);
+    m_Loading = CLoading::Create(m_GraphicDev, CLoading::LOADING_BOSS1);
 
     if (nullptr == m_Loading)
         return E_FAIL;

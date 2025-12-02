@@ -16,7 +16,7 @@ CMapEditorPlacer::CMapEditorPlacer(DEVICE graphicDev)
     m_SelectedType(MAPOBJTYPE::MAPOBJ_END),
     m_Placing(false), m_EraseMode(false), m_GrassIndex(0), m_RubbleIndex(0), m_DecoIndex(0), m_DungeonDecoIndex(0),
     m_ETCIndex(0),
-    m_PreviewScale(1.f),
+    m_PreviewScaleX(1.f), m_PreviewScaleY(1.f),
     m_PreviewRotation(0.f, 0.f, 0.f), m_PreviewYOffset(0)
 {
     if (m_GraphicDev)
@@ -29,7 +29,7 @@ CMapEditorPlacer::CMapEditorPlacer(const CMapEditorPlacer& rhs)
     m_SelectedType(MAPOBJTYPE::MAPOBJ_END),
     m_Placing(false), m_EraseMode(false), m_GrassIndex(0), m_RubbleIndex(0), m_DecoIndex(0), m_DungeonDecoIndex(0),
     m_ETCIndex(0),
-    m_PreviewScale(1.f),
+    m_PreviewScaleX(1.f), m_PreviewScaleY(1.f),
     m_PreviewRotation(0.f, 0.f, 0.f), m_PreviewYOffset(0)
 {
     if (m_GraphicDev)
@@ -111,13 +111,19 @@ void CMapEditorPlacer::Update_MapPlacer(const _float& timeDelta)
             {
                 // 양수면 확대, 음수면 축소
                 _float scaleChange = (wheelDelta > 0 ? 0.1f : -0.1f);
-                m_PreviewScale += scaleChange;
-                m_PreviewScale = max(0.1f, min(5.f, m_PreviewScale));
+                m_PreviewScaleX += scaleChange;
+                m_PreviewScaleY += scaleChange;
+                m_PreviewScaleX = max(0.1f, min(5.f, m_PreviewScaleX));
+                m_PreviewScaleY = max(0.1f, min(5.f, m_PreviewScaleY));
 
-                transform->Set_Scale(m_PreviewScale, m_PreviewScale, m_PreviewScale);
+                Update_PreviewScale();
             }
         }
     }
+
+    ImGuiIO& io = ImGui::GetIO();
+    if (io.WantCaptureMouse)
+        return;
 
     if (input->MouseDown(DIM_LB))
     {
@@ -140,7 +146,7 @@ void CMapEditorPlacer::Update_MapPlacer(const _float& timeDelta)
 
                     if (newTransform)
                     {
-                        newTransform->Set_Scale(m_PreviewScale, m_PreviewScale, m_PreviewScale);
+                        newTransform->Set_Scale(m_PreviewScaleX, m_PreviewScaleY, m_PreviewScaleX);
                         newTransform->Set_Rotation(m_PreviewRotation);
                     }
 
@@ -208,7 +214,8 @@ void CMapEditorPlacer::Start_Place(MAPOBJTYPE type)
     Cancel_Place();
 
     m_SelectedType = type;
-    m_PreviewScale = 1.f;
+    m_PreviewScaleX = 1.f;
+    m_PreviewScaleY = 1.f;
     m_PreviewRotation = _vec3(0.f, 0.f, 0.f);
     m_PreviewYOffset = 0.f;
 
@@ -222,7 +229,7 @@ void CMapEditorPlacer::Start_Place(MAPOBJTYPE type)
         CTransform* transform = dynamic_cast<CTransform*>(m_PreviewObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
         if (transform)
         {
-            transform->Set_Scale(m_PreviewScale, m_PreviewScale, m_PreviewScale);
+            transform->Set_Scale(m_PreviewScaleX, m_PreviewScaleY, m_PreviewScaleX);
             transform->Set_Rotation(m_PreviewRotation);
         }
 
@@ -269,6 +276,28 @@ _int CMapEditorPlacer::Get_CurTextureIndex()
     case MAPOBJTYPE::ETC:             return m_ETCIndex;
     default:                          return 0;
     }
+}
+
+void CMapEditorPlacer::Update_PreviewScale()
+{
+    if (m_PreviewObj)
+    {
+        CTransform* transform = dynamic_cast<CTransform*>(
+            m_PreviewObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+        if (transform)
+            transform->Set_Scale(m_PreviewScaleX, m_PreviewScaleY, m_PreviewScaleX);
+    }
+}
+
+void CMapEditorPlacer::Set_PreviewScaleX(_float scaleX)
+{
+    m_PreviewScaleX = scaleX; Update_PreviewScale();
+}
+
+void CMapEditorPlacer::Set_PreviewScaleY(_float scaleY)
+{
+    m_PreviewScaleY = scaleY; Update_PreviewScale();
 }
 
 CGameObject* CMapEditorPlacer::PickObjectAtMouse()

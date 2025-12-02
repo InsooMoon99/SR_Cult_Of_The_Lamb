@@ -65,7 +65,21 @@ void CMapObjectMgr::Render_MapObjectWindow()
 
     ImGui::Text("Preview YOffset : %.2f", m_MapPlacer->Get_PreviewYOffset());
 
-    ImGui::Text("Preview Scale : %.2f", m_MapPlacer->Get_PreviewScale());
+    //ImGui::Text("Preview Scale : %.2f", m_MapPlacer->Get_PreviewScaleX());
+    if (m_MapPlacer->IsPlacing())
+    {
+        ImGui::Text("[ Preview Scale ]");
+
+        float scaleX = m_MapPlacer->Get_PreviewScaleX();
+        float scaleY = m_MapPlacer->Get_PreviewScaleY();
+
+        if (ImGui::SliderFloat("Scale X", &scaleX, 0.1f, 5.f))
+            m_MapPlacer->Set_PreviewScaleX(scaleX);
+
+        if (ImGui::SliderFloat("Scale Y", &scaleY, 0.1f, 5.f))
+            m_MapPlacer->Set_PreviewScaleY(scaleY);
+    }
+
     ImGui::Text("[ Preview Rotation ]");
     ImGui::Text(u8"  X (Pitch): %.2f°", D3DXToDegree(m_MapPlacer->Get_PreviewRotation().x));
     ImGui::SameLine();
@@ -208,7 +222,7 @@ void CMapObjectMgr::Render_RubbleWindow()
         if (rubbleTexture)
         {
 
-            const _int TOTAL_RUBBLE = 6;
+            const _int TOTAL_RUBBLE = 46;
             const _int COLS = 4;
             const ImVec2 buttonSize(50.f, 50.f);
 
@@ -232,11 +246,10 @@ void CMapObjectMgr::Render_RubbleWindow()
                     {
                         if (m_MapPlacer)
                         {
-                            m_SelectGrassIndex = i;
+                            m_SelectRubbleIndex = i;
                             m_MapPlacer->Set_RubbleIndex(i);
                             m_MapPlacer->Start_Place(MAPOBJTYPE::RUBBLE);
                         }
-
                     }
 
                     if (isSelected)

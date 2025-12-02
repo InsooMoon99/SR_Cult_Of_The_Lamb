@@ -11,12 +11,12 @@
 #include "CRigidbody.h"
 
 CHumanMonster::CHumanMonster(DEVICE graphicDev)
-    : CMonsterBase(graphicDev)
+    : CMonsterBase(graphicDev), m_RigidbodyCom(nullptr)
 {
 }
 
 CHumanMonster::CHumanMonster(const CHumanMonster& rhs)
-    : CMonsterBase(rhs)
+    : CMonsterBase(rhs), m_RigidbodyCom(nullptr)
 {
 }
 
