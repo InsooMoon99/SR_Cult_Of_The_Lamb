@@ -9,14 +9,14 @@
 
 CMainCamera::CMainCamera(DEVICE graphicDev)
     : CGameObject(graphicDev),
-      m_CameraCom(nullptr),
+      m_CamCalc(nullptr),
       m_TransformCom(nullptr),
       m_TargetTransformCom(nullptr)
 { }
 
 CMainCamera::CMainCamera(const CMainCamera& rhs)
     : CGameObject(rhs),
-      m_CameraCom(nullptr),
+      m_CamCalc(nullptr),
       m_TransformCom(nullptr),
       m_TargetTransformCom(nullptr)
 { }
@@ -38,7 +38,7 @@ _int CMainCamera::Update_GameObject(const _float& timeDelta)
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_PRIORITY, this);
 
-    switch (m_CameraCom->Get_CamMode())
+    switch (m_CamCalc->Get_CamMode())
     {
     case CCameraCalc::CAM_FREE:
         Key_Input(timeDelta);
@@ -80,10 +80,10 @@ HRESULT CMainCamera::Set_CamTarget(CTransform* targetTransform)
     if (nullptr == m_TargetTransformCom)
     {
         //MSG_BOX("Camera target set to null. Switching to Free Mode.");
-        m_CameraCom->Set_CamMode(CCameraCalc::CAM_FREE);
+        m_CamCalc->Set_CamMode(CCameraCalc::CAM_FREE);
     }
     else
-        m_CameraCom->Set_CamMode(CCameraCalc::CAM_TARGET);
+        m_CamCalc->Set_CamMode(CCameraCalc::CAM_TARGET);
 
     return S_OK;
 }
@@ -97,10 +97,10 @@ HRESULT CMainCamera::Add_Component()
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
     // Camera Component
-    m_CameraCom = CreateProtoComponent<CCameraCalc>(this, COMPONENTTYPE::CAMERA);
-    NULL_CHECK_RETURN(m_CameraCom, E_FAIL);
+    m_CamCalc = CreateProtoComponent<CCameraCalc>(this, COMPONENTTYPE::CAMERA);
+    NULL_CHECK_RETURN(m_CamCalc, E_FAIL);
 
-    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::CAMERA, m_CameraCom });
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::CAMERA, m_CamCalc });
 
     return S_OK;
 }

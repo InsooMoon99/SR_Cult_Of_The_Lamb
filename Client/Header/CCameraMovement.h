@@ -21,6 +21,7 @@ public:  // --- Getters for Inspector --- : 필요할 경우에 사용
 public:  // --- Setter ---
 
 public:  // --- 기능 메서드 ---
+    // TODO : 카메라 이동, 카메라 쉐이킹 등 기능 함수
 
 private: // --- 내부 로직 ---
 

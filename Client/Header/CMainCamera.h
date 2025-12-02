@@ -2,7 +2,10 @@
 #include "CCameraCom.h"
 #include "CGameObject.h"
 
+class CCameraController;
+class CCameraMovement;
 BEGIN(Engine)
+class CCameraCalc;
 class CTransform;
 END
 
@@ -26,7 +29,6 @@ public:  // --- Setter ---
 public:  // --- Getter ---
 
 public:  // --- 주요 기능 ---
-    // TODO : 카메라 이동, 카메라 쉐이킹 등 기능 함수
 
 private: // --- 내부 로직 ---
     HRESULT Add_Component();
@@ -35,8 +37,11 @@ private: // --- 내부 로직 ---
     void Chase_CamTarget(const _float& timeDelta);
 
 private: // --- 소유 컴포넌트 ---
-    Engine::CCameraCalc* m_CameraCom;
-    Engine::CTransform* m_TransformCom;
+    Engine::CTransform*  m_TransformCom;    // 카메라 자체 Transform
+    Engine::CCameraCalc* m_CamCalc;         // 카메라 행렬 연산
+
+    CCameraMovement*   m_CamMovement;       // 카메라 이동
+    CCameraController* m_CamController;     // 카메라 컨트롤러
 
 private: // --- 외부 컴포넌트 캐싱 ---
     Engine::CTransform* m_TargetTransformCom;   // 카메라 타겟의 Transform

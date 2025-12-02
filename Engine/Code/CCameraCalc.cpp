@@ -6,40 +6,33 @@
 class CMainCamera;
 
 CCameraCalc::CCameraCalc()
-    : m_CamMode(CAM_FREE),
-      m_ViewType(VIEW_FPS),
-      m_ProjType(PROJ_PERSPECTIVE),
-      m_Offset(0.f, 4.f, -6.f),
-      m_FOV(D3DXToRadian(60.f)),
+    : m_FOV(D3DXToRadian(60.f)),
       m_Aspect(static_cast<_float>(WINCX) / WINCY),
       m_Near(0.1f),
       m_Far(1000.f),
+
       m_isDirty(true)
 { }
 
 CCameraCalc::CCameraCalc(DEVICE graphicDev)
     : CComponent(graphicDev),
-      m_CamMode(CAM_FREE),
-      m_ViewType(VIEW_FPS),
-      m_ProjType(PROJ_PERSPECTIVE),
-      m_Offset(0.f, 4.f, -6.f),
+
       m_FOV(D3DXToRadian(60.f)),
       m_Aspect(static_cast<_float>(WINCX) / WINCY),
       m_Near(0.1f),
       m_Far(1000.f),
+
       m_isDirty(true)
 { }
 
 CCameraCalc::CCameraCalc(const CCameraCalc& rhs)
     : CComponent(rhs),
-      m_CamMode(rhs.m_CamMode),
-      m_ViewType(rhs.m_ViewType),
-      m_ProjType(rhs.m_ProjType),
-      m_Offset(rhs.m_Offset),
+
       m_FOV(rhs.m_FOV),
       m_Aspect(rhs.m_Aspect),
       m_Near(rhs.m_Near),
       m_Far(rhs.m_Far),
+
       m_isDirty(true)
 { }
 
@@ -48,8 +41,6 @@ CCameraCalc::~CCameraCalc()
 
 HRESULT CCameraCalc::Ready_Camera()
 {
-    m_Offset = { 0.f, 6.f, -10.f };
-
     return S_OK;
 }
 
@@ -60,12 +51,11 @@ _int CCameraCalc::Update_Component(const _float& timeDelta)
 
 void CCameraCalc::LateUpdate_Component()
 {
-    if (m_TransformCom != nullptr)
-    {
-        m_Pos  = m_TransformCom->Get_Pos();
-        m_Look = m_TransformCom->Get_Look();
-        m_Up   = m_TransformCom->Get_Up();
-    }
+    NULL_CHECK(m_TransformCom);
+
+    _vec3 pos  = m_TransformCom->Get_Pos();
+    _vec3 Up   = m_TransformCom->Get_Up();
+    _vec3 look = m_TransformCom->Get_Look();
 
     switch (m_ViewType)
     {

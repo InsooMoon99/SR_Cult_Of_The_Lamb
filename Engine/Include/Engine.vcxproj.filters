@@ -339,6 +339,9 @@
     <ClInclude Include="..\Header\CSoundMgr.h">
       <Filter>00. Manager\11. SoundMgr</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\Engine_Math.h">
+      <Filter>99. Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <!-- ===================== -->
   <!--       SOURCES         -->

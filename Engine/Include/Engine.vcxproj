@@ -237,6 +237,7 @@ xcopy /Y /I "$(SolutionDir)Engine\Header\*.*" "$(SolutionDir)Reference\Header\"<
     <ClInclude Include="..\Header\Engine_Function.h" />
     <ClInclude Include="..\Header\Engine_Global.h" />
     <ClInclude Include="..\Header\Engine_Macro.h" />
+    <ClInclude Include="..\Header\Engine_Math.h" />
     <ClInclude Include="..\Header\Engine_Struct.h" />
     <ClInclude Include="..\Header\Engine_Typedef.h" />
   </ItemGroup>

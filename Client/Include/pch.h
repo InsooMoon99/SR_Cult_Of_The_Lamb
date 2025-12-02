@@ -36,6 +36,7 @@
 #include "Engine_Global.h"
 #include "Engine_Struct.h"
 #include "Engine_Function.h"
+#include "Engine_Math.h"
 
 #ifdef _DEBUG
 
