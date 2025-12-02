@@ -13,6 +13,7 @@
 #include "CMonsterState.h"
 
 
+
 CBossPhase1::CBossPhase1(DEVICE graphicDev)
     : CMonsterBase(graphicDev)
     , m_StateMachine(nullptr)
@@ -75,7 +76,6 @@ _int CBossPhase1::Update_GameObject(const _float& timeDelta)
 void CBossPhase1::LateUpdate_GameObject(const _float& timeDelta)
 {
     CMonsterBase::LateUpdate_GameObject(timeDelta);
-
     m_StateMachine->LateUpdate_StateMachine(timeDelta);
 }
 

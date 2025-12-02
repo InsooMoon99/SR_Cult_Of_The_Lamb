@@ -13,6 +13,9 @@
 #include "CProjectile.h"
 #include "CBossBulletAttack.h"
 
+
+int CBossBullet::imsdfjlkdsf = 0;
+
 CBossBullet::CBossBullet(DEVICE graphicDev, CGameObject* owner, CGameObject* Target, PROJ_TYPE type)
     : CGameObject(graphicDev),
     m_pOwner(owner),
@@ -20,6 +23,7 @@ CBossBullet::CBossBullet(DEVICE graphicDev, CGameObject* owner, CGameObject* Tar
     m_type(type)
 {
     m_pOwner->AddRef();
+
     m_pTarget->AddRef();
 }
 
@@ -298,5 +302,6 @@ void CBossBullet::Free()
     Safe_Release(m_pOwner);
     Safe_Release(m_pTarget);
 
+    
     CGameObject::Free();
 }

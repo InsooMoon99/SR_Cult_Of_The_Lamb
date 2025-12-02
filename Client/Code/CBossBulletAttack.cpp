@@ -30,13 +30,14 @@ void CBossBulletAttack::Enter()
     CMonsterState::Enter();
     m_pOwnerAnimatorCom->Play_Animation(L"BossAttack", ANIMSTATE::ONCE);
 
+    tmpBullet.clear();
 
     // 순차재생 
     m_BPatterCount %= (int)PHASE::PHASE_END;
     m_ePhase = (PHASE)m_BPatterCount;
     m_BPatterCount++;
 
-    //m_ePhase = PHASE::ROTCROSS_SPREAD; // 이걸 어케 해야하지??
+    //m_ePhase = PHASE::ROTCROSS_SPREAD; 
 
     //int RandPhase = CRandomMgr::GetInstance()->Get_Int_Random(0, ((int)PHASE::PHASE_END) - 1); // 페이즈 랜덤
     //m_ePhase = (PHASE)RandPhase;
@@ -48,9 +49,16 @@ void CBossBulletAttack::Exit()
     CMonsterState::Exit();
     m_StartFlag = false;
 
-    if (!tmpBullet.empty())
-        tmpBullet.clear();
+    /*   if (!tmpBullet.empty())
+        tmpBullet.clear();*/
 
+    for (auto& bullet : tmpBullet)
+    {
+        if (!bullet) continue;
+        if (!bullet->Is_PendingDestroy())
+            bullet->Mark_As_PendingKill(); 
+    }
+    tmpBullet.clear();
 }
 
 HRESULT CBossBulletAttack::Ready_State()
@@ -240,8 +248,11 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
 
 bool CBossBulletAttack::CircleBullet(const _float& timeDelta, int num, int radius, float interval)
 {
-  //  if (m_circleCountTime > 1.f && m_CircleCount == 3)
-  //  {
+    if (m_Count == 0 && !tmpBullet.empty())
+    {
+        tmpBullet.clear();
+    }
+
     if (m_fElapsedTime >= interval && m_Count <= num)
     {
         // 불랫 만들기
@@ -480,4 +491,5 @@ void CBossBulletAttack::Free()
 {
     if (!tmpBullet.empty())
         tmpBullet.clear();
+
 }

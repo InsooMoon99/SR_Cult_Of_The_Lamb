@@ -49,7 +49,7 @@ public:
     void Start_Shoot() { m_StartShoot = true; }
     void Set_TargetDir(_vec3 dir) { m_TargetDir = dir; }
 
-
+    static int imsdfjlkdsf; 
 
 protected:
 
