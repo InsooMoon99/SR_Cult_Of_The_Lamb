@@ -50,13 +50,13 @@ HRESULT CPlayer::Ready_GameObject()
 	if (FAILED(CCharacterBase::Ready_GameObject()))
 		return E_FAIL;
 
-    m_CombatStatCom->Set_Hp(6.f);
-    m_CombatStatCom->Set_MaxHp(6.f);
-    m_CombatStatCom->Set_Attack(10.f);
+    m_CombatStatCom->Set_Hp(100.f);
+    m_CombatStatCom->Set_MaxHp(100.f);
+    m_CombatStatCom->Set_Attack(50.f);
     m_CombatStatCom->Set_Mp(5.f);
     m_CombatStatCom->Set_Speed(5.f);
 
-    m_TransformCom->Set_Pos(_vec3(10.f, 1.f, 10.f));
+    m_TransformCom->Set_Pos(_vec3(20.f, 1.f, 15.f));
     m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
 
     //!! Rigidbody에서 중력만 사용 안함

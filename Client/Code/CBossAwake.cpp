@@ -52,6 +52,7 @@ _int CBossAwake::Update_State(const _float& timeDelta)
     switch (m_ePhase)
     {
     case PHASE::AWAKE:
+        m_pOwnerAnimatorCom->Play_Animation(L"BossAwake", ANIMSTATE::ONCE);
 
         if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
             m_ePhase = PHASE::MOVE;
@@ -59,19 +60,19 @@ _int CBossAwake::Update_State(const _float& timeDelta)
 
     case PHASE::MOVE://움직임 + idle
 
-            _vec3 tmpdir = (m_pOwner->Get_Center() - m_pOwnerTransformCom->Get_Pos());
         
         m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::LOOP);
         if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
         {
      
-            D3DXVec3Normalize(&dir, &(tmpdir));
-            tmpAniDone = true;
         }
+            _vec3 tmpdir = (m_pOwner->Get_Center() - m_pOwnerTransformCom->Get_Pos());
+            D3DXVec3Normalize(&dir, &(tmpdir));
+         //   tmpAniDone = true;
 
         float distance = D3DXVec3Length(&tmpdir);
 
-        if (tmpAniDone == true)
+       // if (tmpAniDone == true)
         {
             m_pOwnerTransformCom->Set_Pos(m_pOwnerTransformCom->Get_Pos() + dir * m_Speed * timeDelta);
 

@@ -13,6 +13,9 @@
 #include "CProjectile.h"
 #include "CBossBulletAttack.h"
 
+
+int CBossBullet::imsdfjlkdsf = 0;
+
 CBossBullet::CBossBullet(DEVICE graphicDev, CGameObject* owner, CGameObject* Target, PROJ_TYPE type)
     : CGameObject(graphicDev),
     m_pOwner(owner),
@@ -20,6 +23,7 @@ CBossBullet::CBossBullet(DEVICE graphicDev, CGameObject* owner, CGameObject* Tar
     m_type(type)
 {
     m_pOwner->AddRef();
+
     m_pTarget->AddRef();
 }
 
@@ -30,6 +34,7 @@ CBossBullet::CBossBullet(const CBossBullet& rhs)
 
 CBossBullet::~CBossBullet()
 {
+    
 }
 
 HRESULT CBossBullet::Ready_GameObject()
@@ -39,7 +44,7 @@ HRESULT CBossBullet::Ready_GameObject()
 
     SetTexAspectInit(m_TextureCom, m_TransformCom, 0);
 
-    SetAspectScale(m_TransformCom, { .2f, .2f, .2f });
+    SetAspectScale(m_TransformCom, { .1f, .1f, .1f });
 
     const auto ownerTransform =
         dynamic_cast<CTransform*>(m_pOwner->Get_Component(
@@ -50,6 +55,9 @@ HRESULT CBossBullet::Ready_GameObject()
     m_TransformCom->Set_Pos({ ownerTransform->Get_Pos().x, /*-ownerTransform->Get_Scale().y * .5f*/0.f, ownerTransform->Get_Pos().z });
 
     m_TransformCom->Set_Rotation({ D3DXToRadian(90), 0, 0 });
+
+   // if (m_BoxColCom)
+   //     m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::BOSSPROJECTILE);
 
     return S_OK;
 }
@@ -66,47 +74,33 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
         // 생성시의 위치 값 저장
         m_StartPos = m_TransformCom->Get_Pos();
 
-        // 공격 박스 생성
-       // CAttackBox* ATBox = CAttackBox::Create(m_GraphicDev);
 
-        //if (ATBox != nullptr)
-        //{
-        //    ATBox->Set_Instigator(m_pOwner); // 공격의 주체를 넣음 - 난 보스를 넣어야 하는듯? 
-        //    ATBox->Set_LifeTime(1.f); // 근데 어짜피 사슬이 사라지면 사라짐 
-        //
-        //
-        //    // 2. 구조체 데이터 세팅
-        //    HITDATA hit{};
-        //    hit.damage = 1;
-        //    hit.knockback = 0.f;
-        //    ATBox->Set_HitDesc(hit);
-        //
-        //    // 3. 공격 박스 위치 설정, 방향값 추가 가능
-        //    _vec3 pos = m_TransformCom->Get_Pos();
-        //
-        //    m_ATKBoxTransformCom = dynamic_cast<CTransform*>(
-        //        ATBox->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-        // 
-        //    m_ATKBoxTransformCom->Set_Pos(pos);
-        //    m_ATKBoxTransformCom->Set_Scale(m_TransformCom->Get_Scale());
-        //
-        //    // 4. 레이어에 추가, 헬퍼 함수 SpawnAttackObject 사용
-        //    //CManagement::GetInstance()->Get_Scene()->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, obj, OBJTYPE::ATTACK_COL);
-        //    SpawnAttackObject(ATBox); // TYPE , BOX SPHERE
-        //}
-        CAttackBox* ATBox = nullptr;
-        CAttackBuilder(m_GraphicDev, m_pOwner)
-            .Box()
+        CAttackBase* ATBox = nullptr;
+        CAttackBuilder(m_GraphicDev, this)
+            .Sphere()
             .Track(ATBox)
             .Damage(1.f)
             .Knockback(0.f)
-            .LifeTime(2.f)
-            .Position(m_TransformCom->Get_Pos())
-            .Scale(m_TransformCom->Get_Scale())
+            .Scale({0.2f, 0.2f, 0.2f})
+            .InstigatorPos()
+            .Offset(_vec3(0.f, 0.f, 0.f))
+            .LifeTime(10.f) // 이건 혹시 충돌 안했을경우를 대비 해서
+            .DestroyOnHit(true)
+            .CollisionLayer(COLLISION_LAYERTYPE::BOSSPROJECTILE)
             .Spawn();
+
+
 
         m_ATKBoxTransformCom = dynamic_cast<CTransform*>(
             ATBox->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+        //dynamic_cast<CAttackBase*>(ATBox->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CIRCLE_COLL));
+        //ATBox
+        //ATBox->Set_OnDestroyCallback([this,m_ATKBoxTransformCom]() {
+        //    if (m_ATKBoxTransformCom) != nullptr)
+        //    m_ATKBoxTransformCom = nullptr;
+        //    this->Mark_As_PendingKill();});
+
+            ATBox->Set_OnDestroyCallback([bullet = this]() {bullet->Mark_As_PendingKill();});
 
         m_flag = true;
     }
@@ -136,12 +130,18 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
         }
     }
 
+
+
+
     return exit;
 }
 
 void CBossBullet::LateUpdate_GameObject(const _float& timeDelta)
 {
     CGameObject::LateUpdate_GameObject(timeDelta);
+
+
+
 }
 
 void CBossBullet::Render_GameObject()
@@ -231,7 +231,11 @@ void CBossBullet::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CGameObject::OnBeginOverlap(self, other);
 
+    //ATBox->Mark_As_PendingKill();
+
     //Mark_As_PendingKill();
+
+
 }
 
 void CBossBullet::OnEndOverlap(CCollider* self, CCollider* other)
@@ -270,8 +274,14 @@ HRESULT CBossBullet::Add_Component()
     NULL_CHECK_RETURN(m_ProjectileCom, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::PROJECTILE, m_ProjectileCom });
 
+   // // BoxCollider
+   // m_BoxColCom = CreateProtoComponent<CBoxCollider>(this, COMPONENTTYPE::BOX_COLL);
+   // NULL_CHECK_RETURN(m_BoxColCom, E_FAIL);
+   // m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::BOX_COLL, m_BoxColCom });
+
     return S_OK;
 }
+
 
 CBossBullet* CBossBullet::Create(DEVICE graphicDev, CGameObject* owner, CGameObject* Target, PROJ_TYPE type)
 {
@@ -292,5 +302,6 @@ void CBossBullet::Free()
     Safe_Release(m_pOwner);
     Safe_Release(m_pTarget);
 
+    
     CGameObject::Free();
 }

@@ -97,4 +97,5 @@ CBossGroggy* CBossGroggy::Create(CBossPhase1* pOwner, CBossStateMachine* pStateM
 
 void CBossGroggy::Free()
 {
+
 }
