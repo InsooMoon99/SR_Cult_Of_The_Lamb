@@ -41,6 +41,7 @@ public:
     HRESULT Add_Component();
 
     void SetPendingKill() { Mark_As_PendingKill(); }
+
 public:
 
     static CBossBullet* Create(DEVICE graphicDev, CGameObject* owner, CGameObject* Target, PROJ_TYPE type);

@@ -103,7 +103,7 @@ _int CBossChain::Update_GameObject(const _float& timeDelta)
                 .InstigatorPos()
                 .Offset(_vec3(0.f, 0.f, 0.f))
                 .LifeTime(.3f)
-                .DestroyOnHit(true)
+                //.DestroyOnHit(true)
                 .CollisionLayer(COLLISION_LAYERTYPE::BOSSPROJECTILE)
                 .Scale({ m_TransformCom->Get_Scale().x, m_TransformCom->Get_Scale().y*.5f , m_TransformCom->Get_Scale().z *.5f})
                 .Spawn();

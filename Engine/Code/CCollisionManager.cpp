@@ -203,6 +203,9 @@ void CCollisionManager::Initialize_CollisionMatrix()
     m_CollisionMatrix[projectile_Index][enemy_Index] = false;
     m_CollisionMatrix[enemy_Index][projectile_Index] = false;
 
+    // 플레이어와 몬스터 몸 충돌x 혹시 모르니까 마지막에 추가 테스트를 위해 일단 끔
+    //_int player_Index = static_cast<_int>(COLLISION_LAYERTYPE::PLAYER);
+    //m_CollisionMatrix[enemy_Index][player_Index] = false;
 }
 
 void CCollisionManager::Free()

@@ -256,9 +256,13 @@ bool CBossChainAttack::PlayerLineUpdate(const _float& timeDelta, _int  MaxCount,
 
     if (m_LineFlag == false)
     {
-        _vec3 tmp = m_pPlayerTransformCom->Get_Pos() - m_pOwnerTransformCom->Get_Pos();
-        D3DXVec3Normalize(&m_PlayerDir, &tmp);
+        // 이렇게 하면 y 값이 들어가서 플레이어의 위치에 따라 달라짐 (x,y,z) 다 합쳐서 1 이니까
+      //  _vec3 tmp = m_pPlayerTransformCom->Get_Pos() - m_pOwnerTransformCom->Get_Pos();
+        _vec3 tmpPlayer = { m_pPlayerTransformCom->Get_Pos().x, 0, m_pPlayerTransformCom->Get_Pos().z };
+        _vec3 tmpOwner = {m_pOwnerTransformCom->Get_Pos().x, 0, m_pOwnerTransformCom->Get_Pos().z };
 
+        _vec3 tmp = tmpPlayer - tmpOwner;
+        D3DXVec3Normalize(&m_PlayerDir, &tmp);
         m_LineFlag = true;
     }
 
@@ -266,14 +270,16 @@ bool CBossChainAttack::PlayerLineUpdate(const _float& timeDelta, _int  MaxCount,
     {
 
         CWarningChain* WarningChain = CWarningChain::Create(m_pOwner->Get_GraphicDev(), m_pOwner);
+
         const auto ChainTransform =
             dynamic_cast<CTransform*>(WarningChain->Get_Component(
                 ID_DYNAMIC,
                 COMPONENTTYPE::TRANSFORM));
-        _vec3 CurPos = ChainTransform->Get_Pos();
-        _vec3 AddPos = { m_PlayerDir.x * (m_Count * m_Offset), 0.f, m_PlayerDir.z * (m_Count * m_Offset) };
 
-        _vec3 TR = CurPos + AddPos;
+        _vec3 OwnerPos = m_pOwnerTransformCom->Get_Pos(); // 오너 기준
+        _vec3 AddPos = { (m_PlayerDir.x * m_Count) * m_Offset, 0.f, (m_PlayerDir.z * m_Count) * m_Offset };
+
+        _vec3 TR = OwnerPos + AddPos;
         ChainTransform->Set_Pos({ TR.x, m_GroundY, TR.z });
      
         SpawnAttackObject(WarningChain);

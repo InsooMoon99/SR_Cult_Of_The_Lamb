@@ -31,6 +31,8 @@ private:
     CBossStateMachine* m_pStateMachine;
     CCombatStat* m_pOwnerStateCom;
 
+
+    static int ChangeAPattern;
 public:
     static CBossIdle* Create(CBossPhase1* pOwner, CBossStateMachine* pStateMachine);
 

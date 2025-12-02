@@ -9,6 +9,8 @@
 #include "CCombatStat.h"
 #include "CRandomMgr.h"
 
+int CBossIdle::ChangeAPattern = 0;
+
 CBossIdle::CBossIdle(CBossPhase1* pOwner, CBossStateMachine* pStateMachine)
 {
     m_pOwner = pOwner;
@@ -63,37 +65,35 @@ _int CBossIdle::Update_State(const _float& timeDelta)
         return CBossPhase1::BOSSPHASE1::BULLETATTACK;
     }
     
-    ////어택->이동
-    //if (m_pStateMachine->Get_PrevStateKey() == (int)CBossPhase1::BOSSPHASE1::BULLETATTACK ||
-    //    m_pStateMachine->Get_PrevStateKey() == (int)CBossPhase1::BOSSPHASE1::CHAINATTACK)
-    //{
-    //    return CBossPhase1::BOSSPHASE1::BOSSMOVE;
-    //}
-    //
-    //if (m_pStateMachine->Get_PrevStateKey() == (int)CBossPhase1::BOSSPHASE1::BOSSMOVE)
-    //{
-    //    if ((CRandomMgr::GetInstance()->Get_Int_Random(0, 1)) == 1)
-    //        return CBossPhase1::BOSSPHASE1::BULLETATTACK;
-    //    else
-    //        return CBossPhase1::BOSSPHASE1::CHAINATTACK;
-    //}
-    //
-    //// 여기서는 애니는 이미 Idle LOOP 중이라고 가정
-    //// (Enter에서 재생)
-    //
-    //    // 이동 ->공격
-    //if (m_pStateMachine->Get_PrevStateKey() == (int)CBossPhase1::BOSSPHASE1::BOSSMOVE)
-    //{
-    //    // 전이 이동이 였으면 idle 한번 돌고 공격으로 넘어감
-    //    if (m_pOwnerAnimatorCom->Get_CurFrame() - 1 == m_pOwnerAnimatorCom->Get_MaxFrame())
-    //    {
-    //        if ((CRandomMgr::GetInstance()->Get_Int_Random(0, 1)) == 1)
-    //            return CBossPhase1::BOSSPHASE1::BULLETATTACK;
-    //        else
-    //            return CBossPhase1::BOSSPHASE1::CHAINATTACK;
-    //
-    //    }
-    //}
+    //어택->이동
+    if (m_pStateMachine->Get_PrevStateKey() == (int)CBossPhase1::BOSSPHASE1::BULLETATTACK ||
+        m_pStateMachine->Get_PrevStateKey() == (int)CBossPhase1::BOSSPHASE1::CHAINATTACK)
+    {
+        return CBossPhase1::BOSSPHASE1::BOSSMOVE;
+    }
+    
+
+    // 여기서는 애니는 이미 Idle LOOP 중이라고 가정
+    // (Enter에서 재생)
+    
+        // 이동 ->공격
+    if (m_pStateMachine->Get_PrevStateKey() == (int)CBossPhase1::BOSSPHASE1::BOSSMOVE)
+    {
+        // 전이 이동이 였으면 idle 한번 돌고 공격으로 넘어감
+        if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame()-1)
+        {
+            ChangeAPattern %= 2;
+            int tmp = ChangeAPattern;
+            ChangeAPattern++;
+           
+            //if ((CRandomMgr::GetInstance()->Get_Int_Random(0, 1)) == 1) // 랜덤
+            if(tmp ==1)
+                return CBossPhase1::BOSSPHASE1::BULLETATTACK;
+            else
+                return CBossPhase1::BOSSPHASE1::CHAINATTACK;
+    
+        }
+    }
 
     return CBossPhase1::BOSSPHASE1::BOSSIDLE;
 

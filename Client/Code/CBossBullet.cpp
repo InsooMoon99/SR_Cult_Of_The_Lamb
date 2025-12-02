@@ -71,14 +71,13 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
         m_StartPos = m_TransformCom->Get_Pos();
 
 
-
         CAttackBase* ATBox = nullptr;
         CAttackBuilder(m_GraphicDev, this)
             .Sphere()
             .Track(ATBox)
             .Damage(1.f)
             .Knockback(0.f)
-            .Scale({0.1f, 0.1f, 0.1f})
+            .Scale({0.2f, 0.2f, 0.2f})
             .InstigatorPos()
             .Offset(_vec3(0.f, 0.f, 0.f))
             .LifeTime(10.f) // 이건 혹시 충돌 안했을경우를 대비 해서
@@ -92,7 +91,12 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
             ATBox->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
         //dynamic_cast<CAttackBase*>(ATBox->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CIRCLE_COLL));
         //ATBox
-        ATBox->Set_OnDestroyCallback([this]() {this->Mark_As_PendingKill();});
+        //ATBox->Set_OnDestroyCallback([this,m_ATKBoxTransformCom]() {
+        //    if (m_ATKBoxTransformCom) != nullptr)
+        //    m_ATKBoxTransformCom = nullptr;
+        //    this->Mark_As_PendingKill();});
+
+            ATBox->Set_OnDestroyCallback([bullet = this]() {bullet->Mark_As_PendingKill();});
 
         m_flag = true;
     }
@@ -273,6 +277,7 @@ HRESULT CBossBullet::Add_Component()
 
     return S_OK;
 }
+
 
 CBossBullet* CBossBullet::Create(DEVICE graphicDev, CGameObject* owner, CGameObject* Target, PROJ_TYPE type)
 {

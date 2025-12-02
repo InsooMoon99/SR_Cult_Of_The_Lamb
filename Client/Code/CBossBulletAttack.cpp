@@ -32,7 +32,7 @@ void CBossBulletAttack::Enter()
 
 
     // 순차재생 
-    m_BPatterCount %= (int)PHASE::PHASE_END ;
+    m_BPatterCount %= (int)PHASE::PHASE_END;
     m_ePhase = (PHASE)m_BPatterCount;
     m_BPatterCount++;
 
@@ -61,12 +61,12 @@ HRESULT CBossBulletAttack::Ready_State()
     m_pOwnerAnimatorCom = static_cast<CAnimator*>(m_pOwner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
 
     m_offset = 1;
-    m_CircleRadius = 5;
+    m_CircleRadius = 4;
     m_Interval = 0.1;
     m_CrossSpreadInterval = 1;
     m_SpreadInterval = 0.4;
     m_GroundY = 0.002f;
-    m_CircleSpeed = 10;
+    m_CircleSpeed = 20;
     return S_OK;
 }
 
@@ -95,59 +95,77 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
     case PHASE::CIRCLE:
 
         m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::ONCE);
-
-        m_fElapsedTime += timeDelta;
-        if (CircleBullet(timeDelta, 9, m_CircleRadius, m_Interval, m_CircleSpeed) == true)
+       
+        m_circleCountTime += timeDelta; // 횟수 인터벌 용
+       
+        m_fElapsedTime += timeDelta; //CircleBullet 에서 쓸 타이머
+       
+        // 지우는 게 안에 있어야 발사후 이동 가능
+        if (m_CircleEndFlag == true)
         {
-            if (m_TargetFlag == false)
+            m_fCurStateElapsedTime += timeDelta;
+       
+            if (m_fCurStateElapsedTime >= 2.0f)
             {
+       
+                tmpBullet.clear();
+       
+                m_Count = 0;
+                m_CircleEndFlag = 0;
+                m_TargetFlag = false;
+                m_CircleEndFlag = false;
+                m_fCurStateElapsedTime = 0;
+                m_fElapsedTime = 0;
+                return CBossPhase1::BOSSPHASE1::BOSSIDLE;
+       
+            }
+        }
+            //여긴 매프레임
+            if (m_CircleEndFlag != true &&CircleBullet(timeDelta, 10, m_CircleRadius, m_Interval) == true)
+            {
+                //한번만 실행 플레그
+                //m_Shoot = true;
                 _vec3 tmpdir;
                 _vec3 tmp = m_pPlayerTransformCom->Get_Pos() - m_pOwnerTransformCom->Get_Pos();
                 D3DXVec3Normalize(&tmpdir, &tmp);
-
-
-
-                for (auto& it : tmpBullet)
+                
+                //for (auto& it : tmpBullet)
+                //{
+                    //}
+                for (auto& bullet : tmpBullet)
                 {
-                    // it->Set_TargetDir(tmpdir);
+                    if (!bullet) continue;              // null 체크
+                    if (bullet->Is_PendingDestroy()) continue;
+                
+                    
                     BulletDesc d;
                     d.Direction = { tmpdir.x, 0.f, tmpdir.z };
-                    d.Speed = 10;
+                    d.Speed = m_CircleSpeed;
                     d.moveType = PROJ_TYPE::LINEAR;
                     d.ProjectileOwner = m_pOwner;
-
-
-                    CProjectile* projectileCom = dynamic_cast<CProjectile*>(it->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::PROJECTILE));
+                
+                
+                    CProjectile* projectileCom = dynamic_cast<CProjectile*>(bullet->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::PROJECTILE));
                     projectileCom->SetMoveDesc(d);
-
-                    it->Start_Shoot();
+                
+                    bullet->Start_Shoot(); // 살아있는 총알만 발사
+                    ///it->Start_Shoot();
                 }
-                m_TargetFlag = true;
+               //}
+                //다 쏘고 난뒤에 클리어
+       
+       
+                /* m_TargetFlag = true;*/
+                m_CircleCount++;
+                if (m_CircleCount == 2)
+                    m_CircleEndFlag = true;
+                
+       
             }
-        }
-        m_fCurStateElapsedTime += timeDelta;
-
-        if (m_fCurStateElapsedTime >= 2.0f)
-        {
-            // 나가기
-            //for (auto& it : tmpBullet)
-            //{
-            //    //일단 테스트
-            //    it->SetPendingKill();
-            //}
-            tmpBullet.clear();
-
-            m_Count = 0;
-            m_TargetFlag = false;
-            m_fCurStateElapsedTime = 0;
-            m_fElapsedTime = 0;
-            return CBossPhase1::BOSSPHASE1::BOSSIDLE;
-
-        }
+               // if (tmpBullet.size() != 0)
+               //     tmpBullet.clear();
+       
         break;
-
-
-
 
     case PHASE::ROTCROSS_SPREAD: //움직임
 
@@ -163,7 +181,6 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
             }
 
             SpreadBullet(timeDelta, 10, m_CrossSpreadInterval, 10);
-
 
             m_fCurStateElapsedTime += timeDelta;
             if (m_fCurStateElapsedTime >= 8.0f)
@@ -200,11 +217,11 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
 
         if (m_fCurStateElapsedTime >= 5.0f)
         {
-           // for (auto& it : tmpBullet)
-           // {
-           //     //일단 테스트
-           //     it->SetPendingKill();
-           // }
+            // for (auto& it : tmpBullet)
+            // {
+            //     //일단 테스트
+            //     it->SetPendingKill();
+            // }
             tmpBullet.clear();
 
             m_Count = 0;
@@ -221,14 +238,16 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
     return CBossPhase1::BOSSPHASE1::BULLETATTACK;
 }
 
-bool CBossBulletAttack::CircleBullet(const _float& timeDelta, int num, int radius, float interval, float speed)
+bool CBossBulletAttack::CircleBullet(const _float& timeDelta, int num, int radius, float interval)
 {
-
+  //  if (m_circleCountTime > 1.f && m_CircleCount == 3)
+  //  {
     if (m_fElapsedTime >= interval && m_Count <= num)
     {
+        // 불랫 만들기
         CBossBullet* BossBullet = CBossBullet::Create(m_pOwner->Get_GraphicDev(), m_pOwner, m_pPlayer, PROJ_TYPE::LINEAR);
 
-
+        // 불렛 초기 위치 설정
         CTransform* BulletTransform =
             dynamic_cast<CTransform*>(BossBullet->Get_Component(
                 ID_DYNAMIC,
@@ -236,40 +255,33 @@ bool CBossBulletAttack::CircleBullet(const _float& timeDelta, int num, int radiu
 
         _vec3 ownerPos = m_pOwnerTransformCom->Get_Pos();
 
-        float rad = D3DXToRadian(360.f / (num));
+        float angle = 360.f / (num); // 갯수 나누기 360 각도 구함
 
-        float addRad = rad * m_Count;
+        float addangle = angle * m_Count; // 몇번재 인지 정함 
 
-        _vec3 circle = { cos(addRad) * radius, 0, sin(addRad) * radius };
+        _vec3 circle = { cos(D3DXToRadian(addangle)) * radius, 0, sin(D3DXToRadian(addangle)) * radius }; // 반지름 적용
         _vec3 TR = ownerPos + circle;
         BulletTransform->Set_Pos({ TR.x, m_GroundY,TR.z });
 
+        //TODO:: 
 
-
-        BulletDesc d;
-        d.Direction = circle;
-        d.Speed = speed;
-        d.moveType = PROJ_TYPE::LINEAR;
-        d.ProjectileOwner = m_pOwner;
-
-        CProjectile* BulletProjectile =
-            dynamic_cast<CProjectile*>(BossBullet->Get_Component(
-                ID_STATIC,
-                COMPONENTTYPE::PROJECTILE));
-
-        BulletProjectile->SetMoveDesc(d);
-
+        // 임시 백터에 넣기 (나중에 한번에 쏘게 하기 위해)
         tmpBullet.push_back(BossBullet);
 
+        // 레이어 관리로 넘기기
+        SpawnAttackObject(BossBullet);
 
         m_Count++;
         m_fElapsedTime = 0;
 
+        
     }
 
-    if (m_Count > num)
+    if (m_Count > num )
     {
         m_fElapsedTime = 0;
+        m_Count = 0;
+        //m_circleCountTime = 0;
         return true;
     }
 
@@ -315,7 +327,7 @@ bool CBossBulletAttack::CrossBullet(const _float& timeDelta, int num, int offset
 
             BulletDesc d;
             d.Radius = distance;
-            d.OrbitCenter = { OwnerPos.x ,m_GroundY, OwnerPos.x };
+            d.OrbitCenter = { OwnerPos.x ,m_GroundY, OwnerPos.z };
             d.StartAngle = 0 + (i * 90);
             d.Speed = 100;
             d.moveType = PROJ_TYPE::ORBIT;
@@ -407,6 +419,42 @@ bool CBossBulletAttack::SpreadBullet(const _float& timeDelta, int num, float int
 
 void CBossBulletAttack::LateUpdate_State(const _float& timeDelta)
 {
+    //CMonsterState::LateUpdate_State(timeDelta);
+    //if (m_Shoot)
+    //{
+
+    //    //한번만 실행 플레그
+
+    //    _vec3 tmpdir;
+    //    _vec3 tmp = m_pPlayerTransformCom->Get_Pos() - m_pOwnerTransformCom->Get_Pos();
+    //    D3DXVec3Normalize(&tmpdir, &tmp);
+
+    //    //for (auto& it : tmpBullet)
+    //    //{
+    //        //}
+    //    for (auto& bullet : tmpBullet)
+    //    {
+    //        if (!bullet) continue;              // null 체크
+    //        if (bullet->Is_PendingDestroy()) continue;
+
+
+      
+    //        // it->Set_TargetDir(tmpdir);
+    //        BulletDesc d;
+    //        d.Direction = { tmpdir.x, 0.f, tmpdir.z };
+    //        d.Speed = m_CircleSpeed;
+    //        d.moveType = PROJ_TYPE::LINEAR;
+    //        d.ProjectileOwner = m_pOwner;
+
+
+    //        CProjectile* projectileCom = dynamic_cast<CProjectile*>(bullet->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::PROJECTILE));
+    //        projectileCom->SetMoveDesc(d);
+
+    //        bullet->Start_Shoot(); // 살아있는 총알만 발사
+    //        ///it->Start_Shoot();
+    //    }
+    //    m_Shoot = false;
+    //}
 }
 
 void CBossBulletAttack::Render_State()

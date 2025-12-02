@@ -16,6 +16,7 @@ protected:
 public:
     virtual HRESULT Ready_StateMachine();
     _int    Update_StateMachine(const _float& timeDelta);
+    void    LateUpdate_StateMachine(const _float& timeDelta);
     virtual void Change_State(_uint changeStateKey);
     _int GetCurStateNum();
 
