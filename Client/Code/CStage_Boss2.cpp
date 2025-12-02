@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "CStage_Boss2.h"
 #include "CBossPhase1.h"
+#include "CBossPhase2.h"
 #include "CLayer.h"
 #include "CMainCamera.h"
 #include "CPersistentObjectHelper.h"
@@ -139,6 +140,14 @@ HRESULT CStage_Boss2::Ready_GameLogic_Layer(LAYERTYPE layerType)
     chunSikTrans->Set_Pos(_vec3(31.f, 3.1f, 30.f));
 
     layer->Add_GameObject(OBJTYPE::NPC, gameObject);
+
+    // 보스 소환
+    //gameObject = CBossPhase2::Create(m_GraphicDev);
+    //NULL_CHECK_RETURN(gameObject, E_FAIL);
+    //
+    //gameObject->Get_Transform()->Set_Pos(35.f, 3.f, 30.f);
+    //
+    //layer->Add_GameObject(OBJTYPE::BOSS2, gameObject);
 
     m_Layers.insert({ layerType, layer });
 

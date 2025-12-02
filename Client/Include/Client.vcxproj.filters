@@ -450,6 +450,9 @@
     <ClInclude Include="..\Header\Client_Struct.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CBossPhase2.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -700,6 +703,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CBossController.cpp">
       <Filter>03. GameObject\04. Boss\02. Boss2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBossPhase2.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
