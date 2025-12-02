@@ -415,12 +415,12 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
         return E_FAIL;
 
     // Boss Phase 2
-    //CTexture* bossPhase2 = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
-    //NULL_CHECK_RETURN(bossPhase2, E_FAIL);
-    //
-    //if (FAILED(bossPhase2->Add_Texture(L"Boss_Idle", TEX_NORMAL,
-    //    L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Boss_Idle%d..png", 58)))
-    //    return E_FAIL;
+    CTexture* bossPhase2 = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(bossPhase2, E_FAIL);
+    
+    if (FAILED(bossPhase2->Add_Texture(L"Boss_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW-Boss-Idle/TOWW_Boss_Idle%d.png", 58)))
+        return E_FAIL;
     
     return S_OK;
 }

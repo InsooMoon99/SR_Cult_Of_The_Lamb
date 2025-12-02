@@ -142,12 +142,12 @@ HRESULT CStage_Boss2::Ready_GameLogic_Layer(LAYERTYPE layerType)
     layer->Add_GameObject(OBJTYPE::NPC, gameObject);
 
     // 보스 소환
-    //gameObject = CBossPhase2::Create(m_GraphicDev);
-    //NULL_CHECK_RETURN(gameObject, E_FAIL);
-    //
-    //gameObject->Get_Transform()->Set_Pos(35.f, 3.f, 30.f);
-    //
-    //layer->Add_GameObject(OBJTYPE::BOSS2, gameObject);
+    gameObject = CBossPhase2::Create(m_GraphicDev);
+    NULL_CHECK_RETURN(gameObject, E_FAIL);
+    
+    gameObject->Get_Transform()->Set_Pos(35.f, 3.f, 30.f);
+    
+    layer->Add_GameObject(OBJTYPE::BOSS2, gameObject);
 
     m_Layers.insert({ layerType, layer });
 
@@ -164,13 +164,6 @@ HRESULT CStage_Boss2::Ready_UI_Layer(LAYERTYPE layerType)
     Engine::CGameObject* pGameObject = nullptr;
 
     m_Layers.insert({ layerType, layer });
-
-    return S_OK;
-}
-
-HRESULT CStage_Boss2::Ready_Prototype()
-{
-    // Move Loading Scene
 
     return S_OK;
 }
