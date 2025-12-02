@@ -5,7 +5,7 @@ class CLoading : public CBase
 {
 public:
     // 로딩 대상 종류 식별용 ID
-    enum LOADINGID { LOADING_STAGE, LOADING_BOSS, LOADING_END };
+    enum LOADINGID { LOADING_STAGE, LOADING_BOSS1, LOADING_BOSS2, LOADING_END };
 
 private:
     explicit CLoading(DEVICE pGraphicDev);
@@ -21,6 +21,7 @@ public:
     HRESULT Ready_Loading(LOADINGID eID);
     _uint   Loading_ForState();
     _uint   Loading_ForBoss();  // 보스 전용 로딩
+    _uint   Loading_ForBoss2();  // 보스 전용 로딩
 
 public:
     static unsigned int __stdcall Thread_Main(void* pArg);

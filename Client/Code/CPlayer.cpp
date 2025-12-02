@@ -101,7 +101,6 @@ void CPlayer::OnBeginOverlap(CCollider* self, CCollider* other)
 {
 	CCharacterBase::OnBeginOverlap(self, other);
 
-    //cout << "Player Hit" << endl;
 }
 
 void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)
@@ -180,7 +179,7 @@ HRESULT CPlayer::Add_Component()
 void CPlayer::Animation_Setting()
 {
 #pragma region ------   IDLE    ------
-    m_AnimatorCom->Create_Animation(L"PlayerIdle", 150, 0.02f);
+    m_AnimatorCom->Create_Animation(L"PlayerIdle", 150, 0.02f, _vec2(0.75f, 1.f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"PlayerIdle", ANIMSTATE::LOOP);
 #pragma endregion
@@ -222,7 +221,7 @@ void CPlayer::Animation_Setting()
                                     31,
                                     0.02f,
                                     _vec2(2.2f, 2.2f),
-                                    _vec2(0.f, 0.f));
+                                    _vec2(0.f, 0.18f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SWORD_COMBO1,
                              L"PlayerSwordCombo1",
@@ -232,7 +231,7 @@ void CPlayer::Animation_Setting()
                                     38,
                                     0.02f,
                                     _vec2(2.2f, 2.2f),
-                                    _vec2(0.f, 0.f));
+                                    _vec2(0.f, 0.24f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SWORD_COMBO2,
                              L"PlayerSwordCombo2",
@@ -242,7 +241,7 @@ void CPlayer::Animation_Setting()
                                     38,
                                     0.02f,
                                     _vec2(2.2f, 2.2f),
-                                    _vec2(0.f, 0.f));
+                                    _vec2(0.f, 0.49f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SWORD_COMBO3,
                              L"PlayerSwordCombo3",

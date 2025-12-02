@@ -173,7 +173,7 @@ void CUITarotCard::Render_GameObject()
 {
     CUI::Render_GameObject();
 
-    Render_Editor();
+    //Render_Editor();
 
     if (!m_RenderOff)
     {

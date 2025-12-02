@@ -14,6 +14,7 @@ private:
 public:
     HRESULT Ready_Resource(DEVICE graphicDev);
     HRESULT Ready_BossResource(DEVICE graphicDev);
+    HRESULT Ready_BossResource2(DEVICE graphicDev);
 
 private:
     HRESULT Ready_Buffer(DEVICE graphicDev);

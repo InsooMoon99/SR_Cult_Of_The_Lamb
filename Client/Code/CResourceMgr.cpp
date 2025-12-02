@@ -31,6 +31,7 @@
 #include "ItemData.h"
 #include "ItemInstance.h"
 #include "CProjectile.h"
+#include "CBossController.h"
 
 IMPLEMENT_SINGLETON(CResourceMgr)
 
@@ -61,6 +62,13 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
 HRESULT CResourceMgr::Ready_BossResource(DEVICE graphicDev)
 {
     if (FAILED(Ready_BossP1(graphicDev))) return E_FAIL;
+    //if (FAILED(Ready_BossP2(graphicDev))) return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CResourceMgr::Ready_BossResource2(DEVICE graphicDev)
+{
     if (FAILED(Ready_BossP2(graphicDev))) return E_FAIL;
 
     return S_OK;
@@ -390,6 +398,30 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
 {
     auto protoMgr = CProtoMgr::GetInstance();
 
+    // Boss Controller
+    //if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::BOSS2_CONTROLLER,
+    //    CBossController::Create(graphicDev))))
+    //    return E_FAIL;
+
+    // Boss Slave
+    CTexture* slaveTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(slaveTex, E_FAIL);
+
+    if(FAILED(slaveTex->Add_Texture(L"Boss_Slave_Appear", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Slave/ChunSik/Follower-finab-loss-appear%d.png", 42)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_SLAVE_TEST, slaveTex)))
+        return E_FAIL;
+
+    // Boss Phase 2
+    //CTexture* bossPhase2 = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    //NULL_CHECK_RETURN(bossPhase2, E_FAIL);
+    //
+    //if (FAILED(bossPhase2->Add_Texture(L"Boss_Idle", TEX_NORMAL,
+    //    L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Boss_Idle%d..png", 58)))
+    //    return E_FAIL;
+    
     return S_OK;
 }
 
@@ -603,7 +635,7 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     // Rubble
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_RUBBLE, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/MapObject/Rubble/Rubble%d.png", 6))))
+            L"../Bin/Resource/Texture/MapObject/Rubble/Rubble%d.png", 46))))
         return E_FAIL;
 
     // Deco
