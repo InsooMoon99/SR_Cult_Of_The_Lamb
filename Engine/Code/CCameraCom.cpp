@@ -48,7 +48,7 @@ CCameraCom::~CCameraCom()
 
 HRESULT CCameraCom::Ready_Camera()
 {
-    m_Offset = { 0.f, 6.f, -10.f };
+    m_Offset = { 0.f, 9.f, -10.f };
 
     return S_OK;
 }

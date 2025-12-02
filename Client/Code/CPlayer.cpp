@@ -180,7 +180,7 @@ HRESULT CPlayer::Add_Component()
 void CPlayer::Animation_Setting()
 {
 #pragma region ------   IDLE    ------
-    m_AnimatorCom->Create_Animation(L"PlayerIdle", 150, 0.02f);
+    m_AnimatorCom->Create_Animation(L"PlayerIdle", 150, 0.02f, _vec2(0.75f, 1.f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"PlayerIdle", ANIMSTATE::LOOP);
 #pragma endregion
