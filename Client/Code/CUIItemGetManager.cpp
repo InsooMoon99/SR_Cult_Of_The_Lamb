@@ -8,14 +8,16 @@
 
 CUIItemGetManager::CUIItemGetManager(DEVICE graphicDev)
     : CGameObject(graphicDev),
-      m_Inventory(nullptr),
-      m_IsShifting(false)
+    m_Inventory(nullptr),
+    m_IsAnyShifting(false),
+    m_NeedsReindex(false)
 { }
 
 CUIItemGetManager::CUIItemGetManager(const CUIItemGetManager& rhs)
     : CGameObject(rhs),
       m_Inventory(nullptr),
-      m_IsShifting(false)
+      m_IsAnyShifting(false),
+      m_NeedsReindex(false)
 { }
 
 CUIItemGetManager::~CUIItemGetManager()
@@ -39,32 +41,46 @@ _int CUIItemGetManager::Update_GameObject(const _float& timeDelta)
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
-    if (!m_UIItemGets.empty())
-    {
-        int index = 0;
+    m_IsAnyShifting = false;
 
-        
-            for (auto iter = m_UIItemGets.begin(); iter != m_UIItemGets.end(); iter++)
-            {
-                (*iter)->Set_Index(index);
-                index++;
-            }
-        
-         for (auto iter = m_UIItemGets.begin(); iter != m_UIItemGets.end();)
-       {
-           if ((*iter)->Get_IsDead())
-           {
-               Safe_Release(*iter);
-               iter =m_UIItemGets.erase(iter);
-           }
-           else
-           {
-               (*iter)->Update_GameObject(timeDelta);
-               iter++;
-           }
-       }
-        
+    if (m_UIItemGets.empty())
+        return 0;
+
+    for (auto iter = m_UIItemGets.begin(); iter != m_UIItemGets.end();)
+    {
+
+        if ((*iter)->Get_IsShifting())
+        {
+            m_IsAnyShifting = true;
+        }
+
+        if((*iter)->Get_IsDead())
+        {
+            Safe_Release(*iter);
+            iter = m_UIItemGets.erase(iter);
+        }
+        else
+        {
+            (*iter)->Update_GameObject(timeDelta);
+            iter++;
+        }
+
     }
+
+    int index = 0;
+
+    if (!m_IsAnyShifting)
+    {
+
+        for (auto iter = m_UIItemGets.begin(); iter != m_UIItemGets.end(); iter++)
+        {
+            (*iter)->Set_Index(index);
+            index++;
+        }
+    }
+    cout << m_UIItemGets.size() << endl;
+
+    
     return exit;
 }
 void CUIItemGetManager::LateUpdate_GameObject(const _float& timeDelta)
@@ -75,14 +91,6 @@ void CUIItemGetManager::LateUpdate_GameObject(const _float& timeDelta)
     {
         for (auto iter = m_UIItemGets.begin(); iter != m_UIItemGets.end();)
         {
-
-          //  if ((*iter)->Get_IsDead())
-          //  {
-          //      m_UIItemGets.erase(iter);
-          //
-          //      return;
-          //  }
-          //
           (*iter)->LateUpdate_GameObject(timeDelta);
             iter++;
         }
@@ -106,7 +114,6 @@ void CUIItemGetManager::Render_GameObject()
     
 }
 
-
 void CUIItemGetManager::Add_UIItemGet(ItemInstance* itemInstance, int itemCount)
 
 {
@@ -114,6 +121,7 @@ void CUIItemGetManager::Add_UIItemGet(ItemInstance* itemInstance, int itemCount)
     {
         CUIItemGet* m_UIItemGet = CUIItemGet::Create(m_GraphicDev);
         m_UIItemGet->Set_UIItem(itemInstance->itemId, itemCount);
+        m_UIItemGet->Set_Index(m_UIItemGets.size());
         m_UIItemGets.push_back(m_UIItemGet);
     }
     else
@@ -128,6 +136,7 @@ void CUIItemGetManager::Add_UIItemGet(ItemInstance* itemInstance, int itemCount)
             {
                 CUIItemGet* m_UIItemGet = CUIItemGet::Create(m_GraphicDev);
                 m_UIItemGet->Set_UIItem(itemInstance->itemId, itemCount);
+                m_UIItemGet->Set_Index(m_UIItemGets.size());
                 m_UIItemGets.push_back(m_UIItemGet);
 
             }
