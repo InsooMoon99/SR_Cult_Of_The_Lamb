@@ -1,94 +1,105 @@
 ﻿#pragma once
 #include "CCameraMovement.h"
 
-static const CAM_PRESET PRESET_DEFAULT =
-    { _vec3(0, 0, 0), 10.f, D3DXToRadian(45.f), 5.f };
-static const CAM_PRESET PRESET_COMBAT =
-    { _vec3(0, 1, 0), 6.f, D3DXToRadian(15.f), 10.f };
-static const CAM_PRESET PRESET_BOSS =
-    { _vec3(0, 5, 0), 15.f, D3DXToRadian(45.f), 3.f };
+BEGIN(CameraPresets) // 미리 설정된 프리셋 값
+inline constexpr CAM_PRESET Default =
+    { _vec3(0, 0, 0), 10.f, D3DXToRadian(45.f), 0.f, 5.f, 5.f };
 
+inline constexpr CAM_PRESET Combat =
+    { _vec3(0, 1, 0), 6.f, D3DXToRadian(15.f), 0.f, 10.f, 5.f };
+
+inline constexpr CAM_PRESET Boss =
+    { _vec3(0, 5, 0), 15.f, D3DXToRadian(45.f), 0.f, 3.f, 5.f };
+END
+
+// Builder 패턴을 이용한 CCameraMovement의 값 설정 클래스
 class CCameraSetup
 {
 public:
-    // 생성자: 변경할 타겟 컴포넌트를 받음
-    // LoadCurrent: true면 현재 카메라 설정을 그대로 가져와서 수정 시작
+    /// @brief 변경할 CCameraMovement 컴포넌트를 받아 값 수정
+    /// @param camMovementCom  CCameraMovement 컴포넌트 주소
+    /// @param LoadCurrent     true면 현재 카메라 설정을 복사해 거기서 추가 수정
     CCameraSetup(CCameraMovement* camMovementCom, _bool LoadCurrent = true)
         : m_CamMovementCom(camMovementCom),
-          m_Immediate(false)
+          m_Snap(false)
     {
         if (LoadCurrent && m_CamMovementCom)
-        {
-            // 현재 타겟의 상태를 가져와서 초기값으로 설정 (Get 함수 필요)
-            m_Preset.vPivotOffset = m_CamMovementCom->Get_PivotOffset();
-            m_Preset.fDist        = m_CamMovementCom->Get_TargetDistance();
-            m_Preset.fPitch       = m_CamMovementCom->Get_RotX();
-            m_Preset.fYaw         = m_CamMovementCom->Get_RotY();
-            // Speed 등은 Getter가 없다면 기본값 사용하거나 추가 필요
-        }
+            m_CamPreset = m_CamMovementCom->Get_Preset();
+        else
+            m_CamPreset = CameraPresets::Default;
     }
 
-    // 특정 프리셋으로 덮어쓰고 시작
+    // --- 체이닝 메서드 : CameraPresets 이용 ---
+
+    // 프리셋 통째로 로드
     CCameraSetup& LoadPreset(const CAM_PRESET& preset)
     {
-        m_Preset = preset;
+        m_CamPreset = preset;
         return *this;
     }
 
-    // --- 체이닝 메서드들 ---
+    // --- 체이닝 메서드 : 개별 제어 ---
 
+    // 타겟의 어느 지점을 바라볼건지에 대한 로컬 오프셋 설정
+    CCameraSetup& PivotOffset(const _vec3& offset)
+    {
+        m_CamPreset.pivotOffset = offset;
+        return *this;
+    }
+
+    // 타겟과의 거리 설정
     CCameraSetup& Distance(_float dist)
     {
-        m_Preset.fDist = dist;
+        m_CamPreset.dist = dist;
         return *this;
     }
 
+    // X축 회전 (Pitch) 설정 [단위: Degree]
     CCameraSetup& RotX(_float angleDegree)
     {
-        m_Preset.fPitch = D3DXToRadian(angleDegree);
+        m_CamPreset.pitch = D3DXToRadian(angleDegree);
         return *this;
     }
 
+    // Y축 회전 (Yaw) 설정 [단위: Degree]
     CCameraSetup& RotY(_float angleDegree)
     {
-        m_Preset.fYaw = D3DXToRadian(angleDegree);
+        m_CamPreset.yaw = D3DXToRadian(angleDegree);
         return *this;
     }
 
-    CCameraSetup& Offset(const _vec3& offset)
-    {
-        m_Preset.vPivotOffset = offset;
-        return *this;
-    }
-
+    // 위치 추적 속도 (값이 클수록 빠르게 따라감)
     CCameraSetup& LagSpeed(_float speed)
     {
-        m_Preset.fLagSpeed = speed;
+        m_CamPreset.lagSpeed = speed;
         return *this;
     }
 
+    // 줌 변경 속도 (값이 클수록 빠르게 변경됨)
     CCameraSetup& ZoomSpeed(_float speed)
     {
-        m_Preset.fZoomSpeed = speed;
+        m_CamPreset.zoomSpeed = speed;
         return *this;
     }
 
-    // 즉시 이동 여부 (텔레포트)
-    CCameraSetup& Immediate()
+    // 적용 시 보간 없이 즉시 이동
+    CCameraSetup& Snap()
     {
-        m_Immediate = true;
+        m_Snap = true;
         return *this;
     }
 
     // --- 최종 적용 ---
+
+    // 설정한 값을 컴포넌트에 반영 (※ 반드시 마지막에 호출할 것)
     void Apply()
     {
         if (m_CamMovementCom)
-            m_CamMovementCom->Apply_Preset(m_Preset, m_Immediate);
+            m_CamMovementCom->Apply_Preset(m_CamPreset, m_Snap);
     }
 
 private:
     CCameraMovement* m_CamMovementCom;
-    CAM_PRESET       m_Preset;     // 임시 저장용 프리셋
-    _bool            m_Immediate; // 즉시 적용 여부
+    CAM_PRESET       m_CamPreset;
+    _bool            m_Snap;
 };
