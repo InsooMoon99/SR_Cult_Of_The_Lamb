@@ -2,6 +2,7 @@
 #include "CComponent.h"
 #include "CItemDB.h"
 #include "ItemInstance.h"
+#include <functional>
 
 BEGIN(Engine)
 class CScene;
@@ -36,8 +37,11 @@ public:
     bool RemoveItem(int itemID, int count);
     int Get_AddedCount() { return m_AddedCount; }
     bool RemoveItemBySlot(int slotNum, int count);
-
     const vector<InventorySlot>& GetVector() const { return m_vecInven; }
+    void SetOnItemAdded(std::function<void(ItemInstance*, int)> callback)
+    {
+        m_ItemAdded = callback;
+    }
 public:
     static CInventory* Create(DEVICE graphicDev);
     CComponent*        Clone() override;
@@ -45,7 +49,8 @@ private:
     vector<InventorySlot> m_vecInven;
     int                   invenSlotNum;
     int                   m_AddedCount;
-
+    std::function<void(ItemInstance*, int)>      m_ItemAdded;
 public:
     void Free() override;
 };
+

@@ -1,9 +1,9 @@
 ﻿#include "pch.h"
 #include "CInventory.h"
-
 #include "CDropSystem.h"
 #include "CItemDB.h"
 #include "CPlayer.h"
+#include "CUIItemGetManager.h"
 #include "ItemData.h"
 
 CInventory::CInventory(DEVICE graphicDev)
@@ -99,9 +99,8 @@ bool CInventory::AddItem(ItemInstance itemInst)
             {
                 int oldCount = slot.count;
                 slot.count++;
-                m_AddedCount = slot.count - oldCount;
-
-
+                int newCount = slot.count - oldCount;
+                m_ItemAdded(&slot.itemInst, newCount);
                 return true;
             }
         }
@@ -120,11 +119,16 @@ bool CInventory::AddItem(ItemInstance itemInst)
             else
             {
                 m_vecInven[slot].itemInst = itemInst;
-
+                int oldCount = m_vecInven[slot].count;
                 m_vecInven[slot].count++;
-                m_AddedCount++;
+                int newCount = m_vecInven[slot].count - oldCount;
+                if(!(m_vecInven[slot].itemInst.itemId == 3001 && m_vecInven[slot].itemInst.itemId == 3002))
+                {
+                m_ItemAdded(&m_vecInven[slot].itemInst, newCount);
+                }
                 return true;
             }
+
             break;
         case ItemType::Food:
             // 음식은 노예용 플레이어는 소지 안함 먹을순 있는데 플레이어에서 처리
@@ -137,8 +141,11 @@ bool CInventory::AddItem(ItemInstance itemInst)
             else
             {
                 m_vecInven[slot].itemInst = itemInst;
+
+                int oldCount = m_vecInven[slot].count;
                 m_vecInven[slot].count++;
-                m_AddedCount++;
+                int newCount =  m_vecInven[slot].count - oldCount;
+                m_ItemAdded(&m_vecInven[slot].itemInst, newCount);
                 return true;
             }
             break;
@@ -155,10 +162,12 @@ bool CInventory::AddItem(ItemInstance itemInst)
         {
             m_vecInven[slot].itemInst = itemInst;
             m_vecInven[slot].count++;
-            m_AddedCount++;
+
             return true;
-        }
+        }                                            
     }
+
+
     return false;
 }
 

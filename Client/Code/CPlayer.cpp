@@ -101,7 +101,6 @@ void CPlayer::OnBeginOverlap(CCollider* self, CCollider* other)
 {
 	CCharacterBase::OnBeginOverlap(self, other);
 
-    //cout << "Player Hit" << endl;
 }
 
 void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)
