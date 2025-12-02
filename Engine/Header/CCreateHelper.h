@@ -1,8 +1,7 @@
 ﻿#pragma once
-
-#include "CProtoMgr.h"
 #include "CEnumHelper.h"
 #include "CManagement.h"
+#include "CProtoMgr.h"
 #include "CScene.h"
 
 BEGIN(Engine)

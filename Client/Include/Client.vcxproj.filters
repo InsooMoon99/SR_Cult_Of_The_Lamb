@@ -444,6 +444,9 @@
     <ClInclude Include="..\Header\CCameraMovement.h">
       <Filter>97. Component\06. Camera Control\01. Movement</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CCameraSetup.h">
+      <Filter>98. Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">

@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "CCameraController.h"
+
 #include "CCameraCalc.h"
 #include "CCameraMovement.h"
 #include "CDInputMgr.h"
@@ -56,15 +57,19 @@ _int CCameraController::Update_Component(const _float& timeDelta)
 
     switch (m_CamMode)
     {
+    case CAM_TARGET:
+        if (false == m_OwnerCamMovementCom->Update_TargetMode(timeDelta))
+        {
+            m_OwnerCamMovementCom->Set_Target(nullptr);
+            m_CamMode = CAM_FREE;
+        }
+        break;
+
     case CAM_FREE:
         Control_FreeMode(timeDelta);
         break;
-    case CAM_TARGET:
-        if (m_TargetTransformCom)
-            m_OwnerCamMovementCom->Chase_Target(m_TargetTransformCom->Get_Pos(), m_Offset, timeDelta);
-        break;
-    default:
-        break;
+
+    default: break;
     }
 
     return 0;

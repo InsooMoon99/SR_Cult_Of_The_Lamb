@@ -184,6 +184,7 @@
     <ClInclude Include="..\Header\CBossStateMachine.h" />
     <ClInclude Include="..\Header\CCameraController.h" />
     <ClInclude Include="..\Header\CCameraMovement.h" />
+    <ClInclude Include="..\Header\CCameraSetup.h" />
     <ClInclude Include="..\Header\CCharacterBase.h" />
     <ClInclude Include="..\Header\CLogo_Boss.h" />
     <ClInclude Include="..\Header\CMapObject_DungeonDeco.h" />

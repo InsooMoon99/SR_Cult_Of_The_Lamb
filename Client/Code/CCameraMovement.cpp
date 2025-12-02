@@ -40,6 +40,9 @@ HRESULT CCameraMovement::Ready_CameraMovement()
     return S_OK;
 }
 
+void CCameraMovement::Initialize_Component()
+{ }
+
 _int CCameraMovement::Update_Component(const _float& timeDelta)
 {
     return 0;
@@ -47,6 +50,20 @@ _int CCameraMovement::Update_Component(const _float& timeDelta)
 
 void CCameraMovement::LateUpdate_Component()
 { }
+
+void CCameraMovement::Set_Target(CTransform* targetTransform)
+{
+    m_TargetTransformCom = targetTransform;
+
+    Reset_Camera();
+}
+
+void CCameraMovement::Set_RotX(_float rotX)
+{
+    m_CamPitch = rotX;
+
+    Clamp_Pitch();
+}
 
 void CCameraMovement::Reset_Camera(const _vec3& pivotOffset,
                                    _float       dist,
@@ -67,7 +84,7 @@ void CCameraMovement::Reset_Camera(const _vec3& pivotOffset,
 
     m_CurrentDistance = m_TargetDistance;
 
-    Update_Orbit(0.f);
+    Update_TargetMode(0.f);
 }
 
 void CCameraMovement::Move_FreeMode(const _vec3& dir, _float speed, _float timeDelta)
@@ -110,35 +127,54 @@ void CCameraMovement::RotateY_FreeMode(_float angleDelta)
     m_TransformCom->Set_Rotation(_vec3(m_CamPitch, m_CamYaw, 0.f));
 }
 
-void CCameraMovement::Update_Orbit(const _float& timeDelta)
+_bool CCameraMovement::Update_TargetMode(const _float& timeDelta)
 {
-    NULL_CHECK(m_TransformCom);
-    NULL_CHECK(m_TargetTransformCom);
+    NULL_CHECK_RETURN(m_TransformCom, false);
+    NULL_CHECK_RETURN(m_TargetTransformCom, false);
 
     _vec3 targetPos = m_TargetTransformCom->Get_Pos() + m_PivotOffset;
+
+    if (timeDelta > 0.f)
+    {
+        m_CurrentPivotPos = Engine::Lerp_Damp(m_CurrentPivotPos,
+                                              targetPos,
+                                              m_LagSpeed,
+                                              timeDelta);
+
+        m_CurrentDistance = Engine::Lerp_Damp(m_CurrentDistance,
+                                              m_TargetDistance,
+                                              m_ZoomSpeed,
+                                              timeDelta);
+    }
+    else // timeDelta == 0 경우 안전
+    {
+        m_CurrentPivotPos = targetPos;
+        m_CurrentDistance = m_TargetDistance;
+    }
 
     _matrix matRot;
     D3DXMatrixRotationYawPitchRoll(&matRot, m_CamYaw, m_CamPitch, 0.f);
 
-    _vec3 offsetDist(0.f, 0.f, -m_TargetDistance);
+    _vec3 offsetDist(0.f, 0.f, -m_CurrentDistance);
     D3DXVec3TransformCoord(&offsetDist, &offsetDist, &matRot);
 
-    _vec3 finalPos = targetPos + offsetDist;
+    _vec3 finalPos = m_CurrentPivotPos + offsetDist;
 
     m_TransformCom->Set_Pos(finalPos);
 
     if (m_TargetDistance > 0.01f)
-        m_TransformCom->LookAt(targetPos);
+        m_TransformCom->LookAt(m_CurrentPivotPos);
     else
         m_TransformCom->Set_Rotation(_vec3(m_CamPitch, m_CamYaw, 0.f));
+
+    return true;
 }
 
 void CCameraMovement::Clamp_Pitch()
 {
     constexpr _float rotXLimit = D3DXToRadian(89.f);
 
-    if (m_CamPitch > rotXLimit) m_CamPitch = rotXLimit;
-    else if (m_CamPitch < -rotXLimit) m_CamPitch = -rotXLimit;
+    m_CamPitch = Engine::Clamp(m_CamPitch, -rotXLimit, rotXLimit);
 }
 
 CCameraMovement* CCameraMovement::Create(DEVICE graphicDev)
