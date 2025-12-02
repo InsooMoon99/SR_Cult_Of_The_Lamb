@@ -3,7 +3,7 @@
 #include "CLayer.h"
 
 CScene::CScene(DEVICE graphicDev)
-    : m_GraphicDev(graphicDev)
+    : m_GraphicDev(graphicDev), m_MainCam(nullptr)
 {
     m_GraphicDev->AddRef();
 }

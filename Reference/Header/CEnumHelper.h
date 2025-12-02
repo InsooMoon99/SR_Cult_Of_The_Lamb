@@ -181,6 +181,16 @@ static const char* ToString(COMPONENTTYPE type)
     // End Marker
     case COMPONENTTYPE::COMPONENT_END:      return "ComponentEnd";
 
+    case COMPONENTTYPE::PROJECTILE:         return "Projectile";
+    case COMPONENTTYPE::TEX_UI_HEARTCARD:   return "UI_HeartCard";
+    case COMPONENTTYPE::TEX_UI_EXPLAIN:     return "UI_Explain";
+    case COMPONENTTYPE::TEX_UI_TAROT:       return "UI_Tarot";
+    case COMPONENTTYPE::TEX_BULLET:         return "Bullet";
+    case COMPONENTTYPE::TEX_SLAVE_TEST:     return "Slave_Test";
+    case COMPONENTTYPE::TEX_BOSS2_PHASE2:   return "Boss_Phase2";
+    case COMPONENTTYPE::BOSS2_CONTROLLER:   return "Boss_Controller";
+    case COMPONENTTYPE::TEX_DUNGEON_DECO:   return "Dungeon_Deco";
+    case COMPONENTTYPE::TEX_ETC:            return "ETC";
     default:                                return "UnknownComponent";
     }
 }

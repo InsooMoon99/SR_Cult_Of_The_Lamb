@@ -12,8 +12,7 @@ namespace Engine
 
 class CPlayer;
 
-class CMonsterState :
-    public CBaseState
+class CMonsterState : public CBaseState
 {
 protected:
     explicit CMonsterState();
@@ -33,17 +32,17 @@ public:
 protected:
     virtual void    Find_Player();
 protected:
-    CPlayer* m_pPlayer;
+    CPlayer*    m_pPlayer;
     CTransform* m_pPlayerTransformCom;
     CTransform* m_pOwnerTransformCom;
-    CAnimator* m_pOwnerAnimatorCom;
+    CAnimator*  m_pOwnerAnimatorCom;
 
 
-    _float m_fCurStateElapsedTime; // 누적시간
+    _float      m_fCurStateElapsedTime; // 누적시간
     _float      m_fMinStateTime;
-    _bool  m_bMinStateTimePassed;
+    _bool       m_bMinStateTimePassed;
 
-    _bool DoneAnim = false;
+    _bool       DoneAnim = false;
 
 private:
     // CBase을(를) 통해 상속됨

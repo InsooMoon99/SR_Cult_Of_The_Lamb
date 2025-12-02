@@ -3,14 +3,17 @@
 #include "CCreateHelper.h"
 #include "CAnimator.h"
 #include "CTexture.h"
+#include "CTransform.h"
+#include "CBossController.h"
+#include "CBoss2_StateMachine.h"
 
 CBossPhase2::CBossPhase2(DEVICE graphicDev)
-    : CMonsterBase(graphicDev)
+    : CMonsterBase(graphicDev), m_BossController(nullptr)
 {
 }
 
 CBossPhase2::CBossPhase2(const CBossPhase2& rhs)
-    : CMonsterBase(rhs)
+    : CMonsterBase(rhs), m_BossController(nullptr)
 {
 }
 
@@ -23,6 +26,7 @@ HRESULT CBossPhase2::Ready_GameObject()
     if (FAILED(CMonsterBase::Ready_GameObject()))
         return E_FAIL;
 
+
     return S_OK;
 }
 
@@ -30,6 +34,7 @@ void CBossPhase2::Initialize_GameObject()
 {
     CMonsterBase::Initialize_GameObject();
 
+    m_TransformCom->Set_Scale(_vec3(8.f, 4.9f, 3.f));
 }
 
 _int CBossPhase2::Update_GameObject(const _float& timeDelta)
@@ -92,7 +97,8 @@ CBossPhase2* CBossPhase2::Create(DEVICE graphicDev)
 
 void CBossPhase2::Animation_Setting()
 {
-    m_AnimatorCom->Create_Animation(L"Boss_Idle", 58, 0.04f);
+    m_AnimatorCom->Create_Animation(L"Boss_Idle", 68, 0.04f);
+    //m_AnimatorCom->Create_Animation(L"Boss_handSlam", 68, 0.04f);
 
     m_AnimatorCom->Play_Animation(L"Boss_Idle", ANIMSTATE::LOOP);
 }
@@ -102,13 +108,25 @@ HRESULT CBossPhase2::Add_Component()
     if(FAILED(CMonsterBase::Add_Component()))
         return E_FAIL;
 
-    COMPONENTTYPE texType = COMPONENTTYPE::TEX_BOSS2_PHASE2;
+    COMPONENTTYPE type;
 
-    m_TextureCom = CreateProtoComponent<CTexture>(this, texType);
+    type = COMPONENTTYPE::TEX_BOSS2_PHASE2;
+    m_TextureCom = CreateProtoComponent<CTexture>(this, type);
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
-    m_Components[ID_STATIC].insert({ texType, m_TextureCom });
+    m_Components[ID_STATIC].insert({ type, m_TextureCom });
 
-    m_AnimatorCom->Set_TextureType(texType);
+    m_AnimatorCom->Set_TextureType(type);
+
+    // Controller
+    type = COMPONENTTYPE::BOSS2_CONTROLLER;
+    m_BossController = CreateProtoComponent<CBossController>(this, type);
+    NULL_CHECK_RETURN(m_BossController, E_FAIL);
+    m_Components[ID_DYNAMIC].insert({ type, m_BossController });
+
+    // State Machine
+    auto stateMachine = CBoss2_StateMachine::Create(this);
+    m_BossController->Set_StateMachine(stateMachine);
+    Safe_Release(stateMachine);
 
     return S_OK;
 }

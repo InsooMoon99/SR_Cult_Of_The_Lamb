@@ -32,9 +32,11 @@ CBossController::~CBossController()
 
 HRESULT CBossController::Ready_BossController()
 {
-    NULL_CHECK_RETURN(Get_Owner(), E_FAIL);
+    if (Get_Owner())
+    {
+        Cache_Components();
+    }
 
-    Cache_Components();
 
     return S_OK;
 }
@@ -43,18 +45,24 @@ void CBossController::Initialize_Component()
 {
     CComponent::Initialize_Component();
 
-    
+    if (!m_ComponentsCached && Get_Owner())
+    {
+        Cache_Components();
+    }
 }
 
 _int CBossController::Update_Component(const _float& timeDelta)
 {
     _int exit = CComponent::Update_Component(timeDelta);
 
+    if (m_StateMachine)
+    {
+        m_StateMachine->Update_StateMachine(timeDelta);
+    }
 
 
     return exit;
 }
-
 
 void CBossController::Set_StateMachine(CStateMachine* stateMachine)
 {
@@ -150,4 +158,13 @@ void CBossController::Free()
 {
     Safe_Release(m_StateMachine);
     CComponent::Free();
+}
+
+void CBossController::Render_Editor()
+{
+    CComponent::Render_Editor();
+
+    ImGui::Text("=== Boss Phase2 ===");
+
+    
 }

@@ -399,9 +399,9 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
     auto protoMgr = CProtoMgr::GetInstance();
 
     // Boss Controller
-    //if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::BOSS2_CONTROLLER,
-    //    CBossController::Create(graphicDev))))
-    //    return E_FAIL;
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::BOSS2_CONTROLLER,
+        CBossController::Create(graphicDev))))
+        return E_FAIL;
 
     // Boss Slave
     CTexture* slaveTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
@@ -419,7 +419,14 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
     NULL_CHECK_RETURN(bossPhase2, E_FAIL);
     
     if (FAILED(bossPhase2->Add_Texture(L"Boss_Idle", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW-Boss-Idle/TOWW_Boss_Idle%d.png", 58)))
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Start_Eye/TOWW_Start_Eye%d.png", 68)))
+            return E_FAIL;
+
+    //if (FAILED(bossPhase2->Add_Texture(L"Boss_handSlam", TEX_NORMAL,
+    //    L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW-Boss-hand-slam2-TOWW-Boss-hand-slam%d.png", 68)))
+    //    return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_BOSS2_PHASE2, bossPhase2)))
         return E_FAIL;
     
     return S_OK;

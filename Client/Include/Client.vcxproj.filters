@@ -450,7 +450,13 @@
     <ClInclude Include="..\Header\Client_Struct.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CBoss2_StateMachine.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2</Filter>
+    </ClInclude>
     <ClInclude Include="..\Header\CBossPhase2.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\00. Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBoss2_Idle.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -704,7 +710,13 @@
     <ClCompile Include="..\Code\CBossController.cpp">
       <Filter>03. GameObject\04. Boss\02. Boss2</Filter>
     </ClCompile>
+    <ClCompile Include="..\Code\CBoss2_StateMachine.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2</Filter>
+    </ClCompile>
     <ClCompile Include="..\Code\CBossPhase2.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\00. Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoss2_Idle.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

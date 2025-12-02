@@ -111,6 +111,7 @@ HRESULT CStage_Boss2::Ready_GameLogic_Layer(LAYERTYPE layerType)
             OBJTYPE::PLAYER, L"Player", m_GraphicDev, layer, &gameObject), L"Persistent object setup failed");
 
     const auto playerTransform = dynamic_cast<CTransform*>(gameObject->Get_Component(ID_DYNAMIC,COMPONENTTYPE::TRANSFORM));
+    playerTransform->Set_Pos(_vec3(35.f, 1.f, 21.3f));
 
     // 카메라 생성
     FAILED_CHECK_MSG(Engine::AcquirePersistentObject<CMainCamera>(
@@ -145,7 +146,7 @@ HRESULT CStage_Boss2::Ready_GameLogic_Layer(LAYERTYPE layerType)
     gameObject = CBossPhase2::Create(m_GraphicDev);
     NULL_CHECK_RETURN(gameObject, E_FAIL);
     
-    gameObject->Get_Transform()->Set_Pos(35.f, 3.f, 30.f);
+    gameObject->Get_Transform()->Set_Pos(35.f, 4.9f, 30.f);
     
     layer->Add_GameObject(OBJTYPE::BOSS2, gameObject);
 

@@ -1,8 +1,5 @@
 ﻿#pragma once
 
-typedef struct tagBossData
-{
-    _vec3 startpos;
+#include "Engine_Define.h"
 
 
-} BossConfig;
