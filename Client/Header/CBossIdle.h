@@ -4,12 +4,14 @@
 class CBossPhase1;
 class CBossStateMachine;
 
+namespace Engine
+{
+    class CCombatStat;
+}
+
 class CBossIdle :
     public CMonsterState
 {
-public:
-    //enum class PHASE { DOWN, TALK, DISAPPEAR };
-    //PHASE m_ePhase;
 private:
     explicit CBossIdle(CBossPhase1* pOwner, CBossStateMachine* pStateMachine);
     virtual ~CBossIdle();
@@ -27,6 +29,8 @@ public:
 private:
     CBossPhase1* m_pOwner;
     CBossStateMachine* m_pStateMachine;
+    CCombatStat* m_pOwnerStateCom;
+
 public:
     static CBossIdle* Create(CBossPhase1* pOwner, CBossStateMachine* pStateMachine);
 

@@ -49,6 +49,10 @@ HRESULT CBossPhase1::Ready_GameObject()
     m_CombatStatCom->Set_Mp(5.f);
     m_CombatStatCom->Set_Speed(5.f);
 
+
+    if (m_BoxColCom)
+        m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::ENEMY);
+
     return S_OK;
 }
 

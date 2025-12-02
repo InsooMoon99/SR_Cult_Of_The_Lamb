@@ -61,6 +61,8 @@ void CBossStateMachine::Change_State(_uint changeStateKey)
     if (m_pCurState)
        m_pCurState->Exit();
 
+    // 이전 상태 등록
+    //m_pPrevState = m_pCurState;
     m_dwPrevStateKey = m_dwCurStateKey;
     m_dwCurStateKey = changeStateKey;
 

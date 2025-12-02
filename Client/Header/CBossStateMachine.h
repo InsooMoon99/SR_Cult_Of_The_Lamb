@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CBase.h"
 #include "CStateMachine.h"
+#include "Client_Enum.h"
 
 class CBossPhase1;
 class CMonsterState;
@@ -19,6 +20,8 @@ public:
     _int GetCurStateNum();
 
     CBaseState* Get_CurState() { return m_pCurState; }
+    //CBaseState* Get_PrevState() { return  m_pPrevState; }
+    _uint Get_PrevStateKey() { return  m_dwPrevStateKey; }
 
 private:
     CBossPhase1* m_pOwner;

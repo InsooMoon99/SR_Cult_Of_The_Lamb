@@ -13,6 +13,7 @@
 #include "CProjectile.h"
 #include "Client_Enum.h"
 
+int  CBossBulletAttack::m_BPatterCount = 0;
 
 CBossBulletAttack::CBossBulletAttack(CBossPhase1* pOwner, CBossStateMachine* pStateMachine)
 {
@@ -28,11 +29,17 @@ void CBossBulletAttack::Enter()
 {
     CMonsterState::Enter();
     m_pOwnerAnimatorCom->Play_Animation(L"BossAttack", ANIMSTATE::ONCE);
-    // TODO:: 지금 이게 안들어오거든 바로 상태안의 애니로 감 어칼까
-    ////
+
+
+    // 순차재생 
+    m_BPatterCount %= (int)PHASE::PHASE_END ;
+    m_ePhase = (PHASE)m_BPatterCount;
+    m_BPatterCount++;
+
     //m_ePhase = PHASE::ROTCROSS_SPREAD; // 이걸 어케 해야하지??
-    int RandPhase = CRandomMgr::GetInstance()->Get_Int_Random(0, ((int)PHASE::PHASE_END) - 1); // 페이즈 랜덤
-    m_ePhase = (PHASE)RandPhase;
+
+    //int RandPhase = CRandomMgr::GetInstance()->Get_Int_Random(0, ((int)PHASE::PHASE_END) - 1); // 페이즈 랜덤
+    //m_ePhase = (PHASE)RandPhase;
 
 }
 
@@ -68,6 +75,7 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
     CMonsterState::Update_State(timeDelta);
 
     Find_Player();
+
     // 이거 첫프레임 씹힘 방지 ?? 인듯???
     if (m_pOwnerAnimatorCom->Get_CurAnimation() == nullptr)
         return CBossPhase1::BOSSPHASE1::BULLETATTACK;
@@ -87,9 +95,9 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
     case PHASE::CIRCLE:
 
         m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::ONCE);
-        
-        m_fElapsedTime += timeDelta;
 
+        m_fElapsedTime += timeDelta;
+        if (CircleBullet(timeDelta, 9, m_CircleRadius, m_Interval, m_CircleSpeed) == true)
         {
             if (m_TargetFlag == false)
             {
@@ -98,11 +106,12 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
                 D3DXVec3Normalize(&tmpdir, &tmp);
 
 
+
                 for (auto& it : tmpBullet)
                 {
                     // it->Set_TargetDir(tmpdir);
                     BulletDesc d;
-                    d.Direction = {tmpdir.x, 0.f, tmpdir.y};
+                    d.Direction = { tmpdir.x, 0.f, tmpdir.z };
                     d.Speed = 10;
                     d.moveType = PROJ_TYPE::LINEAR;
                     d.ProjectileOwner = m_pOwner;
@@ -115,29 +124,29 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
                 }
                 m_TargetFlag = true;
             }
-
-            m_fCurStateElapsedTime += timeDelta;
-
-            if (m_fCurStateElapsedTime >= 2.0f)
-            {
-                // 나가기
-                for (auto& it : tmpBullet)
-                {
-                    //일단 테스트
-                    it->SetPendingKill();
-                }
-                tmpBullet.clear();
-
-                m_Count = 0;
-                m_TargetFlag = false;
-                m_fCurStateElapsedTime = 0;
-                m_fElapsedTime = 0;
-                return CBossPhase1::BOSSPHASE1::BOSSIDLE;
-
-            }
         }
+        m_fCurStateElapsedTime += timeDelta;
 
+        if (m_fCurStateElapsedTime >= 2.0f)
+        {
+            // 나가기
+            //for (auto& it : tmpBullet)
+            //{
+            //    //일단 테스트
+            //    it->SetPendingKill();
+            //}
+            tmpBullet.clear();
+
+            m_Count = 0;
+            m_TargetFlag = false;
+            m_fCurStateElapsedTime = 0;
+            m_fElapsedTime = 0;
+            return CBossPhase1::BOSSPHASE1::BOSSIDLE;
+
+        }
         break;
+
+
 
 
     case PHASE::ROTCROSS_SPREAD: //움직임
@@ -146,25 +155,25 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
 
         m_fElapsedTime += timeDelta;
 
-        if (CrossBullet(timeDelta, 9, m_offset,m_Interval) == true)
+        if (CrossBullet(timeDelta, 9, m_offset, m_Interval) == true)
         {
             for (auto& it : tmpBullet)
             {
                 it->Start_Shoot();
             }
 
-            SpreadBullet(timeDelta, 10,m_CrossSpreadInterval, 10);
+            SpreadBullet(timeDelta, 10, m_CrossSpreadInterval, 10);
 
 
             m_fCurStateElapsedTime += timeDelta;
             if (m_fCurStateElapsedTime >= 8.0f)
             {
                 // 나가기
-                for (auto& it : tmpBullet)
-                {
-                    //일단 테스트
-                    it->SetPendingKill();
-                }
+                //for (auto& it : tmpBullet)
+                //{
+                //    //일단 테스트
+                //    it->SetPendingKill();
+                //}
                 tmpBullet.clear();
                 m_Count = 0;
                 m_fCurStateElapsedTime = 0;
@@ -191,11 +200,11 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
 
         if (m_fCurStateElapsedTime >= 5.0f)
         {
-            for (auto& it : tmpBullet)
-            {
-                //일단 테스트
-                it->SetPendingKill();
-            }
+           // for (auto& it : tmpBullet)
+           // {
+           //     //일단 테스트
+           //     it->SetPendingKill();
+           // }
             tmpBullet.clear();
 
             m_Count = 0;
@@ -212,7 +221,7 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
     return CBossPhase1::BOSSPHASE1::BULLETATTACK;
 }
 
-bool CBossBulletAttack::CircleBullet(const _float& timeDelta, int num, int radius, float interval ,float speed)
+bool CBossBulletAttack::CircleBullet(const _float& timeDelta, int num, int radius, float interval, float speed)
 {
 
     if (m_fElapsedTime >= interval && m_Count <= num)
@@ -302,7 +311,7 @@ bool CBossBulletAttack::CrossBullet(const _float& timeDelta, int num, int offset
                 break;
             }
             _vec3 TR = OwnerPos + AddPos;
-                BulletTransform->Set_Pos({TR.x, m_GroundY,TR.z});
+            BulletTransform->Set_Pos({ TR.x, m_GroundY,TR.z });
 
             BulletDesc d;
             d.Radius = distance;

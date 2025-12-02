@@ -13,6 +13,7 @@
 #include "CRandomMgr.h"
 
 
+   int CBossChainAttack::m_CPatterCount = 0;
 
 CBossChainAttack::CBossChainAttack(CBossPhase1* pOwner, CBossStateMachine* pStateMachine)
 {
@@ -35,7 +36,10 @@ void CBossChainAttack::Enter()
     int RandPhase = CRandomMgr::GetInstance()->Get_Int_Random(0, ((int)PHASE::PHASE_END)-1); // 페이즈 랜덤
     m_ePhase = (PHASE)RandPhase;
 
-
+    // 순차재생을 위한 거
+    m_CPatterCount %= (int)PHASE::PHASE_END;
+    m_ePhase = (PHASE)m_CPatterCount;
+    m_CPatterCount++;
     //m_ePhase = PHASE::RANDCHAIN;
     ////
 }

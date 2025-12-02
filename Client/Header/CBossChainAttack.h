@@ -37,6 +37,8 @@ private:
 
 public:
     static CBossChainAttack* Create(CBossPhase1* pOwner, CBossStateMachine* pStateMachine);
+
+    static int m_CPatterCount;
 private:
     PHASE m_ePhase;
     float m_fElapsedTime;
@@ -60,6 +62,8 @@ private:
 
 private:
     virtual void Free();
+
+    //
 
 };
 

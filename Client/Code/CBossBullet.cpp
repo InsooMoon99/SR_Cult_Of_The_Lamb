@@ -52,6 +52,9 @@ HRESULT CBossBullet::Ready_GameObject()
 
     m_TransformCom->Set_Rotation({ D3DXToRadian(90), 0, 0 });
 
+   // if (m_BoxColCom)
+   //     m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::BOSSPROJECTILE);
+
     return S_OK;
 }
 
@@ -75,10 +78,10 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
             .Track(ATBox)
             .Damage(1.f)
             .Knockback(0.f)
-            .Scale(0.01f)
+            .Scale({0.1f, 0.1f, 0.1f})
             .InstigatorPos()
             .Offset(_vec3(0.f, 0.f, 0.f))
-            .LifeTime(20.f) // 이건 혹시 충돌 안했을경우를 대비 해서
+            .LifeTime(10.f) // 이건 혹시 충돌 안했을경우를 대비 해서
             .DestroyOnHit(true)
             .CollisionLayer(COLLISION_LAYERTYPE::BOSSPROJECTILE)
             .Spawn();
@@ -87,7 +90,9 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
 
         m_ATKBoxTransformCom = dynamic_cast<CTransform*>(
             ATBox->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-        m_ATKBoxTransformCom->Set_Scale({ 0.1f,0.1f,0.1f });
+        //dynamic_cast<CAttackBase*>(ATBox->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CIRCLE_COLL));
+        //ATBox
+        ATBox->Set_OnDestroyCallback([this]() {this->Mark_As_PendingKill();});
 
         m_flag = true;
     }
@@ -260,6 +265,11 @@ HRESULT CBossBullet::Add_Component()
     m_ProjectileCom = CreateProtoComponent<CProjectile>(this, COMPONENTTYPE::PROJECTILE);
     NULL_CHECK_RETURN(m_ProjectileCom, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::PROJECTILE, m_ProjectileCom });
+
+   // // BoxCollider
+   // m_BoxColCom = CreateProtoComponent<CBoxCollider>(this, COMPONENTTYPE::BOX_COLL);
+   // NULL_CHECK_RETURN(m_BoxColCom, E_FAIL);
+   // m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::BOX_COLL, m_BoxColCom });
 
     return S_OK;
 }

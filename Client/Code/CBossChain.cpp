@@ -48,6 +48,8 @@ HRESULT CBossChain::Ready_GameObject()
     //TODO:: 나중에 땅의 위치를 알게 되면 수정 
     //m_TransformCom->Set_Pos({ ownerTransform->Get_Pos().x, -ownerTransform->Get_Scale().y * .5f,ownerTransform->Get_Pos().z });
     //m_TransformCom->Set_Pos
+  //  if (m_BoxColCom)
+  //      m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::BOSSPROJECTILE);
 
     return S_OK;
 }
@@ -100,7 +102,7 @@ _int CBossChain::Update_GameObject(const _float& timeDelta)
                 .Position(m_TransformCom->Get_Pos())
                 .InstigatorPos()
                 .Offset(_vec3(0.f, 0.f, 0.f))
-                .LifeTime(.5f)
+                .LifeTime(.3f)
                 .DestroyOnHit(true)
                 .CollisionLayer(COLLISION_LAYERTYPE::BOSSPROJECTILE)
                 .Scale({ m_TransformCom->Get_Scale().x, m_TransformCom->Get_Scale().y*.5f , m_TransformCom->Get_Scale().z *.5f})
@@ -215,6 +217,11 @@ HRESULT CBossChain::Add_Component()
     m_CombatStatCom = CreateProtoComponent<CCombatStat>(this, COMPONENTTYPE::COMBATSTAT);
     NULL_CHECK_RETURN(m_CombatStatCom, E_FAIL);
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::COMBATSTAT, m_CombatStatCom });
+
+  //  // BoxCollider
+  //  m_BoxColCom = CreateProtoComponent<CBoxCollider>(this, COMPONENTTYPE::BOX_COLL);
+  //  NULL_CHECK_RETURN(m_BoxColCom, E_FAIL);
+  //  m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::BOX_COLL, m_BoxColCom });
 
     return S_OK;
 }

@@ -201,6 +201,7 @@ void CCollisionManager::Initialize_CollisionMatrix()
     _int projectile_Index = static_cast<_int>(COLLISION_LAYERTYPE::BOSSPROJECTILE);
     m_CollisionMatrix[projectile_Index][projectile_Index] = false;
     m_CollisionMatrix[projectile_Index][enemy_Index] = false;
+    m_CollisionMatrix[enemy_Index][projectile_Index] = false;
 
 }
 

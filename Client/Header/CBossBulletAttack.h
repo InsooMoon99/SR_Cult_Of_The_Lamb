@@ -37,6 +37,7 @@ private:
 public:
     static CBossBulletAttack* Create(CBossPhase1* pOwner, CBossStateMachine* pStateMachine);
 
+    static int m_BPatterCount;
 private:
     PHASE m_ePhase;
     float m_fElapsedTime =0;
@@ -46,6 +47,7 @@ private:
 
     vector<CBossBullet*> tmpBullet;
     bool m_TargetFlag = false;
+
 
     // 쓸거
     float m_offset;
