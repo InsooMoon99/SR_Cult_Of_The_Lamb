@@ -279,6 +279,12 @@ void CMainEditorMgr::Render_ToolBar()
     // ============
     // Play / FPS
     // ============
+
+    if (CDInputMgr::GetInstance()->KeyDown(DIK_F7))
+    {
+        m_IsPlaying = !m_IsPlaying;
+    }
+
     {
         ImGui::AlignTextToFramePadding();
 
