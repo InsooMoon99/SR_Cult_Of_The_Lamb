@@ -157,6 +157,12 @@ HRESULT CMainApp::Ready_DefaultSetting(DEVICE* graphicDev)
         *graphicDev, L"NanumSquare_Regular", L"나눔스퀘어 네오 Regular", 18, 21, FW_MEDIUM)))
         return E_FAIL;
 
+
+    //작은 크기 폰트
+    if (FAILED(CFontMgr::GetInstance()->Ready_Font(
+        *graphicDev, L"NanumSquare_Small", L"나눔스퀘어 네오 Regular", 15, 18, FW_MEDIUM)))
+        return E_FAIL;
+
     //아이템 카드 설명용 폰트
     if (FAILED(CFontMgr::GetInstance()->Ready_Font(
         *graphicDev, L"카드 설명", L"나눔스퀘어 네오 Regular", 16, 19, FW_MEDIUM)))
