@@ -1,6 +1,12 @@
 ﻿#pragma once
 #include "CScene.h"
 
+class CTerrain;
+
+BEGIN(Engine)
+
+END
+
 class CStage_Boss2 : public CScene
 {
 private:
@@ -9,6 +15,7 @@ private:
 
 public:
     HRESULT Ready_Scene() override;
+    void    Initialize_Scene() override;
     _int    Update_Scene(const _float& timeDelta) override;
     void    LateUpdate_Scene(const _float& timeDelta) override;
     void    Render_Scene() override;
@@ -25,4 +32,8 @@ public:
 
 private:
     void Free() override;
+
+private:
+    CTerrain* m_Terrain;
+
 };

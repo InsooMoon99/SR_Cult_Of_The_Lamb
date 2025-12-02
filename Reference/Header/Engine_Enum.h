@@ -78,17 +78,20 @@ enum class OBJTYPE
 {
     PLAYER,
     MONSTER,
+    NPC,
     CAMERA,
     ITEM,
     /* 오브젝트 타입 종류 추가 */
     LOGIC,
     UI,
-    BOSS2,
-    BOSS1,
     HUMANMONSTER,
+    BOSS1,
+    BOSS2,
+
+    ATTACK_COL,
+
     TERRAIN,
     PLACEMENT,
-    ATTACK_COL,
     WALL,
 
     OBJ_END
@@ -153,8 +156,16 @@ enum class COMPONENTTYPE
     BOX_COLL,
     SPHERE_COLL,
 
+
     ////////////////
-    // MapObject ///
+    //   Boss 2   //
+    ////////////////
+    TEX_SLAVE_TEST,
+    TEX_BOSS2_PHASE2,
+    BOSS2_CONTROLLER,
+
+    ////////////////
+    //  MapObject //
     ////////////////
     TEX_TILE_284,
     TEX_TILE_1024,
@@ -212,7 +223,8 @@ enum class ACTORDIR
 enum class SCENETYPE
 {
     SC_LOGO,
-    SC_LOGO_BOSS,
+    SC_LOGO_BOSS1,
+    SC_LOGO_BOSS2,
     SC_MAINMENU,
     SC_STAGE,
     SC_STAGE1,

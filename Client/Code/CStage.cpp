@@ -98,7 +98,12 @@ _int CStage::Update_Scene(const _float& timeDelta)
 
     if (CDInputMgr::GetInstance()->KeyDown(DIK_F))
     {
-        CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS);
+        CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS1);
+    }
+
+    if (CDInputMgr::GetInstance()->KeyDown(DIK_G))
+    {
+        CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS2);
     }
 
     return exit;
