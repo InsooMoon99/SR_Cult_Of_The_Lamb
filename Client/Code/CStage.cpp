@@ -212,7 +212,7 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
         mainCam->Set_CamTarget(playerTransform);
 
         auto camCom = dynamic_cast<CCameraCalc*>(
-            mainCam->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAMERA));
+            mainCam->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAM_CALC));
 
         if (camCom)
             CMainEditorMgr::GetInstance()->Set_MainCamera(camCom); // 에디터에 카메라 설정

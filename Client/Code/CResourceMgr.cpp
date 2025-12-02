@@ -83,7 +83,7 @@ HRESULT CResourceMgr::Ready_Common(DEVICE graphicDev)
 
     // Camera
     if (FAILED(protoMgr->Ready_Prototype(
-        COMPONENTTYPE::CAMERA, Engine::CCameraCalc::Create(graphicDev))))
+        COMPONENTTYPE::CAM_CALC, Engine::CCameraCalc::Create(graphicDev))))
         return E_FAIL;
 
     // Rect Collider

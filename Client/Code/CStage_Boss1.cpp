@@ -2,21 +2,21 @@
 #include "CStage_Boss1.h"
 
 #include "CBossPhase1.h"
+#include "CBossPhase1.h"
+#include "CDInputMgr.h"
+#include "CDropSystem.h"
 #include "CLayer.h"
 #include "CMainCamera.h"
+#include "CMainEditorMgr.h"
+#include "CMainMenu.h"
 #include "CMonster.h"
 #include "CPersistentObjectHelper.h"
 #include "CPlayer.h"
+#include "CSceneMgr.h"
 #include "CState.h"
 #include "CTerrain.h"
 #include "CTransform.h"
-#include "CDInputMgr.h"
-#include "CMainEditorMgr.h"
-#include "CMainMenu.h"
-#include "CSceneMgr.h"
 #include "CWall.h"
-#include "CBossPhase1.h"
-#include "CDropSystem.h"
 
 CStage_Boss1::CStage_Boss1(DEVICE graphicDev)
     : Engine::CScene(graphicDev)
@@ -146,7 +146,7 @@ HRESULT CStage_Boss1::Ready_GameLogic_Layer(LAYERTYPE layerType)
         mainCam->Set_CamTarget(playerTransform);
 
         auto camCom = dynamic_cast<CCameraCalc*>(
-            mainCam->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAMERA));
+            mainCam->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAM_CALC));
 
         if (camCom)
             CMainEditorMgr::GetInstance()->Set_MainCamera(camCom); // 에디터에 카메라 설정

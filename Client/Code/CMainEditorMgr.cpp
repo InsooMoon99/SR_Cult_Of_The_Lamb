@@ -518,7 +518,7 @@ void CMainEditorMgr::Render_SelectComponent()
             break;
         }
 
-        case COMPONENTTYPE::CAMERA:
+        case COMPONENTTYPE::CAM_CALC:
         {
             auto camera = dynamic_cast<CCameraCalc*>(selectComponent);
             Camera_Inspector(camera);

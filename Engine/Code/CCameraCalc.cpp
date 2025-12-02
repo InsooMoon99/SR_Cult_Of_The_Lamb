@@ -3,45 +3,46 @@
 #include "CDInputMgr.h"
 #include "CTransform.h"
 
-class CMainCamera;
-
-CCameraCalc::CCameraCalc()
-    : m_FOV(D3DXToRadian(60.f)),
-      m_Aspect(static_cast<_float>(WINCX) / WINCY),
-      m_Near(0.1f),
-      m_Far(1000.f),
-
-      m_isDirty(true)
-{ }
-
 CCameraCalc::CCameraCalc(DEVICE graphicDev)
     : CComponent(graphicDev),
 
+      m_ProjType(PROJ_PERSPECTIVE),
       m_FOV(D3DXToRadian(60.f)),
       m_Aspect(static_cast<_float>(WINCX) / WINCY),
-      m_Near(0.1f),
+      m_Near(0.2f),
       m_Far(1000.f),
-
       m_isDirty(true)
-{ }
+{
+    D3DXMatrixIdentity(&m_matView);
+    D3DXMatrixIdentity(&m_matProj);
+}
 
 CCameraCalc::CCameraCalc(const CCameraCalc& rhs)
     : CComponent(rhs),
 
+      m_ProjType(rhs.m_ProjType),
       m_FOV(rhs.m_FOV),
       m_Aspect(rhs.m_Aspect),
       m_Near(rhs.m_Near),
       m_Far(rhs.m_Far),
-
       m_isDirty(true)
-{ }
+{
+    D3DXMatrixIdentity(&m_matView);
+    D3DXMatrixIdentity(&m_matProj);
+}
 
 CCameraCalc::~CCameraCalc()
 { }
 
-HRESULT CCameraCalc::Ready_Camera()
+HRESULT CCameraCalc::Ready_CameraCalc()
 {
     return S_OK;
+}
+
+void CCameraCalc::Initialize_Component()
+{
+    // 초기 투영 행렬 계산
+    Update_Proj_Matrix();
 }
 
 _int CCameraCalc::Update_Component(const _float& timeDelta)
@@ -51,151 +52,72 @@ _int CCameraCalc::Update_Component(const _float& timeDelta)
 
 void CCameraCalc::LateUpdate_Component()
 {
-    NULL_CHECK(m_TransformCom);
+    NULL_CHECK(m_GraphicDev);
 
-    _vec3 pos  = m_TransformCom->Get_Pos();
-    _vec3 Up   = m_TransformCom->Get_Up();
-    _vec3 look = m_TransformCom->Get_Look();
-
-    switch (m_ViewType)
-    {
-    case VIEW_FPS:
-        Compute_View_FPS();
-        break;
-    case VIEW_TPS:
-        Compute_View_TPS();
-        break;
-    case VIEW_QUARTER:
-        Compute_View_QUARTER();
-        break;
-    default:
-        break;
-    }
-
+    Update_View_Matrix();
     m_GraphicDev->SetTransform(D3DTS_VIEW, &m_matView);
 
-    // 투영 타입 변경 시에만 한 번 실행
     if (m_isDirty)
     {
-        switch (m_ProjType)
-        {
-        case PROJ_PERSPECTIVE:
-            Compute_Proj_Perspective();
-            break;
-        case PROJ_ORTHOGRAPHIC:
-            Compute_Proj_Orthographic();
-            break;
-        default:
-            break;
-        }
-
+        Update_Proj_Matrix();
         m_GraphicDev->SetTransform(D3DTS_PROJECTION, &m_matProj);
+
         m_isDirty = false;
     }
 }
 
-void CCameraCalc::Set_CamMode(CAM_MODE camMode)
-{
-    if (m_CamMode != camMode && camMode < CAM_END)
-    {
-        if (camMode == CAM_FREE)
-            m_ViewType = VIEW_FPS;
-        else if (camMode == CAM_TARGET)
-            m_ViewType = VIEW_QUARTER;
-
-        m_CamMode = camMode;
-    }
-}
-
-void CCameraCalc::Set_ViewType(VIEW_TYPE viewType)
-{
-    if (m_ViewType != viewType && viewType < VIEW_END)
-        m_ViewType = viewType;
-}
-
 void CCameraCalc::Set_ProjType(PROJ_TYPE projType)
 {
-    if (m_ProjType != projType && projType < PROJ_END)
+    if (m_ProjType != projType)
     {
         m_ProjType = projType;
         m_isDirty  = true;
     }
 }
 
-void CCameraCalc::Set_Offset_Spherical(_float distance, _float angleX, _float angleY)
+void CCameraCalc::Update_View_Matrix()
 {
-    _vec3 baseOffset = _vec3(0.f, 0.f, -distance);
+    NULL_CHECK(m_TransformCom);
 
-    _matrix matRot;
-    D3DXMatrixRotationYawPitchRoll(
-        &matRot,
-        D3DXToRadian(angleY),
-        D3DXToRadian(angleX),
-        0.f);
+    _vec3 eye  = m_TransformCom->Get_Pos();
+    _vec3 look = m_TransformCom->Get_Look();
+    _vec3 up   = m_TransformCom->Get_Up();
+    _vec3 at   = eye + look;
 
-    D3DXVec3TransformCoord(&m_Offset, &baseOffset, &matRot);
+    D3DXMatrixLookAtLH(&m_matView, &eye, &at, &up);
 }
 
-void CCameraCalc::Compute_View_FPS()
+void CCameraCalc::Update_Proj_Matrix()
 {
-    m_Eye = m_Pos;
-    m_At  = m_Pos + m_Look;
+    switch (m_ProjType)
+    {
+    case PROJ_PERSPECTIVE:
+    {
+        D3DXMatrixPerspectiveFovLH(&m_matProj, m_FOV, m_Aspect, m_Near, m_Far);
+    }
+    break;
+    case PROJ_ORTHOGRAPHIC:
+    {
+        D3DVIEWPORT9 viewport;
+        m_GraphicDev->GetViewport(&viewport);
 
-    D3DXMatrixLookAtLH(&m_matView, &m_Eye, &m_At, &m_Up);
-}
-
-void CCameraCalc::Compute_View_TPS()
-{
-    _matrix matRotX, matRotY;
-    D3DXMatrixRotationX(&matRotX, m_TransformCom->Get_Rotation(ROT_X));
-    D3DXMatrixRotationY(&matRotY, m_TransformCom->Get_Rotation(ROT_Y));
-
-    _matrix matRot = matRotY * matRotX;
-
-    _vec3 vLocalOffset;
-    D3DXVec3TransformCoord(&vLocalOffset, &m_Offset, &matRot);
-
-    m_Eye = m_Pos + vLocalOffset;
-    m_At  = m_Pos;
-
-    const _vec3 vWorldUp = { 0, 1, 0 };
-
-    D3DXMatrixLookAtLH(&m_matView, &m_Eye, &m_At, &vWorldUp);
-}
-
-void CCameraCalc::Compute_View_QUARTER()
-{
-    m_Eye = m_Pos + m_Offset;
-    m_At  = m_Pos;
-
-    const _vec3 vWorldUp = { 0, 1, 0 };
-
-    D3DXMatrixLookAtLH(&m_matView, &m_Eye, &m_At, &vWorldUp);
-}
-
-void CCameraCalc::Compute_Proj_Perspective()
-{
-    D3DXMatrixPerspectiveFovLH(&m_matProj, m_FOV, m_Aspect, m_Near, m_Far);
-}
-
-void CCameraCalc::Compute_Proj_Orthographic()
-{
-    D3DVIEWPORT9 Viewport;
-    m_GraphicDev->GetViewport(&Viewport);
-
-    D3DXMatrixOrthoLH(
-        &m_matProj,
-        static_cast<_float>(Viewport.Width),
-        static_cast<_float>(Viewport.Height),
-        0.f,
-        1.f);
+        D3DXMatrixOrthoLH(
+            &m_matProj,
+            static_cast<_float>(viewport.Width),
+            static_cast<_float>(viewport.Height),
+            m_Near,
+            m_Far);
+    }
+    break;
+    default: break;
+    }
 }
 
 CCameraCalc* CCameraCalc::Create(DEVICE graphicDev)
 {
     auto CameraCom = new CCameraCalc(graphicDev);
 
-    if (FAILED(CameraCom->Ready_Camera()))
+    if (FAILED(CameraCom->Ready_CameraCalc()))
     {
         Safe_Release(CameraCom);
         MSG_BOX("CameraCalc Create Failed");

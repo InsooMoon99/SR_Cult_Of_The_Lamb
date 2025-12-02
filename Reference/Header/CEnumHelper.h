@@ -125,7 +125,7 @@ static const char* ToString(COMPONENTTYPE type)
     case COMPONENTTYPE::COMBATSTAT:         return "CombatStat";
     case COMPONENTTYPE::INVENTORY:          return "Inventory";
     case COMPONENTTYPE::ANIMATOR:           return "Animator";
-    case COMPONENTTYPE::CAMERA:             return "Camera";
+    case COMPONENTTYPE::CAM_CALC:             return "Camera";
     case COMPONENTTYPE::TERRAIN_RENDER:     return "TerrainRender";
     case COMPONENTTYPE::WALL_RENDERER:      return "WallRenderer";
 

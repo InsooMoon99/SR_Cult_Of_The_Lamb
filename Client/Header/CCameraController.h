@@ -4,39 +4,11 @@
 class CCameraMovement;
 BEGIN(Engine)
 class CCameraCalc;
+class CTransform;
 END
 
 class CCameraController : public CComponent
 {
-public:
-    // 카메라 컨트롤 모드
-    enum CAM_MODE
-    {
-        CAM_FREE,               // 자유 카메라
-        CAM_TARGET,             // 타겟 고정 카메라
-
-        CAM_END
-    };
-
-    // 시점 타입
-    enum VIEW_TYPE
-    {
-        VIEW_FPS,               // 1인칭
-        VIEW_TPS,               // 3인칭
-        VIEW_QUARTER,           // 쿼터뷰 (2.5D)
-
-        VIEW_END
-    };
-
-    // 투영 타입
-    enum PROJ_TYPE
-    {
-        PROJ_PERSPECTIVE,       // 원근 투영
-        PROJ_ORTHOGRAPHIC,      // 직교 투영
-
-        PROJ_END
-    };
-
 private:
     explicit CCameraController(DEVICE graphicDev);
     explicit CCameraController(const CCameraController& rhs);
@@ -78,18 +50,23 @@ public:  // --- Setter ---
     // 시점 타입 변경
     void Set_ViewType(VIEW_TYPE viewType);
 
-    /// @brief 투영 타입 변경
-    /// @details UI등 Renderer에서 자동으로 직교 투영을 할 오브젝트가 아닌,
-    /// 수동으로 직교 투영을 사용하고자 할 때 사용
+    //TODO : 이건 지워야 할듯?
     void Set_ProjType(PROJ_TYPE projType);
+
+    //TODO : 타겟은 CCameraMovement로 옮겼음. 아마 지워야 할듯
+    void Set_CamTarget(Engine::CTransform* targetTransform);
 
 public:  // --- 기능 메서드 ---
 
 private: // --- 내부 로직 ---
+    void Control_FreeMode(const _float& timeDelta);
 
-private: // --- Owner Components 캐싱 ---
-    Engine::CCameraCalc* m_CamCalc;
-    CCameraMovement*     m_CamMovement;
+private: // --- Owner 컴포넌트 캐싱 ---
+    Engine::CCameraCalc* m_OwnerCamCalcCom;
+    CCameraMovement*     m_OwnerCamMovementCom;
+
+private: // --- 외부 컴포넌트 캐싱 ---
+    Engine::CTransform* m_TargetTransformCom;
 
 private: // --- 일반 멤버 변수 ---
     CAM_MODE  m_CamMode;

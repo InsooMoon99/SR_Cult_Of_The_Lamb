@@ -73,6 +73,8 @@ public: // Transform Operations     ========================
     // 수업 코드 기반의 추적. 쿼터뷰 환경에는 맞지 않으므로 사용시 수정하자
     void Chase_Target(const _vec3* targetPos, const _float& timeDelta, const _float& speed);
 
+    void LookAt(const _vec3& targetPos);
+
 private: // Internal Calculations   ========================
 
     _quat   Compute_LookAtTarget_Quat(const _vec3* pTargetPos);
@@ -100,6 +102,8 @@ private:
 
     _matrix m_matWorld;                 // 월드 행렬
 
+    _vec3 m_EulerRad;
+
 #pragma region 이전 프레임 값 저장 : 변화 체크 용도
     _vec3 m_PrevInfo[INFO_END];         // 이전 위치
     _vec3 m_PrevScale;                  // 이전 크기
@@ -109,8 +113,6 @@ private:
     //_matrix m_matPrevParent;          // 부모 월드 행렬의 이전값 (필요시 사용)
 
     bool m_IsDirty;                     // 월드 변환 필요 여부 플래그
-
-    _vec3 m_EulerRad{};
 #pragma endregion
 
 public:
