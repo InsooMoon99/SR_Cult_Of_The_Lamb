@@ -54,6 +54,7 @@ public:
 
     void                Set_CurSize(const _vec2& size);
     void                Set_CurOffset(const _vec2& offset);
+    void                Set_FlipX(_bool flip);
 
     // 주의! Object마다 Set_TextureType 설정 꼭 해줘야함
     void                Set_TextureType(COMPONENTTYPE type);

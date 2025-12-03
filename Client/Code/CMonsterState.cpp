@@ -47,7 +47,7 @@ void CMonsterState::Find_Player()
     m_pPlayer = static_cast<CPlayer*>(pObject);
 
     CComponent* pComponent = m_pPlayer->Get_Component(COMPONENTID::ID_DYNAMIC,COMPONENTTYPE::TRANSFORM);
-//CComponent* pComponent = CManagement::GetInstance()->Get_Component(ID_DYNAMIC, L"GameLogic_Layer", L"Player", L"Transform_Com");
+    //CComponent* pComponent = CManagement::GetInstance()->Get_Component(ID_DYNAMIC, L"GameLogic_Layer", L"Player", L"Transform_Com");
     if (nullptr == dynamic_cast<CTransform*>(pComponent))
     {
         MSG_BOX("MonsterState can't find player's transform!");

@@ -22,6 +22,7 @@ private:
 
 private:
     map<COMPONENTTYPE, CComponent*> m_Prototypes;
+    CRITICAL_SECTION m_CriticalSection;
 
 private:
     void Free() override;

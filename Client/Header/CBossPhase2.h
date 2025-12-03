@@ -2,8 +2,24 @@
 
 #include "CMonsterBase.h"
 
+class CBossController;
+class CBoss2_StateMachine;
+
 class CBossPhase2 : public CMonsterBase
 {
+public:
+    enum PATTERN
+    {
+        PHASE2_IDLE = 0,
+        PHASE2_EYEBALL,
+        PHASE2_CHAIN,
+        PHASE2_BULLET,
+        PHASE2_DEAD,
+
+        PHASE2_END
+
+    };
+
 private:
     explicit CBossPhase2(DEVICE graphicDev);
     explicit CBossPhase2(const CBossPhase2& rhs);
@@ -24,6 +40,10 @@ public:
     void    Render_Editor() override;
 
 public:
+    CBossController* Get_Controller() { return m_BossController; }
+    const char* Get_Boss2_StateName(_int stateNum);
+
+public:
     static CBossPhase2* Create(DEVICE graphicDev);
 
 protected:
@@ -34,6 +54,7 @@ protected:
     void    Free() override;
 
 private:
+    CBossController*        m_BossController;
 
 };
 

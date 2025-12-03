@@ -171,6 +171,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Header\CBoss2_Eyeball.h" />
+    <ClInclude Include="..\Header\CBoss2_Idle.h" />
+    <ClInclude Include="..\Header\CBoss2_StateMachine.h" />
     <ClInclude Include="..\Header\CBossAwake.h" />
     <ClInclude Include="..\Header\CBossBullet.h" />
     <ClInclude Include="..\Header\CBossBulletAttack.h" />
@@ -266,6 +269,9 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Code\CBoss2_Eyeball.cpp" />
+    <ClCompile Include="..\Code\CBoss2_Idle.cpp" />
+    <ClCompile Include="..\Code\CBoss2_StateMachine.cpp" />
     <ClCompile Include="..\Code\CBossAwake.cpp" />
     <ClCompile Include="..\Code\CBossBullet.cpp" />
     <ClCompile Include="..\Code\CBossBulletAttack.cpp" />

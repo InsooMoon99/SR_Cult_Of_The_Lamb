@@ -39,6 +39,9 @@ public:
 private:
     void Cache_Components();
     void Free() override;
+public:
+
+    void Render_Editor() override;
 
 private:
     CAnimator*      m_AnimatorCom;

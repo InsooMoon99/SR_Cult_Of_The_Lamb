@@ -111,6 +111,7 @@ HRESULT CStage_Boss2::Ready_GameLogic_Layer(LAYERTYPE layerType)
             OBJTYPE::PLAYER, L"Player", m_GraphicDev, layer, &gameObject), L"Persistent object setup failed");
 
     const auto playerTransform = dynamic_cast<CTransform*>(gameObject->Get_Component(ID_DYNAMIC,COMPONENTTYPE::TRANSFORM));
+    playerTransform->Set_Pos(_vec3(35.f, 1.f, 21.3f));
 
     // 카메라 생성
     FAILED_CHECK_MSG(Engine::AcquirePersistentObject<CMainCamera>(
@@ -125,6 +126,8 @@ HRESULT CStage_Boss2::Ready_GameLogic_Layer(LAYERTYPE layerType)
         auto camCom = dynamic_cast<CCameraCom*>(
             mainCam->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAMERA));
 
+        camCom->Set_Offset(_vec3(0.f, 11.f, -14.4f)); // 임시. 테스트용
+
         if (camCom)
             CMainEditorMgr::GetInstance()->Set_MainCamera(camCom); // 에디터에 카메라 설정
     }
@@ -137,17 +140,17 @@ HRESULT CStage_Boss2::Ready_GameLogic_Layer(LAYERTYPE layerType)
     const auto chunSikTrans = gameObject->Get_Transform();
     NULL_CHECK_RETURN(chunSikTrans, E_FAIL);
 
-    chunSikTrans->Set_Pos(_vec3(31.f, 3.1f, 30.f));
+    chunSikTrans->Set_Pos(_vec3(27.f, 3.1f, 18.f));
 
     layer->Add_GameObject(OBJTYPE::NPC, gameObject);
 
     // 보스 소환
-    //gameObject = CBossPhase2::Create(m_GraphicDev);
-    //NULL_CHECK_RETURN(gameObject, E_FAIL);
-    //
-    //gameObject->Get_Transform()->Set_Pos(35.f, 3.f, 30.f);
-    //
-    //layer->Add_GameObject(OBJTYPE::BOSS2, gameObject);
+    gameObject = CBossPhase2::Create(m_GraphicDev);
+    NULL_CHECK_RETURN(gameObject, E_FAIL);
+    
+    gameObject->Get_Transform()->Set_Pos(35.f, 4.9f, 30.f);
+    
+    layer->Add_GameObject(OBJTYPE::BOSS2, gameObject);
 
     m_Layers.insert({ layerType, layer });
 
@@ -164,13 +167,6 @@ HRESULT CStage_Boss2::Ready_UI_Layer(LAYERTYPE layerType)
     Engine::CGameObject* pGameObject = nullptr;
 
     m_Layers.insert({ layerType, layer });
-
-    return S_OK;
-}
-
-HRESULT CStage_Boss2::Ready_Prototype()
-{
-    // Move Loading Scene
 
     return S_OK;
 }
