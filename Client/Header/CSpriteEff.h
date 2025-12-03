@@ -4,7 +4,9 @@
 struct SpriteDesc
 {
     // 일단 바운스 기준으로 필요 한거
-
+    _vec3 pos;
+    _vec3 Velocity;
+    float Ground;
 };
 
 
@@ -34,6 +36,12 @@ public:
 public:
     CSpriteEff* Create(DEVICE graphicDev);
     CComponent* Clone();
+
+private:
+    // 간단 물리
+    float m_Gravity;
+    
+
 
 protected:
     void Free() override;
