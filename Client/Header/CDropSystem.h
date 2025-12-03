@@ -17,6 +17,7 @@ private:
     ~CDropSystem() override;
 
 public:
+
     void SpawnDrop(DEVICE pGraphicDev, const ItemInstance& item, const _vec3& worldPos);
     void SpawnAllFromInven(DEVICE pGraphicDev, CInventory& Inven);
 
@@ -24,7 +25,7 @@ public:
 
 private:
     CScene* m_nowScene = nullptr;
-
+    bool isBouncing = false;
 private:
     void Free() override;
 };

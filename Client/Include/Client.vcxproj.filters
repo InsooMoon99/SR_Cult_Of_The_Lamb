@@ -172,6 +172,12 @@
     <Filter Include="03. GameObject\04. Boss\02. Boss2\02. Slave">
       <UniqueIdentifier>{f0761f14-29e5-4beb-a999-fbcd51de41e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97. Component\06.Effect">
+      <UniqueIdentifier>{0a2588d6-9b6a-44ba-9c7f-e2fd96563550}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Component\06.Effect\00.Base">
+      <UniqueIdentifier>{8a0d49d8-10a4-4675-9c64-616209693762}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -453,6 +459,15 @@
     <ClInclude Include="..\Header\CBossPhase2.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CTrailEff.h">
+      <Filter>97. Component\06.Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEffectBaseCom.h">
+      <Filter>97. Component\06.Effect\00.Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CSpriteEff.h">
+      <Filter>97. Component\06.Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -706,6 +721,15 @@
     </ClCompile>
     <ClCompile Include="..\Code\CBossPhase2.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CTrailEff.cpp">
+      <Filter>97. Component\06.Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEffectBaseCom.cpp">
+      <Filter>97. Component\06.Effect\00.Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CSpriteEff.cpp">
+      <Filter>97. Component\06.Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
