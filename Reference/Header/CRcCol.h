@@ -6,7 +6,7 @@ class ENGINE_DLL CRcCol : public CVIBuffer
 {
 private:
     explicit CRcCol();
-    explicit CRcCol(LPDIRECT3DDEVICE9 graphicDev);
+    explicit CRcCol(DEVICE graphicDev);
     explicit CRcCol(const CRcCol& rhs);
     ~CRcCol() override;
 
@@ -15,7 +15,7 @@ public:
     void    Render_Buffer() override;
 
 public:
-    static CRcCol* Create(LPDIRECT3DDEVICE9 graphicDev);
+    static CRcCol* Create(DEVICE graphicDev);
     CComponent*    Clone() override;
 
 private:

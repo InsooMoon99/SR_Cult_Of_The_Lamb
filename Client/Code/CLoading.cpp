@@ -1,25 +1,26 @@
 ﻿#include "pch.h"
 #include "CLoading.h"
-
+#include <future>
+#include <chrono>
 #include "CAnimator.h"
-#include "CCameraCom.h"
+#include "CBoxCol.h"
 #include "CProtoMgr.h"
-#include "CRcCol.h"
-#include "CRcTex.h"
-#include "CRectCollider.h"
+#include "CResourceMgr.h"
 #include "CTexture.h"
-#include "CTransform.h"
-#include "CTriCol.h"
 
 CLoading::CLoading(DEVICE pGraphicDev)
     : m_GraphicDev(pGraphicDev),
-      m_Thread(nullptr), m_Crt{}, m_LoadingID(LOADING_END), m_IsFinish(false)
+    m_Thread(nullptr),
+    m_Crt{},
+    m_LoadingID(LOADING_END),
+    m_IsFinish(false)
 {
     m_GraphicDev->AddRef();
 }
 
 CLoading::~CLoading()
-{ }
+{
+}
 
 HRESULT CLoading::Ready_Loading(LOADINGID eID)
 {
@@ -42,62 +43,99 @@ HRESULT CLoading::Ready_Loading(LOADINGID eID)
 
 _uint CLoading::Loading_ForState()
 {
-    // TODO 석호: E_FAIL마다 경고 출력도 해야 할듯. 어디서 안되는건지 헷갈림
+    // 시작 시간 체크
+    auto start = chrono::high_resolution_clock::now();
 
-    auto pProtoMgr = CProtoMgr::GetInstance();
+    m_LoadingText = L"Resource Loading...";
 
-    m_LoadingText = L"Buffer LOADING..........";
-
-    // Buffer : Triangle Color
-    if (FAILED(pProtoMgr->Ready_Prototype(
-        COMPONENTTYPE::TRI_COLOR, Engine::CTriCol::Create(m_GraphicDev))))
+    // 이제 리소스 추가는 Resource Manager에서 진행
+    if (FAILED(CResourceMgr::GetInstance()->Ready_Resource(m_GraphicDev)))
         return E_FAIL;
 
-    // Buffer : Rect Color
-    if (FAILED(pProtoMgr->Ready_Prototype(
-        COMPONENTTYPE::RC_COLOR, Engine::CRcCol::Create(m_GraphicDev))))
+    // 끝 시간 체크
+    auto end = chrono::high_resolution_clock::now();
+    // 걸린 시간 출력
+    auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
+
+    OutputDebugString((L"Loading Time: " + to_wstring(duration.count()) + L"ms\n").c_str());
+
+    m_IsFinish = true;
+
+    return S_OK;
+}
+
+_uint CLoading::Loading_ForBoss1()
+{
+    auto start = chrono::high_resolution_clock::now();
+
+    m_LoadingText = L"Boss Loading...";
+    auto resourceMgr = CResourceMgr::GetInstance();
+
+    if (FAILED(resourceMgr->Ready_BossP1(m_GraphicDev)))
         return E_FAIL;
 
-    // Buffer : Rect UV
-    // CLogo 에서 이미 프로토타입 생성중이므로 비활성화
-    //if (FAILED(pProtoMgr->Ready_Prototype(
-    //    COMPONENTTYPE::RC_TEX, Engine::CRcTex::Create(m_GraphicDev))))
-    //    return E_FAIL;
+    m_IsFinish = true;
+    return S_OK;
+}
 
-    m_LoadingText = L"Texture LOADING..........";
+_uint CLoading::Loading_ForBoss2()
+{
+    m_LoadingText = L"Boss2 Loading...";
 
-    // Texture : Player
-    if (FAILED(pProtoMgr->Ready_Prototype(
-        COMPONENTTYPE::TEX_PLAYER, Engine::CTexture::Create(
-            m_GraphicDev,
-            TEX_NORMAL,
-            L"../Bin/Resource/Texture/Player/Lamb-idle_sheet.png",
-            1))))
+    if (FAILED(CResourceMgr::GetInstance()->Ready_BossResource2(m_GraphicDev)))
         return E_FAIL;
 
-    m_LoadingText = L"Etc LOADING..........";
+    m_IsFinish = true;
 
-    // Transform
-    if (FAILED(pProtoMgr->Ready_Prototype(
-        COMPONENTTYPE::TRANSFORM, Engine::CTransform::Create(m_GraphicDev))))
+    return S_OK;
+}
+
+_uint CLoading::Loading_ForState_Parallel()
+{
+    auto start = chrono::high_resolution_clock::now();
+
+    m_LoadingText = L"Resource Loading (Parallel)...";
+    auto resourceMgr = CResourceMgr::GetInstance();
+
+    // 버퍼는 먼저 준비
+    if (FAILED(resourceMgr->Ready_Buffer(m_GraphicDev)))
         return E_FAIL;
 
-    // Animator
-    if (FAILED(pProtoMgr->Ready_Prototype(
-        COMPONENTTYPE::ANIMATOR, CAnimator::Create(m_GraphicDev))))
+    if (FAILED(resourceMgr->Ready_Common(m_GraphicDev)))
         return E_FAIL;
 
-    // Camera
-    if (FAILED(pProtoMgr->Ready_Prototype(
-        COMPONENTTYPE::CAMERA, Engine::CCameraCom::Create(m_GraphicDev))))
+    if (FAILED(resourceMgr->Ready_Item(m_GraphicDev)))
         return E_FAIL;
 
-    // Rect Collider
-    if (FAILED(pProtoMgr->Ready_Prototype(
-        COMPONENTTYPE::RECT_COLL, CRectCollider::Create(m_GraphicDev))))
-        return E_FAIL;
+    OutputDebugString(L"[Loading] Item loading completed, starting parallel tasks...\n");
 
-    m_LoadingText = L"LOADING Complete! PRESS ENTER";
+    vector<future<HRESULT>> futures;
+
+    futures.push_back(async(launch::async, [&]() {
+        return resourceMgr->Ready_Player(m_GraphicDev);
+        }));
+    futures.push_back(async(launch::async, [&]() {
+        return resourceMgr->Ready_Monster(m_GraphicDev);
+        }));
+    futures.push_back(async(launch::async, [&]() {
+        return resourceMgr->Ready_UI(m_GraphicDev);
+        }));
+    futures.push_back(async(launch::async, [&]() {
+        return resourceMgr->Ready_Terrain(m_GraphicDev);
+        }));
+    futures.push_back(async(launch::async, [&]() {
+        return resourceMgr->Ready_Decoration(m_GraphicDev);
+        }));
+
+    // 병렬 태스크 완료 대기
+    for (auto& future : futures)
+    {
+        if (FAILED(future.get()))
+            return E_FAIL;
+    }
+    auto end = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
+    OutputDebugString((L"Loading Time: " + to_wstring(duration.count()) + L"ms\n").c_str());
 
     m_IsFinish = true;
 
@@ -116,9 +154,14 @@ unsigned CLoading::Thread_Main(void* pArg)
     switch (pLoading->Get_LoadingID())
     {
     case LOADING_STAGE:
-        iFlag = pLoading->Loading_ForState();
+        //iFlag = pLoading->Loading_ForState();
+        iFlag = pLoading->Loading_ForState_Parallel();
         break;
-    case LOADING_BOSS:
+    case LOADING_BOSS1:
+        iFlag = pLoading->Loading_ForBoss1();
+        break;
+    case LOADING_BOSS2:
+        iFlag = pLoading->Loading_ForBoss2();
         break;
     default:
         break;

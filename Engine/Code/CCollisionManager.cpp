@@ -6,34 +6,62 @@
 IMPLEMENT_SINGLETON(CCollisionManager)
 
 CCollisionManager::CCollisionManager()
-{ }
+{
+    Initialize_CollisionMatrix();
+}
 
 CCollisionManager::~CCollisionManager()
 {
-    CCollisionManager::Free();
-}
-
-void CCollisionManager::Ready_Collision()
-{
-    // TODO
+    Free();
 }
 
 void CCollisionManager::Update()
 {
     auto& colliders = m_Colliders;
-    const _uint count = static_cast<_uint>(m_Colliders.size());
+    const _uint count = static_cast<_uint>(colliders.size());
 
     for (_uint i = 0; i < count; i++)
     {
+        CCollider* src = colliders[i];
+        if (src == nullptr)
+            continue;
+
+        CGameObject* ownerSrc = src->Get_Owner();
+        if (ownerSrc == nullptr || ownerSrc->Is_PendingDestroy()) // 소멸 예정인 애들은 충돌 X
+            continue;
+
+        if (src->IsCollisionActive() == false) // 충돌체 Active가 꺼져있다면 무시
+            continue;
+
         for (_uint j = i + 1; j < count; j++)
         {
-            CCollider* src = m_Colliders[i];
-            CCollider* dst = m_Colliders[j];
-
-            if (src == nullptr || dst == nullptr)
+            CCollider* dst = colliders[j];
+            if (dst == nullptr)
                 continue;
 
-            // TODO : Owner 세팅 후 비교
+            CGameObject* ownerDst = dst->Get_Owner();
+            if (ownerDst == nullptr || ownerDst->Is_PendingDestroy()) // 소멸 예정인 애들은 충돌 X
+                continue;
+
+            if (dst->IsCollisionActive() == false) // 충돌체 Active가 꺼져있다면 무시
+                continue;
+
+            // Owner가 같으면 무시
+            if (ownerSrc == ownerDst)
+                continue;
+
+            // Insigator 체크
+            CGameObject* instigatorSrc = src->Get_Instigator();
+            if (instigatorSrc != nullptr && instigatorSrc == ownerDst)
+                continue;
+
+            CGameObject* instigatorDst = dst->Get_Instigator();
+            if (instigatorDst != nullptr && instigatorDst == ownerSrc)
+                continue;
+
+            // 레이어 확인
+            if (!Can_Collide(src->Get_CollisionLayer(), dst->Get_CollisionLayer()))
+                continue;
 
             bool isColliding = src->CheckCollision(dst);
 
@@ -52,6 +80,15 @@ void CCollisionManager::Update()
                     // 충돌 상태 추가
                     src->AddOverlap(dst);
                     dst->AddOverlap(src);
+                }
+                // 이미 겹쳐 있을 때
+                else
+                {
+                    if (CGameObject* ownerSrc = src->Get_Owner())
+                        ownerSrc->OnStayOverlap(src, dst);
+
+                    if (CGameObject* ownerDst = dst->Get_Owner())
+                        ownerDst->OnStayOverlap(dst, src);
                 }
             }
 
@@ -75,6 +112,7 @@ void CCollisionManager::Update()
     }
 }
 
+// 충돌체 추가
 void CCollisionManager::AddCollider(CCollider* collider)
 {
     if (collider == nullptr)
@@ -88,11 +126,90 @@ void CCollisionManager::RemoveCollider(CCollider* collider)
     if (collider == nullptr)
         return;
 
+    for (CCollider* other : m_Colliders)
+    {
+        if (other && other != collider)
+        {
+            if (other->IsOverlapping(collider))
+            {
+                other->RemoveOverlap(collider);
+
+                if (CGameObject* owner = other->Get_Owner())
+                    owner->OnEndOverlap(other, collider);
+            }
+        }
+    }
+
+    // 리스트에서 제거
     auto iter = remove(m_Colliders.begin(), m_Colliders.end(), collider);
     m_Colliders.erase(iter, m_Colliders.end());
+}
+
+_bool CCollisionManager::Can_Collide(COLLISION_LAYERTYPE layer1, COLLISION_LAYERTYPE layer2)
+{
+    _int index1 = static_cast<int>(layer1);
+    _int index2 = static_cast<int>(layer2);
+
+    return m_CollisionMatrix[index1][index2];
+}
+
+void CCollisionManager::Render_Debug(bool& flag)
+{
+    for (const auto& collider : m_Colliders)
+    {
+        collider->Set_ShowDebug(flag);
+    }
+}
+
+void CCollisionManager::Initialize_CollisionMatrix()
+{
+    // 일단 모든 레이어 충돌 가능하게 설정
+    for (_int i = 0; i < static_cast<_int>(COLLISION_LAYERTYPE::COL_LAYER_END); i++)
+    {
+        for (_int j = 0; j < static_cast<_int>(COLLISION_LAYERTYPE::COL_LAYER_END); j++)
+        {
+            m_CollisionMatrix[i][j] = true;
+        }
+    }
+
+    // 벽끼리는 충돌하지 않도록 설정
+    _int wall_Index = static_cast<_int>(COLLISION_LAYERTYPE::WALL);
+    m_CollisionMatrix[wall_Index][wall_Index] = false;
+
+    // 적끼리도 충돌 X
+    _int enemy_Index = static_cast<_int>(COLLISION_LAYERTYPE::ENEMY);
+    m_CollisionMatrix[enemy_Index][enemy_Index] = false;
+
+    // 아이템과 벽은 충돌 ㄴㄴ
+    _int item_Index = static_cast<_int>(COLLISION_LAYERTYPE::ITEM);
+    m_CollisionMatrix[wall_Index][item_Index] = false;
+    m_CollisionMatrix[item_Index][wall_Index] = false;
+
+    // 공격이랑 아이템 충돌 ㄴㄴ
+    _int attack_Index = static_cast<_int>(COLLISION_LAYERTYPE::ATTACK);
+    m_CollisionMatrix[attack_Index][item_Index] = false;
+    m_CollisionMatrix[item_Index][attack_Index] = false;
+
+    // 아이템, 적 충돌 ㄴㄴ
+    m_CollisionMatrix[item_Index][enemy_Index] = false;
+    m_CollisionMatrix[enemy_Index][item_Index] = false;
+
+    // TODO : 다른 충돌 상태 판정 추가하기
+    
+   // 투사체끼리도 충돌 X, 투사체랑 보스랑도 충돌X
+
+    _int projectile_Index = static_cast<_int>(COLLISION_LAYERTYPE::BOSSPROJECTILE);
+    m_CollisionMatrix[projectile_Index][projectile_Index] = false;
+    m_CollisionMatrix[projectile_Index][enemy_Index] = false;
+    m_CollisionMatrix[enemy_Index][projectile_Index] = false;
+
+    // 플레이어와 몬스터 몸 충돌x 혹시 모르니까 마지막에 추가 테스트를 위해 일단 끔
+    //_int player_Index = static_cast<_int>(COLLISION_LAYERTYPE::PLAYER);
+    //m_CollisionMatrix[enemy_Index][player_Index] = false;
 }
 
 void CCollisionManager::Free()
 {
     m_Colliders.clear();
+
 }

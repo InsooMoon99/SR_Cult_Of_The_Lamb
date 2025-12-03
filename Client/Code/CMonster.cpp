@@ -10,14 +10,17 @@
 
 CMonster::CMonster(DEVICE graphicDev)
     : CGameObject(graphicDev),
-      m_BufferCol(nullptr),
+      m_BufferCom(nullptr),
       m_TransformCom(nullptr),
       m_RectColCom(nullptr)
-{ }
+{}
 
 CMonster::CMonster(const CMonster& rhs)
-    : CGameObject(rhs)
-{ }
+    : CGameObject(rhs),
+      m_BufferCom(nullptr),
+      m_TransformCom(nullptr),
+      m_RectColCom(nullptr)
+{}
 
 CMonster::~CMonster()
 { }
@@ -69,7 +72,7 @@ void CMonster::Render_GameObject()
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
     m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
-    m_BufferCol->Render_Buffer();
+    m_BufferCom->Render_Buffer();
 
     m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 
@@ -89,10 +92,10 @@ void CMonster::OnEndOverlap(CCollider* self, CCollider* other)
 HRESULT CMonster::Add_Component()
 {
     // buffer
-    m_BufferCol = CreateProtoComponent<CTriCol>(this, COMPONENTTYPE::TRI_COLOR);
-    NULL_CHECK_RETURN(m_BufferCol, E_FAIL);
+    m_BufferCom = CreateProtoComponent<CTriCol>(this, COMPONENTTYPE::TRI_COLOR);
+    NULL_CHECK_RETURN(m_BufferCom, E_FAIL);
 
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TRI_COLOR, m_BufferCol });
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TRI_COLOR, m_BufferCom });
 
     // transform
     m_TransformCom = CreateProtoComponent<CTransform>(this, COMPONENTTYPE::TRANSFORM);

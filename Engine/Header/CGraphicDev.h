@@ -12,7 +12,7 @@ private:
     ~CGraphicDev() override;
 
 public:
-    LPDIRECT3DDEVICE9 Get_GraphicDev() { return m_GraphicDev; }
+    DEVICE Get_GraphicDev() { return m_GraphicDev; }
 
 public:
     HRESULT Ready_GraphicDev(HWND          hWnd,
@@ -25,8 +25,8 @@ public:
     void Render_End();
 
 private:
-    LPDIRECT3D9       m_SDK;           // 1. 그래픽 카드 성능 조사 객체
-    LPDIRECT3DDEVICE9 m_GraphicDev;    // 2. 그리기 담당 Direct3D 디바이스 (COM 객체)
+    LPDIRECT3D9 m_SDK;           // 1. 그래픽 카드 성능 조사 객체
+    DEVICE      m_GraphicDev;    // 2. 그리기 담당 Direct3D 디바이스 (COM 객체)
 
 private:
     void Free() override;

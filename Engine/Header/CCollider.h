@@ -4,6 +4,7 @@
 BEGIN(Engine)
 class CRectCollider;
 class CSphereCollider;
+class CBoxCollider;
 
 class ENGINE_DLL CCollider : public CComponent
 {
@@ -18,12 +19,21 @@ public:
     void         LateUpdate_Component() override;
     virtual void Render();
 
+public:
     virtual bool CheckCollision(CCollider* other);
 
-    COLLIDERTYPE GetColliderType() const { return m_ColliderType; }
+    COLLIDERTYPE    GetColliderType() const { return m_ColliderType; }
+    bool            Get_ShowDebug()   const { return m_ShowDebug; }
+    bool            IsCollisionActive() const { return m_IsColliderActive; }
+    CGameObject*    Get_Instigator() { return m_Instigator; }
 
-    void Set_ShowDebug(bool show) { m_ShowDebug = show; }
-    bool Get_ShowDebug() const { return m_ShowDebug; }
+
+    void            Set_Instigator(CGameObject* instigator) { m_Instigator = instigator; }
+    void            Set_ShowDebug(bool show) { m_ShowDebug = show; }
+    void            Set_CollisionActive(bool active) { m_IsColliderActive = active; }
+
+    COLLISION_LAYERTYPE Get_CollisionLayer() const { return m_CollisionLayer; }  
+    void Set_CollisionLayer(COLLISION_LAYERTYPE layer) { m_CollisionLayer = layer; }  
 
     // [충돌 상태 관리] - CollisionManager에서 사용
     bool IsOverlapping(CCollider* other);
@@ -31,15 +41,27 @@ public:
     void RemoveOverlap(CCollider* other);   // 충돌 끝
 
 public:
-    static bool CheckCollisionBox2Box(CRectCollider* b1, CRectCollider* b2);
-    static bool CheckCollisionSphere2Box(CSphereCollider* s1, CRectCollider* b2);
+    // Rect vs Rect
+    static bool CheckCollisionRect2Rect(CRectCollider* b1, CRectCollider* b2);
+    // Box vs Box
+    static bool CheckCollisionBox2Box(CBoxCollider* b1, CBoxCollider* b2);
+    // Sphere vs Box
+    static bool CheckCollisionSphere2Box(CSphereCollider* s1, CBoxCollider* b2);
+    // Sphere vs Sphere
     static bool CheckCollisionSphere2Sphere(CSphereCollider* s1, CSphereCollider* s2);
 
 protected:
-    COLLIDERTYPE m_ColliderType;
-    bool         m_ShowDebug = true;      // 디버그 렌더링 여부
+    void Free() override;
 
-private:
+protected:
+    COLLISION_LAYERTYPE m_CollisionLayer; // 충돌 레이어
+
+    COLLIDERTYPE  m_ColliderType;
+    _bool         m_ShowDebug;        // 디버그 렌더링 여부
+    _bool         m_IsColliderActive; // 충돌처리용
+    CGameObject*  m_Instigator;
+
+protected:
     // 현재 프레임 기준으로 겹쳐있는(충돌중인) 다른 Collider들
     unordered_set<CCollider*> m_ColliderSet;
 };

@@ -25,11 +25,15 @@
 #include <list>
 #include <map>
 #include <vector>
+#include <string>
 #include <process.h>
+#include <filesystem>
+#include <iostream>
 
 #include "Engine_Enum.h"
 #include "Engine_Macro.h"
 #include "Engine_Typedef.h"
+#include "Engine_Global.h"
 #include "Engine_Struct.h"
 #include "Engine_Function.h"
 
@@ -51,5 +55,6 @@ extern HWND      g_hWnd;
 
 using namespace std;
 using namespace Engine;
+using namespace std::filesystem;
 
 #endif //PCH_H

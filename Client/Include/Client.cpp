@@ -4,12 +4,13 @@
 #include "pch.h"
 #include "Client.h"
 #include "framework.h"
-
-#include <locale.h>
 #include "CFrameMgr.h"
 #include "CImGuiManager.h"
 #include "CMainApp.h"
 #include "CTimerMgr.h"
+#include "CMainEditorMgr.h"
+
+#include <locale.h> // cmd창 출력용
 
 #define MAX_LOADSTRING 100
 
@@ -36,12 +37,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE     hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-    // TODO: 여기에 코드를 입력합니다.
-
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_CLIENT, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
+
+    //비율이슈
+    SetProcessDPIAware();
 
     // 애플리케이션 초기화를 수행합니다:
     if (!InitInstance(hInstance, nCmdShow))
@@ -94,8 +96,18 @@ int APIENTRY wWinMain(_In_ HINSTANCE     hInstance,
 
                 _float fTimer_FPS60 = CTimerMgr::GetInstance()->Get_TimeDelta(L"Timer_FPS60");
 
-                pMainApp->Update_MainApp(fTimer_FPS60);
-                pMainApp->LateUpdate_MainApp(fTimer_FPS60);
+                if (CMainEditorMgr::GetInstance()->IsPlaying())
+                {
+                    pMainApp->Update_MainApp(fTimer_FPS60);
+                    pMainApp->LateUpdate_MainApp(fTimer_FPS60);
+                }
+
+                else // 일시정지
+                {
+                    pMainApp->Update_MainApp(0.f);
+                    pMainApp->LateUpdate_MainApp(0.f);
+                }
+               
                 pMainApp->Render_MainApp();
             }
         }
@@ -156,11 +168,20 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
     AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 
+    int windowWidth = rc.right - rc.left;
+    int windowHeight = rc.bottom - rc.top;
+
+    int screenWidth = GetSystemMetrics(SM_CXSCREEN);  
+    int screenHeight = GetSystemMetrics(SM_CYSCREEN); 
+
+    int centerX = (screenWidth - windowWidth) / 2;
+    int centerY = (screenHeight - windowHeight) / 2;
+
     HWND hWnd = CreateWindowW(szWindowClass,
                               szTitle,
                               WS_OVERLAPPEDWINDOW,
-                              CW_USEDEFAULT,
-                              0,
+                              centerX,
+                              centerY,
                               rc.right - rc.left,
                               rc.bottom - rc.top,
                               nullptr,
@@ -204,6 +225,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         _tfreopen_s(&debug, _T("CONIN$"), _T("r"), stdin);
         _tfreopen_s(&debug, _T("CONERR"), _T("w"), stderr);
         _tsetlocale(LC_ALL, _T(""));
+
+        HWND consoleWindow = GetConsoleWindow();
+        if (consoleWindow)
+        {
+
+            SetWindowPos(consoleWindow,
+                HWND_TOP,
+                50,            //  X 좌표
+                50,            //  Y 좌표
+                800,           //  너비
+                600,           //  높이
+                SWP_SHOWWINDOW);
+        }
     }
     break;
     case WM_CLOSE:
@@ -230,6 +264,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
     }
     break;
+
+    case WM_MOUSEWHEEL:  
+        return 0;
+
     case WM_KEYDOWN:
     {
         switch (wParam)

@@ -6,7 +6,7 @@ BEGIN(Engine)
 class ENGINE_DLL CFont : public CBase
 {
 private:
-    explicit CFont(LPDIRECT3DDEVICE9 graphicDev);
+    explicit CFont(DEVICE graphicDev);
     ~CFont() override;
 
 public:
@@ -27,18 +27,22 @@ public:
     void Render_Font(const wstring& text,
                      const _vec2*   pos,
                      D3DXCOLOR      color);
-
+    void Render_FontOutlined(const wstring& text,
+                             const _vec2* pos,
+                             D3DXCOLOR textColor,
+                             D3DXCOLOR outlineColor,
+                             int thickness);
 private:
-    LPDIRECT3DDEVICE9 m_GraphicDev;
-    LPD3DXSPRITE      m_Sprite;    // 2D 렌더링용 스프라이트 객체
-    LPD3DXFONT        m_Font;      // 폰트 COM 객체
+    DEVICE       m_GraphicDev;
+    LPD3DXSPRITE m_Sprite;    // 2D 렌더링용 스프라이트 객체
+    LPD3DXFONT   m_Font;      // 폰트 COM 객체
 
 public:
-    static CFont* Create(LPDIRECT3DDEVICE9 graphicDev,
-                         const wstring&    fontType,
-                         const _uint&      width,
-                         const _uint&      height,
-                         const _uint&      weight);
+    static CFont* Create(DEVICE         graphicDev,
+                         const wstring& fontType,
+                         const _uint&   width,
+                         const _uint&   height,
+                         const _uint&   weight);
 
 private:
     void Free() override;

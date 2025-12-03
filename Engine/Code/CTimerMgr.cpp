@@ -4,6 +4,8 @@
 
 IMPLEMENT_SINGLETON(CTimerMgr)
 
+static const wchar_t* DEFAULT_FRAME_TIMER = L"Timer_FPS60";
+
 CTimerMgr::CTimerMgr()
 { }
 
@@ -30,6 +32,16 @@ void CTimerMgr::Set_TimeDelta(const wstring& timerTag)
         return;
 
     timer->Update_Timer();
+}
+
+_float CTimerMgr::Get_TimeDelta()
+{
+    return Get_TimeDelta(DEFAULT_FRAME_TIMER);
+}
+
+void CTimerMgr::Set_TimeDelta()
+{
+    Set_TimeDelta(DEFAULT_FRAME_TIMER);
 }
 
 HRESULT CTimerMgr::Ready_Timer(const wstring& timerTag)

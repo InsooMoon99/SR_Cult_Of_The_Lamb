@@ -14,9 +14,9 @@ private:
     ~CLightMgr() override;
 
 public:
-    HRESULT Ready_Light(LPDIRECT3DDEVICE9 graphicDev,
-                        const D3DLIGHT9*  lightInfo,
-                        const _uint&      index);
+    HRESULT Ready_Light(DEVICE           graphicDev,
+                        const D3DLIGHT9* lightInfo,
+                        const _uint&     index);
 
 private:
     list<CLight*> m_LightList;  // 리스트를 통한 광원 관리

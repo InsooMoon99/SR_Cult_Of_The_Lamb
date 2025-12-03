@@ -11,7 +11,7 @@ class ENGINE_DLL CTransform : public CComponent
 {
 private:
     explicit CTransform();
-    explicit CTransform(LPDIRECT3DDEVICE9 graphicDev);
+    explicit CTransform(DEVICE graphicDev);
     explicit CTransform(const CTransform& rhs);
     ~CTransform() override;
 
@@ -30,6 +30,7 @@ public: // Getter       ====================================
     _vec3          Get_Rotation() const; // 회전의  X, Y, Z 축 회전 반환 (Pitch, Yaw, Roll)
     _float         Get_Rotation(ROTATION eType) const; // 원하는 축의 회전값 반환
     const _matrix& Get_World() const { return m_matWorld; }
+    _vec3          Get_Euler() const { return m_EulerRad; }
 
     // 월드 행렬에서 값 직접 추출. 수업 코드 호환용
     void Get_Info(INFO type, _vec3* info);
@@ -50,6 +51,11 @@ public: // Setter       ====================================
     void Set_Scale(_float x, _float y, _float z) { m_Scale = { x, y, z }; }
 
     void Set_World(const _matrix& matrix) { m_matWorld = matrix; }
+
+    // 인수) Rotation Setter
+    // Radian 기준 Euler(Pitch=X, Yaw=Y, Roll=Z) 세팅
+    void Set_Rotation(const _vec3& rad);
+    void Set_RotationAxis(ROTATION axis, _float value);
 
 public: // Transform Operations     ========================
 
@@ -103,10 +109,12 @@ private:
     //_matrix m_matPrevParent;          // 부모 월드 행렬의 이전값 (필요시 사용)
 
     bool m_IsDirty;                     // 월드 변환 필요 여부 플래그
+
+    _vec3 m_EulerRad{};
 #pragma endregion
 
 public:
-    static CTransform* Create(LPDIRECT3DDEVICE9 graphicDev);
+    static CTransform* Create(DEVICE graphicDev);
     CComponent*        Clone() override;
 
 private:

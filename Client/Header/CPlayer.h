@@ -1,18 +1,21 @@
 ﻿#pragma once
-#include "CGameObject.h"
-#include "Engine_Define.h"
+
+#include "CCharacterBase.h"
+
+class CWeaponEquip;
+class CInventory;
+class CUIInventory;
+class CPlayerController;
+class CPlayerInput;
+class CPlayerMovement;
+class CPlayerAttack;
 
 BEGIN(Engine)
-class CRcTex;
-class CTransform;
+class CRigidbody;
 class CTexture;
-class CAnimator;
-class CProtoMgr;
-class CRectCollider;
-class CState;
 END
 
-class CPlayer : public CGameObject
+class CPlayer : public CCharacterBase
 {
 private:
     explicit CPlayer(DEVICE graphicDev);
@@ -21,33 +24,36 @@ private:
 
 public:
     HRESULT Ready_GameObject() override;
+    void    Initialize_GameObject() override;
     _int    Update_GameObject(const _float& timeDelta) override;
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
 
+    void    OnBeginOverlap(CCollider* self, CCollider* other) override;
+    void    OnEndOverlap(CCollider* self, CCollider* other) override;
 
-    void Render_Setting();
-    void Render_Reset();
-
-    void OnBeginOverlap(CCollider* self, CCollider* other) override;
-    void OnEndOverlap(CCollider* self, CCollider* other) override;
+    void    Render_Editor() override;
 
 private:
-    HRESULT Add_Component();
-    void    Animation_Setting();
-    void    Key_Input(const _float& timeDelta);
+    HRESULT Add_Component()     override;
+    void    Animation_Setting() override;
 
 private:
-    Engine::CRcTex*        m_BufferCom;
-    Engine::CTransform*    m_TransformCom;
-    Engine::CTexture*      m_TextureCom;
-    Engine::CAnimator*     m_AnimatorCom;
-    Engine::CRectCollider* m_RectColCom;
-    Engine::CState*        m_StateCom;
+#pragma region Engine Components
+    Engine::CRigidbody*  m_RigidbodyCom;
 
-    map<PLAYERSTATE, wstring> m_StateAnim;
+#pragma endregion
+#pragma region Client Components
+    CWeaponEquip*      m_WeaponEquipCom;
+    CInventory*        m_InventoryCom;
+    CPlayerController* m_PlayerControllerCom;
+    CPlayerInput*      m_PlayerInputCom;
+    CPlayerMovement*   m_PlayerMovementCom;
+    CPlayerAttack*     m_PlayerAttackCom;
 
-    void TempImGuiRender();
+#pragma endregion
+
+    map<ACTORSTATE, wstring> m_StateAnim;
 
 public:
     static CPlayer* Create(DEVICE graphicDev);

@@ -22,7 +22,16 @@ enum ROTATION { ROT_X, ROT_Y, ROT_Z, ROT_END };
 enum TEXTUREID { TEX_NORMAL, TEX_CUBE, TEX_END };
 
 // 렌더링 우선순위별 렌더링 그룹 인덱스
-enum RENDERID { RENDER_PRIORITY, RENDER_NONALPHA, RENDER_ALPHA, RENDER_UI, RENDER_END };
+enum RENDERID
+{
+    RENDER_PRIORITY,
+    RENDER_PRIORITY_ALPHA,
+    RENDER_NONALPHA,
+    RENDER_ALPHA,
+    RENDER_UI,
+
+    RENDER_END
+};
 
 // DirectInput 마우스 버튼 상태 인덱스
 enum MOUSEKEYSTATE { DIM_LB, DIM_RB, DIM_MB, DIM_END };
@@ -47,17 +56,44 @@ enum class LAYERTYPE
 {
     ENVIRONMENT,
     GAMELOGIC,
-    CAMERA,
     UI,
 
     LAYER_END
+};
+
+enum class COLLISION_LAYERTYPE
+{
+    DEFAULT, // 모든 충돌
+    PLAYER,
+    ENEMY,
+    WALL,
+    PLAYERPROJECTILE,
+    BOSSPROJECTILE,
+    ITEM,
+    ATTACK,
+
+    COL_LAYER_END
 };
 
 enum class OBJTYPE
 {
     PLAYER,
     MONSTER,
+    NPC,
+    CAMERA,
+    ITEM,
     /* 오브젝트 타입 종류 추가 */
+    LOGIC,
+    UI,
+    HUMANMONSTER,
+    BOSS1,
+    BOSS2,
+
+    ATTACK_COL,
+
+    TERRAIN,
+    PLACEMENT,
+    WALL,
 
     OBJ_END
 };
@@ -67,14 +103,51 @@ enum class COMPONENTTYPE
 {
     TRI_COLOR,
     RC_COLOR,
+    BOX_COLOR,
+
     RC_TEX,
+    BOX_TEX,
+    TERRAIN_TEX,
+
     TRANSFORM,
     STATE,
+    COMBATSTAT,
+    INVENTORY,
+    RIGIDBODY,
+    TERRAIN_RENDER,
+    WALL_RENDERER,
+    PROJECTILE,
+
+    WEAPON_EQUIP,           // 플레이어 무기
+    PL_CONTROLLER,          // 플레이어 FSM 컨트롤러
+    PL_INPUT,               // 플레이어 방향 입력
+    PL_MOVEMENT,            // 플레이어 움직임
+    PL_ATTACK,              // 플레이어 공격
 
     TEXTURE,
     TEX_PLAYER,
     TEX_MAINBG,
-    // TODO 석호: 현재 텍스처 프로토타입마다 다른 enum 값을 줘야 하기에, 텍스처마다 새로 추가되어야 함
+    TEX_MONSTER,
+    TEX_HUMAN_MONSTER,
+    TEX_UI_CIRCLE,
+    TEX_UI_CELL,
+    TEX_UI_COLOR,
+    TEX_UI_HEART,
+    TEX_UI_WEAPON,
+    TEX_UI_SKILLCOUNT,
+    TEX_UI_HIGHLIGHT,
+    TEX_UI_INVEN,
+    TEX_UI_RITUALCARD,
+    TEX_UI_HEARTCARD,
+    TEX_UI_EXPLAIN,
+    TEX_UI_TAROT,
+    TEX_ITEM,
+    TEX_MENU_CHAR,
+    TEX_UI_ICON,
+    TEX_UI_BUTTON,
+    TEX_BOSSPHASE1,
+    TEX_BULLET,
+    TEX_OUT,
 
     ANIMATOR,
     CAMERA,
@@ -84,28 +157,93 @@ enum class COMPONENTTYPE
     BOX_COLL,
     SPHERE_COLL,
 
+
+    ////////////////
+    //   Boss 2   //
+    ////////////////
+    TEX_SLAVE_TEST,
+    TEX_BOSS2_PHASE2,
+    BOSS2_CONTROLLER,
+
+    ////////////////
+    //  MapObject //
+    ////////////////
+    TEX_TILE_284,
+    TEX_TILE_1024,
+    TEX_TILE_OUTLINE,
+
+    TEX_GRASS,
+    TEX_RUBBLE,
+    TEX_DECO,
+
+    TEX_DUNGEON_DECO,
+    TEX_ETC,
+
+
     COMPONENT_END
 };
 
-enum class PLAYERSTATE
+enum class ACTORSTATE
 {
+    // 여기 추가할때마다 EnumHelper에 추가해야 Editor에 정상적으로 나옴
     IDLE,
     RUN,
     ATTACK,
+
+    PLAYER_ROLL,                // 구르기
+    PLAYER_SWORD_COMBO1,        // 검 일반공격 콤보 1
+    PLAYER_SWORD_COMBO2,        // 검 일반공격 콤보 2
+    PLAYER_SWORD_COMBO3,        // 검 일반공격 콤보 3
+    PLAYER_SWORD_HEAVY,         // 검 강공격
+    PLAYER_GAUNTLET_COMBO1,     // 건틀릿 일반공격 콤보 1
+    PLAYER_GAUNTLET_COMBO2,     // 건틀릿 일반공격 콤보 2
+    PLAYER_GAUNTLET_COMBO3,     // 건틀릿 일반공격 콤보 3
+    PLAYER_GAUNTLET_COMBO4,     // 건틀릿 일반공격 콤보 4
+    PLAYER_GAUNTLET_HEAVY,      // 건틀릿 강공격
+
     HIT,
     DEAD,
 
-    PLAYERSTATE_END
+    STATE_END
 };
 
-enum class PLAYERDIR
+enum class ACTORDIR
 {
-    UP,
-    DOWN,
     LEFT,
     RIGHT,
+    UP,
+    DOWN,
+    L_UP,
+    R_UP,
+    L_DOWN,
+    R_DOWN,
 
-    PLAYERDIR_END
+    DIR_END
+};
+
+enum class SCENETYPE
+{
+    SC_LOGO,
+    SC_LOGO_BOSS1,
+    SC_LOGO_BOSS2,
+    SC_MAINMENU,
+    SC_STAGE,
+    SC_STAGE1,
+    SC_TAROT_TEST,
+    SC_BOSS_STAGE1,
+    SC_BOSS_STAGE2,
+
+    SC_EDIT,
+
+    SC_END
+};
+
+enum SOUNDTYPE
+{
+	SOUND_BGM,
+	SOUND_EFFECT,
+
+	SOUND_END
 };
 }
 #endif // Engine_Enum_h__

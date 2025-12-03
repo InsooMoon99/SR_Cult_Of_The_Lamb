@@ -18,12 +18,12 @@ public:
 private:
     HRESULT Ready_Environment_Layer(LAYERTYPE layerType);
     HRESULT Ready_GameLogic_Layer(LAYERTYPE layerType) { return S_OK; }
-    HRESULT Ready_UI_Layer(LAYERTYPE layerType) { return S_OK; }
+    HRESULT Ready_UI_Layer(LAYERTYPE layerType);
 
     HRESULT Ready_Prototype();
 
 private:
-    CLoading* m_pLoading;
+    CLoading* m_Loading;
 
 public:
     static CLogo* Create(DEVICE graphicDev);

@@ -20,13 +20,21 @@ public:
     CComponent* Get_Component(COMPONENTID componentID, OBJTYPE objType, COMPONENTTYPE componentType);
     HRESULT     Add_GameObject(OBJTYPE objType, CGameObject* gameObject);
 
+    const map<OBJTYPE, vector<CGameObject*>>& Get_Objects() const { return m_Objects; }
+
 public:
     HRESULT Ready_Layer();
+    void    Initialize_Layer();
     _int    Update_Layer(const _float& timeDelta);
     void    LateUpdate_Layer(const _float& timeDelta);
 
 private:
-    map<OBJTYPE, CGameObject*> m_Objects;
+    void Object_NameSetting(OBJTYPE objType, CGameObject* gameObject);
+
+private:
+    map<OBJTYPE, vector<CGameObject*>> m_Objects;
+
+    unordered_map<OBJTYPE, _uint> m_NameCounter;
 
 public:
     static CLayer* Create();

@@ -3,19 +3,22 @@
 
 #include "CCameraCom.h"
 #include "CCreateHelper.h"
+#include "CDInputMgr.h"
+#include "CRenderer.h"
 #include "CTransform.h"
 
 CMainCamera::CMainCamera(DEVICE graphicDev)
     : CGameObject(graphicDev),
       m_CameraCom(nullptr),
       m_TransformCom(nullptr),
-      m_TargetTransformCom(nullptr),
-      m_ViewMode(CCameraCom::VIEW_QUARTER)
+      m_TargetTransformCom(nullptr)
 { }
 
 CMainCamera::CMainCamera(const CMainCamera& rhs)
     : CGameObject(rhs),
-      m_ViewMode(rhs.m_ViewMode)
+      m_CameraCom(nullptr),
+      m_TransformCom(nullptr),
+      m_TargetTransformCom(nullptr)
 { }
 
 CMainCamera::~CMainCamera()
@@ -33,7 +36,19 @@ _int CMainCamera::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CGameObject::Update_GameObject(timeDelta);
 
-    // TODO : 매 프레임 작업
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_PRIORITY, this);
+
+    switch (m_CameraCom->Get_CamMode())
+    {
+    case CCameraCom::CAM_FREE:
+        Key_Input(timeDelta);
+        break;
+    case CCameraCom::CAM_TARGET:
+        Chase_CamTarget(timeDelta);
+        break;
+    default:
+        break;
+    }
 
     return exit;
 }
@@ -44,21 +59,37 @@ void CMainCamera::LateUpdate_GameObject(const _float& timeDelta)
 }
 
 void CMainCamera::Render_GameObject()
-{ }
-
-HRESULT CMainCamera::Set_Target(CTransform* targetTransform)
 {
-    NULL_CHECK_RETURN(targetTransform, E_FAIL)
+    m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
+}
 
-    m_TargetTransformCom = targetTransform;
+void CMainCamera::Render_Editor()
+{
+    CGameObject::Render_Editor();
+
+    ImGui::Text("=== Main Camera === ");
+}
+
+HRESULT CMainCamera::Set_CamTarget(CTransform* targetTransform)
+{
+    // 타겟이 변경되었는지 확인하고, 변경되었다면 새로운 타겟 설정
+    if (m_TargetTransformCom != targetTransform)
+        m_TargetTransformCom = targetTransform;
+
+    // 새로운 타겟 상태에 따라 카메라 모드 설정
+    if (nullptr == m_TargetTransformCom)
+    {
+        //MSG_BOX("Camera target set to null. Switching to Free Mode.");
+        m_CameraCom->Set_CamMode(CCameraCom::CAM_FREE);
+    }
+    else
+        m_CameraCom->Set_CamMode(CCameraCom::CAM_TARGET);
 
     return S_OK;
 }
 
 HRESULT CMainCamera::Add_Component()
 {
-    // todo 추가할 것
-
     // transform
     m_TransformCom = CreateProtoComponent<CTransform>(this, COMPONENTTYPE::TRANSFORM);
     NULL_CHECK_RETURN(m_TransformCom, E_FAIL);
@@ -72,6 +103,100 @@ HRESULT CMainCamera::Add_Component()
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::CAMERA, m_CameraCom });
 
     return S_OK;
+}
+
+void CMainCamera::Key_Input(const _float& timeDelta)
+{
+    auto inputMgr = CDInputMgr::GetInstance();
+
+    const _float speed = 10.f;
+
+    _vec3 dir    = { 0.f, 0.f, 0.f };
+    bool  moving = false;
+
+    if (inputMgr->Get_DIKeyState(DIK_LSHIFT) & 0x80)
+    {
+        // Y축 회전
+        if (inputMgr->Get_DIKeyState(DIK_LEFT) & 0x80)
+        {
+            m_TransformCom->Rotation(ROT_Y, D3DXToRadian(-180), timeDelta);
+            moving = true;
+        }
+
+        if (inputMgr->Get_DIKeyState(DIK_RIGHT) & 0x80)
+        {
+            m_TransformCom->Rotation(ROT_Y, D3DXToRadian(180), timeDelta);
+            moving = true;
+        }
+
+        // X축 회전
+        if (inputMgr->Get_DIKeyState(DIK_UP) & 0x80)
+        {
+            m_TransformCom->Rotation_World(ROT_X, D3DXToRadian(-180), timeDelta);
+            moving = true;
+        }
+
+        if (inputMgr->Get_DIKeyState(DIK_DOWN) & 0x80)
+        {
+            m_TransformCom->Rotation_World(ROT_X, D3DXToRadian(180), timeDelta);
+            moving = true;
+        }
+    }
+    else
+    {
+        // 앞뒤
+        dir = m_TransformCom->Get_Look();
+        if (inputMgr->Get_DIKeyState(DIK_UP) & 0x80)
+        {
+            D3DXVec3Normalize(&dir, &dir);
+            m_TransformCom->Move_Pos(dir, timeDelta, speed);
+            moving = true;
+        }
+
+        if (inputMgr->Get_DIKeyState(DIK_DOWN) & 0x80)
+        {
+            D3DXVec3Normalize(&dir, &dir);
+            m_TransformCom->Move_Pos(dir, timeDelta, -speed);
+            moving = true;
+        }
+
+        // 좌우
+        dir = m_TransformCom->Get_Right();
+        if (inputMgr->Get_DIKeyState(DIK_RIGHT) & 0x80)
+        {
+            D3DXVec3Normalize(&dir, &dir);
+            m_TransformCom->Move_Pos(dir, timeDelta, speed);
+            moving = true;
+        }
+
+        if (inputMgr->Get_DIKeyState(DIK_LEFT) & 0x80)
+        {
+            D3DXVec3Normalize(&dir, &dir);
+            m_TransformCom->Move_Pos(dir, timeDelta, -speed);
+            moving = true;
+        }
+    }
+
+    // 상하
+    dir = m_TransformCom->Get_Up();
+    if (inputMgr->Get_DIKeyState(DIK_P) & 0x80)
+    {
+        D3DXVec3Normalize(&dir, &dir);
+        m_TransformCom->Move_Pos(dir, timeDelta, speed);
+        moving = true;
+    }
+
+    if (inputMgr->Get_DIKeyState(DIK_SEMICOLON) & 0x80)
+    {
+        D3DXVec3Normalize(&dir, &dir);
+        m_TransformCom->Move_Pos(dir, timeDelta, -speed);
+        moving = true;
+    }
+}
+
+void CMainCamera::Chase_CamTarget(const _float& timeDelta)
+{
+    m_TransformCom->Set_Pos(m_TargetTransformCom->Get_Pos());
 }
 
 CMainCamera* CMainCamera::Create(DEVICE graphicDev)

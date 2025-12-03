@@ -3,7 +3,7 @@
 CRcCol::CRcCol()
 { }
 
-CRcCol::CRcCol(LPDIRECT3DDEVICE9 graphicDev)
+CRcCol::CRcCol(DEVICE graphicDev)
     : CVIBuffer(graphicDev)
 { }
 
@@ -69,7 +69,7 @@ void CRcCol::Render_Buffer()
     CVIBuffer::Render_Buffer();
 }
 
-CRcCol* CRcCol::Create(LPDIRECT3DDEVICE9 graphicDev)
+CRcCol* CRcCol::Create(DEVICE graphicDev)
 {
     auto* rcCol = new CRcCol(graphicDev);
 

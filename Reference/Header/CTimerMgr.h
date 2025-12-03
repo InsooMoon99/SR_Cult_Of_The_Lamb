@@ -17,6 +17,9 @@ public:
     _float Get_TimeDelta(const wstring& timerTag);
     void   Set_TimeDelta(const wstring& timerTag);
 
+    _float Get_TimeDelta();
+    void   Set_TimeDelta();
+
 public:
     HRESULT Ready_Timer(const wstring& timerTag);
 

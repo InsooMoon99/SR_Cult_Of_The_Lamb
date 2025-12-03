@@ -1,4 +1,5 @@
-#pragma once
+﻿#pragma once
+
 
 class CImGuiManager
 {
@@ -39,7 +40,7 @@ public:
 private:
 	static CImGuiManager* m_pInstance;
 
-	D3DXVECTOR4 clear_color = { 0.f, 0.f, 0.f, 0.f };
+    D3DXVECTOR4 clear_color = { 0.f, 0.f, 0.f, 0.f };
 	bool show_demo_window = true;
 	bool show_another_window = true;
 

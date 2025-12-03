@@ -2,8 +2,6 @@
 #include "CCameraCom.h"
 #include "CGameObject.h"
 
-// TODO : 미완성
-
 BEGIN(Engine)
 class CTransform;
 END
@@ -20,22 +18,26 @@ public:
     _int    Update_GameObject(const _float& timeDelta) override;
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
+    void    Render_Editor() override;
 
-public:
-    HRESULT Set_Target(CTransform* targetTransform);
+public: // Setter
+    HRESULT Set_CamTarget(CTransform* targetTransform); // 카메라가 추적할 타겟 세팅
+
+public: // Getter
 
 public: // TODO : 카메라 이동, 카메라 쉐이킹 등 기능 함수
 
 private:
     HRESULT Add_Component();
 
+    void Key_Input(const _float& timeDelta);
+    void Chase_CamTarget(const _float& timeDelta);
+
 private:
     Engine::CCameraCom* m_CameraCom;
     Engine::CTransform* m_TransformCom;
 
     Engine::CTransform* m_TargetTransformCom;   // 따라가는 타겟의 Transform에 접근
-
-    CCameraCom::VIEW_MODE m_ViewMode;
 
 public:
     static CMainCamera* Create(DEVICE graphicDev);

@@ -77,7 +77,7 @@ HRESULT CGraphicDev::Ready_GraphicDev(HWND          hWnd,
     d3dpp.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
     d3dpp.PresentationInterval       = D3DPRESENT_INTERVAL_IMMEDIATE;
 
-    LPDIRECT3DDEVICE9 graphicDev = nullptr;
+    DEVICE graphicDev = nullptr;
 
     // 3. 그리기 담당 객체 생성 : 앞서 준비한 파라미터로 Direct3D 디바이스를 만든다.
     if (FAILED(sdk->CreateDevice(

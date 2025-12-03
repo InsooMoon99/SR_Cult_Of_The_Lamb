@@ -27,7 +27,7 @@ private:
     HRESULT Add_Component();
 
 private:
-    Engine::CTriCol*       m_BufferCol;
+    Engine::CTriCol*       m_BufferCom;
     Engine::CTransform*    m_TransformCom;
     Engine::CRectCollider* m_RectColCom;
 

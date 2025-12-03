@@ -1,21 +1,37 @@
 ﻿#include "pch.h"
 #include "CStage.h"
 
-#include "CAnimator.h"
+#include "CCombatStat.h"
+#include "CDInputMgr.h"
+#include "CDropSystem.h"
+#include "CHumanMonster.h"
+#include "CInventory.h"
+#include "CItemDB.h"
 #include "CLayer.h"
-#include "CMonster.h"
+#include "CMainCamera.h"
+#include "CMainEditorMgr.h"
+#include "CPersistentObjectHelper.h"
 #include "CPlayer.h"
-#include "CProtoMgr.h"
-#include "CRcCol.h"
-#include "CRcTex.h"
-#include "CRectCollider.h"
-#include "CTexture.h"
+#include "CSceneMgr.h"
+#include "CSoundMgr.h"
+#include "CTerrain.h"
 #include "CTransform.h"
-#include "CTriCol.h"
-#include "CState.h"
+#include "CUICircle.h"
+#include "CUIIcon.h"
+#include "CUIItemGet.h"
+#include "CUIItemGetManager.h"
+#include "CUIMp.h"
+#include "CUIPlayerPanel.h"
+#include "CUITabMenu.h"
+#include "CUIWeapon.h"
+#include "ItemInstance.h"
 
 CStage::CStage(DEVICE graphicDev)
-    : Engine::CScene(graphicDev)
+    : Engine::CScene(graphicDev),
+      m_PlayerCombatStatCom(nullptr),
+      m_PlayerInventoryCom(nullptr),
+      m_WeaponEquipCom(nullptr),
+      m_Terrain(nullptr)
 { }
 
 CStage::~CStage()
@@ -23,28 +39,72 @@ CStage::~CStage()
 
 HRESULT CStage::Ready_Scene()
 {
-    // 로딩 스레드로 역할 이동
-    //if (FAILED(Ready_Prototype()))
-    //    return E_FAIL;
-
     if (FAILED(Ready_Environment_Layer(LAYERTYPE::ENVIRONMENT)))
         return E_FAIL;
 
     if (FAILED(Ready_GameLogic_Layer(LAYERTYPE::GAMELOGIC)))
         return E_FAIL;
 
-    if (FAILED(Ready_Camera_Layer(LAYERTYPE::CAMERA)))
-        return E_FAIL;
-
     if (FAILED(Ready_UI_Layer(LAYERTYPE::UI)))
         return E_FAIL;
 
+    // 안은수 test
+    CDropSystem::GetInstance()->SetCurrentScene(this);
+
+    for (int i = 0; i < CItemDB::GetInstance()->GetVector().size(); i++)
+    {
+        int          id   = CItemDB::GetInstance()->GetVector()[i].id;
+        ItemInstance inst = { id, -1, 0 };
+        CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 5.f, 1.f, 10.f + (i * 3.f) });
+    }
+
+    int size = CItemDB::GetInstance()->GetVector().size();
+    for (int i = 0; i < size; i++)
+    {
+        int reverseIndex = size - 1 - i;
+        int id           = CItemDB::GetInstance()->GetVector()[reverseIndex].id;
+
+        ItemInstance inst = { id, -1, 0 };
+        CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 10.f, 1.f, 10.f + (i * 3.f) });
+    }
+
+
+    size = CItemDB::GetInstance()->GetVector().size();
+    for (int i = 0; i < size; i++)
+    {
+        int reverseIndex = size - 1 - i;
+        int id = CItemDB::GetInstance()->GetVector()[reverseIndex].id;
+
+        ItemInstance inst = { id, -1, 0 };
+        CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 15.f, 1.f, 10.f + (i * 3.f) });
+    }
+    // BGM Test
+    //CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Intro.wav", 0.5f);
+
     return S_OK;
+}
+
+void CStage::Initialize_Scene()
+{
+    CScene::Initialize_Scene();
+
+    // 초기 맵 불러오기 <- 이거 꼭 Initialize에서 진행해야 맵 오브젝트가 잘 불러진다.
+    m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Default.map");
 }
 
 _int CStage::Update_Scene(const _float& timeDelta)
 {
     _int exit = Engine::CScene::Update_Scene(timeDelta);
+
+    if (CDInputMgr::GetInstance()->KeyDown(DIK_F))
+    {
+        CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS1);
+    }
+
+    if (CDInputMgr::GetInstance()->KeyDown(DIK_G))
+    {
+        CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS2);
+    }
 
     return exit;
 }
@@ -61,14 +121,17 @@ void CStage::Render_Scene()
 
 HRESULT CStage::Ready_Environment_Layer(LAYERTYPE layerType)
 {
-    Engine::CLayer* pLayer = Engine::CLayer::Create();
+    Engine::CLayer* layer = Engine::CLayer::Create();
 
-    if (nullptr == pLayer)
+    if (nullptr == layer)
         return E_FAIL;
 
-    Engine::CGameObject* pGameObject = nullptr;
+    m_Terrain = CTerrain::Create(m_GraphicDev);
+    NULL_CHECK_RETURN(m_Terrain, E_FAIL);
 
-    m_Layers.insert({ layerType, pLayer });          // scene -> map
+    layer->Add_GameObject(OBJTYPE::TERRAIN, m_Terrain);
+
+    m_Layers.insert({ layerType, layer });
 
     return S_OK;
 }
@@ -77,69 +140,200 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
 {
     Engine::CLayer* layer = Engine::CLayer::Create();
 
-    if (nullptr == layer)
-        return E_FAIL;
+    NULL_CHECK_RETURN_MSG(
+        layer,
+        E_FAIL,
+        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Create() returned null");
 
     Engine::CGameObject* gameObject = nullptr;
 
-    // player
-    gameObject = CPlayer::Create(m_GraphicDev);
+    // -----------------------------
+    // Player
+    // -----------------------------
 
-    if (nullptr == gameObject)
-        return E_FAIL;
+    // 플레이어 생성
+    FAILED_CHECK_MSG(
+        Engine::AcquirePersistentObject<CPlayer>(
+            OBJTYPE::PLAYER,
+            L"Player",
+            m_GraphicDev,
+            layer,
+            &gameObject),
+        L"Persistent object setup failed");
 
-    if (FAILED(layer->Add_GameObject(OBJTYPE::PLAYER, gameObject)))
-        return E_FAIL;
+    NULL_CHECK_RETURN(gameObject, E_FAIL);
 
-    // monster
-    gameObject = CMonster::Create(m_GraphicDev);
+    // 플레이어의 Transform 가져오기
+    const auto playerTransform =
+        dynamic_cast<CTransform*>(gameObject->Get_Component(
+            ID_DYNAMIC,
+            COMPONENTTYPE::TRANSFORM));
 
-    if (nullptr == gameObject)
-        return E_FAIL;
+    NULL_CHECK_RETURN(playerTransform, E_FAIL);
 
-    if (FAILED(layer->Add_GameObject(OBJTYPE::MONSTER, gameObject)))
-        return E_FAIL;
+    m_PlayerInventoryCom =
+        dynamic_cast<CInventory*>(gameObject->Get_Component(
+            ID_STATIC,
+            COMPONENTTYPE::INVENTORY));
+
+    NULL_CHECK_RETURN(m_PlayerInventoryCom, E_FAIL);
+
+    m_PlayerCombatStatCom =
+        dynamic_cast<CCombatStat*>(gameObject->Get_Component(
+            ID_DYNAMIC,
+            COMPONENTTYPE::COMBATSTAT));
+
+    NULL_CHECK_RETURN(m_PlayerCombatStatCom, E_FAIL);
+
+    // -----------------------------
+    // Monster
+    // -----------------------------
+
+    // HumanMonster
+    gameObject = CHumanMonster::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CHumanMonster::Create() returned null")
+
+    FAILED_CHECK_MSG(
+        layer->Add_GameObject(OBJTYPE::HUMANMONSTER, gameObject),
+        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
+
+    // -----------------------------
+    // Boss
+    // -----------------------------
+    /*gameObject = CBossPhase1::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase1::Create() returned null")
+    
+        FAILED_CHECK_MSG(
+            layer->Add_GameObject(OBJTYPE::BOSS1, gameObject),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");*/
+
+    // -----------------------------
+    // Camera
+    // -----------------------------
+
+    // 카메라 생성
+    FAILED_CHECK_MSG(
+        Engine::AcquirePersistentObject<CMainCamera>(
+            OBJTYPE::CAMERA,
+            L"MainCamera",
+            m_GraphicDev,
+            layer,
+            &gameObject),
+        L"Persistent object setup failed");
+
+    // 카메라 타겟을 플레이어로 설정
+    auto mainCam = dynamic_cast<CMainCamera*>(gameObject);
+    if (mainCam)
+    {
+        mainCam->Set_CamTarget(playerTransform);
+
+        auto camCom = dynamic_cast<CCameraCom*>(
+            mainCam->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAMERA));
+
+        if (camCom)
+            CMainEditorMgr::GetInstance()->Set_MainCamera(camCom); // 에디터에 카메라 설정
+    }
 
     m_Layers.insert({ layerType, layer });
 
-    return S_OK;
-}
 
-HRESULT CStage::Ready_Camera_Layer(LAYERTYPE layerType)
-{
-    // TODO 석호: 카메라 오브젝트 만든 후 여기에 추가
 
-#pragma region 임시 카메라
-
-    _matrix matView, matProj;
-
-    _vec3 eye = { 0.f, 2.f, -10.f };
-    _vec3 at  = { 0.f, 0.f, 1.f };
-    _vec3 up  = { 0.f, 1.f, 0.f };
-
-    D3DXMatrixLookAtLH(&matView, &eye, &at, &up);
-    D3DXMatrixPerspectiveFovLH(&matProj,
-                               D3DXToRadian(60.f),
-                               static_cast<float>(WINCX) / WINCY,
-                               0.1f,
-                               1000.f);
-
-    m_GraphicDev->SetTransform(D3DTS_PROJECTION, &matProj);
-    m_GraphicDev->SetTransform(D3DTS_VIEW, &matView);
-
-#pragma endregion
 
     return S_OK;
 }
 
 HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
 {
-    Engine::CLayer* layer = Engine::CLayer::Create();
+    auto layer = Engine::CLayer::Create();
+    NULL_CHECK_RETURN(layer, E_FAIL);
 
-    if (nullptr == layer)
-        return E_FAIL;
+    CGameObject* gameObject = nullptr;
 
-    Engine::CGameObject* pGameObject = nullptr;
+    FAILED_CHECK_MSG(
+        Engine::AcquirePersistentObject<CUIPlayerPanel>(
+            OBJTYPE::UI,
+            L"UI_PlayerPanel",
+            m_GraphicDev,
+            layer,
+            &gameObject),
+        L"Persistent object setup failed: UI_PlayerPanel");
+
+    CUIPlayerPanel* playerPanel = dynamic_cast<CUIPlayerPanel*>(gameObject);
+
+    playerPanel->Set_PlayerCombatStat(m_PlayerCombatStatCom);
+    playerPanel->Set_Resister(true);
+
+    FAILED_CHECK_MSG(
+        Engine::AcquirePersistentObject<CUIMp>(
+            OBJTYPE::UI,
+            L"UI_Mp",
+            m_GraphicDev,
+            layer,
+            &gameObject),
+        L"Persistent object setup failed: UI_Mp");
+
+    CUIMp* uiMp = dynamic_cast<CUIMp*>(gameObject);
+    uiMp->Set_PlayerCombatStat(m_PlayerCombatStatCom);
+
+    FAILED_CHECK_MSG(
+        Engine::AcquirePersistentObject<CUICircle>(
+            OBJTYPE::UI,
+            L"UI_Circle",
+            m_GraphicDev,
+            layer,
+            &gameObject),
+        L"Persistent object setup failed: UI_Circle");
+
+    dynamic_cast<CUICircle*>(gameObject)->Set_PlayerCombatStat(m_PlayerCombatStatCom);
+
+    FAILED_CHECK_MSG(
+        Engine::AcquirePersistentObject<CUIWeapon>(
+            OBJTYPE::UI,
+            L"UI_Weapon",
+            m_GraphicDev,
+            layer,
+            &gameObject),
+        L"Persistent object setup failed: UI_Weapon");
+
+    //왼쪽 상단 스킬 아이콘 UI
+    CUIIcon* pgameObject = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_ICON);
+    pgameObject->Set_TextureIndex(1);
+    pgameObject->Get_Transform()->Set_Pos(-524.f, 260.f, 0.f);
+    pgameObject->Get_Transform()->Set_Scale(12.5f, 15.f, 0.f);
+
+    FAILED_CHECK_MSG(
+        layer->Add_GameObject(OBJTYPE::UI, pgameObject),
+        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUIIcon) failed");
+
+    // FAILED_CHECK_MSG(
+    //     Engine::AcquirePersistentObject<CUISkillCount>(
+    //         OBJTYPE::UI,
+    //         L"UI_SkillCount",
+    //         m_GraphicDev,
+    //         layer,
+    //         &gameObject),
+    //     L"Persistent object setup failed: UI_SkillCount");
+
+    //CUITabMenu
+    CUITabMenu* uiTabMenu = CUITabMenu::Create(m_GraphicDev);
+    uiTabMenu->SetInventory(m_PlayerInventoryCom);
+    uiTabMenu->Set_PlayerCombatStat(m_PlayerCombatStatCom);
+    uiTabMenu->Initialize();
+
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiTabMenu),
+                     L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UITabMenu) failed");
+
+   // FAILED_CHECK_MSG(Engine::AcquirePersistentObject<CUIItemGet>
+   //     (OBJTYPE::UI, L"UI_ItemGet",
+   //         m_GraphicDev, layer,
+   //         &gameObject), L"Persistent object setup failed: UI_ItemGet")
+   //
+    FAILED_CHECK_MSG(Engine::AcquirePersistentObject<CUIItemGetManager>
+        (OBJTYPE::UI, L"UI_ItemGetManager",
+            m_GraphicDev, layer,
+            &gameObject), L"Persistent object setup failed: UI_ItemGetManager")
+    dynamic_cast<CUIItemGetManager*>(gameObject)->SetInventory(m_PlayerInventoryCom);
+    dynamic_cast<CUIItemGetManager*>(gameObject)->Initialize();
 
     m_Layers.insert({ layerType, layer });
 
@@ -148,72 +342,12 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
 
 HRESULT CStage::Ready_Prototype()
 {
-    if (FAILED(CProtoMgr::GetInstance()
-        ->Ready_Prototype(COMPONENTTYPE::TRI_COLOR, Engine::CTriCol::Create(m_GraphicDev))))
-        return E_FAIL;
-
-    if (FAILED(CProtoMgr::GetInstance()
-        ->Ready_Prototype(COMPONENTTYPE::RC_COLOR, Engine::CRcCol::Create(m_GraphicDev))))
-        return E_FAIL;
-
-    if (FAILED(CProtoMgr::GetInstance()
-        ->Ready_Prototype(COMPONENTTYPE::RC_TEX, Engine::CRcTex::Create(m_GraphicDev))))
-        return E_FAIL;
-
-    if (FAILED(CProtoMgr::GetInstance()
-        ->Ready_Prototype(COMPONENTTYPE::TRANSFORM, Engine::CTransform::Create(m_GraphicDev))))
-        return E_FAIL;
-
-    // 빈 Texture를 일단 생성
-    CTexture* playerTex = Engine::CTexture::Create(
-        m_GraphicDev,
-        TEX_NORMAL,
-        L"",      
-        0);    // 아무 것도 로드하지 않음
-    NULL_CHECK_RETURN(playerTex, E_FAIL);
-
-    // 키값으로 Texture 추가하기
-    playerTex->Add_Texture(TEX_NORMAL, L"PlayerIdle",
-        L"../Bin/Resource/Texture/Player/Lamb-idle_sheet.png");
-
-    playerTex->Add_Texture(TEX_NORMAL, L"PlayerRunDown",
-        L"../Bin/Resource/Texture/Player/Lamb-run-down.png");
-
-    playerTex->Add_Texture(TEX_NORMAL, L"PlayerRun",
-        L"../Bin/Resource/Texture/Player/Lamb-run.png");
-
-    playerTex->Add_Texture(TEX_NORMAL, L"PlayerRunUp",
-        L"../Bin/Resource/Texture/Player/Lamb-run-up.png");
-
-    playerTex->Add_Texture(TEX_NORMAL, L"BossTest",
-        L"../Bin/Resource/Texture/Monster/Boss2/TOWW-Boss2_Idle.png");
-
-    // 세팅 이후 Texture 컴포넌트 프로토타입 생성
-    if (FAILED(CProtoMgr::GetInstance()
-        ->Ready_Prototype(COMPONENTTYPE::TEXTURE, playerTex)))
-        return E_FAIL;
-
-    // Animator
-    if (FAILED(CProtoMgr::GetInstance()
-        ->Ready_Prototype(COMPONENTTYPE::ANIMATOR, CAnimator::Create(m_GraphicDev))))
-        return E_FAIL;
-
-    // RectCol
-    if (FAILED(CProtoMgr::GetInstance()
-        ->Ready_Prototype(COMPONENTTYPE::RECT_COLL, CRectCollider::Create(m_GraphicDev))))
-        return E_FAIL;
-
-    // State
-    if (FAILED(CProtoMgr::GetInstance()
-        ->Ready_Prototype(COMPONENTTYPE::STATE, CState::Create(m_GraphicDev))))
-        return E_FAIL;
-
     return S_OK;
 }
 
 CStage* CStage::Create(DEVICE graphicDev)
 {
-    auto* stage = new CStage(graphicDev);
+    auto stage = new CStage(graphicDev);
 
     if (FAILED(stage->Ready_Scene()))
     {

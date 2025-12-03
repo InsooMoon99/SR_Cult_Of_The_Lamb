@@ -4,6 +4,7 @@
 BEGIN(Engine)
 class CRcTex;
 class CTexture;
+class CTransform;
 END
 
 class CMainBG : public CGameObject
@@ -25,6 +26,7 @@ private:
 private:
     CRcTex*   m_BufferCom;
     CTexture* m_TextureCom;
+    CTransform* m_TransformCom;
 
 public:
     static CMainBG* Create(DEVICE pGraphicDev);

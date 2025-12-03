@@ -3,30 +3,44 @@
 #include "CDInputMgr.h"
 #include "CTransform.h"
 
+class CMainCamera;
+
 CCameraCom::CCameraCom()
-    : m_ViewMode(VIEW_QUARTER), m_ProjType(PROJ_PERSPECTIVE),
+    : m_CamMode(CAM_FREE),
+      m_ViewType(VIEW_FPS),
+      m_ProjType(PROJ_PERSPECTIVE),
       m_Offset(0.f, 4.f, -6.f),
-      m_FOV(D3DXToRadian(60.f)), m_Aspect(static_cast<_float>(WINCX) / WINCY),
-      m_Near(0.1f), m_Far(1000.f),
+      m_FOV(D3DXToRadian(60.f)),
+      m_Aspect(static_cast<_float>(WINCX) / WINCY),
+      m_Near(0.1f),
+      m_Far(1000.f),
       m_isDirty(true)
 { }
 
-CCameraCom::CCameraCom(LPDIRECT3DDEVICE9 graphicDev)
+CCameraCom::CCameraCom(DEVICE graphicDev)
     : CComponent(graphicDev),
-      m_ViewMode(VIEW_QUARTER), m_ProjType(PROJ_PERSPECTIVE),
+      m_CamMode(CAM_FREE),
+      m_ViewType(VIEW_FPS),
+      m_ProjType(PROJ_PERSPECTIVE),
       m_Offset(0.f, 4.f, -6.f),
-      m_FOV(D3DXToRadian(60.f)), m_Aspect(static_cast<_float>(WINCX) / WINCY),
-      m_Near(0.1f), m_Far(1000.f),
+      m_FOV(D3DXToRadian(60.f)),
+      m_Aspect(static_cast<_float>(WINCX) / WINCY),
+      m_Near(0.1f),
+      m_Far(1000.f),
       m_isDirty(true)
 { }
 
 CCameraCom::CCameraCom(const CCameraCom& rhs)
     : CComponent(rhs),
-      m_ViewMode(rhs.m_ViewMode), m_ProjType(rhs.m_ProjType),
+      m_CamMode(rhs.m_CamMode),
+      m_ViewType(rhs.m_ViewType),
+      m_ProjType(rhs.m_ProjType),
       m_Offset(rhs.m_Offset),
-      m_FOV(rhs.m_FOV), m_Aspect(rhs.m_Aspect),
-      m_Near(rhs.m_Near), m_Far(rhs.m_Far),
-      m_isDirty(rhs.m_isDirty)
+      m_FOV(rhs.m_FOV),
+      m_Aspect(rhs.m_Aspect),
+      m_Near(rhs.m_Near),
+      m_Far(rhs.m_Far),
+      m_isDirty(true)
 { }
 
 CCameraCom::~CCameraCom()
@@ -34,25 +48,13 @@ CCameraCom::~CCameraCom()
 
 HRESULT CCameraCom::Ready_Camera()
 {
-    //m_Eye = { 0.f, 0.f, -10.f };   // 초기 카메라 위치
-    //m_At  = { 0.f, 0.f, 10.f };    // 초기 카메라가 보는 지점
-    //m_Up  = { 0.f, 1.f, 0.f };     // 월드 업 벡터
-
-    m_Offset = { 0.f, 4.f, -6.f };
-
-    //D3DXMatrixLookAtLH(&m_matView, &m_Eye, &m_At, &m_Up);
-    //D3DXMatrixPerspectiveFovLH(&m_matProj, m_FOV, m_Aspect, m_Near, m_Far);
-    //
-    //m_GraphicDev->SetTransform(D3DTS_VIEW, &m_matView);
-    //m_GraphicDev->SetTransform(D3DTS_PROJECTION, &m_matProj);
+    m_Offset = { 0.f, 10.f, -10.f };
 
     return S_OK;
 }
 
 _int CCameraCom::Update_Component(const _float& timeDelta)
 {
-    Key_Input();
-
     return 0;
 }
 
@@ -65,7 +67,7 @@ void CCameraCom::LateUpdate_Component()
         m_Up   = m_TransformCom->Get_Up();
     }
 
-    switch (m_ViewMode)
+    switch (m_ViewType)
     {
     case VIEW_FPS:
         Compute_View_FPS();
@@ -99,6 +101,34 @@ void CCameraCom::LateUpdate_Component()
 
         m_GraphicDev->SetTransform(D3DTS_PROJECTION, &m_matProj);
         m_isDirty = false;
+    }
+}
+
+void CCameraCom::Set_CamMode(CAM_MODE camMode)
+{
+    if (m_CamMode != camMode && camMode < CAM_END)
+    {
+        if (camMode == CAM_FREE)
+            m_ViewType = VIEW_FPS;
+        else if (camMode == CAM_TARGET)
+            m_ViewType = VIEW_QUARTER;
+
+        m_CamMode = camMode;
+    }
+}
+
+void CCameraCom::Set_ViewType(VIEW_TYPE viewType)
+{
+    if (m_ViewType != viewType && viewType < VIEW_END)
+        m_ViewType = viewType;
+}
+
+void CCameraCom::Set_ProjType(PROJ_TYPE projType)
+{
+    if (m_ProjType != projType && projType < PROJ_END)
+    {
+        m_ProjType = projType;
+        m_isDirty  = true;
     }
 }
 
@@ -146,28 +176,20 @@ void CCameraCom::Compute_Proj_Perspective()
 
 void CCameraCom::Compute_Proj_Orthographic()
 {
-    D3DXMatrixOrthoLH(&m_matProj, WINCX, WINCY, 0.f, 1.f);
+    D3DVIEWPORT9 Viewport;
+    m_GraphicDev->GetViewport(&Viewport);
+
+    D3DXMatrixOrthoLH(
+        &m_matProj,
+        static_cast<_float>(Viewport.Width),  
+        static_cast<_float>(Viewport.Height), 
+        0.f,
+        1.f);
 }
 
-void CCameraCom::Key_Input()
+CCameraCom* CCameraCom::Create(DEVICE graphicDev)
 {
-#pragma region debug : 키 입력으로 카메라 시점 전환
-
-    auto pInputMgr = CDInputMgr::GetInstance();
-
-    if (pInputMgr->Get_DIKeyState(DIK_8))
-        Set_CamMode(VIEW_FPS);
-    else if (pInputMgr->Get_DIKeyState(DIK_9))
-        Set_CamMode(VIEW_TPS);
-    else if (pInputMgr->Get_DIKeyState(DIK_0))
-        Set_CamMode(VIEW_QUARTER);
-
-#pragma endregion
-}
-
-CCameraCom* CCameraCom::Create(LPDIRECT3DDEVICE9 pGraphicDev)
-{
-    auto CameraCom = new CCameraCom(pGraphicDev);
+    auto CameraCom = new CCameraCom(graphicDev);
 
     if (FAILED(CameraCom->Ready_Camera()))
     {
@@ -186,8 +208,5 @@ CComponent* CCameraCom::Clone()
 
 void CCameraCom::Free()
 {
-    //Safe_Release(m_TransformCom);
-    // TODO 석호: 일단 AddRef를 안했으므로 지우진 말자
-
     CComponent::Free();
 }

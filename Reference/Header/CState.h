@@ -1,53 +1,56 @@
 ﻿#pragma once
-
 #include "CComponent.h"
 #include "Engine_Define.h"
 
 BEGIN(Engine)
-
 class CAnimator;
 
+/// @brief 캐릭터의 현재 상태(State)를 결정하고 관리하는 "감독" 컴포넌트
 class ENGINE_DLL CState : public CComponent
 {
 private:
-    explicit CState(DEVICE GraphicDev);
+    explicit CState(DEVICE graphicDev);
     explicit CState(const CState& rhs);
-    virtual  ~CState();
+    ~CState() override;
 
 public:
-    HRESULT Ready_StateComponent(DEVICE GraphicDev);
+    HRESULT Ready_StateComponent(DEVICE graphicDev);
+    void    Initialize_Component() override;
     _int    Update_Component(const _float& timeDelta) override;
     void    LateUpdate_Component() override;
 
 public:
     void Update_Animation();
 
-    void    Change_State(PLAYERSTATE State);
-    void    Change_Dir(PLAYERDIR Dir);
+    void Change_State(ACTORSTATE state);
+    void Change_Dir(ACTORDIR dir);
 
-    PLAYERSTATE Get_State() const { return m_State; }
-    PLAYERDIR   Get_Dir()   const { return m_Dir; }
+    ACTORSTATE Get_State() const { return m_State; }
+    ACTORDIR   Get_Dir() const { return m_Dir; }
 
-    void Set_AnimInfo(PLAYERSTATE PlayerState, const wstring& Key, ANIMSTATE AnimState);
+    void Set_AnimInfo(ACTORSTATE playerState, const wstring& key, ANIMSTATE animState);
 
-    static CState* Create(DEVICE GraphicDev);
-    CComponent* Clone() override;
+    static CState* Create(DEVICE graphicDev);
+    CComponent*    Clone() override;
 
-protected:
+private:
+    // 방향에 따른 키 접미사와 반전 여부를 반환하는 헬퍼 함수
+    pair<wstring, bool> Get_AnimDirInfo(ACTORSTATE state, ACTORDIR dir);
+
+private:
     void Free() override;
 
 private:
-    PLAYERSTATE m_State;
-    PLAYERSTATE m_PrevState;
+    ACTORSTATE m_State;
+    ACTORSTATE m_PrevState;
 
-    // PrevDir도 필요하면 구현하기
-    PLAYERDIR   m_Dir;
+    ACTORDIR m_Dir;
+    ACTORDIR m_PrevDir;
 
-    CAnimator*  m_Animator;
+    CAnimator* m_Animator;
 
-    map<PLAYERSTATE, wstring>       m_PlayerStateMap;
-    map<PLAYERSTATE, ANIMSTATE>     m_AnimStateMap;
-
+    map<ACTORSTATE, wstring>   m_PlayerStateMap;
+    map<ACTORSTATE, ANIMSTATE> m_AnimStateMap;
 };
 
 END

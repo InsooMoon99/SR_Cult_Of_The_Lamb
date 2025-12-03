@@ -1,5 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- ===================== -->
+  <!--       FILTERS         -->
+  <!-- ===================== -->
   <ItemGroup>
     <Filter Include="99. Header">
       <UniqueIdentifier>{7135ce1c-d617-42aa-8274-6d463ee22556}</UniqueIdentifier>
@@ -67,9 +70,6 @@
     <Filter Include="00. Manager\04. Renderer">
       <UniqueIdentifier>{76be4371-ca9f-4ceb-945d-df8c4cd38f6f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00. Manager\05. TextureManager">
-      <UniqueIdentifier>{36f0eee2-6021-4a88-b9e8-475d8fa2b138}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. Sprite">
       <UniqueIdentifier>{b0691495-0350-4e11-915c-896cf97589d4}</UniqueIdentifier>
     </Filter>
@@ -112,7 +112,59 @@
     <Filter Include="00. Manager\10. SceneMgr">
       <UniqueIdentifier>{4d206c40-2a02-4585-82a7-34871e494d55}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Prototype\06. CombatStat">
+      <UniqueIdentifier>{55ea3021-09c6-444c-b6db-ea5044d079b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Prototype\00. VIBuffer\03. BoxCol">
+      <UniqueIdentifier>{9b9793d6-2da8-4fed-956f-a19e85993f04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Prototype\04. Collider\02. Box Collider">
+      <UniqueIdentifier>{a6dbfb3e-ff25-4d63-9b4f-885093b69017}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Prototype\00. VIBuffer\04. BoxTex">
+      <UniqueIdentifier>{ba70ee2a-9a1b-4729-8fdd-9884817fdb6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Prototype\07. Terrain">
+      <UniqueIdentifier>{6385a333-0774-40fa-9831-fac802a49437}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. UI">
+      <UniqueIdentifier>{96eddf44-2a8d-45b5-9d2c-5e94073fbf4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. UI\01. UI Button">
+      <UniqueIdentifier>{82289fdd-ae84-4124-a01a-02919d2fc645}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. UI\00. UI Panel">
+      <UniqueIdentifier>{02930243-646c-4962-9239-1e1f8ecdb012}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. UI\02. UI Text">
+      <UniqueIdentifier>{f65e2aba-0216-407d-81ba-ad5d86c150da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Logic\97. Editor">
+      <UniqueIdentifier>{6a2f84ff-26ab-4a31-bbd4-54e073962573}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Logic\05. Tiled">
+      <UniqueIdentifier>{1e08cf3b-8a9b-415b-9274-78f77f8da805}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Prototype\08. Rigidbody">
+      <UniqueIdentifier>{e68e5ef7-ba11-4622-a159-024ba3f50365}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Prototype\04. Collider\03. Attack Collider">
+      <UniqueIdentifier>{a9235b16-8ae5-4671-ac3c-c9888f9865e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Logic\06. Renderable">
+      <UniqueIdentifier>{c091d5bc-1f3b-45c6-b255-ec112271b893}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Logic\07. NonRenderable">
+      <UniqueIdentifier>{d1ba0322-deec-4eaf-ad2f-d7cc40ecf4cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. Manager\11. SoundMgr">
+      <UniqueIdentifier>{7cf50558-580d-41f7-a3a4-90ad63d00805}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
+
+  <!-- ===================== -->
+  <!--       HEADERS         -->
+  <!-- ===================== -->
   <ItemGroup>
     <ClInclude Include="..\Header\Engine_Define.h">
       <Filter>99. Header</Filter>
@@ -186,9 +238,6 @@
     <ClInclude Include="..\Header\CRenderer.h">
       <Filter>00. Manager\04. Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CResourceManager.h">
-      <Filter>00. Manager\05. TextureManager</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\CSpriteAnimation.h">
       <Filter>03. Sprite</Filter>
     </ClInclude>
@@ -234,7 +283,68 @@
     <ClInclude Include="..\Header\CEnumHelper.h">
       <Filter>98. Utility</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CPersistentObjectHelper.h">
+      <Filter>98. Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CCombatStat.h">
+      <Filter>02. Prototype\06. CombatStat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBoxCollider.h">
+      <Filter>02. Prototype\04. Collider\02. Box Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBoxTex.h">
+      <Filter>02. Prototype\00. VIBuffer\04. BoxTex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBoxCol.h">
+      <Filter>02. Prototype\00. VIBuffer\03. BoxCol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CTerrainTex.h">
+      <Filter>02. Prototype\07. Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUI.h">
+      <Filter>04. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUIText.h">
+      <Filter>04. UI\02. UI Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUIPanel.h">
+      <Filter>04. UI\00. UI Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEditContext.h">
+      <Filter>01. Logic\97. Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Engine_Global.h">
+      <Filter>99. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\CRigidbody.h">
+      <Filter>02. Prototype\08. Rigidbody</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CAttackBox.h">
+      <Filter>02. Prototype\04. Collider\03. Attack Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CAttackBase.h">
+      <Filter>02. Prototype\04. Collider\03. Attack Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CAttackSphere.h">
+      <Filter>02. Prototype\04. Collider\03. Attack Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CAttackBuilder.h">
+      <Filter>98. Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CRenderObject.h">
+      <Filter>01. Logic\06. Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CPickingHelper.h">
+      <Filter>98. Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CSoundMgr.h">
+      <Filter>00. Manager\11. SoundMgr</Filter>
+    </ClInclude>
   </ItemGroup>
+
+  <!-- ===================== -->
+  <!--       SOURCES         -->
+  <!-- ===================== -->
   <ItemGroup>
     <ClCompile Include="..\Code\CGraphicDev.cpp">
       <Filter>00. Manager\00. GraphicDev</Filter>
@@ -290,9 +400,6 @@
     <ClCompile Include="..\Code\CRenderer.cpp">
       <Filter>00. Manager\04. Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CResourceManager.cpp">
-      <Filter>00. Manager\05. TextureManager</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\CSpriteAnimation.cpp">
       <Filter>03. Sprite</Filter>
     </ClCompile>
@@ -331,6 +438,54 @@
     </ClCompile>
     <ClCompile Include="..\Code\CState.cpp">
       <Filter>02. Prototype\05. State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CCombatStat.cpp">
+      <Filter>02. Prototype\06. CombatStat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoxCollider.cpp">
+      <Filter>02. Prototype\04. Collider\02. Box Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoxTex.cpp">
+      <Filter>02. Prototype\00. VIBuffer\04. BoxTex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoxCol.cpp">
+      <Filter>02. Prototype\00. VIBuffer\03. BoxCol</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CTerrainTex.cpp">
+      <Filter>02. Prototype\07. Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI.cpp">
+      <Filter>04. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUIText.cpp">
+      <Filter>04. UI\02. UI Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUIPanel.cpp">
+      <Filter>04. UI\00. UI Panel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEditContext.cpp">
+      <Filter>01. Logic\97. Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\code\CRigidbody.cpp">
+      <Filter>02. Prototype\08. Rigidbody</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CAttackBox.cpp">
+      <Filter>02. Prototype\04. Collider\03. Attack Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CAttackBase.cpp">
+      <Filter>02. Prototype\04. Collider\03. Attack Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CAttackSphere.cpp">
+      <Filter>02. Prototype\04. Collider\03. Attack Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CAttackBuilder.cpp">
+      <Filter>98. Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CRenderObject.cpp">
+      <Filter>01. Logic\06. Renderable</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CSoundMgr.cpp">
+      <Filter>00. Manager\11. SoundMgr</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,253 +1,303 @@
 ﻿#include "pch.h"
 #include "CPlayer.h"
-
 #include "CAnimator.h"
+#include "CAttackBuilder.h"
+#include "CAttackSphere.h"
+#include "CBoxCollider.h"
+#include "CCombatStat.h"
 #include "CCreateHelper.h"
-#include "CRcTex.h"
-#include "CRectCollider.h"
-#include "CRenderer.h"
+#include "CInventory.h"
+#include "CPlayerController.h"
+#include "CPlayerAttack.h"
+#include "CPlayerInput.h"
+#include "CPlayerMovement.h"
+#include "CRigidbody.h"
+#include "CState.h"
 #include "CTexture.h"
 #include "CTransform.h"
-#include "CState.h"
-#include "CEnumHelper.h"
+#include "CWeaponEquip.h"
 
 CPlayer::CPlayer(DEVICE graphicDev)
-    : CGameObject(graphicDev),
-    m_BufferCom(nullptr),
-    m_TransformCom(nullptr),
-    m_TextureCom(nullptr),
-    m_AnimatorCom(nullptr),
-    m_RectColCom(nullptr),
-    m_StateCom(nullptr)
-{ }
+    : CCharacterBase(graphicDev),
+    m_RigidbodyCom(nullptr),
+    m_WeaponEquipCom(nullptr),
+    m_InventoryCom(nullptr),
+    m_PlayerControllerCom(nullptr),
+    m_PlayerInputCom(nullptr),
+    m_PlayerMovementCom(nullptr),
+    m_PlayerAttackCom(nullptr)
+
+{
+}
 
 CPlayer::CPlayer(const CPlayer& rhs)
-    : CGameObject(rhs)
-{ }
+    : CCharacterBase(rhs),
+    m_RigidbodyCom(nullptr),
+    m_WeaponEquipCom(nullptr),
+    m_InventoryCom(nullptr),
+    m_PlayerControllerCom(nullptr),
+    m_PlayerInputCom(nullptr),
+    m_PlayerMovementCom(nullptr),
+    m_PlayerAttackCom(nullptr)
+{
+}
 
 CPlayer::~CPlayer()
 { }
 
 HRESULT CPlayer::Ready_GameObject()
 {
-    if (FAILED(Add_Component()))
-        return E_FAIL;
+	if (FAILED(CCharacterBase::Ready_GameObject()))
+		return E_FAIL;
 
-    Animation_Setting();
+    m_CombatStatCom->Set_Hp(100.f);
+    m_CombatStatCom->Set_MaxHp(100.f);
+    m_CombatStatCom->Set_Attack(50.f);
+    m_CombatStatCom->Set_Mp(5.f);
+    m_CombatStatCom->Set_Speed(5.f);
 
-    // 크기 변환 테스트
+    m_TransformCom->Set_Pos(_vec3(20.f, 1.f, 15.f));
     m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
+
+    //!! Rigidbody에서 중력만 사용 안함
+    m_RigidbodyCom->Set_UseAccel(true);
+    m_RigidbodyCom->Set_UseFriction(true);
+    m_RigidbodyCom->Set_UseGravity(false);
+
+    if (m_BoxColCom)
+        m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::PLAYER);
 
     return S_OK;
 }
 
+void CPlayer::Initialize_GameObject()
+{
+    CCharacterBase::Initialize_GameObject();
+
+    
+}
+
 _int CPlayer::Update_GameObject(const _float& timeDelta)
 {
-    _int exit = CGameObject::Update_GameObject(timeDelta);
+    _int exit = CCharacterBase::Update_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
-
-    Key_Input(timeDelta);
 
     return exit;
 }
 
 void CPlayer::LateUpdate_GameObject(const _float& timeDelta)
 {
-    CGameObject::LateUpdate_GameObject(timeDelta);
+	CCharacterBase::LateUpdate_GameObject(timeDelta);
 }
 
 void CPlayer::Render_GameObject()
 {
-    m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
+	CCharacterBase::Render_GameObject();
 
-    Render_Setting();
-
-    // 현재 애니메이션 키로 텍스처 선택
-    if (m_TextureCom != nullptr && m_AnimatorCom != nullptr)
-    {
-        const wstring& texKey = m_AnimatorCom->Get_CurKey();
-
-        if (!texKey.empty())
-            m_TextureCom->Set_Texture(texKey);
-
-        else
-            m_TextureCom->Set_Texture(0);
-    }
-
-    m_BufferCom->Render_Buffer();
-
-    TempImGuiRender();
-
-    Render_Reset();
-
-    m_RectColCom->Render(); // Render Reset 이후 호출해야함
-}
-
-void CPlayer::Render_Setting()
-{
-    m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-
-    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-    m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-    m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-
-    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-    m_GraphicDev->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-    m_GraphicDev->SetRenderState(D3DRS_ALPHAREF, 0);
-}
-
-void CPlayer::Render_Reset()
-{
-    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-    m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+    
 }
 
 void CPlayer::OnBeginOverlap(CCollider* self, CCollider* other)
 {
-    CGameObject::OnBeginOverlap(self, other);
+	CCharacterBase::OnBeginOverlap(self, other);
 
-    cout << "Player Hit" << endl;
 }
 
 void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)
 {
-    CGameObject::OnEndOverlap(self, other);
+	CCharacterBase::OnEndOverlap(self, other);
+
+    //cout << "Player HitOut" << endl;
+}
+
+void CPlayer::Render_Editor()
+{
+	CCharacterBase::Render_Editor();
+
+    ImGui::Text("=== Player ===");
+
+
 }
 
 HRESULT CPlayer::Add_Component()
 {
-    // buffer
-    m_BufferCom = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
-    NULL_CHECK_RETURN(m_BufferCom, E_FAIL);
+	// 부모쪽에 Transform, Buffer, Animator, State, CombatStat, BoxCollider 있음
+	if (FAILED(CCharacterBase::Add_Component()))
+		return E_FAIL;
 
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::RC_TEX, m_BufferCom });
-
-    // transform
-    m_TransformCom = CreateProtoComponent<CTransform>(this, COMPONENTTYPE::TRANSFORM);
-    NULL_CHECK_RETURN(m_TransformCom, E_FAIL);
-
-    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
-
-    // texture
+    // Texture
     m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_PLAYER);
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
-
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_PLAYER, m_TextureCom });
 
-    m_AnimatorCom = CreateProtoComponent<CAnimator>(this, COMPONENTTYPE::ANIMATOR);
-    NULL_CHECK_RETURN(m_AnimatorCom, E_FAIL);
+    m_AnimatorCom->Set_TextureType(COMPONENTTYPE::TEX_PLAYER);
 
-    m_AnimatorCom->Ready_Animator();
+    // Inventory
+    m_InventoryCom = CreateProtoComponent<CInventory>(this, COMPONENTTYPE::INVENTORY);
+    NULL_CHECK_RETURN(m_InventoryCom, E_FAIL);
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::INVENTORY, m_InventoryCom });
 
-    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::ANIMATOR, m_AnimatorCom });
+    m_InventoryCom->SetInvenSlotNum(12);
 
-    // Lamb Idle
-    m_AnimatorCom->Create_Animation(L"Idle", 150, 1, 1, 0.02f);
+    // Weapon Equip
+    m_WeaponEquipCom = CreateProtoComponent<CWeaponEquip>(this, COMPONENTTYPE::WEAPON_EQUIP);
+    NULL_CHECK_RETURN(m_WeaponEquipCom, E_FAIL);
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::WEAPON_EQUIP, m_WeaponEquipCom });
 
-    // 시작 애니메이션
-    m_AnimatorCom->Play_Animation(L"Idle", ANIMSTATE::LOOP);
+    // Rigidbody
+    m_RigidbodyCom = CreateProtoComponent<CRigidbody>(this, COMPONENTTYPE::RIGIDBODY);
+    NULL_CHECK_RETURN(m_RigidbodyCom, E_FAIL);
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::RIGIDBODY, m_RigidbodyCom });
 
-    // RectCol Componet
-    m_RectColCom = CreateProtoComponent<CRectCollider>(this, COMPONENTTYPE::RECT_COLL);
-    NULL_CHECK_RETURN(m_RectColCom, E_FAIL);
-    m_RectColCom->Set_Size(_vec2(2.f, 2.f));
+    // Player Controller
+    m_PlayerControllerCom = CreateProtoComponent<CPlayerController>(this, COMPONENTTYPE::PL_CONTROLLER);
+    NULL_CHECK_RETURN(m_PlayerControllerCom, E_FAIL);
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::PL_CONTROLLER, m_PlayerControllerCom });
 
-    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::RECT_COLL, m_RectColCom });
+    // Player Input
+    m_PlayerInputCom = CreateProtoComponent<CPlayerInput>(this, COMPONENTTYPE::PL_INPUT);
+    NULL_CHECK_RETURN(m_PlayerInputCom, E_FAIL);
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::PL_INPUT, m_PlayerInputCom });
 
-    m_StateCom = CreateProtoComponent<CState>(this, COMPONENTTYPE::STATE);
-    NULL_CHECK_RETURN(m_StateCom, E_FAIL);
+    // Player Movement
+    m_PlayerMovementCom = CreateProtoComponent<CPlayerMovement>(this, COMPONENTTYPE::PL_MOVEMENT);
+    NULL_CHECK_RETURN(m_PlayerMovementCom, E_FAIL);
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::PL_MOVEMENT, m_PlayerMovementCom });
 
-    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::STATE, m_StateCom });
+    // Player Attack
+    m_PlayerAttackCom = CreateProtoComponent<CPlayerAttack>(this, COMPONENTTYPE::PL_ATTACK);
+    NULL_CHECK_RETURN(m_PlayerAttackCom, E_FAIL);
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::PL_ATTACK, m_PlayerAttackCom });
+
+    m_PlayerControllerCom->Init_OwnerComponent();
+    m_PlayerMovementCom->Init_OwnerComponent();
+    m_PlayerAttackCom->Init_OwnerComponent();
 
     return S_OK;
 }
 
 void CPlayer::Animation_Setting()
 {
-    // 애니메이션 생성
-    m_AnimatorCom->Create_Animation(L"PlayerIdle", 150, 1, 1, 0.02f);
-    m_AnimatorCom->Create_Animation(L"PlayerRun", 19, 1, 1, 0.02f);
-    m_AnimatorCom->Create_Animation(L"PlayerRunDown", 19, 1, 1, 0.02f);
-    m_AnimatorCom->Create_Animation(L"PlayerRunUp", 19, 1, 1, 0.02f);
+    _float dirX = m_PlayerInputCom->Get_MouseDir().x;
+    m_AnimatorCom->Set_FlipX(dirX < 0);
 
-#pragma region 보스 테스트
-    //m_AnimatorCom->Create_Animation(L"BossTest", 400, 1, 1, 0.02f);
-    //m_StateCom->Set_AnimInfo(PLAYERSTATE::IDLE, L"BossTest", ANIMSTATE::LOOP);
+#pragma region ------   IDLE    ------
+    m_AnimatorCom->Create_Animation(L"PlayerIdle", 150, 0.02f, _vec2(0.75f, 1.f));
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"PlayerIdle", ANIMSTATE::LOOP);
 #pragma endregion
 
-    // State -> Animation 연동
-    m_StateCom->Set_AnimInfo(PLAYERSTATE::IDLE, L"PlayerIdle", ANIMSTATE::LOOP);
-    m_StateCom->Set_AnimInfo(PLAYERSTATE::RUN, L"PlayerRun", ANIMSTATE::LOOP);
+#pragma region ------   RUN     ------
+    m_AnimatorCom->Create_Animation(L"PlayerRun_LEFT", 19, 0.02f);
+    m_AnimatorCom->Create_Animation(L"PlayerRun_UP", 19, 0.02f);
+    m_AnimatorCom->Create_Animation(L"PlayerRun_DOWN", 19, 0.02f);
+    m_AnimatorCom->Create_Animation(L"PlayerRun_LUP", 19, 0.02f);
+    m_AnimatorCom->Create_Animation(L"PlayerRun_LDOWN", 19, 0.02f);
 
-}
+    m_StateCom->Set_AnimInfo(ACTORSTATE::RUN, L"PlayerRun", ANIMSTATE::LOOP);
+#pragma endregion
 
-void CPlayer::Key_Input(const _float& timeDelta)
-{
-    const _float speed = 10.f;
+#pragma region ------   ROLL    ------
+    m_AnimatorCom->Create_Animation(L"PlayerRoll_LEFT",
+                                    19,
+                                    0.02f,
+                                    _vec2(1.3f, 1.3f), // Scale
+                                    _vec2(0.f, 0.f));  // Offset
 
-    _vec3 dir = { 0.f, 0.f, 0.f };
-    bool moving = false;
+    m_AnimatorCom->Create_Animation(L"PlayerRoll_UP",
+                                    16,
+                                    0.02f * 19 / 16,
+                                    _vec2(0.85f, 0.85f),
+                                    _vec2(0.f, 0.f));
 
-    // 앞 뒤
-    m_TransformCom->Get_Info(INFO_LOOK, &dir);
-    if (GetAsyncKeyState(VK_UP) & 0x8000)
-    {
-        D3DXVec3Normalize(&dir, &dir);
-        m_TransformCom->Move_Pos(dir, timeDelta, speed);
-        moving = true;
+    m_AnimatorCom->Create_Animation(L"PlayerRoll_DOWN",
+                                    16,
+                                    0.02f * 19 / 16,
+                                    _vec2(0.85f, 0.85f),
+                                    _vec2(0.f, 0.f));
 
-        m_StateCom->Change_Dir(PLAYERDIR::UP);
-    }
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_ROLL, L"PlayerRoll", ANIMSTATE::ONCE);
+#pragma endregion
 
-    if (GetAsyncKeyState(VK_DOWN) & 0x8000)
-    {
-        D3DXVec3Normalize(&dir, &dir);
-        m_TransformCom->Move_Pos(dir, timeDelta, -speed);
-        moving = true;
+#pragma region ------   SWORD    ------
+    m_AnimatorCom->Create_Animation(L"PlayerSwordCombo1",
+                                    31,
+                                    0.02f,
+                                    _vec2(2.2f, 2.2f),
+                                    _vec2(0.f, 0.18f));
 
-        m_StateCom->Change_Dir(PLAYERDIR::DOWN);
-    }
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SWORD_COMBO1,
+                             L"PlayerSwordCombo1",
+                             ANIMSTATE::ONCE);
 
-    // 좌 우
-    m_TransformCom->Get_Info(INFO_RIGHT, &dir);
-    if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
-    {
-        D3DXVec3Normalize(&dir, &dir);
-        m_TransformCom->Move_Pos(dir, timeDelta, speed);
-        moving = true;
-        
-        m_StateCom->Change_Dir(PLAYERDIR::RIGHT);
-    }
+    m_AnimatorCom->Create_Animation(L"PlayerSwordCombo2",
+                                    38,
+                                    0.02f,
+                                    _vec2(2.2f, 2.2f),
+                                    _vec2(0.f, 0.24f));
 
-    if (GetAsyncKeyState(VK_LEFT) & 0x8000)
-    {
-        D3DXVec3Normalize(&dir, &dir);
-        m_TransformCom->Move_Pos(dir, timeDelta, -speed);
-        moving = true;
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SWORD_COMBO2,
+                             L"PlayerSwordCombo2",
+                             ANIMSTATE::ONCE);
 
-        m_StateCom->Change_Dir(PLAYERDIR::LEFT);
-    }
+    m_AnimatorCom->Create_Animation(L"PlayerSwordCombo3",
+                                    38,
+                                    0.02f,
+                                    _vec2(2.2f, 2.2f),
+                                    _vec2(0.f, 0.49f));
 
-    if (m_StateCom)
-    {
-        if (moving)
-            m_StateCom->Change_State(PLAYERSTATE::RUN);
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SWORD_COMBO3,
+                             L"PlayerSwordCombo3",
+                             ANIMSTATE::ONCE);
+#pragma endregion
 
-        else
-            m_StateCom->Change_State(PLAYERSTATE::IDLE);
-    }
-}
 
-void CPlayer::TempImGuiRender()
-{
-    ImGui::Begin("Player State");
+#pragma region ------   Gauntlet   ------
+    m_AnimatorCom->Create_Animation(L"PlayerGauntletCombo1",
+                                        41,
+                                        0.02f,
+                                        _vec2(2.2f, 2.2f),
+                                        _vec2(0.f, 0.f));
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_COMBO1,
+                                          L"PlayerGauntletCombo1",
+                                          ANIMSTATE::ONCE);
 
-    ImGui::Text("State : %s", Engine::ToString(m_StateCom->Get_State()));
-    ImGui::Text("Dir : %s", Engine::ToString(m_StateCom->Get_Dir()));
+    m_AnimatorCom->Create_Animation(L"PlayerGauntletCombo2",
+                                          43,
+                                          0.02f,
+                                          _vec2(2.2f, 2.2f),
+                                          _vec2(0.f, 0.f));
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_COMBO2,
+                                    L"PlayerGauntletCombo2",
+                                            ANIMSTATE::ONCE);
 
-    ImGui::End();
+    m_AnimatorCom->Create_Animation(L"PlayerGauntletCombo3",
+                                            44,
+                                            0.02f,
+                                            _vec2(2.2f, 2.2f),
+                                            _vec2(0.f, 0.f));
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_COMBO3,
+                                             L"PlayerGauntletCombo3",
+                                             ANIMSTATE::ONCE);
+
+    m_AnimatorCom->Create_Animation(L"PlayerGauntletCombo4",
+                                             40,
+                                             0.02f,
+                                             _vec2(2.2f, 2.2f),
+                                             _vec2(0.f, 0.f));
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_COMBO4,
+                                               L"PlayerGauntletCombo4",
+                                               ANIMSTATE::ONCE);
+
+    m_AnimatorCom->Create_Animation(L"PlayerGauntletHeavy",
+                                             70,
+                                             0.02f,
+                                             _vec2(2.2f, 2.2f),
+                                             _vec2(0.f, 0.f));
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_HEAVY,
+                                                 L"PlayerGauntletHeavy",
+                                                ANIMSTATE::ONCE);
+#pragma end
 }
 
 CPlayer* CPlayer::Create(DEVICE graphicDev)
@@ -256,7 +306,7 @@ CPlayer* CPlayer::Create(DEVICE graphicDev)
 
     if (FAILED(player->Ready_GameObject()))
     {
-        MSG_BOX("pPlayer Create Failed");
+        MSG_BOX("Player Create Failed");
         Safe_Release(player);
         return nullptr;
     }
@@ -266,5 +316,5 @@ CPlayer* CPlayer::Create(DEVICE graphicDev)
 
 void CPlayer::Free()
 {
-    CGameObject::Free();
+	CCharacterBase::Free();
 }

@@ -1,5 +1,9 @@
 ﻿#include "CSphereCollider.h"
+
+#include "CBoxCollider.h"
+#include "CCreateHelper.h"
 #include "CRectCollider.h"
+#include "CTransform.h"
 
 CSphereCollider::CSphereCollider(DEVICE graphicDev)
     : CCollider(graphicDev, COLLIDERTYPE::SPHERE)
@@ -14,6 +18,9 @@ CSphereCollider::~CSphereCollider()
 
 HRESULT CSphereCollider::Ready_SphereCollider(DEVICE graphicDev)
 {
+    if (FAILED(CCollider::Ready_Collider()))
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -31,15 +38,26 @@ void CSphereCollider::LateUpdate_Component()
 
 void CSphereCollider::Render()
 {
-    CCollider::Render();
+    if (!m_ShowDebug)
+        return;
+
+    CTransform* transform = Get_Transform();
+    NULL_CHECK(transform);
+
+    _vec3 center = transform->Get_Pos();
+    _float radius = this->Get_Radius();
+
+    DWORD color = !m_ColliderSet.empty() ? D3DCOLOR_ARGB(255, 255, 0, 0) : D3DCOLOR_ARGB(255, 255, 255, 255);  
+
+    Engine::DrawDebugSphere(m_GraphicDev, center, radius, color);
 }
 
 bool CSphereCollider::CheckCollision(CCollider* other)
 {
     switch (other->GetColliderType())
     {
-    case COLLIDERTYPE::RECT:
-        return CheckCollisionSphere2Box(this, static_cast<CRectCollider*>(other));
+    case COLLIDERTYPE::BOX:
+        return CheckCollisionSphere2Box(this, static_cast<CBoxCollider*>(other));
 
     case COLLIDERTYPE::SPHERE:
         return CheckCollisionSphere2Sphere(this, static_cast<CSphereCollider*>(other));
@@ -67,7 +85,11 @@ CSphereCollider* CSphereCollider::Create(DEVICE graphicDev)
 
 CComponent* CSphereCollider::Clone()
 {
-    return new CSphereCollider(*this);
+    auto col = new CSphereCollider(*this);
+
+    col->Ready_Collider();
+
+    return col;
 }
 
 void CSphereCollider::Free()

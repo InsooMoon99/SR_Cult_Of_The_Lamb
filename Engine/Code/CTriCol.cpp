@@ -1,15 +1,21 @@
 ﻿#include "CTriCol.h"
 
 CTriCol::CTriCol()
-{ }
+{
+    m_ComponentName = L"TriCol";
+}
 
-CTriCol::CTriCol(LPDIRECT3DDEVICE9 graphicDev)
+CTriCol::CTriCol(DEVICE graphicDev)
     : CVIBuffer(graphicDev)
-{ }
+{
+    m_ComponentName = L"TriCol";
+}
 
 CTriCol::CTriCol(const CTriCol& rhs)
     : CVIBuffer(rhs)
-{ }
+{
+    m_ComponentName = L"TriCol";
+}
 
 CTriCol::~CTriCol()
 { }
@@ -22,7 +28,7 @@ HRESULT CTriCol::Ready_Buffer()
     m_FVF     = FVF_COL;
 
     m_IdxSize = sizeof(INDEX32);
-    m_IdxFmt    = D3DFMT_INDEX32;
+    m_IdxFmt  = D3DFMT_INDEX32;
 
     if (FAILED(CVIBuffer::Ready_Buffer()))
         return E_FAIL;
@@ -62,7 +68,7 @@ void CTriCol::Render_Buffer()
     CVIBuffer::Render_Buffer();
 }
 
-CTriCol* CTriCol::Create(LPDIRECT3DDEVICE9 graphicDev)
+CTriCol* CTriCol::Create(DEVICE graphicDev)
 {
     auto triCol = new CTriCol(graphicDev);
 

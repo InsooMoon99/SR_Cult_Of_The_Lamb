@@ -3,20 +3,29 @@
 
 #include "CCollisionManager.h"
 #include "CDInputMgr.h"
+#include "CDropSystem.h"
+#include "CEditContext.h"
 #include "CFontMgr.h"
 #include "CFrameMgr.h"
 #include "CGraphicDev.h"
 #include "CImGuiManager.h"
+#include "CItemDB.h"
 #include "CLightMgr.h"
-#include "CLogo.h"
+#include "CMainEditorMgr.h"
 #include "CManagement.h"
 #include "CProtoMgr.h"
+#include "CRandomMgr.h"
 #include "CRenderer.h"
+#include "CResourceMgr.h"
+#include "CSceneMgr.h"
+#include "CSoundMgr.h"
 #include "CTimerMgr.h"
+#include "CTexture.h"
 
 CMainApp::CMainApp()
     : m_ManagementClass(CManagement::GetInstance()),
-      m_DeviceClass(nullptr), m_GraphicDev(nullptr)
+      m_DeviceClass(nullptr),
+      m_GraphicDev(nullptr)
 { }
 
 CMainApp::~CMainApp()
@@ -27,10 +36,26 @@ HRESULT CMainApp::Ready_MainApp()
     if (FAILED(Ready_DefaultSetting(&m_GraphicDev)))
         return E_FAIL;
 
+#pragma region 데이터 파싱
+
+    if (FAILED(CItemDB::GetInstance()->LoadFromJson("ItemData.txt")))
+        return E_FAIL;
+
+#pragma endregion
+
     if (FAILED(Ready_Scene(m_GraphicDev)))
         return E_FAIL;
 
-    CImGuiManager::GetInstance()->InitImGui(g_hWnd, m_GraphicDev);
+    // ImGui
+    {
+        CImGuiManager::GetInstance()->InitImGui(g_hWnd, m_GraphicDev);
+
+        CEditContext* ctx = CEditContext::Create();
+        CMainEditorMgr::GetInstance()->Ready_MainEditor(m_GraphicDev, ctx);
+    }
+
+    // SoundMgr Init
+    CSoundMgr::GetInstance()->Ready_SoundMgr();
 
     return S_OK;
 }
@@ -44,12 +69,13 @@ int CMainApp::Update_MainApp(const float& timeDelta)
     m_ManagementClass->Update_Scene(timeDelta);
 
     CCollisionManager::GetInstance()->Update();
+    CSoundMgr::GetInstance()->Update(timeDelta);
 
     // Imgui
     {
         CImGuiManager::GetInstance()->Update();
-        /*ImGui::Begin("New Windows");
-        ImGui::End();*/
+
+        CMainEditorMgr::GetInstance()->Update_MainEditor(timeDelta);
     }
 
     return 0;
@@ -62,11 +88,16 @@ void CMainApp::LateUpdate_MainApp(const float& timeDelta)
 
 void CMainApp::Render_MainApp()
 {
-    m_DeviceClass->Render_Begin(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.f));
+    m_DeviceClass->Render_Begin(D3DXCOLOR(0.f, 0.f, 0.f, 1.f));
 
     m_ManagementClass->Render_Scene(m_GraphicDev);
 
-    CImGuiManager::GetInstance()->Render();
+    CMainEditorMgr::GetInstance()->Render_MainEditor();
+
+    // ImGui
+    {
+        CImGuiManager::GetInstance()->Render();
+    }
 
     m_DeviceClass->Render_End();
 }
@@ -82,6 +113,8 @@ HRESULT CMainApp::Ready_DefaultSetting(DEVICE* graphicDev)
     (*graphicDev) = m_DeviceClass->Get_GraphicDev();
 
     (*graphicDev)->AddRef();
+
+    CTexture::InitTextureSystem();
 
     // 조명 연산 끄기 옵션. 나중에는 조명을 끄는 행위는 하지 말자 (온오프 자주 하면 부하↑)
     (*graphicDev)->SetRenderState(D3DRS_LIGHTING, FALSE);
@@ -99,7 +132,53 @@ HRESULT CMainApp::Ready_DefaultSetting(DEVICE* graphicDev)
         return E_FAIL;
 
     if (FAILED(CFontMgr::GetInstance()->Ready_Font(
-        *graphicDev, L"궁서", L"궁서", 20, 15, FW_THIN)))
+        *graphicDev, L"궁서", L"궁서", 30, 30, FW_THIN)))
+        return E_FAIL;
+
+    //AddFontResourceEx(L"../Bin/Resource/Font/LaptureDisplay-Regular.otf", FR_PRIVATE, NULL);
+    if (FAILED(CFontMgr::GetInstance()->Ready_Font(
+        *graphicDev, L"LaptureDisplay-Regular", L"LaptureDisplay-Regular", 10, 24, FW_HEAVY)))
+        return E_FAIL;
+
+    //아이템 숫자 출력용 폰트
+    if (FAILED(CFontMgr::GetInstance()->Ready_Font(
+        *graphicDev, L"NanumSquare_Heavy", L"나눔스퀘어 네오 Heavy", 33, 35, FW_HEAVY)))
+        return E_FAIL;
+
+    //아이템 숫자 출력용 폰트
+    if (FAILED(CFontMgr::GetInstance()->Ready_Font(
+        *graphicDev, L"NanumSquare_Number", L"나눔스퀘어 네오 Heavy", 18, 20, FW_HEAVY)))
+        return E_FAIL;
+
+    //스킬 남은 횟수 출력용 폰트
+    if (FAILED(CFontMgr::GetInstance()->Ready_Font(
+        *graphicDev, L"NanumSquare_Skill", L"나눔스퀘어 네오 Heavy", 25, 25, FW_HEAVY)))
+        return E_FAIL;
+
+    //중간 크기 폰트
+    if (FAILED(CFontMgr::GetInstance()->Ready_Font(
+        *graphicDev, L"NanumSquare_Regular", L"나눔스퀘어 네오 Regular", 18, 21, FW_MEDIUM)))
+        return E_FAIL;
+
+
+    //작은 크기 폰트
+    if (FAILED(CFontMgr::GetInstance()->Ready_Font(
+        *graphicDev, L"NanumSquare_Small", L"나눔스퀘어 네오 Regular", 15, 18, FW_MEDIUM)))
+        return E_FAIL;
+
+    //아이템 카드 설명용 폰트
+    if (FAILED(CFontMgr::GetInstance()->Ready_Font(
+        *graphicDev, L"카드 설명", L"나눔스퀘어 네오 Regular", 16, 19, FW_MEDIUM)))
+        return E_FAIL;
+
+    //아이템 카드 부연 설명용 폰트
+    if (FAILED(CFontMgr::GetInstance()->Ready_Font(
+        *graphicDev, L"부연 설명", L"나눔스퀘어 네오 Regular", 12, 14, FW_MEDIUM)))
+        return E_FAIL;
+
+    //아이템 카드 이름 출력용 폰트
+    if (FAILED(CFontMgr::GetInstance()->Ready_Font(
+        *graphicDev, L"아이템 이름", L"나눔스퀘어 네오 Regular", 20, 24, FW_SEMIBOLD)))
         return E_FAIL;
 
     // DInput
@@ -111,18 +190,7 @@ HRESULT CMainApp::Ready_DefaultSetting(DEVICE* graphicDev)
 
 HRESULT CMainApp::Ready_Scene(DEVICE graphicDev)
 {
-    Engine::CScene* logo = CLogo::Create(graphicDev);
-
-    if (nullptr == logo)
-        return E_FAIL;
-
-    if (FAILED(m_ManagementClass->Set_Scene(logo)))
-    {
-        MSG_BOX("Logo Setting Failed");
-        return E_FAIL;
-    }
-
-    return S_OK;
+    return CSceneMgr::GetInstance()->Ready_SceneMgr(graphicDev);
 }
 
 CMainApp* CMainApp::Create()
@@ -144,15 +212,28 @@ void CMainApp::Free()
     Safe_Release(m_GraphicDev);
     Safe_Release(m_DeviceClass);
 
+    CTexture::CleanupTextureSystem();
+    CSoundMgr::DestroyInstance();
     CCollisionManager::DestroyInstance();
     CLightMgr::DestroyInstance();
     CDInputMgr::DestroyInstance();
     CFontMgr::DestroyInstance();
     CRenderer::DestroyInstance();
     CProtoMgr::DestroyInstance();
+    CResourceMgr::DestroyInstance();
     CFrameMgr::DestroyInstance();
     CTimerMgr::DestroyInstance();
+    CMainEditorMgr::DestroyInstance();
     CImGuiManager::DestroyInstance();
     CManagement::DestroyInstance();
     CGraphicDev::DestroyInstance();
+    CSceneMgr::DestroyInstance();
+    CRandomMgr::DestroyInstance();
+
+#pragma region 데이터 파싱 테스트
+
+    CItemDB::DestroyInstance();
+    CDropSystem::DestroyInstance();
+
+#pragma endregion
 }

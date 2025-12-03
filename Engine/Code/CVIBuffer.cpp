@@ -5,7 +5,7 @@ CVIBuffer::CVIBuffer()
       m_IB(nullptr), m_IdxSize(0), m_IdxFmt(D3DFMT_INDEX32)
 { }
 
-CVIBuffer::CVIBuffer(LPDIRECT3DDEVICE9 graphicDev)
+CVIBuffer::CVIBuffer(DEVICE graphicDev)
     : CComponent(graphicDev),
       m_VB(nullptr), m_VtxSize(0), m_VtxCnt(0), m_TriCnt(0), m_FVF(0),
       m_IB(nullptr), m_IdxSize(0), m_IdxFmt(D3DFMT_INDEX32)

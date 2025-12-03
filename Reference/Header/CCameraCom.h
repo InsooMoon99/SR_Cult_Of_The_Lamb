@@ -4,18 +4,26 @@
 BEGIN(Engine)
 class CTransform;
 
-// TODO 석호: 카메라 오브젝트, 다중 카메라 관리용 카메라 매니저 구성할 것
-
 /// @brief 컴포넌트 기반의 View/Proj 변환용 컴포넌트
 class ENGINE_DLL CCameraCom : public CComponent
 {
 public:
-    // 시점 모드
-    enum VIEW_MODE
+    // 카메라 컨트롤 모드
+    enum CAM_MODE
+    {
+        CAM_FREE,               // 자유 카메라
+        CAM_TARGET,             // 타겟 고정 카메라
+
+        CAM_END
+    };
+
+    // 시점 타입
+    enum VIEW_TYPE
     {
         VIEW_FPS,               // 1인칭
         VIEW_TPS,               // 3인칭
         VIEW_QUARTER,           // 쿼터뷰 (2.5D)
+
         VIEW_END
     };
 
@@ -24,15 +32,13 @@ public:
     {
         PROJ_PERSPECTIVE,       // 원근 투영
         PROJ_ORTHOGRAPHIC,      // 직교 투영
+
         PROJ_END
     };
 
-    // TODO 석호: UI는 메인 카메라가 같이 띄우되, CRenderer::Render_UI 에서 직접 직교 투영을 쓰고 돌려놓는 식으로 하자
-    // 그니까 이건 직교 투영을 월드에서 직접 쓰고 싶을때만 조작하게 되는거
-
 private:
     explicit CCameraCom();
-    explicit CCameraCom(LPDIRECT3DDEVICE9 graphicDev);
+    explicit CCameraCom(DEVICE graphicDev);
     explicit CCameraCom(const CCameraCom& rhs);
     ~CCameraCom() override;
 
@@ -41,28 +47,12 @@ public:
     _int    Update_Component(const _float& timeDelta) override;
     void    LateUpdate_Component() override;
 
-public:
-    // 시점 모드 변경
-    void Set_CamMode(VIEW_MODE viewMode)
-    {
-        if (m_ViewMode != viewMode && viewMode < VIEW_END)
-            m_ViewMode = viewMode;
+public: // Setter
+    void Set_CamMode(CAM_MODE camMode);     // 카메라 컨트롤 모드 변경
+    void Set_ViewType(VIEW_TYPE viewType);  // 시점 타입 변경
+    void Set_ProjType(PROJ_TYPE projType);  // 투영 타입 변경. UI등 Renderer에서 자동으로 직교 투영을 할 오브젝트가 아닌, 수동으로 직교 투영을 사용하고자 할 때 사용
 
-        // todo 석호: Owner는 카메라 오브젝트가 될 것이므로, 오브젝트의 시점 모드 역시 여기서 바꾸는 것을 시도해보자
-    }
-
-    // 투영 타입 변경
-    void Set_ProjType(PROJ_TYPE projType)
-    {
-        if (m_ProjType != projType && projType < PROJ_END)
-        {
-            m_ProjType = projType;
-            m_isDirty  = true;
-        }
-    }
-
-    // TPS / QUARTER 카메라 오프셋 (타겟과의 거리) 설정
-    void Set_Offset(const _vec3& offset) { m_Offset = offset; }
+    void Set_Offset(const _vec3& offset) { m_Offset = offset; } // TPS, QUARTER 카메라 오프셋 (타겟과의 거리) 설정
 
     void Set_FOV(const _float fov)
     {
@@ -88,11 +78,13 @@ public:
         m_isDirty = true;
     }
 
-    VIEW_MODE Get_ViewMode() const { return m_ViewMode; }
+public: // Getter
+    CAM_MODE  Get_CamMode() const { return m_CamMode; }
+    VIEW_TYPE Get_ViewType() const { return m_ViewType; }
     PROJ_TYPE Get_ProjType() const { return m_ProjType; }
 
-    const D3DXMATRIX& Get_View() const { return m_matView; }
-    const D3DXMATRIX& Get_Proj() const { return m_matProj; }
+    const _matrix& Get_View() const { return m_matView; }    // 카메라의 뷰 행렬 Get
+    const _matrix& Get_Proj() const { return m_matProj; }    // 카메라의 투영 행렬 Get
 
     const _vec3& Get_Offset() const { return m_Offset; }
 
@@ -110,24 +102,20 @@ private:
     void Compute_Proj_Orthographic();
 
 private:
-    void Key_Input();
-
-private:
-    VIEW_MODE m_ViewMode;
+    CAM_MODE  m_CamMode;
+    VIEW_TYPE m_ViewType;
     PROJ_TYPE m_ProjType;
 
     _matrix m_matView, m_matProj;
 
-    _vec3 m_Offset;         // 3인칭 카메라의 타겟 기준 오프셋 (거리)
-
-    _vec3 m_Pos, m_Look, m_Up, m_Eye, m_At;
-
+    _vec3  m_Offset;        // 3인칭 카메라의 타겟 기준 오프셋 (거리)
+    _vec3  m_Pos, m_Look,   m_Up,   m_Eye, m_At;
     _float m_FOV, m_Aspect, m_Near, m_Far;
 
     _bool m_isDirty;        // 투영 변환 재연산 트리거
 
 public:
-    static CCameraCom* Create(LPDIRECT3DDEVICE9 pGraphicDev);
+    static CCameraCom* Create(DEVICE graphicDev);
     CComponent*        Clone() override;
 
 private:

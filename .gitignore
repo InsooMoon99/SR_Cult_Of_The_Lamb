@@ -428,5 +428,3 @@ FodyWeavers.xsd
 *.cso
 *.hlsl.h
 *.hlsl.obj
-
-cleanup_branches.sh

@@ -2,8 +2,8 @@
 
 #include "CLayer.h"
 
-CScene::CScene(LPDIRECT3DDEVICE9 graphicDev)
-    : m_GraphicDev(graphicDev)
+CScene::CScene(DEVICE graphicDev)
+    : m_GraphicDev(graphicDev), m_MainCam(nullptr)
 {
     m_GraphicDev->AddRef();
 }
@@ -27,6 +27,45 @@ CComponent* CScene::Get_Component(COMPONENTID   componentID,
 HRESULT CScene::Ready_Scene()
 {
     return S_OK;
+}
+
+void CScene::Initialize_Scene()
+{
+    for (auto& pLayer : m_Layers)
+    {
+        pLayer.second->Initialize_Layer();
+    }
+}
+
+void CScene::AddObjectOnLayer(LAYERTYPE layerType, CGameObject* obj, OBJTYPE objType)
+{
+    Engine::CLayer* layer = nullptr;
+
+    auto it = m_Layers.find(layerType);
+    if (it != m_Layers.end())
+    {
+        layer = it->second;
+    }
+
+    if (layer == nullptr)
+        MSG_BOX("layerType wrong");
+
+    if (FAILED(layer->Add_GameObject(objType, obj)))
+    {
+        MSG_BOX("Add_GameObject failed");
+        return;
+    }
+
+}
+
+CLayer* CScene::Get_Layer(LAYERTYPE type)
+{
+    auto iter = m_Layers.find(type);
+
+    if (iter == m_Layers.end())
+        return nullptr;
+
+    return iter->second;
 }
 
 _int CScene::Update_Scene(const _float& timeDelta)

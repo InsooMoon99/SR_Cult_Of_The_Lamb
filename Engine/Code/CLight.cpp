@@ -1,6 +1,6 @@
 ﻿#include "CLight.h"
 
-CLight::CLight(LPDIRECT3DDEVICE9 graphicDev)
+CLight::CLight(DEVICE graphicDev)
     : m_GraphicDev(graphicDev), m_Light{}, m_Index(0)
 {
     m_GraphicDev->AddRef();
@@ -21,7 +21,7 @@ HRESULT CLight::Ready_Light(const D3DLIGHT9* lightInfo, const _uint& index)
     return S_OK;
 }
 
-CLight* CLight::Create(LPDIRECT3DDEVICE9 graphicDev, const D3DLIGHT9* lightInfo, const _uint& index)
+CLight* CLight::Create(DEVICE graphicDev, const D3DLIGHT9* lightInfo, const _uint& index)
 {
     auto light = new CLight(graphicDev);
 

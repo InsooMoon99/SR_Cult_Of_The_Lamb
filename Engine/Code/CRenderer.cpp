@@ -14,16 +14,17 @@ CRenderer::~CRenderer()
 
 void CRenderer::Add_RenderGroup(RENDERID type, CGameObject* gameObject)
 {
-     if (type < RENDER_PRIORITY || type >= RENDER_END || nullptr == gameObject)
+    if (type < RENDER_PRIORITY || type >= RENDER_END || nullptr == gameObject)
         return;
 
     m_RenderGroup[type].push_back(gameObject);
     gameObject->AddRef();
 }
 
-void CRenderer::Render_GameObject(LPDIRECT3DDEVICE9& graphicDev)
+void CRenderer::Render_GameObject(DEVICE& graphicDev)
 {
     Render_Priority(graphicDev);
+    Render_Priority_Alpha(graphicDev);
     Render_NonAlpha(graphicDev);
     Render_Alpha(graphicDev);
     Render_UI(graphicDev);
@@ -40,7 +41,7 @@ void CRenderer::Clear_RenderGroup()
     }
 }
 
-void CRenderer::Render_Priority(LPDIRECT3DDEVICE9& graphicDev)
+void CRenderer::Render_Priority(DEVICE& graphicDev)
 {
     for (auto& obj : m_RenderGroup[RENDER_PRIORITY])
     {
@@ -48,7 +49,23 @@ void CRenderer::Render_Priority(LPDIRECT3DDEVICE9& graphicDev)
     }
 }
 
-void CRenderer::Render_NonAlpha(LPDIRECT3DDEVICE9& graphicDev)
+void CRenderer::Render_Priority_Alpha(DEVICE& graphicDev)
+{
+    // 알파 블렌딩 켜기
+    graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    graphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);      
+    graphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);  
+
+    for (auto& obj : m_RenderGroup[RENDER_PRIORITY_ALPHA])
+    {
+        obj->Render_GameObject();
+    }
+
+    // 알파 블렌딩 끄기
+    graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+}
+
+void CRenderer::Render_NonAlpha(DEVICE& graphicDev)
 {
     for (auto& obj : m_RenderGroup[RENDER_NONALPHA])
     {
@@ -56,12 +73,9 @@ void CRenderer::Render_NonAlpha(LPDIRECT3DDEVICE9& graphicDev)
     }
 }
 
-void CRenderer::Render_Alpha(LPDIRECT3DDEVICE9& graphicDev)
+void CRenderer::Render_Alpha(DEVICE& graphicDev)
 {
     graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-
-    graphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-    graphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
     for (auto& obj : m_RenderGroup[RENDER_ALPHA])
     {
@@ -71,14 +85,53 @@ void CRenderer::Render_Alpha(LPDIRECT3DDEVICE9& graphicDev)
     graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 }
 
-void CRenderer::Render_UI(LPDIRECT3DDEVICE9& graphicDev)
+void CRenderer::Render_UI(DEVICE& graphicDev)
 {
-    // TODO 석호: 직교 투영 설정
+    if (m_RenderGroup[RENDER_UI].empty())
+        return;
+
+    _matrix prevView;
+    _matrix prevProj;
+
+    graphicDev->GetTransform(D3DTS_VIEW, &prevView);        // 쓰던 뷰 행렬 임시 저장
+    graphicDev->GetTransform(D3DTS_PROJECTION, &prevProj);  // 쓰던 투영 행렬 임시 저장
+
+    _matrix uiView;
+    _matrix uiProj;
+
+    D3DXMatrixIdentity(&uiView);    // UI용 뷰 행렬은 항등 행렬로 설정
+
+    // UI 투영 행렬은 직교 투영으로 설정
+    D3DXMatrixOrthoLH(
+        &uiProj,
+        static_cast<_float>(WINCX),
+        static_cast<_float>(WINCY),
+        0.f,
+        1.f);
+
+    graphicDev->SetTransform(D3DTS_VIEW, &uiView);          // UI 뷰 행렬 사용
+    graphicDev->SetTransform(D3DTS_PROJECTION, &uiProj);    // UI 투영 행렬 사용
+
+    // 깊이 끄기
+    graphicDev->SetRenderState(D3DRS_ZENABLE, FALSE);
+
+    // 알파 블렌딩
+    graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    graphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+    graphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
     for (auto& obj : m_RenderGroup[RENDER_UI])
     {
         obj->Render_GameObject();
     }
+
+    // 상태 복구
+    graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+    graphicDev->SetRenderState(D3DRS_ZENABLE, TRUE);
+
+    graphicDev->SetTransform(D3DTS_VIEW, &prevView);
+    graphicDev->SetTransform(D3DTS_PROJECTION, &prevProj);
+    graphicDev->SetRenderState(D3DRS_ZENABLE, TRUE);
 }
 
 void CRenderer::Free()

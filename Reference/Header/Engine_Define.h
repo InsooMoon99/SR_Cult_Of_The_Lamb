@@ -18,24 +18,20 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+#include <fstream>
+#include <filesystem>
 
 #include "Engine_Enum.h"
 #include "Engine_Macro.h"
 #include "Engine_Typedef.h"
+#include "Engine_Global.h"
 #include "Engine_Struct.h"
 #include "Engine_Function.h"
 
 // DInput
 #define DIRECTINPUT_VERSION	0x0800
 #include <dinput.h>
-
 #pragma warning(disable : 4251)
-
-//DirectXTk (SimpleMath)
-#include "../../Libs/DirectXTK/SimpleMath.h"
-using namespace DirectX;
-using namespace SimpleMath;
-// TODO 석호: 클라 쪽에서도 쓰게 할 것인가?
 
 //Fmod
 #include "../../Libs/Fmod/fmod.hpp"
