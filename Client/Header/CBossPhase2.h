@@ -41,6 +41,7 @@ public:
 
 public:
     CBossController* Get_Controller() { return m_BossController; }
+    const char* Get_Boss2_StateName(_int stateNum);
 
 public:
     static CBossPhase2* Create(DEVICE graphicDev);

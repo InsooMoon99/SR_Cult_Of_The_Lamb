@@ -172,6 +172,9 @@
     <Filter Include="03. GameObject\04. Boss\02. Boss2\02. Slave">
       <UniqueIdentifier>{f0761f14-29e5-4beb-a999-fbcd51de41e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\04. Boss\02. Boss2\03. State">
+      <UniqueIdentifier>{d74a9f17-2586-44d3-a875-b196eaed53a4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -457,7 +460,10 @@
       <Filter>03. GameObject\04. Boss\02. Boss2\00. Boss</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CBoss2_Idle.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBoss2_Eyeball.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -717,7 +723,10 @@
       <Filter>03. GameObject\04. Boss\02. Boss2\00. Boss</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CBoss2_Idle.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoss2_Eyeball.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

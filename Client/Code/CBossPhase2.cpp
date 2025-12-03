@@ -26,6 +26,7 @@ HRESULT CBossPhase2::Ready_GameObject()
     if (FAILED(CMonsterBase::Ready_GameObject()))
         return E_FAIL;
 
+    
 
     return S_OK;
 }
@@ -79,6 +80,41 @@ void CBossPhase2::Render_Editor()
 {
     CMonsterBase::Render_Editor();
 
+    ImGui::SeparatorText("=== Boss Phase2 ===");
+
+    if (m_BossController && m_BossController->Get_StateMachine())
+    {
+        auto stateMachine = m_BossController->Get_StateMachine();
+        _int curState = stateMachine->Get_CurStateNum();
+
+        ImGui::Text("Current State : %s", Get_Boss2_StateName(curState));
+
+        ImGui::Separator();
+
+        for (int i = 0; i < PATTERN::PHASE2_END; i++)
+        {
+            if (ImGui::Button(Get_Boss2_StateName(i)))
+            {
+                stateMachine->Change_State(i);
+            }
+        }
+    }
+
+}
+
+const char* CBossPhase2::Get_Boss2_StateName(_int stateNum)
+{
+    // 상태 추가될때마다 추가하기
+    switch (stateNum)
+    {
+    case PHASE2_IDLE:       return "PHASE2_IDLE";
+    case PHASE2_EYEBALL:    return "PHASE2_EYEBALL";
+    case PHASE2_CHAIN:      return "PHASE2_CHAIN";
+    case PHASE2_BULLET:     return "PHASE2_BULLET";
+    case PHASE2_DEAD:       return "PHASE2_DEAD";
+    case PHASE2_END:        return "PHASE2_END";
+    }
+    return "UNKNOWN";
 }
 
 CBossPhase2* CBossPhase2::Create(DEVICE graphicDev)
@@ -97,10 +133,11 @@ CBossPhase2* CBossPhase2::Create(DEVICE graphicDev)
 
 void CBossPhase2::Animation_Setting()
 {
-    m_AnimatorCom->Create_Animation(L"Boss_Idle", 68, 0.04f);
-    //m_AnimatorCom->Create_Animation(L"Boss_handSlam", 68, 0.04f);
+    m_AnimatorCom->Create_Animation(L"Boss2_Idle", 68, 0.04f);
+    m_AnimatorCom->Create_Animation(L"Boss2_Roar", 69, 0.04f);
 
-    m_AnimatorCom->Play_Animation(L"Boss_Idle", ANIMSTATE::LOOP);
+    // 스프라이트 재생은 상태머신으로
+    //m_AnimatorCom->Play_Animation(L"Boss_Idle", ANIMSTATE::LOOP); 
 }
 
 HRESULT CBossPhase2::Add_Component()

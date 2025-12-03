@@ -20,6 +20,7 @@
 #include "CSceneMgr.h"
 #include "CSoundMgr.h"
 #include "CTimerMgr.h"
+#include "CTexture.h"
 
 CMainApp::CMainApp()
     : m_ManagementClass(CManagement::GetInstance()),
@@ -35,6 +36,13 @@ HRESULT CMainApp::Ready_MainApp()
     if (FAILED(Ready_DefaultSetting(&m_GraphicDev)))
         return E_FAIL;
 
+#pragma region 데이터 파싱
+
+    if (FAILED(CItemDB::GetInstance()->LoadFromJson("ItemData.txt")))
+        return E_FAIL;
+
+#pragma endregion
+
     if (FAILED(Ready_Scene(m_GraphicDev)))
         return E_FAIL;
 
@@ -48,13 +56,6 @@ HRESULT CMainApp::Ready_MainApp()
 
     // SoundMgr Init
     CSoundMgr::GetInstance()->Ready_SoundMgr();
-
-#pragma region 데이터 파싱 테스트
-
-    if (FAILED(CItemDB::GetInstance()->LoadFromJson("ItemData.txt")))
-        return E_FAIL;
-
-#pragma endregion
 
     return S_OK;
 }
@@ -112,6 +113,8 @@ HRESULT CMainApp::Ready_DefaultSetting(DEVICE* graphicDev)
     (*graphicDev) = m_DeviceClass->Get_GraphicDev();
 
     (*graphicDev)->AddRef();
+
+    CTexture::InitTextureSystem();
 
     // 조명 연산 끄기 옵션. 나중에는 조명을 끄는 행위는 하지 말자 (온오프 자주 하면 부하↑)
     (*graphicDev)->SetRenderState(D3DRS_LIGHTING, FALSE);
@@ -209,6 +212,7 @@ void CMainApp::Free()
     Safe_Release(m_GraphicDev);
     Safe_Release(m_DeviceClass);
 
+    CTexture::CleanupTextureSystem();
     CSoundMgr::DestroyInstance();
     CCollisionManager::DestroyInstance();
     CLightMgr::DestroyInstance();

@@ -5,7 +5,7 @@
 #include "CBossPhase2.h"
 #include "CAnimator.h"
 
-CBoss2_Idle::CBoss2_Idle(CGameObject* owner)
+CBoss2_Idle::CBoss2_Idle(CMonsterBase* owner)
     : m_Controller(nullptr), m_Owner(nullptr), m_Pattern_Cooldown(0)
 {
 }
@@ -47,6 +47,8 @@ _int CBoss2_Idle::Update_State(const _float& timeDelta)
 void CBoss2_Idle::Exit()
 {
     CMonsterState::Exit();
+
+    // 상태 끝날 때
 }
 
 HRESULT CBoss2_Idle::Ready_State()
@@ -56,7 +58,7 @@ HRESULT CBoss2_Idle::Ready_State()
     return S_OK;
 }
 
-CBoss2_Idle* CBoss2_Idle::Create(CGameObject* owner)
+CBoss2_Idle* CBoss2_Idle::Create(CMonsterBase* owner)
 {
     auto state = new CBoss2_Idle(owner);
 

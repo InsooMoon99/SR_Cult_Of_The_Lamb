@@ -1,5 +1,8 @@
 ﻿#include "CTexture.h"
 
+CRITICAL_SECTION CTexture::s_D3DLock;
+bool CTexture::s_LockInitialized = false;
+
 CTexture::CTexture(LPDIRECT3DDEVICE9 graphicDev)
     : CComponent(graphicDev)
 { }
@@ -86,35 +89,44 @@ HRESULT CTexture::Ready_Texture_List(const vector<wstring>& fileList, TEXTUREID 
     {
         IDirect3DBaseTexture9* texture = nullptr;
 
-        HRESULT hr = D3DXCreateTextureFromFile(
-            m_GraphicDev,
-            file.c_str(),
-            (LPDIRECT3DTEXTURE9*)&texture);
+		if (!s_LockInitialized)
+		{
+			OutputDebugString(L"[CTexture] ERROR: s_D3DLock NOT initialized!\n");
+			return E_FAIL;
+		}
 
-        if (FAILED(hr))
-        {
-            OutputDebugStringW((L"[Texture Load Failed] " + file + L"\n").c_str());
-            return E_FAIL;
-        }
-
-        OutputDebugStringW((L"[Texture Loaded] " + file + L"\n").c_str());
+		EnterCriticalSection(&s_D3DLock);
 
         if (texType == TEX_NORMAL)
         {
             if (FAILED(D3DXCreateTextureFromFile(
                 m_GraphicDev, file.c_str(), (LPDIRECT3DTEXTURE9*)&texture)))
+            {
+                LeaveCriticalSection(&s_D3DLock);
+                OutputDebugStringW((L"[Texture Load Failed] " + file + L"\n").c_str());
                 return E_FAIL;
+            }
         }
         else if (texType == TEX_CUBE)
         {
             if (FAILED(D3DXCreateCubeTextureFromFile(
                 m_GraphicDev, file.c_str(), (LPDIRECT3DCUBETEXTURE9*)&texture)))
+            {
+                LeaveCriticalSection(&s_D3DLock);
+                OutputDebugStringW((L"[Texture Load Failed] " + file + L"\n").c_str());
                 return E_FAIL;
+            }
         }
+        else
+        {
+            LeaveCriticalSection(&s_D3DLock);
+            return E_FAIL;
+        }
+
+        LeaveCriticalSection(&s_D3DLock);
 
         m_Textures.push_back(texture);
     }
-
     return S_OK;
 }
 
@@ -125,13 +137,19 @@ void CTexture::Set_Texture(const _uint& index)
 
     m_GraphicDev->SetTexture(0, m_Textures[index]);
 
-
 }
 
 HRESULT CTexture::Add_Texture(const wstring& animKey, TEXTUREID texType, const wstring& filePathPattern, _uint count)
 {
+    if (m_AnimTextures.find(animKey) != m_AnimTextures.end())
+        return S_OK;
+
+	EnterCriticalSection(&s_D3DLock);
+
     vector<IDirect3DBaseTexture9*>& frames = m_AnimTextures[animKey];
     frames.reserve(count);
+
+	LeaveCriticalSection(&s_D3DLock);
 
     for (_uint i = 0; i < count; ++i)
     {
@@ -141,24 +159,36 @@ HRESULT CTexture::Add_Texture(const wstring& animKey, TEXTUREID texType, const w
 
         IDirect3DBaseTexture9* texture = nullptr;
 
+		EnterCriticalSection(&s_D3DLock);
+
         switch (texType)
         {
         case TEX_NORMAL:
             if (FAILED(D3DXCreateTextureFromFile(
                 m_GraphicDev, fileName, (LPDIRECT3DTEXTURE9*)&texture)))
+            {
+				LeaveCriticalSection(&s_D3DLock);
                 return E_FAIL;
+            }
             break;
 
         case TEX_CUBE:
         {
             if (FAILED(D3DXCreateCubeTextureFromFile(
                 m_GraphicDev, fileName, (LPDIRECT3DCUBETEXTURE9*)&texture)))
+            {
+				LeaveCriticalSection(&s_D3DLock);
                 return E_FAIL;
+            }
         }
         break;
         }
 
-        frames.push_back(texture);
+		LeaveCriticalSection(&s_D3DLock);
+
+		EnterCriticalSection(&s_D3DLock);
+		frames.push_back(texture);
+		LeaveCriticalSection(&s_D3DLock);
     }
 
     return S_OK;
@@ -290,4 +320,28 @@ void CTexture::Free()
                  }
              });
     m_AnimTextures.clear();
+}
+
+void CTexture::InitTextureSystem()
+{
+	if (!s_LockInitialized)
+	{
+		InitializeCriticalSection(&s_D3DLock);
+		s_LockInitialized = true;
+
+		OutputDebugString(L"[CTexture] InitTextureSystem() called!\n");
+	}
+	else
+	{
+		OutputDebugString(L"[CTexture] Already initialized!\n");
+	}
+}
+
+void CTexture::CleanupTextureSystem()
+{
+    if (s_LockInitialized)
+    {
+        DeleteCriticalSection(&s_D3DLock);
+        s_LockInitialized = false;
+    }
 }

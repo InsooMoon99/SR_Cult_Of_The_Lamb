@@ -3,12 +3,12 @@
 #include "Engine_Define.h"
 #include "CBaseState.h"
 
-namespace Engine
-{
-    class CTransform;
-    class CTexture;
-    class CAnimator;
-}
+BEGIN(Engine)
+class CTransform;
+class CTexture;
+class CAnimator;
+class CGameObject;
+END
 
 class CPlayer;
 
@@ -21,7 +21,6 @@ protected:
 public:
     virtual void Enter() ;
     virtual void Exit() ;
-
 
 public:
      //virtual HRESULT Ready_State() { return S_OK; }
