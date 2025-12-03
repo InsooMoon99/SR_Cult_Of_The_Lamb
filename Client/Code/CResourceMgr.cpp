@@ -32,6 +32,7 @@
 #include "ItemInstance.h"
 #include "CProjectile.h"
 #include "CBossController.h"
+#include "CEyeballController.h"
 
 IMPLEMENT_SINGLETON(CResourceMgr)
 
@@ -393,94 +394,6 @@ HRESULT CResourceMgr::Ready_BossP1(DEVICE graphicDev)
     return S_OK;
 }
 
-HRESULT CResourceMgr::Ready_BossP1_Idle_Awake(DEVICE graphicDev, CTexture* bossTex)
-{
-    if (FAILED(bossTex->Add_Texture(L"BossIdle", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-animation/TOWW-Spirit-animation%d.png", 100)))
-        return E_FAIL;
-
-    if (FAILED(bossTex->Add_Texture(L"BossAwake", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-transform2/TOWW-Spirit-transform%d.png", 105)))
-        return E_FAIL;
-
-    return S_OK;
-}
-
-HRESULT CResourceMgr::Ready_BossP1_Attack_Dead(DEVICE graphicDev, CTexture* bossTex)
-{
-    if (FAILED(bossTex->Add_Texture(L"BossAttack", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-shoot/TOWW-Spirit-shoot%d.png", 97)))
-        return E_FAIL;
-
-    if (FAILED(bossTex->Add_Texture(L"BossDead", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-hurt-talk/TOWW-Spirit-hurt-talk%d.png", 167)))
-        return E_FAIL;
-
-    return S_OK;
-}
-
-HRESULT CResourceMgr::Ready_BossP1_Movement(DEVICE graphicDev, CTexture* bossTex)
-{
-    if (FAILED(bossTex->Add_Texture(L"BossMove_up", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-appear/TOWW-Spirit-appear%d.png", 50)))
-        return E_FAIL;
-
-    if (FAILED(bossTex->Add_Texture(L"BossMove_Down", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-disappear/TOWW-Spirit-disappear%d.png", 28)))
-        return E_FAIL;
-
-    return S_OK;
-}
-
-HRESULT CResourceMgr::Ready_BossP1_Groggy(DEVICE graphicDev, CTexture* bossTex)
-{
-    if (FAILED(bossTex->Add_Texture(L"BossGroggy_start", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-hurt/TOWW-Spirit-hurt%d.png", 115)))
-        return E_FAIL;
-
-    if (FAILED(bossTex->Add_Texture(L"BossGroggy_loop", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-loop/TOWW-Spirit-loop%d.png", 84)))
-        return E_FAIL;
-
-    if (FAILED(bossTex->Add_Texture(L"BossGroggy_end", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-hurt-stop/TOWW-Spirit-hurt-stop%d.png", 67)))
-        return E_FAIL;
-
-    return S_OK;
-}
-
-HRESULT CResourceMgr::Ready_BossP1_Effects(DEVICE graphicDev, CTexture* bossTex)
-{
-    if (FAILED(bossTex->Add_Texture(L"BossChainEff", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase1/ChainAttack/Summon_Chain%d.png", 34)))
-        return E_FAIL;
-    return S_OK;
-
-}
-
-HRESULT CResourceMgr::Ready_BossP1_Extra(DEVICE graphicDev)
-{
-    auto protoMgr = CProtoMgr::GetInstance();
-
-    vector<wstring> pathVec1;
-    pathVec1.push_back(L"../Bin/Resource/Texture/BossPhase1/ChainAttackGround.png");
-    pathVec1.push_back(L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Sermon_Icon.png");
-
-    if (FAILED(protoMgr->Ready_Prototype(
-        COMPONENTTYPE::TEX_OUT, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec1))))
-        return E_FAIL;
-
-    vector<wstring> pathVec2;
-    pathVec2.push_back(L"../Bin/Resource/Texture/BossPhase1/Bullet/Bullet.png");
-    pathVec2.push_back(L"../Bin/Resource/Texture/BossPhase1/Bullet/Bullet1.png");
-
-    if (FAILED(protoMgr->Ready_Prototype(
-        COMPONENTTYPE::TEX_BULLET, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec2))))
-        return E_FAIL;
-    return S_OK;
-
-}
-
 HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
 {
     auto protoMgr = CProtoMgr::GetInstance();
@@ -504,11 +417,16 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
     // Boss Phase 2
     CTexture* bossPhase2 = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(bossPhase2, E_FAIL);
-    
-    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Idle", TEX_NORMAL,
+
+    // Start
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Start", TEX_NORMAL,
         L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Start_Eye/TOWW_Start_Eye%d.png", 68)))
             return E_FAIL;
-
+    // Idle
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Idle/TOWW_Idle%d.png", 68)))
+        return E_FAIL;
+    // Roar
     if (FAILED(bossPhase2->Add_Texture(L"Boss2_Roar", TEX_NORMAL,
         L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Roar/TOWW_Roar%d.png", 69)))
         return E_FAIL;
@@ -516,6 +434,59 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_BOSS2_PHASE2, bossPhase2)))
         return E_FAIL;
     
+    return S_OK;
+}
+
+HRESULT CResourceMgr::Ready_BossP2_Eyeball(DEVICE graphicDev)
+{
+    auto protoMgr = CProtoMgr::GetInstance();
+
+    // Eyeball Controller
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::EYEBALL_CONTROLLER,
+        CEyeballController::Create(graphicDev))))
+        return E_FAIL;
+
+    CTexture* eyeballTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(eyeballTex, E_FAIL);
+
+    // Start
+    if (FAILED(eyeballTex->Add_Texture(L"Eyeball_Start", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Eyeball/Eyeball_Idle/Eyeball_Idle%d.png", 59)))
+        return E_FAIL;
+
+    // Enter
+    if (FAILED(eyeballTex->Add_Texture(L"Eyeball_Enter", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Eyeball/Eyeball_Enter/Eyeball_Enter%d.png", 49)))
+        return E_FAIL;
+
+    // Exit
+    if (FAILED(eyeballTex->Add_Texture(L"Eyeball_Exit", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Eyeball/Eyeball-exit/Eyeball-exit%d.png", 34)))
+        return E_FAIL;
+
+    // Anticipate
+    if (FAILED(eyeballTex->Add_Texture(L"Eyeball_Anti", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Eyeball/Eyeball-attack-anticipate/Eyeball-attack-anticipate%d.png", 44)))
+        return E_FAIL;
+
+    // Attack Loop
+    if (FAILED(eyeballTex->Add_Texture(L"Eyeball_Attack_Loop", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Eyeball/Eyeball-attack-loop/Eyeball-attack-loop%d.png", 45)))
+        return E_FAIL;
+
+    // Attack End
+    if (FAILED(eyeballTex->Add_Texture(L"Eyeball_Attack_End", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Eyeball/Eyeball-attack-end/Eyeball-attack-end%d.png", 54)))
+        return E_FAIL;
+
+    // Die
+    if (FAILED(eyeballTex->Add_Texture(L"Eyeball_Die", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Eyeball/Eyeball-die/Eyeball-die%d.png", 25)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_BOSS2_EYEBALL, eyeballTex)))
+        return E_FAIL;
+
     return S_OK;
 }
 

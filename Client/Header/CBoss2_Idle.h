@@ -4,7 +4,6 @@
 
 class CBossController;
 class CCharacterBase;
-class CMonsterBase;
 
 BEGIN(Engine)
 class CGameObject;
@@ -13,7 +12,7 @@ END
 class CBoss2_Idle : public CMonsterState
 {
 private:
-    explicit CBoss2_Idle(CMonsterBase* owner);
+    explicit CBoss2_Idle(CGameObject* owner);
     virtual ~CBoss2_Idle();
 
 public:
@@ -24,19 +23,15 @@ public:
     HRESULT Ready_State() override;
 
 public:
-    static CBoss2_Idle* Create(CMonsterBase* owner);
+    static CBoss2_Idle* Create(CGameObject* owner);
 
 private:
     void Free() override;
 
 private:
-    CBossController* m_Controller;
-    CMonsterBase*     m_Owner;
+    CGameObject*     m_Owner;
 
     _float           m_Pattern_Cooldown;
-
-
-
 
 };
 
