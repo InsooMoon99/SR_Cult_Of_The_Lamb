@@ -66,7 +66,7 @@ void CCameraCalc::LateUpdate_Component()
     }
 }
 
-void CCameraCalc::Set_ProjType(PROJ_TYPE projType)
+void CCameraCalc::Set_ProjType(PROJECTION_TYPE projType)
 {
     if (m_ProjType != projType)
     {

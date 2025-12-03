@@ -2,6 +2,7 @@
 #include "CAnimator.h"
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
+#include "CDInputMgr.h"
 #include "CEnumHelper.h"
 #include "CInventory.h"
 #include "CPlayerAttack.h"
@@ -15,6 +16,8 @@
 #include "CTransform.h"
 #include "CWallRenderer.h"
 #include "CWeaponEquip.h"
+#include "CCameraCalc.h"
+#include "CCameraMovement.h"
 
 USING(Engine)
 
@@ -699,134 +702,162 @@ static void Animator_Inspector(CAnimator* animator)
     ImGui::PopID();
 }
 
-//TODO CCameraControllerInspector 로 개편 필요
-// 자체적인 모드 변경 등
-// PlayerController_Inspector의 설계처럼 CCameraCalc, CCameraMovement Inspector를 같이 관리할 수 있도록
-static void Menu_CameraInspector(CCameraCalc* cameraCalc)
+static void CamCalc_Inspector(CCameraCalc* camCalc)
 {
-    //if (cameraCalc == nullptr)
-    //    return;
-    //
-    //ImGui::PushID("Main_CameraInspector");
-    //{
-    //    const char* camModeItems[] = { "Free", "Target" };
-    //    int camMode = cameraCalc->Get_CamMode();
-    //
-    //    ImGui::SetNextItemWidth(80.f);
-    //    if (ImGui::Combo("##CamMode", &camMode, camModeItems, IM_ARRAYSIZE(camModeItems)))
-    //    {
-    //        cameraCalc->Set_CamMode(static_cast<CCameraCalc::CAM_MODE>(camMode));
-    //    }
-    //
-    //    if (CDInputMgr::GetInstance()->KeyDown(DIK_F8))
-    //    {
-    //        camMode = (cameraCalc->Get_CamMode() == CCameraCalc::CAM_MODE::CAM_TARGET) ?
-    //            CCameraCalc::CAM_MODE::CAM_FREE :
-    //            CCameraCalc::CAM_MODE::CAM_TARGET;
-    //
-    //        cameraCalc->Set_CamMode(static_cast<CCameraCalc::CAM_MODE>(camMode));
-    //    }
-    //}
-    //ImGui::PopID();
+    if (!camCalc) return;
+
+    ImGui::PushID("CamCalc_Inspector");
+    if (ImGui::CollapsingHeader("Camera Calc"))
+    {
+        // Projection Type
+        const char* projItems[] = { "Perspective", "Orthographic" };
+        int         projType    = static_cast<int>(camCalc->Get_ProjType());
+        if (ImGui::Combo("Projection", &projType, projItems, IM_ARRAYSIZE(projItems)))
+            camCalc->Set_ProjType(static_cast<PROJECTION_TYPE>(projType));
+
+        // FOV
+        _float fov = camCalc->Get_FOV();
+        if (ImGui::DragFloat("FOV", &fov, 0.01f, 0.1f, 3.14f))
+            camCalc->Set_FOV(fov);
+
+        // Aspect
+        _float aspect = camCalc->Get_Aspect();
+        if (ImGui::DragFloat("Aspect", &aspect, 0.01f, 0.1f, 5.0f))
+            camCalc->Set_Aspect(aspect);
+
+        // Near / Far
+        _float nearVal = camCalc->Get_Near();
+        _float farVal  = camCalc->Get_Far();
+        if (ImGui::DragFloat("Near", &nearVal, 0.1f, 0.1f, 1000.0f))
+            camCalc->Set_Near(nearVal);
+        if (ImGui::DragFloat("Far", &farVal, 1.0f, 1.0f, 10000.0f))
+            camCalc->Set_Far(farVal);
+    }
+    ImGui::PopID();
 }
 
-//TODO CCameraCalcInspector 로 개편 필요
-static void Camera_Inspector(CCameraCalc* cameraCalc)
+static void CamMovement_Inspector(CCameraMovement* movement)
 {
-    //if (cameraCalc == nullptr)
-    //    return;
-    //
-    //ImGui::PushID("Camera_Inspector");
-    //{
-    //    ImGui::NewLine();
-    //
-    //    _vec3 offset = cameraCalc->Get_Offset();
-    //
-    //    ImGui::Text("Offset : "); ImGui::SameLine();
-    //    if (ImGui::DragFloat3("##Camera_Offset", &offset.x, 0.001f))
-    //    {
-    //        cameraCalc->Set_Offset(offset);
-    //    }
-    //
-    //    ImGui::NewLine();
-    //    ImGui::Separator();
-    //
-    //    const float column_width = 100.0f;
-    //
-    //    // ------------------------
-    //    // CAM_MODE 편집
-    //    // ------------------------
-    //    const char* camModeItems[] = { "Free", "Target" };
-    //    int camMode = cameraCalc->Get_CamMode();
-    //
-    //    ImGui::Columns(2, "Camera Columns", false);
-    //    ImGui::SetColumnWidth(0, column_width);
-    //
-    //    ImGui::Text("Camera Mode"); ImGui::SameLine();
-    //    ImGui::NextColumn();
-    //
-    //    if (ImGui::Combo("##Combo Camera Mode", &camMode, camModeItems, IM_ARRAYSIZE(camModeItems)))
-    //    {
-    //        cameraCalc->Set_CamMode(static_cast<CCameraCalc::CAM_MODE>(camMode));
-    //    }
-    //
-    //    ImGui::Columns(1);
-    //
-    //    // ------------------------
-    //    // VIEW_TYPE 편집
-    //    // ------------------------
-    //    const char* viewTypeItems[] = { "FPS", "TPS", "Quarter" };
-    //    int         viewType = static_cast<int>(cameraCalc->Get_ViewType());
-    //
-    //    ImGui::Columns(2, "View Columns", false);
-    //    ImGui::SetColumnWidth(0, column_width);
-    //
-    //    ImGui::Text("View Type"); ImGui::SameLine();
-    //    ImGui::NextColumn();
-    //
-    //    if (ImGui::Combo("##Combo View Type", &viewType, viewTypeItems, IM_ARRAYSIZE(viewTypeItems)))
-    //    {
-    //        cameraCalc->Set_ViewType(static_cast<CCameraCalc::VIEW_TYPE>(viewType));
-    //    }
-    //
-    //    ImGui::Columns(1);
-    //
-    //    // ------------------------
-    //    // PROJ_TYPE 편집
-    //    // ------------------------
-    //    const char* projTypeItems[] = { "Perspective", "Orthographic" };
-    //    int         projType = static_cast<int>(cameraCalc->Get_ProjType());
-    //
-    //    ImGui::Columns(2, "Project Columns", false);
-    //    ImGui::SetColumnWidth(0, column_width);
-    //
-    //    ImGui::Text("Projection"); ImGui::SameLine();
-    //    ImGui::NextColumn();
-    //
-    //    if (ImGui::Combo("##Combo Projection Type", &projType, projTypeItems, IM_ARRAYSIZE(projTypeItems)))
-    //    {
-    //        cameraCalc->Set_ProjType(static_cast<CCameraCalc::PROJ_TYPE>(projType));
-    //    }
-    //
-    //    ImGui::Columns(1);
-    //
-    //    ImGui::NewLine();
-    //    ImGui::Text(u8"[ 카메라 Free 모드 조작 방법 ]");
-    //    ImGui::NewLine();
-    //
-    //    ImGui::Text(u8"[ 이동 ]");
-    //    ImGui::TextWrapped(u8"[↑] 앞 | [↓] 뒤 | [←] 좌 | [→] 우");
-    //    ImGui::NewLine();
-    //
-    //    ImGui::Text(u8"[ 상/하 이동 ]");
-    //    ImGui::TextWrapped(u8"[P] 상 | [;] 하");
-    //    ImGui::NewLine();
-    //
-    //    ImGui::Text(u8"[ 회전 ]");
-    //    ImGui::TextWrapped(u8"[LShift + ↑] 상 | [LShift + ↓] 하");
-    //    ImGui::TextWrapped(u8"[LShift + ←] 좌 | [LShift + →] 우");
-    //}
-    //ImGui::PopID();
+    if (!movement) return;
+
+    ImGui::PushID("CamMovement_Inspector");
+    if (ImGui::CollapsingHeader("Camera Movement"))
+    {
+        if (ImGui::Button("Reset Camera"))
+            movement->Reset_Camera(CAM_PRESET(), false);
+
+        ImGui::Separator();
+
+        // Pivot Offset
+        _vec3 pivotOffset = movement->Get_PivotOffset();
+        if (ImGui::DragFloat3(u8"시점 위치", &pivotOffset.x, 0.1f))
+            movement->Set_PivotOffset(pivotOffset);
+
+        // Target Distance
+        _float dist = movement->Get_TargetDistance();
+        if (ImGui::DragFloat(u8"타겟과의 거리", &dist, 0.1f, 1.0f, 100.0f))
+            movement->Set_TargetDistance(dist);
+
+        // Rotation (Pitch/Yaw) - Convert to Degrees
+        _float pitchRad = movement->Get_RotX();
+        _float yawRad   = movement->Get_RotY();
+        _float pitchDeg = D3DXToDegree(pitchRad);
+        _float yawDeg   = D3DXToDegree(yawRad);
+
+        if (ImGui::DragFloat(u8"x축 회전", &pitchDeg, 1.0f, -89.0f, 89.0f))
+        {
+            pitchRad = D3DXToRadian(pitchDeg);
+            movement->Set_RotX(pitchRad);
+        }
+        if (ImGui::DragFloat(u8"Y축 회전", &yawDeg, 1.0f))
+        {
+            yawRad = D3DXToRadian(yawDeg);
+            movement->Set_RotY(yawRad);
+        }
+
+        // Speeds
+        _float lagSpeed = movement->Get_LagSpeed();
+        if (ImGui::DragFloat(u8"보간 속도", &lagSpeed, 0.1f, 0.0f, 20.0f))
+            movement->Set_LagSpeed(lagSpeed);
+
+        _float zoomSpeed = movement->Get_ZoomSpeed();
+        if (ImGui::DragFloat(u8"줌 속도", &zoomSpeed, 0.1f, 0.0f, 20.0f))
+            movement->Set_ZoomSpeed(zoomSpeed);
+
+        ImGui::Separator();
+
+        // Shake Test
+        static _float shakeAmp   = 0.5f;
+        static _float shakeDecay = 1.0f;
+        static _float shakeFreqX = 50.0f;
+        static _float shakeFreqY = 25.0f;
+
+        ImGui::Text(u8"카메라 흔들림 테스트");
+        ImGui::DragFloat(u8"진폭", &shakeAmp, 0.01f, 0.0f, 5.0f);
+        ImGui::DragFloat(u8"감쇠", &shakeDecay, 0.05f, 0.0f, 10.0f);
+        ImGui::DragFloat(u8"X 진동수", &shakeFreqX, 0.1f, 0.0f, 100.0f);
+        ImGui::DragFloat(u8"Y 진동수", &shakeFreqY, 0.1f, 0.0f, 100.0f);
+
+        if (ImGui::Button("Trigger Shake"))
+            movement->Start_CamShake(shakeAmp, shakeDecay, shakeFreqX, shakeFreqY);
+    }
+    ImGui::PopID();
 }
 
-//TODO CCameraMovementInspector 만들기
+static void CamController_Inspector(CCameraController* camController)
+{
+    NULL_CHECK(camController);
+
+    ImGui::PushID("CamController_Inspector");
+    {
+        ImGui::Text("[ Camera Controller ]");
+
+        ImGui::Separator();
+
+        // Sub Inspectors
+        CamCalc_Inspector(camController->Get_OwnerCamCalc());
+        CamMovement_Inspector(camController->Get_OwnerCamMovement());
+
+        ImGui::Separator();
+
+        ImGui::NewLine();
+        ImGui::Text(u8"[ 카메라 Free 모드 조작 방법 ]");
+        ImGui::NewLine();
+
+        ImGui::Text(u8"[ 이동 ]");
+        ImGui::TextWrapped(u8"[↑] 앞 | [↓] 뒤 | [←] 좌 | [→] 우");
+        ImGui::NewLine();
+
+        ImGui::Text(u8"[ 상/하 이동 ]");
+        ImGui::TextWrapped(u8"[PageUp] 상 | [PageDown] 하");
+        ImGui::NewLine();
+
+        ImGui::Text(u8"[ 회전 ]");
+        ImGui::TextWrapped(u8"[RShift + ↑] 상 | [RShift + ↓] 하");
+        ImGui::TextWrapped(u8"[RShift + ←] 좌 | [RShift + →] 우");
+    }
+    ImGui::PopID();
+}
+
+static void Menu_CameraInspector(CCameraController* camController)
+{
+    NULL_CHECK(camController);
+
+    ImGui::PushID("Main_CameraInspector");
+    {
+        // Cam Mode
+        const char* camModeItems[] = { "Free", "Target" };
+        int         camMode        = camController->Get_CamMode();
+
+        ImGui::SetNextItemWidth(100.f);
+        if (ImGui::Combo("Camera Mode", &camMode, camModeItems, IM_ARRAYSIZE(camModeItems)))
+            camController->Set_CamMode(static_cast<CAM_MODE>(camMode));
+
+        if (CDInputMgr::GetInstance()->KeyDown(DIK_F8))
+        {
+            camMode = (camController->Get_CamMode() == CAM_MODE::CAM_TARGET) ? CAM_MODE::CAM_FREE : CAM_MODE::CAM_TARGET;
+            camController->Set_CamMode(static_cast<CAM_MODE>(camMode));
+        }
+    }
+    ImGui::PopID();
+}

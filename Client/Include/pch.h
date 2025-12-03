@@ -29,6 +29,7 @@
 #include <process.h>
 #include <filesystem>
 #include <iostream>
+#include <cstdlib>
 
 #include "Engine_Enum.h"
 #include "Engine_Macro.h"

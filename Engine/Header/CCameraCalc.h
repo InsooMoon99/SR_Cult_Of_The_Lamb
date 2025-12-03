@@ -2,7 +2,10 @@
 #include "CComponent.h"
 
 BEGIN(Engine)
-/// @brief 카메라를 위한 View/Proj 행렬 변환용 다이나믹 컴포넌트
+/// @brief 카메라의 View 및 Projection 행렬을 계산하고 관리하는 다이나믹 컴포넌트
+/// @details 
+/// - 카메라의 위치와 회전 정보를 기반으로 View 행렬 생성, FOV, Aspect, Near, Far 정보를 기반으로 Projection 행렬 생성
+/// - 투영 방식(Perspective/Orthographic) 변경을 지원
 class ENGINE_DLL CCameraCalc : public CComponent
 {
 private:
@@ -17,10 +20,10 @@ public:
     void    LateUpdate_Component() override;
 
 public:  // --- Getter ---
-    const _matrix& Get_View() const { return m_matView; }    // 카메라의 뷰 행렬 Get
-    const _matrix& Get_Proj() const { return m_matProj; }    // 카메라의 투영 행렬 Get
+    const _matrix& Get_View() const { return m_matView; } // 현재 View 행렬 반환
+    const _matrix& Get_Proj() const { return m_matProj; } // 현재 Projection 행렬 반환
 
-    PROJ_TYPE Get_ProjType() const { return m_ProjType; }
+    PROJECTION_TYPE Get_ProjType() const { return m_ProjType; } // 현재 투영 타입 반환 (Perspective / Orthographic)
 
     _float Get_FOV() const { return m_FOV; }
     _float Get_Aspect() const { return m_Aspect; }
@@ -28,42 +31,47 @@ public:  // --- Getter ---
     _float Get_Far() const { return m_Far; }
 
 public:  // --- Setter ---
-    void Set_ProjType(PROJ_TYPE projType);
+    void Set_ProjType(PROJECTION_TYPE projType);
 
+    // 시야각(FOV) 설정
     void Set_FOV(const _float _fov)
     {
         m_FOV     = _fov;
         m_isDirty = true;
     }
 
+    // 종횡비(Aspect Ratio) 설정
     void Set_Aspect(const _float _aspect)
     {
         m_Aspect  = _aspect;
         m_isDirty = true;
     }
 
+    // Near 평면 거리 설정
     void Set_Near(const _float _near)
     {
         m_Near    = _near;
         m_isDirty = true;
     }
 
+    // Far 평면 거리 설정
     void Set_Far(const _float _far)
     {
         m_Far     = _far;
         m_isDirty = true;
     }
 
+    // 투영 행렬 재계산 요청 플래그 설정
     void Set_Dirty() { m_isDirty = true; }
 
 private: // --- 내부 로직 ---
-    void Update_View_Matrix();
-    void Update_Proj_Matrix();
+    void Update_View_Matrix(); // View 행렬 갱신
+    void Update_Proj_Matrix(); // Projection 행렬 갱신
 
 private: // --- 멤버 변수 ---
     _matrix m_matView, m_matProj;
 
-    PROJ_TYPE m_ProjType;   // 투영 타입
+    PROJECTION_TYPE m_ProjType;   // 투영 타입
 
     _float m_FOV, m_Aspect, m_Near, m_Far;
 

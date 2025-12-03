@@ -49,11 +49,6 @@ void CMainCamera::LateUpdate_GameObject(const _float& timeDelta)
     CGameObject::LateUpdate_GameObject(timeDelta);
 }
 
-void CMainCamera::Render_GameObject()
-{
-    m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-}
-
 void CMainCamera::Render_Editor()
 {
     CGameObject::Render_Editor();
@@ -68,11 +63,6 @@ HRESULT CMainCamera::Add_Component()
     NULL_CHECK_RETURN(m_TransformCom, E_FAIL);
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
-    // Camera Controller
-    m_CamController = CreateProtoComponent<CCameraController>(this, COMPONENTTYPE::CAM_CONTROLLER);
-    NULL_CHECK_RETURN(m_CamController, E_FAIL);
-    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::CAM_CONTROLLER, m_CamController });
-
     // Camera Calculator
     m_CamCalc = CreateProtoComponent<CCameraCalc>(this, COMPONENTTYPE::CAM_CALC);
     NULL_CHECK_RETURN(m_CamCalc, E_FAIL);
@@ -82,6 +72,11 @@ HRESULT CMainCamera::Add_Component()
     m_CamMovement = CreateProtoComponent<CCameraMovement>(this, COMPONENTTYPE::CAM_MOVEMENT);
     NULL_CHECK_RETURN(m_CamMovement, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::CAM_MOVEMENT, m_CamMovement });
+
+    // Camera Controller
+    m_CamController = CreateProtoComponent<CCameraController>(this, COMPONENTTYPE::CAM_CONTROLLER);
+    NULL_CHECK_RETURN(m_CamController, E_FAIL);
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::CAM_CONTROLLER, m_CamController });
 
     return S_OK;
 }

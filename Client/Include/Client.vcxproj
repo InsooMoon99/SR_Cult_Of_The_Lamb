@@ -189,7 +189,7 @@
     <ClInclude Include="..\Header\CBossStateMachine.h" />
     <ClInclude Include="..\Header\CCameraController.h" />
     <ClInclude Include="..\Header\CCameraMovement.h" />
-    <ClInclude Include="..\Header\CCameraSetup.h" />
+    <ClInclude Include="..\Header\CCamSetupBuilder.h" />
     <ClInclude Include="..\Header\CBoss_Slave_Test.h" />
     <ClInclude Include="..\Header\CCharacterBase.h" />
     <ClInclude Include="..\Header\Client_Struct.h" />

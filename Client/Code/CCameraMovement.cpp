@@ -14,7 +14,8 @@ CCameraMovement::CCameraMovement(DEVICE graphicDev)
 
       m_ShakeAmp(0.f),
       m_ShakeDecay(0.f),
-      m_ShakeFreq(0.f),
+      m_ShakeFreqX(0.f),
+      m_ShakeFreqY(0.f),
       m_ShakeTimeAcc(0.f),
       m_ShakeOffset(0.f, 0.f, 0.f)
 { }
@@ -27,10 +28,11 @@ CCameraMovement::CCameraMovement(const CCameraMovement& rhs)
       m_CamPreset(rhs.m_CamPreset),
       m_CurrentPivotPos(rhs.m_CurrentPivotPos),
       m_CurrentDistance(rhs.m_CurrentDistance),
-      // ↓ 일시적 효과이기에 값 복사 필요 없음
+
       m_ShakeAmp(0.f),
       m_ShakeDecay(0.f),
-      m_ShakeFreq(0.f),
+      m_ShakeFreqX(0.f),
+      m_ShakeFreqY(0.f),
       m_ShakeTimeAcc(0.f),
       m_ShakeOffset(0.f, 0.f, 0.f)
 { }
@@ -57,7 +59,7 @@ void CCameraMovement::LateUpdate_Component()
 void CCameraMovement::Set_Target(CTransform* targetTransform)
 {
     m_TargetTransformCom = targetTransform;
-    Reset_Camera();
+    // Reset_Camera();
 }
 
 void CCameraMovement::Set_RotX(_float rotX)
@@ -76,11 +78,13 @@ void CCameraMovement::Apply_Preset(const CAM_PRESET& preset, _bool snap)
         Update_TargetMode(0.f);
 }
 
-void CCameraMovement::Start_CamShake(_float amplitude, _float decay, _float freq)
+void CCameraMovement::Start_CamShake(_float amplitude, _float decay, _float freqX, _float freqY)
 {
-    m_ShakeAmp   = max(m_ShakeAmp, amplitude);
-    m_ShakeDecay = decay;
-    m_ShakeFreq  = freq;
+    m_ShakeAmp     = amplitude;
+    m_ShakeDecay   = decay;
+    m_ShakeFreqX   = freqX;
+    m_ShakeFreqY   = freqY;
+    m_ShakeTimeAcc = 0.f;
 }
 
 void CCameraMovement::Move_FreeMode(const _vec3& dir, _float speed, _float timeDelta)
@@ -150,25 +154,28 @@ _bool CCameraMovement::Update_TargetMode(const _float& timeDelta)
     _matrix matRot;
     D3DXMatrixRotationYawPitchRoll(&matRot, m_CamPreset.yaw, m_CamPreset.pitch, 0.f);
 
+    // 흔들림 보정 로직
+    _vec3 worldShake;
+    D3DXVec3TransformNormal(&worldShake, &m_ShakeOffset, &matRot);
+
     // 최종 위치 계산
 
-    // Local
-    _vec3 offsetDist = { 0.f, 0.f, -m_CurrentDistance };
+    // 로컬 거리
+    _vec3 localDist = { 0.f, 0.f, -m_CurrentDistance };
 
-    // Local + Shake
-    _vec3 localPos = offsetDist + m_ShakeOffset;
+    // (로컬 거리) * 회전 = 카메라와 피벗 사이의 월드 오프셋
+    _vec3 worldDistOffset;
+    D3DXVec3TransformCoord(&worldDistOffset, &localDist, &matRot);
 
-    // (Local + Shake) * Rotation
-    _vec3 worldOffset;
-    D3DXVec3TransformCoord(&worldOffset, &localPos, &matRot);
-
-    // (Local + Shake) * Rotation + Pivot
-    _vec3 finalPos = worldOffset + m_CurrentPivotPos;
+    // 최종 위치 = 피벗 위치 + 거리 오프셋 + 흔들림
+    _vec3 finalPos = m_CurrentPivotPos + worldDistOffset + worldShake;
 
     m_TransformCom->Set_Pos(finalPos);
 
+    _vec3 shakePivotPos = m_CurrentPivotPos + worldShake;
+
     if (m_CamPreset.dist > 0.01f)
-        m_TransformCom->LookAt(m_CurrentPivotPos);
+        m_TransformCom->LookAt(shakePivotPos);
     else
         m_TransformCom->Set_Rotation(_vec3(m_CamPreset.pitch, m_CamPreset.yaw, 0.f));
 
@@ -184,29 +191,31 @@ void CCameraMovement::Clamp_Pitch()
 
 void CCameraMovement::Update_Shake(const _float& timeDelta)
 {
+    // 진폭이 없으면 로직 수행 X
+    if (m_ShakeAmp <= 0.f)
+    {
+        m_ShakeAmp     = 0.f;
+        m_ShakeOffset  = _vec3(0.f, 0.f, 0.f);
+        m_ShakeTimeAcc = 0.f;
+        return;
+    }
+
+    // 시간 누적
     m_ShakeTimeAcc += timeDelta;
 
-    if (m_ShakeAmp > 0.f)
-    {
-        // 원형 회전 진동 (X, Y축)
-        _float t = m_ShakeTimeAcc * m_ShakeFreq;
+    // 진폭 감쇠
+    m_ShakeAmp -= m_ShakeDecay * timeDelta;
 
-        // Z축은 흔들지 않음 (깊이는 유지)
-        _vec3 localShake(sinf(t), cosf(t), 0.f);
+    if (m_ShakeAmp < 0.f)
+        m_ShakeAmp = 0.f;
 
-        m_ShakeOffset = localShake * m_ShakeAmp;
+    // 오프셋 계산 (Sin 파동 이용)
+    const _float offsetX = sinf(m_ShakeTimeAcc * m_ShakeFreqX) * m_ShakeAmp;
 
-        // 선형 감쇠
-        m_ShakeAmp -= m_ShakeDecay * timeDelta;
+    // Y축은 cos를 사용하여 X축과 위상차를 둠
+    const _float offsetY = cosf(m_ShakeTimeAcc * m_ShakeFreqY) * m_ShakeAmp;
 
-        if (m_ShakeAmp < 0.f)
-        {
-            m_ShakeAmp    = 0.f;
-            m_ShakeOffset = _vec3(0.f, 0.f, 0.f);
-        }
-    }
-    else
-        m_ShakeOffset = _vec3(0.f, 0.f, 0.f);
+    m_ShakeOffset = _vec3(offsetX, offsetY, 0.f);
 }
 
 CCameraMovement* CCameraMovement::Create(DEVICE graphicDev)

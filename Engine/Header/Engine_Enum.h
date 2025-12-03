@@ -267,7 +267,7 @@ enum VIEW_TYPE
 };
 
 // 카메라 투영 타입
-enum PROJ_TYPE
+enum PROJECTION_TYPE
 {
     PROJ_PERSPECTIVE,       // 원근 투영
     PROJ_ORTHOGRAPHIC,      // 직교 투영

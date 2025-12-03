@@ -89,7 +89,7 @@ void CCameraController::Set_CamTarget(Engine::CTransform* targetTransform)
     if (nullptr != targetTransform)
     {
         m_CamMode = CAM_TARGET;
-        m_OwnerCamMovementCom->Reset_Camera();
+        // m_OwnerCamMovementCom->Reset_Camera();
     }
     else
         m_CamMode = CAM_FREE;
@@ -102,7 +102,7 @@ void CCameraController::Set_CamMode(CAM_MODE camMode)
     m_CamMode = camMode;
 }
 
-void CCameraController::Set_ProjType(PROJ_TYPE projType)
+void CCameraController::Set_ProjType(PROJECTION_TYPE projType)
 {
     NULL_CHECK(m_OwnerCamCalcCom);
 
@@ -116,10 +116,10 @@ void CCameraController::Control_FreeMode(const _float& timeDelta)
 
     auto inputMgr = CDInputMgr::GetInstance();
 
-    // isShiftPressed == true 면 회전 모드
-    bool isShiftPressed = (inputMgr->Get_DIKeyState(DIK_LSHIFT) & 0x80);
+    // isRShiftPressed == true 면 회전 모드
+    bool isRShiftPressed = (inputMgr->Get_DIKeyState(DIK_RSHIFT) & 0x80);
 
-    if (isShiftPressed)
+    if (isRShiftPressed)
     {
         // ============================
         // [회전] Shift + 방향키
