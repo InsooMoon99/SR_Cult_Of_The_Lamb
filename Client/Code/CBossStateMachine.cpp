@@ -10,6 +10,7 @@
 #include "CBossGroggy.h"
 #include "CBossIdle.h"
 #include "CBossMove.h"
+#include "CBossTalk.h"
 
 CBossStateMachine::CBossStateMachine(CBossPhase1* owner) : m_pOwner(owner)
 {
@@ -24,7 +25,7 @@ HRESULT CBossStateMachine::Ready_StateMachine()
 {
     Ready_BossStates();
 
-    m_pCurState = m_vecState[CBossPhase1::BOSSPHASE1::BOSSAWAKE];
+    m_pCurState = m_vecState[CBossPhase1::BOSSPHASE1::TALK];
 
     m_pCurState->Enter();
 
@@ -118,6 +119,9 @@ HRESULT CBossStateMachine::Ready_BossStates()
         return E_FAIL;
     m_vecState[CBossPhase1::BOSSPHASE1::BOSSGROGGRY] = pState;
 
+    if (!(pState = CBossTalk::Create(m_pOwner, this)))
+        return E_FAIL;
+    m_vecState[CBossPhase1::BOSSPHASE1::TALK] = pState;
 
 
     return S_OK;

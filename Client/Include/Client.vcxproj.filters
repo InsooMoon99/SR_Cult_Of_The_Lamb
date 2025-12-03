@@ -468,6 +468,9 @@
     <ClInclude Include="..\Header\CSpriteEff.h">
       <Filter>97. Component\06.Effect</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CBossTalk.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -730,6 +733,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CSpriteEff.cpp">
       <Filter>97. Component\06.Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBossTalk.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

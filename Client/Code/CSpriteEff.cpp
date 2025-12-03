@@ -1,4 +1,5 @@
-﻿#include "CSpriteEff.h"
+﻿#include "pch.h"
+#include "CSpriteEff.h"
 
 CSpriteEff::CSpriteEff()
 {

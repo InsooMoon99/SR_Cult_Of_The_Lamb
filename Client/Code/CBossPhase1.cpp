@@ -134,7 +134,10 @@ void CBossPhase1::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"BossGroggy_end", 67, 0.01f);
 
     m_AnimatorCom->Create_Animation(L"BossChainEff", 34, 0.02f);
-    m_AnimatorCom->Create_Animation(L"ChainGroundEff",1, 0.02f);
+    m_AnimatorCom->Create_Animation(L"ChainGroundEff", 1, 0.02f);
+
+    m_AnimatorCom->Create_Animation(L"Before_Idle", 334, 0.02f);
+    m_AnimatorCom->Create_Animation(L"Escape",119, 0.02f);
 
 }
 
@@ -150,6 +153,7 @@ const char* CBossPhase1::GetBossStateName(_int StateNum)
     case BOSSIDLE:          return "BOSSIDLE";
     case BOSSMOVE:          return "BOSSMOVE";
     case BOSSGROGGRY:       return "BOSSGROGGRY";
+    case TALK:              return "TALK";
     case BOSS_END:          return "BOSS_END";
     }
     return "UNKNOWN";

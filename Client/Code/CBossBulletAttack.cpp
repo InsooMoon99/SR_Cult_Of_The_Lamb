@@ -123,6 +123,7 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
                 m_TargetFlag = false;
                 m_CircleEndFlag = false;
                 m_fCurStateElapsedTime = 0;
+                m_CircleCount = 0;
                 m_fElapsedTime = 0;
                 return CBossPhase1::BOSSPHASE1::BOSSIDLE;
        
@@ -165,7 +166,7 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
        
                 /* m_TargetFlag = true;*/
                 m_CircleCount++;
-                if (m_CircleCount == 2)
+                if (m_CircleCount == 3)
                     m_CircleEndFlag = true;
                 
        
@@ -430,42 +431,7 @@ bool CBossBulletAttack::SpreadBullet(const _float& timeDelta, int num, float int
 
 void CBossBulletAttack::LateUpdate_State(const _float& timeDelta)
 {
-    //CMonsterState::LateUpdate_State(timeDelta);
-    //if (m_Shoot)
-    //{
 
-    //    //한번만 실행 플레그
-
-    //    _vec3 tmpdir;
-    //    _vec3 tmp = m_pPlayerTransformCom->Get_Pos() - m_pOwnerTransformCom->Get_Pos();
-    //    D3DXVec3Normalize(&tmpdir, &tmp);
-
-    //    //for (auto& it : tmpBullet)
-    //    //{
-    //        //}
-    //    for (auto& bullet : tmpBullet)
-    //    {
-    //        if (!bullet) continue;              // null 체크
-    //        if (bullet->Is_PendingDestroy()) continue;
-
-
-      
-    //        // it->Set_TargetDir(tmpdir);
-    //        BulletDesc d;
-    //        d.Direction = { tmpdir.x, 0.f, tmpdir.z };
-    //        d.Speed = m_CircleSpeed;
-    //        d.moveType = PROJ_TYPE::LINEAR;
-    //        d.ProjectileOwner = m_pOwner;
-
-
-    //        CProjectile* projectileCom = dynamic_cast<CProjectile*>(bullet->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::PROJECTILE));
-    //        projectileCom->SetMoveDesc(d);
-
-    //        bullet->Start_Shoot(); // 살아있는 총알만 발사
-    //        ///it->Start_Shoot();
-    //    }
-    //    m_Shoot = false;
-    //}
 }
 
 void CBossBulletAttack::Render_State()
@@ -489,7 +455,14 @@ CBossBulletAttack* CBossBulletAttack::Create(CBossPhase1* pOwner, CBossStateMach
 
 void CBossBulletAttack::Free()
 {
-    if (!tmpBullet.empty())
-        tmpBullet.clear();
+    //if (!tmpBullet.empty())
+    //    tmpBullet.clear();
 
+    for (auto& bullet : tmpBullet)
+    {
+        if (!bullet) continue;
+        if (!bullet->Is_PendingDestroy())
+            bullet->Mark_As_PendingKill();
+    }
+    tmpBullet.clear();
 }

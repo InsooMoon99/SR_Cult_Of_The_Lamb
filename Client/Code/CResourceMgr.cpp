@@ -355,6 +355,15 @@ HRESULT CResourceMgr::Ready_BossP1(DEVICE graphicDev)
         L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-hurt-stop/TOWW-Spirit-hurt-stop%d.png", 67)))
         return E_FAIL;
 
+    if (FAILED(BossP1Tex->Add_Texture(L"Before_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW_BeforeIdle/TOWW_BeforeIdle%d.png", 334)))
+        return E_FAIL;
+
+    if (FAILED(BossP1Tex->Add_Texture(L"Escape", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW_Escape/TOWW_Escape%d.png", 119)))
+        return E_FAIL;
+
+
     // 사슬
     if (FAILED(BossP1Tex->Add_Texture(L"BossChainEff", TEX_NORMAL,
         L"../Bin/Resource/Texture/BossPhase1/ChainAttack/Summon_Chain%d.png", 34)))

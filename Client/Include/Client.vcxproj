@@ -183,6 +183,7 @@
     <ClInclude Include="..\Header\CBossMove.h" />
     <ClInclude Include="..\Header\CBossPhase2.h" />
     <ClInclude Include="..\Header\CBossPhase1.h" />
+    <ClInclude Include="..\Header\CBossTalk.h" />
     <ClInclude Include="..\Header\CBossStateMachine.h" />
     <ClInclude Include="..\Header\CBoss_Slave_Test.h" />
     <ClInclude Include="..\Header\CCharacterBase.h" />
@@ -281,6 +282,7 @@
     <ClCompile Include="..\Code\CBossMove.cpp" />
     <ClCompile Include="..\Code\CBossPhase2.cpp" />
     <ClCompile Include="..\Code\CBossPhase1.cpp" />
+    <ClCompile Include="..\Code\CBossTalk.cpp" />
     <ClCompile Include="..\Code\CBossStateMachine.cpp" />
     <ClCompile Include="..\Code\CBoss_Slave_Test.cpp" />
     <ClCompile Include="..\Code\CCharacterBase.cpp" />
