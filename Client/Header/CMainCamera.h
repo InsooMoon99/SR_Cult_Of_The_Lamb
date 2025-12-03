@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "CCameraCom.h"
 #include "CGameObject.h"
 
 BEGIN(Engine)
@@ -25,7 +24,6 @@ public:
     void    Render_Editor() override;
 
 public:  // --- Setter ---
-    HRESULT Set_CamTarget(CTransform* targetTransform);
 
 public:  // --- Getter ---
 
@@ -35,11 +33,11 @@ private: // --- 내부 로직 ---
     HRESULT Add_Component();
 
 private: // --- 소유 컴포넌트 ---
-    Engine::CTransform* m_TransformCom;     // 카메라 자체 Transform
-    Engine::CCameraCalc* m_CamCalc;         // 카메라 행렬 연산
+    Engine::CTransform*  m_TransformCom;     // 카메라 자체 Transform
+    Engine::CCameraCalc* m_CamCalc;         // 카메라 행렬 연산 컴포넌트
 
-    CCameraController* m_CamController;     // 카메라 컨트롤러
-    CCameraMovement*   m_CamMovement;       // 카메라 이동
+    CCameraController* m_CamController;     // 카메라 컨트롤러 컴포넌트
+    CCameraMovement*   m_CamMovement;       // 카메라 이동 컴포넌트
 
 public:
     static CMainCamera* Create(DEVICE graphicDev);

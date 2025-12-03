@@ -63,9 +63,11 @@ private: // --- 내부 로직 ---
 private: // --- 멤버 변수 ---
     _matrix m_matView, m_matProj;
 
-    PROJ_TYPE m_ProjType;  // 투영 타입
-    _float    m_FOV, m_Aspect, m_Near, m_Far;
-    _bool     m_isDirty;    // 투영 변환 재연산 플래그
+    PROJ_TYPE m_ProjType;   // 투영 타입
+
+    _float m_FOV, m_Aspect, m_Near, m_Far;
+
+    _bool m_isDirty;        // 투영 변환 재연산 플래그
 
 public:
     static CCameraCalc* Create(DEVICE graphicDev);

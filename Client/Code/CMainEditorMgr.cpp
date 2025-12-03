@@ -1,8 +1,9 @@
 ﻿#include "pch.h"
 #include "CMainEditorMgr.h"
-#include "CCollisionManager.h"
+
+#include "CAnimator.h"
 #include "CBoxCollider.h"
-#include "CCameraCom.h"
+#include "CCollisionManager.h"
 #include "CCombatStat.h"
 #include "CComInspectors.h"
 #include "CComponent.h"
@@ -25,7 +26,6 @@
 #include "CTransform.h"
 #include "CWallRenderer.h"
 #include "CWeaponEquip.h"
-#include "CAnimator.h"
 
 IMPLEMENT_SINGLETON(CMainEditorMgr)
 

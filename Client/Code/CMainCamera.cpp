@@ -1,12 +1,11 @@
 ﻿#include "pch.h"
 #include "CMainCamera.h"
 
-#include "CCameraCom.h"
+#include "CCameraCalc.h"
 #include "CCameraController.h"
 #include "CCameraMovement.h"
 #include "CCreateHelper.h"
 #include "CDInputMgr.h"
-#include "CRenderer.h"
 #include "CTransform.h"
 
 CMainCamera::CMainCamera(DEVICE graphicDev)
@@ -62,43 +61,29 @@ void CMainCamera::Render_Editor()
     ImGui::Text("=== Main Camera === ");
 }
 
-HRESULT CMainCamera::Set_CamTarget(CTransform* targetTransform)
-{
-    if (m_CamController)
-        m_CamController->Set_CamTarget(targetTransform);
-
-    return S_OK;
-}
-
 HRESULT CMainCamera::Add_Component()
 {
     // transform
     m_TransformCom = CreateProtoComponent<CTransform>(this, COMPONENTTYPE::TRANSFORM);
     NULL_CHECK_RETURN(m_TransformCom, E_FAIL);
-
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
-    // Camera Component
+    // Camera Controller
+    m_CamController = CreateProtoComponent<CCameraController>(this, COMPONENTTYPE::CAM_CONTROLLER);
+    NULL_CHECK_RETURN(m_CamController, E_FAIL);
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::CAM_CONTROLLER, m_CamController });
+
+    // Camera Calculator
     m_CamCalc = CreateProtoComponent<CCameraCalc>(this, COMPONENTTYPE::CAM_CALC);
     NULL_CHECK_RETURN(m_CamCalc, E_FAIL);
-
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::CAM_CALC, m_CamCalc });
 
     // Camera Movement
-    m_CamMovement = CCameraMovement::Create(m_GraphicDev);
+    m_CamMovement = CreateProtoComponent<CCameraMovement>(this, COMPONENTTYPE::CAM_MOVEMENT);
     NULL_CHECK_RETURN(m_CamMovement, E_FAIL);
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::CAM_MOVEMENT, m_CamMovement });
 
     return S_OK;
-}
-
-void CMainCamera::Key_Input(const _float& timeDelta)
-{
-    // Moved to CCameraController
-}
-
-void CMainCamera::Chase_CamTarget(const _float& timeDelta)
-{
-    // Moved to CCameraMovement
 }
 
 CMainCamera* CMainCamera::Create(DEVICE graphicDev)
@@ -117,5 +102,10 @@ CMainCamera* CMainCamera::Create(DEVICE graphicDev)
 
 void CMainCamera::Free()
 {
+    m_TransformCom  = nullptr;
+    m_CamCalc       = nullptr;
+    m_CamController = nullptr;
+    m_CamMovement   = nullptr;
+
     CGameObject::Free();
 }

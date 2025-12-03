@@ -6,7 +6,7 @@ inline constexpr CAM_PRESET Default =
     { _vec3(0, 0, 0), 10.f, D3DXToRadian(45.f), 0.f, 5.f, 5.f };
 
 inline constexpr CAM_PRESET Combat =
-    { _vec3(0, 1, 0), 6.f, D3DXToRadian(15.f), 0.f, 10.f, 5.f };
+    { _vec3(0, 1, 0), 6.f, D3DXToRadian(45.f), 0.f, 10.f, 5.f };
 
 inline constexpr CAM_PRESET Boss =
     { _vec3(0, 5, 0), 15.f, D3DXToRadian(45.f), 0.f, 3.f, 5.f };
@@ -32,11 +32,12 @@ public:
     // --- 체이닝 메서드 : CameraPresets 이용 ---
 
     // 프리셋 통째로 로드
-    CCameraSetup& LoadPreset(const CAM_PRESET& preset)
-    {
-        m_CamPreset = preset;
-        return *this;
-    }
+    // [현재 사용 안함]
+    //CCameraSetup& LoadPreset(const CAM_PRESET& preset)
+    //{
+    //    m_CamPreset = preset;
+    //    return *this;
+    //}
 
     // --- 체이닝 메서드 : 개별 제어 ---
 

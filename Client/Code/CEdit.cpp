@@ -17,6 +17,7 @@
 #include "CTransform.h"
 #include "CWall.h"
 #include "CWallRenderer.h"
+#include "CCameraController.h"
 
 CEdit::CEdit(DEVICE graphicDev)
     : Engine::CScene(graphicDev)
@@ -137,11 +138,11 @@ HRESULT CEdit::Ready_GameLogic_Layer(LAYERTYPE layerType)
     {
         mainCam->Set_CamTarget(playerTransform);
 
-        auto camCom = dynamic_cast<CCameraCalc*>(
-            mainCam->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAM_CALC));
+        auto camController = dynamic_cast<CCameraController*>(
+            mainCam->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAM_CONTROLLER));
 
-        if (camCom)
-            CMainEditorMgr::GetInstance()->Set_MainCamera(camCom); // 에디터에 카메라 설정
+        if (camController)
+            CMainEditorMgr::GetInstance()->Set_MainCamera(camController); // 에디터에 카메라 설정
     }
 
     // -----------------------------

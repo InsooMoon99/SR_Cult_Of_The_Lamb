@@ -151,9 +151,9 @@ enum class COMPONENTTYPE
 
     ANIMATOR,
 
-    CAM_CALC,
     CAM_CONTROLLER,
     CAM_MOVEMENT,
+    CAM_CALC,
 
     RECT_COLL,
     CIRCLE_COLL,
