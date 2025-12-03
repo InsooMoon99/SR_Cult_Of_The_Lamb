@@ -13,6 +13,7 @@
 #include "CRandomMgr.h"
 
 
+   int CBossChainAttack::m_CPatterCount = 0;
 
 CBossChainAttack::CBossChainAttack(CBossPhase1* pOwner, CBossStateMachine* pStateMachine)
 {
@@ -35,9 +36,12 @@ void CBossChainAttack::Enter()
     int RandPhase = CRandomMgr::GetInstance()->Get_Int_Random(0, ((int)PHASE::PHASE_END)-1); // 페이즈 랜덤
     m_ePhase = (PHASE)RandPhase;
 
-
-   // m_ePhase = PHASE::RANDCHAIN;
-    //
+    // 순차재생을 위한 거
+    m_CPatterCount %= (int)PHASE::PHASE_END;
+    m_ePhase = (PHASE)m_CPatterCount;
+    m_CPatterCount++;
+    //m_ePhase = PHASE::RANDCHAIN;
+    ////
 }
 
 void CBossChainAttack::Exit()
@@ -53,6 +57,14 @@ HRESULT CBossChainAttack::Ready_State()
     m_pOwnerTransformCom = static_cast<CTransform*>(m_pOwner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
     m_pOwnerAnimatorCom = static_cast<CAnimator*>(m_pOwner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
 
+    m_CellSize = 2.5f;
+    m_DirectionOffset = 2.5f;
+    m_MaxLineCount = 7;
+    m_Interval = 0.05;
+
+    m_CircleRadius = 3;
+    m_GroundY = 0.002f;
+    m_CrossOffset=2.f;
     return S_OK;
 }
 
@@ -84,7 +96,7 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
         
 
 
-        if (PlayerLineUpdate(timeDelta, 10, 3, .2f) == true)
+        if (PlayerLineUpdate(timeDelta, m_MaxLineCount, m_DirectionOffset, .2f) == true)
         {
             LineCount++;
         }
@@ -114,7 +126,7 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
 
         m_fElapsedTime+= timeDelta;
 
-        int offset = 5;// TOOD:: 나중에 맴버 변수로 오프셋 조정 (사슬과 사슬 사이의 거리)
+        int offset = m_CrossOffset;// TOOD:: 나중에 맴버 변수로 오프셋 조정 (사슬과 사슬 사이의 거리)
 
 
         if (m_fElapsedTime > .2f && m_Count < 10)
@@ -129,7 +141,6 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
                         COMPONENTTYPE::TRANSFORM));
 
                 _vec3 OwnerPos = m_pOwnerTransformCom->Get_Pos();
-
                 float distance = ((float)m_Count * offset);
 
                 _vec3 AddPos;
@@ -148,8 +159,9 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
                     AddPos = { -easeInQuint10(m_Count) * offset * 5, 0.f, -distance };
                     break;
                 }
-                ChainTransform->Set_Pos(OwnerPos + AddPos);
-
+                _vec3 TR = OwnerPos + AddPos;
+                ChainTransform->Set_Pos({ TR.x, m_GroundY, TR.z });
+                
                 SpawnAttackObject(WarningChain);
 
             }
@@ -189,7 +201,7 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
         {
             _vec3 BaseCenter = m_pOwner->Get_Center();
             int BaseLength = m_pOwner->Get_Length();
-            float interval = 0.5f;
+            float interval = 0.5f; //  이건 시간
             RandomChain(timeDelta, BaseCenter, BaseLength, interval);
         }
         else if (m_fElapsedTime >= 5.f && m_StartPhase == true)
@@ -219,7 +231,7 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
 
         if (m_StartPhase == true)
         {
-            if (CircleChain(timeDelta, 9, 10, 0.1) == true)
+            if (CircleChain(timeDelta, 7, m_CircleRadius, 0.1) == true)
             {
                 // 나가기
                 m_StartFlag = false;
@@ -244,9 +256,13 @@ bool CBossChainAttack::PlayerLineUpdate(const _float& timeDelta, _int  MaxCount,
 
     if (m_LineFlag == false)
     {
-        _vec3 tmp = m_pPlayerTransformCom->Get_Pos() - m_pOwnerTransformCom->Get_Pos();
-        D3DXVec3Normalize(&m_PlayerDir, &tmp);
+        // 이렇게 하면 y 값이 들어가서 플레이어의 위치에 따라 달라짐 (x,y,z) 다 합쳐서 1 이니까
+      //  _vec3 tmp = m_pPlayerTransformCom->Get_Pos() - m_pOwnerTransformCom->Get_Pos();
+        _vec3 tmpPlayer = { m_pPlayerTransformCom->Get_Pos().x, 0, m_pPlayerTransformCom->Get_Pos().z };
+        _vec3 tmpOwner = {m_pOwnerTransformCom->Get_Pos().x, 0, m_pOwnerTransformCom->Get_Pos().z };
 
+        _vec3 tmp = tmpPlayer - tmpOwner;
+        D3DXVec3Normalize(&m_PlayerDir, &tmp);
         m_LineFlag = true;
     }
 
@@ -254,14 +270,18 @@ bool CBossChainAttack::PlayerLineUpdate(const _float& timeDelta, _int  MaxCount,
     {
 
         CWarningChain* WarningChain = CWarningChain::Create(m_pOwner->Get_GraphicDev(), m_pOwner);
+
         const auto ChainTransform =
             dynamic_cast<CTransform*>(WarningChain->Get_Component(
                 ID_DYNAMIC,
                 COMPONENTTYPE::TRANSFORM));
-        _vec3 CurPos = ChainTransform->Get_Pos();
-        _vec3 AddPos = { m_PlayerDir.x * (m_Count * m_Offset), 0.f, m_PlayerDir.z * (m_Count * m_Offset) };
-        ChainTransform->Set_Pos(CurPos + AddPos);
 
+        _vec3 OwnerPos = m_pOwnerTransformCom->Get_Pos(); // 오너 기준
+        _vec3 AddPos = { (m_PlayerDir.x * m_Count) * m_Offset, 0.f, (m_PlayerDir.z * m_Count) * m_Offset };
+
+        _vec3 TR = OwnerPos + AddPos;
+        ChainTransform->Set_Pos({ TR.x, m_GroundY, TR.z });
+     
         SpawnAttackObject(WarningChain);
 
         m_fElapsedTime = 0;
@@ -288,10 +308,9 @@ void CBossChainAttack::RandomChain(const _float& timeDelta, _vec3 BaseCenter, in
     _vec3 LT = { BaseCenter.x - BaseLenght * 0.5f, 0.f, BaseCenter.z + BaseLenght * 0.5f };
     _vec3 RB = { BaseCenter.x + BaseLenght * 0.5f,0.f,BaseCenter.z - BaseLenght * 0.5f };
 
-    int offset = 5;// TOOD:: 나중에 맴버 변수로 오프셋 조정 (사슬과 사슬 사이의 거리)
-
-    int xCell = BaseLenght / offset;
-    int zCell = BaseLenght / offset;
+    
+    int xCell = BaseLenght / m_CellSize;
+    int zCell = BaseLenght / m_CellSize;
 
     //float r = std::fmod((m_fElapsedTime[(int)PHASE::RANDCHAIN]), interval); // 나머지 구하는거, 소숫점에서도 가능
 
@@ -314,10 +333,10 @@ void CBossChainAttack::RandomChain(const _float& timeDelta, _vec3 BaseCenter, in
             int tmpx = CRandomMgr::GetInstance()->Get_Int_Random(0, xCell); // x 몇번쨰 칸인지는 랜덤
             int tmpz = CRandomMgr::GetInstance()->Get_Int_Random(0, zCell); // x 몇번쨰 칸인지는 랜덤
 
-            float xPos = tmpx * (xCell * .5f);
-            float zPos = tmpz * (zCell * .5f);
+            float xPos = tmpx * (m_CellSize );
+            float zPos = tmpz * (m_CellSize );
 
-            ChainTransform->Set_Pos(LT.x + xPos, 0.f, LT.z - zPos);
+            ChainTransform->Set_Pos(LT.x + xPos, m_GroundY, LT.z - zPos);
 
             SpawnAttackObject(WarningChain);
   
@@ -357,7 +376,8 @@ bool CBossChainAttack::CircleChain(const _float& timeDelta, int num, int length,
 
         _vec3 circle = { cos(addRad) * length, 0.f, sin(addRad) * length };
 
-        ChainTransform->Set_Pos(ownerPos + circle);
+        _vec3 TR = { ownerPos + circle };
+        ChainTransform->Set_Pos({ TR.x, m_GroundY,TR.z });
 
         SpawnAttackObject(WarningChain);
 

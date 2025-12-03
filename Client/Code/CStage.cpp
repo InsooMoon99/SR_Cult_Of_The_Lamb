@@ -19,6 +19,7 @@
 #include "CUICircle.h"
 #include "CUIIcon.h"
 #include "CUIItemGet.h"
+#include "CUIItemGetManager.h"
 #include "CUIMp.h"
 #include "CUIPlayerPanel.h"
 #include "CUITabMenu.h"
@@ -67,6 +68,16 @@ HRESULT CStage::Ready_Scene()
         CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 10.f, 1.f, 10.f + (i * 3.f) });
     }
 
+
+    size = CItemDB::GetInstance()->GetVector().size();
+    for (int i = 0; i < size; i++)
+    {
+        int reverseIndex = size - 1 - i;
+        int id = CItemDB::GetInstance()->GetVector()[reverseIndex].id;
+
+        ItemInstance inst = { id, -1, 0 };
+        CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 15.f, 1.f, 10.f + (i * 3.f) });
+    }
     // BGM Test
     //CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Intro.wav", 0.5f);
 
@@ -87,7 +98,12 @@ _int CStage::Update_Scene(const _float& timeDelta)
 
     if (CDInputMgr::GetInstance()->KeyDown(DIK_F))
     {
-        CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS);
+        CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS1);
+    }
+
+    if (CDInputMgr::GetInstance()->KeyDown(DIK_G))
+    {
+        CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS2);
     }
 
     return exit;
@@ -220,6 +236,9 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
 
     m_Layers.insert({ layerType, layer });
 
+
+
+
     return S_OK;
 }
 
@@ -300,14 +319,21 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     uiTabMenu->SetInventory(m_PlayerInventoryCom);
     uiTabMenu->Set_PlayerCombatStat(m_PlayerCombatStatCom);
     uiTabMenu->Initialize();
+
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiTabMenu),
                      L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UITabMenu) failed");
 
-    FAILED_CHECK_MSG(Engine::AcquirePersistentObject<CUIItemGet>
-        (OBJTYPE::UI, L"UI_ItemGet",
-            m_GraphicDev,layer,
-            &gameObject), L"Persistent object setup failed: UI_ItemGet")
-
+   // FAILED_CHECK_MSG(Engine::AcquirePersistentObject<CUIItemGet>
+   //     (OBJTYPE::UI, L"UI_ItemGet",
+   //         m_GraphicDev, layer,
+   //         &gameObject), L"Persistent object setup failed: UI_ItemGet")
+   //
+    FAILED_CHECK_MSG(Engine::AcquirePersistentObject<CUIItemGetManager>
+        (OBJTYPE::UI, L"UI_ItemGetManager",
+            m_GraphicDev, layer,
+            &gameObject), L"Persistent object setup failed: UI_ItemGetManager")
+    dynamic_cast<CUIItemGetManager*>(gameObject)->SetInventory(m_PlayerInventoryCom);
+    dynamic_cast<CUIItemGetManager*>(gameObject)->Initialize();
 
     m_Layers.insert({ layerType, layer });
 

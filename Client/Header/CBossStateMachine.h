@@ -1,33 +1,37 @@
 ﻿#pragma once
 #include "CBase.h"
 #include "CStateMachine.h"
+#include "Client_Enum.h"
 
 class CBossPhase1;
 class CMonsterState;
+class CMonsterBase;
 
-class CBossStateMachine :
-    public CStateMachine
+class CBossStateMachine : public CStateMachine
 {
 protected:
-    explicit CBossStateMachine(CBossPhase1* owner);
+    explicit CBossStateMachine(CMonsterBase* owner);
     virtual ~CBossStateMachine();
 
 public:
     virtual HRESULT Ready_StateMachine();
     _int    Update_StateMachine(const _float& timeDelta);
+    void    LateUpdate_StateMachine(const _float& timeDelta);
     virtual void Change_State(_uint changeStateKey);
     _int GetCurStateNum();
 
     CBaseState* Get_CurState() { return m_pCurState; }
+    //CBaseState* Get_PrevState() { return  m_pPrevState; }
+    _uint Get_PrevStateKey() { return  m_dwPrevStateKey; }
 
 private:
-    CBossPhase1* m_pOwner;
+    CMonsterBase* m_pOwner;
 
 protected:
     HRESULT Ready_BossStates();
 
 public:
-    static CBossStateMachine* Create(CBossPhase1* owner);
+    static CBossStateMachine* Create(CMonsterBase* owner);
 
 protected:
     virtual void Free();

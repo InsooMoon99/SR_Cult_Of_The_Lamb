@@ -32,6 +32,8 @@
 #include "CWeaponEquip.h"
 #include "ItemData.h"
 #include "ItemInstance.h"
+#include "CProjectile.h"
+#include "CBossController.h"
 
 IMPLEMENT_SINGLETON(CResourceMgr)
 
@@ -62,6 +64,13 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
 HRESULT CResourceMgr::Ready_BossResource(DEVICE graphicDev)
 {
     if (FAILED(Ready_BossP1(graphicDev))) return E_FAIL;
+    //if (FAILED(Ready_BossP2(graphicDev))) return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CResourceMgr::Ready_BossResource2(DEVICE graphicDev)
+{
     if (FAILED(Ready_BossP2(graphicDev))) return E_FAIL;
 
     return S_OK;
@@ -369,7 +378,6 @@ HRESULT CResourceMgr::Ready_BossP1(DEVICE graphicDev)
     pathVec1.push_back(L"../Bin/Resource/Texture/BossPhase1/ChainAttackGround.png");
     pathVec1.push_back(L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Sermon_Icon.png");
 
-
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_OUT, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec1))))
         return E_FAIL;
@@ -387,10 +395,129 @@ HRESULT CResourceMgr::Ready_BossP1(DEVICE graphicDev)
     return S_OK;
 }
 
+HRESULT CResourceMgr::Ready_BossP1_Idle_Awake(DEVICE graphicDev, CTexture* bossTex)
+{
+    if (FAILED(bossTex->Add_Texture(L"BossIdle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-animation/TOWW-Spirit-animation%d.png", 100)))
+        return E_FAIL;
+
+    if (FAILED(bossTex->Add_Texture(L"BossAwake", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-transform2/TOWW-Spirit-transform%d.png", 105)))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CResourceMgr::Ready_BossP1_Attack_Dead(DEVICE graphicDev, CTexture* bossTex)
+{
+    if (FAILED(bossTex->Add_Texture(L"BossAttack", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-shoot/TOWW-Spirit-shoot%d.png", 97)))
+        return E_FAIL;
+
+    if (FAILED(bossTex->Add_Texture(L"BossDead", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-hurt-talk/TOWW-Spirit-hurt-talk%d.png", 167)))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CResourceMgr::Ready_BossP1_Movement(DEVICE graphicDev, CTexture* bossTex)
+{
+    if (FAILED(bossTex->Add_Texture(L"BossMove_up", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-appear/TOWW-Spirit-appear%d.png", 50)))
+        return E_FAIL;
+
+    if (FAILED(bossTex->Add_Texture(L"BossMove_Down", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-disappear/TOWW-Spirit-disappear%d.png", 28)))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CResourceMgr::Ready_BossP1_Groggy(DEVICE graphicDev, CTexture* bossTex)
+{
+    if (FAILED(bossTex->Add_Texture(L"BossGroggy_start", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-hurt/TOWW-Spirit-hurt%d.png", 115)))
+        return E_FAIL;
+
+    if (FAILED(bossTex->Add_Texture(L"BossGroggy_loop", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-loop/TOWW-Spirit-loop%d.png", 84)))
+        return E_FAIL;
+
+    if (FAILED(bossTex->Add_Texture(L"BossGroggy_end", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-hurt-stop/TOWW-Spirit-hurt-stop%d.png", 67)))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CResourceMgr::Ready_BossP1_Effects(DEVICE graphicDev, CTexture* bossTex)
+{
+    if (FAILED(bossTex->Add_Texture(L"BossChainEff", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/ChainAttack/Summon_Chain%d.png", 34)))
+        return E_FAIL;
+    return S_OK;
+
+}
+
+HRESULT CResourceMgr::Ready_BossP1_Extra(DEVICE graphicDev)
+{
+    auto protoMgr = CProtoMgr::GetInstance();
+
+    vector<wstring> pathVec1;
+    pathVec1.push_back(L"../Bin/Resource/Texture/BossPhase1/ChainAttackGround.png");
+    pathVec1.push_back(L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Sermon_Icon.png");
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_OUT, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec1))))
+        return E_FAIL;
+
+    vector<wstring> pathVec2;
+    pathVec2.push_back(L"../Bin/Resource/Texture/BossPhase1/Bullet/Bullet.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/BossPhase1/Bullet/Bullet1.png");
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_BULLET, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec2))))
+        return E_FAIL;
+    return S_OK;
+
+}
+
 HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
 {
     auto protoMgr = CProtoMgr::GetInstance();
 
+    // Boss Controller
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::BOSS2_CONTROLLER,
+        CBossController::Create(graphicDev))))
+        return E_FAIL;
+
+    // Boss Slave
+    CTexture* slaveTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(slaveTex, E_FAIL);
+
+    if(FAILED(slaveTex->Add_Texture(L"Boss_Slave_Appear", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Slave/ChunSik/Follower-finab-loss-appear%d.png", 42)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_SLAVE_TEST, slaveTex)))
+        return E_FAIL;
+
+    // Boss Phase 2
+    CTexture* bossPhase2 = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(bossPhase2, E_FAIL);
+    
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Start_Eye/TOWW_Start_Eye%d.png", 68)))
+            return E_FAIL;
+
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Roar", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Roar/TOWW_Roar%d.png", 69)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_BOSS2_PHASE2, bossPhase2)))
+        return E_FAIL;
+    
     return S_OK;
 }
 
@@ -604,7 +731,7 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     // Rubble
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_RUBBLE, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/MapObject/Rubble/Rubble%d.png", 6))))
+            L"../Bin/Resource/Texture/MapObject/Rubble/Rubble%d.png", 46))))
         return E_FAIL;
 
     // Deco

@@ -50,13 +50,13 @@ HRESULT CPlayer::Ready_GameObject()
 	if (FAILED(CCharacterBase::Ready_GameObject()))
 		return E_FAIL;
 
-    m_CombatStatCom->Set_Hp(6.f);
-    m_CombatStatCom->Set_MaxHp(6.f);
-    m_CombatStatCom->Set_Attack(10.f);
+    m_CombatStatCom->Set_Hp(100.f);
+    m_CombatStatCom->Set_MaxHp(100.f);
+    m_CombatStatCom->Set_Attack(50.f);
     m_CombatStatCom->Set_Mp(5.f);
     m_CombatStatCom->Set_Speed(5.f);
 
-    m_TransformCom->Set_Pos(_vec3(10.f, 1.f, 10.f));
+    m_TransformCom->Set_Pos(_vec3(20.f, 1.f, 15.f));
     m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
 
     //!! Rigidbody에서 중력만 사용 안함
@@ -101,7 +101,6 @@ void CPlayer::OnBeginOverlap(CCollider* self, CCollider* other)
 {
 	CCharacterBase::OnBeginOverlap(self, other);
 
-    //cout << "Player Hit" << endl;
 }
 
 void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)
@@ -177,8 +176,11 @@ HRESULT CPlayer::Add_Component()
 
 void CPlayer::Animation_Setting()
 {
+    _float dirX = m_PlayerInputCom->Get_MouseDir().x;
+    m_AnimatorCom->Set_FlipX(dirX < 0);
+
 #pragma region ------   IDLE    ------
-    m_AnimatorCom->Create_Animation(L"PlayerIdle", 150, 0.02f);
+    m_AnimatorCom->Create_Animation(L"PlayerIdle", 150, 0.02f, _vec2(0.75f, 1.f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"PlayerIdle", ANIMSTATE::LOOP);
 #pragma endregion
@@ -220,7 +222,7 @@ void CPlayer::Animation_Setting()
                                     31,
                                     0.02f,
                                     _vec2(2.2f, 2.2f),
-                                    _vec2(0.f, 0.f));
+                                    _vec2(0.f, 0.18f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SWORD_COMBO1,
                              L"PlayerSwordCombo1",
@@ -230,7 +232,7 @@ void CPlayer::Animation_Setting()
                                     38,
                                     0.02f,
                                     _vec2(2.2f, 2.2f),
-                                    _vec2(0.f, 0.f));
+                                    _vec2(0.f, 0.24f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SWORD_COMBO2,
                              L"PlayerSwordCombo2",
@@ -240,7 +242,7 @@ void CPlayer::Animation_Setting()
                                     38,
                                     0.02f,
                                     _vec2(2.2f, 2.2f),
-                                    _vec2(0.f, 0.f));
+                                    _vec2(0.f, 0.49f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SWORD_COMBO3,
                              L"PlayerSwordCombo3",

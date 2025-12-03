@@ -172,6 +172,18 @@
     <Filter Include="97. Component\06. Camera Control\01. Movement">
       <UniqueIdentifier>{97b2548b-ada6-4e00-92f4-21cf83c9f83c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\04. Boss\02. Boss2\00. Boss">
+      <UniqueIdentifier>{06466a2b-be8a-415f-8b9c-c367715508d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\04. Boss\02. Boss2\01. Eyeball">
+      <UniqueIdentifier>{f3c057e0-c8ae-47f1-90b7-6ba55bf76cf7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\04. Boss\02. Boss2\02. Slave">
+      <UniqueIdentifier>{f0761f14-29e5-4beb-a999-fbcd51de41e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\04. Boss\02. Boss2\03. State">
+      <UniqueIdentifier>{d74a9f17-2586-44d3-a875-b196eaed53a4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -447,6 +459,30 @@
     <ClInclude Include="..\Header\CCameraSetup.h">
       <Filter>98. Utility</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CLogo_Boss2.h">
+      <Filter>02. Scene\00. Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBoss_Slave_Test.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\02. Slave</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBossController.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Client_Struct.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBoss2_StateMachine.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBossPhase2.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\00. Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBoss2_Idle.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBoss2_Eyeball.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -694,6 +730,27 @@
     </ClCompile>
     <ClCompile Include="..\Code\CCameraMovement.cpp">
       <Filter>97. Component\06. Camera Control\01. Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CLogo_Boss2.cpp">
+      <Filter>02. Scene\00. Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoss_Slave_Test.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\02. Slave</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBossController.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoss2_StateMachine.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBossPhase2.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\00. Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoss2_Idle.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoss2_Eyeball.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

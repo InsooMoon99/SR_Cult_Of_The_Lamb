@@ -152,7 +152,6 @@ HRESULT CStage_Boss1::Ready_GameLogic_Layer(LAYERTYPE layerType)
             CMainEditorMgr::GetInstance()->Set_MainCamera(camCom); // 에디터에 카메라 설정
     }
 
-    m_Layers.insert({ layerType, layer });
 
     // -----------------------------
     // BossPhase1
@@ -166,12 +165,8 @@ HRESULT CStage_Boss1::Ready_GameLogic_Layer(LAYERTYPE layerType)
         layer->Add_GameObject(OBJTYPE::BOSS1, gameObject),
         L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
 
-   // const auto BossTransform =
-   //     dynamic_cast<CTransform*>(gameObject->Get_Component(
-   //         ID_DYNAMIC,
-   //         COMPONENTTYPE::TRANSFORM));
-   //
-   // BossTransform->Set_Pos({ 50.f,BossTransform->Get_Scale().y*0.5f,50.f });
+
+    m_Layers.insert({ layerType, layer });
 
     return S_OK;
 }

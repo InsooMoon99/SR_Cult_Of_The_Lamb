@@ -39,12 +39,12 @@ public:
 
 protected:
 
-    CRcTex* m_BufferCom;
-    CTransform* m_TransformCom;
-    CTexture* m_TextureCom;
-    CAnimator* m_AnimatorCom;
-    CBoxCollider* m_BoxColCom;
-    CCombatStat* m_CombatStatCom;
+    CRcTex*         m_BufferCom;
+    CTransform*     m_TransformCom;
+    CTexture*       m_TextureCom;
+    CAnimator*      m_AnimatorCom;
+    CBoxCollider*   m_BoxColCom;
+    CCombatStat*    m_CombatStatCom;
 
     CGameObject* m_pOwner;
     bool m_flag = false;

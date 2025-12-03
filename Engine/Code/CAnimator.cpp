@@ -249,6 +249,18 @@ void CAnimator::Set_CurOffset(const _vec2& offset)
     return;
 }
 
+void CAnimator::Set_FlipX(_bool flip)
+{
+    if (m_BufferCom)
+    {
+        CRcTex* rect = dynamic_cast<CRcTex*>(m_BufferCom);
+        if (rect)
+        {
+            rect->Set_FlipX(flip);
+        }
+    }
+}
+
 void CAnimator::Set_TextureType(COMPONENTTYPE type)
 {
     m_TextureType = type;

@@ -37,6 +37,7 @@ private:
 public:
     static CBossBulletAttack* Create(CBossPhase1* pOwner, CBossStateMachine* pStateMachine);
 
+    static int m_BPatterCount;
 private:
     PHASE m_ePhase;
     float m_fElapsedTime =0;
@@ -46,7 +47,18 @@ private:
 
     vector<CBossBullet*> tmpBullet;
     bool m_TargetFlag = false;
-
+    int m_CircleCount = 0;
+    bool m_CircleEndFlag=false;
+    float m_circleCountTime;
+    bool m_Shoot=false;
+    // 쓸거
+    float m_offset;
+    float m_CircleRadius;
+    float m_Interval;
+    float m_CrossSpreadInterval;
+    float m_SpreadInterval;
+    float m_GroundY;
+    float m_CircleSpeed;
 
 private:
     virtual void Free();

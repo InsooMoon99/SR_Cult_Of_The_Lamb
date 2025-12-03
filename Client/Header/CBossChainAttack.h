@@ -37,6 +37,8 @@ private:
 
 public:
     static CBossChainAttack* Create(CBossPhase1* pOwner, CBossStateMachine* pStateMachine);
+
+    static int m_CPatterCount;
 private:
     PHASE m_ePhase;
     float m_fElapsedTime;
@@ -49,8 +51,19 @@ private:
     float m_RandChainTime = 0;
     bool m_StartFlag = false;
 
+    // 쓸거
+    float m_DirectionOffset;
+    float m_MaxLineCount;
+    float m_Interval;
+    float m_CircleRadius;
+    float m_GroundY;
+    float m_CrossOffset;
+    float m_CellSize;
+
 private:
     virtual void Free();
+
+    //
 
 };
 
