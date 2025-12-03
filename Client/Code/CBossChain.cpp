@@ -9,11 +9,13 @@
 #include "CTransform.h"
 #include "CAttackBox.h"
 #include "CAttackBuilder.h"
+#include "CBossPhase1.h"
 
 CBossChain::CBossChain(DEVICE graphicDev, CGameObject* owner)
     : CGameObject(graphicDev), m_pOwner(owner)
 {
     m_pOwner->AddRef();
+
 }
 
 CBossChain::CBossChain(const CBossChain& rhs) : CGameObject(rhs)
@@ -34,8 +36,8 @@ HRESULT CBossChain::Ready_GameObject()
     // 비율 맞춰주는거 생성할때 외부에서 SetAspectScale로 스케일 조정 
     SetTexAspectInit(m_TextureCom, m_TransformCom, 0 , &key);
 
-    SetAspectScale(m_TransformCom, {.5f,.5f,0.f });
-
+    SetAspectScale(m_TransformCom, {.2f,.2f,0.f });
+    
     Animation_Setting();
 
     m_AnimatorCom->Play_Animation(L"BossChainEff", ANIMSTATE::ONCE);
@@ -48,32 +50,8 @@ HRESULT CBossChain::Ready_GameObject()
     //TODO:: 나중에 땅의 위치를 알게 되면 수정 
     //m_TransformCom->Set_Pos({ ownerTransform->Get_Pos().x, -ownerTransform->Get_Scale().y * .5f,ownerTransform->Get_Pos().z });
     //m_TransformCom->Set_Pos
-    //충돌박스 CAttackBox 생성
-    //{
-    //    // 1. 공격 박스 생성
-    //    auto obj = CAttackBox::Create(m_GraphicDev);
-    //    obj->Set_Instigator(m_pOwner); // 공격의 주체를 넣음 - 난 보스를 넣어야 하는듯? 
-    //    obj->Set_LifeTime(10.f); // 근데 어짜피 사슬이 사라지면 사라짐 
-
-
-    //    // 2. 구조체 데이터 세팅
-    //    HITDATA hit{};
-    //    hit.damage = 1;
-    //    hit.knockback = 0.f;
-    //    obj->Set_HitDesc(hit);
-
-    //    // 3. 공격 박스 위치 설정, 방향값 추가 가능
-    //    _vec3 pos = m_TransformCom->Get_Pos();
-
-    //    auto transform = dynamic_cast<CTransform*>(
-    //        obj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-
-    //    transform->Set_Pos(pos);
-
-    //    // 4. 레이어에 추가, 헬퍼 함수 SpawnAttackObject 사용
-    //    //CManagement::GetInstance()->Get_Scene()->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, obj, OBJTYPE::ATTACK_COL);
-    //    SpawnAttackObject(obj); // TYPE , BOX SPHERE
-    //}
+  //  if (m_BoxColCom)
+  //      m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::BOSSPROJECTILE);
 
     return S_OK;
 }
@@ -119,13 +97,17 @@ _int CBossChain::Update_GameObject(const _float& timeDelta)
             //}
 
 #pragma endregion
-            CAttackBuilder(m_GraphicDev, m_pOwner)
+            CAttackBuilder(m_GraphicDev, this)
                 .Box()
                 .Damage(1.f)
                 .Knockback(0.f)
-                .LifeTime(10.f)
                 .Position(m_TransformCom->Get_Pos())
-                .Scale(m_TransformCom->Get_Scale())
+                .InstigatorPos()
+                .Offset(_vec3(0.f, 0.f, 0.f))
+                .LifeTime(.3f)
+                //.DestroyOnHit(true)
+                .CollisionLayer(COLLISION_LAYERTYPE::BOSSPROJECTILE)
+                .Scale({ m_TransformCom->Get_Scale().x, m_TransformCom->Get_Scale().y*.5f , m_TransformCom->Get_Scale().z *.5f})
                 .Spawn();
             
         }
@@ -238,6 +220,11 @@ HRESULT CBossChain::Add_Component()
     NULL_CHECK_RETURN(m_CombatStatCom, E_FAIL);
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::COMBATSTAT, m_CombatStatCom });
 
+  //  // BoxCollider
+  //  m_BoxColCom = CreateProtoComponent<CBoxCollider>(this, COMPONENTTYPE::BOX_COLL);
+  //  NULL_CHECK_RETURN(m_BoxColCom, E_FAIL);
+  //  m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::BOX_COLL, m_BoxColCom });
+
     return S_OK;
 }
 
@@ -245,4 +232,5 @@ void CBossChain::Free()
 {
     Safe_Release(m_pOwner);
     CGameObject::Free();
+  
 }

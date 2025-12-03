@@ -21,6 +21,7 @@ public:
 protected:
     vector<CBaseState*> m_vecState;
     CBaseState* m_pCurState;
+   // CBaseState* m_pPrevState;
 
     _uint                   m_dwPrevStateKey;
     _uint                   m_dwCurStateKey;

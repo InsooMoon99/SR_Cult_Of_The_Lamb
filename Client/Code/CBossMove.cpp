@@ -109,7 +109,7 @@ void CBossMove::RandomMove(const _float& timeDelta, _vec3 BaseCenter, int BaseLe
     float xPos = tmpx * (xCell * .5f);
     float zPos = tmpz * (zCell * .5f);
 
-    m_pOwnerTransformCom->Set_Pos(LT.x + xPos, 0.f, LT.z - zPos);
+    m_pOwnerTransformCom->Set_Pos(LT.x + xPos, m_pOwnerTransformCom->Get_Pos().y, LT.z - zPos);
 
 }
 

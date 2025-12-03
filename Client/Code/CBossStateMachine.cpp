@@ -48,6 +48,11 @@ _int CBossStateMachine::Update_StateMachine(const _float& timeDelta)
     return 0; //일단 0, 형식 통일 떄문에 int로 함 void 여도 됨
 }
 
+void CBossStateMachine::LateUpdate_StateMachine(const _float& timeDelta)
+{
+    m_pCurState->LateUpdate_State(timeDelta);
+}
+
 void CBossStateMachine::Change_State(_uint changeStateKey)
 {
     // 체인지 씬이랑 비슷한 느낌
@@ -62,6 +67,8 @@ void CBossStateMachine::Change_State(_uint changeStateKey)
     if (m_pCurState)
        m_pCurState->Exit();
 
+    // 이전 상태 등록
+    //m_pPrevState = m_pCurState;
     m_dwPrevStateKey = m_dwCurStateKey;
     m_dwCurStateKey = changeStateKey;
 
@@ -137,5 +144,6 @@ CBossStateMachine* CBossStateMachine::Create(CMonsterBase* owner)
 
 void CBossStateMachine::Free()
 {
+
     CStateMachine::Free();
 }

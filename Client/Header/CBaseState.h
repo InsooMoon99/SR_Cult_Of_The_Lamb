@@ -14,7 +14,7 @@ public:
     virtual void Enter() = 0;
     virtual void Exit() = 0;
 
-
+    
 public:
     virtual HRESULT Ready_State() { return S_OK; }
     virtual _int    Update_State(const _float& timeDelta) { return 0; }
