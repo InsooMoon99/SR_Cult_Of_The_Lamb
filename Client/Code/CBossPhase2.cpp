@@ -6,7 +6,7 @@
 #include "CTransform.h"
 #include "CBossController.h"
 #include "CBoss2_StateMachine.h"
-
+#include "CCombatStat.h"
 
 CBossPhase2::CBossPhase2(DEVICE graphicDev)
     : CMonsterBase(graphicDev), m_BossController(nullptr)
@@ -27,6 +27,7 @@ HRESULT CBossPhase2::Ready_GameObject()
     if (FAILED(CMonsterBase::Ready_GameObject()))
         return E_FAIL;
 
+    m_CombatStatCom->Set_HitState(false);
     
 
     return S_OK;

@@ -25,6 +25,17 @@ public:
     {
     }
 
+    // 공격 충돌체 소환 템플릿
+    template <typename T>
+    CAttackBuilder& SetType()
+    {
+        static_assert(is_base_of<CAttackBase, T>::value, "AttackBase에서 상속되지 않은 클래스");
+
+        m_AttackObj = T::Create(m_GraphicDev);
+
+        return *this;
+    }
+
     // 공격 타입 ex) Box, Sphere
     CAttackBuilder& Box()
     {

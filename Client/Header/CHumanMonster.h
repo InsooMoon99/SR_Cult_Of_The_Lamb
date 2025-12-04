@@ -35,10 +35,10 @@ public:
     void    Update_Direction();
 
 public:
-    void OnBeginOverlap(CCollider* self, CCollider* other) override;
-    void OnEndOverlap(CCollider* self, CCollider* other) override;
+    void    OnBeginOverlap(CCollider* self, CCollider* other) override;
+    void    OnEndOverlap(CCollider* self, CCollider* other) override;
 
-    void Chase_Target(const float& timeDelta, _float speed) override;
+    void    Chase_Target(const float& timeDelta, _float speed) override;
 
 private:
     void     Animation_Setting() override;
@@ -52,5 +52,7 @@ protected:
 
 private:
     Engine::CRigidbody* m_RigidbodyCom;
+
+
 
 };

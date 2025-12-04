@@ -123,7 +123,7 @@ HRESULT CBossStateMachine::Ready_BossStates()
         return E_FAIL;
     m_vecState[CBossPhase1::BOSSPHASE1::BOSSGROGGRY] = pState;
 
-    if (!(pState = CBossTalk::Create(m_pOwner, this)))
+    if (!(pState = CBossTalk::Create(phase1, this)))
         return E_FAIL;
     m_vecState[CBossPhase1::BOSSPHASE1::TALK] = pState;
 

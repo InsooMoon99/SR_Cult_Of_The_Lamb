@@ -83,6 +83,9 @@ public:
     _bool  Is_Invincible() const { return m_IsInvincible; }
     _bool  Is_Knockback() const { return m_KnockbackTimer > 0.f; }
 
+    _bool  Can_HitState() { return m_CanHitState; }
+    void Set_HitState(_bool flag) { m_CanHitState = flag; }
+
     void Set_Attack(_float attack) { m_Attack = attack; }
     void Set_AttackSpeed(_float attackSpeed) { m_AttackSpeed = attackSpeed; }
     void Set_Hp(_float hp) { m_Hp = hp; }
@@ -125,6 +128,7 @@ private:
     _int    m_MaxCharges = 3;
 
     _bool   m_IsDead;
+    _bool   m_CanHitState; // 보스는 false로 설정해줘야 Hit상태로 변환 안됨
 
     _bool   m_IsInvincible; // 무적
     _float  m_KnockbackTimer;

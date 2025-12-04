@@ -277,10 +277,10 @@ static void BoxColl_Inspector(CBoxCollider* collider)
     ImGui::Text("[ Size ]");
     ImGui::PushID("BoxColl_Inspector");
     {
-        _vec3 scale = collider->Get_Size();
+        _vec3 scale = collider->Get_RawSize();
 
-        if (ImGui::DragFloat3("##PositionDrag", &scale.x, 0.01f))
-            collider->Set_Size(scale);
+        if (ImGui::DragFloat3("##SizeDrag", &scale.x, 0.01f))
+            collider->Set_RawSize(scale);
 
         ImGui::NewLine();
 
@@ -288,6 +288,7 @@ static void BoxColl_Inspector(CBoxCollider* collider)
         bool renderCheck = collider->Get_ShowDebug();
         if (ImGui::Checkbox("Render Debug Box", &renderCheck))
             collider->Set_ShowDebug(renderCheck);
+
         // Collider Active 충돌체크
         bool collisionCheck = collider->IsCollisionActive();
         if (ImGui::Checkbox("Collision Active", &collisionCheck))
