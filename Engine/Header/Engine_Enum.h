@@ -163,7 +163,10 @@ enum class COMPONENTTYPE
     ////////////////
     TEX_SLAVE_TEST,
     TEX_BOSS2_PHASE2,
+    TEX_BOSS2_EYEBALL,
+
     BOSS2_CONTROLLER,
+    EYEBALL_CONTROLLER,
 
     ////////////////
     //  MapObject //

@@ -75,15 +75,31 @@ _uint CLoading::Loading_ForBoss1()
         return E_FAIL;
 
     m_IsFinish = true;
+
     return S_OK;
 }
 
 _uint CLoading::Loading_ForBoss2()
 {
     m_LoadingText = L"Boss2 Loading...";
+    auto resourceMgr = CResourceMgr::GetInstance();
 
-    if (FAILED(CResourceMgr::GetInstance()->Ready_BossResource2(m_GraphicDev)))
-        return E_FAIL;
+    vector<future<HRESULT>> futures;
+
+    futures.push_back(async(launch::async, [&]() {
+        return resourceMgr->Ready_BossP2(m_GraphicDev);
+        }));
+
+    futures.push_back(async(launch::async, [&]() {
+            return resourceMgr->Ready_BossP2_Eyeball(m_GraphicDev);
+        }));
+
+    // 병렬 태스크 완료 대기
+    for (auto& future : futures)
+    {
+        if (FAILED(future.get()))
+            return E_FAIL;
+    }
 
     m_IsFinish = true;
 
@@ -106,8 +122,6 @@ _uint CLoading::Loading_ForState_Parallel()
 
     if (FAILED(resourceMgr->Ready_Item(m_GraphicDev)))
         return E_FAIL;
-
-    OutputDebugString(L"[Loading] Item loading completed, starting parallel tasks...\n");
 
     vector<future<HRESULT>> futures;
 
@@ -133,8 +147,10 @@ _uint CLoading::Loading_ForState_Parallel()
         if (FAILED(future.get()))
             return E_FAIL;
     }
+
     auto end = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
+
     OutputDebugString((L"Loading Time: " + to_wstring(duration.count()) + L"ms\n").c_str());
 
     m_IsFinish = true;

@@ -5,8 +5,10 @@
 #include "CTransform.h"
 #include "CAnimator.h"
 
-CMonsterState::CMonsterState() : m_pPlayer(nullptr), m_pPlayerTransformCom(nullptr), m_pOwnerTransformCom(nullptr), m_pOwnerAnimatorCom(nullptr),
-m_fMinStateTime(0.f), m_fCurStateElapsedTime(0.f), m_bMinStateTimePassed(false)
+CMonsterState::CMonsterState() : m_pPlayer(nullptr), m_pPlayerTransformCom(nullptr), m_pOwnerTransformCom(nullptr),
+                                 m_pOwnerAnimatorCom(nullptr),
+                                 m_fMinStateTime(0.f), m_fCurStateElapsedTime(0.f), m_bMinStateTimePassed(false),
+                                 m_Controller(nullptr)
 {
 }
 

@@ -1,9 +1,11 @@
 ﻿#include "pch.h"
 #include "CBoss2_StateMachine.h"
+
+#include "CBoss2_Idle.h"
 #include "CBossPhase2.h"
 #include "CMonsterState.h"
-#include "CBoss2_Idle.h"
-#include "CBoss2_Eyeball.h"
+#include "CBoss2_Start.h"
+#include "CBoss2_Roar.h"
 
 CBoss2_StateMachine::CBoss2_StateMachine(CMonsterBase* owner)
     : m_Owner(owner)
@@ -26,20 +28,24 @@ HRESULT CBoss2_StateMachine::Ready_StateMachine()
 
 #pragma region 상태 등록
     {
+        // Start
+        if (FAILED(RegisterState<CBoss2_Start>(CBossPhase2::PATTERN::PHASE2_START, m_Owner)))
+            return E_FAIL;
+
         // Idle
         if (FAILED(RegisterState<CBoss2_Idle>(CBossPhase2::PATTERN::PHASE2_IDLE, m_Owner)))
             return E_FAIL;
 
-        // Eyeball
-        if (FAILED(RegisterState<CBoss2_Eyeball>(CBossPhase2::PATTERN::PHASE2_EYEBALL, m_Owner)))
+        // Roar
+        if (FAILED(RegisterState<CBoss2_Roar>(CBossPhase2::PATTERN::PHASE2_ROAR, m_Owner)))
             return E_FAIL;
     }
 #pragma endregion
     
 
     // 초기 상태 설정
-    m_pCurState = m_vecState[CBossPhase2::PATTERN::PHASE2_IDLE];
-    m_dwCurStateKey = CBossPhase2::PATTERN::PHASE2_IDLE;
+    m_pCurState = m_vecState[CBossPhase2::PATTERN::PHASE2_START];
+    m_dwCurStateKey = CBossPhase2::PATTERN::PHASE2_START;
     m_pCurState->Enter();
 
     return S_OK;

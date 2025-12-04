@@ -4,16 +4,17 @@
 
 class CBossController;
 class CCharacterBase;
+class CMonsterBase;
 
 BEGIN(Engine)
 class CGameObject;
 END
 
-class CBoss2_Eyeball : public CMonsterState
+class CBoss2_Start : public CMonsterState
 {
 private:
-    explicit CBoss2_Eyeball(CGameObject* owner);
-    virtual ~CBoss2_Eyeball();
+    explicit CBoss2_Start(CMonsterBase* owner);
+    virtual ~CBoss2_Start();
 
 public:
     void Enter() override;
@@ -22,15 +23,18 @@ public:
 
     HRESULT Ready_State() override;
 
+private:
+    void Spawn_Eyeball(_int index);
+
 public:
-    static CBoss2_Eyeball* Create(CGameObject* owner);
+    static CBoss2_Start* Create(CMonsterBase* owner);
 
 private:
     void Free() override;
 
 private:
-    CBossController* m_Controller;
-    CGameObject*     m_Owner;
+    CMonsterBase*    m_Owner;
+    _int            m_Eyeball_SpawnCount;
 
     _float           m_Pattern_Cooldown;
 

@@ -151,9 +151,6 @@
     <Filter Include="96. Base">
       <UniqueIdentifier>{4574c831-331d-4517-b972-c4e997802ca0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\05. Building">
-      <UniqueIdentifier>{d128922c-c4b8-47ce-b6cd-7f14a0378dbd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="05. UI\01. UI\05. UITarot">
       <UniqueIdentifier>{9199ebfa-8568-467b-b919-ec9ad9ecb39a}</UniqueIdentifier>
     </Filter>
@@ -174,6 +171,18 @@
     </Filter>
     <Filter Include="03. GameObject\04. Boss\02. Boss2\03. State">
       <UniqueIdentifier>{d74a9f17-2586-44d3-a875-b196eaed53a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\04. Boss\02. Boss2\03. State\00. Boss">
+      <UniqueIdentifier>{5d8eeee8-9250-4ebb-bdbb-345dc552b8dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball">
+      <UniqueIdentifier>{f0f836ab-b4c5-4a9c-b0c6-b534b5f77249}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Scene\05. Building">
+      <UniqueIdentifier>{d128922c-c4b8-47ce-b6cd-7f14a0378dbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\06. Controller">
+      <UniqueIdentifier>{8902134d-20bd-40d8-a9c0-6a01e23a37dc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -447,23 +456,59 @@
     <ClInclude Include="..\Header\CBoss_Slave_Test.h">
       <Filter>03. GameObject\04. Boss\02. Boss2\02. Slave</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CBossController.h">
-      <Filter>03. GameObject\04. Boss\02. Boss2</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\Client_Struct.h">
       <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\CBoss2_StateMachine.h">
-      <Filter>03. GameObject\04. Boss\02. Boss2</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CBossPhase2.h">
       <Filter>03. GameObject\04. Boss\02. Boss2\00. Boss</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CBoss2_Idle.h">
-      <Filter>03. GameObject\04. Boss\02. Boss2\03. State</Filter>
+    <ClInclude Include="..\Header\CEyeball.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\01. Eyeball</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CBoss2_Eyeball.h">
-      <Filter>03. GameObject\04. Boss\02. Boss2\03. State</Filter>
+    <ClInclude Include="..\Header\CBoss2_Roar.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBoss2_Start.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEyeball_Exit.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEyeball_StateMachine.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBoss2_StateMachine.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMonsterController.h">
+      <Filter>03. GameObject\06. Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEyeballController.h">
+      <Filter>03. GameObject\06. Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBossController.h">
+      <Filter>03. GameObject\06. Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEyeball_StartExit.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEyeball_Start.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEyeball_Ground.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEyeball_Enter.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEyeball_Die.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBoss2_Idle.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEyeball_Attack.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -713,20 +758,56 @@
     <ClCompile Include="..\Code\CBoss_Slave_Test.cpp">
       <Filter>03. GameObject\04. Boss\02. Boss2\02. Slave</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CBossController.cpp">
-      <Filter>03. GameObject\04. Boss\02. Boss2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\CBoss2_StateMachine.cpp">
-      <Filter>03. GameObject\04. Boss\02. Boss2</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\CBossPhase2.cpp">
       <Filter>03. GameObject\04. Boss\02. Boss2\00. Boss</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CBoss2_Idle.cpp">
-      <Filter>03. GameObject\04. Boss\02. Boss2\03. State</Filter>
+    <ClCompile Include="..\Code\CEyeball.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\01. Eyeball</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CBoss2_Eyeball.cpp">
-      <Filter>03. GameObject\04. Boss\02. Boss2\03. State</Filter>
+    <ClCompile Include="..\Code\CBoss2_Roar.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoss2_Start.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEyeball_StateMachine.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoss2_StateMachine.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMonsterController.cpp">
+      <Filter>03. GameObject\06. Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEyeballController.cpp">
+      <Filter>03. GameObject\06. Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBossController.cpp">
+      <Filter>03. GameObject\06. Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEyeball_Start.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEyeball_StartExit.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEyeball_Ground.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEyeball_Enter.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEyeball_Exit.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEyeball_Die.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoss2_Idle.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEyeball_Attack.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -111,7 +111,7 @@ _int CWarningChain::Update_GameObject(const _float& timeDelta)
 
         ChainTransform->Set_Pos(offset);
 
-        SpawnAttackObject(chain);
+        SpawnObjectOnLayer(chain);
         //chain->AddRef();
 
         m_fElapsedTime = 0;

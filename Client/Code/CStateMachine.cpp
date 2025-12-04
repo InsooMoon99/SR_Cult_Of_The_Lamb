@@ -12,6 +12,9 @@ CStateMachine::~CStateMachine()
 
 void CStateMachine::Free()
 {
-    for_each(m_vecState.begin(), m_vecState.end(), CDeleteObj());
+    for_each(m_vecState.begin(), m_vecState.end(), [](CBaseState*& state)
+        {
+        Safe_Release(state); 
+        });
     m_vecState.clear();
 }
