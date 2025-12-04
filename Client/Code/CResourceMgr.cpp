@@ -34,6 +34,10 @@
 #include "CWeaponEquip.h"
 #include "ItemData.h"
 #include "ItemInstance.h"
+#include "CProjectile.h"
+#include "CBossController.h"
+#include "CSpriteEff.h"
+#include "CEffectBaseCom.h"
 #include "CEyeballController.h"
 
 IMPLEMENT_SINGLETON(CResourceMgr)
@@ -145,6 +149,11 @@ HRESULT CResourceMgr::Ready_Common(DEVICE graphicDev)
         COMPONENTTYPE::PROJECTILE, CProjectile::Create(graphicDev))))
         return E_FAIL;
 
+    // Effect
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::SPRITEEFFECT, CSpriteEff::Create(graphicDev))))
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -182,6 +191,7 @@ HRESULT CResourceMgr::Ready_Buffer(DEVICE graphicDev)
     //if (FAILED(protoMgr->Ready_Prototype(
     //    COMPONENTTYPE::RC_TEX, Engine::CRcTex::Create(graphicDev))))
     //    return E_FAIL;
+
 
     return S_OK;
 }
@@ -373,6 +383,15 @@ HRESULT CResourceMgr::Ready_BossP1(DEVICE graphicDev)
     if (FAILED(BossP1Tex->Add_Texture(L"BossGroggy_end", TEX_NORMAL,
         L"../Bin/Resource/Texture/BossPhase1/TOWW-Spirit-hurt-stop/TOWW-Spirit-hurt-stop%d.png", 67)))
         return E_FAIL;
+
+    if (FAILED(BossP1Tex->Add_Texture(L"Before_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW_BeforeIdle/TOWW_BeforeIdle%d.png", 334)))
+        return E_FAIL;
+
+    if (FAILED(BossP1Tex->Add_Texture(L"Escape", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/TOWW_Escape/TOWW_Escape%d.png", 119)))
+        return E_FAIL;
+
 
     // 사슬
     if (FAILED(BossP1Tex->Add_Texture(L"BossChainEff", TEX_NORMAL,
