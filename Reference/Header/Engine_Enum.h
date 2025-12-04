@@ -90,6 +90,7 @@ enum class OBJTYPE
     BOSS2,
 
     ATTACK_COL,
+    PARTICLE,
 
     TERRAIN,
     PLACEMENT,
@@ -185,6 +186,11 @@ enum class COMPONENTTYPE
 
     TEX_DUNGEON_DECO,
     TEX_ETC,
+
+    ////////////////
+    //  Particle  //
+    ////////////////
+    TEX_PARTICLE,
 
     COMPONENT_END
 };

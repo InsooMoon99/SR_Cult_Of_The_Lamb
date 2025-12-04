@@ -30,7 +30,7 @@ CStage_Dungeon::CStage_Dungeon(DEVICE graphicDev)
       m_PlayerCombatStatCom(nullptr),
       m_PlayerInventoryCom(nullptr),
       m_WeaponEquipCom(nullptr),
-      m_Terrain(nullptr), m_CurrentRoom(Room::DUNGEON_END)
+      m_CurrentRoom(Room::DUNGEON_END)
 {
 }
 
@@ -67,7 +67,13 @@ void CStage_Dungeon::Initialize_Scene()
 
     m_CurrentRoom = Room::START;
 
-    m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Dungeon1.map");
+    //m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Dungeon1.map");
+
+    for (auto& [room, terrain] : m_Terrains)
+    {
+        if (terrain)
+            terrain->LoadMapOnStart(m_RoomData[static_cast<_int>(room)].terrainFilePath.c_str());
+    }
 }
 
 _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
@@ -152,10 +158,23 @@ HRESULT CStage_Dungeon::Ready_Environment_Layer(LAYERTYPE layerType)
     if (nullptr == layer)
         return E_FAIL;
 
-    m_Terrain = CTerrain::Create(m_GraphicDev);
-    NULL_CHECK_RETURN(m_Terrain, E_FAIL);
+    for (_int i = 0; i < (_int)Room::DUNGEON_END; i++)
+    {
+        Room room = static_cast<Room>(i);
 
-    layer->Add_GameObject(OBJTYPE::TERRAIN, m_Terrain);
+        m_Terrains[room] = CTerrain::Create(m_GraphicDev);
+        NULL_CHECK_RETURN(m_Terrains[room], E_FAIL);
+
+        // 위치 세팅
+        auto terrainTransform = m_Terrains[room]->Get_Transform();
+
+        if (terrainTransform)
+        {
+            terrainTransform->Set_Pos(m_RoomData[static_cast<_int>(room)].terrainOffset);
+        }
+
+        layer->Add_GameObject(OBJTYPE::TERRAIN, m_Terrains[room]);
+    }
 
     m_Layers.insert({ layerType, layer });
 

@@ -17,6 +17,9 @@ struct RoomData
     _vec3   spawnPos{};
     _float  width = 0.f;
     _float  height = 0.f;
+
+    string  terrainFilePath;
+    _vec3   terrainOffset;
 };
 
 class CStage_Dungeon : public CScene
@@ -72,7 +75,7 @@ private:
     CInventory*     m_PlayerInventoryCom;
     CWeaponEquip*   m_WeaponEquipCom;
 
-    CTerrain*       m_Terrain;
+    map<Room, CTerrain*> m_Terrains {};
 
 private:
     RoomData m_RoomData[5];   // 5개 방 미리 생성

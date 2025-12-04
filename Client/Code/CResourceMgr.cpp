@@ -768,5 +768,26 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     return S_OK;
 }
 
+HRESULT CResourceMgr::Ready_Particle(DEVICE graphicDev)
+{
+    auto protoMgr = CProtoMgr::GetInstance();
+
+    CTexture* particleTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(particleTex, E_FAIL);
+
+    // Hit Star
+    if (FAILED(particleTex->Add_Texture(L"HitEffect_Star", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Effect/HitEffect_Star/HitEffect_Star%d.png", 14)))
+        return E_FAIL;
+
+    // 추가 예정
+
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PARTICLE, particleTex)))
+        return E_FAIL;
+
+    return S_OK;
+}
+
 void CResourceMgr::Free()
 { }

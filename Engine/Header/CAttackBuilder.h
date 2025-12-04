@@ -147,6 +147,22 @@ public:
         return *this;
     }
 
+    // 파티클 스폰
+    CAttackBuilder& Particle(const wstring& particleKey, _uint frames, _float interval = 0.05f,
+                                    const _vec3& scale = _vec3(1.f, 1.f, 1.f),   
+                                    const _vec3& offset = _vec3(0.f, 0.f, 0.f))  
+    {
+        auto& particle = m_AttackData.hitParticle;
+
+        particle.key = particleKey;
+        particle.frames = frames;
+        particle.interval = interval;
+        particle.scale = scale;      
+        particle.offset = offset;
+
+        return *this;
+    }
+
     void Spawn()
     {
         NULL_CHECK(m_AttackObj);

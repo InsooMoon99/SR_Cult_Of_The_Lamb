@@ -202,6 +202,9 @@
     <Filter Include="02. Scene\03. MainMenu">
       <UniqueIdentifier>{d480312a-efaf-4078-93cf-c7487930aaa7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="95. Particle">
+      <UniqueIdentifier>{66b66737-d2d9-4490-ba41-336b1cbd241e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
