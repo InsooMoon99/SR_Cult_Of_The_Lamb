@@ -35,7 +35,7 @@ HRESULT CManagement::Get_PersistentObject(const wstring& key, CGameObject** outO
 
     // 2. 일반 Map 검색
     auto iter = m_PersistentObjects.find(key);
-    if (iter == m_PersistentObjects.end())
+     if (iter == m_PersistentObjects.end())
         return E_FAIL;
 
     *outObject = iter->second;

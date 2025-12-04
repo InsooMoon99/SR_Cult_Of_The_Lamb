@@ -119,7 +119,7 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].knockbackPower   = 30.f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].spawnOffset      = 1.2f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
-
+    
     //1타
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].state            = ACTORSTATE::PLAYER_GAUNTLET_COMBO1;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].duration         = 0.7f;

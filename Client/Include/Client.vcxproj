@@ -222,6 +222,7 @@
     <ClInclude Include="..\Header\CPlayer.h" />
     <ClInclude Include="..\Header\CPlayerController.h" />
     <ClInclude Include="..\Header\CPlayerMovement.h" />
+    <ClInclude Include="..\Header\CPlayerSkill.h" />
     <ClInclude Include="..\Header\CProjectile.h" />
     <ClInclude Include="..\Header\CRandomMgr.h" />
     <ClInclude Include="..\Header\CResourceMgr.h" />
@@ -314,6 +315,7 @@
     <ClCompile Include="..\Code\CPlayer.cpp" />
     <ClCompile Include="..\Code\CPlayerController.cpp" />
     <ClCompile Include="..\Code\CPlayerMovement.cpp" />
+    <ClCompile Include="..\Code\CPlayerSkill.cpp" />
     <ClCompile Include="..\Code\CProjectile.cpp" />
     <ClCompile Include="..\Code\CRandomMgr.cpp" />
     <ClCompile Include="..\Code\CResourceMgr.cpp" />

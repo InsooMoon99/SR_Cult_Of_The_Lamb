@@ -12,8 +12,8 @@
 #include "CItemDB.h"
 #include "CPlayerAttack.h"
 #include "CPlayerController.h"
-#include "CPlayerInput.h"
 #include "CPlayerMovement.h"
+#include "CPlayerInput.h"
 #include "CProtoMgr.h"
 #include "CRcCol.h"
 #include "CRectCollider.h"
@@ -32,6 +32,7 @@
 #include "ItemInstance.h"
 #include "CProjectile.h"
 #include "CBossController.h"
+#include "CPlayerSkill.h"
 
 IMPLEMENT_SINGLETON(CResourceMgr)
 
@@ -203,7 +204,12 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         COMPONENTTYPE::WEAPON_EQUIP, CWeaponEquip::Create(graphicDev))))
         return E_FAIL;
 
-    CTexture* playerTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    // skill
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::PL_SKILL, CPlayerSkill::Create(graphicDev))))
+        return E_FAIL;
+
+        CTexture* playerTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(playerTex, E_FAIL);
 
     // Idle
@@ -273,19 +279,28 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         return E_FAIL;
 
     if (FAILED(playerTex->Add_Texture(L"PlayerGauntletCombo3", TEX_NORMAL,
-    L"../Bin/Resource/Texture/Player/Gauntlet_Combo3/Lamb-attack-combo3-gauntlets%d.png", 44)))
+        L"../Bin/Resource/Texture/Player/Gauntlet_Combo3/Lamb-attack-combo3-gauntlets%d.png", 44)))
         return E_FAIL;
 
     if (FAILED(playerTex->Add_Texture(L"PlayerGauntletCombo4", TEX_NORMAL,
-    L"../Bin/Resource/Texture/Player/Gauntlet_Combo4/Lamb-attack-combo4-gauntlet%d.png", 40)))
+        L"../Bin/Resource/Texture/Player/Gauntlet_Combo4/Lamb-attack-combo4-gauntlet%d.png", 40)))
         return E_FAIL;
 
     if (FAILED(playerTex->Add_Texture(L"PlayerGauntletHeavy", TEX_NORMAL,
-    L"../Bin/Resource/Texture/Player/Gauntlet_Attack_Heavy/Lamb-attack-heavy-gauntlet%d.png", 70)))
+        L"../Bin/Resource/Texture/Player/Gauntlet_Attack_Heavy/Lamb-attack-heavy-gauntlet%d.png", 70)))
         return E_FAIL;
 
-    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
+    //Skill
+    if(FAILED(playerTex->Add_Texture(L"PlayerSkillAttack", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Spell1/Lamb-cast-spell%d.png", 32)))
         return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"PlayerSkillCharging", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Spell2/Lamb-cast-spell2-%d.png",17)))
+        return E_FAIL;
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
+    return E_FAIL;
+
 
     return S_OK;
 }
@@ -407,7 +422,7 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
     CTexture* slaveTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(slaveTex, E_FAIL);
 
-    if(FAILED(slaveTex->Add_Texture(L"Boss_Slave_Appear", TEX_NORMAL,
+    if (FAILED(slaveTex->Add_Texture(L"Boss_Slave_Appear", TEX_NORMAL,
         L"../Bin/Resource/Texture/BossPhase2/Slave/ChunSik/Follower-finab-loss-appear%d.png", 42)))
         return E_FAIL;
 
@@ -421,7 +436,7 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
     //if (FAILED(bossPhase2->Add_Texture(L"Boss_Idle", TEX_NORMAL,
     //    L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Boss_Idle%d..png", 58)))
     //    return E_FAIL;
-    
+
     return S_OK;
 }
 

@@ -1,0 +1,96 @@
+﻿#pragma once
+#include "CComponent.h"
+
+    class CPlayerInput;
+    class CWeaponEquip;
+
+BEGIN(Engine)
+    class CAttackBase;
+    class CCombatStat;
+    class CState;
+END
+
+class CPlayerSkill : public CComponent
+{
+public:
+    struct SkillInfo
+    {
+        ACTORSTATE state;
+
+        _float duration;
+        _float damageMultiplier;
+        _float knockbackPower;
+        _float spawnOffset;
+        _vec3 hitboxScale;
+        _float skillspeed;
+        _float chargeTime;
+    };
+
+    enum PL_SKILL_INDEX
+    {
+        SKILL_CHARGING,
+        SKILL_SINGLE,
+        SKILL_TRIPLE,
+
+        SKILL_MAX
+    };
+private:
+    explicit CPlayerSkill(DEVICE graphicDev);
+    explicit CPlayerSkill(const CPlayerSkill& rhs);
+    ~CPlayerSkill() override;
+
+
+public:
+    HRESULT Ready_PlayerCombat();
+    _int    Update_Component(const _float& timeDelta) override;
+    void    LateUpdate_Component() override;
+
+public:
+    HRESULT Init_OwnerComponent();
+    
+
+public:
+    ACTORSTATE  Start_Charging();
+    _bool       Update_Charging(const float& timeDelta);
+
+    ACTORSTATE  Start_SingleSkill();
+    _bool       Update_SingleSkill(const float& timeDelta);
+
+    ACTORSTATE  Start_TripleSkill();
+    _bool       Update_TripleSkill(const float& timeDelta);
+
+    ACTORSTATE  Evaluate_ChargeLevel();
+public:
+    void Set_CurrentTimer(_float timer) { m_SkillTimer = timer; }
+    void Cancel_Attack();
+
+private:
+    void Reset_AttackData();
+    void Create_Projectile(const SkillInfo& skillInfo, const _vec3& vAttackDir);
+
+private:
+    CPlayerInput* m_OwnerInputCom;
+    CState* m_OwnerStateCom;
+    CCombatStat* m_OwnerCombatStatCom;
+
+private:
+    CAttackBase* m_CurrentAttackObj;
+
+private:
+    _bool     m_IsSkillUnlocked;
+    SkillInfo m_SkillInfo[SKILL_MAX];
+    _float    m_SkillTimer;
+    _float    m_ChargeTimer;
+    _float    m_MaxChargeTime;
+    _bool     m_ProjectileFired;
+    _int      m_SkillIndex;
+    _bool     m_IsCharged;
+    _bool     m_IsCharging;
+public:
+    static CPlayerSkill* Create(DEVICE graphicDev);
+    CComponent* Clone() override;
+
+private:
+    void Free() override;
+
+};

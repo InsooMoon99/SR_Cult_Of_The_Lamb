@@ -8,6 +8,7 @@ class CRigidbody;
 class CCollider;
 END
 
+class CPlayerSkill;
 class CPlayerInput;
 class CPlayerMovement;
 class CPlayerAttack;
@@ -40,9 +41,9 @@ public:
     HRESULT Init_OwnerComponent();
 
 public: // --- Getters for Inspector ---
-    CPlayerInput*    Get_InputCom() const { return m_OwnerInputCom; }
+    CPlayerInput* Get_InputCom() const { return m_OwnerInputCom; }
     CPlayerMovement* Get_MovementCom() const { return m_OwnerMovementCom; }
-    CPlayerAttack*   Get_AttackCom() const { return m_OwnerAttackCom; }
+    CPlayerAttack* Get_AttackCom() const { return m_OwnerAttackCom; }
 
 private:
     // --- [핵심 로직 파이프라인] ---
@@ -53,23 +54,27 @@ private:
     void Action_Idle(const _float& timeDelta);      // IDLE 상태
     void Action_Run(const _float& timeDelta);       // RUN 상태
     void Action_Roll(const _float& timeDelta);      // PLAYER_ROLL 상태
-    void Action_Sword(const _float& timeDelta);     // PLAYER_SWORD_ ~ 상태
-
+    void Action_NormalAttack(const _float& timeDelta);     // PLAYER_SWORD_ ~ 상태
+    void Action_Charging(const _float& timeDelta);
+    void Action_SingleSkill(const _float& timeDelta);
+    void Action_TripleSkill(const _float& timeDelta);
 private:
 #pragma region Caching owner components
-    Engine::CState*      m_OwnerStateCom;
+    Engine::CState* m_OwnerStateCom;
     Engine::CCombatStat* m_OwnerCombatStatCom;
-    Engine::CRigidbody*  m_OwnerRigidbodyCom;
-    Engine::CCollider*   m_OwnerColliderCom;
+    Engine::CRigidbody* m_OwnerRigidbodyCom;
+    Engine::CCollider* m_OwnerColliderCom;
 
-    CPlayerInput*    m_OwnerInputCom;
+    CPlayerInput* m_OwnerInputCom;
     CPlayerMovement* m_OwnerMovementCom;
-    CPlayerAttack*   m_OwnerAttackCom;
+    CPlayerAttack* m_OwnerAttackCom;
+    CPlayerSkill* m_OwnerSkillCom;
+
 #pragma endregion
 
 public:
     static CPlayerController* Create(DEVICE graphicDev);
-    CComponent*               Clone() override;
+    CComponent* Clone() override;
 
 private:
     void Free() override;
