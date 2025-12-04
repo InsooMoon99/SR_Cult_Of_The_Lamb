@@ -694,7 +694,7 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     // Grass
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_GRASS, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/MapObject/WeedShrub/WeedShrub%d.png", 20))))
+            L"../Bin/Resource/Texture/MapObject/WeedShrub/WeedShrub%d.png", 53))))
         return E_FAIL;
 
     // Rubble
