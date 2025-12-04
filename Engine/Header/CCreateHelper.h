@@ -36,7 +36,7 @@ static T* CreateProtoComponent(CGameObject* Owner, COMPONENTTYPE eComponentType)
     return component;
 }
 
-static void SpawnAttackObject(CGameObject* obj)
+static void SpawnObjectOnLayer(CGameObject* obj, OBJTYPE objType = OBJTYPE::ATTACK_COL)
 {
     auto mgr = CManagement::GetInstance();
     auto scene = mgr ? mgr->Get_Scene() : nullptr;
@@ -44,7 +44,7 @@ static void SpawnAttackObject(CGameObject* obj)
     if (scene == nullptr)
         return;
 
-    scene->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, obj, OBJTYPE::ATTACK_COL);
+    scene->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, obj, objType);
 }
 
 static void DrawDebugBox(DEVICE graphicDv, const _vec3& center, const _vec3& size, DWORD color)

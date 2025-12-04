@@ -201,6 +201,9 @@ static const char* ToString(COMPONENTTYPE type)
     case COMPONENTTYPE::TEX_DUNGEON_DECO:   return "Dungeon_Deco";
     case COMPONENTTYPE::TEX_ETC:            return "ETC";
 
+    case COMPONENTTYPE::EYEBALL_CONTROLLER: return "Eyeball_Controller";
+    case COMPONENTTYPE::TEX_BOSS2_EYEBALL:      return "Eyeball";
+
     case COMPONENTTYPE::COMPONENT_END:      return "ComponentEnd"; // End Marker
     default:                                return "UnknownComponent";
     }

@@ -35,15 +35,9 @@ public:
 public:
     HRESULT Ready_BossP1(DEVICE graphicDev);
 
-    HRESULT Ready_BossP1_Idle_Awake(DEVICE graphicDev, CTexture* bossTex);
-    HRESULT Ready_BossP1_Attack_Dead(DEVICE graphicDev, CTexture* bossTex);
-    HRESULT Ready_BossP1_Movement(DEVICE graphicDev, CTexture* bossTex);
-    HRESULT Ready_BossP1_Groggy(DEVICE graphicDev, CTexture* bossTex);
-    HRESULT Ready_BossP1_Effects(DEVICE graphicDev, CTexture* bossTex);
-    HRESULT Ready_BossP1_Extra(DEVICE graphicDev);
-
 public:
     HRESULT Ready_BossP2(DEVICE graphicDev);
+    HRESULT Ready_BossP2_Eyeball(DEVICE graphicDev);
 
 public:
     void Free() override;

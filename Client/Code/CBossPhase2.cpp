@@ -7,6 +7,7 @@
 #include "CBossController.h"
 #include "CBoss2_StateMachine.h"
 
+
 CBossPhase2::CBossPhase2(DEVICE graphicDev)
     : CMonsterBase(graphicDev), m_BossController(nullptr)
 {
@@ -36,6 +37,12 @@ void CBossPhase2::Initialize_GameObject()
     CMonsterBase::Initialize_GameObject();
 
     m_TransformCom->Set_Scale(_vec3(8.f, 4.9f, 3.f));
+
+    // State Machine
+    auto stateMachine = CBoss2_StateMachine::Create(this);
+    m_BossController->Set_StateMachine(stateMachine); 
+    Safe_Release(stateMachine);
+
 }
 
 _int CBossPhase2::Update_GameObject(const _float& timeDelta)
@@ -107,7 +114,9 @@ const char* CBossPhase2::Get_Boss2_StateName(_int stateNum)
     // 상태 추가될때마다 추가하기
     switch (stateNum)
     {
-    case PHASE2_IDLE:       return "PHASE2_IDLE";
+    case PHASE2_START:       return "PHASE2_Start";
+    case PHASE2_IDLE:       return "PHASE2_Idle";
+    case PHASE2_ROAR:       return "PHASE2_Roar";
     case PHASE2_EYEBALL:    return "PHASE2_EYEBALL";
     case PHASE2_CHAIN:      return "PHASE2_CHAIN";
     case PHASE2_BULLET:     return "PHASE2_BULLET";
@@ -133,11 +142,12 @@ CBossPhase2* CBossPhase2::Create(DEVICE graphicDev)
 
 void CBossPhase2::Animation_Setting()
 {
+    m_AnimatorCom->Create_Animation(L"Boss2_Start", 68, 0.04f);
     m_AnimatorCom->Create_Animation(L"Boss2_Idle", 68, 0.04f);
     m_AnimatorCom->Create_Animation(L"Boss2_Roar", 69, 0.04f);
 
     // 스프라이트 재생은 상태머신으로
-    //m_AnimatorCom->Play_Animation(L"Boss_Idle", ANIMSTATE::LOOP); 
+    //m_AnimatorCom->Play_Animation(L"Boss2_Idle", ANIMSTATE::LOOP); 
 }
 
 HRESULT CBossPhase2::Add_Component()
@@ -160,10 +170,7 @@ HRESULT CBossPhase2::Add_Component()
     NULL_CHECK_RETURN(m_BossController, E_FAIL);
     m_Components[ID_DYNAMIC].insert({ type, m_BossController });
 
-    // State Machine
-    auto stateMachine = CBoss2_StateMachine::Create(this);
-    m_BossController->Set_StateMachine(stateMachine);
-    Safe_Release(stateMachine);
+
 
     return S_OK;
 }

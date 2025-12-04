@@ -280,7 +280,7 @@ bool CBossBulletAttack::CircleBullet(const _float& timeDelta, int num, int radiu
         tmpBullet.push_back(BossBullet);
 
         // 레이어 관리로 넘기기
-        SpawnAttackObject(BossBullet);
+        SpawnObjectOnLayer(BossBullet);
 
         m_Count++;
         m_fElapsedTime = 0;
@@ -350,7 +350,7 @@ bool CBossBulletAttack::CrossBullet(const _float& timeDelta, int num, int offset
                     COMPONENTTYPE::PROJECTILE));
 
             BulletProjectile->SetMoveDesc(d);
-            SpawnAttackObject(BossBullet);
+            SpawnObjectOnLayer(BossBullet);
 
             tmpBullet.push_back(BossBullet);
         }
@@ -414,7 +414,7 @@ bool CBossBulletAttack::SpreadBullet(const _float& timeDelta, int num, float int
             projectileCom->SetMoveDesc(d);
 
             // 레이어 관리로 넘기기
-            SpawnAttackObject(BossBullet);
+            SpawnObjectOnLayer(BossBullet);
 
             tmpBullet.push_back(BossBullet);
 
