@@ -22,6 +22,19 @@ public:
     void    Render_GameObject() override;
 
 public:
+    // 공통 체크 (넉백, 사망)
+    _bool   Check_CommonTransitions();
+
+    // 상태 변환
+    void    Update_State_Idle(const _float timeDelta);
+    void    Update_State_Run(const _float timeDelta);
+    void    Update_State_Attack(const _float timeDelta);
+    void    Update_State_Hit(const _float timeDelta);
+    void    Update_State_Dead(const _float timeDelta);
+
+    void    Update_Direction();
+
+public:
     void OnBeginOverlap(CCollider* self, CCollider* other) override;
     void OnEndOverlap(CCollider* self, CCollider* other) override;
 

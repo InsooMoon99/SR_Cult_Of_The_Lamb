@@ -249,6 +249,7 @@ void CMapEditorPlacer::Cancel_Place()
 
     m_SelectedType = MAPOBJTYPE::MAPOBJ_END;
 }
+
 // 마우스의 현재 월드위치
 bool CMapEditorPlacer::Get_MouseWorldPos(_vec3& outPos)
 {

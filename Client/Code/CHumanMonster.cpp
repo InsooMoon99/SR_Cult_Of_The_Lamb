@@ -31,8 +31,8 @@ HRESULT CHumanMonster::Ready_GameObject()
     m_TransformCom->Set_Pos(_vec3(5.f, 1.f, 7.f));
     m_TransformCom->Set_Scale(_vec3(1.2f, 1.2f, 1.2f));
 
-    m_CombatStatCom->Set_MaxHp(750.f);
-    m_CombatStatCom->Set_Hp(750.f);
+    m_CombatStatCom->Set_MaxHp(150.f);
+    m_CombatStatCom->Set_Hp(150.f);
     m_CombatStatCom->Set_Speed(65.f);
 
     //!! Rigidbody에서 중력만 사용 안함
@@ -63,12 +63,21 @@ _int CHumanMonster::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CMonsterBase::Update_GameObject(timeDelta);
 
-    if (!m_CombatStatCom->Is_Knockback())
-    {
-        _float distance = Get_DistanceToTarget();
+    if (Check_CommonTransitions())
+        return exit;
 
-        if (2.5f < distance && distance < 10.f)
-            Chase_Target(timeDelta, m_CombatStatCom->Get_Speed());
+    // TODO : 상태 전환 시마다 다음 행동으로 넘어갈 수 있는 딜레이 시간 추가하기
+    Update_Direction();
+
+    ACTORSTATE curState = m_StateCom->Get_State();
+
+    switch (curState)
+    {
+    case ACTORSTATE::IDLE:      Update_State_Idle(timeDelta);  break;
+    case ACTORSTATE::RUN:       Update_State_Run(timeDelta); break;
+    case ACTORSTATE::ATTACK:    Update_State_Attack(timeDelta); break;
+    case ACTORSTATE::HIT:       Update_State_Hit(timeDelta); break;
+    case ACTORSTATE::DEAD:      Update_State_Dead(timeDelta); break;
     }
 
     return exit;
@@ -88,14 +97,128 @@ void CHumanMonster::Render_GameObject()
 
 }
 
+_bool CHumanMonster::Check_CommonTransitions()
+{
+    ACTORSTATE curState = m_StateCom->Get_State();
+
+    if (curState != ACTORSTATE::HIT && m_CombatStatCom->Is_Knockback())
+    {
+        m_StateCom->Change_State(ACTORSTATE::HIT);
+
+        return true;
+    }
+
+    return false;
+}
+
+void CHumanMonster::Update_State_Idle(const _float timeDelta)
+{
+    _float distance = Get_DistanceToTarget();
+
+    if (2.5f < distance && distance < 10.f)
+    {
+        m_StateCom->Change_State(ACTORSTATE::RUN);
+    }
+}
+
+void CHumanMonster::Update_State_Run(const _float timeDelta)
+{
+    // 타겟 추적
+    Chase_Target(timeDelta, m_CombatStatCom->Get_Speed());
+
+    _float distance = Get_DistanceToTarget();
+
+    if (distance <= 2.5f)
+    {
+        m_StateCom->Change_State(ACTORSTATE::ATTACK);
+    }
+    else if (distance >= 10.f)
+    {
+        m_StateCom->Change_State(ACTORSTATE::IDLE);
+    }
+}
+
+void CHumanMonster::Update_State_Attack(const _float timeDelta)
+{
+    if (m_AnimatorCom->Get_CurFrame() == 30)
+    {
+        // TODO AttackBuilder로 공격 충돌체 소환
+    }
+
+    if (m_AnimatorCom->Is_AnimationFinished())
+    {
+        m_StateCom->Change_State(ACTORSTATE::IDLE);
+    }
+}
+
+void CHumanMonster::Update_State_Hit(const _float timeDelta)
+{
+    // 애니메이션이 끝나고, 넉백이 다 밀렸을 때
+    if (m_AnimatorCom->Is_AnimationFinished() && !m_CombatStatCom->Is_Knockback())
+    {
+        m_StateCom->Change_State(ACTORSTATE::IDLE);
+    }
+}
+
+void CHumanMonster::Update_State_Dead(const _float timeDelta)
+{
+    // CombatStat에서 Dead 상태처리 진행중 Dead 애니메이션이 없다. 밀려나면서, 뼛가루 소환?
+    if (m_StateCom->Get_State() == ACTORSTATE::DEAD)
+    {
+        Mark_As_PendingKill();
+    }
+}
+
+void CHumanMonster::Update_Direction()
+{
+    if (!m_TargetTransform || !m_TransformCom)
+        return;
+
+    _vec3 pos = m_TransformCom->Get_Pos();
+    _vec3 targetPos = m_TargetTransform->Get_Pos();
+    _vec3 dir = targetPos - pos;
+
+    if (abs(dir.x) > abs(dir.z))
+    {
+        // 좌우
+        if (dir.x > 0.f)
+        {
+            m_StateCom->Change_Dir(ACTORDIR::RIGHT);
+        }
+        else
+        {
+            m_StateCom->Change_Dir(ACTORDIR::LEFT);
+        }
+    }
+   /* else
+    {
+        if (dir.z > 0.f)
+        {
+            m_StateCom->Change_Dir(ACTORDIR::DOWN);
+        }
+        else
+        {
+            m_StateCom->Change_Dir(ACTORDIR::UP);
+        }
+    }*/
+}
+
 void CHumanMonster::Animation_Setting()
 {
     // 애니메이션 생성
     m_AnimatorCom->Create_Animation(L"HumanMonsterIdle", 34, 0.02f);
-    m_AnimatorCom->Create_Animation(L"HumanMonsterRun", 18, 0.02f);
+    m_AnimatorCom->Create_Animation(L"HumanMonsterAttack", 65, 0.02f);
+    m_AnimatorCom->Create_Animation(L"HumanMonsterHurt", 28, 0.02f);
+
+    // Run
+    m_AnimatorCom->Create_Animation(L"HumanMonsterRun_LEFT", 18, 0.02f);
+
     // State -> Animation 연동
     m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"HumanMonsterIdle", ANIMSTATE::LOOP);
     m_StateCom->Set_AnimInfo(ACTORSTATE::RUN, L"HumanMonsterRun", ANIMSTATE::LOOP);
+    m_StateCom->Set_AnimInfo(ACTORSTATE::HIT, L"HumanMonsterHurt", ANIMSTATE::ONCE);
+    m_StateCom->Set_AnimInfo(ACTORSTATE::ATTACK, L"HumanMonsterAttack", ANIMSTATE::ONCE);
+
 }
 
 void CHumanMonster::OnBeginOverlap(CCollider* self, CCollider* other)

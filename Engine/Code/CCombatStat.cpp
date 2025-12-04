@@ -130,7 +130,7 @@ void CCombatStat::On_Dead()
         if (state)
             state->Change_State(ACTORSTATE::DEAD);
 
-        // 여기서 Owner->Mark_As_PendingKill 호출하면 삭제됨
+        // 각자 클래스에서 애니메이션 끝났을 때 판단해서 추가로 처리하기
 
     }
 }

@@ -317,6 +317,14 @@ HRESULT CResourceMgr::Ready_Monster(DEVICE graphicDev)
         L"../Bin/Resource/Texture/Monster/Human/Run/Run%d.png", 18)))
         return E_FAIL;
 
+    if (FAILED(humanmonsterTex->Add_Texture(L"HumanMonsterAttack", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Human/Attack/Attack%d.png", 65)))
+        return E_FAIL;
+
+    if (FAILED(humanmonsterTex->Add_Texture(L"HumanMonsterHurt", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Human/Hurt/Hurt%d.png", 28)))
+        return E_FAIL;
+
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_HUMAN_MONSTER, humanmonsterTex)))
         return E_FAIL;

@@ -193,6 +193,9 @@
     <Filter Include="03. GameObject\06. Controller">
       <UniqueIdentifier>{8902134d-20bd-40d8-a9c0-6a01e23a37dc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97. Component\07. State">
+      <UniqueIdentifier>{e34a7dc5-e0ec-4ffb-8b09-7b4b921f27cb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">

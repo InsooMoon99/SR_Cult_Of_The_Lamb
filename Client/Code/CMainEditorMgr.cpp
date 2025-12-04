@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include "CMainEditorMgr.h"
-
+#include "CPickingHelper.h"
 #include "CAnimator.h"
 #include "CBoxCollider.h"
 #include "CCameraCalc.h"
@@ -321,6 +321,23 @@ void CMainEditorMgr::Render_ToolBar()
         ImGui::Checkbox("Debugging Mode", &debugCheck);
 
         CCollisionManager::GetInstance()->Render_Debug(debugCheck);
+    }
+
+    ImGui::SameLine();
+
+    // ============
+    //  Mouse Pos
+    // ============
+
+    POINT screenPos, clientPos;
+    GetCursorPos(&screenPos);
+    clientPos = screenPos;
+    ScreenToClient(g_hWnd, &clientPos);
+
+    _vec3 worldMousePos;
+    if (Engine::PickPlaneY(m_GraphicDev, g_hWnd, 0.f, worldMousePos))
+    {
+        ImGui::Text("| Mouse Pos : (%.2f, %.2f, %.2f)", worldMousePos.x, worldMousePos.y, worldMousePos.z);
     }
 
     //ImGui::Columns(1);
