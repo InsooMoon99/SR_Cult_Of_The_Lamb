@@ -19,8 +19,8 @@
 #include "CResourceMgr.h"
 #include "CSceneMgr.h"
 #include "CSoundMgr.h"
-#include "CTimerMgr.h"
 #include "CTexture.h"
+#include "CTimerMgr.h"
 
 CMainApp::CMainApp()
     : m_ManagementClass(CManagement::GetInstance()),
