@@ -143,7 +143,7 @@ _bool      CPlayerSkill::Update_Charging(const float& timeDelta)
        return false;
     
 		m_ChargeTimer+= timeDelta;
-	
+	//if(m_ChargeTimer >= m_SkillInfo[SKILL_CHA])
         if (m_ChargeTimer >= m_MaxChargeTime)
         {
             m_ChargeTimer = m_MaxChargeTime;

@@ -244,6 +244,7 @@ void CPlayerController::CheckStateTransition()
         curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO3 ||
         curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO4 ||
         curState == ACTORSTATE::PLAYER_GAUNTLET_HEAVY ||
+        curState ==ACTORSTATE:: PLAYER_SKILL_CHARGING ||
         curState == ACTORSTATE::PLAYER_SKILL_SINGLE ||
         curState == ACTORSTATE::PLAYER_SKILL_TRIPLE)
 
