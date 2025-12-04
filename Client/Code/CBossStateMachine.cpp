@@ -99,6 +99,7 @@ HRESULT CBossStateMachine::Ready_BossStates()
 
     m_vecState[CBossPhase1::BOSSPHASE1::BOSSAWAKE] = pState;
 
+    //!! 석호 : 오류 발생으로 일시적 비활성화
     //if (!(pState = CBossBulletAttack::Create(phase1, this)))
     //    return E_FAIL;
     //m_vecState[CBossPhase1::BOSSPHASE1::BULLETATTACK] = pState;
@@ -126,7 +127,6 @@ HRESULT CBossStateMachine::Ready_BossStates()
     //if (!(pState = CBossTalk::Create(m_pOwner, this)))
     //    return E_FAIL;
     //m_vecState[CBossPhase1::BOSSPHASE1::TALK] = pState;
-
 
     return S_OK;
 }

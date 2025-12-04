@@ -140,6 +140,12 @@ HRESULT CMainMenu::Ready_GameLogic_Layer(LAYERTYPE layerType)
         L"Persistent object setup failed"
     );
 
+    auto camTransform = dynamic_cast<CTransform*>(
+        gameObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+    camTransform->Set_Pos(0.f, 0.f, 0.f);
+    camTransform->Set_Rotation({ 0.f, 0.f, 0.f });
+
     auto camController = dynamic_cast<CCameraController*>(
         gameObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAM_CONTROLLER));
 
