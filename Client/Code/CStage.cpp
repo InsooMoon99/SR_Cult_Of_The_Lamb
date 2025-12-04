@@ -80,9 +80,6 @@ HRESULT CStage::Ready_Scene()
         CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 15.f, 1.f, 10.f + (i * 3.f) });
     }
 
-    // BGM Test
-    //CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Intro.wav", 0.5f);
-
     return S_OK;
 }
 
@@ -91,7 +88,7 @@ void CStage::Initialize_Scene()
     CScene::Initialize_Scene();
 
     // 초기 맵 불러오기 <- 이거 꼭 Initialize에서 진행해야 맵 오브젝트가 잘 불러진다.
-    m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Default.map");
+    m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Village.map");
 }
 
 _int CStage::Update_Scene(const _float& timeDelta)

@@ -99,34 +99,34 @@ HRESULT CBossStateMachine::Ready_BossStates()
 
     m_vecState[CBossPhase1::BOSSPHASE1::BOSSAWAKE] = pState;
 
-    if (!(pState = CBossBulletAttack::Create(phase1, this)))
-        return E_FAIL;
-    m_vecState[CBossPhase1::BOSSPHASE1::BULLETATTACK] = pState;
-
-    if (!(pState = CBossChainAttack::Create(phase1, this)))
-        return E_FAIL;
-    m_vecState[CBossPhase1::BOSSPHASE1::CHAINATTACK] = pState;
-    
-    if (!(pState = CBossDead::Create(phase1, this)))
-        return E_FAIL;
-    m_vecState[CBossPhase1::BOSSPHASE1::BOSSDEAD] = pState;
-    
-    if (!(pState = CBossIdle::Create(phase1, this)))
-        return E_FAIL;
-    m_vecState[CBossPhase1::BOSSPHASE1::BOSSIDLE] = pState;
-    
-    if (!(pState = CBossMove::Create(phase1, this)))
-        return E_FAIL;
-    m_vecState[CBossPhase1::BOSSPHASE1::BOSSMOVE] = pState;
-    
-    if (!(pState = CBossGroggy::Create(phase1, this)))
-        return E_FAIL;
-    m_vecState[CBossPhase1::BOSSPHASE1::BOSSGROGGRY] = pState;
-
-    if (!(pState = CBossTalk::Create(m_pOwner, this)))
-        return E_FAIL;
-    m_vecState[CBossPhase1::BOSSPHASE1::TALK] = pState;
-
+    //!! 석호 : 오류 발생으로 일시적 비활성화
+    //if (!(pState = CBossBulletAttack::Create(phase1, this)))
+    //    return E_FAIL;
+    //m_vecState[CBossPhase1::BOSSPHASE1::BULLETATTACK] = pState;
+    //
+    //if (!(pState = CBossChainAttack::Create(phase1, this)))
+    //    return E_FAIL;
+    //m_vecState[CBossPhase1::BOSSPHASE1::CHAINATTACK] = pState;
+    //
+    //if (!(pState = CBossDead::Create(phase1, this)))
+    //    return E_FAIL;
+    //m_vecState[CBossPhase1::BOSSPHASE1::BOSSDEAD] = pState;
+    //
+    //if (!(pState = CBossIdle::Create(phase1, this)))
+    //    return E_FAIL;
+    //m_vecState[CBossPhase1::BOSSPHASE1::BOSSIDLE] = pState;
+    //
+    //if (!(pState = CBossMove::Create(phase1, this)))
+    //    return E_FAIL;
+    //m_vecState[CBossPhase1::BOSSPHASE1::BOSSMOVE] = pState;
+    //
+    //if (!(pState = CBossGroggy::Create(phase1, this)))
+    //    return E_FAIL;
+    //m_vecState[CBossPhase1::BOSSPHASE1::BOSSGROGGRY] = pState;
+    //
+    //if (!(pState = CBossTalk::Create(m_pOwner, this)))
+    //    return E_FAIL;
+    //m_vecState[CBossPhase1::BOSSPHASE1::TALK] = pState;
 
     return S_OK;
 }
