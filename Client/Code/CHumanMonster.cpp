@@ -178,29 +178,11 @@ void CHumanMonster::Update_Direction()
     _vec3 targetPos = m_TargetTransform->Get_Pos();
     _vec3 dir = targetPos - pos;
 
-    if (abs(dir.x) > abs(dir.z))
-    {
-        // 좌우
-        if (dir.x > 0.f)
-        {
-            m_StateCom->Change_Dir(ACTORDIR::RIGHT);
-        }
-        else
-        {
-            m_StateCom->Change_Dir(ACTORDIR::LEFT);
-        }
-    }
-   /* else
-    {
-        if (dir.z > 0.f)
-        {
-            m_StateCom->Change_Dir(ACTORDIR::DOWN);
-        }
-        else
-        {
-            m_StateCom->Change_Dir(ACTORDIR::UP);
-        }
-    }*/
+    if (dir.x > 0.f)
+        m_StateCom->Change_Dir(ACTORDIR::RIGHT); 
+    else
+        m_StateCom->Change_Dir(ACTORDIR::LEFT);  
+
 }
 
 void CHumanMonster::Animation_Setting()
@@ -211,7 +193,7 @@ void CHumanMonster::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"HumanMonsterHurt", 28, 0.02f);
 
     // Run
-    m_AnimatorCom->Create_Animation(L"HumanMonsterRun_LEFT", 18, 0.02f);
+    m_AnimatorCom->Create_Animation(L"HumanMonsterRun", 18, 0.02f);
 
     // State -> Animation 연동
     m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"HumanMonsterIdle", ANIMSTATE::LOOP);
