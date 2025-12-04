@@ -28,7 +28,7 @@ void CDropSystem::SpawnDrop(DEVICE pGraphicDev, const ItemInstance& itemInst, co
     {
         pDrop->SetBounceDesc(*bounceDesc);//(*bounceDesc) 해야함
     }
-
+    tmpItem.push_back(pDrop);
     m_nowScene->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, pDrop, OBJTYPE::ITEM);
 }
 
@@ -77,5 +77,20 @@ void CDropSystem::SpawnAllFromInven(DEVICE pGraphicDev, CInventory* Inven)
     return ;
 }
 
+void CDropSystem::Clear_Item()
+{
+    for (auto& it : tmpItem)
+    {
+        if (it != nullptr || (*it).Is_PendingDestroy() != true)
+        {
+            it->Mark_As_PendingKill();
+            
+        }
+    }
+    tmpItem.clear();
+}
+
 void CDropSystem::Free()
-{}
+{
+    Clear_Item();
+}
