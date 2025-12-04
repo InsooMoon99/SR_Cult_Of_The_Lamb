@@ -32,6 +32,8 @@
 #include "ItemInstance.h"
 #include "CProjectile.h"
 #include "CBossController.h"
+#include "CSpriteEff.h"
+#include "CEffectBaseCom.h"
 
 IMPLEMENT_SINGLETON(CResourceMgr)
 
@@ -133,6 +135,11 @@ HRESULT CResourceMgr::Ready_Common(DEVICE graphicDev)
         COMPONENTTYPE::PROJECTILE, CProjectile::Create(graphicDev))))
         return E_FAIL;
 
+    // Effect
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::SPRITEEFFECT, CSpriteEff::Create(graphicDev))))
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -170,6 +177,7 @@ HRESULT CResourceMgr::Ready_Buffer(DEVICE graphicDev)
     //if (FAILED(protoMgr->Ready_Prototype(
     //    COMPONENTTYPE::RC_TEX, Engine::CRcTex::Create(graphicDev))))
     //    return E_FAIL;
+
 
     return S_OK;
 }

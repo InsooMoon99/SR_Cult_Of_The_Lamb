@@ -117,6 +117,7 @@ enum class COMPONENTTYPE
     TERRAIN_RENDER,
     WALL_RENDERER,
     PROJECTILE,
+    SPRITEEFFECT,
 
     WEAPON_EQUIP,           // 플레이어 무기
     PL_CONTROLLER,          // 플레이어 FSM 컨트롤러
