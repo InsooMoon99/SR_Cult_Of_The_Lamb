@@ -163,7 +163,7 @@ void CPlayerController::CheckStateTransition()
         }
     }
 
-    // [우선순위 2] 공격 입력 처리
+    // [우선순위 2] 일반공격 입력 처리
     // - 구르기 상태여도 공격으로 이행 (캔슬)
     else if (inputMgr->MouseDown(DIM_LB))
     {
@@ -188,13 +188,16 @@ void CPlayerController::CheckStateTransition()
                  curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO1 ||
                  curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO2 ||
                  curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO3 ||
-                 curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO4 ||
-                 curState == ACTORSTATE::PLAYER_GAUNTLET_HEAVY)
+                 curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO4)
         {
             m_OwnerAttackCom->Try_NextCombo();
             return;
         }
     }
+
+    //TODO LSHIFT로 강공격
+
+    //TODO RMB로 스킬
 
     //!! 공격 or 구르기 중이라면 이동/대기 상태로 넘어가지 않도록 여기서 리턴
     if (curState == ACTORSTATE::PLAYER_ROLL ||
@@ -235,38 +238,68 @@ void CPlayerController::Update_State(const _float& timeDelta)
     switch (curState)
     {
     case ACTORSTATE::IDLE:
+    {
         Action_Idle(timeDelta);
-        break;
+    }
+    break;
+
     case ACTORSTATE::RUN:
+    {
         Action_Run(timeDelta);
-        break;
+    }
+    break;
+
     case ACTORSTATE::PLAYER_ROLL:
+    {
         Action_Roll(timeDelta);
-        break;
+    }
+    break;
+
     case ACTORSTATE::PLAYER_SWORD_COMBO1:
     case ACTORSTATE::PLAYER_SWORD_COMBO2:
     case ACTORSTATE::PLAYER_SWORD_COMBO3:
-        Action_Sword(timeDelta);
-        break;
     case ACTORSTATE::PLAYER_GAUNTLET_COMBO1:
     case ACTORSTATE::PLAYER_GAUNTLET_COMBO2:
     case ACTORSTATE::PLAYER_GAUNTLET_COMBO3:
     case ACTORSTATE::PLAYER_GAUNTLET_COMBO4:
-        Action_Sword(timeDelta); //? 따로 만들어줘야하나?
+    {
+        Action_NormalAttack(timeDelta);
+    }
+    break;
+
+    case ACTORSTATE::PLAYER_SWORD_HEAVY:
+    case ACTORSTATE::PLAYER_GAUNTLET_HEAVY:
+    {
+        //TODO 강공격 호출. 내부에서 무기에 따라 다른 히트박스가 생성되도록 하자
+    }
+    break;
+
     case ACTORSTATE::HIT:
-        break;
+    {
+        //TODO 피격 상태 및 애니메이션이 필요할 경우 구성
+    }
+    break;
+
     case ACTORSTATE::DEAD:
+    {
         MSG_BOX("CPlayerController: Player Dead!");
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
-        break;
+    }
+    break;
+
     case ACTORSTATE::STATE_END:
+    {
         MSG_BOX("CPlayerController: Warning! Player State is STATE_END");
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
-        break;
+    }
+    break;
+
     default:
+    {
         MSG_BOX("CPlayerController: Invalid Player State");
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
-        break;
+    }
+    break;
     }
 }
 
@@ -287,7 +320,7 @@ void CPlayerController::Action_Roll(const _float& timeDelta)
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
 }
 
-void CPlayerController::Action_Sword(const _float& timeDelta)
+void CPlayerController::Action_NormalAttack(const _float& timeDelta)
 {
     m_OwnerMovementCom->Stop();
 

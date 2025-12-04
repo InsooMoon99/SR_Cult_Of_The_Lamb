@@ -5,12 +5,12 @@
 
 class CBossPhase1;
 class CMonsterState;
+class CMonsterBase;
 
-class CBossStateMachine :
-    public CStateMachine
+class CBossStateMachine : public CStateMachine
 {
 protected:
-    explicit CBossStateMachine(CBossPhase1* owner);
+    explicit CBossStateMachine(CMonsterBase* owner);
     virtual ~CBossStateMachine();
 
 public:
@@ -25,13 +25,13 @@ public:
     _uint Get_PrevStateKey() { return  m_dwPrevStateKey; }
 
 private:
-    CBossPhase1* m_pOwner;
+    CMonsterBase* m_pOwner;
 
 protected:
     HRESULT Ready_BossStates();
 
 public:
-    static CBossStateMachine* Create(CBossPhase1* owner);
+    static CBossStateMachine* Create(CMonsterBase* owner);
 
 protected:
     virtual void Free();

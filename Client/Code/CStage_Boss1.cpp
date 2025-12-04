@@ -2,21 +2,22 @@
 #include "CStage_Boss1.h"
 
 #include "CBossPhase1.h"
+#include "CCameraController.h"
+#include "CCamSetupBuilder.h"
+#include "CDInputMgr.h"
+#include "CDropSystem.h"
 #include "CLayer.h"
 #include "CMainCamera.h"
+#include "CMainEditorMgr.h"
+#include "CMainMenu.h"
 #include "CMonster.h"
 #include "CPersistentObjectHelper.h"
 #include "CPlayer.h"
+#include "CSceneMgr.h"
 #include "CState.h"
 #include "CTerrain.h"
 #include "CTransform.h"
-#include "CDInputMgr.h"
-#include "CMainEditorMgr.h"
-#include "CMainMenu.h"
-#include "CSceneMgr.h"
 #include "CWall.h"
-#include "CBossPhase1.h"
-#include "CDropSystem.h"
 
 CStage_Boss1::CStage_Boss1(DEVICE graphicDev)
     : Engine::CScene(graphicDev)
@@ -131,27 +132,33 @@ HRESULT CStage_Boss1::Ready_GameLogic_Layer(LAYERTYPE layerType)
     // 카메라 생성
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CMainCamera>(
-            OBJTYPE::CAMERA,
-            L"MainCamera",
-            m_GraphicDev,
-            layer,
-            &gameObject),
-        L"Persistent object setup failed");
+            OBJTYPE::CAMERA, L"MainCamera", m_GraphicDev, layer, &gameObject),
+        L"Persistent object setup failed"
+    );
 
-    // 카메라 타겟을 플레이어로 설정
-    // 카메라 타겟을 플레이어로 설정
-    auto mainCam = dynamic_cast<CMainCamera*>(gameObject);
-    if (mainCam)
+    auto camController = dynamic_cast<CCameraController*>(
+        gameObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAM_CONTROLLER));
+
+    // 카메라 설정값 초기화
+    if (camController != nullptr)
     {
-        mainCam->Set_CamTarget(playerTransform);
+        // 씬에서 카메라 생성 시 값 초기화
+        // : CCameraSetup을 카메라 설정을 중도에 바꿀 때 사용 가능하고,
+        //   그럴 때는 필요한 것만 사용해 .Apply() 하면 된다.
+        CCamSetupBuilder(camController)
+            .SetTarget(playerTransform)
+            //.PivotOffset({ 0.f, 0.f, 0.f })
+            //.Distance(12.f)
+            //.RotX(45.f)
+            //.RotY(0.f)
+            //.LagSpeed(10.f)
+            //.ZoomSpeed(5.f)
+            .Snap()
+            .Apply();
 
-        auto camCom = dynamic_cast<CCameraCom*>(
-            mainCam->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAMERA));
-
-        if (camCom)
-            CMainEditorMgr::GetInstance()->Set_MainCamera(camCom); // 에디터에 카메라 설정
+        // 에디터에 카메라 설정
+        CMainEditorMgr::GetInstance()->Set_MainCamera(camController);
     }
-
 
     // -----------------------------
     // BossPhase1

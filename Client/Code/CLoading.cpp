@@ -1,9 +1,12 @@
 ﻿#include "pch.h"
 #include "CLoading.h"
+#include <future>
+#include <chrono>
 #include "CAnimator.h"
 #include "CBoxCol.h"
 #include "CProtoMgr.h"
 #include "CResourceMgr.h"
+#include "CTexture.h"
 
 CLoading::CLoading(DEVICE pGraphicDev)
     : m_GraphicDev(pGraphicDev),
@@ -40,27 +43,35 @@ HRESULT CLoading::Ready_Loading(LOADINGID eID)
 
 _uint CLoading::Loading_ForState()
 {
+    // 시작 시간 체크
+    auto start = chrono::high_resolution_clock::now();
+
     m_LoadingText = L"Resource Loading...";
 
     // 이제 리소스 추가는 Resource Manager에서 진행
     if (FAILED(CResourceMgr::GetInstance()->Ready_Resource(m_GraphicDev)))
         return E_FAIL;
 
+    // 끝 시간 체크
+    auto end = chrono::high_resolution_clock::now();
+    // 걸린 시간 출력
+    auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
+
+    OutputDebugString((L"Loading Time: " + to_wstring(duration.count()) + L"ms\n").c_str());
+
     m_IsFinish = true;
 
     return S_OK;
 }
 
-_uint CLoading::Loading_ForBoss()
+_uint CLoading::Loading_ForBoss1()
 {
+    auto start = chrono::high_resolution_clock::now();
+
     m_LoadingText = L"Boss Loading...";
+    auto resourceMgr = CResourceMgr::GetInstance();
 
-    // 테스트 용으로 일단은 플레이어, 몬스터 이미지까지 로딩 진행
-    // 나중에는 분리를 해야할 것임
-    //if (FAILED(CResourceMgr::GetInstance()->Ready_Resource(m_GraphicDev)))
-    //    return E_FAIL;
-
-    if (FAILED(CResourceMgr::GetInstance()->Ready_BossResource(m_GraphicDev)))
+    if (FAILED(resourceMgr->Ready_BossP1(m_GraphicDev)))
         return E_FAIL;
 
     m_IsFinish = true;
@@ -71,9 +82,76 @@ _uint CLoading::Loading_ForBoss()
 _uint CLoading::Loading_ForBoss2()
 {
     m_LoadingText = L"Boss2 Loading...";
+    auto resourceMgr = CResourceMgr::GetInstance();
 
-    if (FAILED(CResourceMgr::GetInstance()->Ready_BossResource2(m_GraphicDev)))
+    vector<future<HRESULT>> futures;
+
+    futures.push_back(async(launch::async, [&]() {
+        return resourceMgr->Ready_BossP2(m_GraphicDev);
+        }));
+
+    futures.push_back(async(launch::async, [&]() {
+            return resourceMgr->Ready_BossP2_Eyeball(m_GraphicDev);
+        }));
+
+    // 병렬 태스크 완료 대기
+    for (auto& future : futures)
+    {
+        if (FAILED(future.get()))
+            return E_FAIL;
+    }
+
+    m_IsFinish = true;
+
+    return S_OK;
+}
+
+_uint CLoading::Loading_ForState_Parallel()
+{
+    auto start = chrono::high_resolution_clock::now();
+
+    m_LoadingText = L"Resource Loading (Parallel)...";
+    auto resourceMgr = CResourceMgr::GetInstance();
+
+    // 버퍼는 먼저 준비
+    if (FAILED(resourceMgr->Ready_Buffer(m_GraphicDev)))
         return E_FAIL;
+
+    if (FAILED(resourceMgr->Ready_Common(m_GraphicDev)))
+        return E_FAIL;
+
+    if (FAILED(resourceMgr->Ready_Item(m_GraphicDev)))
+        return E_FAIL;
+
+    vector<future<HRESULT>> futures;
+
+    futures.push_back(async(launch::async, [&]() {
+        return resourceMgr->Ready_Player(m_GraphicDev);
+        }));
+    futures.push_back(async(launch::async, [&]() {
+        return resourceMgr->Ready_Monster(m_GraphicDev);
+        }));
+    futures.push_back(async(launch::async, [&]() {
+        return resourceMgr->Ready_UI(m_GraphicDev);
+        }));
+    futures.push_back(async(launch::async, [&]() {
+        return resourceMgr->Ready_Terrain(m_GraphicDev);
+        }));
+    futures.push_back(async(launch::async, [&]() {
+        return resourceMgr->Ready_Decoration(m_GraphicDev);
+        }));
+
+    // 병렬 태스크 완료 대기
+    for (auto& future : futures)
+    {
+        if (FAILED(future.get()))
+            return E_FAIL;
+    }
+
+    auto end = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
+
+    OutputDebugString((L"Loading Time: " + to_wstring(duration.count()) + L"ms\n").c_str());
 
     m_IsFinish = true;
 
@@ -92,10 +170,11 @@ unsigned CLoading::Thread_Main(void* pArg)
     switch (pLoading->Get_LoadingID())
     {
     case LOADING_STAGE:
-        iFlag = pLoading->Loading_ForState();
+        //iFlag = pLoading->Loading_ForState();
+        iFlag = pLoading->Loading_ForState_Parallel();
         break;
     case LOADING_BOSS1:
-        iFlag = pLoading->Loading_ForBoss();
+        iFlag = pLoading->Loading_ForBoss1();
         break;
     case LOADING_BOSS2:
         iFlag = pLoading->Loading_ForBoss2();

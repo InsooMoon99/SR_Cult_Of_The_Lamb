@@ -171,6 +171,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Header\CBoss2_Idle.h" />
+    <ClInclude Include="..\Header\CBoss2_Roar.h" />
+    <ClInclude Include="..\Header\CBoss2_Start.h" />
+    <ClInclude Include="..\Header\CBoss2_StateMachine.h" />
     <ClInclude Include="..\Header\CBossAwake.h" />
     <ClInclude Include="..\Header\CBossBullet.h" />
     <ClInclude Include="..\Header\CBossBulletAttack.h" />
@@ -185,9 +189,22 @@
     <ClInclude Include="..\Header\CBossPhase1.h" />
     <ClInclude Include="..\Header\CBossTalk.h" />
     <ClInclude Include="..\Header\CBossStateMachine.h" />
+    <ClInclude Include="..\Header\CCameraController.h" />
+    <ClInclude Include="..\Header\CCameraMovement.h" />
+    <ClInclude Include="..\Header\CCamSetupBuilder.h" />
     <ClInclude Include="..\Header\CBoss_Slave_Test.h" />
     <ClInclude Include="..\Header\CCharacterBase.h" />
     <ClInclude Include="..\Header\CEffectBaseCom.h" />
+    <ClInclude Include="..\Header\CEyeball.h" />
+    <ClInclude Include="..\Header\CEyeballController.h" />
+    <ClInclude Include="..\Header\CEyeball_Attack.h" />
+    <ClInclude Include="..\Header\CEyeball_Die.h" />
+    <ClInclude Include="..\Header\CEyeball_Enter.h" />
+    <ClInclude Include="..\Header\CEyeball_Exit.h" />
+    <ClInclude Include="..\Header\CEyeball_Ground.h" />
+    <ClInclude Include="..\Header\CEyeball_Start.h" />
+    <ClInclude Include="..\Header\CEyeball_StartExit.h" />
+    <ClInclude Include="..\Header\CEyeball_StateMachine.h" />
     <ClInclude Include="..\Header\Client_Struct.h" />
     <ClInclude Include="..\Header\CLogo_Boss.h" />
     <ClInclude Include="..\Header\CLogo_Boss2.h" />
@@ -217,6 +234,7 @@
     <ClInclude Include="..\Header\CMenuChar.h" />
     <ClInclude Include="..\Header\CMonster.h" />
     <ClInclude Include="..\Header\CMonsterBase.h" />
+    <ClInclude Include="..\Header\CMonsterController.h" />
     <ClInclude Include="..\Header\CMonsterState.h" />
     <ClInclude Include="..\Header\CNPCBase.h" />
     <ClInclude Include="..\Header\CPlayerAttack.h" />
@@ -270,6 +288,10 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Code\CBoss2_Idle.cpp" />
+    <ClCompile Include="..\Code\CBoss2_Roar.cpp" />
+    <ClCompile Include="..\Code\CBoss2_Start.cpp" />
+    <ClCompile Include="..\Code\CBoss2_StateMachine.cpp" />
     <ClCompile Include="..\Code\CBossAwake.cpp" />
     <ClCompile Include="..\Code\CBossBullet.cpp" />
     <ClCompile Include="..\Code\CBossBulletAttack.cpp" />
@@ -284,12 +306,24 @@
     <ClCompile Include="..\Code\CBossPhase1.cpp" />
     <ClCompile Include="..\Code\CBossTalk.cpp" />
     <ClCompile Include="..\Code\CBossStateMachine.cpp" />
+    <ClCompile Include="..\Code\CCameraController.cpp" />
+    <ClCompile Include="..\Code\CCameraMovement.cpp" />
     <ClCompile Include="..\Code\CBoss_Slave_Test.cpp" />
     <ClCompile Include="..\Code\CCharacterBase.cpp" />
     <ClCompile Include="..\Code\CDroppedItem.cpp" />
     <ClCompile Include="..\Code\CDropSystem.cpp" />
     <ClCompile Include="..\Code\CEdit.cpp" />
     <ClCompile Include="..\Code\CEffectBaseCom.cpp" />
+    <ClCompile Include="..\Code\CEyeball.cpp" />
+    <ClCompile Include="..\Code\CEyeballController.cpp" />
+    <ClCompile Include="..\Code\CEyeball_Attack.cpp" />
+    <ClCompile Include="..\Code\CEyeball_Die.cpp" />
+    <ClCompile Include="..\Code\CEyeball_Enter.cpp" />
+    <ClCompile Include="..\Code\CEyeball_Exit.cpp" />
+    <ClCompile Include="..\Code\CEyeball_Ground.cpp" />
+    <ClCompile Include="..\Code\CEyeball_Start.cpp" />
+    <ClCompile Include="..\Code\CEyeball_StartExit.cpp" />
+    <ClCompile Include="..\Code\CEyeball_StateMachine.cpp" />
     <ClCompile Include="..\Code\CHumanMonster.cpp" />
     <ClCompile Include="..\Code\CInventory.cpp" />
     <ClCompile Include="..\Code\CItemDB.cpp" />
@@ -313,6 +347,7 @@
     <ClCompile Include="..\Code\CMenuChar.cpp" />
     <ClCompile Include="..\Code\CMonster.cpp" />
     <ClCompile Include="..\Code\CMonsterBase.cpp" />
+    <ClCompile Include="..\Code\CMonsterController.cpp" />
     <ClCompile Include="..\Code\CMonsterState.cpp" />
     <ClCompile Include="..\Code\CNPCBase.cpp" />
     <ClCompile Include="..\Code\CPlayerAttack.cpp" />

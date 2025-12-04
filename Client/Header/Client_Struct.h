@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include "Engine_Define.h"
 
 typedef struct tagBossData
 {
@@ -21,3 +22,5 @@ struct SpriteBounceDesc
     float m_DampingPerSecond = 0.98f; // 공기저항
 
 };
+
+

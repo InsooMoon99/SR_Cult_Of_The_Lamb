@@ -26,7 +26,7 @@ HRESULT CBoss_SlaveTest::Ready_GameObject()
     if (FAILED(CCharacterBase::Ready_GameObject()))
         return E_FAIL;
 
-    m_TransformCom->Set_Pos(_vec3(31.f, 3.1f, 30.f));
+    m_TransformCom->Set_Pos(_vec3(25.f, 3.1f, 13.f));
     m_TransformCom->Set_Scale(_vec3(1.8f, 3.8f, 1.f));
 
     return S_OK;
@@ -57,7 +57,7 @@ void CBoss_SlaveTest::Animation_Setting()
 {
     m_AnimatorCom->Create_Animation(L"Boss_Slave_Appear", 42, 0.02f);
 
-    m_AnimatorCom->Play_Animation(L"Boss_Slave_Appear", ANIMSTATE::ONCE);
+    m_AnimatorCom->Play_Animation(L"Boss_Slave_Appear", ANIMSTATE::LOOP);
 }
 
 HRESULT CBoss_SlaveTest::Add_Component()

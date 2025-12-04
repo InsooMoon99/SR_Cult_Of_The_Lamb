@@ -53,7 +53,7 @@ private:
     void Action_Idle(const _float& timeDelta);      // IDLE 상태
     void Action_Run(const _float& timeDelta);       // RUN 상태
     void Action_Roll(const _float& timeDelta);      // PLAYER_ROLL 상태
-    void Action_Sword(const _float& timeDelta);     // PLAYER_SWORD_ ~ 상태
+    void Action_NormalAttack(const _float& timeDelta);     // PLAYER_SWORD_ ~ 상태
 
 private:
 #pragma region Caching owner components

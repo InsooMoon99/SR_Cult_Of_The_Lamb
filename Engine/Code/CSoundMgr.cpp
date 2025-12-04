@@ -34,16 +34,16 @@ void CSoundMgr::Update(const _float& timeDelta)
     auto iter = m_FadeChannels.begin();
     while (iter != m_FadeChannels.end())
     {
-        iter->fCurrentVolume -= iter->fFadeSpeed * timeDelta;
+        iter->currVolume -= iter->fadeSpeed * timeDelta;
 
-        if (iter->fCurrentVolume <= 0.f)
+        if (iter->currVolume <= 0.f)
         {
-            FMOD_Channel_Stop(iter->pChannel);
+            FMOD_Channel_Stop(iter->channel);
             iter = m_FadeChannels.erase(iter);
         }
         else
         {
-            FMOD_Channel_SetVolume(iter->pChannel, iter->fCurrentVolume);
+            FMOD_Channel_SetVolume(iter->channel, iter->currVolume);
             ++iter;
         }
     }
@@ -158,10 +158,10 @@ void CSoundMgr::Stop_SoundChannel(SOUNDTYPE soundType, _float fadeOutDuration)
                 continue;
             }
 
-            CHANNEL_INFO info;
-            info.pChannel       = fmodChannel;
-            info.fCurrentVolume = fCurrentVolume;
-            info.fFadeSpeed     = fCurrentVolume / fadeOutDuration;
+            FADE_INFO info;
+            info.channel       = fmodChannel;
+            info.currVolume = fCurrentVolume;
+            info.fadeSpeed     = fCurrentVolume / fadeOutDuration;
 
             m_FadeChannels.push_back(info);
         }

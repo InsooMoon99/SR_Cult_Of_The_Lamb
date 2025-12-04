@@ -120,8 +120,6 @@ void CPlayer::Render_Editor()
 	CCharacterBase::Render_Editor();
 
     ImGui::Text("=== Player ===");
-
-
 }
 
 HRESULT CPlayer::Add_Component()
@@ -183,6 +181,9 @@ HRESULT CPlayer::Add_Component()
 
 void CPlayer::Animation_Setting()
 {
+    _float dirX = m_PlayerInputCom->Get_MouseDir().x;
+    m_AnimatorCom->Set_FlipX(dirX < 0);
+
 #pragma region ------   IDLE    ------
     m_AnimatorCom->Create_Animation(L"PlayerIdle", 150, 0.02f, _vec2(0.75f, 1.f));
 

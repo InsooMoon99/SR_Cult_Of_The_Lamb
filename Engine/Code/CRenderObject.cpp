@@ -26,8 +26,6 @@ HRESULT CRenderObject::Ready_GameObject()
     if (FAILED(Add_Component()))
         return E_FAIL;
 
-
-
     return S_OK;
 }
 

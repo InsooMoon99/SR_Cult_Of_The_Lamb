@@ -1,11 +1,14 @@
 ﻿#include "pch.h"
 #include "CResourceMgr.h"
-#include "CSphereCollider.h"
+
 #include "CAnimator.h"
+#include "CBossController.h"
 #include "CBoxCol.h"
 #include "CBoxCollider.h"
 #include "CBoxTex.h"
-#include "CCameraCom.h"
+#include "CCameraCalc.h"
+#include "CCameraController.h"
+#include "CCameraMovement.h"
 #include "CCombatStat.h"
 #include "CEnumHelper.h"
 #include "CInventory.h"
@@ -14,10 +17,12 @@
 #include "CPlayerController.h"
 #include "CPlayerInput.h"
 #include "CPlayerMovement.h"
+#include "CProjectile.h"
 #include "CProtoMgr.h"
 #include "CRcCol.h"
 #include "CRectCollider.h"
 #include "CRigidbody.h"
+#include "CSphereCollider.h"
 #include "CState.h"
 #include "CTerrain.h"
 #include "CTerrainRenderer.h"
@@ -27,19 +32,18 @@
 #include "CTriCol.h"
 #include "CWallRenderer.h"
 #include "CWeaponEquip.h"
-#include "CWeaponEquip.h"
 #include "ItemData.h"
 #include "ItemInstance.h"
 #include "CProjectile.h"
 #include "CBossController.h"
 #include "CSpriteEff.h"
 #include "CEffectBaseCom.h"
+#include "CEyeballController.h"
 
 IMPLEMENT_SINGLETON(CResourceMgr)
 
 CResourceMgr::CResourceMgr()
-{
-}
+{ }
 
 CResourceMgr::~CResourceMgr()
 {
@@ -90,9 +94,19 @@ HRESULT CResourceMgr::Ready_Common(DEVICE graphicDev)
         COMPONENTTYPE::ANIMATOR, CAnimator::Create(graphicDev))))
         return E_FAIL;
 
-    // Camera
+    // Camera Controller
     if (FAILED(protoMgr->Ready_Prototype(
-        COMPONENTTYPE::CAMERA, Engine::CCameraCom::Create(graphicDev))))
+        COMPONENTTYPE::CAM_CONTROLLER, CCameraController::Create(graphicDev))))
+        return E_FAIL;
+
+    // Camera Movement
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::CAM_MOVEMENT, CCameraMovement::Create(graphicDev))))
+        return E_FAIL;
+
+    // Camera Calculator
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::CAM_CALC, Engine::CCameraCalc::Create(graphicDev))))
         return E_FAIL;
 
     // Rect Collider
@@ -270,7 +284,6 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         L"../Bin/Resource/Texture/Player/Sword_Combo3/Lamb-attack-combo3-%d.png", 38)))
         return E_FAIL;
 
-
     // Gauntlet
     if (FAILED(playerTex->Add_Texture(L"PlayerGauntletCombo1", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Gauntlet_Combo1/Lamb-attack-combo1-gauntlets%d.png", 41)))
@@ -281,15 +294,15 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         return E_FAIL;
 
     if (FAILED(playerTex->Add_Texture(L"PlayerGauntletCombo3", TEX_NORMAL,
-    L"../Bin/Resource/Texture/Player/Gauntlet_Combo3/Lamb-attack-combo3-gauntlets%d.png", 44)))
+        L"../Bin/Resource/Texture/Player/Gauntlet_Combo3/Lamb-attack-combo3-gauntlets%d.png", 44)))
         return E_FAIL;
 
     if (FAILED(playerTex->Add_Texture(L"PlayerGauntletCombo4", TEX_NORMAL,
-    L"../Bin/Resource/Texture/Player/Gauntlet_Combo4/Lamb-attack-combo4-gauntlet%d.png", 40)))
+        L"../Bin/Resource/Texture/Player/Gauntlet_Combo4/Lamb-attack-combo4-gauntlet%d.png", 40)))
         return E_FAIL;
 
     if (FAILED(playerTex->Add_Texture(L"PlayerGauntletHeavy", TEX_NORMAL,
-    L"../Bin/Resource/Texture/Player/Gauntlet_Attack_Heavy/Lamb-attack-heavy-gauntlet%d.png", 70)))
+        L"../Bin/Resource/Texture/Player/Gauntlet_Attack_Heavy/Lamb-attack-heavy-gauntlet%d.png", 70)))
         return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
@@ -393,7 +406,6 @@ HRESULT CResourceMgr::Ready_BossP1(DEVICE graphicDev)
     pathVec1.push_back(L"../Bin/Resource/Texture/BossPhase1/ChainAttackGround.png");
     pathVec1.push_back(L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Sermon_Icon.png");
 
-
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_OUT, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec1))))
         return E_FAIL;
@@ -402,7 +414,6 @@ HRESULT CResourceMgr::Ready_BossP1(DEVICE graphicDev)
     vector<wstring> pathVec2;
     pathVec2.push_back(L"../Bin/Resource/Texture/BossPhase1/Bullet/Bullet.png");
     pathVec2.push_back(L"../Bin/Resource/Texture/BossPhase1/Bullet/Bullet1.png");
-
 
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_BULLET, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec2))))
@@ -416,15 +427,15 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
     auto protoMgr = CProtoMgr::GetInstance();
 
     // Boss Controller
-    //if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::BOSS2_CONTROLLER,
-    //    CBossController::Create(graphicDev))))
-    //    return E_FAIL;
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::BOSS2_CONTROLLER,
+        CBossController::Create(graphicDev))))
+        return E_FAIL;
 
     // Boss Slave
     CTexture* slaveTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(slaveTex, E_FAIL);
 
-    if(FAILED(slaveTex->Add_Texture(L"Boss_Slave_Appear", TEX_NORMAL,
+    if (FAILED(slaveTex->Add_Texture(L"Boss_Slave_Appear", TEX_NORMAL,
         L"../Bin/Resource/Texture/BossPhase2/Slave/ChunSik/Follower-finab-loss-appear%d.png", 42)))
         return E_FAIL;
 
@@ -432,13 +443,78 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
         return E_FAIL;
 
     // Boss Phase 2
-    //CTexture* bossPhase2 = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
-    //NULL_CHECK_RETURN(bossPhase2, E_FAIL);
-    //
-    //if (FAILED(bossPhase2->Add_Texture(L"Boss_Idle", TEX_NORMAL,
-    //    L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Boss_Idle%d..png", 58)))
-    //    return E_FAIL;
-    
+    CTexture* bossPhase2 = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(bossPhase2, E_FAIL);
+
+    // Start
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Start", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Start_Eye/TOWW_Start_Eye%d.png", 68)))
+            return E_FAIL;
+    // Idle
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Idle/TOWW_Idle%d.png", 68)))
+        return E_FAIL;
+    // Roar
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Roar", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Roar/TOWW_Roar%d.png", 69)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_BOSS2_PHASE2, bossPhase2)))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CResourceMgr::Ready_BossP2_Eyeball(DEVICE graphicDev)
+{
+    auto protoMgr = CProtoMgr::GetInstance();
+
+    // Eyeball Controller
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::EYEBALL_CONTROLLER,
+        CEyeballController::Create(graphicDev))))
+        return E_FAIL;
+
+    CTexture* eyeballTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(eyeballTex, E_FAIL);
+
+    // Start
+    if (FAILED(eyeballTex->Add_Texture(L"Eyeball_Start", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Eyeball/Eyeball_Idle/Eyeball_Idle%d.png", 59)))
+        return E_FAIL;
+
+    // Enter
+    if (FAILED(eyeballTex->Add_Texture(L"Eyeball_Enter", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Eyeball/Eyeball_Enter/Eyeball_Enter%d.png", 49)))
+        return E_FAIL;
+
+    // Exit
+    if (FAILED(eyeballTex->Add_Texture(L"Eyeball_Exit", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Eyeball/Eyeball-exit/Eyeball-exit%d.png", 34)))
+        return E_FAIL;
+
+    // Anticipate
+    if (FAILED(eyeballTex->Add_Texture(L"Eyeball_Anti", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Eyeball/Eyeball-attack-anticipate/Eyeball-attack-anticipate%d.png", 44)))
+        return E_FAIL;
+
+    // Attack Loop
+    if (FAILED(eyeballTex->Add_Texture(L"Eyeball_Attack_Loop", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Eyeball/Eyeball-attack-loop/Eyeball-attack-loop%d.png", 45)))
+        return E_FAIL;
+
+    // Attack End
+    if (FAILED(eyeballTex->Add_Texture(L"Eyeball_Attack_End", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Eyeball/Eyeball-attack-end/Eyeball-attack-end%d.png", 54)))
+        return E_FAIL;
+
+    // Die
+    if (FAILED(eyeballTex->Add_Texture(L"Eyeball_Die", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Eyeball/Eyeball-die/Eyeball-die%d.png", 25)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_BOSS2_EYEBALL, eyeballTex)))
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -557,16 +633,24 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     CTexture* tarotTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(tarotTex, E_FAIL);
 
-    if (FAILED(tarotTex->Add_Texture(L"Tarot_Heart_Start", TEXTUREID::TEX_NORMAL, L"../Bin/Resource/Texture/UI/Tarot/Animation/Start/HeartCard/HeartCard%d.png", 64)))
+    if (FAILED(
+        tarotTex->Add_Texture(L"Tarot_Heart_Start", TEXTUREID::TEX_NORMAL,
+            L"../Bin/Resource/Texture/UI/Tarot/Animation/Start/HeartCard/HeartCard%d.png", 64)))
         return E_FAIL;
 
-    if (FAILED(tarotTex->Add_Texture(L"Tarot_Arrow_Start", TEXTUREID::TEX_NORMAL, L"../Bin/Resource/Texture/UI/Tarot/Animation/Start/ArrowCard/ArrowCard%d.png", 64)))
+    if (FAILED(
+        tarotTex->Add_Texture(L"Tarot_Arrow_Start", TEXTUREID::TEX_NORMAL,
+            L"../Bin/Resource/Texture/UI/Tarot/Animation/Start/ArrowCard/ArrowCard%d.png", 64)))
         return E_FAIL;
 
-    if (FAILED(tarotTex->Add_Texture(L"Tarot_Heart_Choice", TEXTUREID::TEX_NORMAL, L"../Bin/Resource/Texture/UI/Tarot/Animation/Choice/HeartCard_Choice.png", 1)))
+    if (FAILED(
+        tarotTex->Add_Texture(L"Tarot_Heart_Choice", TEXTUREID::TEX_NORMAL, L"../Bin/Resource/Texture/UI/Tarot/Animation/Choice/HeartCard_Choice.png",
+            1)))
         return E_FAIL;
 
-    if (FAILED(tarotTex->Add_Texture(L"Tarot_Arrow_Choice", TEXTUREID::TEX_NORMAL, L"../Bin/Resource/Texture/UI/Tarot/Animation/Choice/ArrowCard_Choice.png", 1)))
+    if (FAILED(
+        tarotTex->Add_Texture(L"Tarot_Arrow_Choice", TEXTUREID::TEX_NORMAL, L"../Bin/Resource/Texture/UI/Tarot/Animation/Choice/ArrowCard_Choice.png",
+            1)))
         return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_TAROT, tarotTex)))
@@ -646,7 +730,7 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     // Grass
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_GRASS, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/MapObject/WeedShrub/WeedShrub%d.png", 20))))
+            L"../Bin/Resource/Texture/MapObject/WeedShrub/WeedShrub%d.png", 53))))
         return E_FAIL;
 
     // Rubble
@@ -677,5 +761,4 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
 }
 
 void CResourceMgr::Free()
-{
-}
+{ }

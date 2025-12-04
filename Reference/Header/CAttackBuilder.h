@@ -187,7 +187,7 @@ public:
         }
 
         // GameLogic Layer에 추가
-        SpawnAttackObject(m_AttackObj);
+        SpawnObjectOnLayer(m_AttackObj);
 
         // 정리
         m_AttackObj = nullptr;

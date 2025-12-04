@@ -1,6 +1,8 @@
 ﻿#include "pch.h"
 #include "CStage.h"
 
+#include "CCameraController.h"
+#include "CCamSetupBuilder.h"
 #include "CCombatStat.h"
 #include "CDInputMgr.h"
 #include "CDropSystem.h"
@@ -68,16 +70,16 @@ HRESULT CStage::Ready_Scene()
         CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 10.f, 1.f, 10.f + (i * 3.f) });
     }
 
-
     size = CItemDB::GetInstance()->GetVector().size();
     for (int i = 0; i < size; i++)
     {
         int reverseIndex = size - 1 - i;
-        int id = CItemDB::GetInstance()->GetVector()[reverseIndex].id;
+        int id           = CItemDB::GetInstance()->GetVector()[reverseIndex].id;
 
         ItemInstance inst = { id, -1, 0 };
         CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 15.f, 1.f, 10.f + (i * 3.f) });
     }
+
     // BGM Test
     //CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Intro.wav", 0.5f);
 
@@ -97,14 +99,10 @@ _int CStage::Update_Scene(const _float& timeDelta)
     _int exit = Engine::CScene::Update_Scene(timeDelta);
 
     if (CDInputMgr::GetInstance()->KeyDown(DIK_F))
-    {
         CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS1);
-    }
 
     if (CDInputMgr::GetInstance()->KeyDown(DIK_G))
-    {
         CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS2);
-    }
 
     return exit;
 }
@@ -214,30 +212,35 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     // 카메라 생성
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CMainCamera>(
-            OBJTYPE::CAMERA,
-            L"MainCamera",
-            m_GraphicDev,
-            layer,
-            &gameObject),
-        L"Persistent object setup failed");
+            OBJTYPE::CAMERA, L"MainCamera", m_GraphicDev, layer, &gameObject),
+        L"Persistent object setup failed"
+    );
 
-    // 카메라 타겟을 플레이어로 설정
-    auto mainCam = dynamic_cast<CMainCamera*>(gameObject);
-    if (mainCam)
+    auto camController = dynamic_cast<CCameraController*>(
+        gameObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAM_CONTROLLER));
+
+    // 카메라 설정값 초기화
+    if (camController != nullptr)
     {
-        mainCam->Set_CamTarget(playerTransform);
+        // 씬에서 카메라 생성 시 값 초기화
+        // : CCameraSetup을 카메라 설정을 중도에 바꿀 때 사용 가능하고,
+        //   그럴 때는 필요한 것만 사용해 .Apply() 하면 된다.
+        CCamSetupBuilder(camController)
+            .SetTarget(playerTransform)
+            //.PivotOffset({ 0.f, 0.f, 0.f })
+            //.Distance(12.f)
+            //.RotX(45.f)
+            //.RotY(0.f)
+            //.LagSpeed(10.f)
+            //.ZoomSpeed(5.f)
+            .Snap()
+            .Apply();
 
-        auto camCom = dynamic_cast<CCameraCom*>(
-            mainCam->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAMERA));
-
-        if (camCom)
-            CMainEditorMgr::GetInstance()->Set_MainCamera(camCom); // 에디터에 카메라 설정
+        // 에디터에 카메라 설정
+        CMainEditorMgr::GetInstance()->Set_MainCamera(camController);
     }
 
     m_Layers.insert({ layerType, layer });
-
-
-
 
     return S_OK;
 }
@@ -323,15 +326,16 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiTabMenu),
                      L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UITabMenu) failed");
 
-   // FAILED_CHECK_MSG(Engine::AcquirePersistentObject<CUIItemGet>
-   //     (OBJTYPE::UI, L"UI_ItemGet",
-   //         m_GraphicDev, layer,
-   //         &gameObject), L"Persistent object setup failed: UI_ItemGet")
-   //
+    // FAILED_CHECK_MSG(Engine::AcquirePersistentObject<CUIItemGet>
+    //     (OBJTYPE::UI, L"UI_ItemGet",
+    //         m_GraphicDev, layer,
+    //         &gameObject), L"Persistent object setup failed: UI_ItemGet")
+    //
     FAILED_CHECK_MSG(Engine::AcquirePersistentObject<CUIItemGetManager>
-        (OBJTYPE::UI, L"UI_ItemGetManager",
-            m_GraphicDev, layer,
-            &gameObject), L"Persistent object setup failed: UI_ItemGetManager")
+                     (OBJTYPE::UI, L"UI_ItemGetManager",
+                         m_GraphicDev, layer,
+                         &gameObject),
+                     L"Persistent object setup failed: UI_ItemGetManager")
     dynamic_cast<CUIItemGetManager*>(gameObject)->SetInventory(m_PlayerInventoryCom);
     dynamic_cast<CUIItemGetManager*>(gameObject)->Initialize();
 

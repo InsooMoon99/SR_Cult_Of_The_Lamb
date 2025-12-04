@@ -4,20 +4,6 @@
 namespace Engine
 {
 // ========================================
-// Inline Function
-// ========================================
-
-///@brief 값을 지정된 최소/최대 범위 내로 제한
-///@param value 제한할 원본 값
-///@param min 최소 한계값
-///@param max 최대 한계값
-///@return 범위 내로 제한된 값
-inline float Clamp(const float value, const float min, const float max)
-{
-    return (value < min) ? min : ((value > max) ? max : value);
-}
-
-// ========================================
 // template Function
 // ========================================
 
