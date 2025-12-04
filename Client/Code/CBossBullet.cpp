@@ -84,7 +84,7 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
             .Scale({0.2f, 0.2f, 0.2f})
             .InstigatorPos()
             .Offset(_vec3(0.f, 0.f, 0.f))
-            .LifeTime(10.f) // 이건 혹시 충돌 안했을경우를 대비 해서
+            .LifeTime(5.f) // 이건 혹시 충돌 안했을경우를 대비 해서
             .DestroyOnHit(true)
             .CollisionLayer(COLLISION_LAYERTYPE::BOSSPROJECTILE)
             .Spawn();

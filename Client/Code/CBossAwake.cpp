@@ -52,7 +52,7 @@ _int CBossAwake::Update_State(const _float& timeDelta)
     switch (m_ePhase)
     {
     case PHASE::AWAKE:
-        m_pOwnerAnimatorCom->Play_Animation(L"BossAwake", ANIMSTATE::ONCE);
+        //m_pOwnerAnimatorCom->Play_Animation(L"BossAwake", ANIMSTATE::ONCE);
 
         if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
             m_ePhase = PHASE::MOVE;

@@ -19,7 +19,7 @@ class CBossStateMachine;
 class CBossPhase1 : public CMonsterBase
 {
 public:
-enum  BOSSPHASE1 { BOSSAWAKE=0, BULLETATTACK, CHAINATTACK, BOSSDEAD, BOSSIDLE, BOSSMOVE, BOSSGROGGRY, BOSS_END };
+enum  BOSSPHASE1 { BOSSAWAKE=0, BULLETATTACK, CHAINATTACK, BOSSDEAD, BOSSIDLE, BOSSMOVE, BOSSGROGGRY, TALK, BOSS_END };
 private:
     explicit CBossPhase1(DEVICE graphicDev);
     explicit CBossPhase1(const CBossPhase1& rhs);
@@ -33,8 +33,8 @@ public:
     void    Initialize_GameObject() override; // Ready보다 한 단계 아래 생명주기
 
 public:
-    void    OnBeginOverlap(CCollider* self, CCollider* other) override {}
-    void    OnEndOverlap(CCollider* self, CCollider* other) override {}
+    void    OnBeginOverlap(CCollider* self, CCollider* other) override;
+        void    OnEndOverlap(CCollider* self, CCollider* other) override;
 
     DEVICE  Get_GraphicDev() { return m_GraphicDev; } // 이게  괜찬나..?? 안괜찮을듯
 
@@ -57,6 +57,12 @@ private:
     _vec3 BaseCenter = { 20 ,0, 20 };
     int BaseLength = 30;
     float interval = 1.f;
+
+    //
+
+    bool m_bHurt = false;
+    float m_fAlpha = 0.8f;
+    float m_bHurtTime = 0;
 private:
     void Free() override;
 };

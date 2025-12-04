@@ -15,6 +15,7 @@
 #include "CTransform.h"
 #include "CWeaponEquip.h"
 #include "ItemData.h"
+#include "CSpriteEff.h"
 
 CDroppedItem::CDroppedItem(DEVICE graphicDev, ItemInstance itemInst)
     : CGameObject(graphicDev),
@@ -71,6 +72,14 @@ void CDroppedItem::Initialize_GameObject()
 _int CDroppedItem::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CGameObject::Update_GameObject(timeDelta);
+
+    if (is_SetBounceDesc == true)
+    {
+        m_SpriteEff->InitBounce(m_BounceDesc);
+        is_SetBounceDesc = false;
+    }
+        m_SpriteEff->Update_Component(timeDelta);
+
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_NONALPHA, this);
 
@@ -175,13 +184,16 @@ HRESULT CDroppedItem::Add_Component()
 
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::BOX_COLL, m_BoxColCom });
 
+    // effect
+    m_SpriteEff = CreateProtoComponent<CSpriteEff>(this, COMPONENTTYPE::SPRITEEFFECT);
+    NULL_CHECK_RETURN(m_SpriteEff, E_FAIL);
+
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::SPRITEEFFECT, m_SpriteEff });
+
+
     return S_OK;
 }
 
-void CDroppedItem::PopDrop(float range, float height)
-{
-    // 추후 구현예정
-}
 
 CDroppedItem* CDroppedItem::Create(DEVICE graphicDev, ItemInstance itemInst, _vec3 pos)
 {
