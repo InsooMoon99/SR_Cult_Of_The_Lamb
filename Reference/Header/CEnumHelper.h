@@ -245,6 +245,7 @@ static const char* ToString(OBJTYPE type)
     case OBJTYPE::NPC:              return "NPC";
     case OBJTYPE::LOGIC:            return "Logic";
     case OBJTYPE::PARTICLE:         return "Particle";
+    case OBJTYPE::TRIGGER:          return "Trigger";
 
     case OBJTYPE::OBJ_END:          return "ObjectEnd";
     default:                        return "UnknownObjectType";

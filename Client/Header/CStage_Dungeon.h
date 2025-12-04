@@ -4,22 +4,24 @@
 class CInventory;
 class CWeaponEquip;
 class CTerrain;
+class CPlayer;
 
 BEGIN(Engine)
 class CCombatStat;
+class CTransform;
 END
 
-class CPlayer;
 
 struct RoomData
 {
-    _vec3   centerPos{};
-    _vec3   spawnPos{};
-    _float  width = 0.f;
-    _float  height = 0.f;
+    _vec3   spawnPos{};         
+    string  terrainFilePath;    
+    _vec3   terrainOffset{};    
 
-    string  terrainFilePath;
-    _vec3   terrainOffset;
+    // 방 클리어 여부
+    // 근데 이거 일단은 구현 X
+    bool    isCleared = false;
+    _int    requiredKills = 0;
 };
 
 class CStage_Dungeon : public CScene
@@ -54,8 +56,12 @@ public:
     void    Spawn_Weapon();
     void    Spawn_Monster(_int index);
 
+    void    UnLoad_Room(Room room);
     void    Load_Room(Room room);
-    void    unloadRoom(Room room);
+
+    void    Create_RoomTriggers();
+
+    void    Change_Room(Room room);
 
 private:
     HRESULT Ready_Environment_Layer(LAYERTYPE layerType);
@@ -80,6 +86,9 @@ private:
 private:
     RoomData m_RoomData[5];   // 5개 방 미리 생성
     Room     m_CurrentRoom;   // 현재 방
+
+    CGameObject*    m_Player;
+    CTransform*     m_PlayerTransform;
 
 };
 

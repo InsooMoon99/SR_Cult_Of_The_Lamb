@@ -163,6 +163,9 @@
     <Filter Include="01. Logic\08. Particle">
       <UniqueIdentifier>{66ea5b67-f7f3-437d-a4c7-1c9e0f6d0242}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Logic\09. Trigger">
+      <UniqueIdentifier>{5f2260d6-9126-4f13-b8d9-be6e3bd68393}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <!-- ===================== -->
   <!--       HEADERS         -->
@@ -351,6 +354,7 @@
     <ClInclude Include="..\Header\CParticleHelper.h">
       <Filter>98. Utility</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CTrigger.h" />
   </ItemGroup>
   <!-- ===================== -->
   <!--       SOURCES         -->
@@ -500,5 +504,6 @@
     <ClCompile Include="..\Code\CParticle.cpp">
       <Filter>01. Logic\08. Particle</Filter>
     </ClCompile>
+    <ClCompile Include="..\Code\CTrigger.cpp" />
   </ItemGroup>
 </Project>

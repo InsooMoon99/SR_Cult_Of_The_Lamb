@@ -24,13 +24,14 @@
 #include "CUITabMenu.h"
 #include "CUIWeapon.h"
 #include "ItemInstance.h"
+#include "CTrigger_Dungeon.h"
 
 CStage_Dungeon::CStage_Dungeon(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
       m_PlayerCombatStatCom(nullptr),
       m_PlayerInventoryCom(nullptr),
       m_WeaponEquipCom(nullptr),
-      m_CurrentRoom(Room::DUNGEON_END)
+      m_CurrentRoom(Room::DUNGEON_END), m_Player(nullptr), m_PlayerTransform(nullptr)
 {
 }
 
@@ -58,21 +59,58 @@ void CStage_Dungeon::Initialize_Scene()
 {
     CScene::Initialize_Scene();
 
-    // 방 위치 일단 대충 설정
-    m_RoomData[(int)Room::START] = { {20.f, 0.f, 20.f}, {20.f, 1.f, 20.f}, 30.f, 30.f };
-    m_RoomData[(int)Room::MONSTER1] = { {70.f, 0.f, 20.f}, {70.f, 1.f, 20.f}, 30.f, 30.f };
-    m_RoomData[(int)Room::MONSTER2] = { {120.f, 0.f, 20.f}, {120.f, 1.f, 20.f}, 30.f, 30.f };
-    m_RoomData[(int)Room::TARO] = { {170.f, 0.f, 20.f}, {170.f, 1.f, 20.f}, 30.f, 30.f };
-    m_RoomData[(int)Room::BOSS] = { {220.f, 0.f, 20.f}, {220.f, 1.f, 20.f}, 40.f, 40.f };
+    m_RoomData[static_cast<_int>(Room::START)] =
+    {
+        {10.f, 1.f, 10.f},                          
+        "../Bin/Resource/Data/Terrain/Terrain_Dungeon1.map",     
+        {0.f, 0.f, 0.f}                                   
+    };
+
+    m_RoomData[static_cast<_int>(Room::MONSTER1)] =
+    {
+        {60.f, 1.f, 10.f},
+        "../Bin/Resource/Data/Terrain/Terrain_Mon1Test.map",
+        {50.f, 0.f, 0.f}
+    };
+
+    m_RoomData[static_cast<_int>(Room::MONSTER2)] =
+    {
+        {110.f, 1.f, 10.f},
+        "../Bin/Resource/Data/Terrain/Terrain_Mon2Test.map",
+        {100.f, 0.f, 0.f}
+    };
+
+    m_RoomData[static_cast<_int>(Room::TARO)] =
+    {
+        {160.f, 1.f, 10.f},
+        "../Bin/Resource/Data/Terrain/Terrain_TaroTest.map",
+        {150.f, 0.f, 0.f}
+    };
+
+    m_RoomData[static_cast<_int>(Room::BOSS)] =
+    {
+        {210.f, 1.f, 10.f},
+        "../Bin/Resource/Data/Terrain/Terrain_BossTest.map",
+        {200.f, 0.f, 0.f}
+    };
 
     m_CurrentRoom = Room::START;
 
-    //m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Dungeon1.map");
-
-    for (auto& [room, terrain] : m_Terrains)
+    for (auto& pair : m_Terrains)
     {
+        Room room = pair.first;
+        CTerrain* terrain = pair.second;
+
         if (terrain)
+        {
             terrain->LoadMapOnStart(m_RoomData[static_cast<_int>(room)].terrainFilePath.c_str());
+
+            auto terrainTransform = terrain->Get_Transform();
+            if (terrainTransform)
+            {
+                terrainTransform->Set_Pos(m_RoomData[static_cast<_int>(room)].terrainOffset);
+            }
+        }
     }
 }
 
@@ -138,6 +176,12 @@ void CStage_Dungeon::Spawn_Weapon()
 
 void CStage_Dungeon::Spawn_Monster(_int index)
 {
+    // TODO : 몬스터 소환, 그런데 그냥 에디터에서 세팅할 수 있게 해버릴지 ?
+
+}
+
+void CStage_Dungeon::UnLoad_Room(Room room)
+{
 
 }
 
@@ -146,8 +190,53 @@ void CStage_Dungeon::Load_Room(Room room)
 
 }
 
-void CStage_Dungeon::unloadRoom(Room room)
+void CStage_Dungeon::Create_RoomTriggers()
 {
+    // GameLogic에 추가
+    auto gameLayer = m_Layers[LAYERTYPE::GAMELOGIC];
+    NULL_CHECK(gameLayer);
+
+    // Start -> Monster1
+    {
+        auto trigger = CTrigger_Dungeon::Create(m_GraphicDev);
+
+        // 위치, 크기 세팅
+        trigger->Set_Bounds(_vec3(0.f, 1.f, 10.f), _vec3(5.f, 5.f, 20.f));
+
+        // 한 번만 작동하게
+        trigger->Set_TriggerOnce(true);
+
+        trigger->Set_Callback([this]()
+            {
+                Change_Room(Room::MONSTER1);
+            });
+
+        gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
+    }
+    // Monster1 -> Monster2
+
+    // Monster1 -> 타로
+
+    // Monster2 -> 보스
+
+}
+
+void CStage_Dungeon::Change_Room(Room room)
+{
+    Room nextRoom = room;
+
+    // 이전 방 정리
+    UnLoad_Room(m_CurrentRoom);
+
+    m_CurrentRoom = nextRoom;
+
+    Load_Room(nextRoom);
+
+    // 플레이어 위치 이동
+    if (m_PlayerTransform)
+    {
+        m_PlayerTransform->Set_Pos(m_RoomData[static_cast<_int>(nextRoom)].spawnPos);
+    }
 
 }
 
@@ -164,14 +253,6 @@ HRESULT CStage_Dungeon::Ready_Environment_Layer(LAYERTYPE layerType)
 
         m_Terrains[room] = CTerrain::Create(m_GraphicDev);
         NULL_CHECK_RETURN(m_Terrains[room], E_FAIL);
-
-        // 위치 세팅
-        auto terrainTransform = m_Terrains[room]->Get_Transform();
-
-        if (terrainTransform)
-        {
-            terrainTransform->Set_Pos(m_RoomData[static_cast<_int>(room)].terrainOffset);
-        }
 
         layer->Add_GameObject(OBJTYPE::TERRAIN, m_Terrains[room]);
     }
@@ -203,28 +284,26 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
             L"Player",
             m_GraphicDev,
             layer,
-            &gameObject),
+            &m_Player),
         L"Persistent object setup failed");
 
-    NULL_CHECK_RETURN(gameObject, E_FAIL);
+    NULL_CHECK_RETURN(m_Player, E_FAIL);
 
-    // 플레이어의 Transform 가져오기
-    const auto playerTransform =
-        dynamic_cast<CTransform*>(gameObject->Get_Component(
-            ID_DYNAMIC,
-            COMPONENTTYPE::TRANSFORM));
+    // 플레이어 Transform
+    m_PlayerTransform = dynamic_cast<CTransform*>(
+        m_Player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
 
-    NULL_CHECK_RETURN(playerTransform, E_FAIL);
+    NULL_CHECK_RETURN(m_PlayerTransform, E_FAIL);
 
     m_PlayerInventoryCom =
-        dynamic_cast<CInventory*>(gameObject->Get_Component(
+        dynamic_cast<CInventory*>(m_Player->Get_Component(
             ID_STATIC,
             COMPONENTTYPE::INVENTORY));
 
     NULL_CHECK_RETURN(m_PlayerInventoryCom, E_FAIL);
 
     m_PlayerCombatStatCom =
-        dynamic_cast<CCombatStat*>(gameObject->Get_Component(
+        dynamic_cast<CCombatStat*>(m_Player->Get_Component(
             ID_DYNAMIC,
             COMPONENTTYPE::COMBATSTAT));
 
@@ -258,7 +337,7 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
         // : CCameraSetup을 카메라 설정을 중도에 바꿀 때 사용 가능하고,
         //   그럴 때는 필요한 것만 사용해 .Apply() 하면 된다.
         CCamSetupBuilder(camController)
-            .SetTarget(playerTransform)
+            .SetTarget(m_PlayerTransform)
             //.PivotOffset({ 0.f, 0.f, 0.f })
             //.Distance(12.f)
             //.RotX(45.f)
@@ -273,6 +352,9 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
     }
 
     m_Layers.insert({ layerType, layer });
+
+    // 트리거 생성
+    Create_RoomTriggers();
 
     return S_OK;
 }

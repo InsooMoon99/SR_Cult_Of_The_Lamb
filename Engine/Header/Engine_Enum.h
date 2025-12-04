@@ -71,6 +71,7 @@ enum class COLLISION_LAYERTYPE
     BOSSPROJECTILE,
     ITEM,
     ATTACK,
+    TRIGGER,
 
     COL_LAYER_END
 };
@@ -91,6 +92,7 @@ enum class OBJTYPE
 
     ATTACK_COL,
     PARTICLE,
+    TRIGGER,
 
     TERRAIN,
     PLACEMENT,

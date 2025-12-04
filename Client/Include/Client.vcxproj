@@ -255,6 +255,7 @@
     <ClInclude Include="..\Header\CStage_TarotTest.h" />
     <ClInclude Include="..\Header\CStateMachine.h" />
     <ClInclude Include="..\Header\CTrailEff.h" />
+    <ClInclude Include="..\Header\CTrigger_Dungeon.h" />
     <ClInclude Include="..\Header\CUIItemGet.h" />
     <ClInclude Include="..\Header\CUIItemGetManager.h" />
     <ClInclude Include="..\Header\CUITarotCard.h" />
@@ -369,6 +370,7 @@
     <ClCompile Include="..\Code\CStage_TarotTest.cpp" />
     <ClCompile Include="..\Code\CStateMachine.cpp" />
     <ClCompile Include="..\Code\CTrailEff.cpp" />
+    <ClCompile Include="..\Code\CTrigger_Dungeon.cpp" />
     <ClCompile Include="..\Code\CUIItemGet.cpp" />
     <ClCompile Include="..\Code\CUIItemGetManager.cpp" />
     <ClCompile Include="..\Code\CUITarotCard.cpp" />

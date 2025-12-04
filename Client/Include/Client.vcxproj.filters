@@ -205,6 +205,9 @@
     <Filter Include="95. Particle">
       <UniqueIdentifier>{66b66737-d2d9-4490-ba41-336b1cbd241e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\07. Trigger">
+      <UniqueIdentifier>{92dd4e5b-96b3-4251-ad22-3e104b9d673a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -555,6 +558,9 @@
     <ClInclude Include="..\Header\CStage_Dungeon.h">
       <Filter>02. Scene\01. Stage</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CTrigger_Dungeon.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -874,6 +880,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CStage_Dungeon.cpp">
       <Filter>02. Scene\01. Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CTrigger_Dungeon.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
