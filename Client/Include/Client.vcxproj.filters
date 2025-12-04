@@ -124,26 +124,11 @@
     <Filter Include="97. Component\02. Terrain">
       <UniqueIdentifier>{a82a3041-8adf-4ea9-b83c-573792a7e93c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="97. Component\03. Player Controller">
-      <UniqueIdentifier>{f2106dd3-bd45-46c3-8297-8a8688247354}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\04. Boss\01. Boss1\01.State">
       <UniqueIdentifier>{632c0230-c490-492f-96a9-7c7a3903e946}</UniqueIdentifier>
     </Filter>
     <Filter Include="05. UI\01. UI\04. UITabMenu">
       <UniqueIdentifier>{f5ba0def-b59a-4d45-9d5e-3212b4671db6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="97. Component\03. Player Controller\00. Controller">
-      <UniqueIdentifier>{e4558995-8de9-408a-9c16-0e1a35d1d07a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="97. Component\03. Player Controller\01. Input">
-      <UniqueIdentifier>{cff18376-e62f-46d6-a00f-7cb48f7f951d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="97. Component\03. Player Controller\02. Movement">
-      <UniqueIdentifier>{c335eac9-1f8a-4cad-9c20-9760b6b18d8a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="97. Component\03. Player Controller\03. Combat">
-      <UniqueIdentifier>{47ab0db8-6150-437b-b3f7-2f492e5e5f43}</UniqueIdentifier>
     </Filter>
     <Filter Include="97. Component\04. Wall">
       <UniqueIdentifier>{b0c9067d-def9-4e61-954d-f361723e82cf}</UniqueIdentifier>
@@ -159,6 +144,30 @@
     </Filter>
     <Filter Include="05. UI\01. UI\06. UIItemGet">
       <UniqueIdentifier>{724d35f9-bc60-44bd-8d5a-22d341eb1b04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Component\03. Player Control">
+      <UniqueIdentifier>{f2106dd3-bd45-46c3-8297-8a8688247354}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Component\03. Player Control\00. Controller">
+      <UniqueIdentifier>{e4558995-8de9-408a-9c16-0e1a35d1d07a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Component\03. Player Control\01. Input">
+      <UniqueIdentifier>{cff18376-e62f-46d6-a00f-7cb48f7f951d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Component\03. Player Control\02. Movement">
+      <UniqueIdentifier>{c335eac9-1f8a-4cad-9c20-9760b6b18d8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Component\03. Player Control\03. Combat">
+      <UniqueIdentifier>{47ab0db8-6150-437b-b3f7-2f492e5e5f43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Component\06. Camera Control">
+      <UniqueIdentifier>{64e9c684-36fa-40e3-b44f-ef179ec988f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Component\06. Camera Control\00. Controller">
+      <UniqueIdentifier>{d625002d-799b-4ccf-8e52-87a8e2b58d6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Component\06. Camera Control\01. Movement">
+      <UniqueIdentifier>{97b2548b-ada6-4e00-92f4-21cf83c9f83c}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. GameObject\04. Boss\02. Boss2\00. Boss">
       <UniqueIdentifier>{06466a2b-be8a-415f-8b9c-c367715508d2}</UniqueIdentifier>
@@ -370,16 +379,16 @@
       <Filter>05. UI\01. UI\04. UITabMenu</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CPlayerController.h">
-      <Filter>97. Component\03. Player Controller\00. Controller</Filter>
+      <Filter>97. Component\03. Player Control\00. Controller</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CPlayerInput.h">
-      <Filter>97. Component\03. Player Controller\01. Input</Filter>
+      <Filter>97. Component\03. Player Control\01. Input</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CPlayerMovement.h">
-      <Filter>97. Component\03. Player Controller\02. Movement</Filter>
+      <Filter>97. Component\03. Player Control\02. Movement</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CPlayerAttack.h">
-      <Filter>97. Component\03. Player Controller\03. Combat</Filter>
+      <Filter>97. Component\03. Player Control\03. Combat</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CUIPlayerImage.h">
       <Filter>05. UI\01. UI\04. UITabMenu</Filter>
@@ -449,6 +458,15 @@
     </ClInclude>
     <ClInclude Include="..\Header\CUIItemGetManager.h">
       <Filter>05. UI\01. UI\06. UIItemGet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CCameraController.h">
+      <Filter>97. Component\06. Camera Control\00. Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CCameraMovement.h">
+      <Filter>97. Component\06. Camera Control\01. Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CCamSetupBuilder.h">
+      <Filter>98. Utility</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CLogo_Boss2.h">
       <Filter>02. Scene\00. Logo</Filter>
@@ -675,16 +693,16 @@
       <Filter>05. UI\01. UI\04. UITabMenu</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CPlayerController.cpp">
-      <Filter>97. Component\03. Player Controller\00. Controller</Filter>
+      <Filter>97. Component\03. Player Control\00. Controller</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CPlayerInput.cpp">
-      <Filter>97. Component\03. Player Controller\01. Input</Filter>
+      <Filter>97. Component\03. Player Control\01. Input</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CPlayerMovement.cpp">
-      <Filter>97. Component\03. Player Controller\02. Movement</Filter>
+      <Filter>97. Component\03. Player Control\02. Movement</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CPlayerAttack.cpp">
-      <Filter>97. Component\03. Player Controller\03. Combat</Filter>
+      <Filter>97. Component\03. Player Control\03. Combat</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CUIPlayerImage.cpp">
       <Filter>05. UI\01. UI\04. UITabMenu</Filter>
@@ -751,6 +769,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\CUIItemGetManager.cpp">
       <Filter>05. UI\01. UI\06. UIItemGet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CCameraController.cpp">
+      <Filter>97. Component\06. Camera Control\00. Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CCameraMovement.cpp">
+      <Filter>97. Component\06. Camera Control\01. Movement</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CLogo_Boss2.cpp">
       <Filter>02. Scene\00. Logo</Filter>

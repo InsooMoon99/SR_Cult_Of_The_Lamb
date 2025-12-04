@@ -161,7 +161,6 @@
       <UniqueIdentifier>{7cf50558-580d-41f7-a3a4-90ad63d00805}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
-
   <!-- ===================== -->
   <!--       HEADERS         -->
   <!-- ===================== -->
@@ -274,7 +273,7 @@
     <ClInclude Include="..\Header\CSphereCollider.h">
       <Filter>02. Prototype\04. Collider\01. Sphere Collider</Filter>
     </ClInclude>
-    <ClInclude Include="..\header\CCameraCom.h">
+    <ClInclude Include="..\header\CCameraCalc.h">
       <Filter>02. Prototype\03. Camera</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CState.h">
@@ -340,8 +339,10 @@
     <ClInclude Include="..\Header\CSoundMgr.h">
       <Filter>00. Manager\11. SoundMgr</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\Engine_Math.h">
+      <Filter>99. Header</Filter>
+    </ClInclude>
   </ItemGroup>
-
   <!-- ===================== -->
   <!--       SOURCES         -->
   <!-- ===================== -->
@@ -433,7 +434,7 @@
     <ClCompile Include="..\Code\CSphereCollider.cpp">
       <Filter>02. Prototype\04. Collider\01. Sphere Collider</Filter>
     </ClCompile>
-    <ClCompile Include="..\code\CCameraCom.cpp">
+    <ClCompile Include="..\code\CCameraCalc.cpp">
       <Filter>02. Prototype\03. Camera</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CState.cpp">

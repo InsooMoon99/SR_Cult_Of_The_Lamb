@@ -48,11 +48,25 @@ public:
     void    LateUpdate_Component() override;
 
 public: // Setter
-    void Set_CamMode(CAM_MODE camMode);     // 카메라 컨트롤 모드 변경
-    void Set_ViewType(VIEW_TYPE viewType);  // 시점 타입 변경
-    void Set_ProjType(PROJ_TYPE projType);  // 투영 타입 변경. UI등 Renderer에서 자동으로 직교 투영을 할 오브젝트가 아닌, 수동으로 직교 투영을 사용하고자 할 때 사용
+    // 카메라 컨트롤 모드 변경
+    void Set_CamMode(CAM_MODE camMode);
 
-    void Set_Offset(const _vec3& offset) { m_Offset = offset; } // TPS, QUARTER 카메라 오프셋 (타겟과의 거리) 설정
+    // 시점 타입 변경
+    void Set_ViewType(VIEW_TYPE viewType);
+
+    /// @brief 투영 타입 변경
+    /// @details UI등 Renderer에서 자동으로 직교 투영을 할 오브젝트가 아닌, 수동으로 직교 투영을 사용하고자 할 때 사용
+    void Set_ProjType(PROJ_TYPE projType);
+
+    // 카메라 오프셋 (타겟과의 거리) 설정
+    void Set_Offset(const _vec3& offset) { m_Offset = offset; }
+
+    /// @brief 타겟을 중심으로 하는 구면 좌표계 방식으로 오프셋을 설정하는 기능
+    /// @details 거리와 X/Y축 회전 각도를 받아, 타겟 기준의 상대적 위치 벡터를 계산
+    /// @param distance  타겟과 카메라 사이의 거리
+    /// @param angleX    X축 회전 각도(Pitch: 상하 회전), Degree 값
+    /// @param angleY    Y축 회전 각도(Yaw: 상하 회전), Degree 값
+    void Set_Offset_Spherical(_float distance, _float angleX, _float angleY);
 
     void Set_FOV(const _float fov)
     {

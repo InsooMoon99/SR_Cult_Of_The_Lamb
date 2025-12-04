@@ -1,8 +1,11 @@
 ﻿#include "pch.h"
 #include "CMainEditorMgr.h"
-#include "CCollisionManager.h"
+
+#include "CAnimator.h"
 #include "CBoxCollider.h"
-#include "CCameraCom.h"
+#include "CCameraCalc.h"
+#include "CCameraController.h"
+#include "CCollisionManager.h"
 #include "CCombatStat.h"
 #include "CComInspectors.h"
 #include "CComponent.h"
@@ -25,7 +28,6 @@
 #include "CTransform.h"
 #include "CWallRenderer.h"
 #include "CWeaponEquip.h"
-#include "CAnimator.h"
 
 IMPLEMENT_SINGLETON(CMainEditorMgr)
 
@@ -57,13 +59,13 @@ void CMainEditorMgr::Update_MainEditor(const _float& timeDelta)
         Toggle_ImGui();
     }
 
-    if (m_MainCamera) 
+    if (m_MainCameraController) 
     {
         if (!m_IsPlaying) // Pause 상태에서도 카메라는 움직일 수 있도록 Delta값 세팅
         {
             _float timeDelta = CTimerMgr::GetInstance()->Get_TimeDelta();
 
-            CGameObject* camera = m_MainCamera->Get_Owner();
+            CGameObject* camera = m_MainCameraController->Get_Owner();
             if (camera)
                 camera->Update_GameObject(timeDelta);
         }
@@ -304,10 +306,8 @@ void CMainEditorMgr::Render_ToolBar()
     // =======
     {
         ImGui::AlignTextToFramePadding();
-        ImGui::Text("Camera");
-        ImGui::SameLine();
 
-        Menu_CameraInspector(m_MainCamera);
+        Menu_CameraInspector(m_MainCameraController);
     }
 
     //ImGui::NextColumn();
@@ -524,13 +524,6 @@ void CMainEditorMgr::Render_SelectComponent()
             break;
         }
 
-        case COMPONENTTYPE::CAMERA:
-        {
-            auto camera = dynamic_cast<CCameraCom*>(selectComponent);
-            Camera_Inspector(camera);
-            break;
-        }
-
         case COMPONENTTYPE::TERRAIN_RENDER:
         {
             auto terrain = dynamic_cast<CTerrainRenderer*>(selectComponent);
@@ -578,6 +571,13 @@ void CMainEditorMgr::Render_SelectComponent()
         {
             auto animator = dynamic_cast<CAnimator*>(selectComponent);
             Animator_Inspector(animator);
+        }
+        break;
+
+        case COMPONENTTYPE::CAM_CONTROLLER:
+        {
+            auto controller = dynamic_cast<CCameraController*>(selectComponent);
+            CamController_Inspector(controller);
         }
         break;
 

@@ -115,8 +115,6 @@ void CPlayer::Render_Editor()
 	CCharacterBase::Render_Editor();
 
     ImGui::Text("=== Player ===");
-
-
 }
 
 HRESULT CPlayer::Add_Component()
