@@ -76,8 +76,6 @@ _int CHumanMonster::Update_GameObject(const _float& timeDelta)
     if (Check_CommonTransitions())
         return exit;
 
-    cout << "Timer : " << m_AttackTimer << endl;
-
     Update_Direction();
 
     ACTORSTATE curState = m_StateCom->Get_State();
@@ -111,6 +109,14 @@ void CHumanMonster::Render_GameObject()
 _bool CHumanMonster::Check_CommonTransitions()
 {
     ACTORSTATE curState = m_StateCom->Get_State();
+
+    if (m_CombatStatCom->Is_Dead())
+    {
+        if (curState != ACTORSTATE::DEAD)
+            m_StateCom->Change_State(ACTORSTATE::DEAD);
+
+        return false;
+    }
 
     if (curState != ACTORSTATE::HIT && m_CombatStatCom->Is_Knockback())
     {
