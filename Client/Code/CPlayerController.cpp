@@ -204,35 +204,92 @@ void CPlayerController::CheckStateTransition()
     //TODO LSHIFT로 강공격
 
     //TODO RMB로 스킬
-    // 스킬 공격
-    else if (inputMgr->MousePress(DIM_RB))
+    else if (inputMgr->MouseDown(DIM_RB))
     {
+        cout << "First time Pressed" << endl;
+
         ImGuiIO& io = ImGui::GetIO();
         if (io.WantCaptureMouse)
             return;
 
-        if (curState == ACTORSTATE::PLAYER_ROLL||
+        if (curState == ACTORSTATE::PLAYER_ROLL ||
             curState == ACTORSTATE::IDLE ||
             curState == ACTORSTATE::RUN)
         {
             ACTORSTATE nextState = m_OwnerSkillCom->Start_Charging();
             if (nextState != ACTORSTATE::STATE_END)
-            m_OwnerStateCom->Change_State(nextState);
+                m_OwnerStateCom->Change_State(nextState);
         }
-        else if (curState == ACTORSTATE::PLAYER_SKILL_CHARGING)
+        
+    }
+
+    //else if(inputMgr->MousePress(DIM_RB))
+    //{
+    //    cout << " Pressing" << endl;
+    //
+    //   //  if (curState == ACTORSTATE::PLAYER_SKILL_CHARGING)
+    //   //  {
+    //   //      ACTORSTATE nextState = m_OwnerSkillCom->Start_SingleSkill();
+    //   //      if (nextState != ACTORSTATE::STATE_END);
+    //   //      //m_OwnerStateCom->Change_State(nextState);
+    //   //  }
+    //
+    //    // else if(curState== ACTORSTATE::PLAYER_SKILL_SINGLE)
+    //    // {
+    //    //     ACTORSTATE nextState = m_OwnerSkillCom->Start_TripleSkill();
+    //    //     if (nextState != ACTORSTATE::STATE_END)
+    //    //         m_OwnerStateCom->Change_State(nextState);
+    //    // }
+    //}
+    //
+    else if(inputMgr->MouseUp(DIM_RB))
+    {
+        if(curState == ACTORSTATE::PLAYER_SKILL_CHARGING)
         {
-            ACTORSTATE nextState = m_OwnerSkillCom->Start_SingleSkill();
-            if (nextState != ACTORSTATE::STATE_END)
-            m_OwnerStateCom->Change_State(nextState);
+            m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
         }
-        else if (curState == ACTORSTATE::PLAYER_SKILL_SINGLE)
+        if(curState== ACTORSTATE::PLAYER_SKILL_SINGLE)
         {
-            //싱글 공격일 때 항상 chargetime 다 지났는지 확인하고 지났으면 triple 스킬 state 안 지났으면 single 스킬 state 반환해서 state 돌리기
-            ACTORSTATE nextState = m_OwnerSkillCom->Start_TripleSkill();
-            if (nextState != ACTORSTATE::STATE_END)
-            m_OwnerStateCom->Change_State(nextState);
+            cout << "작은 공격 발사!" << endl;
+        }
+        if(curState==ACTORSTATE::PLAYER_SKILL_TRIPLE)
+        {
+            cout << "큰 공격 발사!" << endl;
         }
     }
+
+    // 스킬 공격
+    //else if (inputMgr->MousePress(DIM_RB))
+    //{
+    //    cout << "Pressed" << endl;
+    //    ImGuiIO& io = ImGui::GetIO();
+    //    if (io.WantCaptureMouse)
+    //        return;
+    //
+    //    if (curState == ACTORSTATE::PLAYER_ROLL||
+    //        curState == ACTORSTATE::IDLE ||
+    //        curState == ACTORSTATE::RUN ||
+    //        curState == ACTORSTATE::PLAYER_SKILL_CHARGING)
+    //    {
+    //        ACTORSTATE nextState = m_OwnerSkillCom->Start_Charging();
+    //        if (nextState != ACTORSTATE::STATE_END)
+    //        m_OwnerStateCom->Change_State(nextState);
+    //    }
+    //
+    //   // else if (curState == ACTORSTATE::PLAYER_SKILL_CHARGING)
+    //   // {
+    //   //     ACTORSTATE nextState = m_OwnerSkillCom->Start_SingleSkill();
+    //   //     if (nextState != ACTORSTATE::STATE_END)
+    //   //     m_OwnerStateCom->Change_State(nextState);
+    //   // }
+    //    else if (curState == ACTORSTATE::PLAYER_SKILL_SINGLE)
+    //    {
+    //        //싱글 공격일 때 항상 chargetime 다 지났는지 확인하고 지났으면 triple 스킬 state 안 지났으면 single 스킬 state 반환해서 state 돌리기
+    //        ACTORSTATE nextState = m_OwnerSkillCom->Start_SingleSkill();
+    //        if (nextState != ACTORSTATE::STATE_END)
+    //        m_OwnerStateCom->Change_State(nextState);
+    //    }
+    //}
 
     //TODO LSHIFT로 강공격
 
@@ -384,8 +441,24 @@ void CPlayerController::Action_Charging(const _float& timeDelta)
 {
     m_OwnerMovementCom->Stop();
 
-    if (!m_OwnerSkillCom->Update_Charging(timeDelta))
+    ACTORSTATE result = m_OwnerSkillCom->Update_Charging(timeDelta);
+
+    switch(result)
+    {
+    case ACTORSTATE::IDLE:
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+        break;
+   
+    case ACTORSTATE::PLAYER_SKILL_SINGLE:
+        m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SKILL_SINGLE);
+        m_OwnerSkillCom->Set_SingleSkill(true);
+        break;
+   
+    case ACTORSTATE::PLAYER_SKILL_TRIPLE:
+        m_OwnerSkillCom->Set_TripleSkill(true);
+        m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SKILL_TRIPLE);
+        break;
+    }
 }
 
 void CPlayerController::Action_SingleSkill(const _float& timeDelta)

@@ -92,6 +92,9 @@ static const char* ToString(ACTORSTATE state)
     case ACTORSTATE::PLAYER_GAUNTLET_COMBO4: return "Gauntlet_Combo4";
     case ACTORSTATE::PLAYER_GAUNTLET_HEAVY:  return "Gauntlet_Heavy";
 
+    case ACTORSTATE::PLAYER_SKILL_CHARGING: return "Player_Skill_Charging";
+    case ACTORSTATE::PLAYER_SKILL_SINGLE:    return "Player_Skill_Single";
+    case ACTORSTATE::PLAYER_SKILL_TRIPLE:    return "Player_Skill_Triple";
     case ACTORSTATE::STATE_END:              return "StateEnd";
     default:                                 return "UnknownState";
     }

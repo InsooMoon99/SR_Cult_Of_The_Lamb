@@ -48,10 +48,12 @@ public:
 public:
     HRESULT Init_OwnerComponent();
     
-
+public:
+    void Set_SingleSkill(_bool tf) { m_SingleSkillEnable = tf; }
+    void Set_TripleSkill(_bool tf) { m_TripleSkillEnable = tf; }
 public:
     ACTORSTATE  Start_Charging();
-    _bool       Update_Charging(const float& timeDelta);
+    ACTORSTATE       Update_Charging(const float& timeDelta);
 
     ACTORSTATE  Start_SingleSkill();
     _bool       Update_SingleSkill(const float& timeDelta);
@@ -86,6 +88,9 @@ private:
     _int      m_SkillIndex;
     _bool     m_IsCharged;
     _bool     m_IsCharging;
+
+    _bool     m_SingleSkillEnable;
+    _bool     m_TripleSkillEnable;
 public:
     static CPlayerSkill* Create(DEVICE graphicDev);
     CComponent* Clone() override;

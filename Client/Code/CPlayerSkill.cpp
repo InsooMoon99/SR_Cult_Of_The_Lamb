@@ -15,11 +15,13 @@ CPlayerSkill::CPlayerSkill(DEVICE graphicDev)
       m_SkillInfo{},
       m_SkillTimer(0),
       m_ChargeTimer(0),
-      m_MaxChargeTime(0),
+      m_MaxChargeTime(8.f),
       m_ProjectileFired(false),
       m_SkillIndex(5.f),
       m_IsCharged(false),
-      m_IsCharging(false)
+      m_IsCharging(false),
+      m_SingleSkillEnable(false),
+      m_TripleSkillEnable(false)
 {}
 
 CPlayerSkill::CPlayerSkill(const CPlayerSkill& rhs)
@@ -30,11 +32,13 @@ CPlayerSkill::CPlayerSkill(const CPlayerSkill& rhs)
       m_IsSkillUnlocked(true),
       m_SkillTimer(rhs.m_SkillTimer),
       m_ChargeTimer(rhs.m_ChargeTimer),
-      m_MaxChargeTime(5.f),
+      m_MaxChargeTime(8.f),
       m_ProjectileFired(false),
       m_SkillIndex(rhs.m_SkillIndex),
       m_IsCharged(false),
-      m_IsCharging(false)
+      m_IsCharging(false),
+      m_SingleSkillEnable(false),
+      m_TripleSkillEnable(false)
 {
     copy_n(&rhs.m_SkillInfo[0], static_cast<_int>(SKILL_MAX), &m_SkillInfo[0]);
 }
@@ -123,6 +127,7 @@ HRESULT     CPlayerSkill::Init_OwnerComponent()
 
 ACTORSTATE CPlayerSkill::Start_Charging()
 {
+    Reset_AttackData();
 
 	if (!m_IsSkillUnlocked)
 		return ACTORSTATE::STATE_END;
@@ -132,47 +137,87 @@ ACTORSTATE CPlayerSkill::Start_Charging()
 	if (playerCombatStat->Get_CurrentCharges() <= 0)
 		return ACTORSTATE::STATE_END;
 
-    m_ChargeTimer = 0.f;
+    if (!m_IsCharging)
+    {
+        m_ChargeTimer = 0.f;
+    }
+
     m_IsCharging = true;
 
 	return m_SkillInfo[SKILL_CHARGING].state;
 }
-_bool      CPlayerSkill::Update_Charging(const float& timeDelta)
+ACTORSTATE      CPlayerSkill::Update_Charging(const float& timeDelta)
 {
-    if(!m_IsCharging)
-       return false;
-    
-		m_ChargeTimer+= timeDelta;
-	//if(m_ChargeTimer >= m_SkillInfo[SKILL_CHA])
-        if (m_ChargeTimer >= m_MaxChargeTime)
-        {
-            m_ChargeTimer = m_MaxChargeTime;
-            m_IsCharging = false;
+    cout << "Update_Charging" << endl;
 
-            return false;
-        }
-	    return true;
+    _vec3 vMouseDir = m_OwnerInputCom->Get_MouseDir();
+
+    if(vMouseDir.x <= 0.f)
+    {
+        m_OwnerStateCom->Change_Dir(ACTORDIR::LEFT);
+    }
+    else
+    {
+        m_OwnerStateCom->Change_Dir(ACTORDIR::RIGHT);
+    }
+
+    if(!m_IsCharging)
+       return ACTORSTATE::IDLE;
+
+    m_ChargeTimer+= timeDelta;
+
+    cout << m_ChargeTimer << endl;
+
+    if (m_ChargeTimer >= m_SkillInfo[SKILL_TRIPLE].chargeTime)
+    {
+        cout << "3발 공격 사용 가능" << endl;
+        return ACTORSTATE::PLAYER_SKILL_TRIPLE;
+    }
+
+	if(m_ChargeTimer >= m_SkillInfo[SKILL_SINGLE].chargeTime)
+	{
+        cout << "1발 공격 사용 가능" << endl;
+        return ACTORSTATE::PLAYER_SKILL_SINGLE;
+	}
+
+
+    if (m_ChargeTimer >= m_MaxChargeTime)
+    {
+        m_ChargeTimer = m_MaxChargeTime;
+        m_IsCharging = false;
+
+        return ACTORSTATE::IDLE;
+    }
+
+    return ACTORSTATE::PLAYER_SKILL_CHARGING;
 }
 
 
 
 ACTORSTATE  CPlayerSkill::Start_SingleSkill()
 {
-    Reset_AttackData();
+    //Reset_AttackData();
 
-    // 만약 스킬 사용할 수 있는 시간 내가 아니라면, STATE_END 반환
     if (!m_IsCharging)
         return ACTORSTATE::IDLE;
 
     if(!m_IsSkillUnlocked)
     return ACTORSTATE::STATE_END;
+
     //TODO 유림 : 시간 초 확인해서 해당 스킬을 사용할 수 있는 범위 내인지 판단하는 로직 추가
     if (m_ChargeTimer >= m_SkillInfo[SKILL_SINGLE].chargeTime)
     {
+        cout << "첫번째 스킬 차지 완료" << endl;
+        m_SingleSkillEnable = true;
         m_IsCharging = false;
         m_SkillIndex = SKILL_SINGLE;
     }
-    return m_SkillInfo[SKILL_SINGLE].state;
+   // else
+   // {
+   //     return m_SkillInfo[SKILL_CHARGING].state;
+   // }
+    //return m_SkillInfo[SKILL_SINGLE].state;
+    return m_SkillInfo[SKILL_CHARGING].state;
 }
 
 _bool       CPlayerSkill::Update_SingleSkill(const float& timeDelta)
@@ -215,19 +260,37 @@ _bool       CPlayerSkill::Update_SingleSkill(const float& timeDelta)
     //{
     //    m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SKILL_SINGLE);
     //}
+
+
+    //발사했으면 false 반환
+    return false;
     return true;
 }
 ACTORSTATE  CPlayerSkill::Start_TripleSkill()
 {
-	if (m_IsCharged)
-	{
-		Reset_AttackData();
 
-		m_SkillIndex = SKILL_TRIPLE;
-		return m_SkillInfo[SKILL_MAX].state;
-	}
-	else
-		return ACTORSTATE::STATE_END;
+    if (m_IsCharging)
+        return ACTORSTATE::IDLE;
+
+    if (m_ChargeTimer >= m_SkillInfo[SKILL_TRIPLE].chargeTime)
+    {
+        cout << "두번째 스킬 차지 완료" << endl;
+        m_SkillIndex = SKILL_TRIPLE;
+    }
+    else
+    {
+        return m_SkillInfo[SKILL_CHARGING].state;
+    }
+	//if (m_IsCharged)
+	//{
+	//	Reset_AttackData();
+    //
+	//	m_SkillIndex = SKILL_TRIPLE;
+	//	return m_SkillInfo[SKILL_MAX].state;
+	//}
+	//else
+	//	return ACTORSTATE::STATE_END;
+    return m_SkillInfo[SKILL_TRIPLE].state;
 }
 _bool       CPlayerSkill::Update_TripleSkill(const _float& timeDelta)
 {
@@ -258,14 +321,8 @@ _bool       CPlayerSkill::Update_TripleSkill(const _float& timeDelta)
   //if (m_ChargeTimer >= skillInfo.tripleChargeTime)
   //    m_IsCharged = true;
   //                                                                                                                                                                                                                                                                                                                                                                                                                                                           
-    if (m_IsCharged)
-    {
-        m_OwnerStateCom->Change_State(m_SkillInfo[SKILL_SINGLE].state);
-    }
-    else
-    {
-        m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SKILL_SINGLE);
-    }
+//발사했으면 반환
+    return false;
 
     return true;
 }
