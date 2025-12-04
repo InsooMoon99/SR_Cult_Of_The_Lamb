@@ -26,12 +26,22 @@ class CPlayerAttack;
 class CPlayerController : public CComponent
 {
 private:
+    // 플레이어 컨트롤러 내 사용하는 타이머용 열거체
+    enum PL_TIMER
+    {
+        TIMER_RUNSOUND,  // 달리기 효과음 재생용
+
+        TIMER_END
+    };
+
+private:
     explicit CPlayerController(DEVICE graphicDev);
     explicit CPlayerController(const CPlayerController& rhs);
     ~CPlayerController() override;
 
 public:
     HRESULT Ready_PlayerController();
+    void    Initialize_Component() override;
     _int    Update_Component(const _float& timeDelta) override;
     void    LateUpdate_Component() override;
 
@@ -66,6 +76,8 @@ private:
     CPlayerMovement* m_OwnerMovementCom;
     CPlayerAttack*   m_OwnerAttackCom;
 #pragma endregion
+
+    _float m_Timers[TIMER_END]; // enum값을 통해 사용하는 타이머
 
 public:
     static CPlayerController* Create(DEVICE graphicDev);
