@@ -234,6 +234,10 @@ void CPlayerController::CheckStateTransition()
         }
     }
 
+    //TODO LSHIFT로 강공격
+
+    //TODO RMB로 스킬
+
     //!! 공격 or 구르기 중이라면 이동/대기 상태로 넘어가지 않도록 여기서 리턴
     if (curState == ACTORSTATE::PLAYER_ROLL ||
         curState == ACTORSTATE::PLAYER_SWORD_COMBO1 ||

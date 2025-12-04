@@ -3,17 +3,17 @@
 #include "Engine_Define.h"
 #include "CBaseState.h"
 
-namespace Engine
-{
-    class CTransform;
-    class CTexture;
-    class CAnimator;
-}
+BEGIN(Engine)
+class CTransform;
+class CTexture;
+class CAnimator;
+class CGameObject;
+END
 
+class CMonsterController;
 class CPlayer;
 
-class CMonsterState :
-    public CBaseState
+class CMonsterState : public CBaseState
 {
 protected:
     explicit CMonsterState();
@@ -22,7 +22,6 @@ protected:
 public:
     virtual void Enter() ;
     virtual void Exit() ;
-
 
 public:
      //virtual HRESULT Ready_State() { return S_OK; }
@@ -33,17 +32,19 @@ public:
 protected:
     virtual void    Find_Player();
 protected:
-    CPlayer* m_pPlayer;
+    CPlayer*    m_pPlayer;
     CTransform* m_pPlayerTransformCom;
     CTransform* m_pOwnerTransformCom;
-    CAnimator* m_pOwnerAnimatorCom;
+    CAnimator*  m_pOwnerAnimatorCom;
 
 
-    _float m_fCurStateElapsedTime; // 누적시간
+    _float      m_fCurStateElapsedTime; // 누적시간
     _float      m_fMinStateTime;
-    _bool  m_bMinStateTimePassed;
+    _bool       m_bMinStateTimePassed;
 
-    _bool DoneAnim = false;
+    _bool       DoneAnim = false;
+
+    CMonsterController* m_Controller;
 
 private:
     // CBase을(를) 통해 상속됨

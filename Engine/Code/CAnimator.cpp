@@ -159,6 +159,28 @@ void CAnimator::Stop_Animation()
     m_Play = false;
 }
 
+_bool CAnimator::Is_AnimationFinished()
+{
+    if (m_CurAnimation == nullptr)
+        return true;  
+
+    // STOP 상태면 끝남
+    if (m_CurAnimation->Get_AnimState() == ANIMSTATE::STOP)
+        return true;
+
+    // ONCE 상태이고 마지막 프레임이면 끝남
+    if (m_CurAnimation->Get_AnimState() == ANIMSTATE::ONCE)
+    {
+        _int curFrame = m_CurAnimation->Get_Frame();
+        _int maxFrame = m_CurAnimation->Get_MaxFrameX();
+
+        return (curFrame >= maxFrame - 1);
+    }
+
+    // LOOP는 안끝남.
+    return false;
+}
+
 _int CAnimator::Get_CurFrame()
 {
     if (m_CurAnimation == nullptr)
@@ -247,6 +269,18 @@ void CAnimator::Set_CurOffset(const _vec2& offset)
     }
 
     return;
+}
+
+void CAnimator::Set_FlipX(_bool flip)
+{
+    if (m_BufferCom)
+    {
+        CRcTex* rect = dynamic_cast<CRcTex*>(m_BufferCom);
+        if (rect)
+        {
+            rect->Set_FlipX(flip);
+        }
+    }
 }
 
 void CAnimator::Set_TextureType(COMPONENTTYPE type)

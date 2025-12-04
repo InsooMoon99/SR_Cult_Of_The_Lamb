@@ -41,6 +41,13 @@ private:
     vector<IDirect3DBaseTexture9*> m_Textures;
     map<wstring, vector<IDirect3DBaseTexture9*>> m_AnimTextures;
 
+private:
+    static CRITICAL_SECTION s_D3DLock;
+    static bool s_LockInitialized;
+
+public:
+    static void InitTextureSystem();
+    static void CleanupTextureSystem();
 
 };
 

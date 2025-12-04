@@ -1,37 +1,53 @@
 ﻿#include "CTransform.h"
 
 CTransform::CTransform()
-    : m_Info{}, m_Scale(1.f, 1.f, 1.f), m_Rotation(0.f, 0.f, 0.f, 1.f),
-    m_PrevInfo{}, m_PrevScale(m_Scale), m_PrevRotation(m_Rotation), m_IsDirty(true)
+    : m_Scale(1.f, 1.f, 1.f),
+      m_Rotation(0.f, 0.f, 0.f, 1.f),
+      m_EulerRad(0.f, 0.f, 0.f),
+      m_PrevScale(m_Scale),
+      m_PrevRotation(m_Rotation),
+      m_IsDirty(true)
 {
+    ZeroMemory(m_Info, sizeof(_vec3) * static_cast<_uint>(INFO_END));
+    ZeroMemory(m_PrevInfo, sizeof(_vec3) * static_cast<_uint>(INFO_END));
+
     D3DXMatrixIdentity(&m_matWorld);
     D3DXMatrixIdentity(&m_matRot);
 }
 
 CTransform::CTransform(DEVICE graphicDev)
     : CComponent(graphicDev),
-    m_Info{}, m_Scale(1.f, 1.f, 1.f), m_Rotation(0.f, 0.f, 0.f, 1.f),
-    m_PrevInfo{}, m_PrevScale(m_Scale), m_PrevRotation(m_Rotation), m_IsDirty(true)
+      m_Scale(1.f, 1.f, 1.f),
+      m_Rotation(0.f, 0.f, 0.f, 1.f),
+      m_EulerRad(0.f, 0.f, 0.f),
+      m_PrevScale(m_Scale),
+      m_PrevRotation(m_Rotation),
+      m_IsDirty(true)
 {
+    ZeroMemory(m_Info, sizeof(_vec3) * static_cast<_uint>(INFO_END));
+    ZeroMemory(m_PrevInfo, sizeof(_vec3) * static_cast<_uint>(INFO_END));
+
     D3DXMatrixIdentity(&m_matWorld);
     D3DXMatrixIdentity(&m_matRot);
 }
 
 CTransform::CTransform(const CTransform& rhs)
     : CComponent(rhs),
-    m_Scale(rhs.m_Scale), m_Rotation(rhs.m_Rotation),
-    m_PrevScale(rhs.m_Scale), m_PrevRotation(rhs.m_Rotation), m_IsDirty(true)
+      m_Scale(rhs.m_Scale),
+      m_Rotation(rhs.m_Rotation),
+      m_matRot(rhs.m_matRot),
+      m_matWorld(rhs.m_matWorld),
+      m_EulerRad(rhs.m_EulerRad),
+      m_PrevScale(rhs.m_Scale),
+      m_PrevRotation(rhs.m_Rotation),
+      m_IsDirty(true)
 {
-    // 복제본이 독립적으로 상태를 유지하도록 깊은 복사
-    for (_uint i = 0; i < INFO_END; ++i)
-    {
-        m_PrevInfo[i] = m_Info[i] = rhs.m_Info[i];
-    }
+    memcpy(m_Info, rhs.m_Info, sizeof(_vec3) * static_cast<_uint>(INFO_END));
+    memcpy(m_PrevInfo, m_Info, sizeof(_vec3) * static_cast<_uint>(INFO_END));
 }
 
 CTransform::~CTransform()
-{
-}
+{ }
 
 HRESULT CTransform::Ready_Transform()
 {
@@ -69,9 +85,8 @@ void CTransform::LateUpdate_Component()
         m_PrevInfo[i] = m_Info[i];
     }
 
-    m_PrevScale = m_Scale;
+    m_PrevScale    = m_Scale;
     m_PrevRotation = m_Rotation;
-
 }
 
 _vec3 CTransform::Get_Rotation() const
@@ -107,7 +122,9 @@ void CTransform::Set_Rotation(const _vec3& rad)
 {
     m_EulerRad = rad;
     D3DXQuaternionRotationYawPitchRoll(&m_Rotation,
-        rad.y, rad.x, rad.z);
+                                       rad.y,
+                                       rad.x,
+                                       rad.z);
     m_IsDirty = true;
 }
 
@@ -200,12 +217,12 @@ void CTransform::Rotation_World(ROTATION rotType, const _float& radian, const _f
 
 void CTransform::Chase_Target(const _vec3* targetPos, const _float& timeDelta, const _float& speed)
 {
-    const float epsMove = 1e-6f;               // 이보다 가까우면 이동하지 않음
-    const float epsRotDist = 0.01f;               // 이 거리보다 가까우면 회전 멈춤 (데드존)
+    const float epsMove      = 1e-6f;               // 이보다 가까우면 이동하지 않음
+    const float epsRotDist   = 0.01f;               // 이 거리보다 가까우면 회전 멈춤 (데드존)
     const float maxTurnSpeed = D3DXToRadian(720.f); // 초당 회전 한계 (rad/s)
 
     // [1] 이동: 등속 이동 + 남은 거리 클램프
-    _vec3 dir = *targetPos - m_Info[INFO_POS];
+    _vec3 dir  = *targetPos - m_Info[INFO_POS];
     float dist = D3DXVec3Length(&dir);
 
     if (dist > epsMove)
@@ -224,7 +241,7 @@ void CTransform::Chase_Target(const _vec3* targetPos, const _float& timeDelta, c
     if (dist < epsRotDist)
         return;
 
-    const _quat targetRot = Compute_LookAtTarget_Quat(targetPos);
+    const _quat targetRot  = Compute_LookAtTarget_Quat(targetPos);
     _quat       currentRot = m_Rotation;
     D3DXQuaternionNormalize(&currentRot, &currentRot);
 
@@ -243,8 +260,8 @@ void CTransform::Chase_Target(const _vec3* targetPos, const _float& timeDelta, c
     D3DXQuaternionNormalize(&deltaRot, &deltaRot);
 
     // 프레임 당 이동 제한 (= 각속도 제한)
-    const float dot = Clamp(fabsf(deltaRot.w), -1.f, 1.f);
-    const float angle = 2.f * acosf(dot);
+    const float dot     = Clamp(fabsf(deltaRot.w), -1.f, 1.f);
+    const float angle   = 2.f * acosf(dot);
     const float maxStep = maxTurnSpeed * timeDelta;
 
     if (angle > 1e-6f)
@@ -266,6 +283,47 @@ void CTransform::Chase_Target(const _vec3* targetPos, const _float& timeDelta, c
 
         D3DXQuaternionNormalize(&m_Rotation, &m_Rotation);
     }
+}
+
+void CTransform::LookAt(const _vec3& targetPos)
+{
+    _vec3 pos  = m_Info[INFO_POS];
+    _vec3 look = targetPos - pos;
+    D3DXVec3Normalize(&look, &look);
+
+    if (D3DXVec3LengthSq(&look) == 0.f)
+        return;
+
+    _vec3 right;
+
+    D3DXVec3Cross(&right, &g_WorldUp, &look);
+    D3DXVec3Normalize(&right, &right);
+
+    if (D3DXVec3LengthSq(&right) == 0.f)
+        right = g_WorldRight;
+
+    _vec3 up;
+    D3DXVec3Cross(&up, &look, &right);
+    D3DXVec3Normalize(&up, &up);
+
+    _matrix matRot;
+    D3DXMatrixIdentity(&matRot);
+
+    matRot._11 = right.x;
+    matRot._12 = right.y;
+    matRot._13 = right.z;
+
+    matRot._21 = up.x;
+    matRot._22 = up.y;
+    matRot._23 = up.z;
+
+    matRot._31 = look.x;
+    matRot._32 = look.y;
+    matRot._33 = look.z;
+
+    D3DXQuaternionRotationMatrix(&m_Rotation, &matRot);
+
+    m_IsDirty = true;
 }
 
 _quat CTransform::Compute_LookAtTarget_Quat(const _vec3* pTargetPos)
@@ -391,8 +449,8 @@ bool CTransform::Check_Dirty()
 bool CTransform::HasVectorChanged(const _vec3& now, const _vec3& prev, float eps)
 {
     return fabsf(now.x - prev.x) > eps
-        || fabsf(now.y - prev.y) > eps
-        || fabsf(now.z - prev.z) > eps;
+           || fabsf(now.y - prev.y) > eps
+           || fabsf(now.z - prev.z) > eps;
 }
 
 bool CTransform::HasQuatChanged(const _quat& now, const _quat& prev, float eps)

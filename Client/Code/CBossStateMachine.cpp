@@ -7,11 +7,12 @@
 #include "CBossBulletAttack.h"
 #include "CBossChainAttack.h"
 #include "CBossDead.h"
-#include "CBossGroggy.h"
+#include "CBossGroggy.h"    
 #include "CBossIdle.h"
 #include "CBossMove.h"
 
-CBossStateMachine::CBossStateMachine(CBossPhase1* owner) : m_pOwner(owner)
+CBossStateMachine::CBossStateMachine(CMonsterBase* owner)
+: m_pOwner(owner)
 {
 }
 
@@ -47,6 +48,11 @@ _int CBossStateMachine::Update_StateMachine(const _float& timeDelta)
     return 0; //일단 0, 형식 통일 떄문에 int로 함 void 여도 됨
 }
 
+void CBossStateMachine::LateUpdate_StateMachine(const _float& timeDelta)
+{
+    m_pCurState->LateUpdate_State(timeDelta);
+}
+
 void CBossStateMachine::Change_State(_uint changeStateKey)
 {
     // 체인지 씬이랑 비슷한 느낌
@@ -61,6 +67,8 @@ void CBossStateMachine::Change_State(_uint changeStateKey)
     if (m_pCurState)
        m_pCurState->Exit();
 
+    // 이전 상태 등록
+    //m_pPrevState = m_pCurState;
     m_dwPrevStateKey = m_dwCurStateKey;
     m_dwCurStateKey = changeStateKey;
 
@@ -82,32 +90,35 @@ HRESULT CBossStateMachine::Ready_BossStates()
 
     CMonsterState* pState = nullptr;
 
-    if (!(pState = CBossAwake::Create(m_pOwner, this)))
+    CBossPhase1* phase1 = dynamic_cast<CBossPhase1*>(m_pOwner);
+    NULL_CHECK_RETURN(phase1, E_FAIL);
+
+    if (!(pState = CBossAwake::Create(phase1, this)))
         return E_FAIL;
 
     m_vecState[CBossPhase1::BOSSPHASE1::BOSSAWAKE] = pState;
 
-    if (!(pState = CBossBulletAttack::Create(m_pOwner, this)))
+    if (!(pState = CBossBulletAttack::Create(phase1, this)))
         return E_FAIL;
     m_vecState[CBossPhase1::BOSSPHASE1::BULLETATTACK] = pState;
 
-    if (!(pState = CBossChainAttack::Create(m_pOwner, this)))
+    if (!(pState = CBossChainAttack::Create(phase1, this)))
         return E_FAIL;
     m_vecState[CBossPhase1::BOSSPHASE1::CHAINATTACK] = pState;
     
-    if (!(pState = CBossDead::Create(m_pOwner, this)))
+    if (!(pState = CBossDead::Create(phase1, this)))
         return E_FAIL;
     m_vecState[CBossPhase1::BOSSPHASE1::BOSSDEAD] = pState;
     
-    if (!(pState = CBossIdle::Create(m_pOwner, this)))
+    if (!(pState = CBossIdle::Create(phase1, this)))
         return E_FAIL;
     m_vecState[CBossPhase1::BOSSPHASE1::BOSSIDLE] = pState;
     
-    if (!(pState = CBossMove::Create(m_pOwner, this)))
+    if (!(pState = CBossMove::Create(phase1, this)))
         return E_FAIL;
     m_vecState[CBossPhase1::BOSSPHASE1::BOSSMOVE] = pState;
     
-    if (!(pState = CBossGroggy::Create(m_pOwner, this)))
+    if (!(pState = CBossGroggy::Create(phase1, this)))
         return E_FAIL;
     m_vecState[CBossPhase1::BOSSPHASE1::BOSSGROGGRY] = pState;
 
@@ -117,7 +128,7 @@ HRESULT CBossStateMachine::Ready_BossStates()
 }
 
 
-CBossStateMachine* CBossStateMachine::Create(CBossPhase1* owner)
+CBossStateMachine* CBossStateMachine::Create(CMonsterBase* owner)
 {
     auto StateMachine = new CBossStateMachine(owner);
     if (FAILED(StateMachine->Ready_StateMachine()))
@@ -133,5 +144,6 @@ CBossStateMachine* CBossStateMachine::Create(CBossPhase1* owner)
 
 void CBossStateMachine::Free()
 {
+
     CStateMachine::Free();
 }

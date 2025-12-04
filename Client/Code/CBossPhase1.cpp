@@ -13,6 +13,7 @@
 #include "CMonsterState.h"
 
 
+
 CBossPhase1::CBossPhase1(DEVICE graphicDev)
     : CMonsterBase(graphicDev)
     , m_StateMachine(nullptr)
@@ -38,12 +39,20 @@ HRESULT CBossPhase1::Ready_GameObject()
 
     m_TransformCom->Set_Scale({ 5,5,1 });
 
+    m_BoxColCom->Set_Size({ m_TransformCom->Get_Scale().x*.2f,m_TransformCom->Get_Scale().y ,m_TransformCom->Get_Scale().z*.2f });
+
+    BaseCenter.y = m_TransformCom->Get_Scale().y;
+    m_TransformCom->Set_Pos(StartPos.x, m_TransformCom->Get_Scale().y, StartPos.z);
 
     m_CombatStatCom->Set_Hp(200.f);
     m_CombatStatCom->Set_MaxHp(200.f);
     m_CombatStatCom->Set_Attack(10.f);
     m_CombatStatCom->Set_Mp(5.f);
     m_CombatStatCom->Set_Speed(5.f);
+
+
+    if (m_BoxColCom)
+        m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::ENEMY);
 
     return S_OK;
 }
@@ -67,6 +76,7 @@ _int CBossPhase1::Update_GameObject(const _float& timeDelta)
 void CBossPhase1::LateUpdate_GameObject(const _float& timeDelta)
 {
     CMonsterBase::LateUpdate_GameObject(timeDelta);
+    m_StateMachine->LateUpdate_StateMachine(timeDelta);
 }
 
 void CBossPhase1::Render_GameObject()

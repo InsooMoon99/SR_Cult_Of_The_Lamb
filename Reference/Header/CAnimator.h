@@ -44,6 +44,9 @@ public:
     void                Play_Animation(const wstring& key, ANIMSTATE state, bool reset = true);
     void                Stop_Animation();
 
+    // 재생중인 애니메이션이 끝났는지. 보통 ONCE일때 사용
+    _bool               Is_AnimationFinished();
+
     CSpriteAnimation*   Get_CurAnimation() const { return m_CurAnimation; } // 현재 재생중인 애니메이션
     const wstring&      Get_CurKey() { return m_CurKey; } // 현재 재생중인 키값
     _int                Get_CurFrame(); // 현재 재생중인 프레임
@@ -54,6 +57,7 @@ public:
 
     void                Set_CurSize(const _vec2& size);
     void                Set_CurOffset(const _vec2& offset);
+    void                Set_FlipX(_bool flip);
 
     // 주의! Object마다 Set_TextureType 설정 꼭 해줘야함
     void                Set_TextureType(COMPONENTTYPE type);

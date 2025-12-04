@@ -57,7 +57,8 @@ _int CProjectile::Update_Component(const _float& timeDelta)
         m_StartAngle += timeDelta * m_Speed;
         m_StartAngle = fmodf(m_StartAngle,360.f);
         _vec3 circle = { cos(D3DXToRadian(m_StartAngle)) * m_Radius, 0.f, sin(D3DXToRadian(m_StartAngle)) * m_Radius };
-        m_TransformCom->Set_Pos(m_BossTransform->Get_Pos() + circle);
+        m_TransformCom->Set_Pos(m_OrbitCenter + circle);
+
 
     }
         break;

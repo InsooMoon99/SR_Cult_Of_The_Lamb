@@ -106,7 +106,7 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
 
     // =========================================================
-    //TODO [2] 건틀릿 (GAUNTLET) 데이터 설정
+    // [2] 건틀릿 (GAUNTLET) 데이터 설정
     // =========================================================
 
     //강공격

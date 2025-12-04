@@ -14,6 +14,8 @@
 #include "CWall.h"
 #include "CDropSystem.h"
 #include "CBoss_Slave_Test.h"
+#include "CCameraController.h"
+#include "CCamSetupBuilder.h"
 
 CStage_Boss2::CStage_Boss2(DEVICE graphicDev)
     : Engine::CScene(graphicDev), m_Terrain(nullptr)
@@ -111,24 +113,38 @@ HRESULT CStage_Boss2::Ready_GameLogic_Layer(LAYERTYPE layerType)
             OBJTYPE::PLAYER, L"Player", m_GraphicDev, layer, &gameObject), L"Persistent object setup failed");
 
     const auto playerTransform = dynamic_cast<CTransform*>(gameObject->Get_Component(ID_DYNAMIC,COMPONENTTYPE::TRANSFORM));
+    playerTransform->Set_Pos(_vec3(35.f, 1.f, 21.3f));
 
     // 카메라 생성
-    FAILED_CHECK_MSG(Engine::AcquirePersistentObject<CMainCamera>(
-        OBJTYPE::CAMERA, L"MainCamera", m_GraphicDev, layer, &gameObject),L"Persistent object setup failed");
+    FAILED_CHECK_MSG(
+        Engine::AcquirePersistentObject<CMainCamera>(
+            OBJTYPE::CAMERA, L"MainCamera", m_GraphicDev, layer, &gameObject),
+        L"Persistent object setup failed"
+    );
 
-    // 카메라 타겟을 플레이어로 설정
-    auto mainCam = dynamic_cast<CMainCamera*>(gameObject);
-    if (mainCam)
+    auto camController = dynamic_cast<CCameraController*>(
+        gameObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAM_CONTROLLER));
+
+    // 카메라 설정값 초기화
+    if (camController != nullptr)
     {
-        mainCam->Set_CamTarget(playerTransform);
+        // 씬에서 카메라 생성 시 값 초기화
+        // : CCameraSetup을 카메라 설정을 중도에 바꿀 때 사용 가능하고,
+        //   그럴 때는 필요한 것만 사용해 .Apply() 하면 된다.
+        CCamSetupBuilder(camController)
+            .SetTarget(playerTransform)
+            //.PivotOffset({ 0.f, 0.f, 0.f })
+            //.Distance(12.f)
+            //.RotX(45.f)
+            //.RotY(0.f)
+            //.LagSpeed(10.f)
+            //.ZoomSpeed(5.f)
+            .Snap()
+            .Apply();
 
-        auto camCom = dynamic_cast<CCameraCom*>(
-            mainCam->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAMERA));
-
-        if (camCom)
-            CMainEditorMgr::GetInstance()->Set_MainCamera(camCom); // 에디터에 카메라 설정
+        // 에디터에 카메라 설정
+        CMainEditorMgr::GetInstance()->Set_MainCamera(camController);
     }
-
 
     // 춘식이 등장
     gameObject = CBoss_SlaveTest::Create(m_GraphicDev);
@@ -137,17 +153,17 @@ HRESULT CStage_Boss2::Ready_GameLogic_Layer(LAYERTYPE layerType)
     const auto chunSikTrans = gameObject->Get_Transform();
     NULL_CHECK_RETURN(chunSikTrans, E_FAIL);
 
-    chunSikTrans->Set_Pos(_vec3(31.f, 3.1f, 30.f));
+    chunSikTrans->Set_Pos(_vec3(27.f, 3.1f, 18.f));
 
     layer->Add_GameObject(OBJTYPE::NPC, gameObject);
 
     // 보스 소환
-    //gameObject = CBossPhase2::Create(m_GraphicDev);
-    //NULL_CHECK_RETURN(gameObject, E_FAIL);
-    //
-    //gameObject->Get_Transform()->Set_Pos(35.f, 3.f, 30.f);
-    //
-    //layer->Add_GameObject(OBJTYPE::BOSS2, gameObject);
+    gameObject = CBossPhase2::Create(m_GraphicDev);
+    NULL_CHECK_RETURN(gameObject, E_FAIL);
+    
+    gameObject->Get_Transform()->Set_Pos(35.f, 4.9f, 30.f);
+    
+    layer->Add_GameObject(OBJTYPE::BOSS2, gameObject);
 
     m_Layers.insert({ layerType, layer });
 
@@ -164,13 +180,6 @@ HRESULT CStage_Boss2::Ready_UI_Layer(LAYERTYPE layerType)
     Engine::CGameObject* pGameObject = nullptr;
 
     m_Layers.insert({ layerType, layer });
-
-    return S_OK;
-}
-
-HRESULT CStage_Boss2::Ready_Prototype()
-{
-    // Move Loading Scene
 
     return S_OK;
 }

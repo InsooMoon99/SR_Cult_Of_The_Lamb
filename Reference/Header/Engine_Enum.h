@@ -67,7 +67,8 @@ enum class COLLISION_LAYERTYPE
     PLAYER,
     ENEMY,
     WALL,
-    PROJECTILE,
+    PLAYERPROJECTILE,
+    BOSSPROJECTILE,
     ITEM,
     ATTACK,
 
@@ -150,7 +151,10 @@ enum class COMPONENTTYPE
     TEX_OUT,
 
     ANIMATOR,
-    CAMERA,
+
+    CAM_CONTROLLER,
+    CAM_MOVEMENT,
+    CAM_CALC,
 
     RECT_COLL,
     CIRCLE_COLL,
@@ -163,7 +167,10 @@ enum class COMPONENTTYPE
     ////////////////
     TEX_SLAVE_TEST,
     TEX_BOSS2_PHASE2,
+    TEX_BOSS2_EYEBALL,
+
     BOSS2_CONTROLLER,
+    EYEBALL_CONTROLLER,
 
     ////////////////
     //  MapObject //
@@ -178,7 +185,6 @@ enum class COMPONENTTYPE
 
     TEX_DUNGEON_DECO,
     TEX_ETC,
-
 
     COMPONENT_END
 };
@@ -242,10 +248,37 @@ enum class SCENETYPE
 
 enum SOUNDTYPE
 {
-	SOUND_BGM,
-	SOUND_EFFECT,
+    SOUND_BGM,
+    SOUND_EFFECT,
 
-	SOUND_END
+    SOUND_END
+};
+
+// 카메라 컨트롤 모드
+enum CAM_MODE
+{
+    CAM_FREE,               // 자유 카메라
+    CAM_TARGET,             // 타겟 고정 카메라
+
+    CAM_END
+};
+
+// 카메라 시점 타입
+enum VIEW_TYPE
+{
+    VIEW_FPS,               // 1인칭
+    VIEW_TPS,               // 3인칭
+
+    VIEW_END
+};
+
+// 카메라 투영 타입
+enum PROJECTION_TYPE
+{
+    PROJ_PERSPECTIVE,       // 원근 투영
+    PROJ_ORTHOGRAPHIC,      // 직교 투영
+
+    PROJ_END
 };
 }
 #endif // Engine_Enum_h__

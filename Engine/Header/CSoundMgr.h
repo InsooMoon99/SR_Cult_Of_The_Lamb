@@ -57,12 +57,14 @@ private: // --- 내부 로직 ---
     void CleanupStoppedBGMChannels();
 
 private:
-    struct CHANNEL_INFO
+    // BGM 소리 페이드아웃 기능을 위한 정보 구조체
+    typedef struct FadeChannelInfo
     {
-        FMOD_CHANNEL* pChannel;
-        _float        fCurrentVolume;
-        _float        fFadeSpeed;
-    };
+        FMOD_CHANNEL* channel;
+        _float        currVolume;
+        _float        fadeSpeed;
+    }
+    FADE_INFO;
 
 private:
     FMOD_SYSTEM*       m_System;
@@ -71,7 +73,7 @@ private:
 
     unordered_map<wstring, FMOD_SOUND*> m_Sounds;
     vector<FMOD_CHANNEL*>               m_BGMChannels;
-    list<CHANNEL_INFO>                  m_FadeChannels;
+    list<FADE_INFO>                     m_FadeChannels;
 
 private:
     void Free() override;

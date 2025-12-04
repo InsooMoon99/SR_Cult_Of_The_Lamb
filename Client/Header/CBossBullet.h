@@ -41,6 +41,7 @@ public:
     HRESULT Add_Component();
 
     void SetPendingKill() { Mark_As_PendingKill(); }
+
 public:
 
     static CBossBullet* Create(DEVICE graphicDev, CGameObject* owner, CGameObject* Target, PROJ_TYPE type);
@@ -48,7 +49,7 @@ public:
     void Start_Shoot() { m_StartShoot = true; }
     void Set_TargetDir(_vec3 dir) { m_TargetDir = dir; }
 
-
+    static int imsdfjlkdsf; 
 
 protected:
 
@@ -61,9 +62,11 @@ protected:
 
     CGameObject* m_pOwner;
     CGameObject* m_pTarget;
-   // CAttackBox* ATBox = nullptr;
+   //CAttackBox* ATBox = nullptr;
     CTransform* m_ATKBoxTransformCom;
     CProjectile* m_ProjectileCom;
+
+
 
     PROJ_TYPE m_type;
 
@@ -76,7 +79,7 @@ protected:
     _vec3 m_MoveLength ;
 
 
-
+	float DieCountForSafe;
     float m_fAlpha = 0;
 
     /// 실제 움직이는 변수/ ///
