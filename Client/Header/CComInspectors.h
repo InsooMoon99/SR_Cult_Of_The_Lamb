@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include "CAnimator.h"
 #include "CBoxCollider.h"
+#include "CCameraCalc.h"
+#include "CCameraMovement.h"
 #include "CCombatStat.h"
 #include "CDInputMgr.h"
 #include "CEnumHelper.h"
@@ -16,8 +18,6 @@
 #include "CTransform.h"
 #include "CWallRenderer.h"
 #include "CWeaponEquip.h"
-#include "CCameraCalc.h"
-#include "CCameraMovement.h"
 
 USING(Engine)
 

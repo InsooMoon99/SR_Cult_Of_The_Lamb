@@ -9,7 +9,7 @@ class CCamSetupBuilder
 public:
     /// @brief CCameraController를 받아와 카메라 타겟 설정 및 값 초기화
     /// @param camController  CCameraController 컴포넌트의 포인터
-    /// @param LoadCurrent    true면 현재 카메라 설정을 복사해 추가 수정 (기본 true)
+    /// @param LoadCurrent    true면 현재 카메라 설정을 가져와 추가 수정 (기본 true)
     CCamSetupBuilder(CCameraController* camController, _bool LoadCurrent = true)
         : m_CamController(camController),
           m_CamMovementCom(nullptr),
