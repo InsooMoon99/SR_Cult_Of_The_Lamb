@@ -10,6 +10,7 @@
 #include "CBossGroggy.h"    
 #include "CBossIdle.h"
 #include "CBossMove.h"
+#include "CBossTalk.h"
 
 CBossStateMachine::CBossStateMachine(CMonsterBase* owner)
 : m_pOwner(owner)
@@ -25,7 +26,7 @@ HRESULT CBossStateMachine::Ready_StateMachine()
 {
     Ready_BossStates();
 
-    m_pCurState = m_vecState[CBossPhase1::BOSSPHASE1::BOSSAWAKE];
+    m_pCurState = m_vecState[CBossPhase1::BOSSPHASE1::TALK];
 
     m_pCurState->Enter();
 
@@ -98,31 +99,33 @@ HRESULT CBossStateMachine::Ready_BossStates()
 
     m_vecState[CBossPhase1::BOSSPHASE1::BOSSAWAKE] = pState;
 
-    if (!(pState = CBossBulletAttack::Create(phase1, this)))
+    if (nullptr == (pState = CBossBulletAttack::Create(phase1, this)))
         return E_FAIL;
     m_vecState[CBossPhase1::BOSSPHASE1::BULLETATTACK] = pState;
-
-    if (!(pState = CBossChainAttack::Create(phase1, this)))
+    
+    if (nullptr == (pState = CBossChainAttack::Create(phase1, this)))
         return E_FAIL;
     m_vecState[CBossPhase1::BOSSPHASE1::CHAINATTACK] = pState;
     
-    if (!(pState = CBossDead::Create(phase1, this)))
+    if (nullptr == (pState = CBossDead::Create(phase1, this)))
         return E_FAIL;
     m_vecState[CBossPhase1::BOSSPHASE1::BOSSDEAD] = pState;
     
-    if (!(pState = CBossIdle::Create(phase1, this)))
+    if (nullptr == (pState = CBossIdle::Create(phase1, this)))
         return E_FAIL;
     m_vecState[CBossPhase1::BOSSPHASE1::BOSSIDLE] = pState;
     
-    if (!(pState = CBossMove::Create(phase1, this)))
+    if (nullptr == (pState = CBossMove::Create(phase1, this)))
         return E_FAIL;
     m_vecState[CBossPhase1::BOSSPHASE1::BOSSMOVE] = pState;
     
-    if (!(pState = CBossGroggy::Create(phase1, this)))
+    if (nullptr == (pState = CBossGroggy::Create(phase1, this)))
         return E_FAIL;
     m_vecState[CBossPhase1::BOSSPHASE1::BOSSGROGGRY] = pState;
-
-
+    
+    if (nullptr == (pState = CBossTalk::Create(phase1, this)))
+        return E_FAIL;
+    m_vecState[CBossPhase1::BOSSPHASE1::TALK] = pState;
 
     return S_OK;
 }

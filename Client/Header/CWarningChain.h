@@ -53,6 +53,7 @@ protected:
     //CTransform* m_ChainTransformCom  = nullptr;
     //CAnimator* m_ChainAnimatorCom = nullptr;
     //CBossChain* chain = nullptr;
+
     bool m_flag = false;
     bool m_Sizeflag = false;
     _vec3 m_originSize;

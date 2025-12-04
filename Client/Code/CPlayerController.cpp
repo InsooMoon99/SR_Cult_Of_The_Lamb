@@ -9,32 +9,35 @@
 #include "CPlayerAttack.h"
 #include "CPlayerMovement.h"
 #include "CRigidbody.h"
+#include "CSoundMgr.h"
 #include "CState.h"
 #include "CPlayerSkill.h"
 #include "CPlayerInput.h"
 
 CPlayerController::CPlayerController(DEVICE graphicDev)
     : CComponent(graphicDev),
-    m_OwnerStateCom(nullptr),
-    m_OwnerCombatStatCom(nullptr),
-    m_OwnerRigidbodyCom(nullptr),
-    m_OwnerColliderCom(nullptr),
-    m_OwnerInputCom(nullptr),
-    m_OwnerMovementCom(nullptr),
-    m_OwnerAttackCom(nullptr)
-{
+      m_OwnerStateCom(nullptr),
+      m_OwnerCombatStatCom(nullptr),
+      m_OwnerRigidbodyCom(nullptr),
+      m_OwnerColliderCom(nullptr),
+      m_OwnerInputCom(nullptr),
+      m_OwnerMovementCom(nullptr),
+      m_OwnerAttackCom(nullptr)
+{ 
+    ZeroMemory(m_Timers, sizeof(m_Timers));
 }
 
 CPlayerController::CPlayerController(const CPlayerController& rhs)
     : CComponent(rhs),
-    m_OwnerStateCom(nullptr),
-    m_OwnerCombatStatCom(nullptr),
-    m_OwnerRigidbodyCom(nullptr),
-    m_OwnerColliderCom(nullptr),
-    m_OwnerInputCom(nullptr),
-    m_OwnerMovementCom(nullptr),
-    m_OwnerAttackCom(nullptr)
-{
+      m_OwnerStateCom(nullptr),
+      m_OwnerCombatStatCom(nullptr),
+      m_OwnerRigidbodyCom(nullptr),
+      m_OwnerColliderCom(nullptr),
+      m_OwnerInputCom(nullptr),
+      m_OwnerMovementCom(nullptr),
+      m_OwnerAttackCom(nullptr)
+{ 
+    ZeroMemory(m_Timers, sizeof(m_Timers));
 }
 
 CPlayerController::~CPlayerController()
@@ -45,6 +48,9 @@ HRESULT CPlayerController::Ready_PlayerController()
 {
     return S_OK;
 }
+
+void CPlayerController::Initialize_Component()
+{ }
 
 _int CPlayerController::Update_Component(const _float& timeDelta)
 {
@@ -418,6 +424,16 @@ void CPlayerController::Action_Idle(const _float& timeDelta)
 
 void CPlayerController::Action_Run(const _float& timeDelta)
 {
+#pragma region 플레이어 달리기 효과음
+    m_Timers[TIMER_RUNSOUND] += timeDelta;
+
+    if (m_Timers[TIMER_RUNSOUND] >= 0.2f)
+    {
+        CSoundMgr::GetInstance()->Play_Once(L"Player/Player_Walk2.wav", SOUND_EFFECT, 0.4f);
+        m_Timers[TIMER_RUNSOUND] = 0.f;
+    }
+#pragma endregion
+
     m_OwnerMovementCom->Run(m_OwnerInputCom->Get_MoveDir(), timeDelta);
 }
 
