@@ -247,14 +247,24 @@ void CPlayer::Animation_Setting()
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SWORD_COMBO3,
                              L"PlayerSwordCombo3",
                              ANIMSTATE::ONCE);
+
+    m_AnimatorCom->Create_Animation(L"PlayerSwordHeavy",
+                                    70,
+                                    0.02f,
+                                    _vec2(2.f, 2.f),
+                                    _vec2(0.f, 0.f));
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SWORD_HEAVY,
+                             L"PlayerSwordHeavy",
+                             ANIMSTATE::ONCE);
 #pragma endregion
 
 #pragma region ------   Gauntlet   ------
     m_AnimatorCom->Create_Animation(L"PlayerGauntletCombo1",
                                     41,
                                     0.02f,
-                                    _vec2(2.2f, 2.2f),
-                                    _vec2(0.f, 0.f));
+                                    _vec2(2.2f, 1.5f),
+                                    _vec2(0.f, 0.3f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_COMBO1,
                              L"PlayerGauntletCombo1",
@@ -263,7 +273,7 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"PlayerGauntletCombo2",
                                     43,
                                     0.02f,
-                                    _vec2(2.2f, 2.2f),
+                                    _vec2(2.2f, 1.5f),
                                     _vec2(0.f, 0.f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_COMBO2,
@@ -271,24 +281,14 @@ void CPlayer::Animation_Setting()
                              ANIMSTATE::ONCE);
 
     m_AnimatorCom->Create_Animation(L"PlayerGauntletCombo3",
-                                    44,
+                                    40,
                                     0.02f,
-                                    _vec2(2.2f, 2.2f),
-                                    _vec2(0.f, 0.f));
+                                    _vec2(2.6f, 2.f),
+                                    _vec2(0.f, 0.45f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_COMBO3,
                              L"PlayerGauntletCombo3",
                              ANIMSTATE::ONCE);
-
-    //m_AnimatorCom->Create_Animation(L"PlayerGauntletCombo4",
-    //                                40,
-    //                                0.02f,
-    //                                _vec2(2.2f, 2.2f),
-    //                                _vec2(0.f, 0.f));
-    //
-    //m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_COMBO4,
-    //                         L"PlayerGauntletCombo4",
-    //                         ANIMSTATE::ONCE);
 
     m_AnimatorCom->Create_Animation(L"PlayerGauntletHeavy",
                                     70,

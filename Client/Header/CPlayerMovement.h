@@ -57,12 +57,10 @@ public:  // --- 동작 명령 함수 (Controller가 호출) ---
     /// @return true(구르기 중), false(구르기 종료)
     _bool Update_Roll(const _float& timeDelta);
 
-    //TODO : Impulse(dir, force) 로 공격 등에서 살짝 이동하는거 하기
+    void ImpulseMove(const _vec3 dir, _float force);
 
-    _vec3 CalcWorldDir(ACTORDIR dir);  // 플레이어의 ACTORDIR 상태에 따라 8방향 벡터 반환
-
-private: // --- 내부 로직 ---
-    void ChangeDir(const _vec3& dir); // 플레이어 방향 갱신
+    void  ChangeActorDir(const _vec3& dir);  // 주어진 벡터값에 따라 플레이어 ACTORDIR 갱신
+    _vec3 ActorDirToVec(ACTORDIR dir);      // 플레이어의 ACTORDIR 상태에 따라 8방향 벡터값 반환
 
 private: // --- Owner Component 캐싱 ---
     Engine::CState*      m_OwnerStateCom;

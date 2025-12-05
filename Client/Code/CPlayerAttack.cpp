@@ -5,6 +5,7 @@
 #include "CCombatStat.h"
 #include "CGameObject.h"
 #include "CPlayerInput.h"
+#include "CPlayerMovement.h"
 #include "CState.h"
 #include "CWeaponEquip.h"
 
@@ -15,12 +16,13 @@ CPlayerAttack::CPlayerAttack(DEVICE graphicDev)
       m_OwnerCombatStatCom(nullptr),
       m_OwnerWeaponCom(nullptr),
       m_OwnerInputCom(nullptr),
+      m_OwnerMovementCom(nullptr),
 
       m_CurrentAttackObj(nullptr),
 
       m_AttackInfo{},
       m_ComboIndex(0),
-      m_MaxCombo(0),
+      m_MaxCombo(3),
 
       m_Timer(0.f),
       m_IsHitboxActive(false),
@@ -35,6 +37,7 @@ CPlayerAttack::CPlayerAttack(const CPlayerAttack& rhs)
       m_OwnerCombatStatCom(nullptr),
       m_OwnerWeaponCom(nullptr),
       m_OwnerInputCom(nullptr),
+      m_OwnerMovementCom(nullptr),
 
       m_CurrentAttackObj(nullptr),
 
@@ -67,7 +70,7 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].hitboxStartTime  = 0.5f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].hitboxEndTime    = 0.6f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].comboInputTime   = 0.0f; // 강공격은 연계 없음
-    m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].damageMultiplier = 2.f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].damageMultiplier = 3.f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].knockbackPower   = 50.f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].spawnOffset      = 1.3f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].hitboxScale      = _vec3(1.f, 1.f, 1.f);
@@ -75,9 +78,9 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     // 1타
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].state            = ACTORSTATE::PLAYER_SWORD_COMBO1;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].duration         = 0.02f * 31;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitboxStartTime  = 0.1f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitboxEndTime    = 0.2f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].comboInputTime   = 0.15f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitboxStartTime  = 0.02f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitboxEndTime    = 0.02f * 8;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].comboInputTime   = 0.3f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].damageMultiplier = 1.f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].knockbackPower   = 30.f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].spawnOffset      = 1.2f; // 가까움
@@ -86,9 +89,9 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     // 2타
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].state            = ACTORSTATE::PLAYER_SWORD_COMBO2;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].duration         = 0.02f * 38;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitboxStartTime  = 0.1f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitboxEndTime    = 0.2f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].comboInputTime   = 0.15f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitboxStartTime  = 0.02f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitboxEndTime    = 0.02f * 8;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].comboInputTime   = 0.3f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].damageMultiplier = 1.f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].knockbackPower   = 30.f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].spawnOffset      = 1.2f;
@@ -97,9 +100,9 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     // 3타
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].state            = ACTORSTATE::PLAYER_SWORD_COMBO3;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].duration         = 0.02f * 38;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitboxStartTime  = 0.1f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitboxEndTime    = 0.2f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].comboInputTime   = 0.15f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitboxStartTime  = 0.02f * 4;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitboxEndTime    = 0.02f * 11;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].comboInputTime   = 0.3f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].damageMultiplier = 1.f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].knockbackPower   = 30.f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].spawnOffset      = 1.2f;
@@ -112,21 +115,21 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     //강공격
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].state            = ACTORSTATE::PLAYER_GAUNTLET_HEAVY;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].duration         = 0.02f * 70;
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].hitboxStartTime  = 0.1f;
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].hitboxEndTime    = 0.2f;
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].comboInputTime   = 0.2f;
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].damageMultiplier = 1.f;
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].knockbackPower   = 30.f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].hitboxStartTime  = 0.4f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].hitboxEndTime    = 0.6f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].comboInputTime   = 0.4f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].damageMultiplier = 5.f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].knockbackPower   = 50.f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].spawnOffset      = 1.2f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
 
     //1타
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].state            = ACTORSTATE::PLAYER_GAUNTLET_COMBO1;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].duration         = 0.02f * 41;
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].hitboxStartTime  = 0.1f;
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].hitboxEndTime    = 0.2f;
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].comboInputTime   = 0.2f;
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].damageMultiplier = 1.f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].hitboxStartTime  = 0.02f * 5;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].hitboxEndTime    = 0.02f * 12;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].comboInputTime   = 0.4f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].damageMultiplier = 2.f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].knockbackPower   = 30.f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].spawnOffset      = 1.2f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
@@ -134,10 +137,10 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     //2타
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].state            = ACTORSTATE::PLAYER_GAUNTLET_COMBO2;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].duration         = 0.02f * 43;
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].hitboxStartTime  = 0.1f;
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].hitboxEndTime    = 0.2f;
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].comboInputTime   = 0.2f;
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].damageMultiplier = 1.f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].hitboxStartTime  = 0.02f * 12;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].hitboxEndTime    = 0.02f * 24;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].comboInputTime   = 0.4f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].damageMultiplier = 2.f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].knockbackPower   = 30.f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].spawnOffset      = 1.2f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
@@ -145,24 +148,13 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     //3타
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].state            = ACTORSTATE::PLAYER_GAUNTLET_COMBO3;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].duration         = 0.02f * 40;
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].hitboxStartTime  = 0.1f;
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].hitboxEndTime    = 0.2f;
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].comboInputTime   = 0.2f;
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].damageMultiplier = 1.f;
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].knockbackPower   = 30.f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].hitboxStartTime  = 0.02f * 20;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].hitboxEndTime    = 0.02f * 27;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].comboInputTime   = 0.4f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].damageMultiplier = 4.f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].knockbackPower   = 50.f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].spawnOffset      = 1.2f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
-
-    //4타
-    //m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO4].state            = ACTORSTATE::PLAYER_GAUNTLET_COMBO4;
-    //m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO4].duration         = 1.f;
-    //m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO4].hitboxStartTime  = 0.1f;
-    //m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO4].hitboxEndTime    = 0.2f;
-    //m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO4].comboInputTime   = 0.2f;
-    //m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO4].damageMultiplier = 1.f;
-    //m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO4].knockbackPower   = 30.f;
-    //m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO4].spawnOffset      = 1.2f;
-    //m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO4].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
 
     return S_OK;
 }
@@ -189,6 +181,9 @@ HRESULT CPlayerAttack::Init_OwnerComponent()
 
     m_OwnerInputCom = dynamic_cast<CPlayerInput*>(
         m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::PL_INPUT));
+
+    m_OwnerMovementCom = dynamic_cast<CPlayerMovement*>(
+        m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::PL_MOVEMENT));
 
     HRESULT result = S_OK;
 
@@ -232,6 +227,16 @@ HRESULT CPlayerAttack::Init_OwnerComponent()
         result = E_FAIL;
     }
 
+    if (nullptr == m_OwnerMovementCom)
+    {
+        MessageBoxW(nullptr,
+                    L"CPlayerAttack: Owner PlayerMovement Not Found",
+                    L"System Message",
+                    MB_ICONERROR);
+
+        result = E_FAIL;
+    }
+
     return result;
 }
 
@@ -253,19 +258,26 @@ ACTORSTATE CPlayerAttack::Start_NormalAttack()
         m_OwnerStateCom->Change_Dir(ACTORDIR::RIGHT);
 
     // 무기 종류에 따라 최대 콤보 허용 설정
-    switch (weaponIdx)
-    {
-    case WEAPON_SWORD:
-        m_MaxCombo = 3;     // 검 : 최대 3타
-        break;
-    case WEAPON_GAUNTLET:
-        m_MaxCombo = 4;     // 건틀릿 : 최대 4타
-        break;
-    default: return ACTORSTATE::STATE_END;
-    }
+    //!! 최대 3타 고정
+    //switch (weaponIdx)
+    //{
+    //case WEAPON_SWORD:
+    //    m_MaxCombo = 3;     // 검 : 최대 3타
+    //    break;
+    //case WEAPON_GAUNTLET:
+    //    m_MaxCombo = 3;     // 건틀릿 : 최대 3타
+    //    break;
+    //default: return ACTORSTATE::STATE_END;
+    //}
 
     // 1타(COMBO_1) 시작
     m_ComboIndex = static_cast<_int>(ATTACK_COMBO1);
+
+    // 일단 마찰 줘서 정지
+    m_OwnerMovementCom->Stop();
+
+    // 마우스 방향으로 도약
+    m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir(), 450.f);
 
     // Controller에서 상태를 변경하도록 상태값 반환
     return m_AttackInfo[weaponIdx][ATTACK_COMBO1].state;
@@ -321,28 +333,35 @@ _bool CPlayerAttack::Update_NormalAttack(const _float& timeDelta)
     if (m_Timer >= info.comboInputTime / atkSpeed && m_ComboIndex < m_MaxCombo)
         m_CanNextCombo = true;
 
-    // 종료 or 콤보
+    // 다음 콤보
+    if (m_Timer >= info.comboInputTime && m_IsNextComboReserved)
+    {
+        ++m_ComboIndex;
+        m_Timer               = 0.f;
+        m_IsHitboxActive      = false;
+        m_CanNextCombo        = false;
+        m_IsNextComboReserved = false;
+
+        // 마우스 위치 X값이 플레이어보다 작거나 같으면 LEFT, 크면 RIGHT로 설정
+        const _vec3& vMouseDir = m_OwnerInputCom->Get_MouseDir();
+        if (vMouseDir.x <= 0.f)
+            m_OwnerStateCom->Change_Dir(ACTORDIR::LEFT);
+        else
+            m_OwnerStateCom->Change_Dir(ACTORDIR::RIGHT);
+
+        // 일단 마찰 줘서 정지
+        m_OwnerMovementCom->Stop();
+
+        // 마우스 방향으로 도약
+        m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir(), 450.f);
+
+        m_OwnerStateCom->Change_State(m_AttackInfo[weaponIdx][m_ComboIndex].state);
+        return true;
+    }
+
+    // 종료
     if (m_Timer >= info.duration / atkSpeed)
     {
-        if (m_IsNextComboReserved && m_ComboIndex < m_MaxCombo)
-        {
-            ++m_ComboIndex;
-            m_Timer               = 0.f;
-            m_IsHitboxActive      = false;
-            m_CanNextCombo        = false;
-            m_IsNextComboReserved = false;
-
-            // 마우스 위치 X값이 플레이어보다 작거나 같으면 LEFT, 크면 RIGHT로 설정
-            const _vec3& vMouseDir = m_OwnerInputCom->Get_MouseDir();
-            if (vMouseDir.x <= 0.f)
-                m_OwnerStateCom->Change_Dir(ACTORDIR::LEFT);
-            else
-                m_OwnerStateCom->Change_Dir(ACTORDIR::RIGHT);
-
-            m_OwnerStateCom->Change_State(m_AttackInfo[weaponIdx][m_ComboIndex].state);
-            return true;
-        }
-
         Reset_AttackData();
         return false;
     }
@@ -463,7 +482,7 @@ void CPlayerAttack::Create_AttackObj(const AttackInfo& attackInfo, const _vec3& 
         // 지속시간 설정
         .LifeTime(attackInfo.hitboxEndTime - attackInfo.hitboxStartTime)
         // 공격 오브젝트 크기 설정
-        .Scale(_vec3())
+        .Scale(attackInfo.hitboxScale)
         // 공격하는 쪽을 기준으로 위치를 지정하겠다
         // 반대되는 기능으로 절대 위치 기준을 정하는 Position(_vec3)가 있다
         .InstigatorPos()
@@ -513,6 +532,7 @@ void CPlayerAttack::Free()
     m_OwnerCombatStatCom = nullptr;
     m_OwnerWeaponCom     = nullptr;
     m_OwnerInputCom      = nullptr;
+    m_OwnerMovementCom   = nullptr;
 
     // CPlayerAttack이 현재 히트박스보다 먼저 죽는 경우
     // Set_OnDestroyCallback이 아무것도 실행하지 말도록 nullptr로 콜백할 함수를 지움

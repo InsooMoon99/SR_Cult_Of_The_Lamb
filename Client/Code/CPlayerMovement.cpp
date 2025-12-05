@@ -102,7 +102,7 @@ void CPlayerMovement::Run(const _vec3& moveDir, const _float& timeDelta)
 {
     m_OwnerRigidbodyCom->Set_Friction(0.05f);
 
-    ChangeDir(moveDir);
+    ChangeActorDir(moveDir);
 
     _float speed = m_OwnerCombatStatCom->Get_Speed();
     m_OwnerRigidbodyCom->Add_Force(moveDir * speed * 20.f);
@@ -111,7 +111,7 @@ void CPlayerMovement::Run(const _vec3& moveDir, const _float& timeDelta)
 
 void CPlayerMovement::Stop()
 {
-    m_OwnerRigidbodyCom->Set_Friction(0.2f);
+    m_OwnerRigidbodyCom->Set_Friction(0.3f);
 }
 
 void CPlayerMovement::Start_Roll(const _vec3& moveDir)
@@ -122,7 +122,7 @@ void CPlayerMovement::Start_Roll(const _vec3& moveDir)
     if (D3DXVec3LengthSq(&moveDir) > 0.001f)
         m_RollDir = moveDir;
     else
-        m_RollDir = CalcWorldDir(m_OwnerStateCom->Get_Dir());
+        m_RollDir = ActorDirToVec(m_OwnerStateCom->Get_Dir());
 
     m_OwnerRigidbodyCom->Set_Friction(0.f);
     m_OwnerRigidbodyCom->Set_UseAccel(false);
@@ -155,9 +155,16 @@ _bool CPlayerMovement::Update_Roll(const _float& timeDelta)
     return true; // 구르기 지속
 }
 
+void CPlayerMovement::ImpulseMove(const _vec3 dir, _float force)
+{
+    m_OwnerRigidbodyCom->Set_Friction(0.1f);
+
+    m_OwnerRigidbodyCom->Add_Force(dir * force);
+}
+
 // @formatter:off
 
-void CPlayerMovement::ChangeDir(const _vec3& dir)
+void CPlayerMovement::ChangeActorDir(const _vec3& dir)
 {
     if (D3DXVec3LengthSq(&dir) <= 0.001f) return;
 
@@ -184,7 +191,7 @@ void CPlayerMovement::ChangeDir(const _vec3& dir)
     m_OwnerStateCom->Change_Dir(newActorDir);
 }
 
-_vec3 CPlayerMovement::CalcWorldDir(ACTORDIR dir)
+_vec3 CPlayerMovement::ActorDirToVec(ACTORDIR dir)
 {
     _vec3 vDir;
 
