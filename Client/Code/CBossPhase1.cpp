@@ -61,7 +61,7 @@ HRESULT CBossPhase1::Ready_GameObject()
 void CBossPhase1::Initialize_GameObject()
 {
    
-    BaseCenter = { 20 ,m_TransformCom->Get_Scale().y, 20 };
+    BaseCenter = { 47 ,m_TransformCom->Get_Scale().y, 47 };
     m_TransformCom->Set_Pos(StartPos.x, m_TransformCom->Get_Scale().y, StartPos.z);
 
 }
@@ -173,46 +173,9 @@ void CBossPhase1::Render_GameObject()
   //      m_BoxColCom->Render();
   //
 
-    // 인테페이스 테스트
-    if (m_TransformCom)
-        m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-
-    Render_Setting();
 
     m_StateMachine->Get_CurState()->Render_State();
-
-    // 4) 텍스처 바인딩
-    if (m_TextureCom && m_AnimatorCom)
-    {
-        const wstring& key = m_AnimatorCom->Get_CurKey();
-        int frame = m_AnimatorCom->Get_CurFrame();
-        m_TextureCom->Set_Texture(key, frame);
-    }
-
-    //  5) 기본 초기화 (선택사항)
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-
-    if (m_bHurt)
-    {
-        // 현제 값은 초기 값세팅을 한거 나중에 변경 하고 싶으면 인자 넣으면 됩니다 색,투명도
-        FlashRenderStart();//색 (ARGB)
-        AlphaRenderStart();//투명도(0~1)
-    }
-
-    // 7) 버텍스 버퍼 렌더
-    if (m_BufferCom)
-        m_BufferCom->Render_Buffer();
-
-    // 초기화
-    if (m_bHurt)
-    {
-        FlashRenderEnd();
-        AlphaRenderEnd();
-    }
-    if (m_BoxColCom)
-        m_BoxColCom->Render();
+    CMonsterBase::Render_GameObject();
 
 
 }
