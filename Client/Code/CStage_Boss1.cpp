@@ -48,7 +48,7 @@ void CStage_Boss1::Initialize_Scene()
 {
     CScene::Initialize_Scene();
 
-    //m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_BossTest.map");
+    m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Boss123.map");
 }
 
 _int CStage_Boss1::Update_Scene(const _float& timeDelta)
