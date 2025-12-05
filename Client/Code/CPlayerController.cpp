@@ -22,7 +22,7 @@ CPlayerController::CPlayerController(DEVICE graphicDev)
       m_OwnerInputCom(nullptr),
       m_OwnerMovementCom(nullptr),
       m_OwnerAttackCom(nullptr)
-{ 
+{
     ZeroMemory(m_Timers, sizeof(m_Timers));
 }
 
@@ -35,7 +35,7 @@ CPlayerController::CPlayerController(const CPlayerController& rhs)
       m_OwnerInputCom(nullptr),
       m_OwnerMovementCom(nullptr),
       m_OwnerAttackCom(nullptr)
-{ 
+{
     ZeroMemory(m_Timers, sizeof(m_Timers));
 }
 
@@ -158,17 +158,17 @@ void CPlayerController::CheckStateTransition()
                 curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO1 ||
                 curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO2 ||
                 curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO3 ||
-                curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO4 ||
                 curState == ACTORSTATE::PLAYER_GAUNTLET_HEAVY)
                 m_OwnerAttackCom->Cancel_Attack();
 
-            // 구르기 시작 (Movement 컴포넌트에 위임)
             _vec3 moveDir = m_OwnerInputCom->Get_MoveDir();
+            m_OwnerMovementCom->ChangeActorDir(moveDir);
 
             // 이동 중이 아니면 바라보는 방향으로 구르기
             if (D3DXVec3LengthSq(&moveDir) <= 0.f)
-                moveDir = m_OwnerMovementCom->CalcWorldDir(m_OwnerStateCom->Get_Dir());
+                moveDir = m_OwnerMovementCom->ActorDirToVec(m_OwnerStateCom->Get_Dir());
 
+            // 구르기 시작
             m_OwnerMovementCom->Start_Roll(moveDir);
             m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_ROLL);
             return;
@@ -193,14 +193,7 @@ void CPlayerController::CheckStateTransition()
                 m_OwnerStateCom->Change_State(nextState);
         }
         // 공격 중이라면 콤보 예약 시도
-        else if (curState == ACTORSTATE::PLAYER_SWORD_COMBO1 ||
-                 curState == ACTORSTATE::PLAYER_SWORD_COMBO2 ||
-                 curState == ACTORSTATE::PLAYER_SWORD_COMBO3 ||
-                 curState == ACTORSTATE::PLAYER_SWORD_COMBO3 ||
-                 curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO1 ||
-                 curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO2 ||
-                 curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO3 ||
-                 curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO4)
+        else
         {
             m_OwnerAttackCom->Try_NextCombo();
             return;
@@ -309,7 +302,6 @@ void CPlayerController::CheckStateTransition()
         curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO1 ||
         curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO2 ||
         curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO3 ||
-        curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO4 ||
         curState == ACTORSTATE::PLAYER_GAUNTLET_HEAVY ||
         curState ==ACTORSTATE:: PLAYER_SKILL_CHARGING ||
         curState == ACTORSTATE::PLAYER_SKILL_SINGLE ||
@@ -339,8 +331,6 @@ void CPlayerController::Update_State(const _float& timeDelta)
 {
     ACTORSTATE curState = m_OwnerStateCom->Get_State();
 
-    // m_StateData.timer += timeDelta; // Removed
-
     switch (curState)
     {
     case ACTORSTATE::IDLE:
@@ -367,7 +357,6 @@ void CPlayerController::Update_State(const _float& timeDelta)
     case ACTORSTATE::PLAYER_GAUNTLET_COMBO1:
     case ACTORSTATE::PLAYER_GAUNTLET_COMBO2:
     case ACTORSTATE::PLAYER_GAUNTLET_COMBO3:
-    case ACTORSTATE::PLAYER_GAUNTLET_COMBO4:
     {
         Action_NormalAttack(timeDelta);
     }
@@ -446,7 +435,7 @@ void CPlayerController::Action_Roll(const _float& timeDelta)
 
 void CPlayerController::Action_NormalAttack(const _float& timeDelta)
 {
-    m_OwnerMovementCom->Stop();
+    //m_OwnerMovementCom->Stop();
 
     // 일반 공격 업데이트 (false 반환 시 종료)
     if (!m_OwnerAttackCom->Update_NormalAttack(timeDelta))

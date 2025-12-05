@@ -19,7 +19,7 @@ CTerrain::CTerrain(DEVICE GraphicDev)
       m_TextureCom1024(nullptr),
       m_TextureComOutline(nullptr),
       m_TerrainRendererCom(nullptr),
-      m_WallRendererCom(nullptr)
+      m_WallRendererCom(nullptr), m_WallSpawn(false)
 {
 }
 
@@ -28,7 +28,7 @@ CTerrain::CTerrain(const CTerrain& rhs)
       m_TextureCom1024(nullptr),
       m_TextureComOutline(nullptr),
       m_TerrainRendererCom(nullptr),
-      m_WallRendererCom(nullptr)
+      m_WallRendererCom(nullptr), m_WallSpawn(false)
 {
 }
 
@@ -41,24 +41,29 @@ HRESULT CTerrain::Ready_GameObject()
     if (FAILED(CRenderObject::Ready_GameObject()))
         return E_FAIL;
 
-    //!! 석호 : 카메라 테스트를 위해 0, 0.001, 0에서 바꿔놓음 !!
     m_TransformCom->Set_Pos(_vec3(0.f, 0.f, 0.f));
 
     return S_OK;
+}
+
+void CTerrain::Initialize_GameObject()
+{
+    CRenderObject::Initialize_GameObject();
+
+
 }
 
 _int CTerrain::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CRenderObject::Update_GameObject(timeDelta);
 
-    static bool wallsSpawned = false;
-    if (!wallsSpawned)
+    if (m_WallSpawn)
     {
         auto layer = CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::ENVIRONMENT);
         if (layer)
         {
             Spawn_Walls(layer);
-            wallsSpawned = true;
+            m_WallSpawn = false;
         }
     }
 
@@ -160,6 +165,8 @@ void CTerrain::LoadMapOnStart(const char* filePath)
     if (m_TerrainRendererCom)
     {
         m_TerrainRendererCom->LoadMap(filePath);
+
+        m_WallSpawn = true;
     }
 }
 
