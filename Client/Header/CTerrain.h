@@ -27,6 +27,7 @@ private:
 
 public:
     HRESULT Ready_GameObject() override;
+    void    Initialize_GameObject() override;
     _int    Update_GameObject(const _float& timeDelta) override;
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
@@ -61,5 +62,6 @@ private:
     CTerrainRenderer*           m_TerrainRendererCom;
     CWallRenderer*              m_WallRendererCom;
 
+    _bool                       m_WallSpawn;
 };
 

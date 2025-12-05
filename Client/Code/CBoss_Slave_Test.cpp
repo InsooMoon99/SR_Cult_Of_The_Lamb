@@ -5,6 +5,7 @@
 #include "CTransform.h"
 #include "CRenderer.h"
 #include "CAnimator.h"
+#include "CBoxCollider.h"
 
 CBoss_SlaveTest::CBoss_SlaveTest(DEVICE graphicDev)
     : CCharacterBase(graphicDev)
@@ -28,6 +29,8 @@ HRESULT CBoss_SlaveTest::Ready_GameObject()
 
     m_TransformCom->Set_Pos(_vec3(25.f, 3.1f, 13.f));
     m_TransformCom->Set_Scale(_vec3(1.8f, 3.8f, 1.f));
+
+    m_BoxColCom->Set_CollisionActive(false);
 
     return S_OK;
 }

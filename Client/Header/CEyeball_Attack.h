@@ -48,6 +48,5 @@ private:
 
     Eyeball_Anim        m_EyeballAnim;
 
-
 };
 
