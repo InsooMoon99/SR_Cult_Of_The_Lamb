@@ -559,6 +559,14 @@
       <Filter>02. Scene\01. Stage</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CTrigger_Dungeon.h">
+    </ClInclude>
+    <ClInclude Include="..\Header\CWorldInteractive.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CHarvestableHerb.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="IHitFlashEff.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -882,6 +890,11 @@
       <Filter>02. Scene\01. Stage</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CTrigger_Dungeon.cpp">
+    </ClCompile>
+    <ClCompile Include="..\Code\CWorldInteractive.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CHarvestableHerb.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

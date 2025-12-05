@@ -1,13 +1,14 @@
 ﻿#pragma once
 
 #include "CCharacterBase.h"
+#include "IHitFlashEff.h"
 
 BEGIN(Engine)
 class CTransform;
 END
 
 // 모든 몬스터들의 기본 베이스 (HumanMonster, Boss ..)
-class CMonsterBase : public CCharacterBase
+class CMonsterBase : public CCharacterBase, public IHitFlashEff
 {
 protected:
     explicit CMonsterBase(DEVICE graphicDev);
@@ -39,6 +40,15 @@ public:
     _float          Get_AttackRange() const { return m_AttackRange; }
     _float          Get_ChaseRange() const { return m_ChaseRange; }
 
+    // IHitFlashEff 구현부
+    virtual void FlashRenderStart(DWORD color = D3DCOLOR_ARGB(255, 255, 255, 255));
+    virtual void FlashRenderEnd() ;
+    virtual void AlphaRenderStart(float alpha = 0.8f) ;
+    virtual void AlphaRenderEnd(); 
+
+    bool m_bHurt = false;
+    float HurtTime = 0;
+    float flashTime = 0.1f;
 protected:
     void            Free() override;
 

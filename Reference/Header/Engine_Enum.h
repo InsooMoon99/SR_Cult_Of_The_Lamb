@@ -72,6 +72,7 @@ enum class COLLISION_LAYERTYPE
     ITEM,
     ATTACK,
     TRIGGER,
+    INTERACTIVEOBJ,
 
     COL_LAYER_END
 };

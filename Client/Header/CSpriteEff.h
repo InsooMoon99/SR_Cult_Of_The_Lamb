@@ -22,6 +22,9 @@ public:
     void      LateUpdate_Component()override;
     void       Render_Effect() override;
 
+    bool BounceEff(const _float& timeDelta);
+
+
     void SetSpriteDesc(SpriteDesc s)
     {
 

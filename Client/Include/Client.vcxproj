@@ -205,6 +205,7 @@
     <ClInclude Include="..\Header\CEyeball_Start.h" />
     <ClInclude Include="..\Header\CEyeball_StartExit.h" />
     <ClInclude Include="..\Header\CEyeball_StateMachine.h" />
+    <ClInclude Include="..\Header\CHarvestableHerb.h" />
     <ClInclude Include="..\Header\Client_Struct.h" />
     <ClInclude Include="..\Header\CLogo_Boss.h" />
     <ClInclude Include="..\Header\CLogo_Boss2.h" />
@@ -279,12 +280,14 @@
     <ClInclude Include="..\Header\CWall.h" />
     <ClInclude Include="..\Header\CWallRenderer.h" />
     <ClInclude Include="..\Header\CWeaponEquip.h" />
+    <ClInclude Include="..\Header\CWorldInteractive.h" />
     <ClInclude Include="..\Header\ItemData.h" />
     <ClInclude Include="..\Header\ItemInstance.h" />
     <ClInclude Include="..\Header\CUIMp.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Client_Enum.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="IHitFlashEff.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
@@ -326,6 +329,7 @@
     <ClCompile Include="..\Code\CEyeball_Start.cpp" />
     <ClCompile Include="..\Code\CEyeball_StartExit.cpp" />
     <ClCompile Include="..\Code\CEyeball_StateMachine.cpp" />
+    <ClCompile Include="..\Code\CHarvestableHerb.cpp" />
     <ClCompile Include="..\Code\CHumanMonster.cpp" />
     <ClCompile Include="..\Code\CInventory.cpp" />
     <ClCompile Include="..\Code\CItemDB.cpp" />
@@ -395,6 +399,7 @@
     <ClCompile Include="..\Code\CWall.cpp" />
     <ClCompile Include="..\Code\CWallRenderer.cpp" />
     <ClCompile Include="..\Code\CWeaponEquip.cpp" />
+    <ClCompile Include="..\Code\CWorldInteractive.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
