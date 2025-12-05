@@ -280,15 +280,15 @@ void CPlayer::Animation_Setting()
                              L"PlayerGauntletCombo3",
                              ANIMSTATE::ONCE);
 
-    m_AnimatorCom->Create_Animation(L"PlayerGauntletCombo4",
-                                    40,
-                                    0.02f,
-                                    _vec2(2.2f, 2.2f),
-                                    _vec2(0.f, 0.f));
-
-    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_COMBO4,
-                             L"PlayerGauntletCombo4",
-                             ANIMSTATE::ONCE);
+    //m_AnimatorCom->Create_Animation(L"PlayerGauntletCombo4",
+    //                                40,
+    //                                0.02f,
+    //                                _vec2(2.2f, 2.2f),
+    //                                _vec2(0.f, 0.f));
+    //
+    //m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_COMBO4,
+    //                         L"PlayerGauntletCombo4",
+    //                         ANIMSTATE::ONCE);
 
     m_AnimatorCom->Create_Animation(L"PlayerGauntletHeavy",
                                     70,

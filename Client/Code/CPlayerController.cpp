@@ -154,7 +154,7 @@ void CPlayerController::CheckStateTransition()
                 curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO1 ||
                 curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO2 ||
                 curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO3 ||
-                curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO4 ||
+                //curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO4 ||
                 curState == ACTORSTATE::PLAYER_GAUNTLET_HEAVY)
                 m_OwnerAttackCom->Cancel_Attack();
 
@@ -195,8 +195,8 @@ void CPlayerController::CheckStateTransition()
                  curState == ACTORSTATE::PLAYER_SWORD_COMBO3 ||
                  curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO1 ||
                  curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO2 ||
-                 curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO3 ||
-                 curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO4)
+                 curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO3)
+                 //curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO4)
         {
             m_OwnerAttackCom->Try_NextCombo();
             return;
@@ -215,7 +215,7 @@ void CPlayerController::CheckStateTransition()
         curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO1 ||
         curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO2 ||
         curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO3 ||
-        curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO4 ||
+        //curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO4 ||
         curState == ACTORSTATE::PLAYER_GAUNTLET_HEAVY)
         return;
 
@@ -267,7 +267,7 @@ void CPlayerController::Update_State(const _float& timeDelta)
     case ACTORSTATE::PLAYER_GAUNTLET_COMBO1:
     case ACTORSTATE::PLAYER_GAUNTLET_COMBO2:
     case ACTORSTATE::PLAYER_GAUNTLET_COMBO3:
-    case ACTORSTATE::PLAYER_GAUNTLET_COMBO4:
+    //case ACTORSTATE::PLAYER_GAUNTLET_COMBO4:
     {
         Action_NormalAttack(timeDelta);
     }

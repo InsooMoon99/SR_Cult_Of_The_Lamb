@@ -89,7 +89,7 @@ static const char* ToString(ACTORSTATE state)
     case ACTORSTATE::PLAYER_GAUNTLET_COMBO1: return "Gauntlet_Combo1";
     case ACTORSTATE::PLAYER_GAUNTLET_COMBO2: return "Gauntlet_Combo2";
     case ACTORSTATE::PLAYER_GAUNTLET_COMBO3: return "Gauntlet_Combo3";
-    case ACTORSTATE::PLAYER_GAUNTLET_COMBO4: return "Gauntlet_Combo4";
+    //case ACTORSTATE::PLAYER_GAUNTLET_COMBO4: return "Gauntlet_Combo4";
     case ACTORSTATE::PLAYER_GAUNTLET_HEAVY:  return "Gauntlet_Heavy";
 
     case ACTORSTATE::STATE_END:              return "StateEnd";

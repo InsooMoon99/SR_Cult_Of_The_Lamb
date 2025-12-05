@@ -54,7 +54,7 @@ public:
         ATTACK_COMBO1,      // 일반 1타
         ATTACK_COMBO2,      // 일반 2타
         ATTACK_COMBO3,      // 일반 3타
-        ATTACK_COMBO4,      // 일반 4타
+        //ATTACK_COMBO4,      // 일반 4타
 
         ATTACK_MAX
     };
