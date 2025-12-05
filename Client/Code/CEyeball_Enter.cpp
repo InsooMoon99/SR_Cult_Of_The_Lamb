@@ -71,7 +71,7 @@ _int CEyeball_Enter::Update_State(const _float& timeDelta)
 
     if (m_IsReachedTarget && m_fCurStateElapsedTime >= m_Pattern_Cooldown)
     {
-        return CEyeball::PATTERN::EYEBALL_MOVE; 
+        return CEyeball::PATTERN::EYEBALL_ATTACK; 
     }
 
     return CEyeball::PATTERN::EYEBALL_ENTER;

@@ -40,10 +40,8 @@ _int CEyeball_Die::Update_State(const _float& timeDelta)
         if (m_Controller->Get_OwnerAnimator()->Is_AnimationFinished())
         {
             auto eyeball = static_cast<CEyeball*>(m_Owner);
-            if (eyeball && eyeball->FEyeDeadCallback)
-            {
-                eyeball->FEyeDeadCallback();
-            }
+            if (eyeball)
+                eyeball->Trigger_OnDeath();
 
             // 사망
             m_Owner->Mark_As_PendingKill();

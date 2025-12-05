@@ -34,6 +34,7 @@ void CEyeball_StartExit::Enter()
     if (transform)
     {
 		m_StartPos = transform->Get_Pos();
+
 		m_StartTargetPos = m_StartPos;
 		m_StartTargetPos.y = FLOOR_POS1.y;
     }
@@ -47,6 +48,7 @@ void CEyeball_StartExit::Enter()
 
 _int CEyeball_StartExit::Update_State(const _float& timeDelta)
 {
+
     m_fCurStateElapsedTime += timeDelta;
 
 	// 이동

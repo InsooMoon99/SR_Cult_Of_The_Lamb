@@ -33,6 +33,9 @@ public:
     void Play_End();
 
 public:
+    void Spawn_BulletPattern();
+
+public:
     static CEyeball_Attack* Create(CMonsterBase* owner);
 
 private:
@@ -47,6 +50,7 @@ private:
     _float              m_LerpSpeed;        
 
     Eyeball_Anim        m_EyeballAnim;
+    _bool               m_HasFiredBullet;
 
 };
 

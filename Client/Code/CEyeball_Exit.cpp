@@ -40,7 +40,7 @@ _int CEyeball_Exit::Update_State(const _float& timeDelta)
         return CEyeball::PATTERN::EYEBALL_START;
     }
 
-    return CEyeball::PATTERN::EYEBALL_START_EXIT;
+    return CEyeball::PATTERN::EYEBALL_EXIT;
 }
 
 void CEyeball_Exit::Exit()

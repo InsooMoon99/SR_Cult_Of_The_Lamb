@@ -9,7 +9,6 @@
 
 CBoss_SlaveTest::CBoss_SlaveTest(DEVICE graphicDev)
     : CCharacterBase(graphicDev)
-
 {
 }
 

@@ -123,6 +123,29 @@ void CEyeball::OnEndOverlap(CCollider* self, CCollider* other)
 
 }
 
+void CEyeball::Set_OnDeathCallback(OnEyeDeadCallback callback)
+{
+    m_OnEyeDeadCallback = callback;
+}
+
+void CEyeball::Trigger_OnDeath()
+{
+    if (m_OnEyeDeadCallback)
+        m_OnEyeDeadCallback();
+}
+
+void CEyeball::Set_OnReachedCallback(OnReachedTargetCallback callback)
+{
+    m_OnReachedTarget_Callback = callback;
+}
+
+void CEyeball::Trigger_OnReachedTarget()
+{
+    if (m_OnReachedTarget_Callback)
+        m_OnReachedTarget_Callback();
+
+}
+
 void CEyeball::Animation_Setting()
 {
     m_AnimatorCom->Create_Animation(L"Eyeball_Start", 59, 0.04f, _vec2(0.8f, 1.f));

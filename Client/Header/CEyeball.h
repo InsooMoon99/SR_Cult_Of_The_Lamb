@@ -44,14 +44,22 @@ public:
     void    OnBeginOverlap(CCollider* self, CCollider* other) override;
     void    OnEndOverlap(CCollider* self, CCollider* other) override;
 
+public:
+    // Eyeball 죽을 때
     using OnEyeDeadCallback = function<void()>;
+    void Set_OnDeathCallback(OnEyeDeadCallback callback);
+    void Trigger_OnDeath();
 
-    OnEyeDeadCallback FEyeDeadCallback = nullptr;
+    // 시작 위치 도달
+    using OnReachedTargetCallback = function<void()>;
+    void Set_OnReachedCallback(OnReachedTargetCallback callback);
+    void Trigger_OnReachedTarget();
 
-    void Set_OnDeathCallback(OnEyeDeadCallback callback)
-    {
-        FEyeDeadCallback = callback;
-    }
+
+private:
+    OnEyeDeadCallback       m_OnEyeDeadCallback = nullptr;
+    OnReachedTargetCallback m_OnReachedTarget_Callback = nullptr;
+    _bool m_HasTriggeredReached = false;
 
 private:
     void     Animation_Setting() override;
@@ -68,6 +76,7 @@ protected:
 
 private:
     CMonsterController* m_EyeballController;
+
 
     
 };

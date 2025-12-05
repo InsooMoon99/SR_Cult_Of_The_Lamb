@@ -36,7 +36,7 @@ HRESULT CEyeball_StateMachine::Ready_StateMachine()
             return E_FAIL;
 
         // Idle
-        //if (FAILED(RegisterState<CEyeball_Exit>(CEyeball::PATTERN::EYEBALL_IDLE, m_Owner)))
+        //if (FAILED(RegisterState<CEyeball_Idle>(CEyeball::PATTERN::EYEBALL_IDLE, m_Owner)))
         //    return E_FAIL;
 
         // Start Exit
@@ -51,15 +51,15 @@ HRESULT CEyeball_StateMachine::Ready_StateMachine()
         if (FAILED(RegisterState<CEyeball_Enter>(CEyeball::PATTERN::EYEBALL_ENTER, m_Owner)))
             return E_FAIL;
 
-        //// Move
+        // Move
         //if (FAILED(RegisterState<CEyeball>(CEyeball::PATTERN::EYEBALL_MOVE, m_Owner)))
         //    return E_FAIL;
 
-        //// Ground
+        // Ground
         if (FAILED(RegisterState<CEyeball_Ground>(CEyeball::PATTERN::EYEBALL_GROUND, m_Owner)))
             return E_FAIL;
 
-        //// Attack
+        // Attack
         if (FAILED(RegisterState<CEyeball_Attack>(CEyeball::PATTERN::EYEBALL_ATTACK, m_Owner)))
             return E_FAIL;
 
@@ -97,9 +97,6 @@ _int CEyeball_StateMachine::Update_StateMachine(const _float& timeDelta)
 
 void CEyeball_StateMachine::Change_State(_uint dwStateKey)
 {
-    if (m_dwCurStateKey == dwStateKey)
-        return;
-
     if (m_vecState[dwStateKey] == nullptr || dwStateKey >= CEyeball::PATTERN::EYEBALL_END)
         return;
 
@@ -109,8 +106,8 @@ void CEyeball_StateMachine::Change_State(_uint dwStateKey)
 
     m_dwPrevStateKey = m_dwCurStateKey;
     m_dwCurStateKey = dwStateKey;
-
     m_pCurState = m_vecState[dwStateKey];
+
     m_pCurState->Enter();
 }
 

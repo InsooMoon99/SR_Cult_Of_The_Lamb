@@ -171,6 +171,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Header\CBoss2_Bullet.h" />
     <ClInclude Include="..\Header\CBoss2_Idle.h" />
     <ClInclude Include="..\Header\CBoss2_Roar.h" />
     <ClInclude Include="..\Header\CBoss2_Start.h" />
@@ -295,6 +296,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Code\CBoss2_Bullet.cpp" />
     <ClCompile Include="..\Code\CBoss2_Idle.cpp" />
     <ClCompile Include="..\Code\CBoss2_Roar.cpp" />
     <ClCompile Include="..\Code\CBoss2_Start.cpp" />
