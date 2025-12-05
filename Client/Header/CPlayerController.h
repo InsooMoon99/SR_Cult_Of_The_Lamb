@@ -27,7 +27,7 @@ class CPlayerController : public CComponent
 {
 private:
     // 플레이어 컨트롤러 내 사용하는 타이머용 열거체
-    enum PL_TIMER
+    enum PLCON_TIMER
     {
         TIMER_RUNSOUND,  // 달리기 효과음 재생용
 

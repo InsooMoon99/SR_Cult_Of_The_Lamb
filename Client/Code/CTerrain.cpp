@@ -41,7 +41,6 @@ HRESULT CTerrain::Ready_GameObject()
     if (FAILED(CRenderObject::Ready_GameObject()))
         return E_FAIL;
 
-    //!! 석호 : 카메라 테스트를 위해 0, 0.001, 0에서 바꿔놓음 !!
     m_TransformCom->Set_Pos(_vec3(0.f, 0.f, 0.f));
 
     return S_OK;
