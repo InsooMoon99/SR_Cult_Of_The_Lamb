@@ -1,6 +1,5 @@
 ﻿#include "pch.h"
 #include "CWeaponEquip.h"
-
 #include "CCombatStat.h"
 #include "CDropSystem.h"
 #include "CItemDB.h"
@@ -91,7 +90,7 @@ void CWeaponEquip::RemoveWeaponStat()
 
     auto* combatStat = dynamic_cast<CCombatStat*>(player->Get_Component(ID_STATIC, COMPONENTTYPE::COMBATSTAT));
 
-    if (!combatStat)
+    if (!combatStat )
         return;
 
     Item* itemData = CItemDB::GetInstance()->GetItemById(m_CurrentWeaponID);

@@ -14,6 +14,7 @@
 #include "CPlayerController.h"
 #include "CPlayerInput.h"
 #include "CPlayerMovement.h"
+#include "CPlayerSkill.h"
 #include "CRigidbody.h"
 #include "CState.h"
 #include "CTexture.h"
@@ -57,6 +58,9 @@ HRESULT CPlayer::Ready_GameObject()
     m_CombatStatCom->Set_Mp(5.f);
     m_CombatStatCom->Set_Speed(5.f);
 
+    // Test
+    m_CombatStatCom->Set_HitState(false);
+
     m_TransformCom->Set_Pos(_vec3(20.f, 1.f, 15.f));
     m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
     m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(45.f));
@@ -82,8 +86,8 @@ _int CPlayer::Update_GameObject(const _float& timeDelta)
     _int exit = CCharacterBase::Update_GameObject(timeDelta);
 
     // 안은수 테스트
-    if (CDInputMgr::GetInstance()->Get_DIKeyState(DIK_BACKSPACE))
-        CDropSystem::GetInstance()->SpawnAllFromInven(m_GraphicDev, m_InventoryCom);
+    //if (CDInputMgr::GetInstance()->Get_DIKeyState(DIK_BACKSPACE))
+    //    CDropSystem::GetInstance()->SpawnAllFromInven(m_GraphicDev, m_InventoryCom);
 
     return exit;
 }
@@ -101,6 +105,7 @@ void CPlayer::Render_GameObject()
 void CPlayer::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CCharacterBase::OnBeginOverlap(self, other);
+
 }
 
 void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)
@@ -167,9 +172,15 @@ HRESULT CPlayer::Add_Component()
     NULL_CHECK_RETURN(m_PlayerAttackCom, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::PL_ATTACK, m_PlayerAttackCom });
 
+    // Player Skill
+    m_PlayerSkillCom = CreateProtoComponent<CPlayerSkill>(this, COMPONENTTYPE::PL_SKILL);
+    NULL_CHECK_RETURN(m_PlayerSkillCom, E_FAIL);
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::PL_SKILL, m_PlayerSkillCom });
+
     m_PlayerControllerCom->Init_OwnerComponent();
     m_PlayerMovementCom->Init_OwnerComponent();
     m_PlayerAttackCom->Init_OwnerComponent();
+    m_PlayerSkillCom->Init_OwnerComponent();
 
     return S_OK;
 }
@@ -297,8 +308,36 @@ void CPlayer::Animation_Setting()
                                     _vec2(0.f, 0.f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_HEAVY,
-                             L"PlayerGauntletHeavy",
-                             ANIMSTATE::ONCE);
+                                                 L"PlayerGauntletHeavy",
+                                                ANIMSTATE::ONCE);
+
+#pragma region -----------Skill-----------
+
+
+    m_AnimatorCom->Create_Animation(L"PlayerSkillCharging",
+                                              17,
+                                              0.02f,
+                                              _vec2(0.6f, 1.f),
+                                              _vec2(0.f, 0.f));
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SKILL_CHARGING,
+                                            L"PlayerSkillCharging",
+                                            ANIMSTATE::LOOP);
+
+    m_AnimatorCom->Create_Animation(L"PlayerSkillAttack",
+                                             32,
+                                             0.02f,
+                                             _vec2(1.f, 1.5f),
+                                             _vec2(0.f, 0.5f));
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SKILL_SINGLE,
+                                               L"PlayerSkillAttack",
+                                               ANIMSTATE::ONCE);
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SKILL_TRIPLE,
+                                                L"PlayerSkillAttack",
+                                                ANIMSTATE::ONCE);
+
 #pragma endregion
 }
 

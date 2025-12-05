@@ -17,8 +17,8 @@
 #include "CItemDB.h"
 #include "CPlayerAttack.h"
 #include "CPlayerController.h"
-#include "CPlayerInput.h"
 #include "CPlayerMovement.h"
+#include "CPlayerInput.h"
 #include "CProjectile.h"
 #include "CProtoMgr.h"
 #include "CRcCol.h"
@@ -37,6 +37,12 @@
 #include "CWeaponEquip.h"
 #include "ItemData.h"
 #include "ItemInstance.h"
+#include "CBossController.h"
+#include "CPlayerSkill.h"
+#include "CProjectile.h"
+#include "CSpriteEff.h"
+#include "CEffectBaseCom.h"
+#include "CEyeballController.h"
 
 IMPLEMENT_SINGLETON(CResourceMgr)
 
@@ -222,7 +228,12 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         COMPONENTTYPE::WEAPON_EQUIP, CWeaponEquip::Create(graphicDev))))
         return E_FAIL;
 
-    CTexture* playerTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    // skill
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::PL_SKILL, CPlayerSkill::Create(graphicDev))))
+        return E_FAIL;
+
+        CTexture* playerTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(playerTex, E_FAIL);
 
 #pragma region --- Tex: Idle ---
@@ -305,8 +316,19 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
 
 #pragma endregion
 
-    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
+    //Skill
+    if(FAILED(playerTex->Add_Texture(L"PlayerSkillAttack", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Spell1/Lamb-cast-spell%d.png", 32)))
         return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"PlayerSkillCharging", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Spell2/Lamb-cast-spell2-%d.png",17)))
+        return E_FAIL;
+
+        
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
+    return E_FAIL;
+
 
     return S_OK;
 }
@@ -325,6 +347,14 @@ HRESULT CResourceMgr::Ready_Monster(DEVICE graphicDev)
 
     if (FAILED(humanmonsterTex->Add_Texture(L"HumanMonsterRun", TEX_NORMAL,
         L"../Bin/Resource/Texture/Monster/Human/Run/Run%d.png", 18)))
+        return E_FAIL;
+
+    if (FAILED(humanmonsterTex->Add_Texture(L"HumanMonsterAttack", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Human/Attack/Attack%d.png", 65)))
+        return E_FAIL;
+
+    if (FAILED(humanmonsterTex->Add_Texture(L"HumanMonsterHurt", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Human/Hurt/Hurt%d.png", 28)))
         return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(
@@ -729,7 +759,7 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     // Grass
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_GRASS, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/MapObject/WeedShrub/WeedShrub%d.png", 53))))
+            L"../Bin/Resource/Texture/MapObject/WeedShrub/WeedShrub%d.png", 56))))
         return E_FAIL;
 
     // Rubble
@@ -741,7 +771,7 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     // Deco
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_DECO, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/MapObject/Deco/Village_Deco%d.png", 77))))
+            L"../Bin/Resource/Texture/MapObject/Deco/Village_Deco%d.png", 79))))
         return E_FAIL;
 
     // Dungeon_Deco
@@ -754,6 +784,27 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_ETC, CTexture::Create(graphicDev, TEX_NORMAL,
             L"../Bin/Resource/Texture/MapObject/ETC/ETC%d.png", 40))))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CResourceMgr::Ready_Particle(DEVICE graphicDev)
+{
+    auto protoMgr = CProtoMgr::GetInstance();
+
+    CTexture* particleTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(particleTex, E_FAIL);
+
+    // Hit Star
+    if (FAILED(particleTex->Add_Texture(L"HitEffect_Star", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Effect/HitEffect_Star/HitEffect_Star%d.png", 14)))
+        return E_FAIL;
+
+    // 추가 예정
+
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PARTICLE, particleTex)))
         return E_FAIL;
 
     return S_OK;

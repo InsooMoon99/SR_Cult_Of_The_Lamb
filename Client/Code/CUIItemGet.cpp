@@ -18,7 +18,7 @@ CUIItemGet::CUIItemGet(DEVICE graphicDev)
     m_UIItemIcon(nullptr),
     m_UIItem{},
     m_IsOpen(false),
-    m_IsAnimating(false),
+    m_IsShifting(false),
     m_CloseAnimation(false),
     m_OpenAnimaiton(false),
     m_TargetX(-500.f),
@@ -32,7 +32,7 @@ CUIItemGet::CUIItemGet(const CUIItemGet& rhs)
       m_UIItemIcon(nullptr),
       m_UIItem{},
       m_IsOpen(false),
-      m_IsAnimating(false),
+      m_IsShifting(false),
       m_CloseAnimation(false),
       m_OpenAnimaiton(false),
       m_TargetX(-500.f),
@@ -53,10 +53,11 @@ HRESULT CUIItemGet::Ready_GameObject()
     //아이템 텍스처
     m_UIItemIcon = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_ITEM);
     m_UIItemIcon->SetRegister(false);
-    m_UIItemIcon->Get_Transform()->Set_Scale(25.f, 25.f, 0.f);
+    m_UIItemIcon->Get_Transform()->Set_Scale(20.f, 20.f, 0.f);
+    m_UIItemIcon->Get_Transform()->Set_Pos(-950.f, 100.f, 0.f);
 
     //배경 위치
-    m_TransformCom->Set_Scale(165.f, 36.9f, 0.f);
+    m_TransformCom->Set_Scale(137.5f, 30.75f, 0.f);
     m_TransformCom->Set_Pos(-950.f, 100.f, 0.f);
     return S_OK;
 }
@@ -69,6 +70,7 @@ _int CUIItemGet::Update_GameObject(const _float& timeDelta)
 
     if (m_UIItem.itemId)
     {
+        m_IsShifting = true;
 		m_UIItem.remainTime -= timeDelta;
         int  index = CItemDB::GetInstance()->GetIndexById(m_UIItem.itemId);
         m_UIItemIcon->Set_TextureIndex(index);
@@ -84,25 +86,23 @@ _int CUIItemGet::Update_GameObject(const _float& timeDelta)
 
         pos.x += timeDelta * m_Speed * dir;
 
-        m_TransformCom->Set_Pos(pos.x, (- m_Index) *  80.f + 60.f, pos.z);
-        m_UIItemIcon->Get_Transform()->Set_Pos(pos.x -30.f, ( - m_Index) *  80.f+ 60.f, pos.z);
+        m_TransformCom->Set_Pos(pos.x , (- m_Index) *  63.f + 60.f, pos.z);
+        m_UIItemIcon->Get_Transform()->Set_Pos(pos.x - uiItemOffset, ( - m_Index) *  63.f+ 60.f, pos.z);
 
-        if (dir <= 0 && (pos.x <= m_ClosedX) || (dir >= 0 && (m_TargetX <= pos.x)))
+        if ((dir <= 0 && pos.x <= targetX) ||
+            (dir >= 0 && pos.x >= targetX))
         {
-            m_IsOpen = !m_IsOpen;
+            pos.x = targetX;        
+            m_IsOpen = !m_IsOpen;   
         }
+
 
 		if(m_UIItem.remainTime <= 0)
 		{
+            m_IsShifting = false;
 			m_IsDead = true;
 		}
-		//if (pos.x<=m_ClosedX)
-		//
-		//{
-		//
-		//	m_IsDead = true;
-		//
-		//}
+
     }
     return exit;
 }
@@ -119,65 +119,19 @@ void CUIItemGet::Render_GameObject()
 
     if (m_UIItem.itemId)
     {
-        // ------------------------------------------------------------------
-    // 1. [상태 저장]: 현재 GPU 상태를 백업 변수에 저장합니다.
-    // ------------------------------------------------------------------
-        DWORD dwOldAlphaEnable;
-        DWORD dwOldSrcBlend;
-        DWORD dwOldDestBlend;
-        DWORD dwOldColorOp;
-        DWORD dwOldColorArg1;
-        DWORD dwOldTextureFactor; // 🛑 텍스처 팩터 색상도 저장합니다.
-
-        m_GraphicDev->GetRenderState(D3DRS_ALPHABLENDENABLE, &dwOldAlphaEnable);
-        m_GraphicDev->GetRenderState(D3DRS_SRCBLEND, &dwOldSrcBlend);
-        m_GraphicDev->GetRenderState(D3DRS_DESTBLEND, &dwOldDestBlend);
-        m_GraphicDev->GetRenderState(D3DRS_TEXTUREFACTOR, &dwOldTextureFactor); // 팩터 색상 저장
-        m_GraphicDev->GetTextureStageState(0, D3DTSS_COLOROP, &dwOldColorOp);
-        m_GraphicDev->GetTextureStageState(0, D3DTSS_COLORARG1, &dwOldColorArg1);
-
-        // ------------------------------------------------------------------
-        // 2. [상태 설정]: 원하는 투명도 및 색상 곱셈 상태로 변경합니다.
-        // ------------------------------------------------------------------
-
-        // 2-1. 투명도 조절 (예: 50% 투명, 알파 = 128)
-        D3DCOLOR fadeColor = D3DCOLOR_ARGB(128, 255, 255, 255);
-        m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, fadeColor);
-
-        // 2-2. 알파 블렌딩 활성화 및 표준 공식 설정
-        m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-        m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-        m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-
-        // 2-3. 색상 곱셈 설정 (텍스처 색상 * 전역 색상/알파)
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR); // TFACTOR(fadeColor)와 곱함
         // 배경 이미지 렌더
         m_TextureCom->Set_Texture(8);
         m_BufferCom->Render_Buffer();
 
-        // ------------------------------------------------------------------
-    // 4. [상태 복원]: 저장해 둔 원래의 상태로 되돌립니다.
-    // ------------------------------------------------------------------
-        m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, dwOldAlphaEnable);
-        m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, dwOldSrcBlend);
-        m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, dwOldDestBlend);
-        m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, dwOldTextureFactor); // 원래 TEXTUREFACTOR로 복원
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, dwOldColorOp);
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, dwOldColorArg1);
     }
         _vec3 pos = m_TransformCom->Get_Pos();
         // 아이콘 렌더
         m_UIItemIcon->Render_GameObject();
 
         Item* item = CItemDB::GetInstance()->GetItemById(m_UIItem.itemId);
-		_vec2 screen = { WINCX / 2 + pos.x +50.f, WINCY / 2 - pos.y};
-		CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Small", CItemDB::GetInstance()->Utf8ToWstring(item->name) + L" +" + to_wstring(m_UIItem.count), &screen, D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.f));
+		_vec2 screen = { WINCX / 2 + pos.x +30.f, WINCY / 2 - pos.y};
+		CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Small", CItemDB::GetInstance()->Utf8ToWstring(item->name) + L"    +" + to_wstring(m_UIItem.count), &screen, D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.f));
 
-    //   screen = { WINCX / 2 + pos.x + 50.f, WINCY / 2 - pos.y };
-    //CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Small", to_wstring(m_UIItem.count), &screen, D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.f));
-    //    //cout << m_TransformCom->Get_Pos().x << "\t" << m_TransformCom->Get_Pos().y << endl;
     }
 
 

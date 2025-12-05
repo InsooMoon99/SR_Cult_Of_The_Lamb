@@ -51,6 +51,7 @@ private:
     bool m_CircleEndFlag=false;
     float m_circleCountTime;
     bool m_Shoot=false;
+
     // 쓸거
     float m_offset;
     float m_CircleRadius;

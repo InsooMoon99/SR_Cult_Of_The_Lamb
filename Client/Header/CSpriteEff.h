@@ -1,11 +1,10 @@
 ﻿#pragma once
 #include "CEffectBaseCom.h"
 #include "Client_Struct.h"
+
 struct SpriteDesc
 {
 };
-
-
 
 class CSpriteEff :
     public CEffectBaseCom
@@ -22,6 +21,9 @@ public:
     _int      Update_Component(const _float& timeDelta)override;
     void      LateUpdate_Component()override;
     void       Render_Effect() override;
+
+    bool BounceEff(const _float& timeDelta);
+
 
     void SetSpriteDesc(SpriteDesc s)
     {

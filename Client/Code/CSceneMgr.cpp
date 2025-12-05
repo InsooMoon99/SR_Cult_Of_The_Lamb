@@ -10,6 +10,7 @@
 #include "Engine_Enum.h"
 #include "CStage_Boss1.h"
 #include "CStage_Boss2.h"
+#include "CStage_Dungeon.h"
 #include "CStage_TarotTest.h"
 
 IMPLEMENT_SINGLETON(CSceneMgr)
@@ -68,6 +69,11 @@ void CSceneMgr::Change_SceneMgr(SCENETYPE typeInput)
 		if (FAILED(CManagement::GetInstance()->Request_ChangeScene(CEdit::Create(m_pGraphicDev))))
 			bFailed = true;
 		break;
+
+    case SCENETYPE::SC_DUNGEON:
+        if (FAILED(CManagement::GetInstance()->Request_ChangeScene(CStage_Dungeon::Create(m_pGraphicDev))))
+            bFailed = true;
+        break;
 
 	case SCENETYPE::SC_TAROT_TEST:
 		if (FAILED(CManagement::GetInstance()->Request_ChangeScene(CStage_TarotTest::Create(m_pGraphicDev))))

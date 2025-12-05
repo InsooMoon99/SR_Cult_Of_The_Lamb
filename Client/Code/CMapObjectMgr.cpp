@@ -70,13 +70,13 @@ void CMapObjectMgr::Render_MapObjectWindow()
     {
         ImGui::Text("[ Preview Scale ]");
 
-        float scaleX = m_MapPlacer->Get_PreviewScaleX();
-        float scaleY = m_MapPlacer->Get_PreviewScaleY();
+        _float scaleX = m_MapPlacer->Get_PreviewScaleX();
+        _float scaleY = m_MapPlacer->Get_PreviewScaleY();
 
-        if (ImGui::SliderFloat("Scale X", &scaleX, 0.1f, 5.f))
+        if (ImGui::SliderFloat("Scale X", &scaleX, 0.1f, 10.f))
             m_MapPlacer->Set_PreviewScaleX(scaleX);
 
-        if (ImGui::SliderFloat("Scale Y", &scaleY, 0.1f, 5.f))
+        if (ImGui::SliderFloat("Scale Y", &scaleY, 0.1f, 10.f))
             m_MapPlacer->Set_PreviewScaleY(scaleY);
     }
 
@@ -142,8 +142,6 @@ void CMapObjectMgr::Render_MapObjectWindow()
     //    }
     //}
 #pragma endregion
-    
-
 
 }
 
@@ -159,7 +157,7 @@ void CMapObjectMgr::Render_GrassWindow()
 
         if (grassTexture)
         {
-            const _int TOTAL_GRASS = 53;
+            const _int TOTAL_GRASS = 56;
             const _int COLS = 5;
             const ImVec2 buttonSize(50.f, 50.f);
 
@@ -221,7 +219,6 @@ void CMapObjectMgr::Render_RubbleWindow()
 
         if (rubbleTexture)
         {
-
             const _int TOTAL_RUBBLE = 46;
             const _int COLS = 4;
             const ImVec2 buttonSize(50.f, 50.f);
@@ -283,7 +280,7 @@ void CMapObjectMgr::Render_DecoWindow()
 
         if (decoTexture)
         {
-            const _int TOTAL_DECO = 76; 
+            const _int TOTAL_DECO = 79; 
             const _int COLS = 5;
             const ImVec2 buttonSize(50.f, 50.f);
 
@@ -617,7 +614,7 @@ HRESULT CMapObjectMgr::Save_ToStream(ofstream& ofs)
     return S_OK;
 }
 
-HRESULT CMapObjectMgr::Load_FromStream(ifstream& ifs)
+HRESULT CMapObjectMgr::Load_FromStream(ifstream& ifs, _vec3 terrainOffset)
 {
     uint32_t count = 0;
     ifs.read((char*)&count, sizeof(count));
@@ -644,7 +641,10 @@ HRESULT CMapObjectMgr::Load_FromStream(ifstream& ifs)
 
             if (transform)
             {
-                transform->Set_Pos(data.pos);
+                _vec3 worldPos = data.pos + terrainOffset;
+
+                transform->Set_Pos(worldPos);
+
                 transform->Set_Scale(data.scale);  
 
                 _vec3 loadedRotation = data.rotation;

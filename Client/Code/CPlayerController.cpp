@@ -1,17 +1,17 @@
 ﻿#include "pch.h"
 #include "CPlayerController.h"
-
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
 #include "CDInputMgr.h"
 #include "CGameObject.h"
 #include "CMainEditorMgr.h"
 #include "CPlayerAttack.h"
-#include "CPlayerInput.h"
 #include "CPlayerMovement.h"
 #include "CRigidbody.h"
 #include "CSoundMgr.h"
 #include "CState.h"
+#include "CPlayerSkill.h"
+#include "CPlayerInput.h"
 
 CPlayerController::CPlayerController(DEVICE graphicDev)
     : CComponent(graphicDev),
@@ -40,7 +40,8 @@ CPlayerController::CPlayerController(const CPlayerController& rhs)
 }
 
 CPlayerController::~CPlayerController()
-{ }
+{
+}
 
 HRESULT CPlayerController::Ready_PlayerController()
 {
@@ -69,7 +70,8 @@ _int CPlayerController::Update_Component(const _float& timeDelta)
 }
 
 void CPlayerController::LateUpdate_Component()
-{ }
+{
+}
 
 HRESULT CPlayerController::Init_OwnerComponent()
 {
@@ -93,6 +95,8 @@ HRESULT CPlayerController::Init_OwnerComponent()
 
     m_OwnerAttackCom = dynamic_cast<CPlayerAttack*>(
         m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::PL_ATTACK));
+
+    m_OwnerSkillCom = dynamic_cast<CPlayerSkill*>(m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::PL_SKILL));
 
     NULL_CHECK_RETURN_MSG(
         m_OwnerStateCom,
@@ -195,6 +199,96 @@ void CPlayerController::CheckStateTransition()
             return;
         }
     }
+    //TODO LSHIFT로 강공격
+
+    //TODO RMB로 스킬
+    else if (inputMgr->MouseDown(DIM_RB))
+    {
+       // cout << "First time Pressed" << endl;
+
+        ImGuiIO& io = ImGui::GetIO();
+        if (io.WantCaptureMouse)
+            return;
+
+        if (curState == ACTORSTATE::PLAYER_ROLL ||
+            curState == ACTORSTATE::IDLE ||
+            curState == ACTORSTATE::RUN)
+        {
+            ACTORSTATE nextState = m_OwnerSkillCom->Start_Charging();
+            if (nextState != ACTORSTATE::STATE_END)
+                m_OwnerStateCom->Change_State(nextState);
+        }
+        
+    }
+
+    //else if(inputMgr->MousePress(DIM_RB))
+    //{
+    //    cout << " Pressing" << endl;
+    //
+    //   //  if (curState == ACTORSTATE::PLAYER_SKILL_CHARGING)
+    //   //  {
+    //   //      ACTORSTATE nextState = m_OwnerSkillCom->Start_SingleSkill();
+    //   //      if (nextState != ACTORSTATE::STATE_END);
+    //   //      //m_OwnerStateCom->Change_State(nextState);
+    //   //  }
+    //
+    //    // else if(curState== ACTORSTATE::PLAYER_SKILL_SINGLE)
+    //    // {
+    //    //     ACTORSTATE nextState = m_OwnerSkillCom->Start_TripleSkill();
+    //    //     if (nextState != ACTORSTATE::STATE_END)
+    //    //         m_OwnerStateCom->Change_State(nextState);
+    //    // }
+    //}
+    //
+    else if(inputMgr->MouseUp(DIM_RB))
+    {
+        if(curState == ACTORSTATE::PLAYER_SKILL_CHARGING)
+        {
+            m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+        }
+        if(m_OwnerSkillCom->Get_TripleSkillAvailability())
+        {
+            m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SKILL_TRIPLE);
+        }
+        if(m_OwnerSkillCom->Get_SingleSkillAvailability())
+        {
+            m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SKILL_SINGLE);
+        }
+        
+    }
+
+    // 스킬 공격
+    //else if (inputMgr->MousePress(DIM_RB))
+    //{
+    //    cout << "Pressed" << endl;
+    //    ImGuiIO& io = ImGui::GetIO();
+    //    if (io.WantCaptureMouse)
+    //        return;
+    //
+    //    if (curState == ACTORSTATE::PLAYER_ROLL||
+    //        curState == ACTORSTATE::IDLE ||
+    //        curState == ACTORSTATE::RUN ||
+    //        curState == ACTORSTATE::PLAYER_SKILL_CHARGING)
+    //    {
+    //        ACTORSTATE nextState = m_OwnerSkillCom->Start_Charging();
+    //        if (nextState != ACTORSTATE::STATE_END)
+    //        m_OwnerStateCom->Change_State(nextState);
+    //    }
+    //
+    //   // else if (curState == ACTORSTATE::PLAYER_SKILL_CHARGING)
+    //   // {
+    //   //     ACTORSTATE nextState = m_OwnerSkillCom->Start_SingleSkill();
+    //   //     if (nextState != ACTORSTATE::STATE_END)
+    //   //     m_OwnerStateCom->Change_State(nextState);
+    //   // }
+    //    else if (curState == ACTORSTATE::PLAYER_SKILL_SINGLE)
+    //    {
+    //        //싱글 공격일 때 항상 chargetime 다 지났는지 확인하고 지났으면 triple 스킬 state 안 지났으면 single 스킬 state 반환해서 state 돌리기
+    //        ACTORSTATE nextState = m_OwnerSkillCom->Start_SingleSkill();
+    //        if (nextState != ACTORSTATE::STATE_END)
+    //        m_OwnerStateCom->Change_State(nextState);
+    //    }
+    //}
 
     //TODO LSHIFT로 강공격
 
@@ -208,7 +302,11 @@ void CPlayerController::CheckStateTransition()
         curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO1 ||
         curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO2 ||
         curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO3 ||
-        curState == ACTORSTATE::PLAYER_GAUNTLET_HEAVY)
+        curState == ACTORSTATE::PLAYER_GAUNTLET_HEAVY ||
+        curState ==ACTORSTATE:: PLAYER_SKILL_CHARGING ||
+        curState == ACTORSTATE::PLAYER_SKILL_SINGLE ||
+        curState == ACTORSTATE::PLAYER_SKILL_TRIPLE)
+
         return;
 
     // [우선순위 3] 이동 (방향 입력)
@@ -270,7 +368,15 @@ void CPlayerController::Update_State(const _float& timeDelta)
         //TODO 강공격 호출. 내부에서 무기에 따라 다른 히트박스가 생성되도록 하자
     }
     break;
-
+    case ACTORSTATE::PLAYER_SKILL_CHARGING:
+        Action_Charging(timeDelta);
+        break;
+    case ACTORSTATE::PLAYER_SKILL_SINGLE:
+        Action_SingleSkill(timeDelta);
+        break;
+    case ACTORSTATE::PLAYER_SKILL_TRIPLE:
+        Action_TripleSkill(timeDelta);
+        break;
     case ACTORSTATE::HIT:
     {
         //TODO 피격 상태 및 애니메이션이 필요할 경우 구성
@@ -336,6 +442,43 @@ void CPlayerController::Action_NormalAttack(const _float& timeDelta)
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
 }
 
+void CPlayerController::Action_Charging(const _float& timeDelta)
+{
+    m_OwnerMovementCom->Stop();
+
+    ACTORSTATE result = m_OwnerSkillCom->Update_Charging(timeDelta);
+
+    switch(result)
+    {
+    case ACTORSTATE::IDLE:
+        m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+        break;
+   
+    case ACTORSTATE::PLAYER_SKILL_SINGLE:
+      //  m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SKILL_SINGLE);
+        m_OwnerSkillCom->Set_SingleSkill(true);
+        break;
+   
+    case ACTORSTATE::PLAYER_SKILL_TRIPLE:
+        m_OwnerSkillCom->Set_TripleSkill(true);
+        //m_OwnerSkillCom->Set_SingleSkill(false);
+      //  m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SKILL_TRIPLE);
+        break;
+    }
+}
+
+void CPlayerController::Action_SingleSkill(const _float& timeDelta)
+{
+    if (!m_OwnerSkillCom->Update_SingleSkill(timeDelta))
+        m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+
+    //아니면 TripleSkill로 넘기는 것도 여기서 해줘야 하는 건가?
+}
+void CPlayerController::Action_TripleSkill(const _float& timeDelta)
+{
+    if (!m_OwnerSkillCom->Update_TripleSkill(timeDelta))
+        m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+}
 CPlayerController* CPlayerController::Create(DEVICE graphicDev)
 {
     auto controller = new CPlayerController(graphicDev);
@@ -358,13 +501,13 @@ CComponent* CPlayerController::Clone()
 void CPlayerController::Free()
 {
     //!! Safe_Release() 등을 호출해 원본을 부수지 말고, nullptr로 빌려온 주소를 반납만 한다. 
-    m_OwnerStateCom      = nullptr;
+    m_OwnerStateCom = nullptr;
     m_OwnerCombatStatCom = nullptr;
-    m_OwnerRigidbodyCom  = nullptr;
-    m_OwnerColliderCom   = nullptr;
-    m_OwnerInputCom      = nullptr;
-    m_OwnerMovementCom   = nullptr;
-    m_OwnerAttackCom     = nullptr;
+    m_OwnerRigidbodyCom = nullptr;
+    m_OwnerColliderCom = nullptr;
+    m_OwnerInputCom = nullptr;
+    m_OwnerMovementCom = nullptr;
+    m_OwnerAttackCom = nullptr;
 
     CComponent::Free();
 }

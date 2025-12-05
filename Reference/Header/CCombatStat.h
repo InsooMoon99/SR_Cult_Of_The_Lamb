@@ -14,11 +14,14 @@ typedef struct tagAttackData
     _float knockback;  // 넉백량
     _float duration;   // 넉백 유지 시간(필요하면 사용 ㄱㄱ)
 
+    PARTICLEDATA hitParticle;
+
     tagAttackData()
         : damage(0.f),
           knockback(0.f),
-          duration(0.f)
-    {}
+          duration(0.f)   
+    {
+    }
 } ATTACKDATA;
 
 // 이건 충돌 구조에서 알아서 채워지는 Hit Data
@@ -83,12 +86,15 @@ public:
     _bool  Is_Invincible() const { return m_IsInvincible; }
     _bool  Is_Knockback() const { return m_KnockbackTimer > 0.f; }
 
+    _bool  Can_HitState() { return m_CanHitState; }
+    void Set_HitState(_bool flag) { m_CanHitState = flag; }
+
     void Set_Attack(_float attack) { m_Attack = attack; }
     void Set_AttackSpeed(_float attackSpeed) { m_AttackSpeed = attackSpeed; }
     void Set_Hp(_float hp) { m_Hp = hp; }
-    void Set_MaxHp(_float maxHp) { m_MaxHp = maxHp; }
+    void Set_MaxHp(_float maxHp) { m_MaxHp = maxHp; Set_Hp(maxHp); }
     void Set_Mp(_float mp) { m_Mp = mp; }
-    void Set_MaxMp(_float maxMp) { m_MaxMp = maxMp; }
+    void Set_MaxMp(_float maxMp) { m_MaxMp = maxMp; Set_Mp(maxMp); }
     void Set_Speed(_float speed) { m_Speed = speed; }
     void Set_Invincible(bool invincible) { m_IsInvincible = invincible; }
 
@@ -125,6 +131,7 @@ private:
     _int    m_MaxCharges = 3;
 
     _bool   m_IsDead;
+    _bool   m_CanHitState; // 보스는 false로 설정해줘야 Hit상태로 변환 안됨
 
     _bool   m_IsInvincible; // 무적
     _float  m_KnockbackTimer;
