@@ -2,14 +2,15 @@
 #include "CComponent.h"
 #include "Engine_Struct.h"
 
-class CPlayerInput;
-class CWeaponEquip;
-
 BEGIN(Engine)
 class CAttackBase;
 class CCombatStat;
 class CState;
 END
+
+class CPlayerMovement;
+class CPlayerInput;
+class CWeaponEquip;
 
 /// @brief 플레이어의 전투 및 공격 로직을 담당하는 컴포넌트
 /// @details
@@ -57,7 +58,6 @@ public:
         ATTACK_COMBO1,      // 일반 1타
         ATTACK_COMBO2,      // 일반 2타
         ATTACK_COMBO3,      // 일반 3타
-        ATTACK_COMBO4,      // 일반 4타
 
         ATTACK_MAX
     };
@@ -118,6 +118,7 @@ private: // --- Owner Component 캐싱 ---
     Engine::CCombatStat* m_OwnerCombatStatCom;
     CWeaponEquip*        m_OwnerWeaponCom;
     CPlayerInput*        m_OwnerInputCom;
+    CPlayerMovement*     m_OwnerMovementCom;
 
 private: // --- 다른 오브젝트 캐싱 ---
     Engine::CAttackBase* m_CurrentAttackObj; // 현재 활성화된 공격 오브젝트
