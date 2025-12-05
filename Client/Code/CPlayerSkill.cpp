@@ -56,7 +56,7 @@ HRESULT CPlayerSkill::Ready_PlayerCombat()
     m_SkillInfo[SKILL_CHARGING].hitboxScale = _vec3(1.f, 1.f, 1.f);
     // 1발
     m_SkillInfo[SKILL_SINGLE].state = ACTORSTATE::PLAYER_SKILL_SINGLE;
-    m_SkillInfo[SKILL_SINGLE].duration = 1.5f;
+    m_SkillInfo[SKILL_SINGLE].duration = 2.f;
     m_SkillInfo[SKILL_SINGLE].damageMultiplier = 2.f;
     m_SkillInfo[SKILL_SINGLE].knockbackPower = 50.f;
     m_SkillInfo[SKILL_SINGLE].spawnOffset = 1.3f;
@@ -148,7 +148,7 @@ ACTORSTATE CPlayerSkill::Start_Charging()
 }
 ACTORSTATE      CPlayerSkill::Update_Charging(const float& timeDelta)
 {
-    cout << "Update_Charging" << endl;
+    //cout << "Update_Charging" << endl;
 
     _vec3 vMouseDir = m_OwnerInputCom->Get_MouseDir();
 
@@ -166,17 +166,17 @@ ACTORSTATE      CPlayerSkill::Update_Charging(const float& timeDelta)
 
     m_ChargeTimer+= timeDelta;
 
-    cout << m_ChargeTimer << endl;
+   // cout << m_ChargeTimer << endl;
 
     if (m_ChargeTimer >= m_SkillInfo[SKILL_TRIPLE].chargeTime)
     {
-        cout << "3발 공격 사용 가능" << endl;
+        //cout << "3발 공격 사용 가능" << endl;
         return ACTORSTATE::PLAYER_SKILL_TRIPLE;
     }
 
 	if(m_ChargeTimer >= m_SkillInfo[SKILL_SINGLE].chargeTime)
 	{
-        cout << "1발 공격 사용 가능" << endl;
+        //cout << "1발 공격 사용 가능" << endl;
         return ACTORSTATE::PLAYER_SKILL_SINGLE;
 	}
 
@@ -207,9 +207,10 @@ ACTORSTATE  CPlayerSkill::Start_SingleSkill()
     //TODO 유림 : 시간 초 확인해서 해당 스킬을 사용할 수 있는 범위 내인지 판단하는 로직 추가
     if (m_ChargeTimer >= m_SkillInfo[SKILL_SINGLE].chargeTime)
     {
-        cout << "첫번째 스킬 차지 완료" << endl;
-        m_SingleSkillEnable = true;
+        //cout << "첫번째 스킬 차지 완료" << endl;
+        m_SkillTimer = 0;
         m_IsCharging = false;
+        m_SingleFired = false;
         m_SkillIndex = SKILL_SINGLE;
     }
    // else
@@ -222,48 +223,33 @@ ACTORSTATE  CPlayerSkill::Start_SingleSkill()
 
 _bool       CPlayerSkill::Update_SingleSkill(const float& timeDelta)
 {
-    if (!m_OwnerCombatStatCom || !m_OwnerInputCom) return false;
-
-    //애니메이션 방향 결정
-    _vec3  vMouseDir = m_OwnerInputCom->Get_MouseDir();
-
-    if (vMouseDir.x <= 0.f)
-        m_OwnerStateCom->Change_Dir(ACTORDIR::LEFT);
-    else
-        m_OwnerStateCom->Change_Dir(ACTORDIR::RIGHT);
-
+    
     //if (m_SkillIndex < SKILL_SINGLE || m_SkillIndex>SKILL_MAX)
 	m_SkillTimer += timeDelta;
 	m_ChargeTimer += timeDelta;
 
     const SkillInfo& skillInfo = m_SkillInfo[SKILL_SINGLE];
+    _vec3 Dir = m_OwnerInputCom->Get_MouseDir();
 
-    vMouseDir.z = 0;
+    Dir.z = 0;
 
-    D3DXVec3Normalize(&vMouseDir, &vMouseDir);
+    m_SkillTimer += timeDelta;
 
-    //if(!m_ProjectileFired&& m_SkillTimer >=skillInfo.projectileInterval) // 나중에 필요하면 시간 제어 조건도 추가
-    //{
-    //    Create_Projectile(skillInfo,vMouseDir);
-    //    m_SkillTimer = 0.f;
-    //    m_ProjectileFired = true;
-    //}
-	//
-    // (m_ChargeTimer >= skillInfo.tripleChargeTime)
-    //  m_IsCharged = true;
-	//
-    //if(m_IsCharged)
-    //{
-    //    m_OwnerStateCom->Change_State(m_SkillInfo[SKILL_SINGLE].state);
-    //}
-    //else
-    //{
-    //    m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SKILL_SINGLE);
-    //}
+    D3DXVec3Normalize(&Dir, &Dir);
+
+    if(!m_SingleFired)
+    {
+     Create_Projectile(skillInfo,Dir);
+        m_SingleFired = true;
+    }
+
+    if(m_SkillTimer >= m_SkillInfo[SKILL_SINGLE].duration)
+    {
+        return false;
 
 
-    //발사했으면 false 반환
-    return false;
+    }
+
     return true;
 }
 ACTORSTATE  CPlayerSkill::Start_TripleSkill()
@@ -274,7 +260,7 @@ ACTORSTATE  CPlayerSkill::Start_TripleSkill()
 
     if (m_ChargeTimer >= m_SkillInfo[SKILL_TRIPLE].chargeTime)
     {
-        cout << "두번째 스킬 차지 완료" << endl;
+        //cout << "두번째 스킬 차지 완료" << endl;
         m_SkillIndex = SKILL_TRIPLE;
     }
     else
@@ -335,7 +321,7 @@ void        CPlayerSkill::Reset_AttackData()
     m_SkillTimer = 0.f;
     m_ChargeTimer = 0.f;
 }
-void        CPlayerSkill::Create_Projectile(const SkillInfo& skillInfo, const _vec3& vSkillDir)
+void        CPlayerSkill::Create_Projectile(const SkillInfo& skillInfo, const _vec3& skillDir)
 {
     if (!m_OwnerCombatStatCom) return;
 
@@ -346,7 +332,7 @@ void        CPlayerSkill::Create_Projectile(const SkillInfo& skillInfo, const _v
         .Knockback(skillInfo.knockbackPower)
         .Scale(_vec3())
         .InstigatorPos()
-        .Offset(vSkillDir * skillInfo.spawnOffset)
+        .Offset(skillDir * skillInfo.spawnOffset)
         .DestroyOnHit(true)
         .Spawn();
 

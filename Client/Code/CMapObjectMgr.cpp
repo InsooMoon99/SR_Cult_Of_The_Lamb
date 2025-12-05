@@ -159,7 +159,7 @@ void CMapObjectMgr::Render_GrassWindow()
 
         if (grassTexture)
         {
-            const _int TOTAL_GRASS = 53;
+            const _int TOTAL_GRASS = 56;
             const _int COLS = 5;
             const ImVec2 buttonSize(50.f, 50.f);
 
@@ -283,7 +283,7 @@ void CMapObjectMgr::Render_DecoWindow()
 
         if (decoTexture)
         {
-            const _int TOTAL_DECO = 76; 
+            const _int TOTAL_DECO = 77; 
             const _int COLS = 5;
             const ImVec2 buttonSize(50.f, 50.f);
 

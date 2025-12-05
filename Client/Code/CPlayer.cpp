@@ -307,7 +307,7 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"PlayerSkillCharging",
                                               17,
                                               0.02f,
-                                              _vec2(0.75, 1.f),
+                                              _vec2(0.6f, 1.f),
                                               _vec2(0.f, 0.f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SKILL_CHARGING,
@@ -317,8 +317,8 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"PlayerSkillAttack",
                                              32,
                                              0.02f,
-                                             _vec2(0.75f, 1.f),
-                                             _vec2(0.f, 0.f));
+                                             _vec2(1.f, 1.5f),
+                                             _vec2(0.f, 0.5f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SKILL_SINGLE,
                                                L"PlayerSkillAttack",

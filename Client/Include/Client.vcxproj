@@ -205,6 +205,7 @@
     <ClInclude Include="..\Header\CEyeball_Start.h" />
     <ClInclude Include="..\Header\CEyeball_StartExit.h" />
     <ClInclude Include="..\Header\CEyeball_StateMachine.h" />
+    <ClInclude Include="..\Header\CFireball.h" />
     <ClInclude Include="..\Header\Client_Struct.h" />
     <ClInclude Include="..\Header\CLogo_Boss.h" />
     <ClInclude Include="..\Header\CLogo_Boss2.h" />
@@ -325,6 +326,7 @@
     <ClCompile Include="..\Code\CEyeball_Start.cpp" />
     <ClCompile Include="..\Code\CEyeball_StartExit.cpp" />
     <ClCompile Include="..\Code\CEyeball_StateMachine.cpp" />
+    <ClCompile Include="..\Code\CFireball.cpp" />
     <ClCompile Include="..\Code\CHumanMonster.cpp" />
     <ClCompile Include="..\Code\CInventory.cpp" />
     <ClCompile Include="..\Code\CItemDB.cpp" />

@@ -3,6 +3,7 @@
 
     class CPlayerInput;
     class CWeaponEquip;
+    class CFireball;
 
 BEGIN(Engine)
     class CAttackBase;
@@ -51,6 +52,10 @@ public:
 public:
     void Set_SingleSkill(_bool tf) { m_SingleSkillEnable = tf; }
     void Set_TripleSkill(_bool tf) { m_TripleSkillEnable = tf; }
+
+    _bool Get_SingleSkillAvailability() { return m_SingleSkillEnable; }
+    _bool Get_TripleSkillAvailability() { return m_TripleSkillEnable; }
+
 public:
     ACTORSTATE  Start_Charging();
     ACTORSTATE       Update_Charging(const float& timeDelta);
@@ -68,13 +73,13 @@ public:
 
 private:
     void Reset_AttackData();
-    void Create_Projectile(const SkillInfo& skillInfo, const _vec3& vAttackDir);
+    void Create_Projectile(const SkillInfo& skillInfo, const _vec3& SkillDir);
 
 private:
     CPlayerInput* m_OwnerInputCom;
     CState* m_OwnerStateCom;
     CCombatStat* m_OwnerCombatStatCom;
-
+    CFireball* m_Fireball;
 private:
     CAttackBase* m_CurrentAttackObj;
 
@@ -91,6 +96,10 @@ private:
 
     _bool     m_SingleSkillEnable;
     _bool     m_TripleSkillEnable;
+
+    _bool     m_SingleFired;
+    _bool    m_TripleFired;
+
 public:
     static CPlayerSkill* Create(DEVICE graphicDev);
     CComponent* Clone() override;

@@ -342,7 +342,7 @@ void CBossChainAttack::RandomChain(const _float& timeDelta, _vec3 BaseCenter, in
   
         }
             count++;
-            cout << count << endl;
+            //cout << count << endl;
         m_RandChainTime = 0;
     }
 

@@ -21,7 +21,7 @@ CUIItemGet::CUIItemGet(DEVICE graphicDev)
     m_IsShifting(false),
     m_CloseAnimation(false),
     m_OpenAnimaiton(false),
-    m_TargetX(-500.f),
+    m_TargetX(-550.f),
     m_ClosedX(-900.f),
     m_Speed(250.f),
     m_IsDead(false)
@@ -35,7 +35,7 @@ CUIItemGet::CUIItemGet(const CUIItemGet& rhs)
       m_IsShifting(false),
       m_CloseAnimation(false),
       m_OpenAnimaiton(false),
-      m_TargetX(-500.f),
+      m_TargetX(-550.f),
       m_ClosedX(-900.f),
       m_Speed(250.f),
       m_IsDead(false)
@@ -88,10 +88,13 @@ _int CUIItemGet::Update_GameObject(const _float& timeDelta)
         m_TransformCom->Set_Pos(pos.x, (- m_Index) *  63.f + 60.f, pos.z);
         m_UIItemIcon->Get_Transform()->Set_Pos(pos.x -40.f, ( - m_Index) *  63.f+ 60.f, pos.z);
 
-        if (dir <= 0 && (pos.x <= m_ClosedX) || (dir >= 0 && (m_TargetX <= pos.x)))
+        if ((dir <= 0 && pos.x <= targetX) ||
+            (dir >= 0 && pos.x >= targetX))
         {
-            m_IsOpen = !m_IsOpen;
+            pos.x = targetX;        
+            m_IsOpen = !m_IsOpen;   
         }
+
 
 		if(m_UIItem.remainTime <= 0)
 		{

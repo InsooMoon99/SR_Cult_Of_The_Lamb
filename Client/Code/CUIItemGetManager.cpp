@@ -78,7 +78,6 @@ _int CUIItemGetManager::Update_GameObject(const _float& timeDelta)
             index++;
         }
     }
-    cout << m_UIItemGets.size() << endl;
 
     
     return exit;

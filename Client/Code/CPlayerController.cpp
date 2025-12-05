@@ -1,6 +1,5 @@
 ﻿#include "pch.h"
 #include "CPlayerController.h"
-
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
 #include "CDInputMgr.h"
@@ -212,7 +211,7 @@ void CPlayerController::CheckStateTransition()
     //TODO RMB로 스킬
     else if (inputMgr->MouseDown(DIM_RB))
     {
-        cout << "First time Pressed" << endl;
+       // cout << "First time Pressed" << endl;
 
         ImGuiIO& io = ImGui::GetIO();
         if (io.WantCaptureMouse)
@@ -254,14 +253,15 @@ void CPlayerController::CheckStateTransition()
         {
             m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
         }
-        if(curState== ACTORSTATE::PLAYER_SKILL_SINGLE)
+        if(m_OwnerSkillCom->Get_TripleSkillAvailability())
         {
-            cout << "작은 공격 발사!" << endl;
+            m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SKILL_TRIPLE);
         }
-        if(curState==ACTORSTATE::PLAYER_SKILL_TRIPLE)
+        if(m_OwnerSkillCom->Get_SingleSkillAvailability())
         {
-            cout << "큰 공격 발사!" << endl;
+            m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SKILL_SINGLE);
         }
+        
     }
 
     // 스킬 공격
@@ -466,13 +466,14 @@ void CPlayerController::Action_Charging(const _float& timeDelta)
         break;
    
     case ACTORSTATE::PLAYER_SKILL_SINGLE:
-        m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SKILL_SINGLE);
+      //  m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SKILL_SINGLE);
         m_OwnerSkillCom->Set_SingleSkill(true);
         break;
    
     case ACTORSTATE::PLAYER_SKILL_TRIPLE:
         m_OwnerSkillCom->Set_TripleSkill(true);
-        m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SKILL_TRIPLE);
+        //m_OwnerSkillCom->Set_SingleSkill(false);
+      //  m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SKILL_TRIPLE);
         break;
     }
 }
