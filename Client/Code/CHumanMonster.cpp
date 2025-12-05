@@ -180,6 +180,7 @@ void CHumanMonster::Update_State_Attack(const _float timeDelta)
             .Offset(m_TargetDir * 0.6f)
             .Knockback(50.f)
             .Scale(_vec3(1.f, 1.f, 1.f))
+            .Particle(L"HitEffect_Star", 14, 0.04f)
             .Spawn();
         
     }

@@ -12,7 +12,7 @@
 class CParticleHelper
 {
 public:
-    template<typename T = CParticle> // 일단 Particle은 자식이 안생길거같아서 고정
+    template<typename T = CParticle>    // 일단 Particle은 자식이 안생길거같아서 고정
     static T* Spawn_Particle(
         const _vec3& position,          // 재생 위치
         const wstring& animKey,         // 스프라이트 키값

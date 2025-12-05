@@ -39,8 +39,7 @@ private:
             return E_FAIL;
         }
 
-        //!! 석호 : 제쪽 에러 발생으로 잠시 비활성화했습니다
-        //m_vecState[stateIndex] = state;
+        m_vecState[stateIndex] = state;
 
         return S_OK;
     }
