@@ -72,6 +72,11 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].spawnOffset      = 1.3f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].hitboxScale      = _vec3(1.f, 1.f, 1.f);
 
+    m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].particle.key = L"HitEffect_Star";
+    m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].particle.frames = 14;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].particle.interval = 0.03f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].particle.scale = _vec3(1.5f, 1.5f, 1.5f);
+
     // 1타
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].state            = ACTORSTATE::PLAYER_SWORD_COMBO1;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].duration         = 0.5f;
@@ -82,6 +87,12 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].knockbackPower   = 30.f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].spawnOffset      = 1.2f; // 가까움
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
+
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].particle.key = L"HitEffect_Star";
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].particle.frames = 14;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].particle.interval = 0.03f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].particle.scale = _vec3(1.5f, 1.5f, 1.5f);
+
 
     // 2타
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].state            = ACTORSTATE::PLAYER_SWORD_COMBO2;
@@ -94,6 +105,11 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].spawnOffset      = 1.2f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
 
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].particle.key = L"HitEffect_Star";
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].particle.frames = 14;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].particle.interval = 0.03f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].particle.scale = _vec3(1.5f, 1.5f, 1.5f);
+
     // 3타
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].state            = ACTORSTATE::PLAYER_SWORD_COMBO3;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].duration         = 0.8f;
@@ -104,6 +120,11 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].knockbackPower   = 30.f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].spawnOffset      = 1.2f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
+
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].particle.key = L"HitEffect_Star";
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].particle.frames = 14;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].particle.interval = 0.03f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].particle.scale = _vec3(1.5f, 1.5f, 1.5f);
 
     // =========================================================
     // [2] 건틀릿 (GAUNTLET) 데이터 설정
@@ -120,6 +141,11 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].spawnOffset      = 1.2f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
 
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].particle.key = L"HitEffect_Star";
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].particle.frames = 14;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].particle.interval = 0.03f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_HEAVY].particle.scale = _vec3(1.5f, 1.5f, 1.5f);
+
     //1타
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].state            = ACTORSTATE::PLAYER_GAUNTLET_COMBO1;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].duration         = 0.7f;
@@ -130,6 +156,11 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].knockbackPower   = 30.f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].spawnOffset      = 1.2f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
+
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].particle.key = L"HitEffect_Star";
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].particle.frames = 14;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].particle.interval = 0.03f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].particle.scale = _vec3(1.5f, 1.5f, 1.5f);
 
     //2타
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].state            = ACTORSTATE::PLAYER_GAUNTLET_COMBO2;
@@ -142,6 +173,11 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].spawnOffset      = 1.2f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
 
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].particle.key = L"HitEffect_Star";
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].particle.frames = 14;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].particle.interval = 0.03f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].particle.scale = _vec3(1.5f, 1.5f, 1.5f);
+
     //3타
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].state            = ACTORSTATE::PLAYER_GAUNTLET_COMBO3;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].duration         = 1.f;
@@ -153,6 +189,11 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].spawnOffset      = 1.2f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
 
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].particle.key = L"HitEffect_Star";
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].particle.frames = 14;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].particle.interval = 0.03f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].particle.scale = _vec3(1.5f, 1.5f, 1.5f);
+
     //4타
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO4].state            = ACTORSTATE::PLAYER_GAUNTLET_COMBO4;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO4].duration         = 1.f;
@@ -163,6 +204,11 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO4].knockbackPower   = 30.f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO4].spawnOffset      = 1.2f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO4].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
+
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO4].particle.key = L"HitEffect_Star";
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO4].particle.frames = 14;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO4].particle.interval = 0.03f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO4].particle.scale = _vec3(1.5f, 1.5f, 1.5f);
 
     return S_OK;
 }
@@ -465,6 +511,9 @@ void CPlayerAttack::Create_AttackObj(const AttackInfo& attackInfo, const _vec3& 
         // 콜라이더 충돌 시 바로 파괴되어야 하는지 설정
         // 투사체 공격의 경우 이를 true로 사용하는 게 좋을수도
         .DestroyOnHit(false)
+        // 파티클 설정
+        .Particle(attackInfo.particle.key, attackInfo.particle.frames, attackInfo.particle.interval,
+                    attackInfo.particle.scale, attackInfo.particle.offset)
         // 모든 설정을 마치고 생성
         .Spawn();
 

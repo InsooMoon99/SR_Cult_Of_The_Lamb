@@ -78,7 +78,7 @@ bool CBoxCollider::CheckCollision(CCollider* other)
     return false;
 }
 
-const _vec3 CBoxCollider::Get_Size() const
+_vec3 CBoxCollider::Get_Size()
 {
     const CTransform* transform = Get_Transform();
 

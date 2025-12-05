@@ -8,12 +8,28 @@
 #include "CRcTex.h"
 
 CMonsterBase::CMonsterBase(DEVICE graphicDev)
-    : CCharacterBase(graphicDev), m_Target(nullptr), m_TargetTransform(nullptr)
+    : CCharacterBase(graphicDev),
+    m_Target(nullptr),
+    m_TargetTransform(nullptr),
+    m_StoppingDistance(2.f),
+    m_AttackRange(2.5f),
+    m_ChaseRange(10.f),
+    m_AttackCooldown(0),
+    m_AttackTimer(0),
+    m_CanAttack(false)
 {
 }
 
 CMonsterBase::CMonsterBase(const CMonsterBase& rhs)
-    : CCharacterBase(rhs), m_Target(nullptr), m_TargetTransform(nullptr)
+    : CCharacterBase(rhs),
+    m_Target(nullptr),
+    m_TargetTransform(nullptr),
+    m_StoppingDistance(rhs.m_StoppingDistance),
+    m_AttackRange(rhs.m_AttackRange),
+    m_ChaseRange(rhs.m_ChaseRange),
+    m_AttackCooldown(rhs.m_AttackCooldown),
+    m_AttackTimer(rhs.m_AttackTimer),
+    m_CanAttack(false)
 {
 }
 
@@ -46,6 +62,14 @@ void CMonsterBase::Initialize_GameObject()
 _int CMonsterBase::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CCharacterBase::Update_GameObject(timeDelta);
+
+    if (m_Target) // 타겟의 방향 설정
+    {
+        _vec3 pos = m_TransformCom->Get_Pos();
+        _vec3 targetPos = m_TargetTransform->Get_Pos();
+        m_TargetDir = targetPos - pos;
+    }
+
     if (m_bHurt == true)
     {
         HurtTime += timeDelta;
@@ -56,6 +80,7 @@ _int CMonsterBase::Update_GameObject(const _float& timeDelta)
             HurtTime = 0;
         }
     }
+
     return exit;
 }
 
@@ -120,6 +145,53 @@ _float CMonsterBase::Get_DistanceToTarget()
     return D3DXVec3Length(&diff);
 }
 
+_bool CMonsterBase::Is_InAttackRange() const
+{
+    if (!m_TargetTransform || !m_TransformCom)
+        return false;
+
+    _vec3 pos = m_TransformCom->Get_Pos();
+    _vec3 targetPos = m_TargetTransform->Get_Pos();
+    _vec3 diff = targetPos - pos;
+
+    _float distance = D3DXVec3Length(&diff);
+
+    return distance <= m_AttackRange;
+}
+
+_bool CMonsterBase::Is_InStoppingRange() const
+{
+    if (!m_TargetTransform || !m_TransformCom)
+        return false;
+
+    _vec3 pos = m_TransformCom->Get_Pos();
+    _vec3 targetPos = m_TargetTransform->Get_Pos();
+    _vec3 diff = targetPos - pos;
+
+    _float distance = D3DXVec3Length(&diff);
+
+    return distance <= m_StoppingDistance;
+}
+
+_bool CMonsterBase::Is_InChaseRange() const
+{
+    if (!m_TargetTransform || !m_TransformCom)
+        return false;
+
+    _vec3 pos = m_TransformCom->Get_Pos();
+    _vec3 targetPos = m_TargetTransform->Get_Pos();
+    _vec3 diff = targetPos - pos;
+
+    _float distance = D3DXVec3Length(&diff);
+
+    return distance <= m_ChaseRange;
+}
+
+_bool CMonsterBase::Is_OutofChaseRange() const
+{
+    return !Is_InChaseRange();
+}
+
 void CMonsterBase::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     m_bHurt = true;
@@ -127,6 +199,7 @@ void CMonsterBase::OnBeginOverlap(CCollider* self, CCollider* other)
 
 void CMonsterBase::OnEndOverlap(CCollider* self, CCollider* other)
 {
+
 }
 
 void CMonsterBase::FlashRenderStart(DWORD color)

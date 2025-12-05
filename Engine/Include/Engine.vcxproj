@@ -198,6 +198,8 @@ xcopy /Y /I "$(SolutionDir)Engine\Header\*.*" "$(SolutionDir)Reference\Header\"<
     <ClInclude Include="..\header\CFontMgr.h" />
     <ClInclude Include="..\header\CLight.h" />
     <ClInclude Include="..\header\CLightMgr.h" />
+    <ClInclude Include="..\Header\CParticle.h" />
+    <ClInclude Include="..\Header\CParticleHelper.h" />
     <ClInclude Include="..\Header\CPersistentObjectHelper.h" />
     <ClInclude Include="..\Header\CPickingHelper.h" />
     <ClInclude Include="..\Header\CRectCollider.h" />
@@ -228,6 +230,7 @@ xcopy /Y /I "$(SolutionDir)Engine\Header\*.*" "$(SolutionDir)Reference\Header\"<
     <ClInclude Include="..\Header\CTimerMgr.h" />
     <ClInclude Include="..\Header\CTransform.h" />
     <ClInclude Include="..\Header\CTriCol.h" />
+    <ClInclude Include="..\Header\CTrigger.h" />
     <ClInclude Include="..\Header\CUI.h" />
     <ClInclude Include="..\Header\CUIPanel.h" />
     <ClInclude Include="..\Header\CUIText.h" />
@@ -258,6 +261,7 @@ xcopy /Y /I "$(SolutionDir)Engine\Header\*.*" "$(SolutionDir)Reference\Header\"<
     <ClCompile Include="..\code\CFontMgr.cpp" />
     <ClCompile Include="..\code\CLight.cpp" />
     <ClCompile Include="..\code\CLightMgr.cpp" />
+    <ClCompile Include="..\Code\CParticle.cpp" />
     <ClCompile Include="..\Code\CRectCollider.cpp" />
     <ClCompile Include="..\Code\CCollisionManager.cpp" />
     <ClCompile Include="..\Code\CCollider.cpp" />
@@ -285,6 +289,7 @@ xcopy /Y /I "$(SolutionDir)Engine\Header\*.*" "$(SolutionDir)Reference\Header\"<
     <ClCompile Include="..\Code\CTimerMgr.cpp" />
     <ClCompile Include="..\Code\CTransform.cpp" />
     <ClCompile Include="..\Code\CTriCol.cpp" />
+    <ClCompile Include="..\Code\CTrigger.cpp" />
     <ClCompile Include="..\Code\CUI.cpp" />
     <ClCompile Include="..\Code\CUIPanel.cpp" />
     <ClCompile Include="..\Code\CUIText.cpp" />

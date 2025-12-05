@@ -1,11 +1,10 @@
 ﻿#pragma once
 #include "CEffectBaseCom.h"
 #include "Client_Struct.h"
+
 struct SpriteDesc
 {
 };
-
-
 
 class CSpriteEff :
     public CEffectBaseCom

@@ -70,8 +70,8 @@ void CMapObjectMgr::Render_MapObjectWindow()
     {
         ImGui::Text("[ Preview Scale ]");
 
-        float scaleX = m_MapPlacer->Get_PreviewScaleX();
-        float scaleY = m_MapPlacer->Get_PreviewScaleY();
+        _float scaleX = m_MapPlacer->Get_PreviewScaleX();
+        _float scaleY = m_MapPlacer->Get_PreviewScaleY();
 
         if (ImGui::SliderFloat("Scale X", &scaleX, 0.1f, 30.f))
             m_MapPlacer->Set_PreviewScaleX(scaleX);
@@ -142,8 +142,6 @@ void CMapObjectMgr::Render_MapObjectWindow()
     //    }
     //}
 #pragma endregion
-    
-
 
 }
 
@@ -617,7 +615,7 @@ HRESULT CMapObjectMgr::Save_ToStream(ofstream& ofs)
     return S_OK;
 }
 
-HRESULT CMapObjectMgr::Load_FromStream(ifstream& ifs)
+HRESULT CMapObjectMgr::Load_FromStream(ifstream& ifs, _vec3 terrainOffset)
 {
     uint32_t count = 0;
     ifs.read((char*)&count, sizeof(count));
@@ -644,7 +642,10 @@ HRESULT CMapObjectMgr::Load_FromStream(ifstream& ifs)
 
             if (transform)
             {
-                transform->Set_Pos(data.pos);
+                _vec3 worldPos = data.pos + terrainOffset;
+
+                transform->Set_Pos(worldPos);
+
                 transform->Set_Scale(data.scale);  
 
                 _vec3 loadedRotation = data.rotation;

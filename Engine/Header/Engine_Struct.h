@@ -54,7 +54,30 @@ typedef struct tagSprite
     _uint  index;           // 스프라이트 인덱스
     _float duration;        // 프레임 전환 속도
 } SPRITE;
+
+typedef struct tagParticle
+{
+    std::wstring key;      // 애니메이션 키
+    _uint   frames;        // 프레임 수
+    _float  interval;      // 간격
+    _vec3   scale;         // 크기
+    _vec3   offset;        // 위치 오프셋
+
+    tagParticle()
+        : key(L""),
+        frames(10),
+        interval(0.05f),
+        scale(_vec3(1.f, 1.f, 1.f)),
+        offset(_vec3(0.f, 0.f, 0.f))
+    {
+    }
+
+    // 파티클 정보가 있는지 체크
+    bool IsValid() const { return !key.empty(); }
+} PARTICLEDATA;
+
 }
+
 
 
 #endif // Engine_Struct_h__

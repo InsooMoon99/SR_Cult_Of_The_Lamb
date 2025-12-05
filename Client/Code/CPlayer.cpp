@@ -57,6 +57,9 @@ HRESULT CPlayer::Ready_GameObject()
     m_CombatStatCom->Set_Mp(5.f);
     m_CombatStatCom->Set_Speed(5.f);
 
+    // Test
+    m_CombatStatCom->Set_HitState(false);
+
     m_TransformCom->Set_Pos(_vec3(20.f, 1.f, 15.f));
     m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
 
@@ -81,8 +84,8 @@ _int CPlayer::Update_GameObject(const _float& timeDelta)
     _int exit = CCharacterBase::Update_GameObject(timeDelta);
 
     // 안은수 테스트
-    if (CDInputMgr::GetInstance()->Get_DIKeyState(DIK_BACKSPACE))
-        CDropSystem::GetInstance()->SpawnAllFromInven(m_GraphicDev, m_InventoryCom);
+    //if (CDInputMgr::GetInstance()->Get_DIKeyState(DIK_BACKSPACE))
+    //    CDropSystem::GetInstance()->SpawnAllFromInven(m_GraphicDev, m_InventoryCom);
 
     return exit;
 }
@@ -100,6 +103,7 @@ void CPlayer::Render_GameObject()
 void CPlayer::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CCharacterBase::OnBeginOverlap(self, other);
+
 }
 
 void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)

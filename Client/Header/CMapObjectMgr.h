@@ -39,7 +39,7 @@ public:
     HRESULT LoadMapObject(const char* filePath);
 
     HRESULT Save_ToStream(ofstream& ofs);
-    HRESULT Load_FromStream(ifstream& ifs);
+    HRESULT Load_FromStream(ifstream& ifs, _vec3 terrainOffset = _vec3(0.f, 0.f, 0.f));
 
     void    Clear_PlacedObjects();  // 로드 전 기존 오브젝트 정리
     void    Refresh_MapObjectList();
