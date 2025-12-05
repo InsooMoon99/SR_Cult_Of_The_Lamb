@@ -11,6 +11,9 @@
 #include "CRcTex.h"
 #include "CCreateHelper.h"
 #include "CPlayer.h"
+#include "CInventory.h"
+#include "ItemInstance.h"
+
 
 CWorldInteractive::CWorldInteractive(DEVICE graphicDev) : CRenderObject(graphicDev)
 {
@@ -48,6 +51,14 @@ HRESULT CWorldInteractive::Ready_GameObject()
 void CWorldInteractive::Initialize_GameObject()
 {
     CRenderObject::Initialize_GameObject();
+    // 인벤 셋팅 (동전 1001, 라즈베리 1002, 잔디 1003, 나무 1005, 돌 1006)
+    m_InventoryCom->SetInvenSlotNum(5);
+    ItemInstance Item = { 1002,-1,0 };
+    for (int i = 0; i < 5;i++)
+    {
+        m_InventoryCom->AddItem(Item);
+    }
+
 }
 
 _int CWorldInteractive::Update_GameObject(const _float& timeDelta)
@@ -59,7 +70,13 @@ _int CWorldInteractive::Update_GameObject(const _float& timeDelta)
     // 플레이어가 가까이 있을떄만
     if (m_IsPlayerOverlap == true)
     {
-        // 
+        //플레이어 상태 변환
+
+        //인풋 프레스 마우왼쪽
+
+        //hp에 따라 오브젝트 이미지 전환
+
+        //0 이면 아이템 드롭
     }
 
    
@@ -108,6 +125,7 @@ void CWorldInteractive::OnBeginOverlap(CCollider* self, CCollider* other)
 void CWorldInteractive::OnEndOverlap(CCollider* self, CCollider* other)
 {
     CPlayer* ply = dynamic_cast<CPlayer*>(other->Get_Owner());
+
     if(m_IsPlayerOverlap==true&& ply!=nullptr)
         m_IsPlayerOverlap == false;
 
@@ -142,6 +160,11 @@ HRESULT CWorldInteractive::Add_Component()
     m_BoxColCom = CreateProtoComponent<CBoxCollider>(this, COMPONENTTYPE::BOX_COLL);
     NULL_CHECK_RETURN(m_BoxColCom, E_FAIL);
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::BOX_COLL, m_BoxColCom });
+
+    // texture
+    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_HUMAN_MONSTER);
+    NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_HUMAN_MONSTER, m_TextureCom });
 
     return S_OK;
 }

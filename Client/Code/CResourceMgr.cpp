@@ -736,7 +736,7 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     // Rubble
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_RUBBLE, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/MapObject/Rubble/Rubble%d.png", 46))))
+            L"../Bin/Resource/Texture/MapObject/Rubble/Rubble%d.png", 50))))
         return E_FAIL;
 
     // Deco
@@ -755,6 +755,22 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_ETC, CTexture::Create(graphicDev, TEX_NORMAL,
             L"../Bin/Resource/Texture/MapObject/ETC/ETC%d.png", 40))))
+        return E_FAIL;
+
+
+
+    // 라즈베리 풀
+    vector<wstring> pathVec2;
+    pathVec2.push_back(L"../Bin/Resource/Texture/InteractiveObj/BerryBush1.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/InteractiveObj/BerryBush1_stump.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/InteractiveObj/BerryBush2.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/InteractiveObj/BerryBush2_stump.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/InteractiveObj/BerryBush3.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/InteractiveObj/BerryBush3_stump.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/InteractiveObj/BerryBushCombined.png");
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_BERRY, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec2))))
         return E_FAIL;
 
     return S_OK;

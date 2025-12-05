@@ -150,6 +150,7 @@ enum class COMPONENTTYPE
     TEX_BOSSPHASE1,
     TEX_BULLET,
     TEX_OUT,
+    TEX_BERRY,
 
     ANIMATOR,
 

@@ -73,10 +73,10 @@ void CMapObjectMgr::Render_MapObjectWindow()
         float scaleX = m_MapPlacer->Get_PreviewScaleX();
         float scaleY = m_MapPlacer->Get_PreviewScaleY();
 
-        if (ImGui::SliderFloat("Scale X", &scaleX, 0.1f, 5.f))
+        if (ImGui::SliderFloat("Scale X", &scaleX, 0.1f, 30.f))
             m_MapPlacer->Set_PreviewScaleX(scaleX);
 
-        if (ImGui::SliderFloat("Scale Y", &scaleY, 0.1f, 5.f))
+        if (ImGui::SliderFloat("Scale Y", &scaleY, 0.1f, 30.f))
             m_MapPlacer->Set_PreviewScaleY(scaleY);
     }
 
@@ -222,7 +222,7 @@ void CMapObjectMgr::Render_RubbleWindow()
         if (rubbleTexture)
         {
 
-            const _int TOTAL_RUBBLE = 46;
+            const _int TOTAL_RUBBLE = 50;
             const _int COLS = 4;
             const ImVec2 buttonSize(50.f, 50.f);
 

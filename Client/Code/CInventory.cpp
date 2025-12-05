@@ -55,18 +55,18 @@ void CInventory::SetInvenSlotNum(int slotNum)
     }
 }
 
-void CInventory::DropItemFromCount(int DropItemNum, _vec3 DropPos, CScene* nowScene)
-{
-    //int size;
-    //
-    //if (DropItemNum == -1 || m_vecInven.size() <= DropItemNum)// 모든 아이템 드랍
-    //{
-    //    CDropSystem::GetInstance()->SpawnAllFromInven(m_GraphicDev, *this);
-    //}
-    //else
-    //    size = DropItemNum;
-    //m_vecInven
-}
+//void CInventory::DropItemFromCount(int DropItemNum, _vec3 DropPos, CScene* nowScene)
+//{
+//    //int size;
+//    //
+//    //if (DropItemNum == -1 || m_vecInven.size() <= DropItemNum)// 모든 아이템 드랍
+//    //{
+//    //    CDropSystem::GetInstance()->SpawnAllFromInven(m_GraphicDev, *this);
+//    //}
+//    //else
+//    //    size = DropItemNum;
+//    //m_vecInven
+//}
 
 void CInventory::DropItemfromSlot(int slotNum, _vec3 DropPos)
 {
