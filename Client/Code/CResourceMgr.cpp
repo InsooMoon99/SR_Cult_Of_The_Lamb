@@ -15,8 +15,8 @@
 #include "CItemDB.h"
 #include "CPlayerAttack.h"
 #include "CPlayerController.h"
-#include "CPlayerInput.h"
 #include "CPlayerMovement.h"
+#include "CPlayerInput.h"
 #include "CProjectile.h"
 #include "CProtoMgr.h"
 #include "CRcCol.h"
@@ -34,8 +34,9 @@
 #include "CWeaponEquip.h"
 #include "ItemData.h"
 #include "ItemInstance.h"
-#include "CProjectile.h"
 #include "CBossController.h"
+#include "CPlayerSkill.h"
+#include "CProjectile.h"
 #include "CSpriteEff.h"
 #include "CEffectBaseCom.h"
 #include "CEyeballController.h"
@@ -225,7 +226,12 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         COMPONENTTYPE::WEAPON_EQUIP, CWeaponEquip::Create(graphicDev))))
         return E_FAIL;
 
-    CTexture* playerTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    // skill
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::PL_SKILL, CPlayerSkill::Create(graphicDev))))
+        return E_FAIL;
+
+        CTexture* playerTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(playerTex, E_FAIL);
 
     // Idle
@@ -305,8 +311,17 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         L"../Bin/Resource/Texture/Player/Gauntlet_Attack_Heavy/Lamb-attack-heavy-gauntlet%d.png", 70)))
         return E_FAIL;
 
-    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
+    //Skill
+    if(FAILED(playerTex->Add_Texture(L"PlayerSkillAttack", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Spell1/Lamb-cast-spell%d.png", 32)))
         return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"PlayerSkillCharging", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Spell2/Lamb-cast-spell2-%d.png",17)))
+        return E_FAIL;
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
+    return E_FAIL;
+
 
     return S_OK;
 }
@@ -738,7 +753,7 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     // Grass
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_GRASS, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/MapObject/WeedShrub/WeedShrub%d.png", 53))))
+            L"../Bin/Resource/Texture/MapObject/WeedShrub/WeedShrub%d.png", 56))))
         return E_FAIL;
 
     // Rubble
@@ -750,7 +765,7 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     // Deco
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_DECO, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/MapObject/Deco/Village_Deco%d.png", 77))))
+            L"../Bin/Resource/Texture/MapObject/Deco/Village_Deco%d.png", 79))))
         return E_FAIL;
 
     // Dungeon_Deco

@@ -9,6 +9,7 @@
 /// @note
 /// 이 컴포넌트는 직접적인 로직을 수행하기보다, Controller나 Movement 컴포넌트가 사용할 수 있는
 /// 순수한 입력 데이터를 제공하는 역할에 집중합니다.
+
 class CPlayerInput : public CComponent
 {
 private:
@@ -31,7 +32,7 @@ private:    // --- 멤버 변수 ---
 
 public:
     static CPlayerInput* Create(DEVICE graphicDev);
-    CComponent*          Clone() override;
+    CComponent* Clone() override;
 
 private:
     void Free() override;

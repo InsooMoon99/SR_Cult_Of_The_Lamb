@@ -2,13 +2,14 @@
 
 #include "CCharacterBase.h"
 
-class CWeaponEquip;
+class CPlayerSkill;
 class CInventory;
 class CUIInventory;
 class CPlayerController;
-class CPlayerInput;
 class CPlayerMovement;
 class CPlayerAttack;
+class CPlayerInput;
+class CWeaponEquip;
 
 BEGIN(Engine)
 class CRigidbody;
@@ -40,17 +41,17 @@ private:
 
 private:
 #pragma region Engine Components
-    Engine::CRigidbody*  m_RigidbodyCom;
+    Engine::CRigidbody* m_RigidbodyCom;
 
 #pragma endregion
 #pragma region Client Components
-    CWeaponEquip*      m_WeaponEquipCom;
-    CInventory*        m_InventoryCom;
+    CWeaponEquip* m_WeaponEquipCom;
+    CInventory* m_InventoryCom;
     CPlayerController* m_PlayerControllerCom;
-    CPlayerInput*      m_PlayerInputCom;
-    CPlayerMovement*   m_PlayerMovementCom;
-    CPlayerAttack*     m_PlayerAttackCom;
-
+    CPlayerInput* m_PlayerInputCom;
+    CPlayerMovement* m_PlayerMovementCom;
+    CPlayerAttack* m_PlayerAttackCom;
+    CPlayerSkill* m_PlayerSkillCom;
 #pragma endregion
 
     map<ACTORSTATE, wstring> m_StateAnim;

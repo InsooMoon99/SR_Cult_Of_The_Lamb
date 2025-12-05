@@ -1,0 +1,110 @@
+﻿#pragma once
+#include "CComponent.h"
+
+    class CPlayerInput;
+    class CWeaponEquip;
+    class CFireball;
+
+BEGIN(Engine)
+    class CAttackBase;
+    class CCombatStat;
+    class CState;
+END
+
+class CPlayerSkill : public CComponent
+{
+public:
+    struct SkillInfo
+    {
+        ACTORSTATE state;
+
+        _float duration;
+        _float damageMultiplier;
+        _float knockbackPower;
+        _float spawnOffset;
+        _vec3 hitboxScale;
+        _float skillspeed;
+        _float chargeTime;
+    };
+
+    enum PL_SKILL_INDEX
+    {
+        SKILL_CHARGING,
+        SKILL_SINGLE,
+        SKILL_TRIPLE,
+
+        SKILL_MAX
+    };
+private:
+    explicit CPlayerSkill(DEVICE graphicDev);
+    explicit CPlayerSkill(const CPlayerSkill& rhs);
+    ~CPlayerSkill() override;
+
+
+public:
+    HRESULT Ready_PlayerCombat();
+    _int    Update_Component(const _float& timeDelta) override;
+    void    LateUpdate_Component() override;
+
+public:
+    HRESULT Init_OwnerComponent();
+    
+public:
+    void Set_SingleSkill(_bool tf) { m_SingleSkillEnable = tf; }
+    void Set_TripleSkill(_bool tf) { m_TripleSkillEnable = tf; }
+
+    _bool Get_SingleSkillAvailability() { return m_SingleSkillEnable; }
+    _bool Get_TripleSkillAvailability() { return m_TripleSkillEnable; }
+
+public:
+    ACTORSTATE  Start_Charging();
+    ACTORSTATE       Update_Charging(const float& timeDelta);
+
+    ACTORSTATE  Start_SingleSkill();
+    _bool       Update_SingleSkill(const float& timeDelta);
+
+    ACTORSTATE  Start_TripleSkill();
+    _bool       Update_TripleSkill(const float& timeDelta);
+
+    ACTORSTATE  Evaluate_ChargeLevel();
+public:
+    void Set_CurrentTimer(_float timer) { m_SkillTimer = timer; }
+    void Cancel_Attack();
+
+private:
+    void Reset_AttackData();
+    void Create_Projectile(const SkillInfo& skillInfo, const _vec3& SkillDir);
+
+private:
+    CPlayerInput* m_OwnerInputCom;
+    CState* m_OwnerStateCom;
+    CCombatStat* m_OwnerCombatStatCom;
+    CFireball* m_Fireball;
+private:
+    CAttackBase* m_CurrentAttackObj;
+
+private:
+    _bool     m_IsSkillUnlocked;
+    SkillInfo m_SkillInfo[SKILL_MAX];
+    _float    m_SkillTimer;
+    _float    m_ChargeTimer;
+    _float    m_MaxChargeTime;
+    _bool     m_ProjectileFired;
+    _int      m_SkillIndex;
+    _bool     m_IsCharged;
+    _bool     m_IsCharging;
+
+    _bool     m_SingleSkillEnable;
+    _bool     m_TripleSkillEnable;
+
+    _bool     m_SingleFired;
+    _bool    m_TripleFired;
+
+public:
+    static CPlayerSkill* Create(DEVICE graphicDev);
+    CComponent* Clone() override;
+
+private:
+    void Free() override;
+
+};
