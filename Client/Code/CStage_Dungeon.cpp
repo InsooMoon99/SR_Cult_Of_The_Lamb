@@ -103,13 +103,14 @@ void CStage_Dungeon::Initialize_Scene()
 
         if (terrain)
         {
-            terrain->LoadMapOnStart(m_RoomData[static_cast<_int>(room)].terrainFilePath.c_str());
-
             auto terrainTransform = terrain->Get_Transform();
             if (terrainTransform)
             {
                 terrainTransform->Set_Pos(m_RoomData[static_cast<_int>(room)].terrainOffset);
             }
+
+            terrain->LoadMapOnStart(m_RoomData[static_cast<_int>(room)].terrainFilePath.c_str());
+
         }
     }
 

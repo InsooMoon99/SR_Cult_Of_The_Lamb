@@ -616,7 +616,7 @@ HRESULT CMapObjectMgr::Save_ToStream(ofstream& ofs)
     return S_OK;
 }
 
-HRESULT CMapObjectMgr::Load_FromStream(ifstream& ifs)
+HRESULT CMapObjectMgr::Load_FromStream(ifstream& ifs, _vec3 terrainOffset)
 {
     uint32_t count = 0;
     ifs.read((char*)&count, sizeof(count));
@@ -643,7 +643,10 @@ HRESULT CMapObjectMgr::Load_FromStream(ifstream& ifs)
 
             if (transform)
             {
-                transform->Set_Pos(data.pos);
+                _vec3 worldPos = data.pos + terrainOffset;
+
+                transform->Set_Pos(worldPos);
+
                 transform->Set_Scale(data.scale);  
 
                 _vec3 loadedRotation = data.rotation;
