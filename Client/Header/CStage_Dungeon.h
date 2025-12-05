@@ -11,7 +11,6 @@ class CCombatStat;
 class CTransform;
 END
 
-
 struct RoomData
 {
     _vec3   spawnPos{};         

@@ -62,4 +62,6 @@ CTrigger_Dungeon* CTrigger_Dungeon::Create(DEVICE graphicDev)
 
 void CTrigger_Dungeon::Free()
 {
+    CTrigger::Free();
+
 }

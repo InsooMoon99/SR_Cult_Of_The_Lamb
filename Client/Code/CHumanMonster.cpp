@@ -13,12 +13,12 @@
 #include "CParticleHelper.h"
 
 CHumanMonster::CHumanMonster(DEVICE graphicDev)
-    : CMonsterBase(graphicDev), m_RigidbodyCom(nullptr)
+    : CMonsterBase(graphicDev), m_RigidbodyCom(nullptr), m_AttackSpawned(false)
 {
 }
 
 CHumanMonster::CHumanMonster(const CHumanMonster& rhs)
-    : CMonsterBase(rhs), m_RigidbodyCom(nullptr)
+    : CMonsterBase(rhs), m_RigidbodyCom(nullptr), m_AttackSpawned(false)
 {
 }
 
@@ -169,7 +169,7 @@ void CHumanMonster::Update_State_Run(const _float timeDelta)
 
 void CHumanMonster::Update_State_Attack(const _float timeDelta)
 {
-    if (m_AnimatorCom->Get_CurFrame() == 30)
+    if (m_AnimatorCom->Get_CurFrame() == 30 && !m_AttackSpawned)
     {
         CAttackBuilder(m_GraphicDev, this)
             .SetType<CAttackBox>()
@@ -182,12 +182,14 @@ void CHumanMonster::Update_State_Attack(const _float timeDelta)
             .Scale(_vec3(1.f, 1.f, 1.f))
             .Particle(L"HitEffect_Star", 14, 0.04f)
             .Spawn();
-        
+
+        m_AttackSpawned = true; // 한 프레임에 2개 생성해버려서
     }
 
     if (m_AnimatorCom->Is_AnimationFinished())
     {
         m_StateCom->Change_State(ACTORSTATE::IDLE);
+        m_AttackSpawned = false;
     }
 }
 

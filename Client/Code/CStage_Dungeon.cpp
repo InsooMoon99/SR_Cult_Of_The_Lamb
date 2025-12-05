@@ -146,7 +146,7 @@ void CStage_Dungeon::LateUpdate_Scene(const _float& timeDelta)
 
 void CStage_Dungeon::Render_Scene()
 {
-    // debug 용
+    
 }
 
 void CStage_Dungeon::Spawn_RoomObjects(Room room)

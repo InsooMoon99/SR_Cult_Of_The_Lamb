@@ -53,6 +53,7 @@ protected:
 private:
     Engine::CRigidbody* m_RigidbodyCom;
 
+    _bool   m_AttackSpawned;
 
 
 };

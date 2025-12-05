@@ -103,6 +103,7 @@ void CPlayer::Render_GameObject()
 void CPlayer::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CCharacterBase::OnBeginOverlap(self, other);
+
 }
 
 void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)

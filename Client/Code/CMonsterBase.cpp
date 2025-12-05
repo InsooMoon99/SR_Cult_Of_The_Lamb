@@ -199,6 +199,7 @@ void CMonsterBase::OnBeginOverlap(CCollider* self, CCollider* other)
 
 void CMonsterBase::OnEndOverlap(CCollider* self, CCollider* other)
 {
+
 }
 
 void CMonsterBase::FlashRenderStart(DWORD color)

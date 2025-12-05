@@ -70,13 +70,13 @@ void CMapObjectMgr::Render_MapObjectWindow()
     {
         ImGui::Text("[ Preview Scale ]");
 
-        float scaleX = m_MapPlacer->Get_PreviewScaleX();
-        float scaleY = m_MapPlacer->Get_PreviewScaleY();
+        _float scaleX = m_MapPlacer->Get_PreviewScaleX();
+        _float scaleY = m_MapPlacer->Get_PreviewScaleY();
 
-        if (ImGui::SliderFloat("Scale X", &scaleX, 0.1f, 5.f))
+        if (ImGui::SliderFloat("Scale X", &scaleX, 0.1f, 10.f))
             m_MapPlacer->Set_PreviewScaleX(scaleX);
 
-        if (ImGui::SliderFloat("Scale Y", &scaleY, 0.1f, 5.f))
+        if (ImGui::SliderFloat("Scale Y", &scaleY, 0.1f, 10.f))
             m_MapPlacer->Set_PreviewScaleY(scaleY);
     }
 
@@ -142,8 +142,6 @@ void CMapObjectMgr::Render_MapObjectWindow()
     //    }
     //}
 #pragma endregion
-    
-
 
 }
 

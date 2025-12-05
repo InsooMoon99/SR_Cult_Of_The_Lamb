@@ -21,6 +21,12 @@ public:
     _int            Update_GameObject(const _float& timeDelta) override;
     void            LateUpdate_GameObject(const _float& timeDelta) override;
 
+    void            Render_GameObject() override;
+
+public:
+    void             OnBeginOverlap(CCollider* self, CCollider* other) override;
+    void             OnEndOverlap(CCollider* self, CCollider* other) override;
+
 public:
     _float          Get_DistanceToTarget();
     _bool           Can_Attack() { return m_AttackTimer >= m_AttackCooldown; }
@@ -41,10 +47,10 @@ public:
     _float          Get_ChaseRange() const { return m_ChaseRange; }
 
     // IHitFlashEff 구현부
-    virtual void FlashRenderStart(DWORD color = D3DCOLOR_ARGB(255, 255, 255, 255));
-    virtual void FlashRenderEnd() ;
-    virtual void AlphaRenderStart(float alpha = 0.8f) ;
-    virtual void AlphaRenderEnd(); 
+    virtual void    FlashRenderStart(DWORD color = D3DCOLOR_ARGB(255, 255, 255, 255));
+    virtual void    FlashRenderEnd() ;
+    virtual void    AlphaRenderStart(float alpha = 0.8f) ;
+    virtual void    AlphaRenderEnd(); 
 
     bool m_bHurt = false;
     float HurtTime = 0;
