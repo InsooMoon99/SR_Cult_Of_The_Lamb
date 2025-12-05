@@ -6,14 +6,14 @@
 CTrigger_Dungeon::CTrigger_Dungeon(DEVICE graphicDev)
     : CTrigger(graphicDev)
 {
-    Set_Name(L"Trigger");
+    
 
 }
 
 CTrigger_Dungeon::CTrigger_Dungeon(const CTrigger_Dungeon& rhs)
     : CTrigger(rhs)
 {
-    Set_Name(L"Trigger");
+    
 }
 
 CTrigger_Dungeon::~CTrigger_Dungeon()

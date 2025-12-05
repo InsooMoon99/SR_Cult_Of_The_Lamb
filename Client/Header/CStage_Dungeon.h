@@ -60,6 +60,12 @@ public:
     void    Load_Room(Room room);
 
     void    Create_RoomTriggers();
+    void    Create_Trigger_Between(Room fromRoom, Room toRoom,
+                _vec3 offsetFromRoom, _vec3 size);
+
+    void Create_Trigger_Between(Room fromRoom,
+        _vec3 offsetFromRoom, _vec3 size,
+        std::function<void()> callback);
 
     void    Change_Room(Room room);
 
@@ -90,5 +96,9 @@ private:
     CGameObject*    m_Player;
     CTransform*     m_PlayerTransform;
 
+    _bool           m_RequestChangeScene = false;
+    SCENETYPE       m_NextSceneType = SCENETYPE::SC_END;
+
 };
+
 

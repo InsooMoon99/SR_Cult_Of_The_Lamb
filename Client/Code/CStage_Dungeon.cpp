@@ -112,10 +112,21 @@ void CStage_Dungeon::Initialize_Scene()
             }
         }
     }
+
+    // 트리거 생성
+    Create_RoomTriggers();
 }
 
 _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
 {
+    if (m_RequestChangeScene)
+    {
+        CSceneMgr::GetInstance()->Change_SceneMgr(m_NextSceneType);
+        m_RequestChangeScene = false;
+
+        return 0;
+    }
+
     _int exit = Engine::CScene::Update_Scene(timeDelta);
 
     if (CDInputMgr::GetInstance()->KeyDown(DIK_F))
@@ -192,33 +203,98 @@ void CStage_Dungeon::Load_Room(Room room)
 
 void CStage_Dungeon::Create_RoomTriggers()
 {
-    // GameLogic에 추가
+    // START -> MONSTER1
+    Create_Trigger_Between(
+        Room::START,
+        Room::MONSTER1,
+        _vec3(18.f, 1.f, 27.f),     
+        _vec3(5.f, 5.f, 4.5f)      
+    );
+
+    // MONSTER1 -> MONSTER2
+    Create_Trigger_Between(
+        Room::MONSTER1,
+        Room::MONSTER2,
+        _vec3(38.f, 1.f, 10.f),
+        _vec3(5.f, 5.f, 4.5f)
+    );
+
+    // MONSTER2 -> TARO
+    //{
+    //    auto gameLayer = m_Layers[LAYERTYPE::GAMELOGIC];
+    //    NULL_CHECK(gameLayer);
+
+    //    auto trigger = CTrigger_Dungeon::Create(m_GraphicDev);
+
+    //    _vec3 roomBasePos = m_RoomData[(int)Room::MONSTER2].terrainOffset;
+    //    _vec3 triggerPos = roomBasePos + _vec3(18.f, 1.f, 26.f);
+
+    //    trigger->Set_Bounds(triggerPos, _vec3(4.5f, 5.f, 5.f));
+    //    trigger->Set_TriggerOnce(true);
+
+    //    trigger->Set_Callback([this]()
+    //        {
+    //            m_RequestChangeScene = true;
+    //            m_NextSceneType = SCENETYPE::SC_LOGO_BOSS1;
+    //        });
+
+    //    gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
+
+    //}
+
+    /*Create_Trigger_Between(
+        Room::MONSTER2,
+        Room::TARO,
+        _vec3(18.f, 1.f, 26.f),     
+        _vec3(4.5f, 5.f, 5.f)      
+    );*/
+
+    // MONSTER2 -> BOSS
+    //Create_Trigger_Between(
+    //    Room::MONSTER2,
+    //    Room::BOSS,
+    //    _vec3(18.f, 1.f, 0.f),
+    //    _vec3(5.f, 5.f, 4.5f)
+    //);
+}
+
+void CStage_Dungeon::Create_Trigger_Between(Room fromRoom, Room toRoom, _vec3 offsetFromRoom, _vec3 size)
+{
     auto gameLayer = m_Layers[LAYERTYPE::GAMELOGIC];
     NULL_CHECK(gameLayer);
 
-    // Start -> Monster1
-    {
-        auto trigger = CTrigger_Dungeon::Create(m_GraphicDev);
+    auto trigger = CTrigger_Dungeon::Create(m_GraphicDev);
 
-        // 위치, 크기 세팅
-        trigger->Set_Bounds(_vec3(0.f, 1.f, 10.f), _vec3(5.f, 5.f, 20.f));
+    _vec3 roomBasePos = m_RoomData[(_int)fromRoom].terrainOffset;
+    _vec3 triggerPos = roomBasePos + offsetFromRoom;
 
-        // 한 번만 작동하게
-        trigger->Set_TriggerOnce(true);
+    trigger->Set_Bounds(triggerPos, size);
+    trigger->Set_TriggerOnce(true);
 
-        trigger->Set_Callback([this]()
-            {
-                Change_Room(Room::MONSTER1);
-            });
+    trigger->Set_Callback([this, toRoom]()
+        {
+            Change_Room(toRoom);
+        });
 
-        gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
-    }
-    // Monster1 -> Monster2
+    gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
+}
 
-    // Monster1 -> 타로
+void CStage_Dungeon::Create_Trigger_Between(Room fromRoom, _vec3 offsetFromRoom, _vec3 size,
+    std::function<void()> callback)
+{
+    auto gameLayer = m_Layers[LAYERTYPE::GAMELOGIC];
+    NULL_CHECK(gameLayer);
 
-    // Monster2 -> 보스
+    auto trigger = CTrigger_Dungeon::Create(m_GraphicDev);
 
+    _vec3 roomBasePos = m_RoomData[(int)fromRoom].terrainOffset;
+    _vec3 triggerPos = roomBasePos + offsetFromRoom;
+
+    trigger->Set_Bounds(triggerPos, size);
+    trigger->Set_TriggerOnce(true);
+    trigger->Set_Callback(callback);
+
+    gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
 }
 
 void CStage_Dungeon::Change_Room(Room room)
@@ -321,6 +397,24 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
             layer->Add_GameObject(OBJTYPE::HUMANMONSTER, gameObject),
             L"CStage_Dungeon::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
 
+    CTransform* humanTr = gameObject->Get_Transform();
+    if (humanTr)
+        humanTr->Set_Pos(_vec3(21.f, 1.f, 10.f));
+
+    {
+        // HumanMonster
+        gameObject = CHumanMonster::Create(m_GraphicDev);
+        NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage_Dungeon::Ready_GameLogic_Layer() failed: CHumanMonster::Create() returned null")
+
+            FAILED_CHECK_MSG(
+                layer->Add_GameObject(OBJTYPE::HUMANMONSTER, gameObject),
+                L"CStage_Dungeon::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
+
+        CTransform* humanTr = gameObject->Get_Transform();
+        if (humanTr)
+            humanTr->Set_Pos(_vec3(26.f, 1.f, 10.f));
+    }
+
     // 카메라 생성
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CMainCamera>(
@@ -352,9 +446,6 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
     }
 
     m_Layers.insert({ layerType, layer });
-
-    // 트리거 생성
-    Create_RoomTriggers();
 
     return S_OK;
 }
