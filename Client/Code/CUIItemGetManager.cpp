@@ -161,5 +161,10 @@ CUIItemGetManager* CUIItemGetManager::Create(DEVICE graphicDev)
 
 void CUIItemGetManager::Free()
 {
+    for (auto iter = m_UIItemGets.begin(); iter != m_UIItemGets.end(); )
+    {
+        Safe_Release(*iter);  
+        iter = m_UIItemGets.erase(iter); 
+    }
     CGameObject::Free();
 }

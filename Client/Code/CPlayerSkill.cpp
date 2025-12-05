@@ -239,7 +239,7 @@ _bool       CPlayerSkill::Update_SingleSkill(const float& timeDelta)
 
     if(!m_SingleFired)
     {
-     Create_Projectile(skillInfo,Dir);
+     //Create_Projectile(skillInfo,Dir);
         m_SingleFired = true;
     }
 

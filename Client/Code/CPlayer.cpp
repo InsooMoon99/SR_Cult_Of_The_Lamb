@@ -259,7 +259,7 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"PlayerGauntletCombo1",
                                         41,
                                         0.02f,
-                                        _vec2(0.7f, 1.f),
+                                        _vec2(1.8f, 1.8f),
                                         _vec2(0.f, 0.7f));
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_COMBO1,
                              L"PlayerGauntletCombo1",
@@ -269,7 +269,7 @@ void CPlayer::Animation_Setting()
                                     43,
                                     0.02f,
                                     _vec2(2.2f, 2.2f),
-                                    _vec2(0.f, 0.f));
+                                    _vec2(0.f, 0.6f));
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_COMBO2,
                              L"PlayerGauntletCombo2",
                              ANIMSTATE::ONCE);
@@ -278,7 +278,7 @@ void CPlayer::Animation_Setting()
                                     44,
                                     0.02f,
                                     _vec2(2.2f, 2.2f),
-                                    _vec2(0.f, 0.f));
+                                    _vec2(0.f, 0.3f));
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_COMBO3,
                              L"PlayerGauntletCombo3",
                              ANIMSTATE::ONCE);
@@ -286,8 +286,8 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"PlayerGauntletCombo4",
                                     40,
                                     0.02f,
-                                    _vec2(2.2f, 2.2f),
-                                    _vec2(0.f, 0.f));
+                                    _vec2(2.4f, 2.4f),
+                                    _vec2(0.f, 0.6f));
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_COMBO4,
                              L"PlayerGauntletCombo4",
                              ANIMSTATE::ONCE);

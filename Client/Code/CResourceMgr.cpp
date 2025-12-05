@@ -745,7 +745,7 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     // Grass
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_GRASS, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/MapObject/WeedShrub/WeedShrub%d.png", 53))))
+            L"../Bin/Resource/Texture/MapObject/WeedShrub/WeedShrub%d.png", 56))))
         return E_FAIL;
 
     // Rubble
@@ -757,7 +757,7 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     // Deco
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_DECO, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/MapObject/Deco/Village_Deco%d.png", 77))))
+            L"../Bin/Resource/Texture/MapObject/Deco/Village_Deco%d.png", 79))))
         return E_FAIL;
 
     // Dungeon_Deco

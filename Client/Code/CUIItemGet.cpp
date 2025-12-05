@@ -21,7 +21,7 @@ CUIItemGet::CUIItemGet(DEVICE graphicDev)
     m_IsShifting(false),
     m_CloseAnimation(false),
     m_OpenAnimaiton(false),
-    m_TargetX(-550.f),
+    m_TargetX(-500.f),
     m_ClosedX(-900.f),
     m_Speed(250.f),
     m_IsDead(false)
@@ -35,7 +35,7 @@ CUIItemGet::CUIItemGet(const CUIItemGet& rhs)
       m_IsShifting(false),
       m_CloseAnimation(false),
       m_OpenAnimaiton(false),
-      m_TargetX(-550.f),
+      m_TargetX(-500.f),
       m_ClosedX(-900.f),
       m_Speed(250.f),
       m_IsDead(false)
@@ -54,6 +54,7 @@ HRESULT CUIItemGet::Ready_GameObject()
     m_UIItemIcon = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_ITEM);
     m_UIItemIcon->SetRegister(false);
     m_UIItemIcon->Get_Transform()->Set_Scale(20.f, 20.f, 0.f);
+    m_UIItemIcon->Get_Transform()->Set_Pos(-950.f, 100.f, 0.f);
 
     //배경 위치
     m_TransformCom->Set_Scale(137.5f, 30.75f, 0.f);
@@ -85,8 +86,8 @@ _int CUIItemGet::Update_GameObject(const _float& timeDelta)
 
         pos.x += timeDelta * m_Speed * dir;
 
-        m_TransformCom->Set_Pos(pos.x, (- m_Index) *  63.f + 60.f, pos.z);
-        m_UIItemIcon->Get_Transform()->Set_Pos(pos.x -40.f, ( - m_Index) *  63.f+ 60.f, pos.z);
+        m_TransformCom->Set_Pos(pos.x , (- m_Index) *  63.f + 60.f, pos.z);
+        m_UIItemIcon->Get_Transform()->Set_Pos(pos.x - uiItemOffset, ( - m_Index) *  63.f+ 60.f, pos.z);
 
         if ((dir <= 0 && pos.x <= targetX) ||
             (dir >= 0 && pos.x >= targetX))
@@ -128,7 +129,7 @@ void CUIItemGet::Render_GameObject()
         m_UIItemIcon->Render_GameObject();
 
         Item* item = CItemDB::GetInstance()->GetItemById(m_UIItem.itemId);
-		_vec2 screen = { WINCX / 2 + pos.x +50.f, WINCY / 2 - pos.y};
+		_vec2 screen = { WINCX / 2 + pos.x +30.f, WINCY / 2 - pos.y};
 		CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Small", CItemDB::GetInstance()->Utf8ToWstring(item->name) + L"    +" + to_wstring(m_UIItem.count), &screen, D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.f));
 
     }
