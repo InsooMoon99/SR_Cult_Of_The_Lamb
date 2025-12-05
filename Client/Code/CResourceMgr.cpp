@@ -17,8 +17,9 @@
 #include "CItemDB.h"
 #include "CPlayerAttack.h"
 #include "CPlayerController.h"
-#include "CPlayerMovement.h"
 #include "CPlayerInput.h"
+#include "CPlayerMovement.h"
+#include "CPlayerSkill.h"
 #include "CProjectile.h"
 #include "CProtoMgr.h"
 #include "CRcCol.h"
@@ -37,12 +38,6 @@
 #include "CWeaponEquip.h"
 #include "ItemData.h"
 #include "ItemInstance.h"
-#include "CBossController.h"
-#include "CPlayerSkill.h"
-#include "CProjectile.h"
-#include "CSpriteEff.h"
-#include "CEffectBaseCom.h"
-#include "CEyeballController.h"
 
 IMPLEMENT_SINGLETON(CResourceMgr)
 
@@ -233,16 +228,19 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         COMPONENTTYPE::PL_SKILL, CPlayerSkill::Create(graphicDev))))
         return E_FAIL;
 
-        CTexture* playerTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    CTexture* playerTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(playerTex, E_FAIL);
 
 #pragma region --- Tex: Idle ---
+
     if (FAILED(playerTex->Add_Texture(L"PlayerIdle", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Idle/Lamb-idle%d.png", 150)))
         return E_FAIL;
+
 #pragma endregion
 
 #pragma region --- Tex: Run ---
+
     if (FAILED(playerTex->Add_Texture(L"PlayerRun_LEFT", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/RunHorizontal/Lamb-run-horizontal%d.png", 19)))
         return E_FAIL;
@@ -262,9 +260,11 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
     if (FAILED(playerTex->Add_Texture(L"PlayerRun_LDOWN", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Run/Lamb-run%d.png", 19)))
         return E_FAIL;
+
 #pragma endregion
 
 #pragma region --- Tex: Roll ---
+
     if (FAILED(playerTex->Add_Texture(L"PlayerRoll_LEFT", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Roll/Lamb-roll%d.png", 19)))
         return E_FAIL;
@@ -276,9 +276,11 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
     if (FAILED(playerTex->Add_Texture(L"PlayerRoll_DOWN", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/RollDown/Lamb-roll-down%d.png", 16)))
         return E_FAIL;
+
 #pragma endregion
 
 #pragma region --- Tex: Sword ---
+
     if (FAILED(playerTex->Add_Texture(L"PlayerSwordCombo1", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Sword_Combo1/Lamb-attack-combo1-%d.png", 31)))
         return E_FAIL;
@@ -294,6 +296,7 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
     if (FAILED(playerTex->Add_Texture(L"PlayerSwordHeavy", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Sword_Heavy/Lamb-attack-heavy-sword%d.png", 70)))
         return E_FAIL;
+
 #pragma endregion
 
 #pragma region --- Tex: Gauntlet ---
@@ -316,8 +319,9 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
 
 #pragma endregion
 
-    //Skill
-    if(FAILED(playerTex->Add_Texture(L"PlayerSkillAttack", TEX_NORMAL,
+#pragma region --- Tex: Skill ---
+
+    if (FAILED(playerTex->Add_Texture(L"PlayerSkillAttack", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Spell1/Lamb-cast-spell%d.png", 32)))
         return E_FAIL;
 
@@ -325,10 +329,10 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         L"../Bin/Resource/Texture/Player/Spell2/Lamb-cast-spell2-%d.png",17)))
         return E_FAIL;
 
-        
-    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
-    return E_FAIL;
+#pragma endregion
 
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -802,7 +806,6 @@ HRESULT CResourceMgr::Ready_Particle(DEVICE graphicDev)
         return E_FAIL;
 
     // 추가 예정
-
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PARTICLE, particleTex)))
         return E_FAIL;

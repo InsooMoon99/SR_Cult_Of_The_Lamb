@@ -7,7 +7,6 @@
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
 #include "CCreateHelper.h"
-#include "CDInputMgr.h"
 #include "CDropSystem.h"
 #include "CInventory.h"
 #include "CPlayerAttack.h"
@@ -29,7 +28,8 @@ CPlayer::CPlayer(DEVICE graphicDev)
       m_PlayerControllerCom(nullptr),
       m_PlayerInputCom(nullptr),
       m_PlayerMovementCom(nullptr),
-      m_PlayerAttackCom(nullptr)
+      m_PlayerAttackCom(nullptr),
+      m_PlayerSkillCom(nullptr)
 
 { }
 
@@ -41,7 +41,8 @@ CPlayer::CPlayer(const CPlayer& rhs)
       m_PlayerControllerCom(nullptr),
       m_PlayerInputCom(nullptr),
       m_PlayerMovementCom(nullptr),
-      m_PlayerAttackCom(nullptr)
+      m_PlayerAttackCom(nullptr),
+      m_PlayerSkillCom(nullptr)
 { }
 
 CPlayer::~CPlayer()
@@ -190,13 +191,13 @@ void CPlayer::Animation_Setting()
     //_float dirX = m_PlayerInputCom->Get_MouseDir().x;
     //m_AnimatorCom->Set_FlipX(dirX < 0);
 
-#pragma region ------   IDLE    ------
+#pragma region --- IDLE ---
     m_AnimatorCom->Create_Animation(L"PlayerIdle", 150, 0.02f, _vec2(0.75f, 0.80f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"PlayerIdle", ANIMSTATE::LOOP);
 #pragma endregion
 
-#pragma region ------   RUN     ------
+#pragma region --- RUN ---
     m_AnimatorCom->Create_Animation(L"PlayerRun_LEFT", 19, 0.02f, _vec2(0.68f, 0.8f));
     m_AnimatorCom->Create_Animation(L"PlayerRun_UP", 19, 0.02f, _vec2(0.68f, 0.8f));
     m_AnimatorCom->Create_Animation(L"PlayerRun_DOWN", 19, 0.02f, _vec2(0.65f, 0.8f));
@@ -206,7 +207,7 @@ void CPlayer::Animation_Setting()
     m_StateCom->Set_AnimInfo(ACTORSTATE::RUN, L"PlayerRun", ANIMSTATE::LOOP);
 #pragma endregion
 
-#pragma region ------   ROLL    ------
+#pragma region --- ROLL ---
     m_AnimatorCom->Create_Animation(L"PlayerRoll_LEFT",
                                     19,
                                     0.02f,
@@ -228,7 +229,7 @@ void CPlayer::Animation_Setting()
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_ROLL, L"PlayerRoll", ANIMSTATE::ONCE);
 #pragma endregion
 
-#pragma region ------   SWORD    ------
+#pragma region --- SWORD ---
     m_AnimatorCom->Create_Animation(L"PlayerSwordCombo1",
                                     31,
                                     0.02f,
@@ -270,7 +271,7 @@ void CPlayer::Animation_Setting()
                              ANIMSTATE::ONCE);
 #pragma endregion
 
-#pragma region ------   Gauntlet   ------
+#pragma region --- Gauntlet ---
     m_AnimatorCom->Create_Animation(L"PlayerGauntletCombo1",
                                     41,
                                     0.02f,
@@ -311,7 +312,7 @@ void CPlayer::Animation_Setting()
                                                  L"PlayerGauntletHeavy",
                                                 ANIMSTATE::ONCE);
 
-#pragma region -----------Skill-----------
+#pragma region --- Skill ---
 
 
     m_AnimatorCom->Create_Animation(L"PlayerSkillCharging",
