@@ -1,6 +1,9 @@
 ﻿#include "pch.h"
 #include "CMainMenu.h"
 
+#include <CSoundMgr.h>
+#include "CCameraController.h"
+#include "CCamSetupBuilder.h"
 #include "CDInputMgr.h"
 #include "CEdit.h"
 #include "CFontMgr.h"
@@ -15,8 +18,6 @@
 #include "CTransform.h"
 #include "CUIButton.h"
 #include "CUIIcon.h"
-#include "CCameraController.h"
-#include "CCamSetupBuilder.h"
 
 CMainMenu::CMainMenu(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -40,6 +41,9 @@ HRESULT CMainMenu::Ready_Scene()
 
     if (FAILED(Ready_UI_Layer(LAYERTYPE::UI)))
         return E_FAIL;
+
+    // 메인 화면 BGM
+    CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Intro.wav", 0.3f);
 
     return S_OK;
 }
@@ -139,6 +143,12 @@ HRESULT CMainMenu::Ready_GameLogic_Layer(LAYERTYPE layerType)
             OBJTYPE::CAMERA, L"MainCamera", m_GraphicDev, layer, &gameObject),
         L"Persistent object setup failed"
     );
+
+    auto camTransform = dynamic_cast<CTransform*>(
+        gameObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+    camTransform->Set_Pos(0.f, 0.f, 0.f);
+    camTransform->Set_Rotation({ 0.f, 0.f, 0.f });
 
     auto camController = dynamic_cast<CCameraController*>(
         gameObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAM_CONTROLLER));
@@ -256,5 +266,7 @@ CMainMenu* CMainMenu::Create(DEVICE graphicDev)
 
 void CMainMenu::Free()
 {
+    CSoundMgr::GetInstance()->Stop_SoundChannel(SOUND_BGM);
+
     Engine::CScene::Free();
 }
