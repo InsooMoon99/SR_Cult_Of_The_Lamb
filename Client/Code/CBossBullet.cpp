@@ -34,7 +34,7 @@ CBossBullet::CBossBullet(const CBossBullet& rhs)
 
 CBossBullet::~CBossBullet()
 {
-    
+
 }
 
 HRESULT CBossBullet::Ready_GameObject()
@@ -56,8 +56,8 @@ HRESULT CBossBullet::Ready_GameObject()
 
     m_TransformCom->Set_Rotation({ D3DXToRadian(90), 0, 0 });
 
-   // if (m_BoxColCom)
-   //     m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::BOSSPROJECTILE);
+    // if (m_BoxColCom)
+    //     m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::BOSSPROJECTILE);
 
     return S_OK;
 }
@@ -81,7 +81,7 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
             .Track(ATBox)
             .Damage(1.f)
             .Knockback(0.f)
-            .Scale({0.2f, 0.2f, 0.2f})
+            .Scale({ 0.2f, 0.2f, 0.2f })
             .InstigatorPos()
             .Offset(_vec3(0.f, 0.f, 0.f))
             .LifeTime(5.f) // 이건 혹시 충돌 안했을경우를 대비 해서
@@ -100,7 +100,7 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
         //    m_ATKBoxTransformCom = nullptr;
         //    this->Mark_As_PendingKill();});
 
-            ATBox->Set_OnDestroyCallback([bullet = this]() {bullet->Mark_As_PendingKill();});
+        ATBox->Set_OnDestroyCallback([bullet = this]() {bullet->Mark_As_PendingKill(); });
 
         m_flag = true;
     }
@@ -274,10 +274,10 @@ HRESULT CBossBullet::Add_Component()
     NULL_CHECK_RETURN(m_ProjectileCom, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::PROJECTILE, m_ProjectileCom });
 
-   // // BoxCollider
-   // m_BoxColCom = CreateProtoComponent<CBoxCollider>(this, COMPONENTTYPE::BOX_COLL);
-   // NULL_CHECK_RETURN(m_BoxColCom, E_FAIL);
-   // m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::BOX_COLL, m_BoxColCom });
+    // // BoxCollider
+    // m_BoxColCom = CreateProtoComponent<CBoxCollider>(this, COMPONENTTYPE::BOX_COLL);
+    // NULL_CHECK_RETURN(m_BoxColCom, E_FAIL);
+    // m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::BOX_COLL, m_BoxColCom });
 
     return S_OK;
 }
@@ -302,6 +302,6 @@ void CBossBullet::Free()
     Safe_Release(m_pOwner);
     Safe_Release(m_pTarget);
 
-    
+
     CGameObject::Free();
 }

@@ -175,6 +175,15 @@
     <Filter Include="03. GameObject\04. Boss\02. Boss2\02. Slave">
       <UniqueIdentifier>{f0761f14-29e5-4beb-a999-fbcd51de41e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97. Component\06. SkillEquip">
+      <UniqueIdentifier>{12547d9a-7e03-42d3-9f2c-46e9b362b9b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Component\06.Effect">
+      <UniqueIdentifier>{0a2588d6-9b6a-44ba-9c7f-e2fd96563550}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Component\06.Effect\00.Base">
+      <UniqueIdentifier>{8a0d49d8-10a4-4675-9c64-616209693762}</UniqueIdentifier>
+    </Filter>
     <Filter Include="03. GameObject\04. Boss\02. Boss2\03. State">
       <UniqueIdentifier>{d74a9f17-2586-44d3-a875-b196eaed53a4}</UniqueIdentifier>
     </Filter>
@@ -190,6 +199,9 @@
     <Filter Include="03. GameObject\06. Controller">
       <UniqueIdentifier>{8902134d-20bd-40d8-a9c0-6a01e23a37dc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\10. Fireball">
+      <UniqueIdentifier>{55718334-06ee-43b9-9d37-001e0d9b66dc}</UniqueIdentifier>
+   </Filter>
     <Filter Include="97. Component\07. State">
       <UniqueIdentifier>{e34a7dc5-e0ec-4ffb-8b09-7b4b921f27cb}</UniqueIdentifier>
     </Filter>
@@ -555,6 +567,11 @@
     <ClInclude Include="..\Header\CBossTalk.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CPlayerSkill.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CFireball.h">
+       </ClInclude>
     <ClInclude Include="..\Header\CStage_Dungeon.h">
       <Filter>02. Scene\01. Stage</Filter>
     </ClInclude>
@@ -885,6 +902,11 @@
     </ClCompile>
     <ClCompile Include="..\Code\CBossTalk.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CPlayerSkill.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CFireball.cpp">
     </ClCompile>
     <ClCompile Include="..\Code\CStage_Dungeon.cpp">
       <Filter>02. Scene\01. Stage</Filter>
