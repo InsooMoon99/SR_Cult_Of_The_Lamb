@@ -71,6 +71,7 @@ enum class COLLISION_LAYERTYPE
     BOSSPROJECTILE,
     ITEM,
     ATTACK,
+    TRIGGER,
     INTERACTIVEOBJ,
 
     COL_LAYER_END
@@ -91,6 +92,8 @@ enum class OBJTYPE
     BOSS2,
 
     ATTACK_COL,
+    PARTICLE,
+    TRIGGER,
 
     TERRAIN,
     PLACEMENT,
@@ -187,6 +190,11 @@ enum class COMPONENTTYPE
     TEX_DUNGEON_DECO,
     TEX_ETC,
 
+    ////////////////
+    //  Particle  //
+    ////////////////
+    TEX_PARTICLE,
+
     COMPONENT_END
 };
 
@@ -235,7 +243,7 @@ enum class SCENETYPE
     SC_LOGO_BOSS2,
     SC_MAINMENU,
     SC_STAGE,
-    SC_STAGE1,
+    SC_DUNGEON,
     SC_TAROT_TEST,
     SC_BOSS_STAGE1,
     SC_BOSS_STAGE2,

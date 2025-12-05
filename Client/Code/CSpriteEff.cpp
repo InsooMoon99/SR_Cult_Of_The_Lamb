@@ -13,7 +13,6 @@ CSpriteEff::CSpriteEff(DEVICE graphicDev) : CEffectBaseCom(graphicDev)
 }
 
 CSpriteEff::CSpriteEff(const CSpriteEff& rhs) : CEffectBaseCom(rhs)
-
 {
     //컴포넌트는 현구조상 프로토 타입으로 클론하기 떄문에 깊은 복사 , 초기화 필수
 

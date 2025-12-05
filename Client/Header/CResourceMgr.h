@@ -32,6 +32,8 @@ public:
     HRESULT Ready_Terrain(DEVICE graphicDev);
     HRESULT Ready_Decoration(DEVICE graphicDev);
 
+    HRESULT Ready_Particle(DEVICE graphicDev);
+
 public:
     HRESULT Ready_BossP1(DEVICE graphicDev);
 

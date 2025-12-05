@@ -1,10 +1,10 @@
 ﻿#include "CAttackBase.h"
-
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
 #include "CCreateHelper.h"
 #include "CRenderer.h"
 #include "CTransform.h"
+#include "CParticleHelper.h"
 
 CAttackBase::CAttackBase(DEVICE graphicDev)
     : CGameObject(graphicDev),
@@ -108,6 +108,22 @@ void CAttackBase::OnBeginOverlap(CCollider* self, CCollider* other)
     hit.hitter = hitter;
 
     combat->Take_Damage(hit);
+
+    // 파티클 있는지 확인
+    if (m_AttackData.hitParticle.IsValid())
+    {
+        const auto& particle = m_AttackData.hitParticle;
+
+        // Pos나 Offset에서 랜덤값 줘야 좀 괜찮을듯
+        CParticleHelper::Spawn_Particle(
+            hitterPos, 
+            particle.key,
+            particle.frames,
+            particle.interval,
+            particle.scale,
+            particle.offset
+        );
+    }
 
     // 데미지를 줬으면, 삭제 요청 -> AttackBuilder에서 세팅
     if (m_DestroyOnHit)
