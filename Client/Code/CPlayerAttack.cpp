@@ -183,7 +183,7 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
 
     //3타
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].state            = ACTORSTATE::PLAYER_GAUNTLET_COMBO3;
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].duration         = 0.02f * 40;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].duration         = 0.02f * 46;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].hitboxStartTime  = 0.02f * 20;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].hitboxEndTime    = 0.02f * 27;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].comboInputTime   = 0.4f;

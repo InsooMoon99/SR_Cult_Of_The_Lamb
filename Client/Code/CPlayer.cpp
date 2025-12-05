@@ -293,7 +293,7 @@ void CPlayer::Animation_Setting()
                              ANIMSTATE::ONCE);
 
     m_AnimatorCom->Create_Animation(L"PlayerGauntletCombo3",
-                                    40,
+                                    46,
                                     0.02f,
                                     _vec2(2.6f, 2.f),
                                     _vec2(0.f, 0.45f));
