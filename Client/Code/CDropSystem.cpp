@@ -81,7 +81,7 @@ void CDropSystem::Clear_Item()
 {
     for (auto& it : tmpItem)
     {
-        if (it != nullptr || (*it).Is_PendingDestroy() != true)
+        if (it != nullptr && (*it).Is_PendingDestroy() != true)
         {
             it->Mark_As_PendingKill();
             

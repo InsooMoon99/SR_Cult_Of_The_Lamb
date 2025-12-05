@@ -34,13 +34,30 @@ void CSpriteEff::Initialize_Component()
 
 _int CSpriteEff::Update_Component(const _float& timeDelta)
 {
-
-
-
     if (m_IsSetBouncingInit)
     {
+        BounceEff(timeDelta); // 완료 되면 m_IsSetBouncingInit = false
+    }
+
+
+   
+
+    
+    return 0;
+}
+
+void CSpriteEff::LateUpdate_Component()
+{
+}
+
+void CSpriteEff::Render_Effect()
+{
+}
+bool CSpriteEff::BounceEff(const _float& timeDelta)
+{
+  
         if (!m_Owner)
-            return -1;
+            return false;
 
         // 가속도 -> 속도
         m_Velocity.y += m_Gravity * timeDelta;
@@ -75,9 +92,10 @@ _int CSpriteEff::Update_Component(const _float& timeDelta)
                     m_Velocity.x = 0.f;
                     m_Velocity.z = 0.f;
                     // ... (Update 종료 로직) ...
-                    m_IsSetBouncingInit = false;
-                    m_Owner->Set_IsActive(false);
-                    return 0;
+                    //m_IsSetBouncingInit = false;
+                   
+
+                    return true;
                 }
             }
         }
@@ -87,20 +105,9 @@ _int CSpriteEff::Update_Component(const _float& timeDelta)
         m_Velocity.x *= factor;
         m_Velocity.z *= factor;
 
-        return 0;
-
-    }
+        return false;
 
     
-    return 0;
-}
-
-void CSpriteEff::LateUpdate_Component()
-{
-}
-
-void CSpriteEff::Render_Effect()
-{
 }
 
 CSpriteEff* CSpriteEff::Create(DEVICE graphicDev)

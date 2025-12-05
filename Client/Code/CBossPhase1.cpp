@@ -82,15 +82,15 @@ _int CBossPhase1::Update_GameObject(const _float& timeDelta)
 
     m_StateMachine->Update_StateMachine(timeDelta);
 
-    if (m_bHurt == true)
-    {
-        m_bHurtTime += timeDelta;
-        if (m_bHurtTime > 0.1f)
-        {
-            m_bHurt = false;
-            m_bHurtTime = 0;
-        }
-    }
+    //if (m_bHurt == true)
+    //{
+    //    m_bHurtTime += timeDelta;
+    //    if (m_bHurtTime > 0.1f)
+    //    {
+    //        m_bHurt = false;
+    //        m_bHurtTime = 0;
+    //    }
+    //}
 
     return exit;
 }
@@ -103,6 +103,76 @@ void CBossPhase1::LateUpdate_GameObject(const _float& timeDelta)
 
 void CBossPhase1::Render_GameObject()
 {
+  //  if (m_TransformCom)
+  //      m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
+  //
+  //  Render_Setting();
+  //
+  //  m_StateMachine->Get_CurState()->Render_State();
+  //
+  //  // 4) 텍스처 바인딩
+  //  if (m_TextureCom && m_AnimatorCom)
+  //  {
+  //      const wstring& key = m_AnimatorCom->Get_CurKey();
+  //      int frame = m_AnimatorCom->Get_CurFrame();
+  //      m_TextureCom->Set_Texture(key, frame);
+  //  }
+  //
+  //  {
+  //      //  5) 기본 COLOROP = MODULATE (절대 ADD 쓰면 안됨)
+  //      m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+  //      m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+  //      m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+  //
+  //      //  6) Hurt 상태면 색 덮어쓰기
+  //      if (m_bHurt)
+  //      {
+  //          // 색으로 번쩍이게 설정
+  //          m_GraphicDev->SetRenderState(
+  //              D3DRS_TEXTUREFACTOR,
+  //              D3DCOLOR_ARGB(255, 255, 255, 255)
+  //          );
+  //
+  //          // TEXTURE * TFACTOR 로 변경하면 Tint 색 정확히 나옴
+  //          m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_ADD);
+  //          m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+  //          m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
+  //
+  //          //알파
+  //          m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB((int)(m_fAlpha * 255), 255, 255, 255));
+  //          //
+  //          m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+  //          m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+  //          m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR); // ← texturefactor.alpha 사용
+  //
+  //      }
+  //  }
+  //  // 7) 버텍스 버퍼 렌더
+  //  if (m_BufferCom)
+  //      m_BufferCom->Render_Buffer();
+  //  {
+  //      // 8) RenderState Reset
+  //      Render_Reset();
+  //
+  //      // Hurt tint가 남지 않게 기본 연산도 복구
+  //      m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+  //      m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+  //      m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+  //
+  //      // 알파 리셋
+  //      m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+  //      m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+  //      m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
+  //      m_GraphicDev->SetRenderState(
+  //          D3DRS_TEXTUREFACTOR,
+  //          D3DCOLOR_ARGB(255, 255, 255, 255)); // 알파 1.0, 색 그대로
+  //  }
+  //  // 9) Debug Collider 렌더 (영향 안 받음, OK)
+  //  if (m_BoxColCom)
+  //      m_BoxColCom->Render();
+  //
+
+    // 인테페이스 테스트
     if (m_TransformCom)
         m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
@@ -118,57 +188,32 @@ void CBossPhase1::Render_GameObject()
         m_TextureCom->Set_Texture(key, frame);
     }
 
-    //  5) 기본 COLOROP = MODULATE (절대 ADD 쓰면 안됨)
+    //  5) 기본 초기화 (선택사항)
     m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
     m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
     m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
 
-    //  6) Hurt 상태면 색 덮어쓰기
     if (m_bHurt)
     {
-        // 붉게 번쩍이게 설정
-        m_GraphicDev->SetRenderState(
-            D3DRS_TEXTUREFACTOR,
-            D3DCOLOR_ARGB(255, 255, 255, 255) // ← 빨간 하이라이트
-        );
-
-        // TEXTURE * TFACTOR 로 변경하면 Tint 색 정확히 나옴
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_ADD);
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
-
-        //알파
-        m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB((int)(m_fAlpha * 255), 255, 255, 255));
-        //
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR); // ← texturefactor.alpha 사용
-
+        // 현제 값은 초기 값세팅을 한거 나중에 변경 하고 싶으면 인자 넣으면 됩니다 색,투명도
+        FlashRenderStart();//색 (ARGB)
+        AlphaRenderStart();//투명도(0~1)
     }
 
     // 7) 버텍스 버퍼 렌더
     if (m_BufferCom)
         m_BufferCom->Render_Buffer();
 
-    // 8) RenderState Reset
-    Render_Reset();
-
-    // Hurt tint가 남지 않게 기본 연산도 복구
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-    // 알파 리셋
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
-    m_GraphicDev->SetRenderState(
-        D3DRS_TEXTUREFACTOR,
-        D3DCOLOR_ARGB(255, 255, 255, 255)); // 알파 1.0, 색 그대로
-
-    // 9) Debug Collider 렌더 (영향 안 받음, OK)
+    // 초기화
+    if (m_bHurt)
+    {
+        FlashRenderEnd();
+        AlphaRenderEnd();
+    }
     if (m_BoxColCom)
         m_BoxColCom->Render();
-   
+
+
 }
 
 void CBossPhase1::Render_Editor()

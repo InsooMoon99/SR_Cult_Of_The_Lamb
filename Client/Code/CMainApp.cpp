@@ -212,6 +212,7 @@ void CMainApp::Free()
     Safe_Release(m_GraphicDev);
     Safe_Release(m_DeviceClass);
 
+    CDropSystem::DestroyInstance();
     CTexture::CleanupTextureSystem();
     CSoundMgr::DestroyInstance();
     CCollisionManager::DestroyInstance();
@@ -233,7 +234,6 @@ void CMainApp::Free()
 #pragma region 데이터 파싱 테스트
 
     CItemDB::DestroyInstance();
-    CDropSystem::DestroyInstance();
 
 #pragma endregion
 }
