@@ -102,6 +102,7 @@ void CHumanMonster::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CMonsterBase::OnBeginOverlap(self, other);
 
+
 }
 
 void CHumanMonster::OnEndOverlap(CCollider* self, CCollider* other)

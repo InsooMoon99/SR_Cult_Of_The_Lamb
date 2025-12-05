@@ -34,13 +34,30 @@ void CSpriteEff::Initialize_Component()
 
 _int CSpriteEff::Update_Component(const _float& timeDelta)
 {
-
-
-
     if (m_IsSetBouncingInit)
     {
+        BounceEff(timeDelta); // 완료 되면 m_IsSetBouncingInit = false
+    }
+
+
+   
+
+    
+    return 0;
+}
+
+void CSpriteEff::LateUpdate_Component()
+{
+}
+
+void CSpriteEff::Render_Effect()
+{
+}
+bool CSpriteEff::BounceEff(const _float& timeDelta)
+{
+  
         if (!m_Owner)
-            return -1;
+            return false;
 
         // 가속도 -> 속도
         m_Velocity.y += m_Gravity * timeDelta;
@@ -64,7 +81,7 @@ _int CSpriteEff::Update_Component(const _float& timeDelta)
             {
                 m_Velocity.y = 0.f;
 
-                // **추가 로직:** Y축이 멈춘 상태(바닥에 붙은 상태)일 때, X/Z 속도에 지속적인 감쇠(마찰)를 적용합니다.
+                // Y축이 멈춘 상태(바닥에 붙은 상태)일 때, X/Z 속도에 지속적인 감쇠(마찰)를 적용합니다.
                 // m_Damping 값을 사용하여 바닥 마찰을 흉내냅니다.
                 m_Velocity.x *= powf(m_Damping, timeDelta * 10.f); // timeDelta에 10 정도를 곱해 감쇠 속도를 높여도 좋습니다.
                 m_Velocity.z *= powf(m_Damping, timeDelta * 10.f);
@@ -75,8 +92,10 @@ _int CSpriteEff::Update_Component(const _float& timeDelta)
                     m_Velocity.x = 0.f;
                     m_Velocity.z = 0.f;
                     // ... (Update 종료 로직) ...
-                    m_IsSetBouncingInit = false;
-                    return 0;
+                    //m_IsSetBouncingInit = false;
+                   
+
+                    return true;
                 }
             }
         }
@@ -86,20 +105,9 @@ _int CSpriteEff::Update_Component(const _float& timeDelta)
         m_Velocity.x *= factor;
         m_Velocity.z *= factor;
 
-        return 0;
-
-    }
+        return false;
 
     
-    return 0;
-}
-
-void CSpriteEff::LateUpdate_Component()
-{
-}
-
-void CSpriteEff::Render_Effect()
-{
 }
 
 CSpriteEff* CSpriteEff::Create(DEVICE graphicDev)
