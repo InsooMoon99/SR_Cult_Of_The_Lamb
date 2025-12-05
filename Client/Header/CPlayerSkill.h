@@ -73,8 +73,8 @@ public:
 
 private:
     void Reset_AttackData();
-    void Create_Projectile(const SkillInfo& skillInfo, const _vec3& SkillDir);
-
+   // void Create_Projectile(const SkillInfo& skillInfo, const _vec3& SkillDir);
+    void Create_Fireball(DEVICE graphicDev);
 private:
     CPlayerInput* m_OwnerInputCom;
     CState* m_OwnerStateCom;

@@ -4,6 +4,7 @@
 #include "CGameObject.h"
 #include "CState.h"
 #include "CCombatStat.h"
+#include "CFireball.h"
 #include "CPlayerInput.h"
 
 CPlayerSkill::CPlayerSkill(DEVICE graphicDev)
@@ -21,7 +22,9 @@ CPlayerSkill::CPlayerSkill(DEVICE graphicDev)
       m_IsCharged(false),
       m_IsCharging(false),
       m_SingleSkillEnable(false),
-      m_TripleSkillEnable(false)
+      m_TripleSkillEnable(false),
+      m_SingleFired(false)
+
 {}
 
 CPlayerSkill::CPlayerSkill(const CPlayerSkill& rhs)
@@ -38,7 +41,8 @@ CPlayerSkill::CPlayerSkill(const CPlayerSkill& rhs)
       m_IsCharged(false),
       m_IsCharging(false),
       m_SingleSkillEnable(false),
-      m_TripleSkillEnable(false)
+      m_TripleSkillEnable(false),
+      m_SingleFired(false)
 {
     copy_n(&rhs.m_SkillInfo[0], static_cast<_int>(SKILL_MAX), &m_SkillInfo[0]);
 }
@@ -64,7 +68,7 @@ HRESULT CPlayerSkill::Ready_PlayerCombat()
     m_SkillInfo[SKILL_SINGLE].chargeTime = 3.f;
     // 3발
     m_SkillInfo[SKILL_TRIPLE].state = ACTORSTATE::PLAYER_SKILL_TRIPLE;
-    m_SkillInfo[SKILL_TRIPLE].duration = 1.5f;
+    m_SkillInfo[SKILL_TRIPLE].duration = 2.f;
     m_SkillInfo[SKILL_TRIPLE].damageMultiplier = 2.f;
     m_SkillInfo[SKILL_TRIPLE].knockbackPower = 50.f;
     m_SkillInfo[SKILL_TRIPLE].spawnOffset = 1.3f;
@@ -239,15 +243,14 @@ _bool       CPlayerSkill::Update_SingleSkill(const float& timeDelta)
 
     if(!m_SingleFired)
     {
-     //Create_Projectile(skillInfo,Dir);
+        //Create_Fireball();
+        cout << "single 투사체 발사 완료" << endl;
         m_SingleFired = true;
     }
 
     if(m_SkillTimer >= m_SkillInfo[SKILL_SINGLE].duration)
     {
         return false;
-
-
     }
 
     return true;
@@ -321,31 +324,37 @@ void        CPlayerSkill::Reset_AttackData()
     m_SkillTimer = 0.f;
     m_ChargeTimer = 0.f;
 }
-void        CPlayerSkill::Create_Projectile(const SkillInfo& skillInfo, const _vec3& skillDir)
+
+void CPlayerSkill::Create_Fireball(DEVICE graphicDev)
 {
-    if (!m_OwnerCombatStatCom) return;
+    m_Fireball = CFireball::Create(graphicDev);
 
-    CAttackBuilder(m_GraphicDev, m_Owner)
-        .Box()
-        .Track(m_CurrentAttackObj)
-        .Damage(m_OwnerCombatStatCom->Get_Attack() * skillInfo.damageMultiplier)
-        .Knockback(skillInfo.knockbackPower)
-        .Scale(_vec3())
-        .InstigatorPos()
-        .Offset(skillDir * skillInfo.spawnOffset)
-        .DestroyOnHit(true)
-        .Spawn();
-
-    if (m_CurrentAttackObj)
-    {
-        CAttackBase* pBox = m_CurrentAttackObj;
-        m_CurrentAttackObj->Set_OnDestroyCallback([this, pBox]()
-            {
-                if (m_CurrentAttackObj == pBox)
-                    m_CurrentAttackObj = nullptr;
-            });
-    }
 }
+//void        CPlayerSkill::Create_Projectile(const SkillInfo& skillInfo, const _vec3& skillDir)
+//{
+ //   if (!m_OwnerCombatStatCom) return;
+//
+//    CAttackBuilder(m_GraphicDev, m_Owner)
+//        .Box()
+//        .Track(m_CurrentAttackObj)
+//        .Damage(m_OwnerCombatStatCom->Get_Attack() * skillInfo.damageMultiplier)
+//        .Knockback(skillInfo.knockbackPower)
+//        .Scale(_vec3())
+//        .InstigatorPos()
+//        .Offset(skillDir * skillInfo.spawnOffset)
+//        .DestroyOnHit(true)
+//        .Spawn();
+//
+//    if (m_CurrentAttackObj)
+//    {
+//        CAttackBase* pBox = m_CurrentAttackObj;
+//        m_CurrentAttackObj->Set_OnDestroyCallback([this, pBox]()
+//            {
+//                if (m_CurrentAttackObj == pBox)
+//                    m_CurrentAttackObj = nullptr;
+//            });
+//    }
+//}
 
 
 CPlayerSkill* CPlayerSkill::Create(DEVICE graphicDev)

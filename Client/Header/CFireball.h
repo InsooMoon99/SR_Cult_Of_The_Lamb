@@ -4,8 +4,12 @@
 
 namespace Engine
 {
+class CTransform;
+class CTexture;
 class CRcTex;
 }
+
+class CProjectile;
 
 class CFireball : public CGameObject
 {

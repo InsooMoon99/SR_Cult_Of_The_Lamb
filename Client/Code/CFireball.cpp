@@ -1,10 +1,12 @@
 ﻿#include "pch.h"
 #include "CFireball.h"
+#include "CProjectile.h"
 #include "CCreateHelper.h"
 #include "CGameObject.h"
 #include "CRcTex.h"
 #include "CTransform.h"
 #include "CTexture.h"
+#include "CRenderer.h"
 
 CFireball::CFireball(DEVICE graphicDev)
     : CGameObject(graphicDev),
@@ -17,7 +19,7 @@ CFireball::CFireball(DEVICE graphicDev)
 
 CFireball::CFireball(const CFireball& rhs)
     : CGameObject(rhs),
-    m_ProjectileCom(nullptr),
+    m_ProjectileCom(nullptr),   
     m_TransformCom(nullptr),
     m_Owner(nullptr)
 {
@@ -39,7 +41,8 @@ HRESULT CFireball::Ready_GameObject()
 
 _int CFireball::Update_GameObject(const _float& timeDelta)
 {
-    return CGameObject::Update_GameObject(timeDelta);
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA,this);
+        return CGameObject::Update_GameObject(timeDelta);
 }
 
 CFireball* CFireball::Create(DEVICE graphicDev)
@@ -65,7 +68,11 @@ void CFireball::LateUpdate_GameObject(const _float& timeDelta)
     CGameObject::LateUpdate_GameObject(timeDelta);
 }
 
-void CFireball::Render_GameObject() {}
+void CFireball::Render_GameObject()
+{
+    m_TextureCom->Set_Texture();
+    m_BufferCom->Render_Buffer();
+}
 
 void CFireball::OnBeginOverlap(CCollider* self, CCollider* other)
 {
@@ -86,6 +93,7 @@ void CFireball::Render_Editor()
 {
     CGameObject::Render_Editor();
 }
+
 
 HRESULT CFireball::Add_Component()
 {

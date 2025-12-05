@@ -331,6 +331,7 @@
     <ClCompile Include="..\Code\CEyeball_Start.cpp" />
     <ClCompile Include="..\Code\CEyeball_StartExit.cpp" />
     <ClCompile Include="..\Code\CEyeball_StateMachine.cpp" />
+    <ClCompile Include="..\Code\CFireball.cpp" />
     <ClCompile Include="..\Code\CHarvestableHerb.cpp" />
     <ClCompile Include="..\Code\CHumanMonster.cpp" />
     <ClCompile Include="..\Code\CInventory.cpp" />
