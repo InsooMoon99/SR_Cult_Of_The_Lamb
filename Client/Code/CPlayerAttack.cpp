@@ -245,6 +245,13 @@ ACTORSTATE CPlayerAttack::Start_NormalAttack()
     const _int weaponIdx = Get_WeaponIndex(m_OwnerWeaponCom->Get_CurrentWeaponID());
     if (weaponIdx < 0) return ACTORSTATE::STATE_END;
 
+    // 마우스 위치 X값이 플레이어보다 작거나 같으면 LEFT, 크면 RIGHT로 설정
+    const _vec3& vMouseDir = m_OwnerInputCom->Get_MouseDir();
+    if (vMouseDir.x <= 0.f)
+        m_OwnerStateCom->Change_Dir(ACTORDIR::LEFT);
+    else
+        m_OwnerStateCom->Change_Dir(ACTORDIR::RIGHT);
+
     // 무기 종류에 따라 최대 콤보 허용 설정
     switch (weaponIdx)
     {
@@ -273,13 +280,6 @@ void CPlayerAttack::Try_NextCombo()
 _bool CPlayerAttack::Update_NormalAttack(const _float& timeDelta)
 {
     if (!m_OwnerWeaponCom || !m_OwnerCombatStatCom || !m_OwnerInputCom) return false;
-
-    // 마우스 위치 X값이 플레이어보다 작거나 같으면 LEFT, 크면 RIGHT로 설정
-    const _vec3& vMouseDir = m_OwnerInputCom->Get_MouseDir();
-    if (vMouseDir.x <= 0.f)
-        m_OwnerStateCom->Change_Dir(ACTORDIR::LEFT);
-    else
-        m_OwnerStateCom->Change_Dir(ACTORDIR::RIGHT);
 
     // 무기가 어떤건지 CWeaponEquip의 ID 확인
     const _int weaponIdx = Get_WeaponIndex(m_OwnerWeaponCom->Get_CurrentWeaponID());
@@ -331,6 +331,13 @@ _bool CPlayerAttack::Update_NormalAttack(const _float& timeDelta)
             m_IsHitboxActive      = false;
             m_CanNextCombo        = false;
             m_IsNextComboReserved = false;
+
+            // 마우스 위치 X값이 플레이어보다 작거나 같으면 LEFT, 크면 RIGHT로 설정
+            const _vec3& vMouseDir = m_OwnerInputCom->Get_MouseDir();
+            if (vMouseDir.x <= 0.f)
+                m_OwnerStateCom->Change_Dir(ACTORDIR::LEFT);
+            else
+                m_OwnerStateCom->Change_Dir(ACTORDIR::RIGHT);
 
             m_OwnerStateCom->Change_State(m_AttackInfo[weaponIdx][m_ComboIndex].state);
             return true;

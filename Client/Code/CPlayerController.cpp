@@ -241,8 +241,6 @@ void CPlayerController::Update_State(const _float& timeDelta)
 {
     ACTORSTATE curState = m_OwnerStateCom->Get_State();
 
-    // m_StateData.timer += timeDelta; // Removed
-
     switch (curState)
     {
     case ACTORSTATE::IDLE:
