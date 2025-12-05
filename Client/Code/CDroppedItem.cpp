@@ -54,7 +54,7 @@ HRESULT CDroppedItem::Ready_GameObject(_vec3 pos)
     m_TransformCom->Set_Pos(pos);
     m_TransformCom->Set_Scale({ 0.4f, 0.4f, 0.4f });
     m_BoxColCom->Set_Size(_vec3(2.f, 2.f, 2.f));
-
+    m_Active = false;
     return S_OK;
 }
 
@@ -75,11 +75,13 @@ _int CDroppedItem::Update_GameObject(const _float& timeDelta)
 
     if (is_SetBounceDesc == true)
     {
-        m_SpriteEff->InitBounce(m_BounceDesc);
+        m_Active = true;
+        m_SpriteEff->InitBounce(m_BounceDesc); // 끝나면 이 안에서 active fasle
         is_SetBounceDesc = false;
     }
-        m_SpriteEff->Update_Component(timeDelta);
 
+    if(m_Active==true)
+        m_SpriteEff->Update_Component(timeDelta);
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_NONALPHA, this);
 

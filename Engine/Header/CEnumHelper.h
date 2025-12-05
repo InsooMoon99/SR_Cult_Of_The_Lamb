@@ -205,9 +205,13 @@ static const char* ToString(COMPONENTTYPE type)
     case COMPONENTTYPE::TEX_ETC:            return "ETC";
 
     case COMPONENTTYPE::EYEBALL_CONTROLLER: return "Eyeball_Controller";
-    case COMPONENTTYPE::TEX_BOSS2_EYEBALL:      return "Eyeball";
+    case COMPONENTTYPE::TEX_BOSS2_EYEBALL:  return "Eyeball";
+
+    case COMPONENTTYPE::SPRITEEFFECT:       return "Sprit_Effect";
+    case COMPONENTTYPE::TEX_PARTICLE:       return "Particle";
 
     case COMPONENTTYPE::COMPONENT_END:      return "ComponentEnd"; // End Marker
+
     default:                                return "UnknownComponent";
     }
 }
@@ -243,6 +247,8 @@ static const char* ToString(OBJTYPE type)
     case OBJTYPE::WALL:             return "Wall";
     case OBJTYPE::NPC:              return "NPC";
     case OBJTYPE::LOGIC:            return "Logic";
+    case OBJTYPE::PARTICLE:         return "Particle";
+    case OBJTYPE::TRIGGER:          return "Trigger";
 
     case OBJTYPE::OBJ_END:          return "ObjectEnd";
     default:                        return "UnknownObjectType";
@@ -260,7 +266,7 @@ static const char* ToString(SCENETYPE type)
     case SCENETYPE::SC_MAINMENU:    return "MainMenu";
 
     case SCENETYPE::SC_STAGE:       return "Stage";
-    case SCENETYPE::SC_STAGE1:      return "Stage1";
+    case SCENETYPE::SC_DUNGEON:      return "Stage1";
     case SCENETYPE::SC_TAROT_TEST:  return "Tarot_Test";
     case SCENETYPE::SC_BOSS_STAGE1: return "Boss_Stage";
     case SCENETYPE::SC_BOSS_STAGE2: return "Boss_Stage2";

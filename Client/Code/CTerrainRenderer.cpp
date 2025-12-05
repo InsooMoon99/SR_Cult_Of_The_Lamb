@@ -618,7 +618,12 @@ HRESULT CTerrainRenderer::LoadMap(const char* filePath)
 
     if (version >= 8)
     {
-        CMapObjectMgr::GetInstance()->Load_FromStream(ifs);
+        _vec3 terrainPos(0.f, 0.f, 0.f);
+
+        if (m_TransformCom)
+            terrainPos = m_TransformCom->Get_Pos();
+
+        CMapObjectMgr::GetInstance()->Load_FromStream(ifs, terrainPos);
     }
 
 

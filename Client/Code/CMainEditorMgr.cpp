@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include "CMainEditorMgr.h"
-
+#include "CPickingHelper.h"
 #include "CAnimator.h"
 #include "CBoxCollider.h"
 #include "CCameraCalc.h"
@@ -239,7 +239,7 @@ void CMainEditorMgr::Render_SceneChangeTab()
 {
     ImGui::PushID("Scene_ChangeTab");
     {
-        const char* sceneChange[] = { "Main", "Stage", "Edit", "Stage_Boss1", "Stage_Boss2", "Stage_TaroTest" };
+        const char* sceneChange[] = { "Main", "Stage", "Edit", "Stage_Boss1", "Stage_Boss2", "Stage_TaroTest", "Stage_Dungeon"};
 
         SCENETYPE sceneType = CSceneMgr::GetInstance()->Get_SceneType();
 
@@ -254,12 +254,13 @@ void CMainEditorMgr::Render_SceneChangeTab()
 
             switch (currentSceneIndex)
             {
-            case 0: newSceneType = SCENETYPE::SC_MAINMENU;    break;
-            case 1: newSceneType = SCENETYPE::SC_STAGE;       break;
-            case 2: newSceneType = SCENETYPE::SC_EDIT;        break;
+            case 0: newSceneType = SCENETYPE::SC_MAINMENU;     break;
+            case 1: newSceneType = SCENETYPE::SC_STAGE;        break;
+            case 2: newSceneType = SCENETYPE::SC_EDIT;         break;
             case 3: newSceneType = SCENETYPE::SC_BOSS_STAGE1;  break;
             case 4: newSceneType = SCENETYPE::SC_BOSS_STAGE2;  break;
             case 5: newSceneType = SCENETYPE::SC_TAROT_TEST;   break;
+            case 6: newSceneType = SCENETYPE::SC_DUNGEON;      break;
 
             default: break;
             }
@@ -321,6 +322,23 @@ void CMainEditorMgr::Render_ToolBar()
         ImGui::Checkbox("Debugging Mode", &debugCheck);
 
         CCollisionManager::GetInstance()->Render_Debug(debugCheck);
+    }
+
+    ImGui::SameLine();
+
+    // ============
+    //  Mouse Pos
+    // ============
+
+    POINT screenPos, clientPos;
+    GetCursorPos(&screenPos);
+    clientPos = screenPos;
+    ScreenToClient(g_hWnd, &clientPos);
+
+    _vec3 worldMousePos;
+    if (Engine::PickPlaneY(m_GraphicDev, g_hWnd, 0.f, worldMousePos))
+    {
+        ImGui::Text("| Mouse Pos : (%.2f, %.2f, %.2f)", worldMousePos.x, worldMousePos.y, worldMousePos.z);
     }
 
     //ImGui::Columns(1);

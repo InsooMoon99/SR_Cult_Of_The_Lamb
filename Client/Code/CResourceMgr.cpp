@@ -342,6 +342,14 @@ HRESULT CResourceMgr::Ready_Monster(DEVICE graphicDev)
         L"../Bin/Resource/Texture/Monster/Human/Run/Run%d.png", 18)))
         return E_FAIL;
 
+    if (FAILED(humanmonsterTex->Add_Texture(L"HumanMonsterAttack", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Human/Attack/Attack%d.png", 65)))
+        return E_FAIL;
+
+    if (FAILED(humanmonsterTex->Add_Texture(L"HumanMonsterHurt", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Human/Hurt/Hurt%d.png", 28)))
+        return E_FAIL;
+
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_HUMAN_MONSTER, humanmonsterTex)))
         return E_FAIL;
@@ -770,6 +778,27 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_ETC, CTexture::Create(graphicDev, TEX_NORMAL,
             L"../Bin/Resource/Texture/MapObject/ETC/ETC%d.png", 40))))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CResourceMgr::Ready_Particle(DEVICE graphicDev)
+{
+    auto protoMgr = CProtoMgr::GetInstance();
+
+    CTexture* particleTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(particleTex, E_FAIL);
+
+    // Hit Star
+    if (FAILED(particleTex->Add_Texture(L"HitEffect_Star", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Effect/HitEffect_Star/HitEffect_Star%d.png", 14)))
+        return E_FAIL;
+
+    // 추가 예정
+
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PARTICLE, particleTex)))
         return E_FAIL;
 
     return S_OK;

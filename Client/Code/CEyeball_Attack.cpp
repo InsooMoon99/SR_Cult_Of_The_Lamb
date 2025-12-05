@@ -6,7 +6,10 @@
 #include "CMonsterController.h"
 
 CEyeball_Attack::CEyeball_Attack(CMonsterBase* owner)
-    : m_Owner(owner), m_Pattern_Cooldown(0), m_LerpSpeed(0), m_IsReachedTarget(false)
+    : m_Owner(owner),
+    m_Pattern_Cooldown(0),
+    m_LerpSpeed(0),
+    m_EyeballAnim(Eyeball_Anim::EYEBALL_ATTACK_END)
 {
 }
 
@@ -26,7 +29,9 @@ void CEyeball_Attack::Enter()
         auto animator = m_Controller->Get_OwnerAnimator();
 
         if (animator)
+        {
             animator->Play_Animation(L"Eyeball_Anti", ANIMSTATE::ONCE);
+        }
     }
 
     CTransform* transform = m_Controller->Get_OwnerTransform();
@@ -40,40 +45,45 @@ void CEyeball_Attack::Enter()
     }
 
     m_fCurStateElapsedTime = 0.f;
-    m_IsReachedTarget = false;  
+
+    m_EyeballAnim = Eyeball_Anim::ATTACK_ANTI;
+
+    Find_Player(); // 플레이어 찾기
 }
 
 _int CEyeball_Attack::Update_State(const _float& timeDelta)
 {
     m_fCurStateElapsedTime += timeDelta;
 
+    if (m_pPlayer)
+    {
+        cout << "플레이어 있음";
+    }
+
     CTransform* transform = m_Controller->Get_OwnerTransform();
 
-    if (transform && !m_IsReachedTarget)
+    switch (m_EyeballAnim)
     {
-        _vec3 currentPos = transform->Get_Pos();
+    case Eyeball_Anim::ATTACK_ANTI:
+        Play_Anti();
+        break;
 
-        _vec3 newPos;
-        D3DXVec3Lerp(&newPos, &currentPos, &m_TargetPos, m_LerpSpeed);
+    case Eyeball_Anim::ATTACK_LOOP:
+        Play_Loop();
+        break;
 
-        transform->Set_Pos(newPos);
+    case Eyeball_Anim::ATTACK_END:
+        Play_End();
+        break;
 
-        _vec3 dir = m_TargetPos - newPos;
-        float distance = D3DXVec3Length(&dir);
-
-        if (distance < 0.1f)
-        {
-            transform->Set_Pos(m_TargetPos);  
-            m_IsReachedTarget = true;
-        }
     }
 
-    if (m_IsReachedTarget && m_fCurStateElapsedTime >= m_Pattern_Cooldown)
+    /*if (m_fCurStateElapsedTime >= m_Pattern_Cooldown)
     {
         return CEyeball::PATTERN::EYEBALL_MOVE; 
-    }
+    }*/
 
-    return CEyeball::PATTERN::EYEBALL_ENTER;
+    return CEyeball::PATTERN::EYEBALL_ATTACK;
 }
 
 void CEyeball_Attack::Exit()
@@ -89,9 +99,24 @@ HRESULT CEyeball_Attack::Ready_State()
     m_Pattern_Cooldown = 1.0f;
 
     m_LerpSpeed = 0.05f;
-    m_IsReachedTarget = false;
-
+    m_EyeballAnim = Eyeball_Anim::ATTACK_ANTI;
+    
     return S_OK;
+}
+
+void CEyeball_Attack::Play_Anti()
+{
+    
+}
+
+void CEyeball_Attack::Play_Loop()
+{
+
+}
+
+void CEyeball_Attack::Play_End()
+{
+
 }
 
 CEyeball_Attack* CEyeball_Attack::Create(CMonsterBase* owner)

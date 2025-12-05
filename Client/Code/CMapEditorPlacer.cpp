@@ -67,7 +67,7 @@ void CMapEditorPlacer::Update_MapPlacer(const _float& timeDelta)
     if (io.WantCaptureMouse)
         return;*/
 
-        // 좌클릭 하면 배치하기
+    // 좌클릭 하면 배치하기
     auto input = CDInputMgr::GetInstance();
 
     // == 마우스 휠 ==
@@ -79,7 +79,17 @@ void CMapEditorPlacer::Update_MapPlacer(const _float& timeDelta)
 
         if (transform)
         {
-            if (input->KeyPress(DIK_LCONTROL) || input->KeyPress(DIK_RCONTROL))
+            if (input->KeyPress(DIK_LALT) && input->KeyPress(DIK_LCONTROL))
+            {
+                _float rotChange = (wheelDelta > 0 ? D3DX_PI / 50.f : -D3DX_PI / 50.f);
+                m_PreviewRotation.z += rotChange;
+
+                // Z축 회전 제한
+                m_PreviewRotation.z = fmodf(m_PreviewRotation.z, D3DX_PI * 2.0f);
+
+                transform->Set_Rotation(m_PreviewRotation);
+            }
+            else if (input->KeyPress(DIK_LCONTROL) || input->KeyPress(DIK_RCONTROL))
             {
                 _float rotChange = (wheelDelta > 0 ? D3DX_PI / 50.f : -D3DX_PI / 50.f);
                 m_PreviewRotation.x += rotChange;
@@ -113,8 +123,8 @@ void CMapEditorPlacer::Update_MapPlacer(const _float& timeDelta)
                 _float scaleChange = (wheelDelta > 0 ? 0.1f : -0.1f);
                 m_PreviewScaleX += scaleChange;
                 m_PreviewScaleY += scaleChange;
-                m_PreviewScaleX = max(0.1f, min(5.f, m_PreviewScaleX));
-                m_PreviewScaleY = max(0.1f, min(5.f, m_PreviewScaleY));
+                m_PreviewScaleX = max(0.1f, min(10.f, m_PreviewScaleX));
+                m_PreviewScaleY = max(0.1f, min(10.f, m_PreviewScaleY));
 
                 Update_PreviewScale();
             }
@@ -249,6 +259,7 @@ void CMapEditorPlacer::Cancel_Place()
 
     m_SelectedType = MAPOBJTYPE::MAPOBJ_END;
 }
+
 // 마우스의 현재 월드위치
 bool CMapEditorPlacer::Get_MouseWorldPos(_vec3& outPos)
 {

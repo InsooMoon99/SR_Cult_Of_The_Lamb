@@ -76,9 +76,6 @@
     <Filter Include="02. Scene\02. Editor">
       <UniqueIdentifier>{f7c8f6a0-1234-4b0a-9d50-b8a900aabbcc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Scene\03.MainMenu">
-      <UniqueIdentifier>{d480312a-efaf-4078-93cf-c7487930aaa7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject">
       <UniqueIdentifier>{610f594c-7bf8-47b8-a70b-40e3d1e32fa3}</UniqueIdentifier>
     </Filter>
@@ -204,6 +201,24 @@
     </Filter>
     <Filter Include="03. GameObject\10. Fireball">
       <UniqueIdentifier>{55718334-06ee-43b9-9d37-001e0d9b66dc}</UniqueIdentifier>
+   </Filter>
+    <Filter Include="97. Component\07. State">
+      <UniqueIdentifier>{e34a7dc5-e0ec-4ffb-8b09-7b4b921f27cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Component\06. Effect">
+      <UniqueIdentifier>{0a2588d6-9b6a-44ba-9c7f-e2fd96563550}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Component\06. Effect\00.Base">
+      <UniqueIdentifier>{8a0d49d8-10a4-4675-9c64-616209693762}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Scene\03. MainMenu">
+      <UniqueIdentifier>{d480312a-efaf-4078-93cf-c7487930aaa7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95. Particle">
+      <UniqueIdentifier>{66b66737-d2d9-4490-ba41-336b1cbd241e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\07. Trigger">
+      <UniqueIdentifier>{92dd4e5b-96b3-4251-ad22-3e104b9d673a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -289,7 +304,7 @@
       <Filter>05. UI\01. UI\03. UIWeapon</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CMainMenu.h">
-      <Filter>02. Scene\03.MainMenu</Filter>
+      <Filter>02. Scene\03. MainMenu</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CSceneMgr.h">
       <Filter>01. Manager</Filter>
@@ -541,13 +556,13 @@
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CTrailEff.h">
-      <Filter>97. Component\06.Effect</Filter>
+      <Filter>97. Component\06. Effect</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CEffectBaseCom.h">
-      <Filter>97. Component\06.Effect\00.Base</Filter>
+      <Filter>97. Component\06. Effect\00.Base</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CSpriteEff.h">
-      <Filter>97. Component\06.Effect</Filter>
+      <Filter>97. Component\06. Effect</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CBossTalk.h">
       <Filter>헤더 파일</Filter>
@@ -556,6 +571,19 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CFireball.h">
+       </ClInclude>
+    <ClInclude Include="..\Header\CStage_Dungeon.h">
+      <Filter>02. Scene\01. Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CTrigger_Dungeon.h">
+    </ClInclude>
+    <ClInclude Include="..\Header\CWorldInteractive.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CHarvestableHerb.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="IHitFlashEff.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -627,7 +655,7 @@
       <Filter>05. UI\01. UI\03. UIWeapon</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CMainMenu.cpp">
-      <Filter>02. Scene\03.MainMenu</Filter>
+      <Filter>02. Scene\03. MainMenu</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CSceneMgr.cpp">
       <Filter>01. Manager</Filter>
@@ -864,13 +892,13 @@
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CTrailEff.cpp">
-      <Filter>97. Component\06.Effect</Filter>
+      <Filter>97. Component\06. Effect</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CEffectBaseCom.cpp">
-      <Filter>97. Component\06.Effect\00.Base</Filter>
+      <Filter>97. Component\06. Effect\00.Base</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CSpriteEff.cpp">
-      <Filter>97. Component\06.Effect</Filter>
+      <Filter>97. Component\06. Effect</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CBossTalk.cpp">
       <Filter>소스 파일</Filter>
@@ -879,6 +907,16 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CFireball.cpp">
+    </ClCompile>
+    <ClCompile Include="..\Code\CStage_Dungeon.cpp">
+      <Filter>02. Scene\01. Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CTrigger_Dungeon.cpp">
+    </ClCompile>
+    <ClCompile Include="..\Code\CWorldInteractive.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CHarvestableHerb.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

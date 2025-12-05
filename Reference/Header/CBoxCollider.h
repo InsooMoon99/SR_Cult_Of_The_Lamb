@@ -21,7 +21,10 @@ public:
 public:
     bool CheckCollision(CCollider* other) override;
 
-    const _vec3 Get_Size() const;
+    const _vec3& Get_RawSize() const { return m_Size; }
+    void Set_RawSize(const _vec3& size) { m_Size = size; }
+
+    _vec3       Get_Size();
     void        Set_Size(_vec3 size) { m_Size = size; }
 
     static CBoxCollider* Create(DEVICE GraphicDev);

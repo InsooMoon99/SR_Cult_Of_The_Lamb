@@ -20,8 +20,9 @@
 #include "CWall.h"
 
 CStage_Boss1::CStage_Boss1(DEVICE graphicDev)
-    : Engine::CScene(graphicDev)
-{ }
+    : Engine::CScene(graphicDev), m_Terrain(nullptr)
+{
+}
 
 CStage_Boss1::~CStage_Boss1()
 { }
@@ -41,6 +42,13 @@ HRESULT CStage_Boss1::Ready_Scene()
     CDropSystem::GetInstance()->SetCurrentScene(this);
 
     return S_OK;
+}
+
+void CStage_Boss1::Initialize_Scene()
+{
+    CScene::Initialize_Scene();
+
+    //m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_BossTest.map");
 }
 
 _int CStage_Boss1::Update_Scene(const _float& timeDelta)
@@ -71,15 +79,15 @@ HRESULT CStage_Boss1::Ready_Environment_Layer(LAYERTYPE layerType)
     // -----------------------------
     // Tile
     // -----------------------------
-    gameObject = CTerrain::Create(m_GraphicDev);
+    m_Terrain = CTerrain::Create(m_GraphicDev);
 
     NULL_CHECK_RETURN_MSG(
-        gameObject,
+        m_Terrain,
         E_FAIL,
         L"CStage_Boss1::Ready_GameLogic_Layer() failed: CTerrain::Create() returned null");
 
     FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::TERRAIN, gameObject),
+        layer->Add_GameObject(OBJTYPE::TERRAIN, m_Terrain),
         L"CStage_TarotTest::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Tile) failed");
 
     // Wall
