@@ -14,7 +14,7 @@
 #include "CDInputMgr.h"
 #include "CDropSystem.h"
 #include "CSpriteEff.h"
-CHarvestableHerb::CHarvestableHerb(DEVICE graphicDev):CWorldInteractive(graphicDev)
+CHarvestableHerb::CHarvestableHerb(DEVICE graphicDev, BERRY m_Berry):CWorldInteractive(graphicDev),m_Berry(m_Berry)
 {
 }
 
@@ -30,22 +30,45 @@ HRESULT CHarvestableHerb::Ready_GameObject()
 {
     if (FAILED(CWorldInteractive::Ready_GameObject()))
         return E_FAIL;
+   
+    switch (m_Berry)
+    {
+    case SMALLBERRY:
+        m_deadTexIndex = 3;
+        m_TexIndex1 = 2;
+        m_TexIndex2 = 999; // 안쓸예정
+
+        m_ItemNum = 3;
+
+        m_CombatStatCom->Set_MaxHp(5.f);
+        m_TransformCom->Set_Scale(_vec3(0.8f, 0.8f, 0.8f));
+        break;
+    case BIGBERRY:
+        m_deadTexIndex = 1;
+        m_TexIndex1 = 6;
+        m_TexIndex2 = 0; 
+
+        m_ItemNum = 5;
+
+        m_CombatStatCom->Set_MaxHp(8.f);
+        m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
+        break;
+    case END_BERRY:
+        return E_FAIL;
+        break;
+    }
+
+    // 밑은 공통
+    m_CurTexIndex = m_TexIndex1;
+
+    m_CombatStatCom->Set_Hp(m_CombatStatCom->Get_MaxHp());
 
 
-
-    m_CombatStatCom->Set_Hp(5.f);
-    m_CombatStatCom->Set_MaxHp(5.f);
-    //m_CombatStatCom->Set_Attack(50.f);
-    //m_CombatStatCom->Set_Mp(5.f);
-    //m_CombatStatCom->Set_Speed(5.f);
-
-    m_TransformCom->Set_Pos(_vec3(30.f, 1.f, 30.f));
-    m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
-
+    m_TransformCom->Set_Pos(_vec3(30.f, 1.f, 30.f));// 밖에서 덮어 씌울예정
     if (m_BoxColCom)
     {
         m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::INTERACTIVEOBJ);
-        m_BoxColCom->Set_Size({ 1.f,1.f,1.f });
+        m_BoxColCom->Set_Size({ 1.5f,1.5f,1.5f });
     }
 
     m_InventoryCom->SetInvenSlotNum(5);// 기본셋팅 무조건 해야 하는거
@@ -60,7 +83,8 @@ void CHarvestableHerb::Initialize_GameObject()
     // 인벤 셋팅 (동전 1001, 라즈베리 1002, 잔디 1003, 나무 1005, 돌 1006)
 
     ItemInstance Item = { 1002,-1,0 };
-    for (int i = 0; i < 5;i++)
+
+    for (int i = 0; i < m_ItemNum;i++)
     {
         m_InventoryCom->AddItem(Item);
     }
@@ -69,9 +93,13 @@ void CHarvestableHerb::Initialize_GameObject()
 
 _int CHarvestableHerb::Update_GameObject(const _float& timeDelta)
 {
-    if (m_bDead == true)
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
+
+    if (m_CombatStatCom->Is_Dead() == true)
     {
         // 텍스쳐 바꿈
+       m_CurTexIndex = m_deadTexIndex;
+        return 0;
     }
     _int exit = CWorldInteractive::Update_GameObject(timeDelta);
 
@@ -86,7 +114,7 @@ void CHarvestableHerb::LateUpdate_GameObject(const _float& timeDelta)
 
 void CHarvestableHerb::Render_GameObject()
 {
-    m_TextureCom->Set_Texture(2);
+    m_TextureCom->Set_Texture(m_CurTexIndex);
     CWorldInteractive::Render_GameObject();
 
 }
@@ -115,9 +143,9 @@ void CHarvestableHerb::OnEndOverlap(CCollider* self, CCollider* other)
 
 }
 
-CHarvestableHerb* CHarvestableHerb::Create(DEVICE graphicDev)
+CHarvestableHerb* CHarvestableHerb::Create(DEVICE graphicDev, BERRY berryType)
 {
-    auto HarvestableHerb = new CHarvestableHerb(graphicDev);
+    auto HarvestableHerb = new CHarvestableHerb(graphicDev, berryType);
 
     if (FAILED(HarvestableHerb->Ready_GameObject()))
     {

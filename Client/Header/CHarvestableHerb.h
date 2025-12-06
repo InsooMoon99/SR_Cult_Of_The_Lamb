@@ -4,10 +4,10 @@ class CHarvestableHerb :
     public CWorldInteractive
 {
 public:
-    enum BERRY { BIGBERREY, SMALLBERRY, END_BERRY };
+    enum BERRY { BIGBERRY, SMALLBERRY, END_BERRY };
 protected:
 
-    explicit CHarvestableHerb(DEVICE graphicDev);
+    explicit CHarvestableHerb(DEVICE graphicDev, BERRY Berry);
     explicit CHarvestableHerb(const CHarvestableHerb& rhs);
     virtual ~CHarvestableHerb();
 
@@ -26,16 +26,19 @@ protected:
 
 
 protected:
+    BERRY m_Berry;
+    _int m_deadTexIndex;
+    _int m_TexIndex1;
+    _int m_TexIndex2;
 
+    _int m_CurTexIndex;
 
-private:
-
+    _int m_ItemNum;
 
 public:
-    static CHarvestableHerb* Create(DEVICE graphicDev);
+    static CHarvestableHerb* Create(DEVICE graphicDev, BERRY berryType);
 
 protected:
-
 
     void Free() override;
 

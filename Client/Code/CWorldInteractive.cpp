@@ -57,9 +57,9 @@ _int CWorldInteractive::Update_GameObject(const _float& timeDelta)
 
     _int exit = CRenderObject::Update_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
+    //CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 
-
+    
 
     // 플레이어가 가까이 있을떄만
     if (m_bPlayerOverlap == true)
@@ -71,12 +71,7 @@ _int CWorldInteractive::Update_GameObject(const _float& timeDelta)
             // 호버링이 되어 있을떄 
             m_bHovering = true; // 렌더 아웃라인 용
             cout << "hovering" << endl;
-            //인풋 프레스 마우스 왼쪽 // 이건 플레이어 쪽에서 하는건가
-            if (CDInputMgr::GetInstance()->MousePress(DIM_LB))
-            {
-                // 이제 공격 받을거임
-                cout << "clik" << endl;
-            }
+
         }
         else
             m_bHovering = false;
@@ -84,10 +79,8 @@ _int CWorldInteractive::Update_GameObject(const _float& timeDelta)
         //hp에 따라 오브젝트 이미지 전환
 
         //0 이면 아이템 드롭
-        if (m_CombatStatCom->Get_Hp() <= 0)
+        if (m_CombatStatCom->Get_Hp() <= 0) // 컴포넌트 내부에서 처리함 0 만들고 Dead true
         {
-            m_CombatStatCom->Set_Hp(0);
-            m_bDead = true;
 
             // 플레이어 위치
             CDropSystem::GetInstance()->SpawnAllFromInven(m_GraphicDev, m_InventoryCom);
@@ -152,6 +145,8 @@ void CWorldInteractive::OnEndOverlap(CCollider* self, CCollider* other)
 
 bool CWorldInteractive::Is_Hovering()
 {
+    ////////////
+    // 여기는 분리 할거 임 1프레임에 1 번만 하게
     POINT pt;
     GetCursorPos(&pt);
     ScreenToClient(CDInputMgr::GetInstance()->Get_HWND(), &pt);
@@ -187,6 +182,9 @@ bool CWorldInteractive::Is_Hovering()
     _vec3 vRayDir; //마우스 방향을 월드 방향으로 변환
     D3DXVec3TransformNormal(&vRayDir, &vMousePos, &matView);
     D3DXVec3Normalize(&vRayDir, &vRayDir);
+
+    /////////
+
     // 이건 할 필요 없음 월드 공간 레이 vs 월드 AABB 테스트 할거라서
     /*D3DXMATRIX matWorld = (this->Get_Transform()->Get_World());
     D3DXMatrixInverse(&matWorld, 0, &matWorld);

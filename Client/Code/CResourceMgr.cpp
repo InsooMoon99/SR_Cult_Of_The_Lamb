@@ -318,7 +318,25 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
 
     if (FAILED(playerTex->Add_Texture(L"PlayerSkillCharging", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Spell2/Lamb-cast-spell2-%d.png",17)))
+
+
+    //crafting
+    if (FAILED(playerTex->Add_Texture(L"PlayerAction", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Lamb_action/Lamb_action%d.png", 17)))
         return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"PlayerStone", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Lamb_actions_chop_stone/Lamb_actions_chop_stone%d.png", 17)))
+        return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"PlayerWood", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Lamb_actions_chop_wood/Lamb_actions_chop_wood%d.png", 17)))
+        return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"PlayerBerry", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Lamb_actions_collect_berries/Lamb_actions_collect_berries%d.png", 17)))
+        return E_FAIL;
+
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
     return E_FAIL;
 

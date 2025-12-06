@@ -144,7 +144,11 @@ bool CSpriteEff::OutLineEff(Engine::CRcTex* m_BufferCom)
         
         for (int i = 0; i < 8; i++)
         {
-            _vec3 tmpPos = OriginPos + DIR8[i];
+            // 2. 오프셋 벡터를 행렬에 곱하여 로컬 회전을 적용합니다.
+            _vec3 RotatedOffset;
+            D3DXVec3TransformNormal(&RotatedOffset, &DIR8[i], &originWorld); // 회전/스케일만 적용
+            //
+            _vec3 tmpPos = OriginPos + RotatedOffset;
             //
             D3DXMATRIX tempWorld = m_TransformCom->Get_World();
             tempWorld._41 = tmpPos.x;

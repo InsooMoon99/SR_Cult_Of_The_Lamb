@@ -95,6 +95,12 @@ static const char* ToString(ACTORSTATE state)
     case ACTORSTATE::PLAYER_SKILL_CHARGING: return "Player_Skill_Charging";
     case ACTORSTATE::PLAYER_SKILL_SINGLE:    return "Player_Skill_Single";
     case ACTORSTATE::PLAYER_SKILL_TRIPLE:    return "Player_Skill_Triple";
+
+    case ACTORSTATE::PLAYER_ACTION:          return "PlayerAction";
+    case ACTORSTATE::PLAYER_WOOD:            return "PlayerWood";
+    case ACTORSTATE::PLAYER_STONE:           return "PlayerStone";
+    case ACTORSTATE::PLAYER_BERRY:           return "PlayerBerry";
+
     case ACTORSTATE::STATE_END:              return "StateEnd";
     default:                                 return "UnknownState";
     }

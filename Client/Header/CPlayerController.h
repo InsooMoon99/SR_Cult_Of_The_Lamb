@@ -57,7 +57,7 @@ public: // --- Getters for Inspector ---
 
 private:
     // --- [핵심 로직 파이프라인] ---
-    void CheckStateTransition();                // 상태 전환이 가능한지 판단
+    void CheckStateTransition();                 // 상태 전환이 가능한지 판단
     void Update_State(const _float& timeDelta); // 상태에 따른 행동 실행
 
     // --- [세부 행동 메서드] ---

@@ -333,6 +333,35 @@ void CPlayer::Animation_Setting()
                                                 ANIMSTATE::ONCE);
 
 #pragma endregion
+
+#pragma region -----------Crafting-----------
+
+
+    m_AnimatorCom->Create_Animation(L"PlayerAction",
+        17,
+        0.02f,
+        _vec2(0.6f, 1.f),
+        _vec2(0.f, 0.f));
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SKILL_CHARGING,
+        L"PlayerSkillCharging",
+        ANIMSTATE::LOOP);
+
+    m_AnimatorCom->Create_Animation(L"PlayerStone",
+        32,
+        0.02f,
+        _vec2(1.f, 1.5f),
+        _vec2(0.f, 0.5f));
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SKILL_SINGLE,
+        L"PlayerWood",
+        ANIMSTATE::ONCE);
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SKILL_TRIPLE,
+        L"PlayerBerry",
+        ANIMSTATE::ONCE);
+
+#pragma endregion
 #pragma end
 }
 
