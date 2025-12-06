@@ -2,8 +2,11 @@
 #include "CEyeball_Attack.h"
 #include "CTransform.h"
 #include "CAnimator.h"
+#include "CBoss2_Bullet.h"
 #include "CEyeball.h"
+#include "CAttackBuilder.h"
 #include "CMonsterController.h"
+#include "CProjectile.h"
 
 CEyeball_Attack::CEyeball_Attack(CMonsterBase* owner)
     : m_Owner(owner),
@@ -119,14 +122,14 @@ void CEyeball_Attack::Play_Loop()
     // 공격
     auto animator = m_Controller->Get_OwnerAnimator();
 
-    if (animator && animator->Is_AnimationFinished())
+    if (animator)
     {
         //m_EyeballAnim = Eyeball_Anim::ATTACK_END;
         //animator->Play_Animation(L"Eyeball_Attack_End", ANIMSTATE::ONCE);
 
         _int curFrame = animator->Get_CurFrame();
 
-        if (curFrame == 20)
+        if (curFrame >= 20 && !m_HasFiredBullet)
         {
             Spawn_BulletPattern();
             m_HasFiredBullet = true;
@@ -161,7 +164,42 @@ void CEyeball_Attack::Spawn_BulletPattern()
         _float angle = D3DXToRadian(angleStep * i);
         _vec3 direction(cosf(angle), 0.f, sinf(angle));
 
-        CBossBullet* bullet = CBossBullet::Create
+        CBoss2_Bullet* bullet = nullptr;
+
+        DEVICE graphicDev = m_Owner->Get_GraphicDev();
+
+        CAttackBuilder(graphicDev, m_Owner)
+            .SetType<CBoss2_Bullet>()
+            .Track(bullet)
+            .Position(eyeballPos)
+            .Scale(0.2f)
+            .Damage(1.f)
+            .Knockback(500.f)
+            .LifeTime(5.f)
+            .CollisionLayer(COLLISION_LAYERTYPE::ENEMY)
+            .DestroyOnHit(true)
+            .Particle(L"HitEffect_Star", 14)
+            .Spawn();
+
+        if (bullet)
+        {
+            CProjectile* projectileCom = dynamic_cast<CProjectile*>(
+                bullet->Get_Component(ID_STATIC, COMPONENTTYPE::PROJECTILE));
+
+            if (projectileCom)
+            {
+                BulletDesc desc;
+                desc.ProjectileOwner = m_Owner;
+                desc.moveType = PROJ_TYPE::LINEAR;
+                desc.Speed = 15.f;
+                desc.Direction = direction;
+
+                projectileCom->SetMoveDesc(desc);
+            }
+
+            bullet->Start_Shoot();
+        }
+       
     }
 }
 
