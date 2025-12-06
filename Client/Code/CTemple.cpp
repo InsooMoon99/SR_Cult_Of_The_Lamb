@@ -3,7 +3,9 @@
 
 #include "CBoxCollider.h"
 #include "CCreateHelper.h"
+#include "CRcTex.h"
 #include "CTexture.h"
+#include "CTransform.h"
 
 CTemple::CTemple(DEVICE graphicDev)
     : CBuildingBase(graphicDev)
@@ -46,7 +48,33 @@ void CTemple::LateUpdate_GameObject(const _float& timeDelta)
 
 void CTemple::Render_GameObject()
 {
+    //TODO 출력 테스트 필요: 오프셋에 따라 두 텍스처가 다른 위치에 출력되고 있는지 검증해야 한다
+
+    // [1] Body Rendering
+    if (m_TextureCom)
+    {
+        m_TextureCom->Set_Texture(0);
+    }
     CBuildingBase::Render_GameObject();
+
+    // [2] Roof Rendering
+    _matrix matWorld = m_TransformCom->Get_World();
+    _matrix matOffset;
+    D3DXMatrixTranslation(&matOffset, 0.f, 2.0f, 0.f); 
+    
+    matWorld = matOffset * matWorld;
+    
+    m_GraphicDev->SetTransform(D3DTS_WORLD, &matWorld);
+
+    if (m_TextureCom2)
+        m_TextureCom2->Set_Texture(0);
+
+    Render_Setting(); 
+    
+    if (m_BufferCom)
+        m_BufferCom->Render_Buffer();
+        
+    Render_Reset();
 }
 
 void CTemple::Render_Editor()

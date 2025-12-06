@@ -34,5 +34,4 @@ private:
 
 private:
     CTexture* m_TextureCom2 = nullptr;  // 신전 지붕용 텍스처
-    //TODO 신전 지붕은, 신전 앞부분과 어느 정도 거리를 둔 채(오프셋) 위치해야 하는데, 이는 어떻게 해결할 것인가?
 };
