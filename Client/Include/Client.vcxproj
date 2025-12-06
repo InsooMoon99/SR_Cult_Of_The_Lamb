@@ -172,8 +172,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\CBoss2_Bullet.h" />
+    <ClInclude Include="..\Header\CBoss2_Chain.h" />
+    <ClInclude Include="..\Header\CBoss2_Die.h" />
     <ClInclude Include="..\Header\CBoss2_Idle.h" />
-    <ClInclude Include="..\Header\CBoss2_Roar.h" />
+    <ClInclude Include="..\Header\CBoss2_ChainAttack.h" />
     <ClInclude Include="..\Header\CBoss2_Start.h" />
     <ClInclude Include="..\Header\CBoss2_StateMachine.h" />
     <ClInclude Include="..\Header\CBossAwake.h" />
@@ -202,7 +204,9 @@
     <ClInclude Include="..\Header\CEyeball_Die.h" />
     <ClInclude Include="..\Header\CEyeball_Enter.h" />
     <ClInclude Include="..\Header\CEyeball_Exit.h" />
-    <ClInclude Include="..\Header\CEyeball_Ground.h" />
+    <ClInclude Include="..\Header\CEyeball_Ground_Move.h" />
+    <ClInclude Include="..\Header\CEyeball_StartGround.h" />
+    <ClInclude Include="..\Header\CEyeball_Idle.h" />
     <ClInclude Include="..\Header\CEyeball_Start.h" />
     <ClInclude Include="..\Header\CEyeball_StartExit.h" />
     <ClInclude Include="..\Header\CEyeball_StateMachine.h" />
@@ -279,6 +283,7 @@
     <ClInclude Include="..\Header\CTarotStageController.h" />
     <ClInclude Include="..\Header\CUITarotDescCard.h" />
     <ClInclude Include="..\Header\CUIWeapon.h" />
+    <ClInclude Include="..\Header\CUI_MonsterHp.h" />
     <ClInclude Include="..\Header\CWarningChain.h" />
     <ClInclude Include="..\Header\CWall.h" />
     <ClInclude Include="..\Header\CWallRenderer.h" />
@@ -297,8 +302,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CBoss2_Bullet.cpp" />
+    <ClCompile Include="..\Code\CBoss2_Chain.cpp" />
+    <ClCompile Include="..\Code\CBoss2_Die.cpp" />
     <ClCompile Include="..\Code\CBoss2_Idle.cpp" />
-    <ClCompile Include="..\Code\CBoss2_Roar.cpp" />
+    <ClCompile Include="..\Code\CBoss2_ChainAttack.cpp" />
     <ClCompile Include="..\Code\CBoss2_Start.cpp" />
     <ClCompile Include="..\Code\CBoss2_StateMachine.cpp" />
     <ClCompile Include="..\Code\CBossAwake.cpp" />
@@ -329,7 +336,9 @@
     <ClCompile Include="..\Code\CEyeball_Die.cpp" />
     <ClCompile Include="..\Code\CEyeball_Enter.cpp" />
     <ClCompile Include="..\Code\CEyeball_Exit.cpp" />
-    <ClCompile Include="..\Code\CEyeball_Ground.cpp" />
+    <ClCompile Include="..\Code\CEyeball_Ground_Move.cpp" />
+    <ClCompile Include="..\Code\CEyeball_StartGround.cpp" />
+    <ClCompile Include="..\Code\CEyeball_Idle.cpp" />
     <ClCompile Include="..\Code\CEyeball_Start.cpp" />
     <ClCompile Include="..\Code\CEyeball_StartExit.cpp" />
     <ClCompile Include="..\Code\CEyeball_StateMachine.cpp" />
@@ -400,6 +409,7 @@
     <ClCompile Include="..\Code\CTarotStageController.cpp" />
     <ClCompile Include="..\Code\CUITarotDescCard.cpp" />
     <ClCompile Include="..\Code\CUIWeapon.cpp" />
+    <ClCompile Include="..\Code\CUI_MonsterHp.cpp" />
     <ClCompile Include="..\Code\CWarningChain.cpp" />
     <ClCompile Include="..\Code\CWall.cpp" />
     <ClCompile Include="..\Code\CWallRenderer.cpp" />

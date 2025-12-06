@@ -145,7 +145,7 @@ void CBoss2_Start::Spawn_Eyeball(_int index)
     if (!bossTransform) 
         return;
 
-    CEyeball* eyeball = CEyeball::Create(boss->Get_GraphicDev());
+    CEyeball* eyeball = CEyeball::Create(boss->Get_GraphicDev(), m_Owner);
     if (!eyeball)  
         return;
 

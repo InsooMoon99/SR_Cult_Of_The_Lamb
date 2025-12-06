@@ -7,6 +7,7 @@
 #include "CTransform.h"
 #include "CRenderer.h"
 #include "CSphereCollider.h"
+#include "CWall.h"
 
 CBoss2_Bullet::CBoss2_Bullet(DEVICE graphicDev)
     : CAttackSphere(graphicDev),
@@ -142,6 +143,21 @@ CBoss2_Bullet* CBoss2_Bullet::Create(DEVICE graphicDev, CGameObject* owner, CGam
     }
 
     return bullet;
+}
+
+void CBoss2_Bullet::OnBeginOverlap(CCollider* self, CCollider* other)
+{
+    CAttackSphere::OnBeginOverlap(self, other);
+
+    if (other && other->Get_Owner())
+    {
+        auto wall = dynamic_cast<CWall*>(other->Get_Owner());
+
+        if (wall)
+        {
+            Mark_As_PendingKill();
+        }
+    }
 }
 
 CBoss2_Bullet* CBoss2_Bullet::Create(DEVICE graphicDev)

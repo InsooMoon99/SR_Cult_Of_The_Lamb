@@ -7,13 +7,14 @@
 #include "CAttackBuilder.h"
 #include "CMonsterController.h"
 #include "CProjectile.h"
+#include "CTimerMgr.h"
 
 CEyeball_Attack::CEyeball_Attack(CMonsterBase* owner)
     : m_Owner(owner),
-    m_Pattern_Cooldown(0),
-    m_LerpSpeed(0),
-    m_EyeballAnim(Eyeball_Anim::EYEBALL_ATTACK_END),
-    m_HasFiredBullet(false)
+      m_Pattern_Cooldown(0),
+      m_LerpSpeed(0),
+      m_EyeballAnim(Eyeball_Anim::EYEBALL_ATTACK_END),
+      m_HasFiredBullet(false), m_AttackCount(0), m_IsFinished(false)
 {
 }
 
@@ -35,7 +36,6 @@ void CEyeball_Attack::Enter()
         if (animator)
         {
             animator->Play_Animation(L"Eyeball_Anti", ANIMSTATE::ONCE);
-           
         }
     }
 
@@ -62,6 +62,10 @@ _int CEyeball_Attack::Update_State(const _float& timeDelta)
 
     CTransform* transform = m_Controller->Get_OwnerTransform();
     auto animator = m_Controller->Get_OwnerAnimator();
+
+    // 끝나면 Idle로
+    if (m_IsFinished)
+        return CEyeball::PATTERN::EYEBALL_IDLE;
 
     switch (m_EyeballAnim)
     {
@@ -101,19 +105,36 @@ HRESULT CEyeball_Attack::Ready_State()
 
     m_LerpSpeed = 0.05f;
     m_EyeballAnim = Eyeball_Anim::ATTACK_ANTI;
+
+    m_HasFiredBullet = false;
+    m_AttackCount = 0;
+    m_IsFinished = false;
     
     return S_OK;
 }
 
 void CEyeball_Attack::Play_Anti()
 {
-    // 플레이어 반대 방향으로 이동
+    // 플레이어 반대 방향으로 이동 시키기?
     auto animator = m_Controller->Get_OwnerAnimator();
 
-    if (animator && animator->Is_AnimationFinished())
+    if (animator)
     {
-        m_EyeballAnim = Eyeball_Anim::ATTACK_LOOP;
-        animator->Play_Animation(L"Eyeball_Attack_Loop", ANIMSTATE::LOOP);
+        if (animator->Is_AnimationFinished())
+        {
+            m_EyeballAnim = Eyeball_Anim::ATTACK_LOOP;
+            animator->Play_Animation(L"Eyeball_Attack_Loop", ANIMSTATE::LOOP);
+        }
+        else
+        {
+            _vec3 dir = (m_Owner->Get_Transform()->Get_Pos() - m_pPlayerTransformCom->Get_Pos());
+            dir.y = 0;
+            D3DXVec3Normalize(&dir, &dir);
+
+            _float delta = CTimerMgr::GetInstance()->Get_TimeDelta();
+            m_Owner->Get_Transform()->Move_Pos(dir, delta, 2.f);
+        }
+
     }
 }
 
@@ -124,15 +145,26 @@ void CEyeball_Attack::Play_Loop()
 
     if (animator)
     {
-        //m_EyeballAnim = Eyeball_Anim::ATTACK_END;
-        //animator->Play_Animation(L"Eyeball_Attack_End", ANIMSTATE::ONCE);
-
         _int curFrame = animator->Get_CurFrame();
 
-        if (curFrame >= 20 && !m_HasFiredBullet)
+        // 20 프레임에 한번만 쏘기
+        if (curFrame >= 20 && !m_HasFiredBullet && m_AttackCount < 2)
         {
+            m_AttackCount++;
+
             Spawn_BulletPattern();
             m_HasFiredBullet = true;
+        }
+
+        if (curFrame >= 40)
+        {
+            m_HasFiredBullet = false;
+        }
+
+        if (m_AttackCount >= 2)
+        {
+            m_EyeballAnim = Eyeball_Anim::ATTACK_END;
+            animator->Play_Animation(L"Eyeball_Attack_End", ANIMSTATE::ONCE);
         }
 
     }
@@ -141,12 +173,27 @@ void CEyeball_Attack::Play_Loop()
 
 void CEyeball_Attack::Play_End()
 {
+    m_HasFiredBullet = false;
+
     // 공격 끝 -> Move로 상태 전환
     auto animator = m_Controller->Get_OwnerAnimator();
 
-    if (animator && animator->Is_AnimationFinished())
+    // 일단 ㅌㅌ
+    if (animator)
     {
+        if (animator->Is_AnimationFinished())
+        {
+            m_IsFinished = true;
 
+            return;
+        }
+
+        _vec3 dir = (m_Owner->Get_Transform()->Get_Pos() - m_pPlayerTransformCom->Get_Pos());
+        dir.y = 0;
+        D3DXVec3Normalize(&dir, &dir);
+
+        _float delta = CTimerMgr::GetInstance()->Get_TimeDelta();
+        m_Owner->Get_Transform()->Move_Pos(dir, delta, 1.f);
     }
 
 }

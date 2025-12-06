@@ -100,7 +100,7 @@ _int CEyeball_StartExit::Update_State(const _float& timeDelta)
 	// 목표 도달 후 일정 시간 대기 후 GROUND으로 전환 후 이동
     if (m_IsFinalPosSet && m_fCurStateElapsedTime >= m_Pattern_Cooldown)
     {
-        return CEyeball::PATTERN::EYEBALL_GROUND;
+        return CEyeball::PATTERN::EYEBALL_START_GROUND;
     }
 
     return CEyeball::PATTERN::EYEBALL_START_EXIT;  

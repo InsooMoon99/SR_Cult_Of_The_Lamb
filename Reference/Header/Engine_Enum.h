@@ -147,6 +147,7 @@ enum class COMPONENTTYPE
     TEX_UI_HEARTCARD,
     TEX_UI_EXPLAIN,
     TEX_UI_TAROT,
+    TEX_UI_MONSTERHP,
     TEX_ITEM,
     TEX_MENU_CHAR,
     TEX_UI_ICON,
@@ -176,6 +177,8 @@ enum class COMPONENTTYPE
 
     BOSS2_CONTROLLER,
     EYEBALL_CONTROLLER,
+    TEX_WARNING_CHAIN,
+    TEX_CHAIN,
 
     ////////////////
     //  MapObject //

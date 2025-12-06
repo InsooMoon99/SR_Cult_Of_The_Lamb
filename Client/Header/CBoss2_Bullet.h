@@ -45,6 +45,9 @@ public:
     static CBoss2_Bullet* Create(DEVICE graphicDev,
         CGameObject* owner, CGameObject* target, PROJ_TYPE type);
 
+public:
+    void OnBeginOverlap(CCollider* self, CCollider* other) override;
+
 protected:
     HRESULT Add_Component() override;
 

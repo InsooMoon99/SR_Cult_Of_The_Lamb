@@ -24,7 +24,7 @@ void CEyeball_Exit::Enter()
     {
         auto animator = m_Controller->Get_OwnerAnimator();
         if (animator)
-            animator->Play_Animation(L"Eyeball_Exit", ANIMSTATE::LOOP);
+            animator->Play_Animation(L"Eyeball_Exit", ANIMSTATE::ONCE);
     }
 
     m_fCurStateElapsedTime = 0.f;
@@ -34,10 +34,13 @@ _int CEyeball_Exit::Update_State(const _float& timeDelta)
 {
     m_fCurStateElapsedTime += timeDelta;
 
-    // 3초 후 Exit 으로 전환
-    if (m_fCurStateElapsedTime >= m_Pattern_Cooldown)
+    auto animator = m_Controller->Get_OwnerAnimator();
+    if (animator)
     {
-        return CEyeball::PATTERN::EYEBALL_START;
+        if (animator->Is_AnimationFinished())
+        {
+            return CEyeball::PATTERN::EYEBALL_START_GROUND;
+        }
     }
 
     return CEyeball::PATTERN::EYEBALL_EXIT;

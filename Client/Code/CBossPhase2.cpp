@@ -27,8 +27,9 @@ HRESULT CBossPhase2::Ready_GameObject()
     if (FAILED(CMonsterBase::Ready_GameObject()))
         return E_FAIL;
 
+    m_CombatStatCom->Set_MaxHp(300.f);
+
     m_CombatStatCom->Set_HitState(false);
-    
 
     return S_OK;
 }
@@ -50,6 +51,23 @@ _int CBossPhase2::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CMonsterBase::Update_GameObject(timeDelta);
 
+    // 사망
+    if (m_CombatStatCom && m_CombatStatCom->Is_Dead())
+    {
+        if (m_BossController)
+        {
+            auto stateMachine = m_BossController->Get_StateMachine();
+            if (stateMachine)
+            {
+                _int curState = stateMachine->Get_CurStateNum();
+
+                if (curState != PATTERN::PHASE2_DEAD)
+                {
+                    stateMachine->Change_State(PATTERN::PHASE2_DEAD);
+                }
+            }
+        }
+    }
 
     return exit;
 }
@@ -64,23 +82,6 @@ void CBossPhase2::Render_GameObject()
 {
     CMonsterBase::Render_GameObject();
 
-}
-
-void CBossPhase2::OnBeginOverlap(CCollider* self, CCollider* other)
-{
-    CMonsterBase::OnBeginOverlap(self, other);
-
-}
-
-void CBossPhase2::OnStayOverlap(CCollider* self, CCollider* other)
-{
-    CMonsterBase::OnStayOverlap(self, other);
-
-}
-
-void CBossPhase2::OnEndOverlap(CCollider* self, CCollider* other)
-{
-    CMonsterBase::OnEndOverlap(self, other);
 
 }
 
@@ -115,7 +116,7 @@ const char* CBossPhase2::Get_Boss2_StateName(_int stateNum)
     // 상태 추가될때마다 추가하기
     switch (stateNum)
     {
-    case PHASE2_START:       return "PHASE2_Start";
+    case PHASE2_START:      return "PHASE2_Start";
     case PHASE2_IDLE:       return "PHASE2_Idle";
     case PHASE2_ROAR:       return "PHASE2_Roar";
     case PHASE2_EYEBALL:    return "PHASE2_EYEBALL";
@@ -147,6 +148,9 @@ void CBossPhase2::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"Boss2_Idle", 68, 0.04f);
     m_AnimatorCom->Create_Animation(L"Boss2_Roar", 69, 0.04f);
 
+    m_AnimatorCom->Create_Animation(L"Boss2_HandSlam", 68, 0.04f);
+    m_AnimatorCom->Create_Animation(L"Boss2_Dead", 56, 0.04f);
+
     // 스프라이트 재생은 상태머신으로
     //m_AnimatorCom->Play_Animation(L"Boss2_Idle", ANIMSTATE::LOOP); 
 }
@@ -170,7 +174,6 @@ HRESULT CBossPhase2::Add_Component()
     m_BossController = CreateProtoComponent<CBossController>(this, type);
     NULL_CHECK_RETURN(m_BossController, E_FAIL);
     m_Components[ID_DYNAMIC].insert({ type, m_BossController });
-
 
 
     return S_OK;

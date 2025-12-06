@@ -166,6 +166,9 @@
     <Filter Include="01. Logic\09. Trigger">
       <UniqueIdentifier>{5f2260d6-9126-4f13-b8d9-be6e3bd68393}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. UI\03. UI_HP">
+      <UniqueIdentifier>{299d9497-5545-46ba-8a2c-7b7557fe16f1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <!-- ===================== -->
   <!--       HEADERS         -->

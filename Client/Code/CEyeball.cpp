@@ -8,16 +8,14 @@
 #include "CEyeball_StateMachine.h"
 #include "CMonsterController.h"
 
-CEyeball::CEyeball(DEVICE graphicDev)
-    : CMonsterBase(graphicDev), m_EyeballController(nullptr)
+CEyeball::CEyeball(DEVICE graphicDev, CMonsterBase* boss)
+    : CMonsterBase(graphicDev), m_EyeballController(nullptr), m_Boss(boss)
 {
-
 }
 
-CEyeball::CEyeball(const CEyeball& rhs)
-    : CMonsterBase(rhs), m_EyeballController(nullptr)
+CEyeball::CEyeball(const CEyeball& rhs, CMonsterBase* boss)
+    : CMonsterBase(rhs), m_EyeballController(nullptr), m_Boss(rhs.m_Boss)
 {
-
 }
 
 CEyeball::~CEyeball()
@@ -191,7 +189,7 @@ const char* CEyeball::Get_StateName(_int stateNum)
     case EYEBALL_IDLE:              return "EYEBALL_IDLE";
     case EYEBALL_EXIT:              return "EYEBALL_EXIT";
     case EYEBALL_ENTER:             return "EYEBALL_ENTER";
-    case EYEBALL_GROUND:            return "EYEBALL_GROUND";
+    case EYEBALL_START_GROUND:            return "EYEBALL_GROUND";
     case EYEBALL_MOVE:              return "EYEBALL_MOVE";
     case EYEBALL_ATTACK:            return "EYEBALL_ATTACK";
     case EYEBALL_DEAD:              return "EYEBALL_DEAD";
@@ -199,9 +197,9 @@ const char* CEyeball::Get_StateName(_int stateNum)
     return "UNKNOWN";
 }
 
-CEyeball* CEyeball::Create(DEVICE graphicDev)
+CEyeball* CEyeball::Create(DEVICE graphicDev, CMonsterBase* boss)
 {
-    CEyeball* eyeball = new CEyeball(graphicDev);
+    CEyeball* eyeball = new CEyeball(graphicDev, boss);
 
     if (FAILED(eyeball->Ready_GameObject()))
     {
