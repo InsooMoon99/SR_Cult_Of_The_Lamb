@@ -124,8 +124,8 @@ enum class COMPONENTTYPE
     SPRITEEFFECT,
 
     WEAPON_EQUIP,           // 플레이어 무기
-    PL_CONTROLLER,          // 플레이어 FSM 컨트롤러
     PL_INPUT,               // 플레이어 방향 입력
+    PL_CONTROLLER,          // 플레이어 FSM 컨트롤러
     PL_MOVEMENT,            // 플레이어 움직임
     PL_ATTACK,              // 플레이어 공격
     PL_SKILL,
@@ -214,7 +214,6 @@ enum class ACTORSTATE
     PLAYER_GAUNTLET_COMBO1,     // 건틀릿 일반공격 콤보 1
     PLAYER_GAUNTLET_COMBO2,     // 건틀릿 일반공격 콤보 2
     PLAYER_GAUNTLET_COMBO3,     // 건틀릿 일반공격 콤보 3
-    PLAYER_GAUNTLET_COMBO4,     // 건틀릿 일반공격 콤보 4
     PLAYER_GAUNTLET_HEAVY,      // 건틀릿 강공격
     PLAYER_SKILL_CHARGING,
     PLAYER_SKILL_SINGLE,

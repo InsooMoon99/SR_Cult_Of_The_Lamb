@@ -1,14 +1,15 @@
 ﻿#include "pch.h"
 #include "CCharacterBase.h"
+
 #include "CAnimator.h"
-#include "CState.h"
-#include "CCombatStat.h"
 #include "CBoxCollider.h"
-#include "CTransform.h"
+#include "CCombatStat.h"
 #include "CCreateHelper.h"
-#include "CRenderer.h"
-#include "CTexture.h"
 #include "CRcTex.h"
+#include "CRenderer.h"
+#include "CState.h"
+#include "CTexture.h"
+#include "CTransform.h"
 
 CCharacterBase::CCharacterBase(DEVICE graphicDev)
     : CRenderObject(graphicDev)
@@ -63,7 +64,7 @@ _int CCharacterBase::Update_GameObject(const _float& timeDelta)
 
 void CCharacterBase::LateUpdate_GameObject(const _float& timeDelta)
 {
-    CGameObject::LateUpdate_GameObject(timeDelta);
+    CRenderObject::LateUpdate_GameObject(timeDelta);
 }
 
 void CCharacterBase::Render_GameObject()

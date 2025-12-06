@@ -10,19 +10,23 @@
 #include "CCameraController.h"
 #include "CCameraMovement.h"
 #include "CCombatStat.h"
+#include "CEffectBaseCom.h"
 #include "CEnumHelper.h"
+#include "CEyeballController.h"
 #include "CInventory.h"
 #include "CItemDB.h"
 #include "CPlayerAttack.h"
 #include "CPlayerController.h"
-#include "CPlayerMovement.h"
 #include "CPlayerInput.h"
+#include "CPlayerMovement.h"
+#include "CPlayerSkill.h"
 #include "CProjectile.h"
 #include "CProtoMgr.h"
 #include "CRcCol.h"
 #include "CRectCollider.h"
 #include "CRigidbody.h"
 #include "CSphereCollider.h"
+#include "CSpriteEff.h"
 #include "CState.h"
 #include "CTerrain.h"
 #include "CTerrainRenderer.h"
@@ -34,12 +38,6 @@
 #include "CWeaponEquip.h"
 #include "ItemData.h"
 #include "ItemInstance.h"
-#include "CBossController.h"
-#include "CPlayerSkill.h"
-#include "CProjectile.h"
-#include "CSpriteEff.h"
-#include "CEffectBaseCom.h"
-#include "CEyeballController.h"
 
 IMPLEMENT_SINGLETON(CResourceMgr)
 
@@ -203,7 +201,6 @@ HRESULT CResourceMgr::Ready_Buffer(DEVICE graphicDev)
     //    COMPONENTTYPE::RC_TEX, Engine::CRcTex::Create(graphicDev))))
     //    return E_FAIL;
 
-
     return S_OK;
 }
 
@@ -241,16 +238,18 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         COMPONENTTYPE::PL_SKILL, CPlayerSkill::Create(graphicDev))))
         return E_FAIL;
 
-        CTexture* playerTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    CTexture* playerTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(playerTex, E_FAIL);
 
-    // Idle
+#pragma region --- Tex: Idle ---
 
     if (FAILED(playerTex->Add_Texture(L"PlayerIdle", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Idle/Lamb-idle%d.png", 150)))
         return E_FAIL;
 
-    // Run
+#pragma endregion
+
+#pragma region --- Tex: Run ---
 
     if (FAILED(playerTex->Add_Texture(L"PlayerRun_LEFT", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/RunHorizontal/Lamb-run-horizontal%d.png", 19)))
@@ -272,7 +271,9 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         L"../Bin/Resource/Texture/Player/Run/Lamb-run%d.png", 19)))
         return E_FAIL;
 
-    // Roll
+#pragma endregion
+
+#pragma region --- Tex: Roll ---
 
     if (FAILED(playerTex->Add_Texture(L"PlayerRoll_LEFT", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Roll/Lamb-roll%d.png", 19)))
@@ -286,7 +287,9 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         L"../Bin/Resource/Texture/Player/RollDown/Lamb-roll-down%d.png", 16)))
         return E_FAIL;
 
-    // Sword
+#pragma endregion
+
+#pragma region --- Tex: Sword ---
 
     if (FAILED(playerTex->Add_Texture(L"PlayerSwordCombo1", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Sword_Combo1/Lamb-attack-combo1-%d.png", 31)))
@@ -300,7 +303,14 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         L"../Bin/Resource/Texture/Player/Sword_Combo3/Lamb-attack-combo3-%d.png", 38)))
         return E_FAIL;
 
-    // Gauntlet
+    if (FAILED(playerTex->Add_Texture(L"PlayerSwordHeavy", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Sword_Heavy/Lamb-attack-heavy-sword%d.png", 70)))
+        return E_FAIL;
+
+#pragma endregion
+
+#pragma region --- Tex: Gauntlet ---
+
     if (FAILED(playerTex->Add_Texture(L"PlayerGauntletCombo1", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Gauntlet_Combo1/Lamb-attack-combo1-gauntlets%d.png", 41)))
         return E_FAIL;
@@ -310,28 +320,29 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         return E_FAIL;
 
     if (FAILED(playerTex->Add_Texture(L"PlayerGauntletCombo3", TEX_NORMAL,
-        L"../Bin/Resource/Texture/Player/Gauntlet_Combo3/Lamb-attack-combo3-gauntlets%d.png", 44)))
-        return E_FAIL;
-
-    if (FAILED(playerTex->Add_Texture(L"PlayerGauntletCombo4", TEX_NORMAL,
-        L"../Bin/Resource/Texture/Player/Gauntlet_Combo4/Lamb-attack-combo4-gauntlet%d.png", 40)))
+        L"../Bin/Resource/Texture/Player/Gauntlet_Combo3/Lamb-attack-combo3-gauntlets%d.png", 46)))
         return E_FAIL;
 
     if (FAILED(playerTex->Add_Texture(L"PlayerGauntletHeavy", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Gauntlet_Attack_Heavy/Lamb-attack-heavy-gauntlet%d.png", 70)))
         return E_FAIL;
 
-    //Skill
-    if(FAILED(playerTex->Add_Texture(L"PlayerSkillAttack", TEX_NORMAL,
+#pragma endregion
+
+#pragma region --- Tex: Skill ---
+
+    if (FAILED(playerTex->Add_Texture(L"PlayerSkillAttack", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Spell1/Lamb-cast-spell%d.png", 32)))
         return E_FAIL;
 
     if (FAILED(playerTex->Add_Texture(L"PlayerSkillCharging", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Spell2/Lamb-cast-spell2-%d.png",17)))
         return E_FAIL;
-    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
-    return E_FAIL;
 
+#pragma endregion
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -417,7 +428,6 @@ HRESULT CResourceMgr::Ready_BossP1(DEVICE graphicDev)
         L"../Bin/Resource/Texture/BossPhase1/TOWW_Escape/TOWW_Escape%d.png", 119)))
         return E_FAIL;
 
-
     // 사슬
     if (FAILED(BossP1Tex->Add_Texture(L"BossChainEff", TEX_NORMAL,
         L"../Bin/Resource/Texture/BossPhase1/ChainAttack/Summon_Chain%d.png", 34)))
@@ -473,7 +483,7 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
     // Start
     if (FAILED(bossPhase2->Add_Texture(L"Boss2_Start", TEX_NORMAL,
         L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Start_Eye/TOWW_Start_Eye%d.png", 68)))
-            return E_FAIL;
+        return E_FAIL;
     // Idle
     if (FAILED(bossPhase2->Add_Texture(L"Boss2_Idle", TEX_NORMAL,
         L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Idle/TOWW_Idle%d.png", 68)))
@@ -797,7 +807,6 @@ HRESULT CResourceMgr::Ready_Particle(DEVICE graphicDev)
         return E_FAIL;
 
     // 추가 예정
-
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PARTICLE, particleTex)))
         return E_FAIL;
