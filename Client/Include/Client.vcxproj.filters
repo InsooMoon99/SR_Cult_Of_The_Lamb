@@ -207,7 +207,7 @@
     </Filter>
     <Filter Include="03. GameObject\10. Fireball">
       <UniqueIdentifier>{55718334-06ee-43b9-9d37-001e0d9b66dc}</UniqueIdentifier>
-   </Filter>
+    </Filter>
     <Filter Include="97. Component\07. State">
       <UniqueIdentifier>{e34a7dc5-e0ec-4ffb-8b09-7b4b921f27cb}</UniqueIdentifier>
     </Filter>
@@ -225,6 +225,18 @@
     </Filter>
     <Filter Include="03. GameObject\07. Trigger">
       <UniqueIdentifier>{92dd4e5b-96b3-4251-ad22-3e104b9d673a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\08. Building Object">
+      <UniqueIdentifier>{d4a892b8-5b80-4d48-8a32-2cdc3e6bce19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="94. Construction">
+      <UniqueIdentifier>{333e7f9f-7c14-4b8c-92ac-75d6310fa615}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="94. Construction\00. Manager">
+      <UniqueIdentifier>{98e0a1db-7574-4e94-a5a2-e98174919f1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="94. Construction\01. Placer">
+      <UniqueIdentifier>{96197f47-b222-4840-94b1-dbb271990129}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -598,6 +610,18 @@
     <ClInclude Include="IHitFlashEff.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CTemple.h">
+      <Filter>03. GameObject\08. Building Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBuildingBase.h">
+      <Filter>96. Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CConstructionMgr.h">
+      <Filter>94. Construction\00. Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CConstructionPlacer.h">
+      <Filter>94. Construction\01. Placer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -924,8 +948,6 @@
     <ClCompile Include="..\Code\CPlayerSkill.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CFireball.cpp">
-    </ClCompile>
     <ClCompile Include="..\Code\CStage_Dungeon.cpp">
       <Filter>02. Scene\01. Stage</Filter>
     </ClCompile>
@@ -936,6 +958,18 @@
     </ClCompile>
     <ClCompile Include="..\Code\CHarvestableHerb.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CTemple.cpp">
+      <Filter>03. GameObject\08. Building Object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBuildingBase.cpp">
+      <Filter>96. Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CConstructionMgr.cpp">
+      <Filter>94. Construction\00. Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CConstructionPlacer.cpp">
+      <Filter>94. Construction\01. Placer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

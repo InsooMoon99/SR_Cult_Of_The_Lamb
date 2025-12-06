@@ -2,6 +2,7 @@
 #include "CMainApp.h"
 
 #include "CCollisionManager.h"
+#include "CConstructionMgr.h"
 #include "CDInputMgr.h"
 #include "CDropSystem.h"
 #include "CEditContext.h"
@@ -160,7 +161,6 @@ HRESULT CMainApp::Ready_DefaultSetting(DEVICE* graphicDev)
         *graphicDev, L"NanumSquare_Regular", L"나눔스퀘어 네오 Regular", 18, 21, FW_MEDIUM)))
         return E_FAIL;
 
-
     //작은 크기 폰트
     if (FAILED(CFontMgr::GetInstance()->Ready_Font(
         *graphicDev, L"NanumSquare_Small", L"나눔스퀘어 네오 Regular", 15, 18, FW_MEDIUM)))
@@ -212,6 +212,7 @@ void CMainApp::Free()
     Safe_Release(m_GraphicDev);
     Safe_Release(m_DeviceClass);
 
+    CConstructionMgr::DestroyInstance();
     CDropSystem::DestroyInstance();
     CTexture::CleanupTextureSystem();
     CSoundMgr::DestroyInstance();

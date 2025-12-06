@@ -189,11 +189,14 @@
     <ClInclude Include="..\Header\CBossPhase1.h" />
     <ClInclude Include="..\Header\CBossTalk.h" />
     <ClInclude Include="..\Header\CBossStateMachine.h" />
+    <ClInclude Include="..\Header\CBuildingBase.h" />
     <ClInclude Include="..\Header\CCameraController.h" />
     <ClInclude Include="..\Header\CCameraMovement.h" />
     <ClInclude Include="..\Header\CCamSetupBuilder.h" />
     <ClInclude Include="..\Header\CBoss_Slave_Test.h" />
     <ClInclude Include="..\Header\CCharacterBase.h" />
+    <ClInclude Include="..\Header\CConstructionMgr.h" />
+    <ClInclude Include="..\Header\CConstructionPlacer.h" />
     <ClInclude Include="..\Header\CEffectBaseCom.h" />
     <ClInclude Include="..\Header\CEyeball.h" />
     <ClInclude Include="..\Header\CEyeballController.h" />
@@ -257,6 +260,7 @@
     <ClInclude Include="..\Header\CStage_Dungeon.h" />
     <ClInclude Include="..\Header\CStage_TarotTest.h" />
     <ClInclude Include="..\Header\CStateMachine.h" />
+    <ClInclude Include="..\Header\CTemple.h" />
     <ClInclude Include="..\Header\CTrailEff.h" />
     <ClInclude Include="..\Header\CTrigger_Dungeon.h" />
     <ClInclude Include="..\Header\CUIItemGet.h" />
@@ -313,10 +317,13 @@
     <ClCompile Include="..\Code\CBossPhase1.cpp" />
     <ClCompile Include="..\Code\CBossTalk.cpp" />
     <ClCompile Include="..\Code\CBossStateMachine.cpp" />
+    <ClCompile Include="..\Code\CBuildingBase.cpp" />
     <ClCompile Include="..\Code\CCameraController.cpp" />
     <ClCompile Include="..\Code\CCameraMovement.cpp" />
     <ClCompile Include="..\Code\CBoss_Slave_Test.cpp" />
     <ClCompile Include="..\Code\CCharacterBase.cpp" />
+    <ClCompile Include="..\Code\CConstructionMgr.cpp" />
+    <ClCompile Include="..\Code\CConstructionPlacer.cpp" />
     <ClCompile Include="..\Code\CDroppedItem.cpp" />
     <ClCompile Include="..\Code\CDropSystem.cpp" />
     <ClCompile Include="..\Code\CEdit.cpp" />
@@ -376,6 +383,7 @@
     <ClCompile Include="..\Code\CStage_Dungeon.cpp" />
     <ClCompile Include="..\Code\CStage_TarotTest.cpp" />
     <ClCompile Include="..\Code\CStateMachine.cpp" />
+    <ClCompile Include="..\Code\CTemple.cpp" />
     <ClCompile Include="..\Code\CTrailEff.cpp" />
     <ClCompile Include="..\Code\CTrigger_Dungeon.cpp" />
     <ClCompile Include="..\Code\CUIItemGet.cpp" />
