@@ -59,16 +59,19 @@ HRESULT CHarvestableHerb::Ready_GameObject()
     }
 
     // 밑은 공통
+    m_Type = TYPE::BERRY;
+
     m_CurTexIndex = m_TexIndex1;
 
     m_CombatStatCom->Set_Hp(m_CombatStatCom->Get_MaxHp());
 
 
     m_TransformCom->Set_Pos(_vec3(30.f, 1.f, 30.f));// 밖에서 덮어 씌울예정
+
     if (m_BoxColCom)
     {
         m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::INTERACTIVEOBJ);
-        m_BoxColCom->Set_Size({ 1.5f,1.5f,1.5f });
+        m_BoxColCom->Set_Size({ 3.f,3.f,3.f });
     }
 
     m_InventoryCom->SetInvenSlotNum(5);// 기본셋팅 무조건 해야 하는거
@@ -93,15 +96,15 @@ void CHarvestableHerb::Initialize_GameObject()
 
 _int CHarvestableHerb::Update_GameObject(const _float& timeDelta)
 {
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
+    _int exit = CWorldInteractive::Update_GameObject(timeDelta);
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
     if (m_CombatStatCom->Is_Dead() == true)
     {
         // 텍스쳐 바꿈
        m_CurTexIndex = m_deadTexIndex;
         return 0;
     }
-    _int exit = CWorldInteractive::Update_GameObject(timeDelta);
 
     return exit;
 }

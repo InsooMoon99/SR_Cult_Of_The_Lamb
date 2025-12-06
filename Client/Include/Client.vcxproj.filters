@@ -201,7 +201,7 @@
     </Filter>
     <Filter Include="03. GameObject\10. Fireball">
       <UniqueIdentifier>{55718334-06ee-43b9-9d37-001e0d9b66dc}</UniqueIdentifier>
-   </Filter>
+    </Filter>
     <Filter Include="97. Component\07. State">
       <UniqueIdentifier>{e34a7dc5-e0ec-4ffb-8b09-7b4b921f27cb}</UniqueIdentifier>
     </Filter>
@@ -571,7 +571,7 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CFireball.h">
-       </ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Header\CStage_Dungeon.h">
       <Filter>02. Scene\01. Stage</Filter>
     </ClInclude>
@@ -584,6 +584,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="IHitFlashEff.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CPlayerGathering.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -906,8 +909,6 @@
     <ClCompile Include="..\Code\CPlayerSkill.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CFireball.cpp">
-    </ClCompile>
     <ClCompile Include="..\Code\CStage_Dungeon.cpp">
       <Filter>02. Scene\01. Stage</Filter>
     </ClCompile>
@@ -917,6 +918,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CHarvestableHerb.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CPlayerGathering.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

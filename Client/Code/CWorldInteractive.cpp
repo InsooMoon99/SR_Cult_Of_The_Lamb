@@ -53,14 +53,20 @@ void CWorldInteractive::Initialize_GameObject()
 
 _int CWorldInteractive::Update_GameObject(const _float& timeDelta)
 {
+    _int  exit = CRenderObject::Update_GameObject(timeDelta);
     
+        if (m_CombatStatCom->Is_Dead() == true && m_bInvenDropped==false) // 컴포넌트 내부에서 처리함 0 만들고 Dead true
+        {
+            // 플레이어 위치
+            CDropSystem::GetInstance()->SpawnAllFromInven(m_GraphicDev, m_InventoryCom);
+            m_bHovering = false;
+            m_bInvenDropped = true;
+            return exit;
+        }
 
-    _int exit = CRenderObject::Update_GameObject(timeDelta);
 
     //CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
-
-    
-
+        
     // 플레이어가 가까이 있을떄만
     if (m_bPlayerOverlap == true)
     {
@@ -79,12 +85,6 @@ _int CWorldInteractive::Update_GameObject(const _float& timeDelta)
         //hp에 따라 오브젝트 이미지 전환
 
         //0 이면 아이템 드롭
-        if (m_CombatStatCom->Get_Hp() <= 0) // 컴포넌트 내부에서 처리함 0 만들고 Dead true
-        {
-
-            // 플레이어 위치
-            CDropSystem::GetInstance()->SpawnAllFromInven(m_GraphicDev, m_InventoryCom);
-        }
 
     }
     else
@@ -102,8 +102,6 @@ void CWorldInteractive::Render_GameObject()
 {
 
     Render_Setting();
-
-   //m_TextureCom->Set_Texture(2);
 
 
     if (m_bHovering == true)

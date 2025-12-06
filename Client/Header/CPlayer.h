@@ -10,6 +10,7 @@ class CPlayerMovement;
 class CPlayerAttack;
 class CPlayerInput;
 class CWeaponEquip;
+class CPlayerGathering;
 
 BEGIN(Engine)
 class CRigidbody;
@@ -52,6 +53,8 @@ private:
     CPlayerMovement* m_PlayerMovementCom;
     CPlayerAttack* m_PlayerAttackCom;
     CPlayerSkill* m_PlayerSkillCom;
+    CPlayerGathering* m_PlayerGatherCom;
+
 #pragma endregion
 
     map<ACTORSTATE, wstring> m_StateAnim;

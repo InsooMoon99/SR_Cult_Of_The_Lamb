@@ -35,6 +35,8 @@ protected:
 
     _int m_ItemNum;
 
+
+
 public:
     static CHarvestableHerb* Create(DEVICE graphicDev, BERRY berryType);
 

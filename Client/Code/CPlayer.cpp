@@ -20,6 +20,7 @@
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CWeaponEquip.h"
+#include "CPlayerGathering.h"
 
 CPlayer::CPlayer(DEVICE graphicDev)
     : CCharacterBase(graphicDev),
@@ -104,13 +105,14 @@ void CPlayer::Render_GameObject()
 void CPlayer::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CCharacterBase::OnBeginOverlap(self, other);
+    m_PlayerGatherCom->OnBeginOverlap(self, other);
 
 }
 
 void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)
 {
     CCharacterBase::OnEndOverlap(self, other);
-
+    m_PlayerGatherCom->OnEndOverlap(self, other);
     //cout << "Player HitOut" << endl;
 }
 
@@ -175,6 +177,11 @@ HRESULT CPlayer::Add_Component()
     m_PlayerSkillCom = CreateProtoComponent<CPlayerSkill>(this, COMPONENTTYPE::PL_SKILL);
     NULL_CHECK_RETURN(m_PlayerSkillCom, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::PL_SKILL, m_PlayerSkillCom });
+
+    //GTHERING
+    m_PlayerGatherCom = CreateProtoComponent<CPlayerGathering>(this, COMPONENTTYPE::GATHERING);
+    NULL_CHECK_RETURN(m_PlayerGatherCom, E_FAIL);
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::GATHERING, m_PlayerGatherCom });
 
     m_PlayerControllerCom->Init_OwnerComponent();
     m_PlayerMovementCom->Init_OwnerComponent();

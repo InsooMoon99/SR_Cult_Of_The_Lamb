@@ -123,6 +123,7 @@ enum class COMPONENTTYPE
     WALL_RENDERER,
     PROJECTILE,
     SPRITEEFFECT,
+    GATHERING,
 
     WEAPON_EQUIP,           // 플레이어 무기
     PL_CONTROLLER,          // 플레이어 FSM 컨트롤러
@@ -227,6 +228,7 @@ enum class ACTORSTATE
     PLAYER_WOOD,
     PLAYER_STONE,
     PLAYER_BERRY,
+    //GATHERING,
 
     DEAD,
 

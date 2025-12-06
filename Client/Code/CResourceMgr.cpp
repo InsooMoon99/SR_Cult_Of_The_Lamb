@@ -40,7 +40,7 @@
 #include "CSpriteEff.h"
 #include "CEffectBaseCom.h"
 #include "CEyeballController.h"
-
+#include "CPlayerGathering.h"
 IMPLEMENT_SINGLETON(CResourceMgr)
 
 CResourceMgr::CResourceMgr()
@@ -226,6 +226,12 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         COMPONENTTYPE::WEAPON_EQUIP, CWeaponEquip::Create(graphicDev))))
         return E_FAIL;
 
+    // Gathering
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::GATHERING, CPlayerGathering::Create(graphicDev))))
+        return E_FAIL;
+
+
     // skill
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::PL_SKILL, CPlayerSkill::Create(graphicDev))))
@@ -322,19 +328,19 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
 
     //crafting
     if (FAILED(playerTex->Add_Texture(L"PlayerAction", TEX_NORMAL,
-        L"../Bin/Resource/Texture/Player/Lamb_action/Lamb_action%d.png", 17)))
+        L"../Bin/Resource/Texture/Player/Lamb_action/Lamb_action%d.png", 25)))
         return E_FAIL;
 
     if (FAILED(playerTex->Add_Texture(L"PlayerStone", TEX_NORMAL,
-        L"../Bin/Resource/Texture/Player/Lamb_actions_chop_stone/Lamb_actions_chop_stone%d.png", 17)))
+        L"../Bin/Resource/Texture/Player/Lamb_actions_chop_stone/Lamb_actions_chop_stone%d.png", 45)))
         return E_FAIL;
 
     if (FAILED(playerTex->Add_Texture(L"PlayerWood", TEX_NORMAL,
-        L"../Bin/Resource/Texture/Player/Lamb_actions_chop_wood/Lamb_actions_chop_wood%d.png", 17)))
+        L"../Bin/Resource/Texture/Player/Lamb_actions_chop_wood/Lamb_actions_chop_wood%d.png", 39)))
         return E_FAIL;
 
     if (FAILED(playerTex->Add_Texture(L"PlayerBerry", TEX_NORMAL,
-        L"../Bin/Resource/Texture/Player/Lamb_actions_collect_berries/Lamb_actions_collect_berries%d.png", 17)))
+        L"../Bin/Resource/Texture/Player/Lamb_actions_collect_berries/Lamb_actions_collect_berries%d.png", 25)))
         return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))

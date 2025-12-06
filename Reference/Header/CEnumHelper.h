@@ -100,7 +100,7 @@ static const char* ToString(ACTORSTATE state)
     case ACTORSTATE::PLAYER_WOOD:            return "PlayerWood";
     case ACTORSTATE::PLAYER_STONE:           return "PlayerStone";
     case ACTORSTATE::PLAYER_BERRY:           return "PlayerBerry";
-
+   // case ACTORSTATE::GATHERING:           return "Gathering";
     case ACTORSTATE::STATE_END:              return "StateEnd";
     default:                                 return "UnknownState";
     }
