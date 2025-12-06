@@ -85,8 +85,8 @@ _int CPlayer::Update_GameObject(const _float& timeDelta)
     _int exit = CCharacterBase::Update_GameObject(timeDelta);
 
     // 안은수 테스트
-    //if (CDInputMgr::GetInstance()->Get_DIKeyState(DIK_BACKSPACE))
-    //    CDropSystem::GetInstance()->SpawnAllFromInven(m_GraphicDev, m_InventoryCom);
+    if (CDInputMgr::GetInstance()->Get_DIKeyState(DIK_BACKSPACE))
+        CDropSystem::GetInstance()->SpawnAllFromInven(m_GraphicDev, m_InventoryCom);
 
     return exit;
 }

@@ -27,8 +27,8 @@ HRESULT CInventory::Ready_Inventory()
 void CInventory::SetInvenSlotNum(int slotNum)
 {
     //클론 한 뒤에 무조건 호출 해야합니다.
-
-    if (dynamic_cast<CPlayer*>(m_Owner) != nullptr)
+    CPlayer* player = dynamic_cast<CPlayer*>(m_Owner);
+    if (player != nullptr)
     {
         //플레이어인 경우
         invenSlotNum = 12;
@@ -100,7 +100,7 @@ bool CInventory::AddItem(ItemInstance itemInst)
                 int oldCount = slot.count;
                 slot.count++;
                 int newCount = slot.count - oldCount;
-                m_ItemAdded(&slot.itemInst, newCount);
+                //m_ItemAdded(&slot.itemInst, newCount);
                 return true;
             }
         }

@@ -90,6 +90,7 @@ enum class OBJTYPE
     HUMANMONSTER,
     BOSS1,
     BOSS2,
+    INTERACTIVE,
 
     ATTACK_COL,
     PARTICLE,

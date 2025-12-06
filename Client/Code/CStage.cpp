@@ -27,6 +27,7 @@
 #include "CUITabMenu.h"
 #include "CUIWeapon.h"
 #include "ItemInstance.h"
+#include "CHarvestableHerb.h"
 
 CStage::CStage(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -236,6 +237,16 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
         // 에디터에 카메라 설정
         CMainEditorMgr::GetInstance()->Set_MainCamera(camController);
     }
+
+    // 인터렉티브 오브젝트
+    gameObject = CHarvestableHerb::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
+
+        FAILED_CHECK_MSG(
+            layer->Add_GameObject(OBJTYPE::INTERACTIVE, gameObject),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
+
+
 
     m_Layers.insert({ layerType, layer });
 
