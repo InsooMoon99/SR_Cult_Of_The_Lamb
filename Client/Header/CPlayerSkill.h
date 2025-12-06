@@ -25,6 +25,8 @@ public:
         _vec3 hitboxScale;
         _float skillspeed;
         _float chargeTime;
+
+        PARTICLEDATA particle;
     };
 
     enum PL_SKILL_INDEX
@@ -74,12 +76,13 @@ public:
 private:
     void Reset_AttackData();
    // void Create_Projectile(const SkillInfo& skillInfo, const _vec3& SkillDir);
-    void Create_Fireball(DEVICE graphicDev);
+    CFireball* Create_Fireball(const SkillInfo& skillInfo, DEVICE graphicDev, CGameObject* instigator, _vec3 skillDir);
+
 private:
     CPlayerInput* m_OwnerInputCom;
     CState* m_OwnerStateCom;
     CCombatStat* m_OwnerCombatStatCom;
-    CFireball* m_Fireball;
+    CFireball* m_Fireball{};
 private:
     CAttackBase* m_CurrentAttackObj;
 
@@ -98,7 +101,9 @@ private:
     _bool     m_TripleSkillEnable;
 
     _bool     m_SingleFired;
-    _bool    m_TripleFired;
+    _bool    m_TripleFired{};
+
+    vector<CFireball*> m_Fireballs;
 
 public:
     static CPlayerSkill* Create(DEVICE graphicDev);

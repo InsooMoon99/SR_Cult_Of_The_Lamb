@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "CGameObject.h"
+#include "CPlayerSkill.h"
 #include "CProjectile.h"
 
 namespace Engine
@@ -10,6 +11,8 @@ class CRcTex;
 }
 
 class CProjectile;
+//#include "CPlayerSkill.h";
+struct SkillInfo;
 
 class CFireball : public CGameObject
 {
@@ -32,8 +35,9 @@ public:
     _int Update_GameObject(const _float& timeDelta) override;
 
 public:
-    static CFireball* Create(DEVICE graphicDev);
-
+    static CFireball* Create(const CPlayerSkill::SkillInfo& skillInfo, DEVICE graphicDev,CGameObject* instigator, _vec3& skillDir);
+    void Create_AttackObj(const CPlayerSkill::SkillInfo& skillInfo, const _vec3& skillDir, CGameObject* instigator);
+    Engine::CAttackBase* m_CurrentAttackObj;
 protected:
     void Free() override;
 
@@ -42,8 +46,9 @@ private:
     CTransform*  m_TransformCom;
     CTexture*    m_TextureCom;
     CRcTex*      m_BufferCom;
-
     CGameObject* m_Owner;
+
+   // float m_SpawnOffset;
 
 };
 
