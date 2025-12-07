@@ -2,14 +2,19 @@
 #include "CEyeball_Attack.h"
 #include "CTransform.h"
 #include "CAnimator.h"
+#include "CBoss2_Bullet.h"
 #include "CEyeball.h"
+#include "CAttackBuilder.h"
 #include "CMonsterController.h"
+#include "CProjectile.h"
+#include "CTimerMgr.h"
 
 CEyeball_Attack::CEyeball_Attack(CMonsterBase* owner)
     : m_Owner(owner),
-    m_Pattern_Cooldown(0),
-    m_LerpSpeed(0),
-    m_EyeballAnim(Eyeball_Anim::EYEBALL_ATTACK_END)
+      m_Pattern_Cooldown(0),
+      m_LerpSpeed(0),
+      m_EyeballAnim(Eyeball_Anim::EYEBALL_ATTACK_END),
+      m_HasFiredBullet(false), m_AttackCount(0), m_IsFinished(false)
 {
 }
 
@@ -55,12 +60,12 @@ _int CEyeball_Attack::Update_State(const _float& timeDelta)
 {
     m_fCurStateElapsedTime += timeDelta;
 
-    if (m_pPlayer)
-    {
-        cout << "플레이어 있음";
-    }
-
     CTransform* transform = m_Controller->Get_OwnerTransform();
+    auto animator = m_Controller->Get_OwnerAnimator();
+
+    // 끝나면 Idle로
+    if (m_IsFinished)
+        return CEyeball::PATTERN::EYEBALL_IDLE;
 
     switch (m_EyeballAnim)
     {
@@ -100,23 +105,149 @@ HRESULT CEyeball_Attack::Ready_State()
 
     m_LerpSpeed = 0.05f;
     m_EyeballAnim = Eyeball_Anim::ATTACK_ANTI;
+
+    m_HasFiredBullet = false;
+    m_AttackCount = 0;
+    m_IsFinished = false;
     
     return S_OK;
 }
 
 void CEyeball_Attack::Play_Anti()
 {
-    
+    // 플레이어 반대 방향으로 이동 시키기?
+    auto animator = m_Controller->Get_OwnerAnimator();
+
+    if (animator)
+    {
+        if (animator->Is_AnimationFinished())
+        {
+            m_EyeballAnim = Eyeball_Anim::ATTACK_LOOP;
+            animator->Play_Animation(L"Eyeball_Attack_Loop", ANIMSTATE::LOOP);
+        }
+        else
+        {
+            _vec3 dir = (m_Owner->Get_Transform()->Get_Pos() - m_pPlayerTransformCom->Get_Pos());
+            dir.y = 0;
+            D3DXVec3Normalize(&dir, &dir);
+
+            _float delta = CTimerMgr::GetInstance()->Get_TimeDelta();
+            m_Owner->Get_Transform()->Move_Pos(dir, delta, 2.f);
+        }
+
+    }
 }
 
 void CEyeball_Attack::Play_Loop()
 {
+    // 공격
+    auto animator = m_Controller->Get_OwnerAnimator();
+
+    if (animator)
+    {
+        _int curFrame = animator->Get_CurFrame();
+
+        // 20 프레임에 한번만 쏘기
+        if (curFrame >= 20 && !m_HasFiredBullet && m_AttackCount < 2)
+        {
+            m_AttackCount++;
+
+            Spawn_BulletPattern();
+            m_HasFiredBullet = true;
+        }
+
+        if (curFrame >= 40)
+        {
+            m_HasFiredBullet = false;
+        }
+
+        if (m_AttackCount >= 2)
+        {
+            m_EyeballAnim = Eyeball_Anim::ATTACK_END;
+            animator->Play_Animation(L"Eyeball_Attack_End", ANIMSTATE::ONCE);
+        }
+
+    }
 
 }
 
 void CEyeball_Attack::Play_End()
 {
+    m_HasFiredBullet = false;
 
+    // 공격 끝 -> Move로 상태 전환
+    auto animator = m_Controller->Get_OwnerAnimator();
+
+    // 일단 ㅌㅌ
+    if (animator)
+    {
+        if (animator->Is_AnimationFinished())
+        {
+            m_IsFinished = true;
+
+            return;
+        }
+
+        _vec3 dir = (m_Owner->Get_Transform()->Get_Pos() - m_pPlayerTransformCom->Get_Pos());
+        dir.y = 0;
+        D3DXVec3Normalize(&dir, &dir);
+
+        _float delta = CTimerMgr::GetInstance()->Get_TimeDelta();
+        m_Owner->Get_Transform()->Move_Pos(dir, delta, 1.f);
+    }
+
+}
+
+void CEyeball_Attack::Spawn_BulletPattern()
+{
+    _vec3 eyeballPos = m_Controller->Get_OwnerTransform()->Get_Pos();
+
+    // 원형 패턴 8개 탄환 360도 처리
+    _int bulletCount = 8;
+    _float angleStep = 360.f / static_cast<_float>(bulletCount);
+
+    for (_int i = 0; i < bulletCount; ++i)
+    {
+        _float angle = D3DXToRadian(angleStep * i);
+        _vec3 direction(cosf(angle), 0.f, sinf(angle));
+
+        CBoss2_Bullet* bullet = nullptr;
+
+        DEVICE graphicDev = m_Owner->Get_GraphicDev();
+
+        CAttackBuilder(graphicDev, m_Owner)
+            .SetType<CBoss2_Bullet>()
+            .Track(bullet)
+            .Position(eyeballPos)
+            .Scale(0.2f)
+            .Damage(1.f)
+            .Knockback(500.f)
+            .LifeTime(5.f)
+            .CollisionLayer(COLLISION_LAYERTYPE::ENEMY)
+            .DestroyOnHit(true)
+            .Particle(L"HitEffect_Star", 14)
+            .Spawn();
+
+        if (bullet)
+        {
+            CProjectile* projectileCom = dynamic_cast<CProjectile*>(
+                bullet->Get_Component(ID_STATIC, COMPONENTTYPE::PROJECTILE));
+
+            if (projectileCom)
+            {
+                BulletDesc desc;
+                desc.ProjectileOwner = m_Owner;
+                desc.moveType = PROJ_TYPE::LINEAR;
+                desc.Speed = 15.f;
+                desc.Direction = direction;
+
+                projectileCom->SetMoveDesc(desc);
+            }
+
+            bullet->Start_Shoot();
+        }
+       
+    }
 }
 
 CEyeball_Attack* CEyeball_Attack::Create(CMonsterBase* owner)

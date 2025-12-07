@@ -47,6 +47,17 @@ static void SpawnObjectOnLayer(CGameObject* obj, OBJTYPE objType = OBJTYPE::ATTA
     scene->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, obj, objType);
 }
 
+static void SpawnUIOnLayer(CGameObject* obj, OBJTYPE objType = OBJTYPE::UI)
+{
+    auto mgr = CManagement::GetInstance();
+    auto scene = mgr ? mgr->Get_Scene() : nullptr;
+
+    if (!scene || !obj)
+        return;
+
+    scene->AddObjectOnLayer(LAYERTYPE::UI, obj, objType);
+}
+
 static void DrawDebugBox(DEVICE graphicDv, const _vec3& center, const _vec3& size, DWORD color)
 {
     if (!graphicDv) return;

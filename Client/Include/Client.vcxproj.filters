@@ -199,6 +199,12 @@
     <Filter Include="03. GameObject\06. Controller">
       <UniqueIdentifier>{8902134d-20bd-40d8-a9c0-6a01e23a37dc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97. Component\07. Effect">
+      <UniqueIdentifier>{0a2588d6-9b6a-44ba-9c7f-e2fd96563550}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Component\07. Effect\00.Base">
+      <UniqueIdentifier>{8a0d49d8-10a4-4675-9c64-616209693762}</UniqueIdentifier>
+    </Filter>
     <Filter Include="03. GameObject\10. Fireball">
       <UniqueIdentifier>{55718334-06ee-43b9-9d37-001e0d9b66dc}</UniqueIdentifier>
     </Filter>
@@ -219,6 +225,27 @@
     </Filter>
     <Filter Include="03. GameObject\07. Trigger">
       <UniqueIdentifier>{92dd4e5b-96b3-4251-ad22-3e104b9d673a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\04. Boss\02. Boss2\04. AttackObject">
+      <UniqueIdentifier>{284452da-69b9-4b9f-9bd4-9b5e3f98e399}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. UI\01. UI\07. UI_MonsterHp">
+      <UniqueIdentifier>{64afee0e-3924-4b66-83ff-7eaad8c29212}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\08. Building Object">
+      <UniqueIdentifier>{d4a892b8-5b80-4d48-8a32-2cdc3e6bce19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="94. Construction">
+      <UniqueIdentifier>{333e7f9f-7c14-4b8c-92ac-75d6310fa615}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="94. Construction\00. Manager">
+      <UniqueIdentifier>{98e0a1db-7574-4e94-a5a2-e98174919f1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="94. Construction\01. Placer">
+      <UniqueIdentifier>{96197f47-b222-4840-94b1-dbb271990129}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. UI\01. UI\07. UICharging">
+      <UniqueIdentifier>{e12d587e-6cb4-4929-857d-7de7606a343a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -510,7 +537,7 @@
     <ClInclude Include="..\Header\CEyeball.h">
       <Filter>03. GameObject\04. Boss\02. Boss2\01. Eyeball</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CBoss2_Roar.h">
+    <ClInclude Include="..\Header\CBoss2_ChainAttack.h">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CBoss2_Start.h">
@@ -540,7 +567,7 @@
     <ClInclude Include="..\Header\CEyeball_Start.h">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CEyeball_Ground.h">
+    <ClInclude Include="..\Header\CEyeball_StartGround.h">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CEyeball_Enter.h">
@@ -556,13 +583,19 @@
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CTrailEff.h">
-      <Filter>97. Component\06. Effect</Filter>
+      <Filter>97. Component\07. Effect</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CEffectBaseCom.h">
-      <Filter>97. Component\06. Effect\00.Base</Filter>
+      <Filter>97. Component\07. Effect\00.Base</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CSpriteEff.h">
-      <Filter>97. Component\06. Effect</Filter>
+      <Filter>97. Component\07. Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEffectBaseCom.h">
+      <Filter>97. Component\07. Effect\00.Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CSpriteEff.h">
+      <Filter>97. Component\07. Effect</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CBossTalk.h">
       <Filter>헤더 파일</Filter>
@@ -588,6 +621,42 @@
     </ClInclude>
     <ClInclude Include="..\Header\CPlayerGathering.h">
       <Filter>헤더 파일</Filter>
+   </ClInclude>
+    <ClInclude Include="..\Header\CEyeball_Idle.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEyeball_Ground_Move.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBoss2_Bullet.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\04. AttackObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBoss2_Chain.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\04. AttackObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBoss2_Die.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUI_MonsterHp.h">
+      <Filter>05. UI\01. UI\07. UI_MonsterHp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CTemple.h">
+      <Filter>03. GameObject\08. Building Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBuildingBase.h">
+      <Filter>96. Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CConstructionMgr.h">
+      <Filter>94. Construction\00. Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CConstructionPlacer.h">
+      <Filter>94. Construction\01. Placer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CFireball.h">
+      <Filter>03. GameObject\10. Fireball</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUICharging.h">
+      <Filter>05. UI\01. UI\07. UICharging</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -849,7 +918,7 @@
     <ClCompile Include="..\Code\CEyeball.cpp">
       <Filter>03. GameObject\04. Boss\02. Boss2\01. Eyeball</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CBoss2_Roar.cpp">
+    <ClCompile Include="..\Code\CBoss2_ChainAttack.cpp">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CBoss2_Start.cpp">
@@ -876,7 +945,7 @@
     <ClCompile Include="..\Code\CEyeball_StartExit.cpp">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CEyeball_Ground.cpp">
+    <ClCompile Include="..\Code\CEyeball_StartGround.cpp">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CEyeball_Enter.cpp">
@@ -895,13 +964,19 @@
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CTrailEff.cpp">
-      <Filter>97. Component\06. Effect</Filter>
+      <Filter>97. Component\07. Effect</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CEffectBaseCom.cpp">
-      <Filter>97. Component\06. Effect\00.Base</Filter>
+      <Filter>97. Component\07. Effect\00.Base</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CSpriteEff.cpp">
-      <Filter>97. Component\06. Effect</Filter>
+      <Filter>97. Component\07. Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEffectBaseCom.cpp">
+      <Filter>97. Component\07. Effect\00.Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CSpriteEff.cpp">
+      <Filter>97. Component\07. Effect</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CBossTalk.cpp">
       <Filter>소스 파일</Filter>
@@ -922,6 +997,42 @@
     </ClCompile>
     <ClCompile Include="..\Code\CPlayerGathering.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEyeball_Idle.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEyeball_Ground_Move.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoss2_Chain.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\04. AttackObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoss2_Bullet.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\04. AttackObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoss2_Die.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_MonsterHp.cpp">
+      <Filter>05. UI\01. UI\07. UI_MonsterHp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CTemple.cpp">
+      <Filter>03. GameObject\08. Building Object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBuildingBase.cpp">
+      <Filter>96. Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CConstructionMgr.cpp">
+      <Filter>94. Construction\00. Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CConstructionPlacer.cpp">
+      <Filter>94. Construction\01. Placer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CFireball.cpp">
+      <Filter>03. GameObject\10. Fireball</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUICharging.cpp">
+      <Filter>05. UI\01. UI\07. UICharging</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -171,8 +171,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Header\CBoss2_Bullet.h" />
+    <ClInclude Include="..\Header\CBoss2_Chain.h" />
+    <ClInclude Include="..\Header\CBoss2_Die.h" />
     <ClInclude Include="..\Header\CBoss2_Idle.h" />
-    <ClInclude Include="..\Header\CBoss2_Roar.h" />
+    <ClInclude Include="..\Header\CBoss2_ChainAttack.h" />
     <ClInclude Include="..\Header\CBoss2_Start.h" />
     <ClInclude Include="..\Header\CBoss2_StateMachine.h" />
     <ClInclude Include="..\Header\CBossAwake.h" />
@@ -189,12 +192,15 @@
     <ClInclude Include="..\Header\CBossPhase1.h" />
     <ClInclude Include="..\Header\CBossTalk.h" />
     <ClInclude Include="..\Header\CBossStateMachine.h" />
+    <ClInclude Include="..\Header\CBuildingBase.h" />
     <ClInclude Include="..\Header\CCameraController.h" />
     <ClInclude Include="..\Header\CCameraMovement.h" />
     <ClInclude Include="..\Header\CCamSetupBuilder.h" />
     <ClInclude Include="..\Header\CBoss_Slave_Test.h" />
     <ClInclude Include="..\Header\CCharacterBase.h" />
     <ClInclude Include="..\Header\CPlayerGathering.h" />
+    <ClInclude Include="..\Header\CConstructionMgr.h" />
+    <ClInclude Include="..\Header\CConstructionPlacer.h" />
     <ClInclude Include="..\Header\CEffectBaseCom.h" />
     <ClInclude Include="..\Header\CEyeball.h" />
     <ClInclude Include="..\Header\CEyeballController.h" />
@@ -202,7 +208,9 @@
     <ClInclude Include="..\Header\CEyeball_Die.h" />
     <ClInclude Include="..\Header\CEyeball_Enter.h" />
     <ClInclude Include="..\Header\CEyeball_Exit.h" />
-    <ClInclude Include="..\Header\CEyeball_Ground.h" />
+    <ClInclude Include="..\Header\CEyeball_Ground_Move.h" />
+    <ClInclude Include="..\Header\CEyeball_StartGround.h" />
+    <ClInclude Include="..\Header\CEyeball_Idle.h" />
     <ClInclude Include="..\Header\CEyeball_Start.h" />
     <ClInclude Include="..\Header\CEyeball_StartExit.h" />
     <ClInclude Include="..\Header\CEyeball_StateMachine.h" />
@@ -258,8 +266,10 @@
     <ClInclude Include="..\Header\CStage_Dungeon.h" />
     <ClInclude Include="..\Header\CStage_TarotTest.h" />
     <ClInclude Include="..\Header\CStateMachine.h" />
+    <ClInclude Include="..\Header\CTemple.h" />
     <ClInclude Include="..\Header\CTrailEff.h" />
     <ClInclude Include="..\Header\CTrigger_Dungeon.h" />
+    <ClInclude Include="..\Header\CUICharging.h" />
     <ClInclude Include="..\Header\CUIItemGet.h" />
     <ClInclude Include="..\Header\CUIItemGetManager.h" />
     <ClInclude Include="..\Header\CUITarotCard.h" />
@@ -279,6 +289,7 @@
     <ClInclude Include="..\Header\CTarotStageController.h" />
     <ClInclude Include="..\Header\CUITarotDescCard.h" />
     <ClInclude Include="..\Header\CUIWeapon.h" />
+    <ClInclude Include="..\Header\CUI_MonsterHp.h" />
     <ClInclude Include="..\Header\CWarningChain.h" />
     <ClInclude Include="..\Header\CWall.h" />
     <ClInclude Include="..\Header\CWallRenderer.h" />
@@ -296,8 +307,11 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Code\CBoss2_Bullet.cpp" />
+    <ClCompile Include="..\Code\CBoss2_Chain.cpp" />
+    <ClCompile Include="..\Code\CBoss2_Die.cpp" />
     <ClCompile Include="..\Code\CBoss2_Idle.cpp" />
-    <ClCompile Include="..\Code\CBoss2_Roar.cpp" />
+    <ClCompile Include="..\Code\CBoss2_ChainAttack.cpp" />
     <ClCompile Include="..\Code\CBoss2_Start.cpp" />
     <ClCompile Include="..\Code\CBoss2_StateMachine.cpp" />
     <ClCompile Include="..\Code\CBossAwake.cpp" />
@@ -314,11 +328,14 @@
     <ClCompile Include="..\Code\CBossPhase1.cpp" />
     <ClCompile Include="..\Code\CBossTalk.cpp" />
     <ClCompile Include="..\Code\CBossStateMachine.cpp" />
+    <ClCompile Include="..\Code\CBuildingBase.cpp" />
     <ClCompile Include="..\Code\CCameraController.cpp" />
     <ClCompile Include="..\Code\CCameraMovement.cpp" />
     <ClCompile Include="..\Code\CBoss_Slave_Test.cpp" />
     <ClCompile Include="..\Code\CCharacterBase.cpp" />
     <ClCompile Include="..\Code\CPlayerGathering.cpp" />
+    <ClCompile Include="..\Code\CConstructionMgr.cpp" />
+    <ClCompile Include="..\Code\CConstructionPlacer.cpp" />
     <ClCompile Include="..\Code\CDroppedItem.cpp" />
     <ClCompile Include="..\Code\CDropSystem.cpp" />
     <ClCompile Include="..\Code\CEdit.cpp" />
@@ -329,10 +346,13 @@
     <ClCompile Include="..\Code\CEyeball_Die.cpp" />
     <ClCompile Include="..\Code\CEyeball_Enter.cpp" />
     <ClCompile Include="..\Code\CEyeball_Exit.cpp" />
-    <ClCompile Include="..\Code\CEyeball_Ground.cpp" />
+    <ClCompile Include="..\Code\CEyeball_Ground_Move.cpp" />
+    <ClCompile Include="..\Code\CEyeball_StartGround.cpp" />
+    <ClCompile Include="..\Code\CEyeball_Idle.cpp" />
     <ClCompile Include="..\Code\CEyeball_Start.cpp" />
     <ClCompile Include="..\Code\CEyeball_StartExit.cpp" />
     <ClCompile Include="..\Code\CEyeball_StateMachine.cpp" />
+    <ClCompile Include="..\Code\CFireball.cpp" />
     <ClCompile Include="..\Code\CHarvestableHerb.cpp" />
     <ClCompile Include="..\Code\CHumanMonster.cpp" />
     <ClCompile Include="..\Code\CInventory.cpp" />
@@ -378,8 +398,10 @@
     <ClCompile Include="..\Code\CStage_Dungeon.cpp" />
     <ClCompile Include="..\Code\CStage_TarotTest.cpp" />
     <ClCompile Include="..\Code\CStateMachine.cpp" />
+    <ClCompile Include="..\Code\CTemple.cpp" />
     <ClCompile Include="..\Code\CTrailEff.cpp" />
     <ClCompile Include="..\Code\CTrigger_Dungeon.cpp" />
+    <ClCompile Include="..\Code\CUICharging.cpp" />
     <ClCompile Include="..\Code\CUIItemGet.cpp" />
     <ClCompile Include="..\Code\CUIItemGetManager.cpp" />
     <ClCompile Include="..\Code\CUITarotCard.cpp" />
@@ -400,6 +422,7 @@
     <ClCompile Include="..\Code\CTarotStageController.cpp" />
     <ClCompile Include="..\Code\CUITarotDescCard.cpp" />
     <ClCompile Include="..\Code\CUIWeapon.cpp" />
+    <ClCompile Include="..\Code\CUI_MonsterHp.cpp" />
     <ClCompile Include="..\Code\CWarningChain.cpp" />
     <ClCompile Include="..\Code\CWall.cpp" />
     <ClCompile Include="..\Code\CWallRenderer.cpp" />

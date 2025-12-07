@@ -7,9 +7,7 @@
 #include "CRenderer.h"
 #include "CTexture.h"
 #include "CTransform.h"
-#include "CAttackBox.h"
 #include "CAttackBuilder.h"
-#include "CBossPhase1.h"
 
 CBossChain::CBossChain(DEVICE graphicDev, CGameObject* owner)
     : CGameObject(graphicDev), m_pOwner(owner)

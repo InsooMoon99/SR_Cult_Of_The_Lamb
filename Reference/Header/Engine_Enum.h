@@ -73,6 +73,7 @@ enum class COLLISION_LAYERTYPE
     ATTACK,
     TRIGGER,
     INTERACTIVEOBJ,
+    BUILDING,       // 건물
 
     COL_LAYER_END
 };
@@ -95,7 +96,7 @@ enum class OBJTYPE
     ATTACK_COL,
     PARTICLE,
     TRIGGER,
-
+    BULLET,
     TERRAIN,
     PLACEMENT,
     WALL,
@@ -126,8 +127,8 @@ enum class COMPONENTTYPE
     GATHERING,
 
     WEAPON_EQUIP,           // 플레이어 무기
-    PL_CONTROLLER,          // 플레이어 FSM 컨트롤러
     PL_INPUT,               // 플레이어 방향 입력
+    PL_CONTROLLER,          // 플레이어 FSM 컨트롤러
     PL_MOVEMENT,            // 플레이어 움직임
     PL_ATTACK,              // 플레이어 공격
     PL_SKILL,
@@ -149,14 +150,17 @@ enum class COMPONENTTYPE
     TEX_UI_HEARTCARD,
     TEX_UI_EXPLAIN,
     TEX_UI_TAROT,
+    TEX_UI_MONSTERHP,
     TEX_ITEM,
     TEX_MENU_CHAR,
     TEX_UI_ICON,
     TEX_UI_BUTTON,
     TEX_BOSSPHASE1,
     TEX_BULLET,
+    TEX_TEMPLE,
     TEX_OUT,
     TEX_BERRY,
+    TEX_SKILL,
 
     ANIMATOR,
 
@@ -169,7 +173,6 @@ enum class COMPONENTTYPE
     BOX_COLL,
     SPHERE_COLL,
 
-
     ////////////////
     //   Boss 2   //
     ////////////////
@@ -179,6 +182,8 @@ enum class COMPONENTTYPE
 
     BOSS2_CONTROLLER,
     EYEBALL_CONTROLLER,
+    TEX_WARNING_CHAIN,
+    TEX_CHAIN,
 
     ////////////////
     //  MapObject //
@@ -217,7 +222,6 @@ enum class ACTORSTATE
     PLAYER_GAUNTLET_COMBO1,     // 건틀릿 일반공격 콤보 1
     PLAYER_GAUNTLET_COMBO2,     // 건틀릿 일반공격 콤보 2
     PLAYER_GAUNTLET_COMBO3,     // 건틀릿 일반공격 콤보 3
-    PLAYER_GAUNTLET_COMBO4,     // 건틀릿 일반공격 콤보 4
     PLAYER_GAUNTLET_HEAVY,      // 건틀릿 강공격
     PLAYER_SKILL_CHARGING,
     PLAYER_SKILL_SINGLE,
@@ -299,6 +303,15 @@ enum PROJECTION_TYPE
     PROJ_ORTHOGRAPHIC,      // 직교 투영
 
     PROJ_END
+};
+
+// 건축물 종류
+enum BUILDING_TYPE
+{
+    TEMPLE,             // 신전
+    KITCHEN,            // 요리용 화덕
+
+    BUILDING_END
 };
 }
 #endif // Engine_Enum_h__

@@ -4,6 +4,7 @@
 #include "CCameraController.h"
 #include "CCamSetupBuilder.h"
 #include "CCombatStat.h"
+#include "CConstructionMgr.h"
 #include "CDInputMgr.h"
 #include "CDropSystem.h"
 #include "CHumanMonster.h"
@@ -15,7 +16,6 @@
 #include "CPersistentObjectHelper.h"
 #include "CPlayer.h"
 #include "CSceneMgr.h"
-#include "CSoundMgr.h"
 #include "CTerrain.h"
 #include "CTransform.h"
 #include "CUICircle.h"
@@ -28,6 +28,8 @@
 #include "CUIWeapon.h"
 #include "ItemInstance.h"
 #include "CHarvestableHerb.h"
+#include "CPlayerSkill.h"
+
 
 CStage::CStage(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -42,6 +44,9 @@ CStage::~CStage()
 
 HRESULT CStage::Ready_Scene()
 {
+    // Construction Manager 초기화
+    CConstructionMgr::GetInstance()->Ready_ConstructionMgr(m_GraphicDev);
+
     if (FAILED(Ready_Environment_Layer(LAYERTYPE::ENVIRONMENT)))
         return E_FAIL;
 
@@ -89,11 +94,13 @@ void CStage::Initialize_Scene()
     CScene::Initialize_Scene();
 
     // 초기 맵 불러오기 <- 이거 꼭 Initialize에서 진행해야 맵 오브젝트가 잘 불러진다.
-    m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_maeul.map");
+    m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Village.map");
 }
 
 _int CStage::Update_Scene(const _float& timeDelta)
 {
+    CConstructionMgr::GetInstance()->Update_ConstructionMgr(timeDelta);
+
     _int exit = Engine::CScene::Update_Scene(timeDelta);
 
     if (CDInputMgr::GetInstance()->KeyDown(DIK_F))
@@ -101,7 +108,7 @@ _int CStage::Update_Scene(const _float& timeDelta)
 
     if (CDInputMgr::GetInstance()->KeyDown(DIK_G))
         CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS2);
-
+	
     return exit;
 }
 
@@ -113,6 +120,7 @@ void CStage::LateUpdate_Scene(const _float& timeDelta)
 void CStage::Render_Scene()
 {
     // debug 용
+    CConstructionMgr::GetInstance()->Render_ConstructionMgr();
 }
 
 HRESULT CStage::Ready_Environment_Layer(LAYERTYPE layerType)
@@ -180,6 +188,10 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
             COMPONENTTYPE::COMBATSTAT));
 
     NULL_CHECK_RETURN(m_PlayerCombatStatCom, E_FAIL);
+
+	m_PlayerSkillCom = dynamic_cast<CPlayerSkill*>(gameObject->Get_Component(ID_STATIC, COMPONENTTYPE::PL_SKILL));
+
+	NULL_CHECK_RETURN(m_PlayerSkillCom, E_FAIL);
 
     // -----------------------------
     // Monster

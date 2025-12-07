@@ -31,13 +31,13 @@ public:
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
 
-    void    OnBeginOverlap(CCollider* self, CCollider* other) override;
-    void    OnEndOverlap(CCollider* self, CCollider* other) override;
+    void OnBeginOverlap(CCollider* self, CCollider* other) override;
+    void OnEndOverlap(CCollider* self, CCollider* other) override;
 
-    void    Render_Editor() override;
+    void Render_Editor() override;
 
 private:
-    HRESULT Add_Component()     override;
+    HRESULT Add_Component() override;
     void    Animation_Setting() override;
 
 private:
@@ -46,8 +46,8 @@ private:
 
 #pragma endregion
 #pragma region Client Components
-    CWeaponEquip* m_WeaponEquipCom;
-    CInventory* m_InventoryCom;
+    CWeaponEquip*      m_WeaponEquipCom;
+    CInventory*        m_InventoryCom;
     CPlayerController* m_PlayerControllerCom;
     CPlayerInput* m_PlayerInputCom;
     CPlayerMovement* m_PlayerMovementCom;

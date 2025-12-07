@@ -28,6 +28,7 @@ public:
     void             OnEndOverlap(CCollider* self, CCollider* other) override;
 
 public:
+    DEVICE          Get_GraphicDev() { return m_GraphicDev; }
     _float          Get_DistanceToTarget();
     _bool           Can_Attack() { return m_AttackTimer >= m_AttackCooldown; }
 

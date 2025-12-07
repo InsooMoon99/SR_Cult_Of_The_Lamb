@@ -16,6 +16,15 @@ class CEyeball_Attack : public CMonsterState
         EYEBALL_ATTACK_END
     };
 
+    enum class Attack_Type
+    {
+        DISPERSION, //분산
+        CIRCLE,
+        BURTST,
+
+        ATTACK_TYPE_END
+    };
+
 private:
     explicit CEyeball_Attack(CMonsterBase* owner);
     virtual ~CEyeball_Attack();
@@ -33,6 +42,9 @@ public:
     void Play_End();
 
 public:
+    void Spawn_BulletPattern();
+
+public:
     static CEyeball_Attack* Create(CMonsterBase* owner);
 
 private:
@@ -47,6 +59,10 @@ private:
     _float              m_LerpSpeed;        
 
     Eyeball_Anim        m_EyeballAnim;
+    _bool               m_HasFiredBullet;
+
+    _int                m_AttackCount;
+    _bool               m_IsFinished;
 
 };
 

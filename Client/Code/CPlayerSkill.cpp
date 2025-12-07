@@ -1,44 +1,52 @@
 ﻿#include "pch.h"
 #include "CPlayerSkill.h"
+
+#include "CLayer.h"
 #include "CAttackBuilder.h"
 #include "CGameObject.h"
 #include "CState.h"
 #include "CCombatStat.h"
+#include "CFireball.h"
 #include "CPlayerInput.h"
 
-CPlayerSkill::CPlayerSkill(DEVICE graphicDev)
-    : m_OwnerStateCom(nullptr),
+CPlayerSkill::CPlayerSkill(DEVICE graphicDev) : CComponent(graphicDev),
+      m_OwnerStateCom(nullptr),
       m_OwnerCombatStatCom(nullptr),
+      m_Fireball(nullptr),
       m_OwnerInputCom(nullptr),
       m_CurrentAttackObj(nullptr),
       m_IsSkillUnlocked(true),
       m_SkillInfo{},
       m_SkillTimer(0),
       m_ChargeTimer(0),
-      m_MaxChargeTime(8.f),
+      m_MaxChargeTime(5.f),
       m_ProjectileFired(false),
       m_SkillIndex(5.f),
       m_IsCharged(false),
-      m_IsCharging(false),
+      m_IsCharging(false), 
       m_SingleSkillEnable(false),
-      m_TripleSkillEnable(false)
+      m_TripleSkillEnable(false),
+      m_SingleFired(false),
+      m_TripleFired(false)
+
 {}
 
-CPlayerSkill::CPlayerSkill(const CPlayerSkill& rhs)
-    : m_OwnerStateCom(nullptr),
+CPlayerSkill::CPlayerSkill(const CPlayerSkill& rhs) : CComponent(rhs),
+      m_OwnerStateCom(nullptr),
       m_OwnerCombatStatCom(nullptr),
       m_OwnerInputCom(nullptr),
       m_CurrentAttackObj(nullptr),
       m_IsSkillUnlocked(true),
       m_SkillTimer(rhs.m_SkillTimer),
       m_ChargeTimer(rhs.m_ChargeTimer),
-      m_MaxChargeTime(8.f),
+      m_MaxChargeTime(5.f),
       m_ProjectileFired(false),
       m_SkillIndex(rhs.m_SkillIndex),
       m_IsCharged(false),
       m_IsCharging(false),
       m_SingleSkillEnable(false),
-      m_TripleSkillEnable(false)
+      m_TripleSkillEnable(false),
+      m_SingleFired(false)
 {
     copy_n(&rhs.m_SkillInfo[0], static_cast<_int>(SKILL_MAX), &m_SkillInfo[0]);
 }
@@ -53,23 +61,23 @@ HRESULT CPlayerSkill::Ready_PlayerCombat()
     m_SkillInfo[SKILL_CHARGING].damageMultiplier = 2.f;
     m_SkillInfo[SKILL_CHARGING].knockbackPower = 50.f;
     m_SkillInfo[SKILL_CHARGING].spawnOffset = 1.3f;
-    m_SkillInfo[SKILL_CHARGING].hitboxScale = _vec3(1.f, 1.f, 1.f);
+    // m_SkillInfo[SKILL_CHARGING].hitboxScale = _vec3(1.f, 1.f, 1.f);
     // 1발
     m_SkillInfo[SKILL_SINGLE].state = ACTORSTATE::PLAYER_SKILL_SINGLE;
-    m_SkillInfo[SKILL_SINGLE].duration = 2.f;
+    m_SkillInfo[SKILL_SINGLE].duration = 1.f;
     m_SkillInfo[SKILL_SINGLE].damageMultiplier = 2.f;
     m_SkillInfo[SKILL_SINGLE].knockbackPower = 50.f;
     m_SkillInfo[SKILL_SINGLE].spawnOffset = 1.3f;
-    m_SkillInfo[SKILL_SINGLE].hitboxScale = _vec3(1.f, 1.f, 1.f);
-    m_SkillInfo[SKILL_SINGLE].chargeTime = 3.f;
+    m_SkillInfo[SKILL_SINGLE].hitboxScale = _vec3(0.6f, 0.6f, 0.6f);
+    m_SkillInfo[SKILL_SINGLE].chargeTime = 1.5f;
     // 3발
     m_SkillInfo[SKILL_TRIPLE].state = ACTORSTATE::PLAYER_SKILL_TRIPLE;
-    m_SkillInfo[SKILL_TRIPLE].duration = 1.5f;
+    m_SkillInfo[SKILL_TRIPLE].duration = 1.f;
     m_SkillInfo[SKILL_TRIPLE].damageMultiplier = 2.f;
     m_SkillInfo[SKILL_TRIPLE].knockbackPower = 50.f;
     m_SkillInfo[SKILL_TRIPLE].spawnOffset = 1.3f;
-    m_SkillInfo[SKILL_TRIPLE].hitboxScale = _vec3(1.f, 1.f, 1.f);
-    m_SkillInfo[SKILL_TRIPLE].chargeTime =7.f;
+    m_SkillInfo[SKILL_TRIPLE].hitboxScale = _vec3(0.6f, 0.6f, 0.6f);
+    m_SkillInfo[SKILL_TRIPLE].chargeTime =2.5f;
     return S_OK;
 }
 
@@ -166,7 +174,7 @@ ACTORSTATE      CPlayerSkill::Update_Charging(const float& timeDelta)
 
     m_ChargeTimer+= timeDelta;
 
-   // cout << m_ChargeTimer << endl;
+    cout << m_ChargeTimer << endl;
 
     if (m_ChargeTimer >= m_SkillInfo[SKILL_TRIPLE].chargeTime)
     {
@@ -199,55 +207,59 @@ ACTORSTATE  CPlayerSkill::Start_SingleSkill()
     //Reset_AttackData();
 
     if (!m_IsCharging)
-        return ACTORSTATE::IDLE;
+        return ACTORSTATE::STATE_END;
 
     if(!m_IsSkillUnlocked)
     return ACTORSTATE::STATE_END;
 
-    //TODO 유림 : 시간 초 확인해서 해당 스킬을 사용할 수 있는 범위 내인지 판단하는 로직 추가
     if (m_ChargeTimer >= m_SkillInfo[SKILL_SINGLE].chargeTime)
     {
-        //cout << "첫번째 스킬 차지 완료" << endl;
         m_SkillTimer = 0;
-        m_IsCharging = false;
+        m_IsCharging = true;
         m_SingleFired = false;
         m_SkillIndex = SKILL_SINGLE;
     }
-   // else
-   // {
-   //     return m_SkillInfo[SKILL_CHARGING].state;
-   // }
-    //return m_SkillInfo[SKILL_SINGLE].state;
-    return m_SkillInfo[SKILL_CHARGING].state;
+  
+    return m_SkillInfo[SKILL_SINGLE].state;
 }
 
 _bool       CPlayerSkill::Update_SingleSkill(const float& timeDelta)
 {
-    
+    if (m_SkillTimer != 0)
+        return false;
+
+    for (auto iter = m_Fireballs.begin(); iter != m_Fireballs.end();)
+    {
+        if ((*iter)->Is_PendingDestroy())
+            iter = m_Fireballs.erase(iter);
+        else
+        {
+            iter++;
+        }
+    }
+
     //if (m_SkillIndex < SKILL_SINGLE || m_SkillIndex>SKILL_MAX)
 	m_SkillTimer += timeDelta;
 	m_ChargeTimer += timeDelta;
 
     const SkillInfo& skillInfo = m_SkillInfo[SKILL_SINGLE];
-    _vec3 Dir = m_OwnerInputCom->Get_MouseDir();
+    _vec3 MouseDir = m_OwnerInputCom->Get_MouseDir();
 
-    Dir.z = 0;
-
-    m_SkillTimer += timeDelta;
-
-    D3DXVec3Normalize(&Dir, &Dir);
+    // MouseDir.z = 0;
+    D3DXVec3Normalize(&MouseDir, &MouseDir);
 
     if(!m_SingleFired)
     {
-     //Create_Projectile(skillInfo,Dir);
+        CFireball* fireball = Create_Fireball(m_SkillInfo[m_SkillIndex], m_GraphicDev,m_Owner, MouseDir);
+		m_Fireballs.push_back(fireball);
+        cout << "single 투사체 발사 완료" << endl;
+        
         m_SingleFired = true;
     }
 
     if(m_SkillTimer >= m_SkillInfo[SKILL_SINGLE].duration)
     {
         return false;
-
-
     }
 
     return true;
@@ -255,47 +267,83 @@ _bool       CPlayerSkill::Update_SingleSkill(const float& timeDelta)
 ACTORSTATE  CPlayerSkill::Start_TripleSkill()
 {
 
-    if (m_IsCharging)
-        return ACTORSTATE::IDLE;
+    if (!m_IsCharging)
+        return ACTORSTATE::STATE_END;
+
+    if (!m_IsSkillUnlocked)
+        return ACTORSTATE::STATE_END;
 
     if (m_ChargeTimer >= m_SkillInfo[SKILL_TRIPLE].chargeTime)
     {
-        //cout << "두번째 스킬 차지 완료" << endl;
+        m_SkillTimer = 0;
+        m_IsCharging = true;
+        m_TripleFired = false;
         m_SkillIndex = SKILL_TRIPLE;
     }
-    else
-    {
-        return m_SkillInfo[SKILL_CHARGING].state;
-    }
-	//if (m_IsCharged)
-	//{
-	//	Reset_AttackData();
-    //
-	//	m_SkillIndex = SKILL_TRIPLE;
-	//	return m_SkillInfo[SKILL_MAX].state;
-	//}
-	//else
-	//	return ACTORSTATE::STATE_END;
+	
     return m_SkillInfo[SKILL_TRIPLE].state;
 }
 _bool       CPlayerSkill::Update_TripleSkill(const _float& timeDelta)
 {
     if (!m_OwnerCombatStatCom || !m_OwnerInputCom) return false;
 
-    //애니메이션 방향 결정
-    _vec3  vMouseDir = m_OwnerInputCom->Get_MouseDir();
+    if (m_SkillTimer != 0)
+        return false;
 
-    if (vMouseDir.x <= 0.f)
-        m_OwnerStateCom->Change_Dir(ACTORDIR::LEFT);
-    else
-        m_OwnerStateCom->Change_Dir(ACTORDIR::RIGHT);
+    for (auto iter = m_Fireballs.begin(); iter != m_Fireballs.end();)
+    {
+        if ((*iter)->Is_PendingDestroy())
+            iter = m_Fireballs.erase(iter);
+        else
+        {
+            iter++;
+        }
+    }
+  
+  _vec3  MouseDir = m_OwnerInputCom->Get_MouseDir();
+
     m_SkillTimer += timeDelta;
     m_ChargeTimer += timeDelta;
     const SkillInfo& skillInfo = m_SkillInfo[SKILL_TRIPLE];
 
-    vMouseDir.z = 0;
+   // MouseDir.z = 0;
 
-    D3DXVec3Normalize(&vMouseDir, &vMouseDir);
+    D3DXVec3Normalize(&MouseDir, &MouseDir);
+
+    if (!m_TripleFired)
+    {
+        cout << "triple 투사체 발사 완료" << endl;
+        CFireball* center = Create_Fireball(m_SkillInfo[m_SkillIndex], m_GraphicDev, m_Owner, MouseDir);
+
+        float baseAngle = atan2f(MouseDir.z, MouseDir.x);
+
+        float offset = D3DXToRadian(15.f);
+		float leftAngle = baseAngle - offset;
+		float RightAngle = baseAngle + offset;
+
+		_vec3 vLeft = { cosf(leftAngle), 0.f, sinf(leftAngle) };
+		_vec3 vRight = { cosf(RightAngle), 0.f, sinf(RightAngle) };
+
+		CFireball* left = Create_Fireball(m_SkillInfo[m_SkillIndex], m_GraphicDev, m_Owner, vLeft);
+
+		CFireball* right = Create_Fireball(m_SkillInfo[m_SkillIndex], m_GraphicDev, m_Owner, vRight);
+
+		m_Fireballs.push_back(center);
+		m_Fireballs.push_back(left);
+		m_Fireballs.push_back(right);
+        
+        m_TripleFired = true;
+    }
+
+	//for(auto fireball : m_Fireballs)
+	//{
+	//	fireball->Update_GameObject(timeDelta);
+	//}
+	//
+    if (m_SkillTimer >= m_SkillInfo[SKILL_TRIPLE].duration)
+    {
+        return false;
+    }
 
   //if (!m_ProjectileFired && m_SkillTimer >= skillInfo.projectileInterval) // 나중에 필요하면 시간 제어 조건도 추가
   //{
@@ -308,10 +356,16 @@ _bool       CPlayerSkill::Update_TripleSkill(const _float& timeDelta)
   //    m_IsCharged = true;
   //                                                                                                                                                                                                                                                                                                                                                                                                                                                           
 //발사했으면 반환
-    return false;
 
     return true;
 }
+
+ACTORSTATE CPlayerSkill::Evaluate_ChargeLevel()
+{
+
+    return ACTORSTATE::STATE_END;
+}
+
 void        CPlayerSkill::Cancel_Attack()
 {
     Reset_AttackData();
@@ -321,42 +375,59 @@ void        CPlayerSkill::Reset_AttackData()
     m_SkillTimer = 0.f;
     m_ChargeTimer = 0.f;
 }
-void        CPlayerSkill::Create_Projectile(const SkillInfo& skillInfo, const _vec3& skillDir)
-{
-    if (!m_OwnerCombatStatCom) return;
 
-    CAttackBuilder(m_GraphicDev, m_Owner)
-        .Box()
-        .Track(m_CurrentAttackObj)
-        .Damage(m_OwnerCombatStatCom->Get_Attack() * skillInfo.damageMultiplier)
+CFireball* CPlayerSkill::Create_Fireball(const SkillInfo& skillInfo, DEVICE graphicDev, CGameObject* instigator,_vec3 skillDir)
+{
+    CFireball* fireball = nullptr;
+
+    CAttackBuilder(graphicDev, instigator)
+        .SetType<CFireball>() // .Box 박스 충돌체 소환하던걸 이제 Fireball, 이게 Sphere를 상속받아서 자체적으로 충돌체가 있어
+        .Track(fireball)  
+        .Damage(dynamic_cast<CCombatStat*>(instigator->Get_Component(ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT))->Get_Attack() * skillInfo.damageMultiplier)
         .Knockback(skillInfo.knockbackPower)
-        .Scale(_vec3())
+        .Scale(skillInfo.hitboxScale)
         .InstigatorPos()
         .Offset(skillDir * skillInfo.spawnOffset)
+        .LifeTime(3.f)
         .DestroyOnHit(true)
+        .CollisionLayer(COLLISION_LAYERTYPE::PLAYERPROJECTILE)
         .Spawn();
 
-    if (m_CurrentAttackObj)
+    if (fireball)
     {
-        CAttackBase* pBox = m_CurrentAttackObj;
-        m_CurrentAttackObj->Set_OnDestroyCallback([this, pBox]()
-            {
-                if (m_CurrentAttackObj == pBox)
-                    m_CurrentAttackObj = nullptr;
-            });
-    }
-}
+        auto projectile = dynamic_cast<CProjectile*>(fireball->Get_Component(ID_STATIC, COMPONENTTYPE::PROJECTILE));
+        if (projectile)
+        {
+            BulletDesc d;
+            d.ProjectileOwner = instigator;
+            d.moveType = PROJ_TYPE::LINEAR;
+            d.Speed = 10.f;
+            d.Direction = skillDir;
+            projectile->SetMoveDesc(d);
+        }
 
+        auto transform = fireball->Get_Transform();
+        if (transform)
+        {
+            //transform->Set_Scale(0.7f, 0.7f, 0.f);
+            transform->Set_Rotation(_vec3{ D3DXToRadian(30.f), 0.f, 0.f });
+        }
+    }
+
+    return fireball;
+}
 
 CPlayerSkill* CPlayerSkill::Create(DEVICE graphicDev)
 {
     auto playerskill = new CPlayerSkill(graphicDev);
+
     if (FAILED(playerskill->Ready_PlayerCombat()))
     {
         Safe_Release(playerskill);
         MSG_BOX("PlayerCombat Create Failed");
         return nullptr;
     }
+
     return playerskill;
 }
 CComponent* CPlayerSkill::Clone()
@@ -369,6 +440,8 @@ void CPlayerSkill::Free()
     m_OwnerStateCom = nullptr;
     m_OwnerCombatStatCom = nullptr;
     m_OwnerInputCom = nullptr;
+
+    //총알은 레이어에 추가해서 CLayer LateUpdate에서 삭제
 
     CComponent::Free();
 }

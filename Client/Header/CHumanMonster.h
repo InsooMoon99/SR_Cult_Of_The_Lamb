@@ -2,6 +2,8 @@
 
 #include "CMonsterBase.h"
 
+class CUI_MonsterHp;
+
 BEGIN(Engine)
 class CTexture;
 class CRigidbody;
@@ -51,9 +53,9 @@ protected:
     void Free() override;
 
 private:
-    Engine::CRigidbody* m_RigidbodyCom;
+    CRigidbody*     m_RigidbodyCom;
+    _bool           m_AttackSpawned;
 
-    _bool   m_AttackSpawned;
-
+    CUI_MonsterHp*  m_HpBar;
 
 };
