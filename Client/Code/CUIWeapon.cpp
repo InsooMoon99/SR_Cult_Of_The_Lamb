@@ -141,9 +141,9 @@ CUIWeapon* CUIWeapon::Create(DEVICE graphicDev)
 
 void CUIWeapon::Free()
 {
-    Safe_Release(m_BufferCom);
-    Safe_Release(m_TextureCom);
-    Safe_Release(m_TransformCom);
+   // Safe_Release(m_BufferCom);
+   // Safe_Release(m_TextureCom);
+   // Safe_Release(m_TransformCom);
 
     CUI::Free();
 }

@@ -207,7 +207,7 @@
     </Filter>
     <Filter Include="03. GameObject\10. Fireball">
       <UniqueIdentifier>{55718334-06ee-43b9-9d37-001e0d9b66dc}</UniqueIdentifier>
-   </Filter>
+    </Filter>
     <Filter Include="97. Component\07. State">
       <UniqueIdentifier>{e34a7dc5-e0ec-4ffb-8b09-7b4b921f27cb}</UniqueIdentifier>
     </Filter>
@@ -225,6 +225,9 @@
     </Filter>
     <Filter Include="03. GameObject\07. Trigger">
       <UniqueIdentifier>{92dd4e5b-96b3-4251-ad22-3e104b9d673a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. UI\01. UI\07. UICharging">
+      <UniqueIdentifier>{e12d587e-6cb4-4929-857d-7de7606a343a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -598,6 +601,12 @@
     <ClInclude Include="IHitFlashEff.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CFireball.h">
+      <Filter>03. GameObject\10. Fireball</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUICharging.h">
+      <Filter>05. UI\01. UI\07. UICharging</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -924,8 +933,6 @@
     <ClCompile Include="..\Code\CPlayerSkill.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CFireball.cpp">
-    </ClCompile>
     <ClCompile Include="..\Code\CStage_Dungeon.cpp">
       <Filter>02. Scene\01. Stage</Filter>
     </ClCompile>
@@ -936,6 +943,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\CHarvestableHerb.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CFireball.cpp">
+      <Filter>03. GameObject\10. Fireball</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUICharging.cpp">
+      <Filter>05. UI\01. UI\07. UICharging</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

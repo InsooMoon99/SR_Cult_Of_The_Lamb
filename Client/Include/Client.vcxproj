@@ -259,6 +259,7 @@
     <ClInclude Include="..\Header\CStateMachine.h" />
     <ClInclude Include="..\Header\CTrailEff.h" />
     <ClInclude Include="..\Header\CTrigger_Dungeon.h" />
+    <ClInclude Include="..\Header\CUICharging.h" />
     <ClInclude Include="..\Header\CUIItemGet.h" />
     <ClInclude Include="..\Header\CUIItemGetManager.h" />
     <ClInclude Include="..\Header\CUITarotCard.h" />
@@ -331,6 +332,7 @@
     <ClCompile Include="..\Code\CEyeball_Start.cpp" />
     <ClCompile Include="..\Code\CEyeball_StartExit.cpp" />
     <ClCompile Include="..\Code\CEyeball_StateMachine.cpp" />
+    <ClCompile Include="..\Code\CFireball.cpp" />
     <ClCompile Include="..\Code\CHarvestableHerb.cpp" />
     <ClCompile Include="..\Code\CHumanMonster.cpp" />
     <ClCompile Include="..\Code\CInventory.cpp" />
@@ -378,6 +380,7 @@
     <ClCompile Include="..\Code\CStateMachine.cpp" />
     <ClCompile Include="..\Code\CTrailEff.cpp" />
     <ClCompile Include="..\Code\CTrigger_Dungeon.cpp" />
+    <ClCompile Include="..\Code\CUICharging.cpp" />
     <ClCompile Include="..\Code\CUIItemGet.cpp" />
     <ClCompile Include="..\Code\CUIItemGetManager.cpp" />
     <ClCompile Include="..\Code\CUITarotCard.cpp" />
