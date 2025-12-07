@@ -373,13 +373,25 @@ void CPlayer::Animation_Setting()
         ANIMSTATE::LOOP);
 
 
-    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_BERRY,
-        L"PlayerBerry",
-        ANIMSTATE::LOOP);
-
+    m_AnimatorCom->Create_Animation(L"PlayerStone",
+        45,
+        0.02f,
+        _vec2(0.6f, 1.f),
+        _vec2(0.f, 0.f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_STONE,
         L"PlayerStone",
+        ANIMSTATE::LOOP);
+
+
+    m_AnimatorCom->Create_Animation(L"PlayerBerry",
+        25,
+        0.02f,
+        _vec2(0.6f, 1.f),
+        _vec2(0.f, 0.f));
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_BERRY,
+        L"PlayerBerry",
         ANIMSTATE::LOOP);
 
 #pragma endregion

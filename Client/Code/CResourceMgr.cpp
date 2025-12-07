@@ -385,8 +385,7 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
 
 #pragma endregion
 
-    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
-        return E_FAIL;
+  
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_SKILL, Engine::CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Player/Bullet/Fireball.png", 1))))
         return E_FAIL;
