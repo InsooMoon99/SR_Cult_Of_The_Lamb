@@ -13,8 +13,10 @@ CUI_MonsterHp::CUI_MonsterHp(DEVICE graphicDev, CGameObject* owner)
     m_OwnerCombatStat(nullptr),
     m_OwnerTransform(nullptr),
     m_HpRatio(1.0f),
+    m_HpDelayRatio(1.0f),
+    m_HpDelaySpeed(1.5f),   
     m_YOffset(3.0f),
-    m_BarSize(100.f, 10.f, 1.f)
+    m_BarSize(0.6f, 0.7f, 1.f)
 {
     Set_Name(L"Monster Hp");
 
@@ -31,9 +33,12 @@ HRESULT CUI_MonsterHp::Ready_GameObject()
     if (FAILED(Add_Component()))
         return E_FAIL;
 
-    m_YOffset = 3.0f;
-    m_BarSize = _vec3(100.f, 10.f, 1.f);
+    m_YOffset = 1.2f;
+    m_BarSize = _vec3(0.6f, 0.7f, 1.f);
     m_HpRatio = 1.f;
+    m_HpDelaySpeed = 1.5f;
+
+    m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(45.f));
 
     return S_OK;
 }
@@ -50,14 +55,14 @@ void CUI_MonsterHp::Initialize_GameObject()
         m_OwnerTransform = dynamic_cast<CTransform*>(
             m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
     }
+
 }
 
 _int CUI_MonsterHp::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
-
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 
     if (!m_Owner)
         return exit;
@@ -81,12 +86,17 @@ _int CUI_MonsterHp::Update_GameObject(const _float& timeDelta)
     if (m_OwnerTransform && m_TransformCom)
     {
         _vec3 ownerPos = m_OwnerTransform->Get_Pos();
-        _vec3 uiPos = ownerPos;
-        uiPos.y += m_YOffset;   
-
-        //m_TransformCom->Set_Pos(uiPos);
-        m_TransformCom->Set_Pos(_vec3(0.f, 300.f, 0.f));
+        ownerPos.y += m_YOffset; 
+        
+        m_TransformCom->Set_Pos(ownerPos);
         m_TransformCom->Set_Scale(m_BarSize);
+    }
+
+    if (m_HpDelayRatio > m_HpRatio)
+    {
+        m_HpDelayRatio -= m_HpDelaySpeed * timeDelta;
+        if (m_HpDelayRatio < m_HpRatio)
+            m_HpDelayRatio = m_HpRatio;
     }
 
     return exit;
@@ -100,44 +110,59 @@ void CUI_MonsterHp::LateUpdate_GameObject(const _float& timeDelta)
 
 void CUI_MonsterHp::Render_GameObject()
 {
-    OutputDebugStringA("MonsterHP Render called!\n");
-
     if (!m_Owner || !m_TextureCom || !m_BufferCom)
-    {
-        OutputDebugStringA("MonsterHP: Component is NULL!\n");
         return;
-    }
 
-    // 1. 배경
+    float ratio = clamp(m_HpRatio, 0.f, 1.f);
+    float delayRatio = clamp(m_HpDelayRatio, 0.f, 1.f);
+
+    const float FULL_HALF_WIDTH = 1.0f;
+    const float FULL_HALF_HEIGHT = 0.15f;
+
+    const _matrix& world = m_TransformCom->Get_World();
+
+    auto ApplyBarScaleOffset = [&](float barRatio)
+        {
+            float hw_full = FULL_HALF_WIDTH;
+            float hh_full = FULL_HALF_HEIGHT;
+
+            float hw = hw_full * barRatio;
+
+            float offsetX = hw_full * (1.f - barRatio);
+
+            m_BufferCom->Set_Scale(hw, hh_full);
+            m_BufferCom->Set_Offset(offsetX, 0.f);
+        };
+
     {
-        m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-        m_TextureCom->Set_Texture(1);  // 배경은 1번 인덱스
+        const float BG_WIDTH_SCALE = 1.08f;
+        const float BG_HEIGHT_SCALE = 0.18f;
+
+        m_BufferCom->Set_Scale(BG_WIDTH_SCALE, BG_HEIGHT_SCALE);
+        m_BufferCom->Set_Offset(0.f, 0.f);
+
+        m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
+        m_TextureCom->Set_Texture(1); // 배경
         m_BufferCom->Render_Buffer();
     }
 
-    // 2. HP 바 (왼쪽 정렬, 오른쪽에서 줄어듦)
-    if (m_HpRatio > 0.f)
+    if (delayRatio > 0.f)
     {
-        _matrix hpMatrix = m_TransformCom->Get_World();
+        ApplyBarScaleOffset(delayRatio);
 
-        // X 스케일 조정
-        hpMatrix._11 *= m_HpRatio;
-
-        // 왼쪽 정렬
-        _float offsetX = m_BarSize.x * (1.f - m_HpRatio) * 0.5f;
-        hpMatrix._41 -= offsetX;
-
-        m_GraphicDev->SetTransform(D3DTS_WORLD, &hpMatrix);
-        m_TextureCom->Set_Texture(0);
+        m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
+        m_TextureCom->Set_Texture(2); // 흰색 딜레이 바
         m_BufferCom->Render_Buffer();
     }
 
-    // 3. 테두리
-    /*{
-        m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-        m_TextureCom->Set_Texture(2);
+    if (ratio > 0.f)
+    {
+        ApplyBarScaleOffset(ratio);
+
+        m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
+        m_TextureCom->Set_Texture(0); 
         m_BufferCom->Render_Buffer();
-    }*/
+    }
 }
 
 HRESULT CUI_MonsterHp::Add_Component()
@@ -163,19 +188,6 @@ HRESULT CUI_MonsterHp::Add_Component()
 void CUI_MonsterHp::Update_Billboard()
 {
 
-}
-
-void CUI_MonsterHp::WorldToScreen(_vec3 worldPos)
-{
-    _matrix view, proj;
-    m_GraphicDev->GetTransform(D3DTS_VIEW, &view);
-    m_GraphicDev->GetTransform(D3DTS_PROJECTION, &proj);
-
-    _matrix viewProj = view * proj;
-
-    // 월드 -> NDC
-    _vec3 ndc;
-    D3DXVec3TransformCoord(&ndc, &worldPos, &viewProj);
 }
 
 CUI_MonsterHp* CUI_MonsterHp::Create(DEVICE graphicDev, CGameObject* owner)
