@@ -6,6 +6,7 @@ class CWorldInteractive;
 namespace Engine
 {
     class CCollider;
+    class CState;
 }
 class CWorldInteractive;
 
@@ -30,6 +31,8 @@ public:
     CWorldInteractive* const GetInteractiveObj() { return m_Target; }
    /* CWorldInteractive::TYPE  GetInteractiveType() { return m_Target->GetInteractiveType(); }*/
 private:
+    CState* m_OwnerStateCom = nullptr;
+
     CWorldInteractive* m_Target = nullptr;
 public:
     static CPlayerGathering* Create(DEVICE graphicDev);

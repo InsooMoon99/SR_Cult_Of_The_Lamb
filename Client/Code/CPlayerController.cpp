@@ -426,7 +426,7 @@ void CPlayerController::Update_State(const _float& timeDelta)
     case ACTORSTATE::PLAYER_STONE:
     {
         //if(m_OwnerGatherCom->GetInteractiveObj()!=nullptr)
-            m_OwnerGatherCom->Update_Component(timeDelta);
+          m_OwnerGatherCom->Update_Component(timeDelta);
         //else
         //    m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
             // 이건 업데이트 안에서 ㄱㄱ

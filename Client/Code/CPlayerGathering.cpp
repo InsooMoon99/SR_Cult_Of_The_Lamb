@@ -2,6 +2,9 @@
 #include "CPlayerGathering.h"
 #include "CCollider.h"
 #include "CWorldInteractive.h"
+#include "CTransform.h"
+#include "CState.h"
+
 
 CPlayerGathering::CPlayerGathering(DEVICE graphicDev) : CComponent(graphicDev)
 {
@@ -23,7 +26,7 @@ HRESULT CPlayerGathering::Ready_PlayerGathering()
 void CPlayerGathering::Initialize_Component()
 {
     CComponent::Initialize_Component();
-
+    m_OwnerStateCom = dynamic_cast<CState*>(m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
 }
 
 _int CPlayerGathering::Update_Component(const _float& timeDelta)
@@ -34,27 +37,26 @@ _int CPlayerGathering::Update_Component(const _float& timeDelta)
     {
     case CWorldInteractive::TYPE::BERRY:
     {
-        //if (!m_OwnerCombatStatCom || !m_OwnerInputCom) return false;
+       //if () return false;
 
-        ////애니메이션 방향 결정
-        //_vec3  vMouseDir = m_OwnerInputCom->Get_MouseDir();
+       //애니메이션 방향 결정
+       _vec3  vTargetDir = m_Target->Get_Transform()->Get_Pos();
 
-        //if (vMouseDir.x <= 0.f)
-        //    m_OwnerStateCom->Change_Dir(ACTORDIR::LEFT);
-        //else
-        //    m_OwnerStateCom->Change_Dir(ACTORDIR::RIGHT);
-        //m_SkillTimer += timeDelta;
-        //m_ChargeTimer += timeDelta;
-        //const SkillInfo& skillInfo = m_SkillInfo[SKILL_TRIPLE];
+       _vec3 dir = vTargetDir - m_Owner->Get_Transform()->Get_Pos();
 
-        //vMouseDir.z = 0;
+       D3DXVec3Normalize(&dir, &dir);
 
-       // D3DXVec3Normalize(&vMouseDir, &vMouseDir);
+       if (dir.x <= 0.f)
+           m_OwnerStateCom->Change_Dir(ACTORDIR::LEFT);
+       else
+           m_OwnerStateCom->Change_Dir(ACTORDIR::RIGHT);
 
 
-        return false;
+       dir.z = 0;
 
-        return true;
+        
+
+        return 0;
     }
         break;
     case CWorldInteractive::TYPE::WOOD:
