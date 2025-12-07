@@ -326,8 +326,8 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"PlayerSkillAttack",
                                     32,
                                     0.02f,
-                                    _vec2(1.f, 1.5f),
-                                    _vec2(0.f, 0.5f));
+                                    _vec2(1.f, 1.2f),
+                                    _vec2(0.f, 0.4f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SKILL_SINGLE,
                              L"PlayerSkillAttack",

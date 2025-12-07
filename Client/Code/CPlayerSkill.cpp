@@ -57,27 +57,27 @@ HRESULT CPlayerSkill::Ready_PlayerCombat()
 {
     //충전
     m_SkillInfo[SKILL_CHARGING].state = ACTORSTATE::PLAYER_SKILL_CHARGING;
-    m_SkillInfo[SKILL_CHARGING].duration = 1.5f;
+    m_SkillInfo[SKILL_CHARGING].duration = 0.5f;
     m_SkillInfo[SKILL_CHARGING].damageMultiplier = 2.f;
     m_SkillInfo[SKILL_CHARGING].knockbackPower = 50.f;
     m_SkillInfo[SKILL_CHARGING].spawnOffset = 1.3f;
     // m_SkillInfo[SKILL_CHARGING].hitboxScale = _vec3(1.f, 1.f, 1.f);
     // 1발
     m_SkillInfo[SKILL_SINGLE].state = ACTORSTATE::PLAYER_SKILL_SINGLE;
-    m_SkillInfo[SKILL_SINGLE].duration = 2.f;
+    m_SkillInfo[SKILL_SINGLE].duration = 0.5f;
     m_SkillInfo[SKILL_SINGLE].damageMultiplier = 2.f;
     m_SkillInfo[SKILL_SINGLE].knockbackPower = 50.f;
     m_SkillInfo[SKILL_SINGLE].spawnOffset = 1.3f;
-    m_SkillInfo[SKILL_SINGLE].hitboxScale = _vec3(0.2f, 0.2f, 0.2f);
-    m_SkillInfo[SKILL_SINGLE].chargeTime = 1.5f;
+    m_SkillInfo[SKILL_SINGLE].hitboxScale = _vec3(0.5f, 0.5f, 0.5f);
+    m_SkillInfo[SKILL_SINGLE].chargeTime = 0.5f;
     // 3발
     m_SkillInfo[SKILL_TRIPLE].state = ACTORSTATE::PLAYER_SKILL_TRIPLE;
-    m_SkillInfo[SKILL_TRIPLE].duration = 2.f;
+    m_SkillInfo[SKILL_TRIPLE].duration = 0.5f;
     m_SkillInfo[SKILL_TRIPLE].damageMultiplier = 2.f;
     m_SkillInfo[SKILL_TRIPLE].knockbackPower = 50.f;
     m_SkillInfo[SKILL_TRIPLE].spawnOffset = 1.3f;
-    m_SkillInfo[SKILL_TRIPLE].hitboxScale = _vec3(0.2f, 0.2f, 0.2f);
-    m_SkillInfo[SKILL_TRIPLE].chargeTime =2.5f;
+    m_SkillInfo[SKILL_TRIPLE].hitboxScale  = _vec3(0.5f, 0.5f, 0.5f);
+    m_SkillInfo[SKILL_TRIPLE].chargeTime =1.5f;
     return S_OK;
 }
 
@@ -225,9 +225,9 @@ ACTORSTATE  CPlayerSkill::Start_SingleSkill()
 
 _bool       CPlayerSkill::Update_SingleSkill(const float& timeDelta)
 {
-    if (m_SkillTimer != 0)
-        return false;
-
+   // if (m_SingleFired)
+   //     return false;
+   //
     for (auto iter = m_Fireballs.begin(); iter != m_Fireballs.end();)
     {
         if ((*iter)->Is_PendingDestroy())
@@ -287,8 +287,8 @@ _bool       CPlayerSkill::Update_TripleSkill(const _float& timeDelta)
 {
     if (!m_OwnerCombatStatCom || !m_OwnerInputCom) return false;
 
-    if (m_SkillTimer != 0)
-        return false;
+   // if (m_TripleFired)
+   //     return false;
 
     for (auto iter = m_Fireballs.begin(); iter != m_Fireballs.end();)
     {
