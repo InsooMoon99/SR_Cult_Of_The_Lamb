@@ -17,6 +17,7 @@
 #include "CItemDB.h"
 #include "CPlayerAttack.h"
 #include "CPlayerController.h"
+#include "CPlayerGathering.h"
 #include "CPlayerInput.h"
 #include "CPlayerMovement.h"
 #include "CPlayerSkill.h"
@@ -38,13 +39,6 @@
 #include "CWeaponEquip.h"
 #include "ItemData.h"
 #include "ItemInstance.h"
-#include "CBossController.h"
-#include "CPlayerSkill.h"
-#include "CProjectile.h"
-#include "CSpriteEff.h"
-#include "CEffectBaseCom.h"
-#include "CEyeballController.h"
-#include "CPlayerGathering.h"
 
 IMPLEMENT_SINGLETON(CResourceMgr)
 

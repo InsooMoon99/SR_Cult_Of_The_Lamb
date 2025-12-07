@@ -92,6 +92,8 @@ enum class OBJTYPE
     BOSS1,
     BOSS2,
     INTERACTIVE,
+    TEMPLE,             // 신전
+    KITCHEN,            // 요리용 화덕
 
     ATTACK_COL,
     PARTICLE,

@@ -333,9 +333,9 @@
     <ClCompile Include="..\Code\CCameraMovement.cpp" />
     <ClCompile Include="..\Code\CBoss_Slave_Test.cpp" />
     <ClCompile Include="..\Code\CCharacterBase.cpp" />
+    <ClCompile Include="..\Code\CConstructionPlacer.cpp" />
     <ClCompile Include="..\Code\CPlayerGathering.cpp" />
     <ClCompile Include="..\Code\CConstructionMgr.cpp" />
-    <ClCompile Include="..\Code\CConstructionPlacer.cpp" />
     <ClCompile Include="..\Code\CDroppedItem.cpp" />
     <ClCompile Include="..\Code\CDropSystem.cpp" />
     <ClCompile Include="..\Code\CEdit.cpp" />

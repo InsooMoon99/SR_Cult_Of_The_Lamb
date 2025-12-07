@@ -1,15 +1,22 @@
 ﻿#include "pch.h"
 #include "CConstructionPlacer.h"
+
+#include "CBuildingBase.h"
 #include "CGameObject.h"
+#include "CManagement.h"
 #include "CPickingHelper.h"
-#include "CTerrain.h"
+#include "CScene.h"
+#include "CTemple.h"
 #include "CTransform.h"
 
 // 임시: 아이템 ID나 프로토타입 키 매핑을 위한 헤더 필요시 추가
 // #include "CItemDB.h" 
 
 CConstructionPlacer::CConstructionPlacer(DEVICE graphicDev)
-    : m_GraphicDev(graphicDev)
+    : m_GraphicDev(graphicDev),
+
+      m_CurPickPos(10.f, 0.f, 10.f),
+      m_PreviewOffsetY(0.f)
 {
     m_GraphicDev->AddRef();
 }
@@ -21,22 +28,28 @@ void CConstructionPlacer::Update_Placer(const _float& fTimeDelta)
 {
     NULL_CHECK(m_PreviewObj);
 
-    _vec3 pickPos;
+    // Picking Logic Test
+    if (Engine::PickPlaneY(m_GraphicDev, g_hWnd, 0.f, m_CurPickPos))
+    {
+        // Check Validation
+        m_CanPlace = Check_ValidPosition(&m_CurPickPos);
 
-    if (!PickPlaneY(m_GraphicDev, g_hWnd, 0.f, pickPos))
-        return;
+        _vec3 pickPos = m_CurPickPos;
 
-    // Check Validation
-    m_CanPlace = Check_ValidPosition(&pickPos);
+        pickPos.y += m_PreviewOffsetY;
 
-    pickPos.y += m_PreviewOffsetY;
+        // Update Preview Object Transform
+        auto previewTransform = dynamic_cast<CTransform*>(
+            m_PreviewObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
 
-    // Update Preview Object Transform
-    auto previewTransform = dynamic_cast<CTransform*>(
-        m_PreviewObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-
-    if (previewTransform)
-        previewTransform->Set_Pos(pickPos);
+        if (previewTransform)
+            previewTransform->Set_Pos(pickPos);
+    }
+    else
+    {
+        // Check Validation
+        m_CanPlace = false;
+    }
 
     m_PreviewObj->Update_GameObject(fTimeDelta);
 }
@@ -108,10 +121,29 @@ void CConstructionPlacer::Set_PreviewObject(BUILDING_TYPE type)
     Safe_Release(m_PreviewObj);
     m_CurBuildingType = type;
 
-    // TODO: iItemIndex에  해당하는 GameObject 생성
-    // 프로토타입 클론 로직 필요. 
-    // 예: m_PreviewObj = Prototype_Mgr->Clone_Proto(L"Proto_Building_House");
-    // 지금은 껍데기만.
+    switch (m_CurBuildingType)
+    {
+    case BUILDING_TYPE::TEMPLE:
+        m_PreviewObj = CTemple::Create(m_GraphicDev);
+        break;
+
+    case BUILDING_TYPE::KITCHEN:
+        // m_PreviewObj = CKitchen::Create(m_GraphicDev);
+        break;
+
+    default: break;
+    }
+
+    if (m_PreviewObj)
+    {
+        dynamic_cast<CBuildingBase*>(m_PreviewObj)->Set_Preview(true);
+        m_PreviewObj->Initialize_GameObject();
+
+        // 초기 위치 설정
+        CTransform* pTransform = dynamic_cast<CTransform*>(m_PreviewObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+        if (pTransform)
+            pTransform->Set_Pos(m_CurPickPos);
+    }
 }
 
 _bool CConstructionPlacer::Try_PlaceObject()
@@ -119,22 +151,57 @@ _bool CConstructionPlacer::Try_PlaceObject()
     if (!m_CanPlace)
         return false;
 
-    // TODO: 실제 오브젝트 생성 요청
-    // Logic:
-    // 1. 현재 vPickPos 가져오기
-    // 2. CStage의 레이어에 실제 오브젝트 Add_Object
-    // 3. 인벤토리에서 아이템 차감 (Manager가 호출자이므로 Manager에서 처리하거나 여기서 콜백)
+    // 실제 오브젝트 생성
+    CGameObject* pNewObj = nullptr;
+
+    switch (m_CurBuildingType)
+    {
+    case BUILDING_TYPE::TEMPLE:
+        pNewObj = CTemple::Create(m_GraphicDev);
+        break;
+    case BUILDING_TYPE::KITCHEN:
+        // pNewObj = CKitchen::Create(m_GraphicDev);
+        break;
+
+    default: break;
+    }
+
+    if (nullptr == pNewObj)
+        return false;
+
+    // 생성 후 Initialize 호출
+    pNewObj->Initialize_GameObject();
+
+    // 위치 설정
+    CTransform* pTransform = dynamic_cast<CTransform*>(pNewObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+    if (pTransform)
+    {
+        _vec3 placePos = m_CurPickPos;
+        placePos.y += m_PreviewOffsetY; // 오프셋 적용
+        pTransform->Set_Pos(placePos);
+    }
+
+    // 씬에 추가
+    CScene* pScene = CManagement::GetInstance()->Get_Scene();
+    if (pScene)
+    {
+        // 건물은 ENVIRONMENT 레이어에 추가 (또는 기획에 따라 변경)
+        pScene->AddObjectOnLayer(LAYERTYPE::ENVIRONMENT, pNewObj, OBJTYPE::TEMPLE);
+    }
+    else
+    {
+        Safe_Release(pNewObj);
+        return false;
+    }
+
+    // TODO: 인벤토리 차감 등 후처리
 
     return true;
 }
 
 _bool CConstructionPlacer::Check_ValidPosition(_vec3* pOutPos)
 {
-    // TODO: 마우스 피킹 구현
-    // 일단 기본값 리턴
-    if (pOutPos)
-        *pOutPos = _vec3(0.f, 0.f, 0.f);
-
+    // TODO: 마우스 피킹 구현, 충돌 검사 등
     return true;
 }
 

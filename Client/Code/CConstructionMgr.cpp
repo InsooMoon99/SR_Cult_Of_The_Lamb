@@ -2,6 +2,7 @@
 #include "CConstructionMgr.h"
 
 #include "CConstructionPlacer.h"
+#include "CDInputMgr.h"
 
 IMPLEMENT_SINGLETON(CConstructionMgr)
 
@@ -41,17 +42,18 @@ void CConstructionMgr::Update_ConstructionMgr(const _float& fTimeDelta)
     {
         m_pPlacer->Update_Placer(fTimeDelta);
 
-        // TODO: 마우스 클릭 체크하여 배치 시도
-        // 예: if (Engine::Get_DIMouseState(DIM_LB) & 0x80)
-        // {
-        //     if (m_pPlacer->Try_PlaceObject()) {
-        //         // 배치 성공 시 후처리 (아이템 차감, 건설 모드 종료 or 유지)
-        //     }
-        // }
+        // 마우스 클릭 체크하여 배치 시도
+        if (CDInputMgr::GetInstance()->KeyDown(DIM_LB))
+        {
+            if (m_pPlacer->Try_PlaceObject()) 
+            {
+                // 배치 성공 시 후처리 (아이템 차감, 건설 모드 종료 or 유지)
+            }
+        }
 
-        // TODO: 취소 키 체크 (ESC or 우클릭)
-        // if (Engine::Get_DIMouseState(DIM_RB) & 0x80)
-        //     End_BuildMode();
+        // 취소 키 체크 (우클릭)
+        if (CDInputMgr::GetInstance()->KeyDown(DIM_RB))
+            End_BuildMode();
     }
 }
 

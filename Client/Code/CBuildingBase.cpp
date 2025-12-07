@@ -3,7 +3,9 @@
 
 #include "CBoxCollider.h"
 #include "CCreateHelper.h"
+#include "CRcTex.h"
 #include "CRenderer.h"
+#include "CTransform.h"
 
 CBuildingBase::CBuildingBase(DEVICE graphicDev)
     : CRenderObject(graphicDev)
@@ -33,7 +35,8 @@ _int CBuildingBase::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CRenderObject::Update_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
+    if (!m_IsPreview)
+        CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 
     return exit;
 }
@@ -45,7 +48,18 @@ void CBuildingBase::LateUpdate_GameObject(const _float& timeDelta)
 
 void CBuildingBase::Render_GameObject()
 {
-    CRenderObject::Render_GameObject();
+    if (m_IsPreview)
+    {
+        if (m_TransformCom)
+            m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
+
+        if (m_BufferCom)
+            m_BufferCom->Render_Buffer();
+    }
+    else
+    {
+        CRenderObject::Render_GameObject();
+    }
 
     if (m_BoxColCom)
         m_BoxColCom->Render();

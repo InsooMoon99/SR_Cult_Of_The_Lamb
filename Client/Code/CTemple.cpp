@@ -68,12 +68,14 @@ void CTemple::Render_GameObject()
 
     m_TextureCom->Set_Texture(1);
 
-    Render_Setting();
+    if (!m_IsPreview)
+        Render_Setting();
 
     if (m_BufferCom)
         m_BufferCom->Render_Buffer();
 
-    Render_Reset();
+    if (!m_IsPreview)
+        Render_Reset();
 }
 
 void CTemple::Render_Editor()

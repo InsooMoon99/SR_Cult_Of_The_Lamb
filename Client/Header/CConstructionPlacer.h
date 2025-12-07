@@ -36,7 +36,7 @@ private:
 
     BUILDING_TYPE m_CurBuildingType = BUILDING_END; // 현재 배치하려는 건물 종류
 
-    _float m_PreviewOffsetY = 0.f;                  // 미리보기 Y 오프셋
-
-    _bool m_CanPlace = false;                       // 현재 위치에 배치 가능한지 여부
+    _vec3  m_CurPickPos;                            // 현재 마우스 피킹 위치 저장
+    _float m_PreviewOffsetY;                        // 미리보기 Y 오프셋
+    _bool  m_CanPlace = false;                      // 현재 위치에 배치 가능한지 여부
 };
