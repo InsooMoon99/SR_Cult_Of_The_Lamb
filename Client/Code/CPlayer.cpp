@@ -20,6 +20,7 @@
 #include "CTransform.h"
 #include "CWeaponEquip.h"
 #include "CPlayerGathering.h"
+#include "CDInputMgr.h"
 
 CPlayer::CPlayer(DEVICE graphicDev)
     : CCharacterBase(graphicDev),
@@ -356,23 +357,30 @@ void CPlayer::Animation_Setting()
         _vec2(0.6f, 1.f),
         _vec2(0.f, 0.f));
 
-    m_StateCom->Set_AnimInfo(ACTORSTATE::,
-        L"PlayerSkillCharging",
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_ACTION,
+        L"PlayerAction",
         ANIMSTATE::LOOP);
 
-    m_AnimatorCom->Create_Animation(L"PlayerStone",
-        32,
+
+    m_AnimatorCom->Create_Animation(L"PlayerWood",
+        39,
         0.02f,
         _vec2(1.f, 1.5f),
         _vec2(0.f, 0.5f));
 
-    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SKILL_SINGLE,
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_WOOD,
         L"PlayerWood",
-        ANIMSTATE::ONCE);
+        ANIMSTATE::LOOP);
 
-    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SKILL_TRIPLE,
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_BERRY,
         L"PlayerBerry",
-        ANIMSTATE::ONCE);
+        ANIMSTATE::LOOP);
+
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_STONE,
+        L"PlayerStone",
+        ANIMSTATE::LOOP);
 
 #pragma endregion
 #pragma end

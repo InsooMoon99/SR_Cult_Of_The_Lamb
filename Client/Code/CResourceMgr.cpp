@@ -361,8 +361,8 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
 
     if (FAILED(playerTex->Add_Texture(L"PlayerSkillCharging", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Spell2/Lamb-cast-spell2-%d.png",17)))
-
-
+#pragma endregion
+#pragma region --- Tex: CRAFT ---
     //crafting
     if (FAILED(playerTex->Add_Texture(L"PlayerAction", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Lamb_action/Lamb_action%d.png", 25)))

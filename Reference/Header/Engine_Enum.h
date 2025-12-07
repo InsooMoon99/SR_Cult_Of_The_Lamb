@@ -222,6 +222,7 @@ enum class ACTORSTATE
     PLAYER_GAUNTLET_COMBO1,     // 건틀릿 일반공격 콤보 1
     PLAYER_GAUNTLET_COMBO2,     // 건틀릿 일반공격 콤보 2
     PLAYER_GAUNTLET_COMBO3,     // 건틀릿 일반공격 콤보 3
+    PLAYER_GAUNTLET_COMBO4,
     PLAYER_GAUNTLET_HEAVY,      // 건틀릿 강공격
     PLAYER_SKILL_CHARGING,
     PLAYER_SKILL_SINGLE,

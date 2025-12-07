@@ -229,7 +229,7 @@ void CPlayerController::CheckStateTransition()
             curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO2 ||
             curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO3 ||
             curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO4)
-        else
+        
         {
             m_OwnerAttackCom->Try_NextCombo();
             return;
