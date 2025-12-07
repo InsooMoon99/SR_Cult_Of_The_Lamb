@@ -4,10 +4,13 @@
 #include "CWorldInteractive.h"
 #include "CTransform.h"
 #include "CState.h"
+#include "CDInputMgr.h"
+#include "CCombatStat.h"
 
 
 CPlayerGathering::CPlayerGathering(DEVICE graphicDev) : CComponent(graphicDev)
 {
+    ZeroMemory(&h, sizeof(h));
 }
 
 CPlayerGathering::CPlayerGathering(const CPlayerGathering& rhs) : CComponent(rhs)
@@ -20,6 +23,7 @@ CPlayerGathering::~CPlayerGathering()
 
 HRESULT CPlayerGathering::Ready_PlayerGathering()
 {
+
     return S_OK;
 }
 
@@ -27,17 +31,25 @@ void CPlayerGathering::Initialize_Component()
 {
     CComponent::Initialize_Component();
     m_OwnerStateCom = dynamic_cast<CState*>(m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
+
+    h.attacker = m_Owner;
+    h.damage = 1;
+    h.dir = { 0,0,0 };
+    h.hitter = nullptr;
+    h.knockback = 0;;
+    h.knockbackTimer = 0;
 }
 
 _int CPlayerGathering::Update_Component(const _float& timeDelta)
 {
     _int exit = CComponent::Update_Component(timeDelta);
 
-   switch(m_Target->GetInteractiveType())
+    if (CDInputMgr::GetInstance()->MouseUp(DIM_LB)/*&& m_Target */ || m_Target->Get_Hovering() == false)
     {
-    case CWorldInteractive::TYPE::BERRY:
-    {
-       //if () return false;
+           m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+           return exit;
+
+    }
 
        //애니메이션 방향 결정
        _vec3  vTargetDir = m_Target->Get_Transform()->Get_Pos();
@@ -51,19 +63,36 @@ _int CPlayerGathering::Update_Component(const _float& timeDelta)
        else
            m_OwnerStateCom->Change_Dir(ACTORDIR::RIGHT);
 
+       /*dir.z = 0;*/
 
-       dir.z = 0;
 
-        
+       m_AttackTimer += timeDelta;
 
-        return 0;
-    }
-        break;
-    case CWorldInteractive::TYPE::WOOD:
-        break;
-    case CWorldInteractive::TYPE::ROCK:
-        break;
-    }
+       if (m_AttackTimer >= 0.5)
+       {
+           // 공격 1 씩 주기
+           CCombatStat* combat = dynamic_cast<CCombatStat*>(m_Target->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
+           h.dir = dir;
+           h.hitter = m_Target;
+
+           combat->Apply_Damage(h);
+
+           m_AttackTimer = 0;
+       }
+
+
+   //switch(m_Target->GetInteractiveType())
+   // {
+   // case CWorldInteractive::TYPE::BERRY:
+   // {
+   //
+   // }
+   //     break;
+   // case CWorldInteractive::TYPE::WOOD:
+   //     break;
+   // case CWorldInteractive::TYPE::ROCK:
+   //     break;
+   // }
 
     return exit;
 }
