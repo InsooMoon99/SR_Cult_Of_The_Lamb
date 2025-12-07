@@ -5,6 +5,7 @@
 class CBossController;
 class CCharacterBase;
 class CMonsterBase;
+class CEyeball;
 
 BEGIN(Engine)
 class CGameObject;
@@ -23,6 +24,10 @@ public:
 
     HRESULT Ready_State() override;
 
+public:
+    // 하강
+    void Trigger_Eyeball_Descend(_int index);
+
 private:
     void Spawn_Eyeball(_int index);
 
@@ -33,10 +38,14 @@ private:
     void Free() override;
 
 private:
-    CMonsterBase*    m_Owner;
+    CMonsterBase*   m_Owner;
     _int            m_Eyeball_SpawnCount;
+    _float          m_Pattern_Cooldown;
 
-    _float           m_Pattern_Cooldown;
+    _int            m_Eyeball_ReachedCount;
 
+    CEyeball*       m_Eyeballs[3] {};
+
+    _bool m_AlreadyTriggered = false;
 };
 

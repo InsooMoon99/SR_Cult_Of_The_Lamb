@@ -1,18 +1,13 @@
 ﻿#include "pch.h"
 #include "CBossBullet.h"
-#include "CAnimator.h"
 #include "CCombatStat.h"
 #include "CCreateHelper.h"
 #include "CRcTex.h"
 #include "CRenderer.h"
 #include "CTexture.h"
 #include "CTransform.h"
-#include "CAttackBox.h"
 #include "CAttackBuilder.h"
-#include "CBossPhase1.h"
 #include "CProjectile.h"
-#include "CBossBulletAttack.h"
-
 
 int CBossBullet::imsdfjlkdsf = 0;
 

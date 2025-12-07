@@ -226,6 +226,12 @@
     <Filter Include="03. GameObject\07. Trigger">
       <UniqueIdentifier>{92dd4e5b-96b3-4251-ad22-3e104b9d673a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\04. Boss\02. Boss2\04. AttackObject">
+      <UniqueIdentifier>{284452da-69b9-4b9f-9bd4-9b5e3f98e399}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. UI\01. UI\07. UI_MonsterHp">
+      <UniqueIdentifier>{64afee0e-3924-4b66-83ff-7eaad8c29212}</UniqueIdentifier>
+    </Filter>
     <Filter Include="03. GameObject\08. Building Object">
       <UniqueIdentifier>{d4a892b8-5b80-4d48-8a32-2cdc3e6bce19}</UniqueIdentifier>
     </Filter>
@@ -531,7 +537,7 @@
     <ClInclude Include="..\Header\CEyeball.h">
       <Filter>03. GameObject\04. Boss\02. Boss2\01. Eyeball</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CBoss2_Roar.h">
+    <ClInclude Include="..\Header\CBoss2_ChainAttack.h">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CBoss2_Start.h">
@@ -561,7 +567,7 @@
     <ClInclude Include="..\Header\CEyeball_Start.h">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CEyeball_Ground.h">
+    <ClInclude Include="..\Header\CEyeball_StartGround.h">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CEyeball_Enter.h">
@@ -612,6 +618,24 @@
     </ClInclude>
     <ClInclude Include="IHitFlashEff.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEyeball_Idle.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEyeball_Ground_Move.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBoss2_Bullet.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\04. AttackObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBoss2_Chain.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\04. AttackObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBoss2_Die.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUI_MonsterHp.h">
+      <Filter>05. UI\01. UI\07. UI_MonsterHp</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CTemple.h">
       <Filter>03. GameObject\08. Building Object</Filter>
@@ -891,7 +915,7 @@
     <ClCompile Include="..\Code\CEyeball.cpp">
       <Filter>03. GameObject\04. Boss\02. Boss2\01. Eyeball</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CBoss2_Roar.cpp">
+    <ClCompile Include="..\Code\CBoss2_ChainAttack.cpp">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CBoss2_Start.cpp">
@@ -918,7 +942,7 @@
     <ClCompile Include="..\Code\CEyeball_StartExit.cpp">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CEyeball_Ground.cpp">
+    <ClCompile Include="..\Code\CEyeball_StartGround.cpp">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CEyeball_Enter.cpp">
@@ -967,6 +991,24 @@
     </ClCompile>
     <ClCompile Include="..\Code\CHarvestableHerb.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEyeball_Idle.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEyeball_Ground_Move.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoss2_Chain.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\04. AttackObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoss2_Bullet.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\04. AttackObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoss2_Die.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_MonsterHp.cpp">
+      <Filter>05. UI\01. UI\07. UI_MonsterHp</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CTemple.cpp">
       <Filter>03. GameObject\08. Building Object</Filter>

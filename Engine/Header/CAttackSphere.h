@@ -7,7 +7,7 @@ BEGIN(Engine)
 
 class ENGINE_DLL CAttackSphere : public CAttackBase
 {
-private:
+protected:
     explicit CAttackSphere(DEVICE graphicDev);
     explicit CAttackSphere(const CAttackSphere& rhs);
     virtual ~CAttackSphere();
@@ -27,11 +27,13 @@ public:
 protected:
     virtual CCollider* Get_Collider() override { return m_SphereColCom; }
 
-private:
-    HRESULT Add_Component();
+protected:
+    virtual HRESULT Add_Component();
+
+protected:
     void Free() override;
 
-private:
+protected:
     CSphereCollider* m_SphereColCom;
   
 

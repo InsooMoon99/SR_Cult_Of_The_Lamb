@@ -319,6 +319,7 @@ void CTexture::Free()
                      Safe_Release(tex);
                  }
              });
+
     m_AnimTextures.clear();
 }
 

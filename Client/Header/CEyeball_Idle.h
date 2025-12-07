@@ -10,11 +10,11 @@ BEGIN(Engine)
 class CGameObject;
 END
 
-class CEyeball_Ground : public CMonsterState
+class CEyeball_Idle : public CMonsterState
 {
 private:
-    explicit CEyeball_Ground(CMonsterBase* owner);
-    virtual ~CEyeball_Ground();
+    explicit CEyeball_Idle(CMonsterBase* owner);
+    virtual ~CEyeball_Idle();
 
 public:
     void Enter() override;
@@ -24,7 +24,7 @@ public:
     HRESULT Ready_State() override;
 
 public:
-    static CEyeball_Ground* Create(CMonsterBase* owner);
+    static CEyeball_Idle* Create(CMonsterBase* owner);
 
 private:
     void Free() override;
@@ -33,11 +33,11 @@ private:
     CMonsterBase*       m_Owner;
     _float              m_Pattern_Cooldown;
 
-    _vec3               m_StartPos{};
-    _vec3               m_TargetDir{};
-    _vec3               m_TargetPos{};
-
+    _vec3               m_Current_Direction;
+    _vec3               m_Target_Direction;
+    _float              m_Direction_ChangeTimer;
+    _float              m_Direction_Timer;
+    _float              m_MoveSpeed;
     _float              m_LerpSpeed;
-    _float              m_MaxMoveDistance;
 };
 

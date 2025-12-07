@@ -4,8 +4,6 @@
 
 CBossController::CBossController(DEVICE graphicDev)
     : CMonsterController(graphicDev)
-
-
 {
 }
 

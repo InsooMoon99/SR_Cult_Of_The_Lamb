@@ -8,16 +8,14 @@
 #include "CEyeball_StateMachine.h"
 #include "CMonsterController.h"
 
-CEyeball::CEyeball(DEVICE graphicDev)
-    : CMonsterBase(graphicDev), m_EyeballController(nullptr)
+CEyeball::CEyeball(DEVICE graphicDev, CMonsterBase* boss)
+    : CMonsterBase(graphicDev), m_EyeballController(nullptr), m_Boss(boss)
 {
-
 }
 
-CEyeball::CEyeball(const CEyeball& rhs)
-    : CMonsterBase(rhs), m_EyeballController(nullptr)
+CEyeball::CEyeball(const CEyeball& rhs, CMonsterBase* boss)
+    : CMonsterBase(rhs), m_EyeballController(nullptr), m_Boss(rhs.m_Boss)
 {
-
 }
 
 CEyeball::~CEyeball()
@@ -123,6 +121,29 @@ void CEyeball::OnEndOverlap(CCollider* self, CCollider* other)
 
 }
 
+void CEyeball::Set_OnDeathCallback(OnEyeDeadCallback callback)
+{
+    m_OnEyeDeadCallback = callback;
+}
+
+void CEyeball::Trigger_OnDeath()
+{
+    if (m_OnEyeDeadCallback)
+        m_OnEyeDeadCallback();
+}
+
+void CEyeball::Set_OnReachedCallback(OnReachedTargetCallback callback)
+{
+    m_OnReachedTarget_Callback = callback;
+}
+
+void CEyeball::Trigger_OnReachedTarget()
+{
+    if (m_OnReachedTarget_Callback)
+        m_OnReachedTarget_Callback();
+
+}
+
 void CEyeball::Animation_Setting()
 {
     m_AnimatorCom->Create_Animation(L"Eyeball_Start", 59, 0.04f, _vec2(0.8f, 1.f));
@@ -168,7 +189,7 @@ const char* CEyeball::Get_StateName(_int stateNum)
     case EYEBALL_IDLE:              return "EYEBALL_IDLE";
     case EYEBALL_EXIT:              return "EYEBALL_EXIT";
     case EYEBALL_ENTER:             return "EYEBALL_ENTER";
-    case EYEBALL_GROUND:            return "EYEBALL_GROUND";
+    case EYEBALL_START_GROUND:            return "EYEBALL_GROUND";
     case EYEBALL_MOVE:              return "EYEBALL_MOVE";
     case EYEBALL_ATTACK:            return "EYEBALL_ATTACK";
     case EYEBALL_DEAD:              return "EYEBALL_DEAD";
@@ -176,9 +197,9 @@ const char* CEyeball::Get_StateName(_int stateNum)
     return "UNKNOWN";
 }
 
-CEyeball* CEyeball::Create(DEVICE graphicDev)
+CEyeball* CEyeball::Create(DEVICE graphicDev, CMonsterBase* boss)
 {
-    CEyeball* eyeball = new CEyeball(graphicDev);
+    CEyeball* eyeball = new CEyeball(graphicDev, boss);
 
     if (FAILED(eyeball->Ready_GameObject()))
     {

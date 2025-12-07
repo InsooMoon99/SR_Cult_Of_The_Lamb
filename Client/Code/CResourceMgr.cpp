@@ -154,6 +154,25 @@ HRESULT CResourceMgr::Ready_Common(DEVICE graphicDev)
         COMPONENTTYPE::SPRITEEFFECT, CSpriteEff::Create(graphicDev))))
         return E_FAIL;
 
+    ////////////
+    vector<wstring> pathVec2;
+    pathVec2.push_back(L"../Bin/Resource/Texture/BossPhase1/Bullet/Bullet.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/BossPhase1/Bullet/Bullet1.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/BossPhase1/Bullet/FireFly.png");
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_BULLET, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec2))))
+        return E_FAIL;
+
+    //FadeOut Tex
+    vector<wstring> pathVec1;
+    pathVec1.push_back(L"../Bin/Resource/Texture/BossPhase1/ChainAttackGround.png");
+    pathVec1.push_back(L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Sermon_Icon.png");
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_OUT, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec1))))
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -439,23 +458,6 @@ HRESULT CResourceMgr::Ready_BossP1(DEVICE graphicDev)
 
     ///////////////////////////////////////////////////////////////////////
 
-    //FadeOut Tex
-    vector<wstring> pathVec1;
-    pathVec1.push_back(L"../Bin/Resource/Texture/BossPhase1/ChainAttackGround.png");
-    pathVec1.push_back(L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Sermon_Icon.png");
-
-    if (FAILED(protoMgr->Ready_Prototype(
-        COMPONENTTYPE::TEX_OUT, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec1))))
-        return E_FAIL;
-
-    ////////////
-    vector<wstring> pathVec2;
-    pathVec2.push_back(L"../Bin/Resource/Texture/BossPhase1/Bullet/Bullet.png");
-    pathVec2.push_back(L"../Bin/Resource/Texture/BossPhase1/Bullet/Bullet1.png");
-    if (FAILED(protoMgr->Ready_Prototype(
-        COMPONENTTYPE::TEX_BULLET, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec2))))
-        return E_FAIL;
-
     return S_OK;
 }
 
@@ -468,7 +470,7 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
         CBossController::Create(graphicDev))))
         return E_FAIL;
 
-    // Boss Slave
+    // 춘식이
     CTexture* slaveTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(slaveTex, E_FAIL);
 
@@ -487,13 +489,35 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
     if (FAILED(bossPhase2->Add_Texture(L"Boss2_Start", TEX_NORMAL,
         L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Start_Eye/TOWW_Start_Eye%d.png", 68)))
         return E_FAIL;
+
     // Idle
     if (FAILED(bossPhase2->Add_Texture(L"Boss2_Idle", TEX_NORMAL,
         L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Idle/TOWW_Idle%d.png", 68)))
         return E_FAIL;
+
     // Roar
     if (FAILED(bossPhase2->Add_Texture(L"Boss2_Roar", TEX_NORMAL,
         L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Roar/TOWW_Roar%d.png", 69)))
+        return E_FAIL;
+
+    // HandSlam
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_HandSlam", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Handslam/TOWW_Handslam%d.png", 68)))
+        return E_FAIL;
+
+    // Dead
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Dead", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Die/TOWW_Die%d.png", 56)))
+        return E_FAIL;
+
+    // Warning Chain
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Warning", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/ChainAttackGround.png", 1)))
+        return E_FAIL;
+
+    // Chain
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Chain", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/ChainAttack/Summon_Chain%d.png", 34)))
         return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_BOSS2_PHASE2, bossPhase2)))
@@ -514,7 +538,7 @@ HRESULT CResourceMgr::Ready_BossP2_Eyeball(DEVICE graphicDev)
     CTexture* eyeballTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(eyeballTex, E_FAIL);
 
-    // Start
+    // Start, Idle
     if (FAILED(eyeballTex->Add_Texture(L"Eyeball_Start", TEX_NORMAL,
         L"../Bin/Resource/Texture/BossPhase2/Eyeball/Eyeball_Idle/Eyeball_Idle%d.png", 59)))
         return E_FAIL;
@@ -701,6 +725,16 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
             TEX_NORMAL,
             L"../Bin/Resource/Texture/UI/Tarot/ExplainBox/HeartExplain.png",
             1))))
+        return E_FAIL;
+
+    // UI_MonsterHp
+    vector<wstring> monsterHp_Path;
+    monsterHp_Path.emplace_back(L"../Bin/Resource/Texture/UI/HPBar/hpbar2.png");
+    monsterHp_Path.emplace_back(L"../Bin/Resource/Texture/UI/HPBar/hpbarBG.png");
+    monsterHp_Path.emplace_back(L"../Bin/Resource/Texture/UI/HPBar/hpbarWhite.png");
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_UI_MONSTERHP, CTexture::Create(graphicDev, TEX_NORMAL, monsterHp_Path))))
         return E_FAIL;
 
     return S_OK;

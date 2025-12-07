@@ -7,19 +7,21 @@ CProjectile::CProjectile()
 {
 }
 
-CProjectile::CProjectile(DEVICE graphicDev): CComponent(graphicDev),
-m_BulletTransform(nullptr), m_UpdateFlag(false),
-m_ProjectileOwner(nullptr), m_MoveType(PROJ_TYPE::TYPE_END), m_Speed(0.f), m_Direction({0,1,0}),
-m_OrbitCenter({0,0,0}),m_StartAngle(0.f),m_Radius(0.f),m_Target(nullptr),m_TurnSpeed(0.f)
-, isSetDesc(false)
+CProjectile::CProjectile(DEVICE graphicDev)
+    : CComponent(graphicDev),
+    m_BulletTransform(nullptr), m_UpdateFlag(false),
+    m_ProjectileOwner(nullptr), m_MoveType(PROJ_TYPE::TYPE_END), m_Speed(0.f), m_Direction({ 0,1,0 }),
+    m_OrbitCenter({ 0,0,0 }), m_StartAngle(0.f), m_Radius(0.f), m_Target(nullptr), m_TurnSpeed(0.f)
+    , isSetDesc(false)
 {
 }
 
-CProjectile::CProjectile(const CProjectile& rhs): CComponent(rhs),
-m_BulletTransform(rhs.m_BulletTransform), m_UpdateFlag(rhs.m_UpdateFlag),
-m_ProjectileOwner(rhs.m_ProjectileOwner), m_MoveType(rhs.m_MoveType), m_Speed(rhs.m_Speed), m_Direction(rhs.m_Direction),
-m_OrbitCenter(rhs.m_OrbitCenter), m_StartAngle(rhs.m_StartAngle), m_Radius(rhs.m_Radius), m_Target(rhs.m_Target), m_TurnSpeed(rhs.m_TurnSpeed)
-, isSetDesc(rhs.isSetDesc)
+CProjectile::CProjectile(const CProjectile& rhs)
+    : CComponent(rhs),
+    m_BulletTransform(rhs.m_BulletTransform), m_UpdateFlag(rhs.m_UpdateFlag),
+    m_ProjectileOwner(rhs.m_ProjectileOwner), m_MoveType(rhs.m_MoveType), m_Speed(rhs.m_Speed), m_Direction(rhs.m_Direction),
+    m_OrbitCenter(rhs.m_OrbitCenter), m_StartAngle(rhs.m_StartAngle), m_Radius(rhs.m_Radius), m_Target(rhs.m_Target), m_TurnSpeed(rhs.m_TurnSpeed)
+    , isSetDesc(rhs.isSetDesc)
 {
 }
 
@@ -96,5 +98,6 @@ CComponent* CProjectile::Clone()
 void CProjectile::Free()
 {
     Safe_Release(m_ProjectileOwner);
+
     CComponent::Free();
 }
