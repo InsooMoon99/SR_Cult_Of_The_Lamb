@@ -44,7 +44,6 @@ int CUICharging::Update_GameObject(const _float& timeDelta)
     float chargeTime = m_PlayerSkill->Get_ChargeTime();
     float maxChargeTime = m_PlayerSkill->Get_MaxChargeTime();
     m_ChargeRatio = chargeTime / maxChargeTime;
-
 	//m_TransformCom->Set_Scale(m_ChargeRatio*, 0.f, 0.f);
     return exit;
 }

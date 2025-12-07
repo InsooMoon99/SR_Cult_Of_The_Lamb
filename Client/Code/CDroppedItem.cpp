@@ -169,9 +169,9 @@ void CDroppedItem::OnBeginOverlap(CCollider* self, CCollider* other)
             }
 			m_WeaponExplainUI->Set_Active(true);
 
-            ImGuiIO& io = ImGui::GetIO();
-            if (io.WantCaptureKeyboard)
-                return;
+            //ImGuiIO& io = ImGui::GetIO();
+            //if (io.WantCaptureKeyboard)
+            //    return;
            
             if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
             {
