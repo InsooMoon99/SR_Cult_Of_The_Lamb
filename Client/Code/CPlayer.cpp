@@ -318,7 +318,7 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"PlayerSkillCharging",
                                               17,
                                               0.02f,
-                                              _vec2(0.6f, 1.f),
+                                              _vec2(0.6f, 0.8f),
                                               _vec2(0.f, 0.f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SKILL_CHARGING,
