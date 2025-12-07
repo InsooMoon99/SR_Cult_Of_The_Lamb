@@ -8,7 +8,6 @@
 #include "CTexture.h"
 #include "CRenderer.h"
 #include "CAttackBuilder.h"
-#include "CCombatStat.h"
 #include "CWall.h"
 
 
@@ -38,6 +37,10 @@ HRESULT CFireball::Ready_GameObject()
     if (FAILED(Add_Component()))
         return E_FAIL;
 
+    auto collider = dynamic_cast<CSphereCollider*>(Get_Collider());
+
+    if (collider)
+        collider->Set_Radius(0.3f);
 
     return S_OK;
 }
@@ -45,6 +48,7 @@ HRESULT CFireball::Ready_GameObject()
 void CFireball::Initialize_GameObject()
 {
     CAttackSphere::Initialize_GameObject();
+
 
 }
 
