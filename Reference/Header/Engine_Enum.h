@@ -73,6 +73,7 @@ enum class COLLISION_LAYERTYPE
     ATTACK,
     TRIGGER,
     INTERACTIVEOBJ,
+    BUILDING,       // 건물
 
     COL_LAYER_END
 };
@@ -153,6 +154,7 @@ enum class COMPONENTTYPE
     TEX_UI_BUTTON,
     TEX_BOSSPHASE1,
     TEX_BULLET,
+    TEX_TEMPLE,
     TEX_OUT,
     TEX_SKILL,
 
@@ -166,7 +168,6 @@ enum class COMPONENTTYPE
     CIRCLE_COLL,
     BOX_COLL,
     SPHERE_COLL,
-
 
     ////////////////
     //   Boss 2   //
@@ -289,6 +290,15 @@ enum PROJECTION_TYPE
     PROJ_ORTHOGRAPHIC,      // 직교 투영
 
     PROJ_END
+};
+
+// 건축물 종류
+enum BUILDING_TYPE
+{
+    TEMPLE,             // 신전
+    KITCHEN,            // 요리용 화덕
+
+    BUILDING_END
 };
 }
 #endif // Engine_Enum_h__

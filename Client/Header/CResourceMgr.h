@@ -35,6 +35,9 @@ public:
     HRESULT Ready_Particle(DEVICE graphicDev);
 
 public:
+    HRESULT Ready_Building(DEVICE graphicDev);
+
+public:
     HRESULT Ready_BossP1(DEVICE graphicDev);
 
 public:

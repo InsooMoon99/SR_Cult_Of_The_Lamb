@@ -4,6 +4,7 @@
 #include "CCameraController.h"
 #include "CCamSetupBuilder.h"
 #include "CCombatStat.h"
+#include "CConstructionMgr.h"
 #include "CDInputMgr.h"
 #include "CDropSystem.h"
 #include "CHumanMonster.h"
@@ -15,7 +16,6 @@
 #include "CPersistentObjectHelper.h"
 #include "CPlayer.h"
 #include "CSceneMgr.h"
-#include "CSoundMgr.h"
 #include "CTerrain.h"
 #include "CTransform.h"
 #include "CUICircle.h"
@@ -43,6 +43,9 @@ CStage::~CStage()
 
 HRESULT CStage::Ready_Scene()
 {
+    // Construction Manager 초기화
+    CConstructionMgr::GetInstance()->Ready_ConstructionMgr(m_GraphicDev);
+
     if (FAILED(Ready_Environment_Layer(LAYERTYPE::ENVIRONMENT)))
         return E_FAIL;
 
@@ -95,6 +98,8 @@ void CStage::Initialize_Scene()
 
 _int CStage::Update_Scene(const _float& timeDelta)
 {
+    CConstructionMgr::GetInstance()->Update_ConstructionMgr(timeDelta);
+
     _int exit = Engine::CScene::Update_Scene(timeDelta);
 
     if (CDInputMgr::GetInstance()->KeyDown(DIK_F))
@@ -114,6 +119,7 @@ void CStage::LateUpdate_Scene(const _float& timeDelta)
 void CStage::Render_Scene()
 {
     // debug 용
+    CConstructionMgr::GetInstance()->Render_ConstructionMgr();
 }
 
 HRESULT CStage::Ready_Environment_Layer(LAYERTYPE layerType)
