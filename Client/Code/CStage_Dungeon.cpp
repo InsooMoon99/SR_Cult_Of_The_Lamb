@@ -31,7 +31,7 @@ CStage_Dungeon::CStage_Dungeon(DEVICE graphicDev)
     : CScene(graphicDev),
       m_PlayerCombatStatCom(nullptr),
       m_PlayerInventoryCom(nullptr),
-      m_WeaponEquipCom(nullptr), m_UI_Fade(nullptr),
+      m_WeaponEquipCom(nullptr), m_UI_Fade(nullptr), m_NextRoom(Room::DUNGEON_END),
       m_CurrentRoom(Room::DUNGEON_END), m_Player(nullptr), m_PlayerTransform(nullptr)
 {
 }
@@ -70,6 +70,7 @@ void CStage_Dungeon::Initialize_Scene()
     m_RoomData[static_cast<_int>(Room::MONSTER1)] =
     {
         {60.f, 1.f, 10.f},
+        //"../Bin/Resource/Data/Terrain/Terrain_Mon1Test.map",
         "../Bin/Resource/Data/Terrain/Terrain_Mon1Test.map",
         {50.f, 0.f, 0.f}
     };
@@ -117,6 +118,10 @@ void CStage_Dungeon::Initialize_Scene()
 
     // 트리거 생성
     Create_RoomTriggers();
+
+    // Init에서 RoomData 세팅 이후 위치 세팅해줘야 함
+    _vec3 startPos = m_RoomData[static_cast<_int>(Room::START)].spawnPos;
+    m_PlayerTransform->Set_Pos(_vec3(startPos.x, startPos.y, startPos.z));
 }
 
 _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
@@ -129,20 +134,8 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
         return 0;
     }
 
-    if (m_IsFading && m_UI_Fade && m_UI_Fade->IsFadeComplete())
-    {
-        UnLoad_Room(m_CurrentRoom);
-        m_CurrentRoom = m_NextRoom;
-        Load_Room(m_NextRoom);
-
-        if (m_PlayerTransform)
-        {
-            m_PlayerTransform->Set_Pos(m_RoomData[static_cast<_int>(m_NextRoom)].spawnPos);
-        }
-
-        m_UI_Fade->StartFadeIn(0.5f);
-        m_IsFading = false;
-    }
+    // Fade
+    Fade_Check();
 
     _int exit = Engine::CScene::Update_Scene(timeDelta);
 
@@ -165,28 +158,6 @@ void CStage_Dungeon::Render_Scene()
     
 }
 
-void CStage_Dungeon::Spawn_RoomObjects(Room room)
-{
-    switch (room)
-    {
-    case Room::START:
-        Spawn_Weapon();
-        break;
-    case Room::MONSTER1:
-        Spawn_Monster(3);
-        break;
-    case Room::MONSTER2:
-        Spawn_Monster(5);
-        break;
-    case Room::TARO:
-        // 타로 NPC 소환
-        break;
-    case Room::BOSS:
-
-        break;
-    }
-}
-
 void CStage_Dungeon::Spawn_Weapon()
 {
     // 일단 무기 2개만 스폰
@@ -200,22 +171,6 @@ void CStage_Dungeon::Spawn_Weapon()
         ItemInstance inst = { id, -1, 0 };
         CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 15.f, 1.f, 10.f + (i * 3.f) });
     }
-}
-
-void CStage_Dungeon::Spawn_Monster(_int index)
-{
-    // TODO : 몬스터 소환, 그런데 그냥 에디터에서 세팅할 수 있게 해버릴지 ?
-
-}
-
-void CStage_Dungeon::UnLoad_Room(Room room)
-{
-
-}
-
-void CStage_Dungeon::Load_Room(Room room)
-{
-
 }
 
 void CStage_Dungeon::Create_RoomTriggers()
@@ -318,11 +273,12 @@ void CStage_Dungeon::Change_Room(Room room)
 {
     if (m_UI_Fade)
     {
+
+
         m_NextRoom = room;  
         m_IsFading = true;
-        m_UI_Fade->StartFadeOut(3.f); 
+        m_UI_Fade->StartFadeOut(3.5f);
     }
-
 }
 
 HRESULT CStage_Dungeon::Ready_Environment_Layer(LAYERTYPE layerType)
@@ -432,6 +388,13 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
 
     auto camController = dynamic_cast<CCameraController*>(
         gameObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAM_CONTROLLER));
+
+    m_CamMovement = dynamic_cast<CCameraMovement*>(
+        gameObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAM_MOVEMENT));
+
+    // 기존 줌 세팅 저장
+    if (m_CamMovement)
+        m_PrevZoomSpeed = m_CamMovement->Get_ZoomSpeed();
 
     // 카메라 설정값 초기화
     if (camController != nullptr)
@@ -573,5 +536,27 @@ CStage_Dungeon* CStage_Dungeon::Create(DEVICE graphicDev)
 
 void CStage_Dungeon::Free()
 {
+    m_CamMovement   = nullptr;
+    m_UI_Fade       = nullptr;
+
     Engine::CScene::Free();
+}
+
+void CStage_Dungeon::Fade_Check()
+{
+    if (m_IsFading && m_UI_Fade && m_UI_Fade->IsFadeComplete())
+    {
+        m_CurrentRoom = m_NextRoom;
+
+        if (m_PlayerTransform)
+        {
+            m_PlayerTransform->Set_Pos(m_RoomData[static_cast<_int>(m_NextRoom)].spawnPos);
+        }
+
+        m_UI_Fade->StartFadeIn(0.5f);
+        m_IsFading = false;
+
+        if (m_CamMovement)  
+            m_CamMovement->Set_ZoomSpeed(m_PrevZoomSpeed);
+    }
 }

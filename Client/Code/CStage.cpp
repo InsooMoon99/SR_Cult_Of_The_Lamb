@@ -30,6 +30,7 @@
 #include "ItemInstance.h"
 #include "CHarvestableHerb.h"
 #include "CPlayerSkill.h"
+#include "CTrigger_Dungeon.h"
 
 
 CStage::CStage(DEVICE graphicDev)
@@ -96,6 +97,9 @@ void CStage::Initialize_Scene()
 
     // 초기 맵 불러오기 <- 이거 꼭 Initialize에서 진행해야 맵 오브젝트가 잘 불러진다.
     m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Village.map");
+
+    // 던전 이동 트리거 만들기
+    Create_Trigger();
 }
 
 _int CStage::Update_Scene(const _float& timeDelta)
@@ -386,6 +390,30 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
 HRESULT CStage::Ready_Prototype()
 {
     return S_OK;
+}
+
+void CStage::Create_Trigger()
+{
+    auto gameLayer = m_Layers[LAYERTYPE::GAMELOGIC];
+    NULL_CHECK(gameLayer);
+
+    auto trigger = CTrigger_Dungeon::Create(m_GraphicDev);
+
+    // Terrain 위치에 맞춰서 스폰
+    _vec3 triggerPos = m_Terrain->Get_Transform()->Get_Pos();
+    _vec3 offset = _vec3(18.f, 0.f, 46.f);
+
+    // 트리거 위치, 크기 세팅
+    trigger->Set_Bounds(triggerPos + offset, _vec3(10.f, 5.f, 5.f));
+    trigger->Set_TriggerOnce(true);
+
+    trigger->Set_Callback([this]
+        {
+            CSceneMgr::GetInstance()->Change_SceneMgr_WithFade(
+                SCENETYPE::SC_DUNGEON, 2.0f);
+        });
+
+    gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
 }
 
 CStage* CStage::Create(DEVICE graphicDev)

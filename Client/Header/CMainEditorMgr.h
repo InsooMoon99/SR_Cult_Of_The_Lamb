@@ -7,6 +7,7 @@ class CMapObjectBase;
 class CMapObjectGrass;
 class CTerrainRenderer;
 class CWallRenderer;
+class CTerrain;
 
 BEGIN(Engine)
 class CEditContext;
@@ -21,6 +22,7 @@ class CMainEditorMgr : public CBase
         TERRAIN,
         MAP_OBJECT,
         WALL,
+        MONSTER_SPAWNER,
 
         MAPTOOL_END
     };
@@ -65,6 +67,7 @@ private:
 
     CTerrainRenderer* Find_TerrainRenderer();
     CWallRenderer*    Find_WallRenderer();
+    CTerrain*         Find_Terrain();
 
 protected:
     virtual void Free() override;
@@ -74,8 +77,8 @@ private:
     CEditContext*      m_Context    = nullptr;
     CCameraController* m_MainCameraController = nullptr;
 
-    _bool m_IsPlaying = true;
-    _bool m_ShowImGui = true;
+    _bool              m_IsPlaying = true;
+    _bool              m_ShowImGui = true;
 
     MAPTOOL_VIEW m_MapToolView = MAPTOOL_VIEW::TERRAIN;
 

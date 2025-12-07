@@ -44,6 +44,7 @@
 #include "CSpriteEff.h"
 #include "CEffectBaseCom.h"
 #include "CEyeballController.h"
+#include "CMonsterSpawner.h"
 #include "CPlayerGathering.h"
 
 IMPLEMENT_SINGLETON(CResourceMgr)
@@ -826,6 +827,11 @@ HRESULT CResourceMgr::Ready_Terrain(DEVICE graphicDev)
     // WallRenderer
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::WALL_RENDERER, CWallRenderer::Create(graphicDev))))
+        return E_FAIL;
+
+    // Monster Spawner
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::MONSTER_SPAWNER,
+        CMonsterSpawner::Create(graphicDev))))
         return E_FAIL;
 
     // Terrain_284

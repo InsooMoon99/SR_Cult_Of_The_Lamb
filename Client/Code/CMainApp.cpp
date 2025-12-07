@@ -71,6 +71,7 @@ int CMainApp::Update_MainApp(const float& timeDelta)
 
     CCollisionManager::GetInstance()->Update();
     CSoundMgr::GetInstance()->Update(timeDelta);
+    CSceneMgr::GetInstance()->Update_SceneMgr(timeDelta);
 
     // Imgui
     {
@@ -94,6 +95,7 @@ void CMainApp::Render_MainApp()
     m_ManagementClass->Render_Scene(m_GraphicDev);
 
     CMainEditorMgr::GetInstance()->Render_MainEditor();
+    CSceneMgr::GetInstance()->Render_SceneMgr();
 
     // ImGui
     {

@@ -32,6 +32,10 @@ private:
 
     HRESULT Ready_Prototype();
 
+private:
+    // 마을 -> 던전 씬 전환용 트리거
+    void Create_Trigger();
+
 public:
     static CStage* Create(DEVICE graphicDev);
 

@@ -53,10 +53,7 @@ _int CUI_Fade::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
 
-    if (m_Alpha > 0.001f)
-    {
-        CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
-    }
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
     if (!m_IsActive) // 진행중이면 ㄴㄴ
         return exit;
@@ -95,9 +92,6 @@ void CUI_Fade::LateUpdate_GameObject(const _float& timeDelta)
 void CUI_Fade::Render_GameObject()
 {
     CUI::Render_GameObject();
-
-    if (m_Alpha <= 0.001f)
-        return;
 
     m_TransformCom->Set_Pos(0.f, 0.f, 0.f);
     m_TransformCom->Set_Scale(WINCX, WINCY, 1.f);

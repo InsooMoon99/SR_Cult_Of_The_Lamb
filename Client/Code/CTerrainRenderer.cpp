@@ -1,23 +1,16 @@
 ﻿#include "pch.h"
 #include "CTerrainRenderer.h"
-
-#include <CLayer.h>
-
-#include "CManagement.h"
+#include "CLayer.h"
+#include "CMonsterSpawner.h"
 #include "CTransform.h"
 #include "CTexture.h"
 #include "CDInputMgr.h"
 #include "CGameObject.h"
-#include "CMapObjectBase.h"
 #include "CMapObjectMgr.h"
-#include "CMapObject_Deco.h"
-#include "CMapObject_Grass.h"
-#include "CMapObject_Rubble.h"
 #include "CTerrainTex.h"
 #include "CPickingHelper.h"
 #include "CTerrain.h"
 #include "CWallRenderer.h"
-#include "../../Engine/Header/CScene.h"
 
 CTerrainRenderer::CTerrainRenderer(DEVICE graphicDev)
     : CComponent(graphicDev),
@@ -529,6 +522,7 @@ HRESULT CTerrainRenderer::SaveMap(const char* filePath)
         CTerrain* owner = dynamic_cast<CTerrain*>(m_TransformCom->Get_Owner());
         if (owner)
         {
+            // 벽 위치 저장
             CWallRenderer* wallRenderer = owner->Get_WallRenderer();
             if (wallRenderer)
             {
@@ -540,6 +534,22 @@ HRESULT CTerrainRenderer::SaveMap(const char* filePath)
     if (version >= 8)
     {
         CMapObjectMgr::GetInstance()->Save_ToStream(ofs);
+
+        // 몬스터 위치 저장
+        if (m_TransformCom && m_TransformCom->Get_Owner())
+        {
+            CTerrain* owner = dynamic_cast<CTerrain*>(m_TransformCom->Get_Owner());
+            if (owner)
+            {
+                CMonsterSpawner* monsterSpawner = dynamic_cast<CMonsterSpawner*>(
+                    owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::MONSTER_SPAWNER));
+
+                if (monsterSpawner)
+                {
+                    monsterSpawner->Save_Monsters(ofs);
+                }
+            }
+        }
     }
 
     ofs.close();
@@ -605,6 +615,7 @@ HRESULT CTerrainRenderer::LoadMap(const char* filePath)
             CTerrain* owner = dynamic_cast<CTerrain*>(m_TransformCom->Get_Owner());
             if (owner)
             {
+                // 벽 소환
                 CWallRenderer* wallRenderer = owner->Get_WallRenderer();
                 if (wallRenderer)
                 {
@@ -612,6 +623,7 @@ HRESULT CTerrainRenderer::LoadMap(const char* filePath)
 
                     wallRenderer->Load_Walls(ifs);
                 }
+
             }
         }
     }
@@ -624,6 +636,22 @@ HRESULT CTerrainRenderer::LoadMap(const char* filePath)
             terrainPos = m_TransformCom->Get_Pos();
 
         CMapObjectMgr::GetInstance()->Load_FromStream(ifs, terrainPos);
+
+        // 몬스터 소환
+        if (m_TransformCom && m_TransformCom->Get_Owner())
+        {
+            CTerrain* owner = dynamic_cast<CTerrain*>(m_TransformCom->Get_Owner());
+            if (owner)
+            {
+                CMonsterSpawner* monsterSpawner = dynamic_cast<CMonsterSpawner*>(
+                    owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::MONSTER_SPAWNER));
+
+                if (monsterSpawner)
+                {
+                    monsterSpawner->Load_Monsters(ifs);
+                }
+            }
+        }
     }
 
 
@@ -637,7 +665,7 @@ _vec3 CTerrainRenderer::GetCellCenterWorld(_uint cellX, _uint cellZ) const
 
     _vec3 localPos(
         cellX * vtxItv + vtxItv * 0.5f,
-        0.f,
+        1.f,
         cellZ * vtxItv + vtxItv * 0.5f);
 
     if (m_TransformCom)
@@ -744,8 +772,6 @@ void CTerrainRenderer::Resize_Terrain(_int sizeX, _int sizeZ, _float cellSize)
     m_TileIndices284.assign(cellCount, 0);     
     m_TileIndices1024.assign(cellCount, -1);   
     m_TileIndicesOutline.assign(cellCount, -1);
-
-
 }
 
 CTerrainRenderer* CTerrainRenderer::Create(DEVICE graphicDev)

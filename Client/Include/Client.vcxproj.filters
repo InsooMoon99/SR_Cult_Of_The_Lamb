@@ -624,7 +624,7 @@
     </ClInclude>
     <ClInclude Include="..\Header\CPlayerGathering.h">
       <Filter>헤더 파일</Filter>
-   </ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Header\CEyeball_Idle.h">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
     </ClInclude>
@@ -668,7 +668,7 @@
       <Filter>03. GameObject\02. Monster</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CMonsterSpawner.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>03. GameObject\09. MapObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1053,7 +1053,7 @@
       <Filter>03. GameObject\02. Monster</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CMonsterSpawner.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>03. GameObject\09. MapObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
