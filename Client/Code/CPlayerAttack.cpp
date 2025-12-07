@@ -530,7 +530,6 @@ void CPlayerAttack::Create_AttackObj(const AttackInfo& attackInfo, const _vec3& 
         // 공격자로부터 얼마나 떨어져 있는지 설정
         .Offset(vAttackDir * attackInfo.spawnOffset)
         // 콜라이더 충돌 시 바로 파괴되어야 하는지 설정
-        // 투사체 공격의 경우 이를 true로 사용하는 게 좋을수도
         .DestroyOnHit(false)
         // 파티클 설정
         .Particle(attackInfo.particle.key, attackInfo.particle.frames, attackInfo.particle.interval,

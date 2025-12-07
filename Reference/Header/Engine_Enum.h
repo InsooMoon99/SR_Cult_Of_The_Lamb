@@ -154,8 +154,7 @@ enum class COMPONENTTYPE
     TEX_UI_BUTTON,
     TEX_BOSSPHASE1,
     TEX_BULLET,
-    TEX_TEMPLE_FRONT,       // 신전 앞면
-    TEX_TEMPLE_ROOF,        // 신전 지붕
+    TEX_TEMPLE,
     TEX_OUT,
 
     ANIMATOR,

@@ -59,6 +59,7 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
     if (FAILED(Ready_Common(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Terrain(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Decoration(graphicDev))) return E_FAIL;
+    if (FAILED(Ready_Building(graphicDev))) return E_FAIL;
 
     return S_OK;
 }
@@ -808,6 +809,22 @@ HRESULT CResourceMgr::Ready_Particle(DEVICE graphicDev)
     // 추가 예정
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PARTICLE, particleTex)))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CResourceMgr::Ready_Building(DEVICE graphicDev)
+{
+    auto protoMgr = CProtoMgr::GetInstance();
+
+    vector<wstring> templeTextures;
+    templeTextures.emplace_back(L"../Bin/Resource/Texture/Building/Temple_Front.png");
+    templeTextures.emplace_back(L"../Bin/Resource/Texture/Building/Temple_Roof.png");
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_TEMPLE,
+        CTexture::Create(graphicDev, TEX_NORMAL, templeTextures))))
         return E_FAIL;
 
     return S_OK;

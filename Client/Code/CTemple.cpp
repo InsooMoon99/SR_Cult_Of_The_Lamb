@@ -50,30 +50,29 @@ void CTemple::Render_GameObject()
 {
     //TODO 출력 테스트 필요: 오프셋에 따라 두 텍스처가 다른 위치에 출력되고 있는지 검증해야 한다
 
-    // [1] Body Rendering
-    if (m_TextureCom)
-    {
-        m_TextureCom->Set_Texture(0);
-    }
+    NULL_CHECK(m_TextureCom);
+
+    // 앞면 텍스처 렌더링
+    m_TextureCom->Set_Texture(0);
+
     CBuildingBase::Render_GameObject();
 
-    // [2] Roof Rendering
+    // 다른 위치에 지붕 텍스처 렌더링
     _matrix matWorld = m_TransformCom->Get_World();
     _matrix matOffset;
-    D3DXMatrixTranslation(&matOffset, 0.f, 2.0f, 0.f); 
-    
+    D3DXMatrixTranslation(&matOffset, 0.f, 2.0f, 0.f);
+
     matWorld = matOffset * matWorld;
-    
+
     m_GraphicDev->SetTransform(D3DTS_WORLD, &matWorld);
 
-    if (m_TextureCom2)
-        m_TextureCom2->Set_Texture(0);
+    m_TextureCom->Set_Texture(1);
 
-    Render_Setting(); 
-    
+    Render_Setting();
+
     if (m_BufferCom)
         m_BufferCom->Render_Buffer();
-        
+
     Render_Reset();
 }
 
@@ -104,15 +103,10 @@ HRESULT CTemple::Add_Component()
     if (FAILED(CBuildingBase::Add_Component()))
         return E_FAIL;
 
-    // Texture : Temple_Front
-    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_TEMPLE_FRONT);
+    // Texture
+    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_TEMPLE);
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_TEMPLE_FRONT, m_TextureCom });
-
-    // Texture : Temple_Roof
-    m_TextureCom2 = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_TEMPLE_ROOF);
-    NULL_CHECK_RETURN(m_TextureCom2, E_FAIL);
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_TEMPLE_ROOF, m_TextureCom2 });
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_TEMPLE, m_TextureCom });
 
     return S_OK;
 }

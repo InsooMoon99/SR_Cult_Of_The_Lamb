@@ -1,6 +1,10 @@
 ﻿#pragma once
 #include "CBuildingBase.h"
 
+// 신전 건물 오브젝트
+
+/// @brief 신전 건물 오브젝트
+/// @details 텍스처 0번은 신전 앞면, 1번은 신전 지붕
 class CTemple : public CBuildingBase
 {
 private:
@@ -31,7 +35,4 @@ public:
 
 private:
     void Free() override;
-
-private:
-    CTexture* m_TextureCom2 = nullptr;  // 신전 지붕용 텍스처
 };
