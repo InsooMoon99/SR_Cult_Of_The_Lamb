@@ -1,6 +1,7 @@
 ﻿#include"pch.h"
 #include"CDroppedItem.h"
 
+#include <CLayer.h>
 #include "CBoxCollider.h"
 #include "CComponent.h"
 #include "CCreateHelper.h"
@@ -16,6 +17,10 @@
 #include "CWeaponEquip.h"
 #include "ItemData.h"
 #include "CSpriteEff.h"
+#include "CUIWeaponExplain.h"
+#include "CDInputMgr.h"
+
+CUIWeaponExplain* CDroppedItem::m_WeaponExplainUI = nullptr;
 
 CDroppedItem::CDroppedItem(DEVICE graphicDev, ItemInstance itemInst)
     : CGameObject(graphicDev),
@@ -24,6 +29,7 @@ CDroppedItem::CDroppedItem(DEVICE graphicDev, ItemInstance itemInst)
       m_TextureCom(nullptr),
       m_BoxColCom(nullptr),
       m_itemInst(itemInst)
+
 { }
 
 CDroppedItem::CDroppedItem(const CDroppedItem& rhs)
@@ -33,6 +39,7 @@ CDroppedItem::CDroppedItem(const CDroppedItem& rhs)
       m_TextureCom(rhs.m_TextureCom),
       m_BoxColCom(rhs.m_BoxColCom),
       m_itemInst(rhs.m_itemInst)
+  
 { }
 
 CDroppedItem::~CDroppedItem()
@@ -55,6 +62,7 @@ HRESULT CDroppedItem::Ready_GameObject(_vec3 pos)
     m_TransformCom->Set_Scale({ 0.4f, 0.4f, 0.4f });
     m_BoxColCom->Set_Size(_vec3(2.f, 2.f, 2.f));
     m_Active = false;
+
     return S_OK;
 }
 
@@ -66,7 +74,13 @@ void CDroppedItem::Initialize_GameObject()
     {
         m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::ITEM);
     }
-    
+
+    if (!m_WeaponExplainUI)
+    {
+        m_WeaponExplainUI = CUIWeaponExplain::Create(m_GraphicDev);
+        m_WeaponExplainUI->Initialize_GameObject();
+        CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::UI)->Add_GameObject(OBJTYPE::UI, m_WeaponExplainUI);
+    }
 }
 
 _int CDroppedItem::Update_GameObject(const _float& timeDelta)
@@ -137,23 +151,37 @@ void CDroppedItem::OnBeginOverlap(CCollider* self, CCollider* other)
    
         if (CItemDB::GetInstance()->GetItemById(m_itemInst.itemId)->type == ItemType::Weapon)
         {
-            dynamic_cast<CWeaponEquip*>(ply->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::WEAPON_EQUIP))->Equip_Weapon(m_itemInst);
             //*** 아이템 지우기 ***
 
             //1. 무기 정보 UI 띄우기
             switch(m_itemInst.itemId)
             {
-            case 3001:
-                    
-                break;
+            	case 3001:
+            	{
+            	    m_WeaponExplainUI->Set_ItemID(3001);
+            	    break;
+            	}
+            	case 3002:
+            	{
+					m_WeaponExplainUI->Set_ItemID(3002);
+            	    break;
+            	}
+            }
+			m_WeaponExplainUI->Set_Active(true);
 
-            case 3002:
-                break;
+            ImGuiIO& io = ImGui::GetIO();
+            if (io.WantCaptureKeyboard)
+                return;
+           
+            if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
+            {
+                dynamic_cast<CWeaponEquip*>(ply->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::WEAPON_EQUIP))->Equip_Weapon(m_itemInst);
+                Mark_As_PendingKill();
+                m_WeaponExplainUI->Set_Active(false);
             }
             //2. 상호작용 키 UI 띄우기
 
 
-            Mark_As_PendingKill();
         }
         else
         {
@@ -172,6 +200,8 @@ void CDroppedItem::OnBeginOverlap(CCollider* self, CCollider* other)
 void CDroppedItem::OnEndOverlap(CCollider* self, CCollider* other)
 {
     CGameObject::OnEndOverlap(self, other);
+	m_WeaponExplainUI->Set_Active(false);
+
 }
 
 HRESULT CDroppedItem::Add_Component()

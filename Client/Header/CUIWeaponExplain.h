@@ -16,10 +16,13 @@ public:
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
     HRESULT Add_Component();
+    void    Set_ItemID(int ID) { m_ItemID = ID; }
+    void   Set_Active(_bool tf) { m_Active = tf; }
+    static CUIWeaponExplain* Create(DEVICE graphicDev);
 protected:
     void Free() override;
 private:
-    CUIIcon* m_WeaponCardUI;
+    int m_ItemID;
 };
 
 

@@ -624,7 +624,7 @@
     </ClInclude>
     <ClInclude Include="..\Header\CPlayerGathering.h">
       <Filter>헤더 파일</Filter>
-   </ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Header\CEyeball_Idle.h">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
     </ClInclude>
@@ -661,7 +661,7 @@
     <ClInclude Include="..\Header\CUICharging.h">
       <Filter>05. UI\01. UI\08. UICharging</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CUIWeaponExplainMgr.h">
+    <ClInclude Include="..\Header\CUIWeaponExplain.h">
       <Filter>05. UI\01. UI\09. UIWeaponExplain</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1040,7 +1040,7 @@
     <ClCompile Include="..\Code\CUICharging.cpp">
       <Filter>05. UI\01. UI\08. UICharging</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CUIWeaponExplainMgr.cpp">
+    <ClCompile Include="..\Code\CUIWeaponExplain.cpp">
       <Filter>05. UI\01. UI\09. UIWeaponExplain</Filter>
     </ClCompile>
   </ItemGroup>

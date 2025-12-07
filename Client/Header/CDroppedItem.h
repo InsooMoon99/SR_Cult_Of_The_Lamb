@@ -3,6 +3,7 @@
 #include "ItemInstance.h"
 #include "Client_Struct.h"
 
+class CUIWeaponExplain;
 BEGIN(Engine)
 class CTransform;
 class CBoxCollider;
@@ -38,6 +39,7 @@ private:
     Engine::CTransform*   m_TransformCom;
     Engine::CTexture*     m_TextureCom;
     Engine::CBoxCollider* m_BoxColCom;
+    static CUIWeaponExplain* m_WeaponExplainUI;
 
     CSpriteEff* m_SpriteEff;
 
