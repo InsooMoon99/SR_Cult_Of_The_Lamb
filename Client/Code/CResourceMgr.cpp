@@ -38,6 +38,13 @@
 #include "CWeaponEquip.h"
 #include "ItemData.h"
 #include "ItemInstance.h"
+#include "CBossController.h"
+#include "CPlayerSkill.h"
+#include "CProjectile.h"
+#include "CSpriteEff.h"
+#include "CEffectBaseCom.h"
+#include "CEyeballController.h"
+#include "CPlayerGathering.h"
 
 IMPLEMENT_SINGLETON(CResourceMgr)
 
@@ -243,6 +250,12 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         COMPONENTTYPE::WEAPON_EQUIP, CWeaponEquip::Create(graphicDev))))
         return E_FAIL;
 
+    // Gathering
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::GATHERING, CPlayerGathering::Create(graphicDev))))
+        return E_FAIL;
+
+
     // skill
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::PL_SKILL, CPlayerSkill::Create(graphicDev))))
@@ -348,12 +361,31 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
 
     if (FAILED(playerTex->Add_Texture(L"PlayerSkillCharging", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Spell2/Lamb-cast-spell2-%d.png",17)))
+#pragma endregion
+#pragma region --- Tex: CRAFT ---
+    //crafting
+    if (FAILED(playerTex->Add_Texture(L"PlayerAction", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Lamb_action/Lamb_action%d.png", 25)))
         return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"PlayerStone", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Lamb_actions_chop_stone/Lamb_actions_chop_stone%d.png", 45)))
+        return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"PlayerWood", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Lamb_actions_chop_wood/Lamb_actions_chop_wood%d.png", 39)))
+        return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"PlayerBerry", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Lamb_actions_collect_berries/Lamb_actions_collect_berries%d.png", 25)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
+    return E_FAIL;
 
 #pragma endregion
 
-    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
-        return E_FAIL;
+  
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_SKILL, Engine::CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Player/Bullet/Fireball.png", 1))))
         return E_FAIL;
@@ -810,7 +842,7 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     // Rubble
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_RUBBLE, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/MapObject/Rubble/Rubble%d.png", 46))))
+            L"../Bin/Resource/Texture/MapObject/Rubble/Rubble%d.png", 50))))
         return E_FAIL;
 
     // Deco
@@ -829,6 +861,22 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_ETC, CTexture::Create(graphicDev, TEX_NORMAL,
             L"../Bin/Resource/Texture/MapObject/ETC/ETC%d.png", 40))))
+        return E_FAIL;
+
+
+
+    // 라즈베리 풀
+    vector<wstring> pathVec2;
+    pathVec2.push_back(L"../Bin/Resource/Texture/InteractiveObj/BerryBush1.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/InteractiveObj/BerryBush1_stump.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/InteractiveObj/BerryBush2.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/InteractiveObj/BerryBush2_stump.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/InteractiveObj/BerryBush3.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/InteractiveObj/BerryBush3_stump.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/InteractiveObj/BerryBushCombined.png");
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_BERRY, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec2))))
         return E_FAIL;
 
     return S_OK;

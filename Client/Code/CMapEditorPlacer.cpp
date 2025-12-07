@@ -123,8 +123,8 @@ void CMapEditorPlacer::Update_MapPlacer(const _float& timeDelta)
                 _float scaleChange = (wheelDelta > 0 ? 0.1f : -0.1f);
                 m_PreviewScaleX += scaleChange;
                 m_PreviewScaleY += scaleChange;
-                m_PreviewScaleX = max(0.1f, min(10.f, m_PreviewScaleX));
-                m_PreviewScaleY = max(0.1f, min(10.f, m_PreviewScaleY));
+                m_PreviewScaleX = max(0.1f, min(30.f, m_PreviewScaleX));
+                m_PreviewScaleY = max(0.1f, min(30.f, m_PreviewScaleY));
 
                 Update_PreviewScale();
             }

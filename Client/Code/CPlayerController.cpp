@@ -13,17 +13,21 @@
 #include "CRigidbody.h"
 #include "CSoundMgr.h"
 #include "CState.h"
+#include "CPlayerSkill.h"
+#include "CPlayerInput.h"
+#include "CPlayerGathering.h"
+#include "CWorldInteractive.h"
 
 CPlayerController::CPlayerController(DEVICE graphicDev)
     : CComponent(graphicDev),
-      m_OwnerStateCom(nullptr),
-      m_OwnerCombatStatCom(nullptr),
-      m_OwnerRigidbodyCom(nullptr),
-      m_OwnerColliderCom(nullptr),
-      m_OwnerInputCom(nullptr),
-      m_OwnerMovementCom(nullptr),
-      m_OwnerAttackCom(nullptr),
-      m_OwnerSkillCom(nullptr)
+    m_OwnerStateCom(nullptr),
+    m_OwnerCombatStatCom(nullptr),
+    m_OwnerRigidbodyCom(nullptr),
+    m_OwnerColliderCom(nullptr),
+    m_OwnerInputCom(nullptr),
+    m_OwnerMovementCom(nullptr),
+    m_OwnerAttackCom(nullptr),
+    m_OwnerSkillCom(nullptr)
 {
     ZeroMemory(m_Timers, sizeof(m_Timers));
 }
@@ -51,7 +55,8 @@ HRESULT CPlayerController::Ready_PlayerController()
 }
 
 void CPlayerController::Initialize_Component()
-{ }
+{
+}
 
 _int CPlayerController::Update_Component(const _float& timeDelta)
 {
@@ -98,6 +103,8 @@ HRESULT CPlayerController::Init_OwnerComponent()
         m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::PL_ATTACK));
 
     m_OwnerSkillCom = dynamic_cast<CPlayerSkill*>(m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::PL_SKILL));
+
+    m_OwnerGatherCom = dynamic_cast<CPlayerGathering*>(m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::GATHERING));
 
     NULL_CHECK_RETURN_MSG(
         m_OwnerStateCom,
@@ -184,7 +191,27 @@ void CPlayerController::CheckStateTransition()
         ImGuiIO& io = ImGui::GetIO();
         if (io.WantCaptureMouse)
             return;
-
+        ////////
+        if (m_OwnerGatherCom->GetInteractiveObj() != nullptr/*&& 마을알때*/)
+        {
+            switch (m_OwnerGatherCom->GetInteractiveObj()->GetInteractiveType())
+            {
+            case CWorldInteractive::TYPE::BERRY:
+                m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_BERRY);
+                m_OwnerMovementCom->Stop();
+                break;
+            case CWorldInteractive::TYPE::WOOD:
+                m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_WOOD);
+                m_OwnerMovementCom->Stop();
+                break;
+            case CWorldInteractive::TYPE::ROCK:
+                m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_STONE);
+                m_OwnerMovementCom->Stop();
+                break;
+            }
+            return;
+        }
+        //////////
         if (curState == ACTORSTATE::PLAYER_ROLL ||
             curState == ACTORSTATE::IDLE ||
             curState == ACTORSTATE::RUN)
@@ -194,11 +221,21 @@ void CPlayerController::CheckStateTransition()
                 m_OwnerStateCom->Change_State(nextState);
         }
         // 공격 중이라면 콤보 예약 시도
-        else
+        else if (curState == ACTORSTATE::PLAYER_SWORD_COMBO1 ||
+            curState == ACTORSTATE::PLAYER_SWORD_COMBO2 ||
+            curState == ACTORSTATE::PLAYER_SWORD_COMBO3 ||
+            curState == ACTORSTATE::PLAYER_SWORD_COMBO3 ||
+            curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO1 ||
+            curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO2 ||
+            curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO3 ||
+            curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO4)
+        
         {
             m_OwnerAttackCom->Try_NextCombo();
             return;
         }
+
+
     }
     //TODO LSHIFT로 강공격
 
@@ -219,6 +256,7 @@ void CPlayerController::CheckStateTransition()
             if (nextState != ACTORSTATE::STATE_END)
                 m_OwnerStateCom->Change_State(nextState);
         }
+
     }
 
     //else if(inputMgr->MousePress(DIM_RB))
@@ -393,6 +431,19 @@ void CPlayerController::Update_State(const _float& timeDelta)
     }
     break;
 
+    case ACTORSTATE::PLAYER_BERRY:
+    case ACTORSTATE::PLAYER_WOOD:
+    case ACTORSTATE::PLAYER_STONE:
+    {
+        //if(m_OwnerGatherCom->GetInteractiveObj()!=nullptr)
+          m_OwnerGatherCom->Update_Component(timeDelta);
+        //else
+        //    m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+            // 이건 업데이트 안에서 ㄱㄱ
+    }
+  
+    break;
+
     case ACTORSTATE::DEAD:
     {
         MSG_BOX("CPlayerController: Player Dead!");
@@ -406,6 +457,7 @@ void CPlayerController::Update_State(const _float& timeDelta)
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
     }
     break;
+
 
     default:
     {

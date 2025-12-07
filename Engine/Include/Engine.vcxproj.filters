@@ -52,9 +52,6 @@
     <Filter Include="02. Prototype\00. VIBuffer\00. TriCol">
       <UniqueIdentifier>{4956c59c-80af-4903-bb66-a368d1e79f6b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00. Manager\03. ProtoMgr">
-      <UniqueIdentifier>{a1c288da-ebd5-4fbc-b773-3f40abec0f7f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. Prototype\01. Transform">
       <UniqueIdentifier>{91920d56-c28a-4ac7-885e-a0ebfee97453}</UniqueIdentifier>
     </Filter>
@@ -166,6 +163,9 @@
     <Filter Include="01. Logic\09. Trigger">
       <UniqueIdentifier>{5f2260d6-9126-4f13-b8d9-be6e3bd68393}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. Manager\00. GraphicDev\03. ProtoMgr">
+      <UniqueIdentifier>{a1c288da-ebd5-4fbc-b773-3f40abec0f7f}</UniqueIdentifier>
+    </Filter>
     <Filter Include="04. UI\03. UI_HP">
       <UniqueIdentifier>{299d9497-5545-46ba-8a2c-7b7557fe16f1}</UniqueIdentifier>
     </Filter>
@@ -229,7 +229,7 @@
       <Filter>02. Prototype\00. VIBuffer\00. TriCol</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CProtoMgr.h">
-      <Filter>00. Manager\03. ProtoMgr</Filter>
+      <Filter>00. Manager\00. GraphicDev\03. ProtoMgr</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CTransform.h">
       <Filter>02. Prototype\01. Transform</Filter>
@@ -400,7 +400,7 @@
       <Filter>02. Prototype\00. VIBuffer\00. TriCol</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CProtoMgr.cpp">
-      <Filter>00. Manager\03. ProtoMgr</Filter>
+      <Filter>00. Manager\00. GraphicDev\03. ProtoMgr</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CTransform.cpp">
       <Filter>02. Prototype\01. Transform</Filter>

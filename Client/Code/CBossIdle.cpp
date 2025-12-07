@@ -80,6 +80,7 @@ _int CBossIdle::Update_State(const _float& timeDelta)
     if (m_pStateMachine->Get_PrevStateKey() == (int)CBossPhase1::BOSSPHASE1::BOSSMOVE)
     {
         // 전이 이동이 였으면 idle 한번 돌고 공격으로 넘어감
+        m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::ONCE);
         if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame()-1)
         {
             ChangeAPattern %= 2;

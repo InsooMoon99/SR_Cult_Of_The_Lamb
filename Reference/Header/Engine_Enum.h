@@ -91,6 +91,7 @@ enum class OBJTYPE
     HUMANMONSTER,
     BOSS1,
     BOSS2,
+    INTERACTIVE,
 
     ATTACK_COL,
     PARTICLE,
@@ -123,6 +124,7 @@ enum class COMPONENTTYPE
     WALL_RENDERER,
     PROJECTILE,
     SPRITEEFFECT,
+    GATHERING,
 
     WEAPON_EQUIP,           // 플레이어 무기
     PL_INPUT,               // 플레이어 방향 입력
@@ -157,6 +159,7 @@ enum class COMPONENTTYPE
     TEX_BULLET,
     TEX_TEMPLE,
     TEX_OUT,
+    TEX_BERRY,
     TEX_SKILL,
 
     ANIMATOR,
@@ -219,11 +222,19 @@ enum class ACTORSTATE
     PLAYER_GAUNTLET_COMBO1,     // 건틀릿 일반공격 콤보 1
     PLAYER_GAUNTLET_COMBO2,     // 건틀릿 일반공격 콤보 2
     PLAYER_GAUNTLET_COMBO3,     // 건틀릿 일반공격 콤보 3
+    PLAYER_GAUNTLET_COMBO4,
     PLAYER_GAUNTLET_HEAVY,      // 건틀릿 강공격
     PLAYER_SKILL_CHARGING,
     PLAYER_SKILL_SINGLE,
     PLAYER_SKILL_TRIPLE,
     HIT,
+
+    PLAYER_ACTION,
+    PLAYER_WOOD,
+    PLAYER_STONE,
+    PLAYER_BERRY,
+    //GATHERING,
+
     DEAD,
 
     STATE_END

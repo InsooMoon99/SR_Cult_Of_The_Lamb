@@ -2,6 +2,7 @@
 #include "CSpriteEff.h"
 #include "CGameObject.h"
 #include "CTransform.h"
+#include "CRcTex.h"
 
 CSpriteEff::CSpriteEff()
 {
@@ -29,6 +30,22 @@ HRESULT CSpriteEff::Ready_Effect()
 
 void CSpriteEff::Initialize_Component()
 {
+
+    DIR8[0] = _vec3{ m_LineSize, 0,  0.001f };
+    DIR8[1] = _vec3{ -m_LineSize, 0, 0.001f };
+    DIR8[2] = _vec3{ 0, -m_LineSize, 0.001f };
+    DIR8[3] = _vec3{ 0, m_LineSize,  0.001f };
+    
+    //DIR8[0] = _vec3{ m_LineSize, 0,  0 };   // 동
+    //DIR8[1] = _vec3{ m_LineSize, 0, -m_LineSize };   // 남동
+    //DIR8[2] = _vec3{ 0, 0, -m_LineSize };   // 남
+    //DIR8[3] = _vec3{ -m_LineSize, 0, -m_LineSize };   // 남서
+    //DIR8[4] = _vec3{ -m_LineSize, 0,  0 };   // 서
+    //DIR8[5] = _vec3{ -m_LineSize, 0,  m_LineSize };   // 북서
+    //DIR8[6] = _vec3{ 0, 0,  m_LineSize };   // 북
+    //DIR8[7] = _vec3{ m_LineSize, 0,  m_LineSize };   // 북동
+      
+
 }
 
 _int CSpriteEff::Update_Component(const _float& timeDelta)
@@ -51,7 +68,12 @@ void CSpriteEff::LateUpdate_Component()
 
 void CSpriteEff::Render_Effect()
 {
+    if (m_IsSetOutLineInit == true)
+    {
+
+    }
 }
+
 bool CSpriteEff::BounceEff(const _float& timeDelta)
 {
   
@@ -109,6 +131,51 @@ bool CSpriteEff::BounceEff(const _float& timeDelta)
     
 }
 
+bool CSpriteEff::OutLineEff(Engine::CRcTex* m_BufferCom)
+{
+    if (m_IsSetOutLineInit == true)
+    {
+
+        m_TransformCom = m_Owner->Get_Transform();
+
+        _vec3 OriginPos = m_TransformCom->Get_Pos();
+
+        D3DXMATRIX originWorld = m_TransformCom->Get_World();
+        
+        for (int i = 0; i < 8; i++)
+        {
+            // 2. 오프셋 벡터를 행렬에 곱하여 로컬 회전을 적용합니다.
+            _vec3 RotatedOffset;
+            D3DXVec3TransformNormal(&RotatedOffset, &DIR8[i], &originWorld); // 회전/스케일만 적용
+            //
+            _vec3 tmpPos = OriginPos + RotatedOffset;
+            //
+            D3DXMATRIX tempWorld = m_TransformCom->Get_World();
+            tempWorld._41 = tmpPos.x;
+            tempWorld._42 = tmpPos.y;
+            tempWorld._43 = tmpPos.z;
+
+            m_GraphicDev->SetTransform(D3DTS_WORLD, &tempWorld);
+
+            FlashRenderStart(D3DCOLOR_ARGB(255, 255, 255, 255));// AGRB
+            if (m_BufferCom)
+                m_BufferCom->Render_Buffer();
+        }
+
+        FlashRenderEnd();
+
+
+        m_GraphicDev->SetTransform(D3DTS_WORLD, &originWorld);
+
+        if (m_BufferCom)
+            m_BufferCom->Render_Buffer();
+
+        return true;
+    }
+
+    return false;
+}
+
 CSpriteEff* CSpriteEff::Create(DEVICE graphicDev)
 {
     auto SpriteEff = new CSpriteEff(graphicDev);
@@ -131,4 +198,49 @@ CComponent* CSpriteEff::Clone()
 void CSpriteEff::Free()
 {
     CEffectBaseCom::Free();
+}
+
+
+void CSpriteEff::FlashRenderStart(DWORD color)
+{
+    m_GraphicDev->SetRenderState(
+        D3DRS_TEXTUREFACTOR,
+        D3DCOLOR_ARGB(255, 255, 255, 255)
+    );
+
+    // TEXTURE * TFACTOR 로 변경하면 Tint 색 정확히 나옴
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_ADD);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
+}
+
+void CSpriteEff::FlashRenderEnd()
+{
+    // Hurt tint가 남지 않게 기본 연산도 복구
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+
+}
+
+void CSpriteEff::AlphaRenderStart(float alpha)
+{
+    //알파
+    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB((int)(alpha * 255), 255, 255, 255));
+    //
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR); // ← texturefactor.alpha 사용
+
+}
+
+void CSpriteEff::AlphaRenderEnd()
+{
+    // 알파 리셋
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
+    m_GraphicDev->SetRenderState(
+        D3DRS_TEXTUREFACTOR,
+        D3DCOLOR_ARGB(255, 255, 255, 255)); // 알파 1.0, 색 그대로
 }
