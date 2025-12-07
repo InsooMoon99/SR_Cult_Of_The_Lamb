@@ -198,6 +198,7 @@
     <ClInclude Include="..\Header\CCamSetupBuilder.h" />
     <ClInclude Include="..\Header\CBoss_Slave_Test.h" />
     <ClInclude Include="..\Header\CCharacterBase.h" />
+    <ClInclude Include="..\Header\CPlayerGathering.h" />
     <ClInclude Include="..\Header\CConstructionMgr.h" />
     <ClInclude Include="..\Header\CConstructionPlacer.h" />
     <ClInclude Include="..\Header\CEffectBaseCom.h" />
@@ -332,6 +333,7 @@
     <ClCompile Include="..\Code\CCameraMovement.cpp" />
     <ClCompile Include="..\Code\CBoss_Slave_Test.cpp" />
     <ClCompile Include="..\Code\CCharacterBase.cpp" />
+    <ClCompile Include="..\Code\CPlayerGathering.cpp" />
     <ClCompile Include="..\Code\CConstructionMgr.cpp" />
     <ClCompile Include="..\Code\CConstructionPlacer.cpp" />
     <ClCompile Include="..\Code\CDroppedItem.cpp" />

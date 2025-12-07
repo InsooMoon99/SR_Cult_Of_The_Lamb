@@ -48,7 +48,7 @@ void CStage_Boss1::Initialize_Scene()
 {
     CScene::Initialize_Scene();
 
-    //m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_BossTest.map");
+    m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Boss1.map");
 }
 
 _int CStage_Boss1::Update_Scene(const _float& timeDelta)
@@ -80,16 +80,16 @@ HRESULT CStage_Boss1::Ready_Environment_Layer(LAYERTYPE layerType)
     // Tile
     // -----------------------------
     m_Terrain = CTerrain::Create(m_GraphicDev);
-
+    
     NULL_CHECK_RETURN_MSG(
         m_Terrain,
         E_FAIL,
         L"CStage_Boss1::Ready_GameLogic_Layer() failed: CTerrain::Create() returned null");
-
+    
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::TERRAIN, m_Terrain),
         L"CStage_TarotTest::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Tile) failed");
-
+    
     // Wall
     CWall* wall = CWall::Create(m_GraphicDev);
     NULL_CHECK_RETURN(wall, E_FAIL);
@@ -131,6 +131,8 @@ HRESULT CStage_Boss1::Ready_GameLogic_Layer(LAYERTYPE layerType)
         dynamic_cast<CTransform*>(gameObject->Get_Component(
             ID_DYNAMIC,
             COMPONENTTYPE::TRANSFORM));
+
+    playerTransform->Set_Pos({ 47.f,1.f,10.f });
    
 
     // -----------------------------
@@ -179,7 +181,6 @@ HRESULT CStage_Boss1::Ready_GameLogic_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::BOSS1, gameObject),
         L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
-
 
     m_Layers.insert({ layerType, layer });
 

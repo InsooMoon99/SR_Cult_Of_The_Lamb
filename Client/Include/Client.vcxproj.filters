@@ -619,6 +619,9 @@
     <ClInclude Include="IHitFlashEff.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CPlayerGathering.h">
+      <Filter>헤더 파일</Filter>
+   </ClInclude>
     <ClInclude Include="..\Header\CEyeball_Idle.h">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
     </ClInclude>
@@ -990,6 +993,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CHarvestableHerb.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CPlayerGathering.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CEyeball_Idle.cpp">

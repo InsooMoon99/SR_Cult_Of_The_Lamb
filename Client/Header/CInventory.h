@@ -27,7 +27,7 @@ public:
     virtual HRESULT Ready_Inventory();
     void            SetInvenSlotNum(int slotNum); //무조건 만들어야함 
 
-    void DropItemFromCount(int DropItemNum, _vec3 DropPos, CScene* nowScene);
+    //void DropItemFromCount(int DropItemNum, _vec3 DropPos, CScene* nowScene);
 
     void DropItemfromSlot(int slotNum, _vec3 DropPos);
 
@@ -38,6 +38,7 @@ public:
     int Get_AddedCount() { return m_AddedCount; }
     bool RemoveItemBySlot(int slotNum, int count);
     const vector<InventorySlot>& GetVector() const { return m_vecInven; }
+
     void SetOnItemAdded(std::function<void(ItemInstance*, int)> callback)
     {
         m_ItemAdded = callback;
