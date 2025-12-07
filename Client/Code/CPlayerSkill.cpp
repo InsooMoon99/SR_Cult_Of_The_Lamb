@@ -19,7 +19,7 @@ CPlayerSkill::CPlayerSkill(DEVICE graphicDev) : CComponent(graphicDev),
       m_SkillInfo{},
       m_SkillTimer(0),
       m_ChargeTimer(0),
-      m_MaxChargeTime(8.f),
+      m_MaxChargeTime(5.f),
       m_ProjectileFired(false),
       m_SkillIndex(5.f),
       m_IsCharged(false),
@@ -39,7 +39,7 @@ CPlayerSkill::CPlayerSkill(const CPlayerSkill& rhs) : CComponent(rhs),
       m_IsSkillUnlocked(true),
       m_SkillTimer(rhs.m_SkillTimer),
       m_ChargeTimer(rhs.m_ChargeTimer),
-      m_MaxChargeTime(8.f),
+      m_MaxChargeTime(5.f),
       m_ProjectileFired(false),
       m_SkillIndex(rhs.m_SkillIndex),
       m_IsCharged(false),
@@ -225,6 +225,8 @@ ACTORSTATE  CPlayerSkill::Start_SingleSkill()
 
 _bool       CPlayerSkill::Update_SingleSkill(const float& timeDelta)
 {
+    if (m_SkillTimer != 0)
+        return false;
 
     for (auto iter = m_Fireballs.begin(); iter != m_Fireballs.end();)
     {
@@ -245,7 +247,6 @@ _bool       CPlayerSkill::Update_SingleSkill(const float& timeDelta)
 
    // MouseDir.z = 0;
 
-    m_SkillTimer += timeDelta;
 
     D3DXVec3Normalize(&MouseDir, &MouseDir);
 
@@ -254,10 +255,11 @@ _bool       CPlayerSkill::Update_SingleSkill(const float& timeDelta)
         CFireball* fireball = Create_Fireball(m_SkillInfo[m_SkillIndex],m_GraphicDev,m_Owner, MouseDir);
 		m_Fireballs.push_back(fireball);
         cout << "single 투사체 발사 완료" << endl;
-	for (auto fireball : m_Fireballs)
-	{
-		CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::GAMELOGIC)->Add_GameObject(OBJTYPE::BULLET, fireball);
-	}
+
+	
+        CLayer* layer = CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::GAMELOGIC);
+
+        layer->Add_GameObject(OBJTYPE::BULLET, fireball);
         m_SingleFired = true;
     }
 
@@ -286,20 +288,15 @@ ACTORSTATE  CPlayerSkill::Start_TripleSkill()
         m_TripleFired = false;
         m_SkillIndex = SKILL_TRIPLE;
     }
-	//if (m_IsCharged)
-	//{
-	//	Reset_AttackData();
-    //
-	//	m_SkillIndex = SKILL_TRIPLE;
-	//	return m_SkillInfo[SKILL_MAX].state;
-	//}
-	//else
-	//	return ACTORSTATE::STATE_END;
+	
     return m_SkillInfo[SKILL_TRIPLE].state;
 }
 _bool       CPlayerSkill::Update_TripleSkill(const _float& timeDelta)
 {
     if (!m_OwnerCombatStatCom || !m_OwnerInputCom) return false;
+
+    if (m_SkillTimer != 0)
+        return false;
 
     for (auto iter = m_Fireballs.begin(); iter != m_Fireballs.end();)
     {
@@ -343,11 +340,11 @@ _bool       CPlayerSkill::Update_TripleSkill(const _float& timeDelta)
 		m_Fireballs.push_back(left);
 		m_Fireballs.push_back(right);
 
-		for(auto fireball : m_Fireballs)
-		{
-	    CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::GAMELOGIC)->Add_GameObject(OBJTYPE::BULLET,fireball);
-		}
+        CLayer* layer = CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::GAMELOGIC);
 
+        layer->Add_GameObject(OBJTYPE::BULLET, center);
+        layer->Add_GameObject(OBJTYPE::BULLET, left);
+        layer->Add_GameObject(OBJTYPE::BULLET, right);
         m_TripleFired = true;
     }
 
@@ -438,9 +435,7 @@ void CPlayerSkill::Free()
     m_OwnerCombatStatCom = nullptr;
     m_OwnerInputCom = nullptr;
 
-    if (!(m_Fireballs.empty()))
-    {
-        for_each(m_Fireballs.begin(), m_Fireballs.end(), CDeleteObj());
-    }
+    //총알은 레이어에 추가해서 CLayer LateUpdate에서 삭제
+
     CComponent::Free();
 }

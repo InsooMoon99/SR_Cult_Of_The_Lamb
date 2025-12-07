@@ -228,6 +228,7 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         COMPONENTTYPE::PL_SKILL, CPlayerSkill::Create(graphicDev))))
         return E_FAIL;
 
+
     CTexture* playerTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(playerTex, E_FAIL);
 
@@ -606,6 +607,7 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     pathVec1.push_back(L"../Bin/Resource/Texture/UI/Inventory/Weapon2.png");
     pathVec1.push_back(L"../Bin/Resource/Texture/UI/ItemGet/0.png");
     pathVec1.push_back(L"../Bin/Resource/Texture/UI/ItemGet/1.png");
+    pathVec1.push_back(L"../Bin/Resource/Texture/Player/Skill/Arrow_White.png");
 
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_ICON, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec1))))

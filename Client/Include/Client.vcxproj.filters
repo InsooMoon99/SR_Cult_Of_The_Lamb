@@ -605,7 +605,7 @@
       <Filter>03. GameObject\10. Fireball</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CUICharging.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>05. UI\01. UI\07. UICharging</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -948,7 +948,7 @@
       <Filter>03. GameObject\10. Fireball</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CUICharging.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>05. UI\01. UI\07. UICharging</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

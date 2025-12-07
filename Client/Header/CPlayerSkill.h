@@ -58,6 +58,10 @@ public:
     _bool Get_SingleSkillAvailability() { return m_SingleSkillEnable; }
     _bool Get_TripleSkillAvailability() { return m_TripleSkillEnable; }
 
+    float Get_ChargeTime() { return m_ChargeTimer; }
+    float Get_MaxChargeTime() { return m_MaxChargeTime; }
+    SkillInfo Get_SkillInfo() { return m_SkillInfo[m_SkillIndex]; }
+
 public:
     ACTORSTATE  Start_Charging();
     ACTORSTATE       Update_Charging(const float& timeDelta);
