@@ -293,6 +293,7 @@
     <ClInclude Include="..\Header\CWall.h" />
     <ClInclude Include="..\Header\CWallRenderer.h" />
     <ClInclude Include="..\Header\CWeaponEquip.h" />
+    <ClInclude Include="..\Header\CUIWeaponExplainMgr.h" />
     <ClInclude Include="..\Header\CWorldInteractive.h" />
     <ClInclude Include="..\Header\ItemData.h" />
     <ClInclude Include="..\Header\ItemInstance.h" />
@@ -425,6 +426,7 @@
     <ClCompile Include="..\Code\CWall.cpp" />
     <ClCompile Include="..\Code\CWallRenderer.cpp" />
     <ClCompile Include="..\Code\CWeaponEquip.cpp" />
+    <ClCompile Include="..\Code\CUIWeaponExplainMgr.cpp" />
     <ClCompile Include="..\Code\CWorldInteractive.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">

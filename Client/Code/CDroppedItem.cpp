@@ -139,6 +139,20 @@ void CDroppedItem::OnBeginOverlap(CCollider* self, CCollider* other)
         {
             dynamic_cast<CWeaponEquip*>(ply->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::WEAPON_EQUIP))->Equip_Weapon(m_itemInst);
             //*** 아이템 지우기 ***
+
+            //1. 무기 정보 UI 띄우기
+            switch(m_itemInst.itemId)
+            {
+            case 3001:
+                    
+                break;
+
+            case 3002:
+                break;
+            }
+            //2. 상호작용 키 UI 띄우기
+
+
             Mark_As_PendingKill();
         }
         else

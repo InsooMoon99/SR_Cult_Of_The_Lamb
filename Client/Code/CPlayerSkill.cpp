@@ -69,7 +69,7 @@ HRESULT CPlayerSkill::Ready_PlayerCombat()
     m_SkillInfo[SKILL_SINGLE].knockbackPower = 50.f;
     m_SkillInfo[SKILL_SINGLE].spawnOffset = 1.3f;
     m_SkillInfo[SKILL_SINGLE].hitboxScale = _vec3(0.6f, 0.6f, 0.6f);
-    m_SkillInfo[SKILL_SINGLE].chargeTime = 1.5f;
+    m_SkillInfo[SKILL_SINGLE].chargeTime = 0.5f;
     // 3발
     m_SkillInfo[SKILL_TRIPLE].state = ACTORSTATE::PLAYER_SKILL_TRIPLE;
     m_SkillInfo[SKILL_TRIPLE].duration = 0.5f;
@@ -77,7 +77,7 @@ HRESULT CPlayerSkill::Ready_PlayerCombat()
     m_SkillInfo[SKILL_TRIPLE].knockbackPower = 50.f;
     m_SkillInfo[SKILL_TRIPLE].spawnOffset = 1.3f;
     m_SkillInfo[SKILL_TRIPLE].hitboxScale = _vec3(0.6f, 0.6f, 0.6f);
-    m_SkillInfo[SKILL_TRIPLE].chargeTime =2.5f;
+    m_SkillInfo[SKILL_TRIPLE].chargeTime =1.5f;
     return S_OK;
 }
 
@@ -204,7 +204,6 @@ ACTORSTATE      CPlayerSkill::Update_Charging(const float& timeDelta)
 
 ACTORSTATE  CPlayerSkill::Start_SingleSkill()
 {
-    //Reset_AttackData();
 
     if (!m_IsCharging)
         return ACTORSTATE::STATE_END;
@@ -255,6 +254,7 @@ _bool       CPlayerSkill::Update_SingleSkill(const float& timeDelta)
         cout << "single 투사체 발사 완료" << endl;
         
         m_SingleFired = true;
+        m_SingleSkillEnable = false;
     }
 
     if(m_SkillTimer >= m_SkillInfo[SKILL_SINGLE].duration)
@@ -333,6 +333,7 @@ _bool       CPlayerSkill::Update_TripleSkill(const _float& timeDelta)
 		m_Fireballs.push_back(right);
         
         m_TripleFired = true;
+        m_TripleSkillEnable = false;
     }
 
 	//for(auto fireball : m_Fireballs)
