@@ -1,14 +1,14 @@
 ﻿#pragma once
 #include "CComponent.h"
 
-    class CPlayerInput;
-    class CWeaponEquip;
-    class CFireball;
+class CPlayerInput;
+class CWeaponEquip;
+class CFireball;
 
 BEGIN(Engine)
-    class CAttackBase;
-    class CCombatStat;
-    class CState;
+class CAttackBase;
+class CCombatStat;
+class CState;
 END
 
 class CPlayerSkill : public CComponent
@@ -64,7 +64,7 @@ public:
 
 public:
     ACTORSTATE  Start_Charging();
-    ACTORSTATE       Update_Charging(const float& timeDelta);
+    ACTORSTATE  Update_Charging(const float& timeDelta);
 
     ACTORSTATE  Start_SingleSkill();
     _bool       Update_SingleSkill(const float& timeDelta);
@@ -72,7 +72,7 @@ public:
     ACTORSTATE  Start_TripleSkill();
     _bool       Update_TripleSkill(const float& timeDelta);
 
-    ACTORSTATE  Evaluate_ChargeLevel();
+    ACTORSTATE  Evaluate_ChargeLevel(); 
 public:
     void Set_CurrentTimer(_float timer) { m_SkillTimer = timer; }
     void Cancel_Attack();

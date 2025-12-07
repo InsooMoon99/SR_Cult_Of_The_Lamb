@@ -34,7 +34,7 @@ _int CAttackSphere::Update_GameObject(const _float& timeDelta)
     if (m_SphereColCom && m_TransformCom)
     {
         float scale = m_TransformCom->Get_Scale().x;
-        m_SphereColCom->Set_Radius(3.5f * scale); // 👈 스케일이 커지면 radius도 커지고, 작으면 작아짐
+        m_SphereColCom->Set_Radius(3.5f * scale); // 스케일이 커지면 radius도 커지고, 작으면 작아짐
     }
 
     return exit;
