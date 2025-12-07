@@ -81,6 +81,9 @@ public:
     _float Get_Speed() { return m_Speed; }
     _float Get_MaxMp() { return m_MaxMp; }
     _int   Get_CurrentCharges() { return m_CurrentCharges; }
+    //  아이템용
+    _vec3   Get_Dir() { return m_DirForItem; }
+
 
     _bool  Is_Dead() { return m_IsDead; }
     _bool  Is_Invincible() const { return m_IsInvincible; }
@@ -136,6 +139,8 @@ private:
     _bool   m_IsInvincible; // 무적
     _float  m_KnockbackTimer;
 
+    //  아이템용
+    _vec3 m_DirForItem = {0,0,0};
 };
 
 END

@@ -344,7 +344,10 @@ void CPlayerController::CheckStateTransition()
         curState == ACTORSTATE::PLAYER_GAUNTLET_HEAVY ||
         curState == ACTORSTATE::PLAYER_SKILL_CHARGING ||
         curState == ACTORSTATE::PLAYER_SKILL_SINGLE ||
-        curState == ACTORSTATE::PLAYER_SKILL_TRIPLE)
+        curState == ACTORSTATE::PLAYER_SKILL_TRIPLE||
+        curState == ACTORSTATE::PLAYER_BERRY||
+        curState == ACTORSTATE::PLAYER_STONE||
+        curState == ACTORSTATE::PLAYER_WOOD)
 
         return;
 
@@ -426,8 +429,10 @@ void CPlayerController::Update_State(const _float& timeDelta)
     case ACTORSTATE::PLAYER_WOOD:
     case ACTORSTATE::PLAYER_STONE:
     {
+        //if (CDInputMgr::GetInstance()->MouseUp(DIM_LB)/*&& m_Target */ )
+        //m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
         //if(m_OwnerGatherCom->GetInteractiveObj()!=nullptr)
-          m_OwnerGatherCom->Update_Component(timeDelta);
+        m_OwnerGatherCom->Update_Component(timeDelta);
         //else
         //    m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
             // 이건 업데이트 안에서 ㄱㄱ

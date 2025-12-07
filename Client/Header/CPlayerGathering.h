@@ -1,12 +1,13 @@
 ﻿#pragma once
 #include "CComponent.h"
-
+#include "CCombatStat.h"
 class CWorldInteractive;
 
 namespace Engine
 {
     class CCollider;
     class CState;
+    class CombatStat;
 }
 class CWorldInteractive;
 
@@ -34,6 +35,9 @@ private:
     CState* m_OwnerStateCom = nullptr;
 
     CWorldInteractive* m_Target = nullptr;
+
+    float m_AttackTimer = 0;
+    HITDATA h;
 public:
     static CPlayerGathering* Create(DEVICE graphicDev);
     CComponent* Clone() override;

@@ -7,6 +7,7 @@
 #include "CStage.h"
 #include "CTransform.h"
 #include "Client_Struct.h"
+#include "CRandomMgr.h"
 
 IMPLEMENT_SINGLETON(CDropSystem)
 
@@ -32,7 +33,7 @@ void CDropSystem::SpawnDrop(DEVICE pGraphicDev, const ItemInstance& itemInst, co
     m_nowScene->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, pDrop, OBJTYPE::ITEM);
 }
 
-void CDropSystem::SpawnAllFromInven(DEVICE pGraphicDev, CInventory* Inven)
+void CDropSystem::SpawnAllFromInven(DEVICE pGraphicDev, CInventory* Inven, _vec3 dropDir, int offset)
 {
     CGameObject* obj = Inven->Get_Owner();
     if (obj == nullptr)
@@ -51,9 +52,14 @@ void CDropSystem::SpawnAllFromInven(DEVICE pGraphicDev, CInventory* Inven)
             int dropCount = slot.count;
             for (int j = 0; j < dropCount; j++)
             {
-                int angle = 25*i+ j*13;
-                SpriteBounceDesc d;
 
+                // 플레이어 잉떄
+                _vec3 tmp0Dir = { 0,0,0 };
+                if (dropDir == tmp0Dir && offset == 0)
+                {
+                int angle = 25*i+ j*13;
+
+                SpriteBounceDesc d;
                 _vec3 tmpvec = { cos(D3DXToRadian(angle)),1,sin(D3DXToRadian(angle))};
                 D3DXVec3Normalize(&tmpvec, &tmpvec);
 
@@ -71,6 +77,70 @@ void CDropSystem::SpawnAllFromInven(DEVICE pGraphicDev, CInventory* Inven)
                 SpawnDrop(pGraphicDev, itemInst, tmppos, d);
 
                 Inven->RemoveItem(itemInst.itemId, 1);
+                }
+                else // 다른 오브젝트 일떄  )
+                {
+                   // int index =  i + (j+1);
+
+                    SpriteBounceDesc d;
+                    _vec3 tmpvec = dropDir;
+                   // tmpvec.y = 0.f;
+                    D3DXVec3Normalize(&tmpvec, &tmpvec);
+
+                   int RandOffSet = CRandomMgr::GetInstance()->Get_Int_Random(-offset, offset); // y 축 회전
+
+                    int PitchAngle = 60;
+
+                    //D3DXMATRIX matRotX, matRotY, matFinal;
+
+                    //D3DXMatrixRotationX(&matRotX, D3DXToRadian(PitchAngle));// 위 아래 회전 
+                    //D3DXMatrixRotationY(&matRotY, D3DXToRadian(RandOffSet)); // offset 으로 양 옆 회전
+
+                    //matFinal = matRotY * matRotX;
+
+                    //D3DXVec3TransformNormal(&tmpvec, &tmpvec, &matFinal);
+                    //D3DXVec3Normalize(&tmpvec, &tmpvec);
+                   
+        
+
+                    // 월드 기준 Up 방향
+                    _vec3 worldUp = { 0.f, 1.f, 0.f };
+
+                    // 1) Yaw 랜덤 적용
+                    D3DXMATRIX matYaw;
+                    D3DXMatrixRotationY(&matYaw, D3DXToRadian(RandOffSet));
+                    D3DXVec3TransformNormal(&tmpvec, &tmpvec, &matYaw);
+
+                    // 2) Pitch(X 축 회전이 아니라! 벡터와 worldUp의 교차축을 찾아서 회전)
+                    _vec3 right;
+                    D3DXVec3Cross(&right, &worldUp, &tmpvec);
+                    D3DXVec3Normalize(&right, &right);
+
+                    D3DXMATRIX matPitch;
+                    D3DXMatrixRotationAxis(&matPitch, &right, D3DXToRadian(PitchAngle));
+                    D3DXMatrixRotationAxis(&matPitch, &right, D3DXToRadian(PitchAngle));
+
+                    // 최종 적용
+                    D3DXVec3TransformNormal(&tmpvec, &tmpvec, &matPitch);
+                    D3DXVec3Normalize(&tmpvec, &tmpvec);
+
+                    d.pos = ownerPos;
+                    // d.velocity
+                    d.velocity = tmpvec * 30;
+                    d.groundY = 1.f;
+                    // 중력
+                    d.gravity = -300.f;
+                    d.restitution = 0.8f;// 튕김 계수
+                    d.damping = 0.7f;// 충돌 감쇠(마찰)
+                    d.m_DampingPerSecond = 0.9f;// 공기 저항
+
+                    _vec3 Startpos = { ownerPos.x, ownerPos.y/*+1.f*/, ownerPos.z };
+
+                    SpawnDrop(pGraphicDev, itemInst, Startpos, d);
+
+                    Inven->RemoveItem(itemInst.itemId, 1);
+                }
+
             }
         }
     }
