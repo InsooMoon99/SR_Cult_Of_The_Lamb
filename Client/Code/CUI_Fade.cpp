@@ -12,19 +12,8 @@ CUI_Fade::CUI_Fade(DEVICE graphicDev)
     m_Alpha(0.0f),
     m_FadeSpeed(1.0f),
     m_IsFadingIn(false),
-    m_IsActive(false)
-{
-    Set_Name(L"Fade UI");
-}
-
-CUI_Fade::CUI_Fade(const CUI_Fade& rhs)
-    : CUI(rhs),
-    m_BufferCom(nullptr),
-    m_TransformCom(nullptr),
-    m_Alpha(0.0f),
-    m_FadeSpeed(1.0f),
-    m_IsFadingIn(false),
-    m_IsActive(false)
+    m_IsActive(false),
+    m_UseRenderer(true)
 {
 }
 
@@ -53,7 +42,10 @@ _int CUI_Fade::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+    if (m_UseRenderer)
+    {
+        CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+    }
 
     if (!m_IsActive) // 진행중이면 ㄴㄴ
         return exit;

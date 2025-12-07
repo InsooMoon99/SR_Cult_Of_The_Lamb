@@ -84,13 +84,21 @@ void CSceneMgr::Update_SceneMgr(const _float& timeDelta)
         break;
 
     case FADE_STATE::SCENE_CHANGE:
-        Change_SceneMgr(m_NextSceneType);       // 실제 씬 전환
-        m_FadeState = FADE_STATE::FADE_IN;
-        m_FadeUI->StartFadeIn(m_FadeSpeed);
+        Change_SceneMgr(m_NextSceneType);
+        m_FadeState = FADE_STATE::WAIT_SCENE_LOAD;
+        m_FadeTimer = 0.0f;
+        break;
+
+    case FADE_STATE::WAIT_SCENE_LOAD:
+        if (m_FadeTimer >= 0.05f) 
+        {
+            m_FadeState = FADE_STATE::FADE_IN;
+            m_FadeUI->StartFadeIn(m_FadeSpeed);
+        }
         break;
 
     case FADE_STATE::FADE_IN:
-        if (m_FadeUI->IsFadeComplete())         // 완료 확인
+        if (m_FadeUI->IsFadeComplete())
         {
             m_FadeState = FADE_STATE::NONE;
             m_IsFading = false;
@@ -212,7 +220,8 @@ CUI_Fade* CSceneMgr::Get_Or_Create_FadeUI()
         if (m_FadeUI)
         {
             m_FadeUI->Ready_GameObject();
-			m_FadeUI->AddRef();
+            m_FadeUI->Set_UseRenderer(false); 
+            m_FadeUI->AddRef();
         }
     }
 

@@ -33,6 +33,7 @@ private:
 
 public:
     static CUI_Fade* Create(DEVICE graphicDev);
+    void   Set_UseRenderer(_bool use) { m_UseRenderer = use; }
 
 protected:
     void Free() override;
@@ -41,11 +42,11 @@ private:
     CRcTex*     m_BufferCom;
     CTransform* m_TransformCom;
 
-    _float  m_Alpha;           
-    _float  m_FadeSpeed;      
-    _bool   m_IsFadingIn;    // true: Fade In, false: Fade Out
-    _bool   m_IsActive;       
+    _float      m_Alpha;           
+    _float      m_FadeSpeed;      
+    _bool       m_IsFadingIn;    // true: Fade In, false: Fade Out
+    _bool       m_IsActive;       
 
-
+    _bool       m_UseRenderer;
 };
 

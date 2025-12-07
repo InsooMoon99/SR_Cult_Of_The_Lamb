@@ -15,6 +15,7 @@ private:
         FADE_OUT,      // 어두워지는 중
         WAITING,       // 완전히 어두워진 상태
         SCENE_CHANGE,  // 씬 전환
+        WAIT_SCENE_LOAD,
         FADE_IN        // 밝아지는 중
     };
 
