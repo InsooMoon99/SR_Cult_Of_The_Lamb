@@ -106,7 +106,6 @@ void CPlayer::Render_GameObject()
 void CPlayer::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CCharacterBase::OnBeginOverlap(self, other);
-
 }
 
 void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)
@@ -309,11 +308,10 @@ void CPlayer::Animation_Setting()
                                     _vec2(0.f, 0.f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_HEAVY,
-                                                 L"PlayerGauntletHeavy",
-                                                ANIMSTATE::ONCE);
+                             L"PlayerGauntletHeavy",
+                             ANIMSTATE::ONCE);
 
 #pragma region --- Skill ---
-
 
     m_AnimatorCom->Create_Animation(L"PlayerSkillCharging",
                                               17,
@@ -322,22 +320,22 @@ void CPlayer::Animation_Setting()
                                               _vec2(0.f, 0.f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SKILL_CHARGING,
-                                            L"PlayerSkillCharging",
-                                            ANIMSTATE::LOOP);
+                             L"PlayerSkillCharging",
+                             ANIMSTATE::LOOP);
 
     m_AnimatorCom->Create_Animation(L"PlayerSkillAttack",
-                                             32,
-                                             0.02f,
-                                             _vec2(1.f, 1.5f),
-                                             _vec2(0.f, 0.5f));
+                                    32,
+                                    0.02f,
+                                    _vec2(1.f, 1.5f),
+                                    _vec2(0.f, 0.5f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SKILL_SINGLE,
-                                               L"PlayerSkillAttack",
-                                               ANIMSTATE::ONCE);
+                             L"PlayerSkillAttack",
+                             ANIMSTATE::ONCE);
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SKILL_TRIPLE,
-                                                L"PlayerSkillAttack",
-                                                ANIMSTATE::ONCE);
+                             L"PlayerSkillAttack",
+                             ANIMSTATE::ONCE);
 
 #pragma endregion
 }

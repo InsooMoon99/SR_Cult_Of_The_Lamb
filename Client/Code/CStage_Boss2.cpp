@@ -20,6 +20,7 @@
 CStage_Boss2::CStage_Boss2(DEVICE graphicDev)
     : Engine::CScene(graphicDev), m_Terrain(nullptr)
 {
+
 }
 
 CStage_Boss2::~CStage_Boss2()
@@ -48,6 +49,8 @@ void CStage_Boss2::Initialize_Scene()
 
     if (m_Terrain)
         m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Boss2.map");
+
+
 }   
 
 _int CStage_Boss2::Update_Scene(const _float& timeDelta)
@@ -134,7 +137,7 @@ HRESULT CStage_Boss2::Ready_GameLogic_Layer(LAYERTYPE layerType)
         CCamSetupBuilder(camController)
             .SetTarget(playerTransform)
             //.PivotOffset({ 0.f, 0.f, 0.f })
-            //.Distance(12.f)
+            .Distance(20.f)
             //.RotX(45.f)
             //.RotY(0.f)
             //.LagSpeed(10.f)

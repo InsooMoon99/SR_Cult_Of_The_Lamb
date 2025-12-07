@@ -1,21 +1,23 @@
 ﻿#include "pch.h"
-#include "CEyeball_Ground.h"
+#include "CEyeball_Ground_Move.h"
 #include "CBossController.h"
 #include "CAnimator.h"
 #include "CEyeball.h"
 #include "CRandomMgr.h"
 #include "CTransform.h"
 
-CEyeball_Ground::CEyeball_Ground(CMonsterBase* owner)
+CEyeball_Ground_Move::CEyeball_Ground_Move(CMonsterBase* owner)
     : m_Owner(owner), m_Pattern_Cooldown(0), m_LerpSpeed(0), m_MaxMoveDistance(0)
 {
+
 }
 
-CEyeball_Ground::~CEyeball_Ground()
+CEyeball_Ground_Move::~CEyeball_Ground_Move()
 {
+
 }
 
-void CEyeball_Ground::Enter()
+void CEyeball_Ground_Move::Enter()
 {
     CMonsterState::Enter();
 
@@ -53,7 +55,7 @@ void CEyeball_Ground::Enter()
     m_fCurStateElapsedTime = 0.f;
 }
 
-_int CEyeball_Ground::Update_State(const _float& timeDelta)
+_int CEyeball_Ground_Move::Update_State(const _float& timeDelta)
 {
     m_fCurStateElapsedTime += timeDelta;
 
@@ -75,27 +77,28 @@ _int CEyeball_Ground::Update_State(const _float& timeDelta)
 
         if (moveDistance >= m_MaxMoveDistance)
         {
-            return CEyeball::PATTERN::EYEBALL_GROUND;
+            return CEyeball::PATTERN::EYEBALL_START_GROUND;
         }
 
         const _float moveSpeed = 8.f;
         transform->Move_Pos(m_TargetDir, timeDelta, moveSpeed);
     }
 
-    return CEyeball::PATTERN::EYEBALL_GROUND;
+    return CEyeball::PATTERN::EYEBALL_START_GROUND;
 }
 
-void CEyeball_Ground::Exit()
+void CEyeball_Ground_Move::Exit()
 {
     CMonsterState::Exit();
 
     // 상태 끝날 때
 }
 
-HRESULT CEyeball_Ground::Ready_State()
+HRESULT CEyeball_Ground_Move::Ready_State()
 {
     m_fMinStateTime = 0.5f;
     m_Pattern_Cooldown = 2.5f;
+    m_fCurStateElapsedTime = 0.f;
 
     m_StartPos = _vec3(0.f, 0.f, 0.f);
     m_TargetDir = _vec3(0.f, 0.f, 0.f);
@@ -108,9 +111,9 @@ HRESULT CEyeball_Ground::Ready_State()
     return S_OK;
 }
 
-CEyeball_Ground* CEyeball_Ground::Create(CMonsterBase* owner)
+CEyeball_Ground_Move* CEyeball_Ground_Move::Create(CMonsterBase* owner)
 {
-    auto state = new CEyeball_Ground(owner);
+    auto state = new CEyeball_Ground_Move(owner);
 
     if (FAILED(state->Ready_State()))
     {
@@ -122,7 +125,7 @@ CEyeball_Ground* CEyeball_Ground::Create(CMonsterBase* owner)
     return state;
 }
 
-void CEyeball_Ground::Free()
+void CEyeball_Ground_Move::Free()
 {
     
 }

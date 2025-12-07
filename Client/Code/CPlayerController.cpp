@@ -1,17 +1,18 @@
 ﻿#include "pch.h"
 #include "CPlayerController.h"
+
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
 #include "CDInputMgr.h"
 #include "CGameObject.h"
 #include "CMainEditorMgr.h"
 #include "CPlayerAttack.h"
+#include "CPlayerInput.h"
 #include "CPlayerMovement.h"
+#include "CPlayerSkill.h"
 #include "CRigidbody.h"
 #include "CSoundMgr.h"
 #include "CState.h"
-#include "CPlayerSkill.h"
-#include "CPlayerInput.h"
 
 CPlayerController::CPlayerController(DEVICE graphicDev)
     : CComponent(graphicDev),
@@ -21,7 +22,8 @@ CPlayerController::CPlayerController(DEVICE graphicDev)
       m_OwnerColliderCom(nullptr),
       m_OwnerInputCom(nullptr),
       m_OwnerMovementCom(nullptr),
-      m_OwnerAttackCom(nullptr)
+      m_OwnerAttackCom(nullptr),
+      m_OwnerSkillCom(nullptr)
 {
     ZeroMemory(m_Timers, sizeof(m_Timers));
 }
@@ -34,14 +36,14 @@ CPlayerController::CPlayerController(const CPlayerController& rhs)
       m_OwnerColliderCom(nullptr),
       m_OwnerInputCom(nullptr),
       m_OwnerMovementCom(nullptr),
-      m_OwnerAttackCom(nullptr)
+      m_OwnerAttackCom(nullptr),
+      m_OwnerSkillCom(nullptr)
 {
     ZeroMemory(m_Timers, sizeof(m_Timers));
 }
 
 CPlayerController::~CPlayerController()
-{
-}
+{}
 
 HRESULT CPlayerController::Ready_PlayerController()
 {
@@ -70,8 +72,7 @@ _int CPlayerController::Update_Component(const _float& timeDelta)
 }
 
 void CPlayerController::LateUpdate_Component()
-{
-}
+{}
 
 HRESULT CPlayerController::Init_OwnerComponent()
 {
@@ -204,7 +205,7 @@ void CPlayerController::CheckStateTransition()
     //TODO RMB로 스킬
     else if (inputMgr->MouseDown(DIM_RB))
     {
-       // cout << "First time Pressed" << endl;
+        // cout << "First time Pressed" << endl;
 
         ImGuiIO& io = ImGui::GetIO();
         if (io.WantCaptureMouse)
@@ -218,7 +219,6 @@ void CPlayerController::CheckStateTransition()
             if (nextState != ACTORSTATE::STATE_END)
                 m_OwnerStateCom->Change_State(nextState);
         }
-        
     }
 
     //else if(inputMgr->MousePress(DIM_RB))
@@ -240,25 +240,22 @@ void CPlayerController::CheckStateTransition()
     //    // }
     //}
     //
-    else if(inputMgr->MouseUp(DIM_RB))
+    else if (inputMgr->MouseUp(DIM_RB))
     {
-        if(curState == ACTORSTATE::PLAYER_SKILL_CHARGING)
-        {
+        if (curState == ACTORSTATE::PLAYER_SKILL_CHARGING)
             m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
-        }
-        if(m_OwnerSkillCom->Get_TripleSkillAvailability())
+        if (m_OwnerSkillCom->Get_TripleSkillAvailability())
         {
-           ACTORSTATE nextState = m_OwnerSkillCom->Start_TripleSkill();
-           if (nextState != ACTORSTATE::STATE_END)
-           m_OwnerStateCom->Change_State(nextState);
+            ACTORSTATE nextState = m_OwnerSkillCom->Start_TripleSkill();
+            if (nextState != ACTORSTATE::STATE_END)
+                m_OwnerStateCom->Change_State(nextState);
         }
-        if(m_OwnerSkillCom->Get_SingleSkillAvailability())
+        if (m_OwnerSkillCom->Get_SingleSkillAvailability())
         {
-           ACTORSTATE nextState = m_OwnerSkillCom->Start_SingleSkill();
-           if (nextState != ACTORSTATE::STATE_END)
-           m_OwnerStateCom->Change_State(nextState);
+            ACTORSTATE nextState = m_OwnerSkillCom->Start_SingleSkill();
+            if (nextState != ACTORSTATE::STATE_END)
+                m_OwnerStateCom->Change_State(nextState);
         }
-        
     }
 
     // 스킬 공격
@@ -307,7 +304,7 @@ void CPlayerController::CheckStateTransition()
         curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO2 ||
         curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO3 ||
         curState == ACTORSTATE::PLAYER_GAUNTLET_HEAVY ||
-        curState ==ACTORSTATE:: PLAYER_SKILL_CHARGING ||
+        curState == ACTORSTATE::PLAYER_SKILL_CHARGING ||
         curState == ACTORSTATE::PLAYER_SKILL_SINGLE ||
         curState == ACTORSTATE::PLAYER_SKILL_TRIPLE)
 
@@ -452,22 +449,24 @@ void CPlayerController::Action_Charging(const _float& timeDelta)
 
     ACTORSTATE result = m_OwnerSkillCom->Update_Charging(timeDelta);
 
-    switch(result)
+    switch (result)
     {
     case ACTORSTATE::IDLE:
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
         break;
-   
+
     case ACTORSTATE::PLAYER_SKILL_SINGLE:
-      //  m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SKILL_SINGLE);
+        //  m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SKILL_SINGLE);
         m_OwnerSkillCom->Set_SingleSkill(true);
         break;
-   
+
     case ACTORSTATE::PLAYER_SKILL_TRIPLE:
         m_OwnerSkillCom->Set_TripleSkill(true);
         m_OwnerSkillCom->Set_SingleSkill(false);
-      //  m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SKILL_TRIPLE);
+        //  m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SKILL_TRIPLE);
         break;
+
+    default: break;
     }
 }
 
@@ -478,11 +477,13 @@ void CPlayerController::Action_SingleSkill(const _float& timeDelta)
 
     //아니면 TripleSkill로 넘기는 것도 여기서 해줘야 하는 건가?
 }
+
 void CPlayerController::Action_TripleSkill(const _float& timeDelta)
 {
     if (!m_OwnerSkillCom->Update_TripleSkill(timeDelta))
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
 }
+
 CPlayerController* CPlayerController::Create(DEVICE graphicDev)
 {
     auto controller = new CPlayerController(graphicDev);
@@ -505,13 +506,14 @@ CComponent* CPlayerController::Clone()
 void CPlayerController::Free()
 {
     //!! Safe_Release() 등을 호출해 원본을 부수지 말고, nullptr로 빌려온 주소를 반납만 한다. 
-    m_OwnerStateCom = nullptr;
+    m_OwnerStateCom      = nullptr;
     m_OwnerCombatStatCom = nullptr;
-    m_OwnerRigidbodyCom = nullptr;
-    m_OwnerColliderCom = nullptr;
-    m_OwnerInputCom = nullptr;
-    m_OwnerMovementCom = nullptr;
-    m_OwnerAttackCom = nullptr;
+    m_OwnerRigidbodyCom  = nullptr;
+    m_OwnerColliderCom   = nullptr;
+    m_OwnerInputCom      = nullptr;
+    m_OwnerMovementCom   = nullptr;
+    m_OwnerAttackCom     = nullptr;
+    m_OwnerSkillCom      = nullptr;
 
     CComponent::Free();
 }

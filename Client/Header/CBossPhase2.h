@@ -34,18 +34,12 @@ public:
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
 
-public:
-    void    OnBeginOverlap(CCollider* self, CCollider* other) override;
-    void    OnStayOverlap(CCollider* self, CCollider* other) override;
-    void    OnEndOverlap(CCollider* self, CCollider* other) override;
-
     void    Render_Editor() override;
-
-    DEVICE Get_GraphicDev() { return m_GraphicDev; }
 
 public:
     CMonsterController* Get_Controller() { return m_BossController; }
     const char*         Get_Boss2_StateName(_int stateNum);
+    DEVICE              Get_GraphicDev() { return m_GraphicDev; }
         
 public:
     static CBossPhase2* Create(DEVICE graphicDev);

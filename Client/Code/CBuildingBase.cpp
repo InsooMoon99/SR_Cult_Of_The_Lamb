@@ -1,0 +1,85 @@
+﻿#include "pch.h"
+#include "CBuildingBase.h"
+
+#include "CBoxCollider.h"
+#include "CCreateHelper.h"
+#include "CRenderer.h"
+
+CBuildingBase::CBuildingBase(DEVICE graphicDev)
+    : CRenderObject(graphicDev)
+{ }
+
+CBuildingBase::CBuildingBase(const CBuildingBase& rhs)
+    : CRenderObject(rhs)
+{ }
+
+CBuildingBase::~CBuildingBase()
+{ }
+
+HRESULT CBuildingBase::Ready_GameObject()
+{
+    if (FAILED(CRenderObject::Ready_GameObject()))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+void CBuildingBase::Initialize_GameObject()
+{
+    CRenderObject::Initialize_GameObject();
+}
+
+_int CBuildingBase::Update_GameObject(const _float& timeDelta)
+{
+    _int exit = CRenderObject::Update_GameObject(timeDelta);
+
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
+
+    return exit;
+}
+
+void CBuildingBase::LateUpdate_GameObject(const _float& timeDelta)
+{
+    CRenderObject::LateUpdate_GameObject(timeDelta);
+}
+
+void CBuildingBase::Render_GameObject()
+{
+    CRenderObject::Render_GameObject();
+
+    if (m_BoxColCom)
+        m_BoxColCom->Render();
+}
+
+void CBuildingBase::OnBeginOverlap(CCollider* self, CCollider* other)
+{
+    CRenderObject::OnBeginOverlap(self, other);
+}
+
+void CBuildingBase::OnStayOverlap(CCollider* self, CCollider* other)
+{
+    CRenderObject::OnStayOverlap(self, other);
+}
+
+void CBuildingBase::OnEndOverlap(CCollider* self, CCollider* other)
+{
+    CRenderObject::OnEndOverlap(self, other);
+}
+
+HRESULT CBuildingBase::Add_Component()
+{
+    if (FAILED(CRenderObject::Add_Component()))
+        return E_FAIL;
+
+    // BoxCollider
+    m_BoxColCom = CreateProtoComponent<CBoxCollider>(this, COMPONENTTYPE::BOX_COLL);
+    NULL_CHECK_RETURN(m_BoxColCom, E_FAIL);
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::BOX_COLL, m_BoxColCom });
+
+    return S_OK;
+}
+
+void CBuildingBase::Free()
+{
+    CRenderObject::Free();
+}

@@ -73,6 +73,7 @@ enum class COLLISION_LAYERTYPE
     ATTACK,
     TRIGGER,
     INTERACTIVEOBJ,
+    BUILDING,       // 건물
 
     COL_LAYER_END
 };
@@ -147,12 +148,14 @@ enum class COMPONENTTYPE
     TEX_UI_HEARTCARD,
     TEX_UI_EXPLAIN,
     TEX_UI_TAROT,
+    TEX_UI_MONSTERHP,
     TEX_ITEM,
     TEX_MENU_CHAR,
     TEX_UI_ICON,
     TEX_UI_BUTTON,
     TEX_BOSSPHASE1,
     TEX_BULLET,
+    TEX_TEMPLE,
     TEX_OUT,
     TEX_SKILL,
 
@@ -167,7 +170,6 @@ enum class COMPONENTTYPE
     BOX_COLL,
     SPHERE_COLL,
 
-
     ////////////////
     //   Boss 2   //
     ////////////////
@@ -177,6 +179,8 @@ enum class COMPONENTTYPE
 
     BOSS2_CONTROLLER,
     EYEBALL_CONTROLLER,
+    TEX_WARNING_CHAIN,
+    TEX_CHAIN,
 
     ////////////////
     //  MapObject //
@@ -289,6 +293,15 @@ enum PROJECTION_TYPE
     PROJ_ORTHOGRAPHIC,      // 직교 투영
 
     PROJ_END
+};
+
+// 건축물 종류
+enum BUILDING_TYPE
+{
+    TEMPLE,             // 신전
+    KITCHEN,            // 요리용 화덕
+
+    BUILDING_END
 };
 }
 #endif // Engine_Enum_h__

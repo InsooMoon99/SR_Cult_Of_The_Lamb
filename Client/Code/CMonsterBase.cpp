@@ -35,6 +35,7 @@ CMonsterBase::CMonsterBase(const CMonsterBase& rhs)
 
 CMonsterBase::~CMonsterBase()
 {
+    
 }
 
 HRESULT CMonsterBase::Ready_GameObject()

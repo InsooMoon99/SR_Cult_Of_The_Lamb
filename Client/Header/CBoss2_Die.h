@@ -9,11 +9,11 @@ BEGIN(Engine)
 class CGameObject;
 END
 
-class CBoss2_Roar : public CMonsterState
+class CBoss2_Die : public CMonsterState
 {
 private:
-    explicit CBoss2_Roar(CGameObject* owner);
-    virtual ~CBoss2_Roar();
+    explicit CBoss2_Die(CGameObject* owner);
+    virtual ~CBoss2_Die();
 
 public:
     void Enter() override;
@@ -23,14 +23,13 @@ public:
     HRESULT Ready_State() override;
 
 public:
-    static CBoss2_Roar* Create(CGameObject* owner);
+    static CBoss2_Die* Create(CGameObject* owner);
 
 private:
     void Free() override;
 
 private:
     CGameObject*     m_Owner;
-
     _float           m_Pattern_Cooldown;
 
 };
