@@ -59,6 +59,7 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
     if (FAILED(Ready_Common(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Terrain(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Decoration(graphicDev))) return E_FAIL;
+    if (FAILED(Ready_Building(graphicDev))) return E_FAIL;
 
     return S_OK;
 }
@@ -247,6 +248,7 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         COMPONENTTYPE::PL_SKILL, CPlayerSkill::Create(graphicDev))))
         return E_FAIL;
 
+
     CTexture* playerTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(playerTex, E_FAIL);
 
@@ -351,6 +353,9 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
 #pragma endregion
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_SKILL, Engine::CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Player/Bullet/Fireball.png", 1))))
         return E_FAIL;
 
     return S_OK;
@@ -627,6 +632,7 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     pathVec1.push_back(L"../Bin/Resource/Texture/UI/Inventory/Weapon2.png");
     pathVec1.push_back(L"../Bin/Resource/Texture/UI/ItemGet/0.png");
     pathVec1.push_back(L"../Bin/Resource/Texture/UI/ItemGet/1.png");
+    pathVec1.push_back(L"../Bin/Resource/Texture/Player/Skill/Arrow_White.png");
 
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_ICON, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec1))))
@@ -841,6 +847,22 @@ HRESULT CResourceMgr::Ready_Particle(DEVICE graphicDev)
     // 추가 예정
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PARTICLE, particleTex)))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CResourceMgr::Ready_Building(DEVICE graphicDev)
+{
+    auto protoMgr = CProtoMgr::GetInstance();
+
+    vector<wstring> templeTextures;
+    templeTextures.emplace_back(L"../Bin/Resource/Texture/Building/Temple_Front.png");
+    templeTextures.emplace_back(L"../Bin/Resource/Texture/Building/Temple_Roof.png");
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_TEMPLE,
+        CTexture::Create(graphicDev, TEX_NORMAL, templeTextures))))
         return E_FAIL;
 
     return S_OK;

@@ -13,17 +13,16 @@ class ENGINE_DLL CAttackBuilder
 public:
     CAttackBuilder(DEVICE graphicDev, CGameObject* instigator)
         : m_GraphicDev(graphicDev),
-        m_Instigator(instigator),
-        m_AttackObj(nullptr),
-        m_LifeTime(0.4f),
-        m_Position(0.f, 0.f, 0.f),
-        m_Offset(0.f, 0.f, 0.f),
-        m_Scale(0.f, 0.f, 0.f),
-        m_UseInstigatorPos(false),
-        m_DestroyOnHit(false),
-        m_Collision_LayerType(COLLISION_LAYERTYPE::DEFAULT)
-    {
-    }
+          m_Instigator(instigator),
+          m_AttackObj(nullptr),
+          m_LifeTime(0.4f),
+          m_Position(0.f, 0.f, 0.f),
+          m_Offset(0.f, 0.f, 0.f),
+          m_Scale(0.f, 0.f, 0.f),
+          m_UseInstigatorPos(false),
+          m_DestroyOnHit(false),
+          m_Collision_LayerType(COLLISION_LAYERTYPE::DEFAULT)
+    { }
 
     // 공격 충돌체 소환 템플릿
     template <typename T>
@@ -87,7 +86,7 @@ public:
     // 절대 위치 (내가 원하는 위치)
     CAttackBuilder& Position(const _vec3& pos)
     {
-        m_Position = pos;
+        m_Position         = pos;
         m_UseInstigatorPos = false;
         return *this;
     }
@@ -148,17 +147,19 @@ public:
     }
 
     // 파티클 스폰
-    CAttackBuilder& Particle(const wstring& particleKey, _uint frames, _float interval = 0.05f,
-                                    const _vec3& scale = _vec3(1.f, 1.f, 1.f),   
-                                    const _vec3& offset = _vec3(0.f, 0.f, 0.f))  
+    CAttackBuilder& Particle(const wstring& particleKey,
+                             _uint          frames,
+                             _float         interval = 0.05f,
+                             const _vec3&   scale    = _vec3(1.f, 1.f, 1.f),
+                             const _vec3&   offset   = _vec3(0.f, 0.f, 0.f))
     {
         auto& particle = m_AttackData.hitParticle;
 
-        particle.key = particleKey;
-        particle.frames = frames;
+        particle.key      = particleKey;
+        particle.frames   = frames;
         particle.interval = interval;
-        particle.scale = scale;      
-        particle.offset = offset;
+        particle.scale    = scale;
+        particle.offset   = offset;
 
         return *this;
     }
@@ -172,9 +173,7 @@ public:
 
         CCollider* collider = m_AttackObj->Get_Collider();
         if (collider)
-        {
             collider->Set_CollisionLayer(m_Collision_LayerType);
-        }
 
         // AttackData 설정 
         m_AttackObj->Set_AttackData(m_AttackData);
@@ -221,18 +220,18 @@ public:
     }
 
 private:
-    DEVICE              m_GraphicDev;
+    DEVICE       m_GraphicDev;
     CGameObject* m_Instigator;
     CAttackBase* m_AttackObj;
 
-    ATTACKDATA          m_AttackData;
-    _float              m_LifeTime;
+    ATTACKDATA m_AttackData;
+    _float     m_LifeTime;
 
-    _vec3               m_Position;
-    _vec3               m_Offset;
-    _vec3               m_Scale;
-    _bool               m_UseInstigatorPos; // 공격자의 위치를 사용할지
-    _bool               m_DestroyOnHit;
+    _vec3 m_Position;
+    _vec3 m_Offset;
+    _vec3 m_Scale;
+    _bool m_UseInstigatorPos; // 공격자의 위치를 사용할지
+    _bool m_DestroyOnHit;
 
     COLLISION_LAYERTYPE m_Collision_LayerType;
 };
