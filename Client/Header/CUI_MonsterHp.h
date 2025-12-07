@@ -25,7 +25,7 @@ public:
 private:
     HRESULT Add_Component();
     void    Update_Billboard();  // 빌보드 계산
-    void    WorldToScreen(_vec3 worldPos);
+    _vec3    WorldToScreen(_vec3 worldPos);
 
 public:
     static CUI_MonsterHp* Create(DEVICE graphicDev, CGameObject* owner);
@@ -39,10 +39,13 @@ private:
     CCombatStat*    m_OwnerCombatStat;
     CTransform*     m_OwnerTransform;
 
-    _float          m_HpRatio;    
-    _float          m_YOffset;    
-    _vec3           m_BarSize;    
+    _float          m_HpRatio;
+    _float          m_HpDelayRatio;   
+    _float          m_HpDelaySpeed;
 
-    _matrix         m_BillboardMatrix;  
+    _float          m_YOffset;
+    _vec3           m_BarSize;
+
+    _matrix         m_BillboardMatrix;
 };
 
