@@ -1,6 +1,5 @@
-﻿#include"pch.h"
-#include"CDroppedItem.h"
-
+﻿#include "pch.h"
+#include "CDroppedItem.h"
 #include "CBoxCollider.h"
 #include "CComponent.h"
 #include "CCreateHelper.h"

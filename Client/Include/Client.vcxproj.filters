@@ -247,6 +247,9 @@
     <Filter Include="05. UI\01. UI\07. UICharging">
       <UniqueIdentifier>{e12d587e-6cb4-4929-857d-7de7606a343a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. UI\01. UI\99. Fade">
+      <UniqueIdentifier>{7ed145a4-f09b-474f-b0ca-37315f6894df}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -655,6 +658,15 @@
     <ClInclude Include="..\Header\CUICharging.h">
       <Filter>05. UI\01. UI\07. UICharging</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CUI_Fade.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CFloaterMonster.h">
+      <Filter>03. GameObject\02. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMonsterSpawner.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1027,6 +1039,15 @@
     </ClCompile>
     <ClCompile Include="..\Code\CUICharging.cpp">
       <Filter>05. UI\01. UI\07. UICharging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_Fade.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CFloaterMonster.cpp">
+      <Filter>03. GameObject\02. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMonsterSpawner.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

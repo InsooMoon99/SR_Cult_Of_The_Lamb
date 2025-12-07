@@ -11,7 +11,7 @@ class CUI_MonsterHp : public CUI
 private:
     explicit CUI_MonsterHp(DEVICE graphicDev, CGameObject* owner);
 
-    // 특정 몬스터한테 1:1로 매칭될 거기 때문에 복사 생성자 필요 ㄴㄴ
+    // 특정 몬스터한테 1:1로 매칭될 거기 때문에 복사 생성자가 안필요할듯?
     explicit CUI_MonsterHp(const CUI_MonsterHp& rhs) = delete;
     virtual ~CUI_MonsterHp();
 
@@ -24,8 +24,8 @@ public:
 
 private:
     HRESULT Add_Component();
+
     void    Update_Billboard();  // 빌보드 계산
-    _vec3    WorldToScreen(_vec3 worldPos);
 
 public:
     static CUI_MonsterHp* Create(DEVICE graphicDev, CGameObject* owner);
@@ -39,6 +39,9 @@ private:
     CCombatStat*    m_OwnerCombatStat;
     CTransform*     m_OwnerTransform;
 
+    CRcTex*         m_Buffer_Hp;
+    CRcTex*         m_Buffer_Delay;
+
     _float          m_HpRatio;
     _float          m_HpDelayRatio;   
     _float          m_HpDelaySpeed;
@@ -46,6 +49,6 @@ private:
     _float          m_YOffset;
     _vec3           m_BarSize;
 
-    _matrix         m_BillboardMatrix;
+    _matrix         m_BillboardMatrix; // 빌보드 쓸지말지?
 };
 

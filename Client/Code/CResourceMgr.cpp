@@ -389,6 +389,28 @@ HRESULT CResourceMgr::Ready_Monster(DEVICE graphicDev)
         COMPONENTTYPE::TEX_HUMAN_MONSTER, humanmonsterTex)))
         return E_FAIL;
 
+    // Floater
+    CTexture* floaterTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(floaterTex, E_FAIL);
+
+    if (FAILED(floaterTex->Add_Texture(L"Floater_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Floater/Floater_Idle/Floater_Idle%d.png", 32)))
+        return E_FAIL;
+
+    if (FAILED(floaterTex->Add_Texture(L"Floater_Hit", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Floater/Floater_Hit/Floater_Hit%d.png", 25)))
+        return E_FAIL;
+
+    if (FAILED(floaterTex->Add_Texture(L"Floater_Attack", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Floater/Floater_Attack/Floater_Attack%d.png", 34)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_FLOATER_MONSTER, floaterTex)))
+        return E_FAIL;
+
+
+
     return S_OK;
 }
 

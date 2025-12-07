@@ -5,6 +5,7 @@ class CInventory;
 class CWeaponEquip;
 class CTerrain;
 class CPlayer;
+class CUI_Fade;
 
 BEGIN(Engine)
 class CCombatStat;
@@ -62,9 +63,8 @@ public:
     void    Create_Trigger_Between(Room fromRoom, Room toRoom,
                 _vec3 offsetFromRoom, _vec3 size);
 
-    void Create_Trigger_Between(Room fromRoom,
-        _vec3 offsetFromRoom, _vec3 size,
-        std::function<void()> callback);
+    void    Create_Trigger_Between(Room fromRoom,
+        _vec3 offsetFromRoom, _vec3 size, function<void()> callback);
 
     void    Change_Room(Room room);
 
@@ -97,6 +97,12 @@ private:
 
     _bool           m_RequestChangeScene = false;
     SCENETYPE       m_NextSceneType = SCENETYPE::SC_END;
+
+    CUI_Fade*       m_UI_Fade;
+
+private:
+    _bool   m_IsFading = false;
+    Room    m_NextRoom;
 
 };
 

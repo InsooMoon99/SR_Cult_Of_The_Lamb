@@ -7,6 +7,7 @@
 #include "CConstructionMgr.h"
 #include "CDInputMgr.h"
 #include "CDropSystem.h"
+#include "CFloaterMonster.h"
 #include "CHumanMonster.h"
 #include "CInventory.h"
 #include "CItemDB.h"
@@ -203,6 +204,13 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::HUMANMONSTER, gameObject),
         L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
+
+    gameObject = CFloaterMonster::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CHumanMonster::Create() returned null")
+
+        FAILED_CHECK_MSG(
+            layer->Add_GameObject(OBJTYPE::HUMANMONSTER, gameObject),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
 
     // -----------------------------
     // Boss

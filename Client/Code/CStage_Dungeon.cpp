@@ -25,12 +25,13 @@
 #include "CUIWeapon.h"
 #include "ItemInstance.h"
 #include "CTrigger_Dungeon.h"
+#include "CUI_Fade.h"
 
 CStage_Dungeon::CStage_Dungeon(DEVICE graphicDev)
-    : Engine::CScene(graphicDev),
+    : CScene(graphicDev),
       m_PlayerCombatStatCom(nullptr),
       m_PlayerInventoryCom(nullptr),
-      m_WeaponEquipCom(nullptr),
+      m_WeaponEquipCom(nullptr), m_UI_Fade(nullptr),
       m_CurrentRoom(Room::DUNGEON_END), m_Player(nullptr), m_PlayerTransform(nullptr)
 {
 }
@@ -126,6 +127,21 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
         m_RequestChangeScene = false;
 
         return 0;
+    }
+
+    if (m_IsFading && m_UI_Fade && m_UI_Fade->IsFadeComplete())
+    {
+        UnLoad_Room(m_CurrentRoom);
+        m_CurrentRoom = m_NextRoom;
+        Load_Room(m_NextRoom);
+
+        if (m_PlayerTransform)
+        {
+            m_PlayerTransform->Set_Pos(m_RoomData[static_cast<_int>(m_NextRoom)].spawnPos);
+        }
+
+        m_UI_Fade->StartFadeIn(0.5f);
+        m_IsFading = false;
     }
 
     _int exit = Engine::CScene::Update_Scene(timeDelta);
@@ -300,19 +316,11 @@ void CStage_Dungeon::Create_Trigger_Between(Room fromRoom, _vec3 offsetFromRoom,
 
 void CStage_Dungeon::Change_Room(Room room)
 {
-    Room nextRoom = room;
-
-    // 이전 방 정리
-    UnLoad_Room(m_CurrentRoom);
-
-    m_CurrentRoom = nextRoom;
-
-    Load_Room(nextRoom);
-
-    // 플레이어 위치 이동
-    if (m_PlayerTransform)
+    if (m_UI_Fade)
     {
-        m_PlayerTransform->Set_Pos(m_RoomData[static_cast<_int>(nextRoom)].spawnPos);
+        m_NextRoom = room;  
+        m_IsFading = true;
+        m_UI_Fade->StartFadeOut(3.f); 
     }
 
 }
@@ -523,7 +531,6 @@ HRESULT CStage_Dungeon::Ready_UI_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiTabMenu),
         L"CStage_Dungeon::Ready_UI_Layer() failed: CLayer::Add_GameObject(UITabMenu) failed");
 
-
     FAILED_CHECK_MSG(Engine::AcquirePersistentObject<CUIItemGetManager>
         (OBJTYPE::UI, L"UI_ItemGetManager",
             m_GraphicDev, layer,
@@ -531,6 +538,14 @@ HRESULT CStage_Dungeon::Ready_UI_Layer(LAYERTYPE layerType)
         L"Persistent object setup failed: UI_ItemGetManager")
         dynamic_cast<CUIItemGetManager*>(gameObject)->SetInventory(m_PlayerInventoryCom);
     dynamic_cast<CUIItemGetManager*>(gameObject)->Initialize();
+
+    // Fade In - Fade Out
+    m_UI_Fade = CUI_Fade::Create(m_GraphicDev);
+    NULL_CHECK_RETURN(m_UI_Fade, E_FAIL);
+
+    FAILED_CHECK_MSG(
+        layer->Add_GameObject(OBJTYPE::UI, m_UI_Fade),
+        L"CStage_Dungeon::Ready_UI_Layer() failed: CFade_UI Add failed");
 
     m_Layers.insert({ layerType, layer });
 
