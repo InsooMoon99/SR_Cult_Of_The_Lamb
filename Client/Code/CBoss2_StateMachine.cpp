@@ -5,7 +5,8 @@
 #include "CBossPhase2.h"
 #include "CMonsterState.h"
 #include "CBoss2_Start.h"
-#include "CBoss2_Roar.h"
+#include "CBoss2_ChainAttack.h"
+#include "CBoss2_Die.h"
 
 CBoss2_StateMachine::CBoss2_StateMachine(CMonsterBase* owner)
     : m_Owner(owner)
@@ -37,7 +38,11 @@ HRESULT CBoss2_StateMachine::Ready_StateMachine()
             return E_FAIL;
 
         // Roar
-        if (FAILED(RegisterState<CBoss2_Roar>(CBossPhase2::PATTERN::PHASE2_ROAR, m_Owner)))
+        if (FAILED(RegisterState<CBoss2_ChainAttack>(CBossPhase2::PATTERN::PHASE2_ROAR, m_Owner)))
+            return E_FAIL;
+
+        // Die
+        if (FAILED(RegisterState<CBoss2_Die>(CBossPhase2::PATTERN::PHASE2_DEAD, m_Owner)))
             return E_FAIL;
     }
 #pragma endregion

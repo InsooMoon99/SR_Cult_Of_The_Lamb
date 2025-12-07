@@ -1,7 +1,7 @@
 ﻿#include "pch.h"
 #include "CPlayerSkill.h"
 
-#include <CLayer.h>
+#include "CLayer.h"
 #include "CAttackBuilder.h"
 #include "CGameObject.h"
 #include "CState.h"
@@ -61,14 +61,14 @@ HRESULT CPlayerSkill::Ready_PlayerCombat()
     m_SkillInfo[SKILL_CHARGING].damageMultiplier = 2.f;
     m_SkillInfo[SKILL_CHARGING].knockbackPower = 50.f;
     m_SkillInfo[SKILL_CHARGING].spawnOffset = 1.3f;
-   // m_SkillInfo[SKILL_CHARGING].hitboxScale = _vec3(1.f, 1.f, 1.f);
+    // m_SkillInfo[SKILL_CHARGING].hitboxScale = _vec3(1.f, 1.f, 1.f);
     // 1발
     m_SkillInfo[SKILL_SINGLE].state = ACTORSTATE::PLAYER_SKILL_SINGLE;
     m_SkillInfo[SKILL_SINGLE].duration = 1.f;
     m_SkillInfo[SKILL_SINGLE].damageMultiplier = 2.f;
     m_SkillInfo[SKILL_SINGLE].knockbackPower = 50.f;
     m_SkillInfo[SKILL_SINGLE].spawnOffset = 1.3f;
-    m_SkillInfo[SKILL_SINGLE].hitboxScale = _vec3(0.2f, 0.2f, 0.2f);
+    m_SkillInfo[SKILL_SINGLE].hitboxScale = _vec3(0.6f, 0.6f, 0.6f);
     m_SkillInfo[SKILL_SINGLE].chargeTime = 1.5f;
     // 3발
     m_SkillInfo[SKILL_TRIPLE].state = ACTORSTATE::PLAYER_SKILL_TRIPLE;
@@ -76,7 +76,7 @@ HRESULT CPlayerSkill::Ready_PlayerCombat()
     m_SkillInfo[SKILL_TRIPLE].damageMultiplier = 2.f;
     m_SkillInfo[SKILL_TRIPLE].knockbackPower = 50.f;
     m_SkillInfo[SKILL_TRIPLE].spawnOffset = 1.3f;
-    m_SkillInfo[SKILL_TRIPLE].hitboxScale = _vec3(0.2f, 0.2f, 0.2f);
+    m_SkillInfo[SKILL_TRIPLE].hitboxScale = _vec3(0.6f, 0.6f, 0.6f);
     m_SkillInfo[SKILL_TRIPLE].chargeTime =2.5f;
     return S_OK;
 }
@@ -245,25 +245,17 @@ _bool       CPlayerSkill::Update_SingleSkill(const float& timeDelta)
     const SkillInfo& skillInfo = m_SkillInfo[SKILL_SINGLE];
     _vec3 MouseDir = m_OwnerInputCom->Get_MouseDir();
 
-   // MouseDir.z = 0;
-
-
+    // MouseDir.z = 0;
     D3DXVec3Normalize(&MouseDir, &MouseDir);
 
     if(!m_SingleFired)
     {
-        CFireball* fireball = Create_Fireball(m_SkillInfo[m_SkillIndex],m_GraphicDev,m_Owner, MouseDir);
+        CFireball* fireball = Create_Fireball(m_SkillInfo[m_SkillIndex], m_GraphicDev,m_Owner, MouseDir);
 		m_Fireballs.push_back(fireball);
         cout << "single 투사체 발사 완료" << endl;
-
-	
-        CLayer* layer = CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::GAMELOGIC);
-
-        layer->Add_GameObject(OBJTYPE::BULLET, fireball);
+        
         m_SingleFired = true;
     }
-
-
 
     if(m_SkillTimer >= m_SkillInfo[SKILL_SINGLE].duration)
     {
@@ -339,12 +331,7 @@ _bool       CPlayerSkill::Update_TripleSkill(const _float& timeDelta)
 		m_Fireballs.push_back(center);
 		m_Fireballs.push_back(left);
 		m_Fireballs.push_back(right);
-
-        CLayer* layer = CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::GAMELOGIC);
-
-        layer->Add_GameObject(OBJTYPE::BULLET, center);
-        layer->Add_GameObject(OBJTYPE::BULLET, left);
-        layer->Add_GameObject(OBJTYPE::BULLET, right);
+        
         m_TripleFired = true;
     }
 
@@ -372,6 +359,13 @@ _bool       CPlayerSkill::Update_TripleSkill(const _float& timeDelta)
 
     return true;
 }
+
+ACTORSTATE CPlayerSkill::Evaluate_ChargeLevel()
+{
+
+    return ACTORSTATE::STATE_END;
+}
+
 void        CPlayerSkill::Cancel_Attack()
 {
     Reset_AttackData();
@@ -384,44 +378,56 @@ void        CPlayerSkill::Reset_AttackData()
 
 CFireball* CPlayerSkill::Create_Fireball(const SkillInfo& skillInfo, DEVICE graphicDev, CGameObject* instigator,_vec3 skillDir)
 {
-    return CFireball::Create(skillInfo, graphicDev, instigator,skillDir);
-}
-//void        CPlayerSkill::Create_Projectile(const SkillInfo& skillInfo, const _vec3& skillDir)
-//{
- //   if (!m_OwnerCombatStatCom) return;
-//
-//    CAttackBuilder(m_GraphicDev, m_Owner)
-//        .Box()
-//        .Track(m_CurrentAttackObj)
-//        .Damage(m_OwnerCombatStatCom->Get_Attack() * skillInfo.damageMultiplier)
-//        .Knockback(skillInfo.knockbackPower)
-//        .Scale(_vec3())
-//        .InstigatorPos()
-//        .Offset(skillDir * skillInfo.spawnOffset)
-//        .DestroyOnHit(true)
-//        .Spawn();
-//
-//    if (m_CurrentAttackObj)
-//    {
-//        CAttackBase* pBox = m_CurrentAttackObj;
-//        m_CurrentAttackObj->Set_OnDestroyCallback([this, pBox]()
-//            {
-//                if (m_CurrentAttackObj == pBox)
-//                    m_CurrentAttackObj = nullptr;
-//            });
-//    }
-//}
+    CFireball* fireball = nullptr;
 
+    CAttackBuilder(graphicDev, instigator)
+        .SetType<CFireball>() // .Box 박스 충돌체 소환하던걸 이제 Fireball, 이게 Sphere를 상속받아서 자체적으로 충돌체가 있어
+        .Track(fireball)  
+        .Damage(dynamic_cast<CCombatStat*>(instigator->Get_Component(ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT))->Get_Attack() * skillInfo.damageMultiplier)
+        .Knockback(skillInfo.knockbackPower)
+        .Scale(skillInfo.hitboxScale)
+        .InstigatorPos()
+        .Offset(skillDir * skillInfo.spawnOffset)
+        .LifeTime(3.f)
+        .DestroyOnHit(true)
+        .CollisionLayer(COLLISION_LAYERTYPE::PLAYERPROJECTILE)
+        .Spawn();
+
+    if (fireball)
+    {
+        auto projectile = dynamic_cast<CProjectile*>(fireball->Get_Component(ID_STATIC, COMPONENTTYPE::PROJECTILE));
+        if (projectile)
+        {
+            BulletDesc d;
+            d.ProjectileOwner = instigator;
+            d.moveType = PROJ_TYPE::LINEAR;
+            d.Speed = 10.f;
+            d.Direction = skillDir;
+            projectile->SetMoveDesc(d);
+        }
+
+        auto transform = fireball->Get_Transform();
+        if (transform)
+        {
+            //transform->Set_Scale(0.7f, 0.7f, 0.f);
+            transform->Set_Rotation(_vec3{ D3DXToRadian(30.f), 0.f, 0.f });
+        }
+    }
+
+    return fireball;
+}
 
 CPlayerSkill* CPlayerSkill::Create(DEVICE graphicDev)
 {
     auto playerskill = new CPlayerSkill(graphicDev);
+
     if (FAILED(playerskill->Ready_PlayerCombat()))
     {
         Safe_Release(playerskill);
         MSG_BOX("PlayerCombat Create Failed");
         return nullptr;
     }
+
     return playerskill;
 }
 CComponent* CPlayerSkill::Clone()

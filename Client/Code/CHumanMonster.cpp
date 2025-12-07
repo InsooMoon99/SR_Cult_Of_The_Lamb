@@ -2,7 +2,6 @@
 #include "CHumanMonster.h"
 #include "CCombatStat.h"
 #include "CAnimator.h"
-#include "CBoxCollider.h"
 #include "CCreateHelper.h"
 #include "CPlayer.h"
 #include "CState.h"
@@ -11,14 +10,15 @@
 #include "CRigidbody.h"
 #include "CAttackBuilder.h"
 #include "CParticleHelper.h"
+#include "CUI_MonsterHp.h"
 
 CHumanMonster::CHumanMonster(DEVICE graphicDev)
-    : CMonsterBase(graphicDev), m_RigidbodyCom(nullptr), m_AttackSpawned(false)
+    : CMonsterBase(graphicDev), m_RigidbodyCom(nullptr), m_AttackSpawned(false), m_HpBar(nullptr)
 {
 }
 
 CHumanMonster::CHumanMonster(const CHumanMonster& rhs)
-    : CMonsterBase(rhs), m_RigidbodyCom(nullptr), m_AttackSpawned(false)
+    : CMonsterBase(rhs), m_RigidbodyCom(nullptr), m_AttackSpawned(false), m_HpBar(nullptr)
 {
 }
 
@@ -42,6 +42,8 @@ HRESULT CHumanMonster::Ready_GameObject()
     m_RigidbodyCom->Set_UseGravity(false);
 
     m_RigidbodyCom->Set_Friction(0.3f);
+
+    m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(45.f));
 
     // 공격 주기 설정
     m_AttackCooldown = 2.f;
@@ -67,6 +69,13 @@ void CHumanMonster::Initialize_GameObject()
 
     if (m_TargetTransform)
         m_Target = m_TargetTransform->Get_Owner();
+
+    // Hp Bar 추가
+    m_HpBar = CUI_MonsterHp::Create(m_GraphicDev, this);
+    if (m_HpBar)
+    {
+        SpawnUIOnLayer(m_HpBar, OBJTYPE::UI);
+    }
 }
 
 _int CHumanMonster::Update_GameObject(const _float& timeDelta)

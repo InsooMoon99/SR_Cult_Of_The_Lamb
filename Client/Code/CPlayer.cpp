@@ -19,6 +19,8 @@
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CWeaponEquip.h"
+#include "CPlayerGathering.h"
+#include "CDInputMgr.h"
 
 CPlayer::CPlayer(DEVICE graphicDev)
     : CCharacterBase(graphicDev),
@@ -87,8 +89,8 @@ _int CPlayer::Update_GameObject(const _float& timeDelta)
     _int exit = CCharacterBase::Update_GameObject(timeDelta);
 
     // 안은수 테스트
-    //if (CDInputMgr::GetInstance()->Get_DIKeyState(DIK_BACKSPACE))
-    //    CDropSystem::GetInstance()->SpawnAllFromInven(m_GraphicDev, m_InventoryCom);
+    if (CDInputMgr::GetInstance()->Get_DIKeyState(DIK_BACKSPACE))
+        CDropSystem::GetInstance()->SpawnAllFromInven(m_GraphicDev, m_InventoryCom);
 
     return exit;
 }
@@ -106,12 +108,14 @@ void CPlayer::Render_GameObject()
 void CPlayer::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CCharacterBase::OnBeginOverlap(self, other);
+    m_PlayerGatherCom->OnBeginOverlap(self, other);
+
 }
 
 void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)
 {
     CCharacterBase::OnEndOverlap(self, other);
-
+    m_PlayerGatherCom->OnEndOverlap(self, other);
     //cout << "Player HitOut" << endl;
 }
 
@@ -176,6 +180,11 @@ HRESULT CPlayer::Add_Component()
     m_PlayerSkillCom = CreateProtoComponent<CPlayerSkill>(this, COMPONENTTYPE::PL_SKILL);
     NULL_CHECK_RETURN(m_PlayerSkillCom, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::PL_SKILL, m_PlayerSkillCom });
+
+    //GTHERING
+    m_PlayerGatherCom = CreateProtoComponent<CPlayerGathering>(this, COMPONENTTYPE::GATHERING);
+    NULL_CHECK_RETURN(m_PlayerGatherCom, E_FAIL);
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::GATHERING, m_PlayerGatherCom });
 
     m_PlayerControllerCom->Init_OwnerComponent();
     m_PlayerMovementCom->Init_OwnerComponent();
@@ -338,6 +347,55 @@ void CPlayer::Animation_Setting()
                              ANIMSTATE::ONCE);
 
 #pragma endregion
+
+#pragma region -----------Crafting-----------
+
+
+    m_AnimatorCom->Create_Animation(L"PlayerAction",
+        25,
+        0.02f,
+        _vec2(0.6f, 1.f),
+        _vec2(0.f, 0.f));
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_ACTION,
+        L"PlayerAction",
+        ANIMSTATE::LOOP);
+
+
+    m_AnimatorCom->Create_Animation(L"PlayerWood",
+        39,
+        0.02f,
+        _vec2(1.f, 1.5f),
+        _vec2(0.f, 0.5f));
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_WOOD,
+        L"PlayerWood",
+        ANIMSTATE::LOOP);
+
+
+    m_AnimatorCom->Create_Animation(L"PlayerStone",
+        45,
+        0.02f,
+        _vec2(0.6f, 1.f),
+        _vec2(0.f, 0.f));
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_STONE,
+        L"PlayerStone",
+        ANIMSTATE::LOOP);
+
+
+    m_AnimatorCom->Create_Animation(L"PlayerBerry",
+        25,
+        0.02f,
+        _vec2(0.6f, 1.f),
+        _vec2(0.f, 0.f));
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_BERRY,
+        L"PlayerBerry",
+        ANIMSTATE::LOOP);
+
+#pragma endregion
+#pragma end
 }
 
 CPlayer* CPlayer::Create(DEVICE graphicDev)

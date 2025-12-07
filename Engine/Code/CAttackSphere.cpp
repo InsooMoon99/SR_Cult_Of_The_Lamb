@@ -27,15 +27,22 @@ HRESULT CAttackSphere::Ready_GameObject()
     return S_OK;
 }
 
-_int CAttackSphere::Update_GameObject(const _float& timeDelta)
+void CAttackSphere::Initialize_GameObject()
 {
-    _int exit = CAttackBase::Update_GameObject(timeDelta);
+    CAttackBase::Initialize_GameObject();
 
     if (m_SphereColCom && m_TransformCom)
     {
         float scale = m_TransformCom->Get_Scale().x;
-        m_SphereColCom->Set_Radius(3.5f * scale); // 👈 스케일이 커지면 radius도 커지고, 작으면 작아짐
+        m_SphereColCom->Set_Radius(3.5f * scale); // 스케일이 커지면 radius도 커지고, 작으면 작아짐
     }
+}
+
+_int CAttackSphere::Update_GameObject(const _float& timeDelta)
+{
+    _int exit = CAttackBase::Update_GameObject(timeDelta);
+
+    
 
     return exit;
 }

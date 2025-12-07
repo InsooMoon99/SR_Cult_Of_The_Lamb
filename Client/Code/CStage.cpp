@@ -27,6 +27,7 @@
 #include "CUITabMenu.h"
 #include "CUIWeapon.h"
 #include "ItemInstance.h"
+#include "CHarvestableHerb.h"
 #include "CPlayerSkill.h"
 
 
@@ -248,6 +249,27 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
         // 에디터에 카메라 설정
         CMainEditorMgr::GetInstance()->Set_MainCamera(camController);
     }
+    ///////////////////////////////////////////
+    // 인터렉티브 오브젝트
+    //////////////////////////////////////////
+    CHarvestableHerb* tmpObject;
+    tmpObject = CHarvestableHerb::Create(m_GraphicDev, CHarvestableHerb::BERRY::BIGBERRY);
+    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
+
+        FAILED_CHECK_MSG(
+            layer->Add_GameObject(OBJTYPE::INTERACTIVE, tmpObject),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
+    tmpObject->Get_Transform()->Set_Pos(30.f, .6f, 30.f);
+    
+    //
+    tmpObject = CHarvestableHerb::Create(m_GraphicDev , CHarvestableHerb::BERRY::SMALLBERRY);
+    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
+
+        FAILED_CHECK_MSG(
+            layer->Add_GameObject(OBJTYPE::INTERACTIVE, tmpObject),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
+    tmpObject->Get_Transform()->Set_Pos(20.f, 0.6f, 20.f);
+
 
     m_Layers.insert({ layerType, layer });
 

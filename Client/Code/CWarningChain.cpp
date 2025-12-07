@@ -3,8 +3,10 @@
 
 #include "CAnimator.h"
 #include "CAttackBox.h"
+#include "CBoss2_Chain.h"
 #include "CBossChain.h"
 #include "CBossPhase1.h"
+#include "CBossPhase2.h"
 #include "CCombatStat.h"
 #include "CCreateHelper.h"
 #include "CRcTex.h"
@@ -105,26 +107,54 @@ _int CWarningChain::Update_GameObject(const _float& timeDelta)
 
     if (m_fElapsedTime > 0.8f && m_flag == false)
     {
-        CBossPhase1* owner = dynamic_cast<CBossPhase1*>(m_pOwner);
+		CBossPhase1* boss1 = dynamic_cast<CBossPhase1*>(m_pOwner);
+		CBossPhase2* boss2 = dynamic_cast<CBossPhase2*>(m_pOwner);
 
-        CBossChain* chain = CBossChain::Create(owner->Get_GraphicDev(), owner);
+		if (boss1)
+		{
+			CBossChain* chain = CBossChain::Create(boss1->Get_GraphicDev(), boss1);
 
-        CTransform* ChainTransform =
-            dynamic_cast<CTransform*>(chain->Get_Component(
-                ID_DYNAMIC,
-                COMPONENTTYPE::TRANSFORM));
+			if (chain)
+			{
+				CTransform* ChainTransform =
+					dynamic_cast<CTransform*>(chain->Get_Component(
+						ID_DYNAMIC,
+						COMPONENTTYPE::TRANSFORM));
+				_vec3 tmp = { 0.f, ChainTransform->Get_Scale().y, 0.f };
+				_vec3 offset = m_TransformCom->Get_Pos() + tmp;
+				ChainTransform->Set_Pos(offset);
+				SpawnObjectOnLayer(chain);
+			}
+		}
+		else if (boss2)
+		{
+			CBoss2_Chain* chain = CBoss2_Chain::Create(boss2->Get_GraphicDev(), boss2);
 
-        _vec3 tmp = { 0.f, ChainTransform->Get_Scale().y, 0.f };
+			if (chain)
+			{
+				CTransform* ChainTransform =
+					dynamic_cast<CTransform*>(chain->Get_Component(
+						ID_DYNAMIC,
+						COMPONENTTYPE::TRANSFORM));
 
-        _vec3 offset = m_TransformCom->Get_Pos() + tmp;
+				if (ChainTransform)
+				{
+					_vec3 tmp = { 0.f, ChainTransform->Get_Scale().y, 0.f };
+					_vec3 offset = m_TransformCom->Get_Pos() + tmp;
 
-        ChainTransform->Set_Pos(offset);
+					ChainTransform->Set_Scale(0.8f, 3.f, 1.f);
+					ChainTransform->Set_Pos(offset);
+					SpawnObjectOnLayer(chain);
+				}
+                else
+                {
+					SpawnObjectOnLayer(chain);
+                }
+			}
+		}
 
-        SpawnObjectOnLayer(chain);
-        //chain->AddRef();
-
-        m_fElapsedTime = 0;
-        m_flag         = true;
+		m_fElapsedTime = 0;
+		m_flag = true;
     }
     //
     //if (chain != nullptr)

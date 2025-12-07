@@ -57,14 +57,23 @@ _int CEyeball_Start::Update_State(const _float& timeDelta)
 
 			transform->Set_Pos(fowardMovePos);
 
-			// 목표 거리 도달
-			_vec3 dir = m_StartTargetPos - fowardMovePos;
-			float length = D3DXVec3Length(&dir);
-			if (length < 0.1f)
-			{
-				transform->Set_Pos(m_StartTargetPos);
-				m_IsReachedTarget = true;
-			}
+            _vec3 dir = m_StartTargetPos - fowardMovePos;
+            float length = D3DXVec3Length(&dir);
+            if (length < 0.1f) // 목표 거리 도달
+            {
+                transform->Set_Pos(m_StartTargetPos);
+
+                if (!m_IsReachedTarget)
+                {
+                    m_IsReachedTarget = true;
+
+                    auto eyeball = static_cast<CEyeball*>(m_Owner);
+                    if (eyeball)  
+                    {
+                        eyeball->Trigger_OnReachedTarget(); 
+                    }
+                }
+            }
         }
     }
 
@@ -73,10 +82,10 @@ _int CEyeball_Start::Update_State(const _float& timeDelta)
 	{
 		m_fCurStateElapsedTime += timeDelta;
 
-        if (m_fCurStateElapsedTime >= m_Pattern_Cooldown)
+        /*if (m_fCurStateElapsedTime >= m_Pattern_Cooldown)
         {
 			return CEyeball::PATTERN::EYEBALL_START_EXIT;
-        }
+        }*/
 	}
 
     return CEyeball::PATTERN::EYEBALL_START;

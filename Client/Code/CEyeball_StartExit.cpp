@@ -34,6 +34,7 @@ void CEyeball_StartExit::Enter()
     if (transform)
     {
 		m_StartPos = transform->Get_Pos();
+
 		m_StartTargetPos = m_StartPos;
 		m_StartTargetPos.y = FLOOR_POS1.y;
     }
@@ -47,6 +48,7 @@ void CEyeball_StartExit::Enter()
 
 _int CEyeball_StartExit::Update_State(const _float& timeDelta)
 {
+
     m_fCurStateElapsedTime += timeDelta;
 
 	// 이동
@@ -98,7 +100,7 @@ _int CEyeball_StartExit::Update_State(const _float& timeDelta)
 	// 목표 도달 후 일정 시간 대기 후 GROUND으로 전환 후 이동
     if (m_IsFinalPosSet && m_fCurStateElapsedTime >= m_Pattern_Cooldown)
     {
-        return CEyeball::PATTERN::EYEBALL_GROUND;
+        return CEyeball::PATTERN::EYEBALL_START_GROUND;
     }
 
     return CEyeball::PATTERN::EYEBALL_START_EXIT;  

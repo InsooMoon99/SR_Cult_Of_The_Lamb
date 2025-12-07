@@ -196,7 +196,7 @@ void CCollisionManager::Initialize_CollisionMatrix()
 
     // TODO : 다른 충돌 상태 판정 추가하기
     
-   // 투사체끼리도 충돌 X, 투사체랑 보스랑도 충돌X
+    // 투사체끼리도 충돌 X, 투사체랑 보스랑도 충돌X
 
     _int projectile_Index = static_cast<_int>(COLLISION_LAYERTYPE::BOSSPROJECTILE);
     m_CollisionMatrix[projectile_Index][projectile_Index] = false;

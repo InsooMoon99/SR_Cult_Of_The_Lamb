@@ -15,10 +15,11 @@ public:
     {
         EYEBALL_START,
         EYEBALL_START_EXIT,
+        EYEBALL_START_GROUND, // 플레이어 방향으로 직진
         EYEBALL_IDLE,
         EYEBALL_EXIT,
         EYEBALL_ENTER,
-        EYEBALL_GROUND,
+        EYEBALL_GROUND_MOVE, // 땅속에서 랜덤이동
         EYEBALL_MOVE,
         EYEBALL_ATTACK,
         EYEBALL_DEAD,
@@ -27,8 +28,8 @@ public:
     };
 
 private:
-    explicit CEyeball(DEVICE graphicDev);
-    explicit CEyeball(const CEyeball& rhs);
+    explicit CEyeball(DEVICE graphicDev, CMonsterBase* boss);
+    explicit CEyeball(const CEyeball& rhs, CMonsterBase* boss);
     ~CEyeball() override;
 
 public:
@@ -44,14 +45,22 @@ public:
     void    OnBeginOverlap(CCollider* self, CCollider* other) override;
     void    OnEndOverlap(CCollider* self, CCollider* other) override;
 
+public:
+    // Eyeball 죽을 때
     using OnEyeDeadCallback = function<void()>;
+    void Set_OnDeathCallback(OnEyeDeadCallback callback);
+    void Trigger_OnDeath();
 
-    OnEyeDeadCallback FEyeDeadCallback = nullptr;
+    // 시작 위치 도달
+    using OnReachedTargetCallback = function<void()>;
+    void Set_OnReachedCallback(OnReachedTargetCallback callback);
+    void Trigger_OnReachedTarget();
 
-    void Set_OnDeathCallback(OnEyeDeadCallback callback)
-    {
-        FEyeDeadCallback = callback;
-    }
+
+private:
+    OnEyeDeadCallback       m_OnEyeDeadCallback = nullptr;
+    OnReachedTargetCallback m_OnReachedTarget_Callback = nullptr;
+    _bool                   m_HasTriggeredReached = false;
 
 private:
     void     Animation_Setting() override;
@@ -61,14 +70,13 @@ public:
     CMonsterController* Get_Controller() { return m_EyeballController; }
     const char* Get_StateName(_int stateNum);
 
-    static CEyeball* Create(DEVICE graphicDev);
+    static CEyeball* Create(DEVICE graphicDev, CMonsterBase* boss);
 
 protected:
     void Free() override;
 
 private:
     CMonsterController* m_EyeballController;
-
-    
+	CMonsterBase*		m_Boss;
 };
 
