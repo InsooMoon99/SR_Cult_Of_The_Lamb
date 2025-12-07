@@ -22,11 +22,10 @@ public:
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
 
-    void    UpdateHPBarUV(_float hpRatio);
-
 private:
     HRESULT Add_Component();
     void    Update_Billboard();  // 빌보드 계산
+    void    WorldToScreen(_vec3 worldPos);
 
 public:
     static CUI_MonsterHp* Create(DEVICE graphicDev, CGameObject* owner);

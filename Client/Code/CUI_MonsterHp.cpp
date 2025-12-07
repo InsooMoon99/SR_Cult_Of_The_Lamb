@@ -160,6 +160,24 @@ HRESULT CUI_MonsterHp::Add_Component()
     return S_OK;
 }
 
+void CUI_MonsterHp::Update_Billboard()
+{
+
+}
+
+void CUI_MonsterHp::WorldToScreen(_vec3 worldPos)
+{
+    _matrix view, proj;
+    m_GraphicDev->GetTransform(D3DTS_VIEW, &view);
+    m_GraphicDev->GetTransform(D3DTS_PROJECTION, &proj);
+
+    _matrix viewProj = view * proj;
+
+    // 월드 -> NDC
+    _vec3 ndc;
+    D3DXVec3TransformCoord(&ndc, &worldPos, &viewProj);
+}
+
 CUI_MonsterHp* CUI_MonsterHp::Create(DEVICE graphicDev, CGameObject* owner)
 {
     CUI_MonsterHp* hp = new CUI_MonsterHp(graphicDev, owner);
