@@ -16,8 +16,20 @@ CConstructionMgr::~CConstructionMgr()
 void CConstructionMgr::Ready_ConstructionMgr(DEVICE graphicDev)
 {
     m_GraphicDev = graphicDev;
+    m_GraphicDev->AddRef();
+}
 
-    m_pPlacer = CConstructionPlacer::Create(m_GraphicDev);
+void CConstructionMgr::Create_Placer(DEVICE graphicDev)
+{
+    Release_Placer();
+
+    m_pPlacer = CConstructionPlacer::Create(graphicDev);
+}
+
+void CConstructionMgr::Release_Placer()
+{
+    if (m_pPlacer)
+        Safe_Release(m_pPlacer);
 }
 
 void CConstructionMgr::Update_ConstructionMgr(const _float& fTimeDelta)

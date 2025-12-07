@@ -43,9 +43,6 @@ CStage::~CStage()
 
 HRESULT CStage::Ready_Scene()
 {
-    // Construction Manager 초기화
-    CConstructionMgr::GetInstance()->Ready_ConstructionMgr(m_GraphicDev);
-
     if (FAILED(Ready_Environment_Layer(LAYERTYPE::ENVIRONMENT)))
         return E_FAIL;
 
@@ -84,6 +81,9 @@ HRESULT CStage::Ready_Scene()
         ItemInstance inst = { id, -1, 0 };
         CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 15.f, 1.f, 10.f + (i * 3.f) });
     }
+
+    // Construction Manager 의 Placer초기화
+    CConstructionMgr::GetInstance()->Create_Placer(m_GraphicDev);
 
     return S_OK;
 }
@@ -374,5 +374,7 @@ CStage* CStage::Create(DEVICE graphicDev)
 
 void CStage::Free()
 {
+    CConstructionMgr::GetInstance()->Release_Placer();
+
     Engine::CScene::Free();
 }

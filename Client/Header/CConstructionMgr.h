@@ -16,6 +16,9 @@ public:
     void Update_ConstructionMgr(const _float& fTimeDelta);
     void Render_ConstructionMgr();
 
+    void Create_Placer(DEVICE graphicDev);
+    void Release_Placer();
+
     // 건설 모드 제어
     // iItemIndex: 건설할 아이템의 인벤토리 인덱스 혹은 ID
     void Start_BuildMode(BUILDING_TYPE type);

@@ -60,7 +60,7 @@ void CTemple::Render_GameObject()
     // 다른 위치에 지붕 텍스처 렌더링
     _matrix matWorld = m_TransformCom->Get_World();
     _matrix matOffset;
-    D3DXMatrixTranslation(&matOffset, 0.f, 2.0f, 0.f);
+    D3DXMatrixTranslation(&matOffset, 0.f, 0.f, 5.f);
 
     matWorld = matOffset * matWorld;
 

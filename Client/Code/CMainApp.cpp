@@ -58,6 +58,9 @@ HRESULT CMainApp::Ready_MainApp()
     // SoundMgr Init
     CSoundMgr::GetInstance()->Ready_SoundMgr();
 
+    // ConstructionMgr Init
+    CConstructionMgr::GetInstance()->Ready_ConstructionMgr(m_GraphicDev);
+
     return S_OK;
 }
 
