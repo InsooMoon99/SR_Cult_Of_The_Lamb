@@ -12,6 +12,7 @@ class CPlayerSkill;
 class CPlayerInput;
 class CPlayerMovement;
 class CPlayerAttack;
+class CPlayerGathering;
 
 /// @brief 플레이어의 전체적인 행동과 상태를 관리하는 중앙 제어 컴포넌트
 /// @details 
@@ -57,7 +58,7 @@ public: // --- Getters for Inspector ---
 
 private:
     // --- [핵심 로직 파이프라인] ---
-    void CheckStateTransition();                // 상태 전환이 가능한지 판단
+    void CheckStateTransition();                 // 상태 전환이 가능한지 판단
     void Update_State(const _float& timeDelta); // 상태에 따른 행동 실행
 
     // --- [세부 행동 메서드] ---
@@ -79,7 +80,7 @@ private:
     CPlayerMovement* m_OwnerMovementCom;
     CPlayerAttack* m_OwnerAttackCom;
     CPlayerSkill* m_OwnerSkillCom;
-
+    CPlayerGathering* m_OwnerGatherCom;
 #pragma endregion
 
     _float m_Timers[TIMER_END]; // enum값을 통해 사용하는 타이머

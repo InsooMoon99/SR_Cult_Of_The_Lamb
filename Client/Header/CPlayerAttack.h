@@ -48,6 +48,8 @@ public:
         WEAPON_SWORD,       // 무기 : 검
         WEAPON_GAUNTLET,    // 무기 : 건틀릿
 
+        WEPON_CRAFTING,      // 곡괭이, 도끼 , 체집시 사용할 공격
+
         WEAPON_MAX
     };
 

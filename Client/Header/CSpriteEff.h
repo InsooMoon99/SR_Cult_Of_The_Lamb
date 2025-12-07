@@ -1,6 +1,11 @@
 ﻿#pragma once
 #include "CEffectBaseCom.h"
 #include "Client_Struct.h"
+namespace Engine
+{
+    class CRcTex;
+}
+
 
 struct SpriteDesc
 {
@@ -23,7 +28,14 @@ public:
     void       Render_Effect() override;
 
     bool BounceEff(const _float& timeDelta);
+    bool OutLineEff(Engine::CRcTex* m_BufferCom);
 
+public:// 함수로만 호출 가능 한 애들
+// 플레시 알파 이팩트 함수
+    void FlashRenderStart(DWORD color);// AGRB
+    void FlashRenderEnd();
+    void AlphaRenderStart(float alpha); //0~1
+    void AlphaRenderEnd();
 
     void SetSpriteDesc(SpriteDesc s)
     {
@@ -43,6 +55,15 @@ public:
 
         m_IsSetBouncingInit = true;
     }
+    void InitOutLine(DWORD color,float lineSize, float alpha=1)
+    {
+        m_Color = color;
+        m_Alpha = alpha;
+        m_LineSize = lineSize;
+
+        m_IsSetOutLineInit = true;
+    }
+
 public:
     static CSpriteEff* Create(DEVICE graphicDev);
     CComponent* Clone();
@@ -58,12 +79,18 @@ private:
     float m_Restitution; // 튕김계수 (1: 비탄성 ~ 0: 탄성)
     float m_Damping;    // 수평 속도 감쇠 (튕길떄)
     float m_DampingPerSecond;    // 수평 속도 감쇠 (공기저항)
+    float m_STOP_VEL = 5.f;
 
 
     bool m_IsSetBouncingInit = false;
-    //    
 
-    float m_STOP_VEL = 5.f;
+    // 라인 이팩트 /////
+    float m_LineSize;
+    _vec3 DIR8[8];
+    DWORD m_Color;
+    float m_Alpha;
+
+    bool m_IsSetOutLineInit;
 protected:
     void Free() override;
 };
