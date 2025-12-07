@@ -144,38 +144,46 @@ void CDroppedItem::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CGameObject::OnBeginOverlap(self, other);
 
+    
+}
+
+void CDroppedItem::OnStayOverlap(CCollider* self, CCollider* other)
+{
+    CGameObject::OnStayOverlap(self, other);
+
     CPlayer* ply = dynamic_cast<CPlayer*>(other->Get_Owner());
     if (ply != nullptr)
     {
         //CDropSystem::GetInstance()->
-   
+
         if (CItemDB::GetInstance()->GetItemById(m_itemInst.itemId)->type == ItemType::Weapon)
         {
             //*** 아이템 지우기 ***
 
             //1. 무기 정보 UI 띄우기
-            switch(m_itemInst.itemId)
+            switch (m_itemInst.itemId)
             {
-            	case 3001:
-            	{
-            	    m_WeaponExplainUI->Set_ItemID(3001);
-            	    break;
-            	}
-            	case 3002:
-            	{
-					m_WeaponExplainUI->Set_ItemID(3002);
-            	    break;
-            	}
+            case 3001:
+            {
+                m_WeaponExplainUI->Set_ItemID(3001);
+                break;
             }
-			m_WeaponExplainUI->Set_Active(true);
+            case 3002:
+            {
+                m_WeaponExplainUI->Set_ItemID(3002);
+                break;
+            }
+            }
+            m_WeaponExplainUI->Set_Active(true);
 
             //ImGuiIO& io = ImGui::GetIO();
             //if (io.WantCaptureKeyboard)
             //    return;
-           
+
             if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
             {
                 dynamic_cast<CWeaponEquip*>(ply->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::WEAPON_EQUIP))->Equip_Weapon(m_itemInst);
+
                 Mark_As_PendingKill();
                 m_WeaponExplainUI->Set_Active(false);
             }
@@ -188,12 +196,12 @@ void CDroppedItem::OnBeginOverlap(CCollider* self, CCollider* other)
             CComponent* com = ply->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::INVENTORY);
             if (dynamic_cast<CInventory*>(com)->AddItem(m_itemInst) == true)
             {
-            //*** 아이템 지우기 ***
-            Mark_As_PendingKill();
+                //*** 아이템 지우기 ***
+                Mark_As_PendingKill();
             }
         }
     }
-   
+
     //cout << "item Hit" << endl;
 }
 
