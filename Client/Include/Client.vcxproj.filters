@@ -238,6 +238,9 @@
     <Filter Include="94. Construction\01. Placer">
       <UniqueIdentifier>{96197f47-b222-4840-94b1-dbb271990129}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. UI\01. UI\07. UICharging">
+      <UniqueIdentifier>{e12d587e-6cb4-4929-857d-7de7606a343a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -622,6 +625,12 @@
     <ClInclude Include="..\Header\CConstructionPlacer.h">
       <Filter>94. Construction\01. Placer</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CFireball.h">
+      <Filter>03. GameObject\10. Fireball</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUICharging.h">
+      <Filter>05. UI\01. UI\07. UICharging</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -970,6 +979,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\CConstructionPlacer.cpp">
       <Filter>94. Construction\01. Placer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CFireball.cpp">
+      <Filter>03. GameObject\10. Fireball</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUICharging.cpp">
+      <Filter>05. UI\01. UI\07. UICharging</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

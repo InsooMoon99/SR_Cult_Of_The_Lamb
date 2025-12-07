@@ -21,7 +21,7 @@ CUIItemGet::CUIItemGet(DEVICE graphicDev)
     m_IsShifting(false),
     m_CloseAnimation(false),
     m_OpenAnimaiton(false),
-    m_TargetX(-500.f),
+    m_TargetX(-520.f),
     m_ClosedX(-900.f),
     m_Speed(250.f),
     m_IsDead(false)
@@ -35,7 +35,7 @@ CUIItemGet::CUIItemGet(const CUIItemGet& rhs)
       m_IsShifting(false),
       m_CloseAnimation(false),
       m_OpenAnimaiton(false),
-      m_TargetX(-500.f),
+      m_TargetX(-520.f),
       m_ClosedX(-900.f),
       m_Speed(250.f),
       m_IsDead(false)
@@ -116,7 +116,7 @@ void CUIItemGet::Render_GameObject()
 {
     CUI::Render_GameObject();
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-
+    
     if (m_UIItem.itemId)
     {
         // 배경 이미지 렌더
@@ -169,7 +169,7 @@ void CUIItemGet::Set_UIItem(int itemId, int itemCount)
         m_UIItem.itemId = itemId;
         m_UIItem.count = itemCount;
         m_UIItem.newcount = itemCount;
-        m_UIItem.remainTime = 3.5f;
+        m_UIItem.remainTime = 3.f;
     }
 }
 

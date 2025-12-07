@@ -95,7 +95,7 @@ enum class OBJTYPE
     ATTACK_COL,
     PARTICLE,
     TRIGGER,
-
+    BULLET,
     TERRAIN,
     PLACEMENT,
     WALL,
@@ -156,6 +156,7 @@ enum class COMPONENTTYPE
     TEX_BULLET,
     TEX_TEMPLE,
     TEX_OUT,
+    TEX_SKILL,
 
     ANIMATOR,
 

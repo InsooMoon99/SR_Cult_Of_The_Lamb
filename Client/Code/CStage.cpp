@@ -27,6 +27,8 @@
 #include "CUITabMenu.h"
 #include "CUIWeapon.h"
 #include "ItemInstance.h"
+#include "CPlayerSkill.h"
+
 
 CStage::CStage(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -105,7 +107,7 @@ _int CStage::Update_Scene(const _float& timeDelta)
 
     if (CDInputMgr::GetInstance()->KeyDown(DIK_G))
         CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS2);
-
+	
     return exit;
 }
 
@@ -185,6 +187,10 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
             COMPONENTTYPE::COMBATSTAT));
 
     NULL_CHECK_RETURN(m_PlayerCombatStatCom, E_FAIL);
+
+	m_PlayerSkillCom = dynamic_cast<CPlayerSkill*>(gameObject->Get_Component(ID_STATIC, COMPONENTTYPE::PL_SKILL));
+
+	NULL_CHECK_RETURN(m_PlayerSkillCom, E_FAIL);
 
     // -----------------------------
     // Monster

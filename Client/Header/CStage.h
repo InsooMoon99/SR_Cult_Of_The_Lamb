@@ -4,6 +4,7 @@
 class CInventory;
 class CWeaponEquip;
 class CTerrain;
+class CPlayerSkill;
 
 BEGIN(Engine)
 class CCombatStat;
@@ -47,6 +48,6 @@ private:
     CCombatStat*  m_PlayerCombatStatCom;
     CInventory*   m_PlayerInventoryCom;
     CWeaponEquip* m_WeaponEquipCom;
-
+    CPlayerSkill* m_PlayerSkillCom;
     CTerrain*     m_Terrain;
 };

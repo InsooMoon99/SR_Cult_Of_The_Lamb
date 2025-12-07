@@ -248,11 +248,15 @@ void CPlayerController::CheckStateTransition()
         }
         if(m_OwnerSkillCom->Get_TripleSkillAvailability())
         {
-            m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SKILL_TRIPLE);
+           ACTORSTATE nextState = m_OwnerSkillCom->Start_TripleSkill();
+           if (nextState != ACTORSTATE::STATE_END)
+           m_OwnerStateCom->Change_State(nextState);
         }
         if(m_OwnerSkillCom->Get_SingleSkillAvailability())
         {
-            m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SKILL_SINGLE);
+           ACTORSTATE nextState = m_OwnerSkillCom->Start_SingleSkill();
+           if (nextState != ACTORSTATE::STATE_END)
+           m_OwnerStateCom->Change_State(nextState);
         }
         
     }
@@ -461,7 +465,7 @@ void CPlayerController::Action_Charging(const _float& timeDelta)
    
     case ACTORSTATE::PLAYER_SKILL_TRIPLE:
         m_OwnerSkillCom->Set_TripleSkill(true);
-        //m_OwnerSkillCom->Set_SingleSkill(false);
+        m_OwnerSkillCom->Set_SingleSkill(false);
       //  m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SKILL_TRIPLE);
         break;
     }
