@@ -281,7 +281,7 @@ void CMapObjectMgr::Render_DecoWindow()
 
         if (decoTexture)
         {
-            const _int TOTAL_DECO = 79; 
+            const _int TOTAL_DECO = 83; 
             const _int COLS = 5;
             const ImVec2 buttonSize(50.f, 50.f);
 

@@ -96,12 +96,11 @@ _int CUIButton::Update_GameObject(const _float& timeDelta)
 
     // 5) 클릭 (괄호 주의)
     if (m_Hovered &&
-        (CDInputMgr::GetInstance()->Get_DIMouseState(MOUSEKEYSTATE::DIM_LB) & 0x80))
+        (CDInputMgr::GetInstance()->MouseDown(DIM_LB)))
     {
         if (m_OnClick)
         {
             m_OnClick();
-
         }
         // OnClick(); 같은 거 여기서 호출해도 됨
     }

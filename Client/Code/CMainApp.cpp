@@ -1,6 +1,5 @@
 ﻿#include "pch.h"
 #include "CMainApp.h"
-
 #include "CCollisionManager.h"
 #include "CConstructionMgr.h"
 #include "CDInputMgr.h"
@@ -93,14 +92,14 @@ void CMainApp::Render_MainApp()
     m_DeviceClass->Render_Begin(D3DXCOLOR(0.f, 0.f, 0.f, 1.f));
 
     m_ManagementClass->Render_Scene(m_GraphicDev);
-
     CMainEditorMgr::GetInstance()->Render_MainEditor();
-    CSceneMgr::GetInstance()->Render_SceneMgr();
 
     // ImGui
     {
         CImGuiManager::GetInstance()->Render();
     }
+
+    CSceneMgr::GetInstance()->Render_SceneMgr();
 
     m_DeviceClass->Render_End();
 }

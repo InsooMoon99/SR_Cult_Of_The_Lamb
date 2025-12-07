@@ -85,6 +85,9 @@ void CUI_Fade::Render_GameObject()
 {
     CUI::Render_GameObject();
 
+    if (!m_IsActive)
+        return;
+
     m_TransformCom->Set_Pos(0.f, 0.f, 0.f);
     m_TransformCom->Set_Scale(WINCX, WINCY, 1.f);
 
@@ -94,6 +97,11 @@ void CUI_Fade::Render_GameObject()
     DWORD color = D3DCOLOR_ARGB(alpha, 0, 0, 0);  
 
     m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, color);
+
+    // 기존 행렬 저장
+    D3DXMATRIX matOldView, matOldProj;
+    m_GraphicDev->GetTransform(D3DTS_VIEW, &matOldView);
+    m_GraphicDev->GetTransform(D3DTS_PROJECTION, &matOldProj);
 
     // 알파 블렌딩
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
@@ -116,6 +124,10 @@ void CUI_Fade::Render_GameObject()
     m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
 
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+
+    // 행렬 복구
+    m_GraphicDev->SetTransform(D3DTS_VIEW, &matOldView);
+    m_GraphicDev->SetTransform(D3DTS_PROJECTION, &matOldProj);
 }
 
 void CUI_Fade::StartFadeIn(_float speed)
@@ -128,6 +140,7 @@ void CUI_Fade::StartFadeIn(_float speed)
 
 void CUI_Fade::StartFadeOut(_float speed)
 {
+
     m_Alpha = 0.0f;        
     m_FadeSpeed = speed;   
     m_IsFadingIn = false;  

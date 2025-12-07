@@ -22,6 +22,9 @@ public:
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
 
+public:
+    void    Set_YOffset(_float offset) { m_YOffset = offset; }
+
 private:
     HRESULT Add_Component();
 

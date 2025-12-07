@@ -23,6 +23,8 @@ public:
     void    Render_GameObject() override;
 
 public:
+    _float GetAlpha() const { return m_Alpha; }
+
     void    StartFadeIn(_float speed = 1.0f);
     void    StartFadeOut(_float speed = 1.0f);
     _bool   IsFading() const { return m_IsActive; }

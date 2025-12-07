@@ -307,30 +307,25 @@ CComponent* CTexture::Clone()
 
 void CTexture::Free()
 {
-    for_each(m_Textures.begin(), m_Textures.end(), CDeleteObj());
-
-    m_Textures.clear();
-
     if (s_LockInitialized)
     {
         EnterCriticalSection(&s_D3DLock);
     }
 
-    for (auto& keyValue : m_AnimTextures)  
-    {
-        for (auto*& tex : keyValue.second)
+    for_each(m_Textures.begin(), m_Textures.end(), CDeleteObj());
+    m_Textures.clear();
+
+    for_each(m_AnimTextures.begin(),
+        m_AnimTextures.end(),
+        [](auto& keyValue)
         {
-            if (tex != nullptr)  
+            for (auto*& tex : keyValue.second)
             {
                 Safe_Release(tex);
-                tex = nullptr;  
             }
-        }
-        keyValue.second.clear(); 
-    }
+        });
 
     m_AnimTextures.clear();
-
     if (s_LockInitialized)
     {
         LeaveCriticalSection(&s_D3DLock);
