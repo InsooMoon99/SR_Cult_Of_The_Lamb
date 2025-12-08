@@ -30,6 +30,7 @@ public:
     void    Render_GameObject() override;
 
     TYPE GetInteractiveType() { return m_Type;}
+    bool Get_Hovering() { return m_bHovering; }
 protected:
     virtual HRESULT Add_Component();
 
@@ -37,6 +38,7 @@ protected:
     void    OnEndOverlap(CCollider* self, CCollider* other) override;
 
     bool Is_Hovering();
+
 
 protected:
     //m_TransformCom, m_BufferCom, m_TextureCom 부모에 있음, 텍스쳐 만 자식에서 추가 설정해줘야 함

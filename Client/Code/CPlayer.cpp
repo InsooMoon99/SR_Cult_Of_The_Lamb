@@ -356,7 +356,7 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"PlayerAction",
         25,
         0.02f,
-        _vec2(0.6f, 1.f),
+        _vec2(0.75f, 0.80f),
         _vec2(0.f, 0.f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_ACTION,
@@ -367,7 +367,7 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"PlayerWood",
         39,
         0.02f,
-        _vec2(1.f, 1.5f),
+        _vec2(0.75f, 0.80f),
         _vec2(0.f, 0.5f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_WOOD,
@@ -378,7 +378,7 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"PlayerStone",
         45,
         0.02f,
-        _vec2(0.6f, 1.f),
+        _vec2(0.75f, 0.80f),
         _vec2(0.f, 0.f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_STONE,
@@ -389,8 +389,8 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"PlayerBerry",
         25,
         0.02f,
-        _vec2(0.6f, 1.f),
-        _vec2(0.f, 0.f));
+        _vec2(0.65f, 0.70f),
+        _vec2(0.05f, -0.1f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_BERRY,
         L"PlayerBerry",
