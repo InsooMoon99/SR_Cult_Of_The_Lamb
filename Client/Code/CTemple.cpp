@@ -48,8 +48,6 @@ void CTemple::LateUpdate_GameObject(const _float& timeDelta)
 
 void CTemple::Render_GameObject()
 {
-    //TODO 출력 테스트 필요: 오프셋에 따라 두 텍스처가 다른 위치에 출력되고 있는지 검증해야 한다
-
     NULL_CHECK(m_TextureCom);
 
     // 앞면 텍스처 렌더링
@@ -60,7 +58,7 @@ void CTemple::Render_GameObject()
     // 다른 위치에 지붕 텍스처 렌더링
     _matrix matWorld = m_TransformCom->Get_World();
     _matrix matOffset;
-    D3DXMatrixTranslation(&matOffset, 0.f, 0.f, 5.f);
+    D3DXMatrixTranslation(&matOffset, 0.f, 0.f, 1.f);
 
     matWorld = matOffset * matWorld;
 

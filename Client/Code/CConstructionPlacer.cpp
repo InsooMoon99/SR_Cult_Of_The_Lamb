@@ -57,58 +57,47 @@ void CConstructionPlacer::Update_Placer(const _float& fTimeDelta)
 void CConstructionPlacer::Render_Preview()
 {
     NULL_CHECK(m_PreviewObj);
-
-#pragma region --- RenderState & TextureStageStat 변경 ---
-
-    // 알파 블랜딩 활성화
-    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+#pragma region --- RenderState 변경 ---
+    // 1. [핵심] Z-Write 끄기
+    m_GraphicDev->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+    // 2. [수정] Alpha Test를 켜서 텍스처의 검은색(0,0,0)을 날려버릴지 결정  
+    // 만약 텍스처가 '검은색=투명' 규칙을 쓴다면 아래 설정이 유효할 수 있으나, 
+    // 근본적으로는 텍스처에 Alpha Channel이 있어야 깔끔하게 나옵니다.
+    // 우선은 기존처럼 FALSE로 두되, 텍스처 문제 확인이 필요합니다.
+    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE); 
+    // 3. Alpha Blending 켜기
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
     m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
     m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-
-    // 뒤쪽 오브젝트를 가리지 않게 하기 위한 Z-Buffer 기록 끄기
-    m_GraphicDev->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
-
-    // 색상 혼합
+    // 4. [색상 혼합] Texture * TFactor (색상 틴트)
     m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
     m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
     m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
-
-    // 알파 혼합
+    // 5. [알파 혼합] Texture * TFactor (투명도)
     m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
     m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
     m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR);
-
-    // 프리뷰 오브젝트 색상 설정
-    DWORD previewColor;
-    if (m_CanPlace)
-        previewColor = D3DCOLOR_ARGB(128, 128, 255, 128);
-    else
-        previewColor = D3DCOLOR_ARGB(128, 255, 128, 128);
-
-    // 텍스처에 ARGB 색상 적용
+    // 6. TFactor 설정 (Green/Red 반투명)
+    DWORD previewColor = m_CanPlace ? D3DCOLOR_ARGB(128, 128, 255, 128) : D3DCOLOR_ARGB(128, 255, 128, 128);
     m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, previewColor);
-
 #pragma endregion
-
-    // 프리뷰 오브젝트 그리기
+    // 프리뷰 오브젝트 렌더
     m_PreviewObj->Render_GameObject();
-
-#pragma region --- 설정 초기화 ---
-
-    // Z-Write 다시 켜기
+#pragma region --- 설정 복구 ---
+    
+    // 복구 순서 중요: 변경한 것들은 모두 원상복구 해야 함
     m_GraphicDev->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
-    // 알파 블렌딩 끄기
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-    // 알파 테스트 켜기
-    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-    // Color 연산 복구
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-    // Alpha 연산 복구
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-    // 팩터 색상 초기화 (흰색)
+    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE); // 보통 켜둠
+    
+    // Texture Stage 복구 (기본값: Modulate / Texture / Current)
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE); 
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_CURRENT); // TFACTOR -> CURRENT로 복구
+    
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1); // 보통 Alpha는 Texture만 봄
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
     m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(255, 255, 255, 255));
-
 #pragma endregion
 }
 
