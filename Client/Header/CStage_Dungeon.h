@@ -74,7 +74,7 @@ public:
 
 private:
     void Free() override;
-    void Fade_Check();
+    void Fade_Check(const _float timeDelta);
 
 private:
     CCombatStat*    m_PlayerCombatStatCom;

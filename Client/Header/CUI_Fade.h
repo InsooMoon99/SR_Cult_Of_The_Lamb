@@ -23,7 +23,7 @@ public:
     void    Render_GameObject() override;
 
 public:
-    _float GetAlpha() const { return m_Alpha; }
+    _float  GetAlpha() const { return m_Alpha; }
 
     void    StartFadeIn(_float speed = 1.0f);
     void    StartFadeOut(_float speed = 1.0f);
@@ -34,8 +34,8 @@ private:
     HRESULT Add_Component();
 
 public:
-    static CUI_Fade* Create(DEVICE graphicDev);
-    void   Set_UseRenderer(_bool use) { m_UseRenderer = use; }
+    static  CUI_Fade* Create(DEVICE graphicDev);
+    void    Set_UseRenderer(_bool use) { m_UseRenderer = use; }
 
 protected:
     void Free() override;

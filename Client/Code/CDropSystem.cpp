@@ -21,7 +21,7 @@ CDropSystem::~CDropSystem()
 
 // 이건 그냥 바닥에 드롭 시킬떄 새로 생성해서 줌
 
-void CDropSystem::SpawnDrop(DEVICE pGraphicDev, const ItemInstance& item, const _vec3& worldPos,
+CDroppedItem* CDropSystem::SpawnDrop(DEVICE pGraphicDev, const ItemInstance& item, const _vec3& worldPos,
     std::optional<_vec3> scale, std::optional<SpriteBounceDesc> bounceDesc)
 {
     CDroppedItem* pDrop = CDroppedItem::Create(pGraphicDev, item, worldPos);
@@ -43,7 +43,10 @@ void CDropSystem::SpawnDrop(DEVICE pGraphicDev, const ItemInstance& item, const 
     }
 
     tmpItem.push_back(pDrop);
+
     m_nowScene->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, pDrop, OBJTYPE::ITEM);
+
+    return pDrop;
 }
 
 void CDropSystem::SpawnAllFromInven(DEVICE pGraphicDev, CInventory* Inven, _vec3 dropDir, int offset)

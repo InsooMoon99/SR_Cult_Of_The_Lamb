@@ -57,6 +57,9 @@ HRESULT CMainApp::Ready_MainApp()
     // SoundMgr Init
     CSoundMgr::GetInstance()->Ready_SoundMgr();
 
+    // ConstructionMgr Init
+    CConstructionMgr::GetInstance()->Ready_ConstructionMgr(m_GraphicDev);
+
     return S_OK;
 }
 
@@ -93,13 +96,13 @@ void CMainApp::Render_MainApp()
 
     m_ManagementClass->Render_Scene(m_GraphicDev);
     CMainEditorMgr::GetInstance()->Render_MainEditor();
+    CSceneMgr::GetInstance()->Render_SceneMgr();
 
     // ImGui
     {
         CImGuiManager::GetInstance()->Render();
     }
 
-    CSceneMgr::GetInstance()->Render_SceneMgr();
 
     m_DeviceClass->Render_End();
 }

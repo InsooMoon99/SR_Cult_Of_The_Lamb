@@ -17,6 +17,7 @@
 #include "CItemDB.h"
 #include "CPlayerAttack.h"
 #include "CPlayerController.h"
+#include "CPlayerGathering.h"
 #include "CPlayerInput.h"
 #include "CPlayerMovement.h"
 #include "CPlayerSkill.h"
@@ -38,14 +39,8 @@
 #include "CWeaponEquip.h"
 #include "ItemData.h"
 #include "ItemInstance.h"
-#include "CBossController.h"
-#include "CPlayerSkill.h"
-#include "CProjectile.h"
-#include "CSpriteEff.h"
-#include "CEffectBaseCom.h"
-#include "CEyeballController.h"
 #include "CMonsterSpawner.h"
-#include "CPlayerGathering.h"
+
 
 IMPLEMENT_SINGLETON(CResourceMgr)
 
@@ -379,6 +374,11 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
 
     if (FAILED(playerTex->Add_Texture(L"PlayerBerry", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Lamb_actions_collect_berries/Lamb_actions_collect_berries%d.png", 25)))
+        return E_FAIL;
+
+#pragma region --- Tex: 기타 상호작용 ---
+    if (FAILED(playerTex->Add_Texture(L"Player_WeaponGet", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Weapon_Get_Shot/Lamb-weapons-get%d.png", 77)))
         return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
