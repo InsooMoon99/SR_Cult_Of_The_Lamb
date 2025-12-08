@@ -5,48 +5,96 @@
 #include "CRcTex.h"
 #include "CTransform.h"
 #include "CTexture.h"
+#include "CRenderer.h"
 
 CUICharging::CUICharging(DEVICE graphicDev): CUI(graphicDev) {}
 CUICharging::CUICharging(const CUICharging& rhs): CUI(rhs) {}
 CUICharging::~CUICharging() {}
-
-void CUICharging::Initialize_GameObject()
-{
-    CUI::Initialize_GameObject();
-}
 
 HRESULT CUICharging::Ready_GameObject()
 {
     if (FAILED(Add_Component()))
         return E_FAIL;
 
-    m_TransformCom->Set_Scale(50.f,50.f,0.f);
-    _vec3 spawnOffset = m_PlayerSkill->Get_Owner()->Get_Transform()->Get_Pos();
-    m_TransformCom->Set_Pos(spawnOffset);
-
-
+    Set_IsActive(false);
     return S_OK;
 }
-
-void CUICharging::Render_GameObject()
+void CUICharging::Initialize_GameObject()
 {
-    CUI::Render_GameObject();
-	m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-	
-    m_TextureCom->Set_Texture(10);
-    m_BufferCom->Render_Buffer();
+    CUI::Initialize_GameObject();
+
+    m_TransformCom->Set_Scale(1.f, 1.f, 1.f);
+    m_TransformCom->Set_Rotation(_vec3{ D3DXToRadian(90.f), 0.f, 0.f });
 }
 
 int CUICharging::Update_GameObject(const _float& timeDelta)
 {
-    int exit = CUI::Update_GameObject(timeDelta);
+        int exit = CUI::Update_GameObject(timeDelta);
 
-    float chargeTime = m_PlayerSkill->Get_ChargeTime();
-    float maxChargeTime = m_PlayerSkill->Get_MaxChargeTime();
-    m_ChargeRatio = chargeTime / maxChargeTime;
+    if (m_Active)
+    {
+        CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_ALPHA, this);
 
-	//m_TransformCom->Set_Scale(m_ChargeRatio*, 0.f, 0.f);
+        float maxLength = 2;
+        float minLength = 0.1;
+        float chargeTime = m_PlayerSkill->Get_ChargeTime();
+        float maxChargeTime = m_PlayerSkill->Get_MaxChargeTime();
+
+        m_ChargeRatio = chargeTime / maxChargeTime;
+
+        float changeLength = m_ChargeRatio * (maxLength - minLength);
+
+        if (changeLength <= minLength)
+            changeLength = minLength;
+
+        m_TransformCom->Set_Scale(changeLength, 0.5f, 1.f);
+
+        _vec3 playerPos = m_PlayerSkill->Get_Owner()->Get_Transform()->Get_Pos();
+
+        _vec3 dir = m_ArrowDir;
+
+        D3DXVec3Normalize(&dir, &dir);
+
+         dir.x = -dir.x;
+        float angle = atan2f(dir.z, dir.x);
+        float offset = m_PlayerSkill->Get_SkillInfo().spawnOffset;
+        dir.x = -dir.x;
+
+       _vec3 spawnPos = playerPos + offset*dir ;
+        m_TransformCom->Set_Pos(spawnPos);
+
+        _vec3 rot{ D3DXToRadian(90.f), angle, 0.f };
+        m_TransformCom->Set_Rotation(rot);
+
+    }
     return exit;
+}
+
+void CUICharging::Render_GameObject()
+{
+        CUI::Render_GameObject();
+        m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
+    if (m_PlayerSkill->Get_IsCharging())
+
+    {
+       m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
+        m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+        m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+        m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
+        m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+        m_GraphicDev->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+        m_GraphicDev->SetRenderState(D3DRS_ALPHAREF, 0);
+
+        m_TextureCom->Set_Texture(10);
+        m_BufferCom->Render_Buffer();
+
+        m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+        m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+       m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+     
+    }
 }
 
 HRESULT CUICharging::Add_Component()
@@ -63,7 +111,7 @@ HRESULT CUICharging::Add_Component()
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
     // texture
-    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_UI_CIRCLE);
+    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_UI_ICON);
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
 
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_UI_ICON, m_TextureCom });
@@ -81,6 +129,7 @@ CUICharging* CUICharging::Create(DEVICE graphicDev)
         MSG_BOX("ChargingUI Create Failed");
         return nullptr;
     }
+    return chargingUI;
 }
 
 void CUICharging::Free()

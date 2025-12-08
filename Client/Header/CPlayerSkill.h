@@ -4,6 +4,7 @@
 class CPlayerInput;
 class CWeaponEquip;
 class CFireball;
+class CUICharging;
 
 BEGIN(Engine)
 class CAttackBase;
@@ -61,7 +62,7 @@ public:
     float Get_ChargeTime() { return m_ChargeTimer; }
     float Get_MaxChargeTime() { return m_MaxChargeTime; }
     SkillInfo Get_SkillInfo() { return m_SkillInfo[m_SkillIndex]; }
-
+    _bool Get_IsCharging() { return m_IsCharging; }
 public:
     ACTORSTATE  Start_Charging();
     ACTORSTATE  Update_Charging(const float& timeDelta);
@@ -112,8 +113,12 @@ private:
 public:
     static CPlayerSkill* Create(DEVICE graphicDev);
     CComponent* Clone() override;
-
+    
 private:
     void Free() override;
 
+private:
+    CUICharging* m_LeftChargingUI{};
+    CUICharging* m_CenterChargingUI{};
+    CUICharging* m_RightChargingUI{};
 };

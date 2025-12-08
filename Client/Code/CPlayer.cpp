@@ -82,6 +82,12 @@ HRESULT CPlayer::Ready_GameObject()
 void CPlayer::Initialize_GameObject()
 {
     CCharacterBase::Initialize_GameObject();
+
+    m_PlayerControllerCom->Init_OwnerComponent();
+    m_PlayerMovementCom->Init_OwnerComponent();
+    m_PlayerAttackCom->Init_OwnerComponent();
+    m_PlayerSkillCom->Init_OwnerComponent();
+
 }
 
 _int CPlayer::Update_GameObject(const _float& timeDelta)
@@ -186,10 +192,6 @@ HRESULT CPlayer::Add_Component()
     NULL_CHECK_RETURN(m_PlayerGatherCom, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::GATHERING, m_PlayerGatherCom });
 
-    m_PlayerControllerCom->Init_OwnerComponent();
-    m_PlayerMovementCom->Init_OwnerComponent();
-    m_PlayerAttackCom->Init_OwnerComponent();
-    m_PlayerSkillCom->Init_OwnerComponent();
 
     return S_OK;
 }
@@ -323,10 +325,10 @@ void CPlayer::Animation_Setting()
 #pragma region --- Skill ---
 
     m_AnimatorCom->Create_Animation(L"PlayerSkillCharging",
-                                    17,
-                                    0.02f,
-                                    _vec2(0.6f, 1.f),
-                                    _vec2(0.f, 0.f));
+                                              17,
+                                              0.02f,
+                                              _vec2(0.6f, 0.8f),
+                                              _vec2(0.f, 0.f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SKILL_CHARGING,
                              L"PlayerSkillCharging",
@@ -335,8 +337,8 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"PlayerSkillAttack",
                                     32,
                                     0.02f,
-                                    _vec2(1.f, 1.5f),
-                                    _vec2(0.f, 0.5f));
+                                    _vec2(1.f, 1.2f),
+                                    _vec2(0.f, 0.4f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SKILL_SINGLE,
                              L"PlayerSkillAttack",
