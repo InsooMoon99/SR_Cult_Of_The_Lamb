@@ -1,6 +1,5 @@
 ﻿#include "pch.h"
 #include "CMainApp.h"
-
 #include "CCollisionManager.h"
 #include "CConstructionMgr.h"
 #include "CDInputMgr.h"
@@ -58,6 +57,9 @@ HRESULT CMainApp::Ready_MainApp()
     // SoundMgr Init
     CSoundMgr::GetInstance()->Ready_SoundMgr();
 
+    // ConstructionMgr Init
+    CConstructionMgr::GetInstance()->Ready_ConstructionMgr(m_GraphicDev);
+
     return S_OK;
 }
 
@@ -71,6 +73,7 @@ int CMainApp::Update_MainApp(const float& timeDelta)
 
     CCollisionManager::GetInstance()->Update();
     CSoundMgr::GetInstance()->Update(timeDelta);
+    CSceneMgr::GetInstance()->Update_SceneMgr(timeDelta);
 
     // Imgui
     {
@@ -92,13 +95,14 @@ void CMainApp::Render_MainApp()
     m_DeviceClass->Render_Begin(D3DXCOLOR(0.f, 0.f, 0.f, 1.f));
 
     m_ManagementClass->Render_Scene(m_GraphicDev);
-
     CMainEditorMgr::GetInstance()->Render_MainEditor();
+    CSceneMgr::GetInstance()->Render_SceneMgr();
 
     // ImGui
     {
         CImGuiManager::GetInstance()->Render();
     }
+
 
     m_DeviceClass->Render_End();
 }

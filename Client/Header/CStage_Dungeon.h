@@ -5,6 +5,8 @@ class CInventory;
 class CWeaponEquip;
 class CTerrain;
 class CPlayer;
+class CUI_Fade;
+class CCameraMovement;
 
 BEGIN(Engine)
 class CCombatStat;
@@ -49,22 +51,14 @@ public:
     void    Render_Scene() override;
 
 public:
-    // TODO : 몬스터, 트리거 등 에디터를 통해 스폰할 수 있도록 변경할 예정
-    void    Spawn_RoomObjects(Room room);
-
     void    Spawn_Weapon();
-    void    Spawn_Monster(_int index);
-
-    void    UnLoad_Room(Room room);
-    void    Load_Room(Room room);
 
     void    Create_RoomTriggers();
     void    Create_Trigger_Between(Room fromRoom, Room toRoom,
                 _vec3 offsetFromRoom, _vec3 size);
 
-    void Create_Trigger_Between(Room fromRoom,
-        _vec3 offsetFromRoom, _vec3 size,
-        std::function<void()> callback);
+    void    Create_Trigger_Between(Room fromRoom,
+        _vec3 offsetFromRoom, _vec3 size, function<void()> callback);
 
     void    Change_Room(Room room);
 
@@ -80,6 +74,7 @@ public:
 
 private:
     void Free() override;
+    void Fade_Check(const _float timeDelta);
 
 private:
     CCombatStat*    m_PlayerCombatStatCom;
@@ -89,8 +84,8 @@ private:
     map<Room, CTerrain*> m_Terrains {};
 
 private:
-    RoomData m_RoomData[5];   // 5개 방 미리 생성
-    Room     m_CurrentRoom;   // 현재 방
+    RoomData        m_RoomData[5];   // 5개 방 미리 생성
+    Room            m_CurrentRoom;   // 현재 방
 
     CGameObject*    m_Player;
     CTransform*     m_PlayerTransform;
@@ -98,6 +93,16 @@ private:
     _bool           m_RequestChangeScene = false;
     SCENETYPE       m_NextSceneType = SCENETYPE::SC_END;
 
+    CUI_Fade*       m_UI_Fade;
+
+private:
+    _bool           m_IsFading = false;
+    Room            m_NextRoom;
+
+    _float          m_PrevZoomSpeed = 0.f;
+
+    // 카메라 무브먼트
+    CCameraMovement* m_CamMovement;
 };
 
 

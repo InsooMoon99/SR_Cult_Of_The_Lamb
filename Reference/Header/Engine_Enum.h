@@ -92,6 +92,8 @@ enum class OBJTYPE
     BOSS1,
     BOSS2,
     INTERACTIVE,
+    TEMPLE,             // 신전
+    KITCHEN,            // 요리용 화덕
 
     ATTACK_COL,
     PARTICLE,
@@ -122,6 +124,7 @@ enum class COMPONENTTYPE
     RIGIDBODY,
     TERRAIN_RENDER,
     WALL_RENDERER,
+    MONSTER_SPAWNER,
     PROJECTILE,
     SPRITEEFFECT,
     GATHERING,
@@ -138,6 +141,7 @@ enum class COMPONENTTYPE
     TEX_MAINBG,
     TEX_MONSTER,
     TEX_HUMAN_MONSTER,
+    TEX_FLOATER_MONSTER,
     TEX_UI_CIRCLE,
     TEX_UI_CELL,
     TEX_UI_COLOR,
@@ -235,6 +239,7 @@ enum class ACTORSTATE
     PLAYER_WOOD,
     PLAYER_STONE,
     PLAYER_BERRY,
+    PLAYER_WEAPONGET,
     //GATHERING,
 
     DEAD,
@@ -311,8 +316,8 @@ enum PROJECTION_TYPE
 // 건축물 종류
 enum BUILDING_TYPE
 {
-    TEMPLE,             // 신전
-    KITCHEN,            // 요리용 화덕
+    TEMPLE,                 // 신전
+    KITCHEN,                // 요리용 화덕
 
     BUILDING_END
 };

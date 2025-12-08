@@ -106,6 +106,7 @@ HRESULT CManagement::Request_ChangeScene(CScene* nextScene)
 
     if (m_NextScene != nullptr)
         Safe_Release(m_NextScene);
+
     m_NextScene = nextScene;
 
     m_ShouldChangeScene = true;
@@ -116,6 +117,8 @@ HRESULT CManagement::Request_ChangeScene(CScene* nextScene)
 void CManagement::Commit_ChangeScene()
 {
     if (!m_ShouldChangeScene) return;
+
+    CRenderer::GetInstance()->Clear_RenderGroup();
 
     Safe_Release(m_Scene);
     m_Scene             = m_NextScene;

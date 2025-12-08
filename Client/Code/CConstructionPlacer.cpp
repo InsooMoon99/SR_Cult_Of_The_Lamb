@@ -1,15 +1,22 @@
 ﻿#include "pch.h"
 #include "CConstructionPlacer.h"
+
+#include "CBuildingBase.h"
 #include "CGameObject.h"
+#include "CManagement.h"
 #include "CPickingHelper.h"
-#include "CTerrain.h"
+#include "CScene.h"
+#include "CTemple.h"
 #include "CTransform.h"
 
 // 임시: 아이템 ID나 프로토타입 키 매핑을 위한 헤더 필요시 추가
 // #include "CItemDB.h" 
 
 CConstructionPlacer::CConstructionPlacer(DEVICE graphicDev)
-    : m_GraphicDev(graphicDev)
+    : m_GraphicDev(graphicDev),
+
+      m_CurPickPos(0.f, 0.f, 0.f),
+      m_PreviewOffsetY(0.f)
 {
     m_GraphicDev->AddRef();
 }
@@ -21,22 +28,28 @@ void CConstructionPlacer::Update_Placer(const _float& fTimeDelta)
 {
     NULL_CHECK(m_PreviewObj);
 
-    _vec3 pickPos;
+    // Picking Logic Test
+    if (Engine::PickPlaneY(m_GraphicDev, g_hWnd, 0.f, m_CurPickPos))
+    {
+        // Check Validation
+        m_CanPlace = Check_ValidPosition(&m_CurPickPos);
 
-    if (!PickPlaneY(m_GraphicDev, g_hWnd, 0.f, pickPos))
-        return;
+        _vec3 pickPos = m_CurPickPos;
 
-    // Check Validation
-    m_CanPlace = Check_ValidPosition(&pickPos);
+        pickPos.y += m_PreviewOffsetY;
 
-    pickPos.y += m_PreviewOffsetY;
+        // Update Preview Object Transform
+        auto previewTransform = dynamic_cast<CTransform*>(
+            m_PreviewObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
 
-    // Update Preview Object Transform
-    auto previewTransform = dynamic_cast<CTransform*>(
-        m_PreviewObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-
-    if (previewTransform)
-        previewTransform->Set_Pos(pickPos);
+        if (previewTransform)
+            previewTransform->Set_Pos(pickPos);
+    }
+    else
+    {
+        // Check Validation
+        m_CanPlace = false;
+    }
 
     m_PreviewObj->Update_GameObject(fTimeDelta);
 }
@@ -44,58 +57,49 @@ void CConstructionPlacer::Update_Placer(const _float& fTimeDelta)
 void CConstructionPlacer::Render_Preview()
 {
     NULL_CHECK(m_PreviewObj);
-
-#pragma region --- RenderState & TextureStageStat 변경 ---
-
-    // 알파 블랜딩 활성화
-    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+#pragma region --- RenderState 변경 ---
+    // 1. Z-Write 끄기
+    m_GraphicDev->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+    // 2. [수정] Alpha Test를 켜서 텍스처의 검은색(0,0,0)을 날려버릴지 결정  
+    // 만약 텍스처가 '검은색=투명' 규칙을 쓴다면 아래 설정이 유효할 수 있으나, 
+    // 근본적으로는 텍스처에 Alpha Channel이 있어야 깔끔하게 나옵니다.
+    // 우선은 기존처럼 FALSE로 두되, 텍스처 문제 확인이 필요합니다.
+    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE); 
+    // 3. Alpha Blending 켜기
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
     m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
     m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-
-    // 뒤쪽 오브젝트를 가리지 않게 하기 위한 Z-Buffer 기록 끄기
-    m_GraphicDev->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
-
-    // 색상 혼합
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
-
-    // 알파 혼합
+    // 4. [색상 혼합] Texture * TFactor (색상 틴트)
+    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
+    // 5. [알파 혼합] Texture * TFactor (투명도)
     m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
     m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
     m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR);
+    // 6. TFactor 설정 (Green/Red 반투명)
+    //DWORD previewColor = m_CanPlace ? D3DCOLOR_ARGB(128, 64, 255, 64) : D3DCOLOR_ARGB(128, 255, 64, 64);
 
-    // 프리뷰 오브젝트 색상 설정
-    DWORD previewColor;
-    if (m_CanPlace)
-        previewColor = D3DCOLOR_ARGB(128, 128, 255, 128);
-    else
-        previewColor = D3DCOLOR_ARGB(128, 255, 128, 128);
-
-    // 텍스처에 ARGB 색상 적용
-    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, previewColor);
-
+    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(128, 255, 255, 255));
 #pragma endregion
 
-    // 프리뷰 오브젝트 그리기
+    // 프리뷰 오브젝트 렌더
     m_PreviewObj->Render_GameObject();
 
-#pragma region --- 설정 초기화 ---
-
-    // Z-Write 다시 켜기
+#pragma region --- 설정 복구 ---
+    // 복구 순서 중요: 변경한 것들은 모두 원상복구 해야 함
     m_GraphicDev->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
-    // 알파 블렌딩 끄기
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-    // 알파 테스트 켜기
-    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-    // Color 연산 복구
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-    // Alpha 연산 복구
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-    // 팩터 색상 초기화 (흰색)
+    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE); // 보통 켜둠
+    
+    // Texture Stage 복구 (기본값: Modulate / Texture / Current)
+    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE); 
+    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_CURRENT); // TFACTOR -> CURRENT로 복구
+    
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1); // 보통 Alpha는 Texture만 봄
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
     m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(255, 255, 255, 255));
-
 #pragma endregion
 }
 
@@ -108,10 +112,33 @@ void CConstructionPlacer::Set_PreviewObject(BUILDING_TYPE type)
     Safe_Release(m_PreviewObj);
     m_CurBuildingType = type;
 
-    // TODO: iItemIndex에  해당하는 GameObject 생성
-    // 프로토타입 클론 로직 필요. 
-    // 예: m_PreviewObj = Prototype_Mgr->Clone_Proto(L"Proto_Building_House");
-    // 지금은 껍데기만.
+    switch (m_CurBuildingType)
+    {
+    case BUILDING_TYPE::TEMPLE:
+        m_PreviewOffsetY = 3.f;
+        m_PreviewObj = CTemple::Create(m_GraphicDev);
+        break;
+
+    case BUILDING_TYPE::KITCHEN:
+        m_PreviewOffsetY = 1.f;
+        // m_PreviewObj = CKitchen::Create(m_GraphicDev);
+        break;
+
+    default: break;
+    }
+
+    if (m_PreviewObj)
+    {
+        dynamic_cast<CBuildingBase*>(m_PreviewObj)->Set_Preview(true);
+        m_PreviewObj->Initialize_GameObject();
+
+        // 초기 위치 설정
+        CTransform* pTransform = dynamic_cast<CTransform*>(m_PreviewObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+        if (pTransform)
+            pTransform->Set_Pos(m_CurPickPos);
+
+        //TODO 건축 범위를 나타내는 원을 만들기
+    }
 }
 
 _bool CConstructionPlacer::Try_PlaceObject()
@@ -119,22 +146,57 @@ _bool CConstructionPlacer::Try_PlaceObject()
     if (!m_CanPlace)
         return false;
 
-    // TODO: 실제 오브젝트 생성 요청
-    // Logic:
-    // 1. 현재 vPickPos 가져오기
-    // 2. CStage의 레이어에 실제 오브젝트 Add_Object
-    // 3. 인벤토리에서 아이템 차감 (Manager가 호출자이므로 Manager에서 처리하거나 여기서 콜백)
+    // 실제 오브젝트 생성
+    CGameObject* pNewObj = nullptr;
+
+    switch (m_CurBuildingType)
+    {
+    case BUILDING_TYPE::TEMPLE:
+        pNewObj = CTemple::Create(m_GraphicDev);
+        break;
+    case BUILDING_TYPE::KITCHEN:
+        // pNewObj = CKitchen::Create(m_GraphicDev);
+        break;
+
+    default: break;
+    }
+
+    if (nullptr == pNewObj)
+        return false;
+
+    // 생성 후 Initialize 호출
+    pNewObj->Initialize_GameObject();
+
+    // 위치 설정
+    CTransform* pTransform = dynamic_cast<CTransform*>(pNewObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+    if (pTransform)
+    {
+        _vec3 placePos = m_CurPickPos;
+        placePos.y += m_PreviewOffsetY; // 오프셋 적용
+        pTransform->Set_Pos(placePos);
+    }
+
+    // 씬에 추가
+    CScene* pScene = CManagement::GetInstance()->Get_Scene();
+    if (pScene)
+    {
+        // 건물은 ENVIRONMENT 레이어에 추가 (또는 기획에 따라 변경)
+        pScene->AddObjectOnLayer(LAYERTYPE::ENVIRONMENT, pNewObj, OBJTYPE::TEMPLE);
+    }
+    else
+    {
+        Safe_Release(pNewObj);
+        return false;
+    }
+
+    // TODO: 인벤토리 차감 등 후처리
 
     return true;
 }
 
 _bool CConstructionPlacer::Check_ValidPosition(_vec3* pOutPos)
 {
-    // TODO: 마우스 피킹 구현
-    // 일단 기본값 리턴
-    if (pOutPos)
-        *pOutPos = _vec3(0.f, 0.f, 0.f);
-
+    // TODO: 마우스 피킹 구현, 충돌 검사 등
     return true;
 }
 

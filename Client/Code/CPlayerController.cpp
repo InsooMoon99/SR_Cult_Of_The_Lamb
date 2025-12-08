@@ -281,7 +281,9 @@ void CPlayerController::CheckStateTransition()
     else if (inputMgr->MouseUp(DIM_RB))
     {
         if (curState == ACTORSTATE::PLAYER_SKILL_CHARGING)
+        {
             m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+        }
         if (m_OwnerSkillCom->Get_TripleSkillAvailability())
         {
             ACTORSTATE nextState = m_OwnerSkillCom->Start_TripleSkill();
@@ -294,6 +296,8 @@ void CPlayerController::CheckStateTransition()
             if (nextState != ACTORSTATE::STATE_END)
                 m_OwnerStateCom->Change_State(nextState);
         }
+
+
     }
 
     // 스킬 공격
@@ -348,8 +352,13 @@ void CPlayerController::CheckStateTransition()
         curState == ACTORSTATE::PLAYER_BERRY||
         curState == ACTORSTATE::PLAYER_STONE||
         curState == ACTORSTATE::PLAYER_WOOD)
+    {
+
+        m_OwnerSkillCom->Set_SingleSkill(false);
+        m_OwnerSkillCom->Set_TripleSkill(false);
 
         return;
+    }
 
     // [우선순위 3] 이동 (방향 입력)
     if (D3DXVec3LengthSq(&m_OwnerInputCom->Get_MoveDir()) > 0.001f)

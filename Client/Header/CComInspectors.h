@@ -7,6 +7,7 @@
 #include "CDInputMgr.h"
 #include "CEnumHelper.h"
 #include "CInventory.h"
+#include "CMonsterSpawner.h"
 #include "CPlayerAttack.h"
 #include "CPlayerController.h"
 #include "CPlayerInput.h"
@@ -861,4 +862,11 @@ static void Menu_CameraInspector(CCameraController* camController)
         }
     }
     ImGui::PopID();
+}
+
+static void MonsterSpawner_Inspector(CMonsterSpawner* spawner)
+{
+    NULL_CHECK(spawner);
+
+    spawner->Render_Editor();
 }

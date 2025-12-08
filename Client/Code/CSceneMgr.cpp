@@ -12,13 +12,18 @@
 #include "CStage_Boss2.h"
 #include "CStage_Dungeon.h"
 #include "CStage_TarotTest.h"
+#include "CUI_Fade.h"
 
 IMPLEMENT_SINGLETON(CSceneMgr)
 
 CSceneMgr::CSceneMgr()
+    : m_GraphicDev(nullptr),
+      m_SceneType(SCENETYPE::SC_END),
+      m_FadeUI(nullptr),
+      m_PendingScene(SCENETYPE::SC_END), m_FadeSpeed(0),
+      m_IsChanging(false),
+      m_FadeOutComplete(false)
 {
-	m_pGraphicDev = nullptr;
-	m_SceneType = SCENETYPE::SC_END;
 }
 
 CSceneMgr::~CSceneMgr()
@@ -26,10 +31,10 @@ CSceneMgr::~CSceneMgr()
 	CSceneMgr::Free();
 }
 
-HRESULT CSceneMgr::Ready_SceneMgr(LPDIRECT3DDEVICE9 pGraphicDev)
+HRESULT CSceneMgr::Ready_SceneMgr(DEVICE pGraphicDev)
 {
-	m_pGraphicDev = pGraphicDev;
-	m_pGraphicDev->AddRef();
+	m_GraphicDev = pGraphicDev;
+	m_GraphicDev->AddRef();
 
 	Engine::CScene* logo = CLogo::Create(pGraphicDev);
 
@@ -45,67 +50,154 @@ HRESULT CSceneMgr::Ready_SceneMgr(LPDIRECT3DDEVICE9 pGraphicDev)
 	return S_OK;
 }
 
-void CSceneMgr::Render_SceneMgr()
-{
-}
-
 void CSceneMgr::Change_SceneMgr(SCENETYPE typeInput)
 {
-	_bool     bFailed = false;
+    // 이미 전환 중이면 무시
+    if (m_IsChanging)
+        return;
 
-	m_SceneType = typeInput;
+    if (m_FadeUI == nullptr)
+    {
+        m_FadeUI = CUI_Fade::Create(m_GraphicDev);
+    }
 
-	switch (m_SceneType)
-	{
-	case SCENETYPE::SC_MAINMENU:
-		if (FAILED(CManagement::GetInstance()->Request_ChangeScene(CMainMenu::Create(m_pGraphicDev))))
-			bFailed = true;
-		break;
-	case SCENETYPE::SC_STAGE:
-		if (FAILED(CManagement::GetInstance()->Request_ChangeScene(CStage::Create(m_pGraphicDev))))
-			bFailed = true;
-		break;
-	case SCENETYPE::SC_EDIT:
-		if (FAILED(CManagement::GetInstance()->Request_ChangeScene(CEdit::Create(m_pGraphicDev))))
-			bFailed = true;
-		break;
+    // Fade UI 생성 실패 시 바로 전환
+    if (m_FadeUI == nullptr)
+    {
+        m_SceneType = typeInput;
 
-    case SCENETYPE::SC_DUNGEON:
-        if (FAILED(CManagement::GetInstance()->Request_ChangeScene(CStage_Dungeon::Create(m_pGraphicDev))))
-            bFailed = true;
-        break;
+        switch (m_SceneType)
+        {
+        case SCENETYPE::SC_MAINMENU:
+            CManagement::GetInstance()->Request_ChangeScene(CMainMenu::Create(m_GraphicDev));
+            break;
 
-	case SCENETYPE::SC_TAROT_TEST:
-		if (FAILED(CManagement::GetInstance()->Request_ChangeScene(CStage_TarotTest::Create(m_pGraphicDev))))
-			bFailed = true;
-		break;
+        case SCENETYPE::SC_STAGE:
+            CManagement::GetInstance()->Request_ChangeScene(CStage::Create(m_GraphicDev));
+            break;
 
-	case SCENETYPE::SC_BOSS_STAGE1:
-		if (FAILED(CManagement::GetInstance()->Request_ChangeScene(CStage_Boss1::Create(m_pGraphicDev))))
-			bFailed = true;
-		break;
+        case SCENETYPE::SC_EDIT:
+            CManagement::GetInstance()->Request_ChangeScene(CEdit::Create(m_GraphicDev));
+            break;
 
-	case SCENETYPE::SC_BOSS_STAGE2:
-		if (FAILED(CManagement::GetInstance()->Request_ChangeScene(CStage_Boss2::Create(m_pGraphicDev))))
-			bFailed = true;
-		break;
+        case SCENETYPE::SC_DUNGEON:
+            CManagement::GetInstance()->Request_ChangeScene(CStage_Dungeon::Create(m_GraphicDev));
+            break;
 
-    case SCENETYPE::SC_LOGO_BOSS1:
-        if (FAILED(CManagement::GetInstance()->Request_ChangeScene(CLogo_Boss::Create(m_pGraphicDev))))
-            bFailed = true;
-        break;
+        case SCENETYPE::SC_TAROT_TEST:
+            CManagement::GetInstance()->Request_ChangeScene(CStage_TarotTest::Create(m_GraphicDev));
+            break;
 
-	case SCENETYPE::SC_LOGO_BOSS2:
-		if (FAILED(CManagement::GetInstance()->Request_ChangeScene(CLogo_Boss2::Create(m_pGraphicDev))))
-			bFailed = true;
-		break;
+        case SCENETYPE::SC_BOSS_STAGE1:
+            CManagement::GetInstance()->Request_ChangeScene(CStage_Boss1::Create(m_GraphicDev));
+            break;
 
-    default:
-		break;
-	}
+        case SCENETYPE::SC_BOSS_STAGE2:
+            CManagement::GetInstance()->Request_ChangeScene(CStage_Boss2::Create(m_GraphicDev));
+            break;
+
+        case SCENETYPE::SC_LOGO_BOSS1:
+            CManagement::GetInstance()->Request_ChangeScene(CLogo_Boss::Create(m_GraphicDev));
+            break;
+
+        case SCENETYPE::SC_LOGO_BOSS2:
+            CManagement::GetInstance()->Request_ChangeScene(CLogo_Boss2::Create(m_GraphicDev));
+            break;
+
+        default:
+            break;
+        }
+        return;
+    }
+
+    // Fade 있으면 예약만 하고 FadeOut 시작
+    m_PendingScene = typeInput;
+    m_IsChanging = true;
+    m_FadeOutComplete = false;
+    m_FadeUI->StartFadeOut(2.0f);
+}
+
+void CSceneMgr::Update_SceneMgr(const _float& timeDelta)
+{
+    if (!m_FadeUI || !m_IsChanging)
+        return;
+
+    m_FadeUI->Update_GameObject(timeDelta);
+
+
+    if (!m_FadeOutComplete &&
+        m_FadeUI->IsFadeComplete() &&
+        m_FadeUI->GetAlpha() >= 1.0f)
+    {
+        m_FadeOutComplete = true;
+        m_SceneType = m_PendingScene;
+        // 실제 씬 전환
+        switch (m_SceneType)
+        {
+        case SCENETYPE::SC_MAINMENU:
+            CManagement::GetInstance()->Request_ChangeScene(CMainMenu::Create(m_GraphicDev));
+            break;
+
+        case SCENETYPE::SC_STAGE:
+            CManagement::GetInstance()->Request_ChangeScene(CStage::Create(m_GraphicDev));
+            break;
+
+        case SCENETYPE::SC_EDIT:
+            CManagement::GetInstance()->Request_ChangeScene(CEdit::Create(m_GraphicDev));
+            break;
+
+        case SCENETYPE::SC_DUNGEON:
+            CManagement::GetInstance()->Request_ChangeScene(CStage_Dungeon::Create(m_GraphicDev));
+            break;
+
+        case SCENETYPE::SC_TAROT_TEST:
+            CManagement::GetInstance()->Request_ChangeScene(CStage_TarotTest::Create(m_GraphicDev));
+            break;
+
+        case SCENETYPE::SC_BOSS_STAGE1:
+            CManagement::GetInstance()->Request_ChangeScene(CStage_Boss1::Create(m_GraphicDev));
+            break;
+
+        case SCENETYPE::SC_BOSS_STAGE2:
+            CManagement::GetInstance()->Request_ChangeScene(CStage_Boss2::Create(m_GraphicDev));
+            break;
+
+        case SCENETYPE::SC_LOGO_BOSS1:
+            CManagement::GetInstance()->Request_ChangeScene(CLogo_Boss::Create(m_GraphicDev));
+            break;
+
+        case SCENETYPE::SC_LOGO_BOSS2:
+            CManagement::GetInstance()->Request_ChangeScene(CLogo_Boss2::Create(m_GraphicDev));
+            break;
+
+        default:
+            break;
+        }
+        // FadeIn 시작
+        m_FadeUI->StartFadeIn(2.0f);
+    }
+
+    // FadeIn 완료 체크
+    if (m_FadeOutComplete &&
+        m_FadeUI->IsFadeComplete() &&
+        m_FadeUI->GetAlpha() <= 0.0f)
+    {
+        m_IsChanging = false;
+        m_FadeOutComplete = false;
+    }
+}
+
+void CSceneMgr::Render_SceneMgr()
+{
+    if (m_FadeUI && m_IsChanging)
+    {
+        m_FadeUI->Render_GameObject();
+    }
 }
 
 void CSceneMgr::Free()
 {
-	Safe_Release(m_pGraphicDev);
+    Safe_Release(m_FadeUI);
+	Safe_Release(m_GraphicDev);
 }
+

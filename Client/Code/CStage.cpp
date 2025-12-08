@@ -1,12 +1,13 @@
 ﻿#include "pch.h"
 #include "CStage.h"
-
 #include "CCameraController.h"
 #include "CCamSetupBuilder.h"
 #include "CCombatStat.h"
 #include "CConstructionMgr.h"
 #include "CDInputMgr.h"
+#include "CDroppedItem.h"
 #include "CDropSystem.h"
+#include "CFloaterMonster.h"
 #include "CHumanMonster.h"
 #include "CInventory.h"
 #include "CItemDB.h"
@@ -32,6 +33,7 @@
 #include "CRock.h"
 #include "CTree.h"
 
+#include "CTrigger_Dungeon.h"
 
 CStage::CStage(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -46,9 +48,6 @@ CStage::~CStage()
 
 HRESULT CStage::Ready_Scene()
 {
-    // Construction Manager 초기화
-    CConstructionMgr::GetInstance()->Ready_ConstructionMgr(m_GraphicDev);
-
     if (FAILED(Ready_Environment_Layer(LAYERTYPE::ENVIRONMENT)))
         return E_FAIL;
 
@@ -88,6 +87,9 @@ HRESULT CStage::Ready_Scene()
         CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 15.f, 1.f, 10.f + (i * 3.f) });
     }
 
+    // Construction Manager 의 Placer초기화
+    CConstructionMgr::GetInstance()->Create_Placer(m_GraphicDev);
+
     return S_OK;
 }
 
@@ -97,20 +99,32 @@ void CStage::Initialize_Scene()
 
     // 초기 맵 불러오기 <- 이거 꼭 Initialize에서 진행해야 맵 오브젝트가 잘 불러진다.
     m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Village.map");
+
+    // 던전 이동 트리거 만들기
+    Create_Trigger();
 }
 
 _int CStage::Update_Scene(const _float& timeDelta)
 {
-    CConstructionMgr::GetInstance()->Update_ConstructionMgr(timeDelta);
-
     _int exit = Engine::CScene::Update_Scene(timeDelta);
+
+    CConstructionMgr::GetInstance()->Update_ConstructionMgr(timeDelta);
 
     if (CDInputMgr::GetInstance()->KeyDown(DIK_F))
         CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS1);
 
     if (CDInputMgr::GetInstance()->KeyDown(DIK_G))
         CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS2);
-	
+
+    // Building Mode Test
+    if (CDInputMgr::GetInstance()->KeyDown(DIK_B))
+    {
+        if (CConstructionMgr::GetInstance()->IsBuilding())
+            CConstructionMgr::GetInstance()->End_BuildMode();
+        else
+            CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::TEMPLE);
+    }
+
     return exit;
 }
 
@@ -191,9 +205,9 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
 
     NULL_CHECK_RETURN(m_PlayerCombatStatCom, E_FAIL);
 
-	m_PlayerSkillCom = dynamic_cast<CPlayerSkill*>(gameObject->Get_Component(ID_STATIC, COMPONENTTYPE::PL_SKILL));
+    m_PlayerSkillCom = dynamic_cast<CPlayerSkill*>(gameObject->Get_Component(ID_STATIC, COMPONENTTYPE::PL_SKILL));
 
-	NULL_CHECK_RETURN(m_PlayerSkillCom, E_FAIL);
+    NULL_CHECK_RETURN(m_PlayerSkillCom, E_FAIL);
 
     // -----------------------------
     // Monster
@@ -206,6 +220,13 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::HUMANMONSTER, gameObject),
         L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
+
+    gameObject = CFloaterMonster::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CHumanMonster::Create() returned null")
+
+        FAILED_CHECK_MSG(
+            layer->Add_GameObject(OBJTYPE::HUMANMONSTER, gameObject),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
 
     // -----------------------------
     // Boss
@@ -258,18 +279,18 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     tmpObject = CHarvestableHerb::Create(m_GraphicDev, CHarvestableHerb::BERRY::BIGBERRY);
     NULL_CHECK_RETURN_MSG(tmpObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
 
-        FAILED_CHECK_MSG(
-            layer->Add_GameObject(OBJTYPE::INTERACTIVE, tmpObject),
-            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
+    FAILED_CHECK_MSG(
+        layer->Add_GameObject(OBJTYPE::INTERACTIVE, tmpObject),
+        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
     tmpObject->Get_Transform()->Set_Pos(30.f, .6f, 30.f);
-    
+
     //
     tmpObject = CHarvestableHerb::Create(m_GraphicDev , CHarvestableHerb::BERRY::SMALLBERRY);
     NULL_CHECK_RETURN_MSG(tmpObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
 
-        FAILED_CHECK_MSG(
-            layer->Add_GameObject(OBJTYPE::INTERACTIVE, tmpObject),
-            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
+    FAILED_CHECK_MSG(
+        layer->Add_GameObject(OBJTYPE::INTERACTIVE, tmpObject),
+        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
     tmpObject->Get_Transform()->Set_Pos(20.f, 0.6f, 20.f);
     //
     CRock* tmpRock;
@@ -460,6 +481,30 @@ HRESULT CStage::Ready_Prototype()
     return S_OK;
 }
 
+void CStage::Create_Trigger()
+{
+    auto gameLayer = m_Layers[LAYERTYPE::GAMELOGIC];
+    NULL_CHECK(gameLayer);
+
+    auto trigger = CTrigger_Dungeon::Create(m_GraphicDev);
+
+    // Terrain 위치에 맞춰서 스폰
+    _vec3 triggerPos = m_Terrain->Get_Transform()->Get_Pos();
+    _vec3 offset = _vec3(18.f, 0.f, 46.f);
+
+    // 트리거 위치, 크기 세팅
+    trigger->Set_Bounds(triggerPos + offset, _vec3(10.f, 5.f, 5.f));
+    trigger->Set_TriggerOnce(false);
+
+    trigger->Set_Callback([this]
+        {
+            CSceneMgr::GetInstance()->Change_SceneMgr(
+                SCENETYPE::SC_DUNGEON);
+        });
+
+    gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
+}
+
 CStage* CStage::Create(DEVICE graphicDev)
 {
     auto stage = new CStage(graphicDev);
@@ -476,5 +521,8 @@ CStage* CStage::Create(DEVICE graphicDev)
 
 void CStage::Free()
 {
+    CDroppedItem::Reset_WeaponExplainUI();
+    CConstructionMgr::GetInstance()->Release_Placer();
+
     Engine::CScene::Free();
 }

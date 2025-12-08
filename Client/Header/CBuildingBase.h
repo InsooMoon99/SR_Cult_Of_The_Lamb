@@ -25,6 +25,9 @@ public:
     void OnStayOverlap(CCollider* self, CCollider* other) override;
     void OnEndOverlap(CCollider* self, CCollider* other) override;
 
+public:
+    void Set_Preview(bool preview) { m_IsPreview = preview; }
+
 protected:
     HRESULT Add_Component() override;
 
@@ -32,5 +35,7 @@ protected:
     void Free() override;
 
 protected:
-    Engine::CBoxCollider* m_BoxColCom = nullptr;
+    Engine::CBoxCollider* m_BoxCollCom = nullptr;
+
+    _bool m_IsPreview = false;
 };

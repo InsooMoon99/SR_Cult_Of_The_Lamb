@@ -24,10 +24,10 @@ protected:
     void Free() override;
 
 private:
-    CRcTex* m_BufferCom;
-    CTransform* m_TransformCom;
-    CTexture* m_TextureCom;
-    CAnimator* m_AnimatorCom;
-    CState* m_StateCom;
+    CRcTex*          m_BufferCom;
+    CTransform*      m_TransformCom;
+    CTexture*        m_TextureCom;
+    CAnimator*       m_AnimatorCom;
+    CState*          m_StateCom;
 };
 

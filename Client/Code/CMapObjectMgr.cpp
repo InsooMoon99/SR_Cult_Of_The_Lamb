@@ -1,13 +1,14 @@
 ﻿#include "pch.h"
 #include "CMapObjectMgr.h"
+
+#include "CLayer.h"
+#include "CManagement.h"
+#include "CMapEditorPlacer.h"
 #include "CMapObject_Helper.h"
 #include "CProtoMgr.h"
-#include "CTexture.h"
-#include "CMapEditorPlacer.h"
-#include "CTransform.h"
-#include "CLayer.h"
 #include "CScene.h"
-#include "CManagement.h"
+#include "CTexture.h"
+#include "CTransform.h"
 
 IMPLEMENT_SINGLETON(CMapObjectMgr)
 
@@ -18,12 +19,13 @@ CMapObjectMgr::CMapObjectMgr()
 
 CMapObjectMgr::~CMapObjectMgr()
 {
-    Free();
+    CMapObjectMgr::Free();
 }
 
 void CMapObjectMgr::Ready_MapObjectMgr(DEVICE graphicDev)
 {
     m_GraphicDev = graphicDev;
+    m_GraphicDev->AddRef();
 
     m_MapPlacer = CMapEditorPlacer::Create(graphicDev);
 
@@ -281,7 +283,7 @@ void CMapObjectMgr::Render_DecoWindow()
 
         if (decoTexture)
         {
-            const _int TOTAL_DECO = 79; 
+            const _int TOTAL_DECO = 83; 
             const _int COLS = 5;
             const ImVec2 buttonSize(50.f, 50.f);
 
@@ -651,6 +653,7 @@ HRESULT CMapObjectMgr::Load_FromStream(ifstream& ifs, _vec3 terrainOffset)
                 _vec3 loadedRotation = data.rotation;
                 loadedRotation.x = -loadedRotation.x;
                 loadedRotation.y = -loadedRotation.y;
+                loadedRotation.z = -loadedRotation.z;
 
                 transform->Set_Rotation(loadedRotation);
             }
