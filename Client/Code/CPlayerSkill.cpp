@@ -66,14 +66,14 @@ HRESULT CPlayerSkill::Ready_PlayerCombat()
     m_SkillInfo[SKILL_CHARGING].duration = 0.5f;
     m_SkillInfo[SKILL_CHARGING].damageMultiplier = 2.f;
     m_SkillInfo[SKILL_CHARGING].knockbackPower = 50.f;
-    m_SkillInfo[SKILL_CHARGING].spawnOffset = 1.3f;
+    m_SkillInfo[SKILL_CHARGING].spawnOffset = 0.8f;
     // m_SkillInfo[SKILL_CHARGING].hitboxScale = _vec3(1.f, 1.f, 1.f);
     // 1발
     m_SkillInfo[SKILL_SINGLE].state = ACTORSTATE::PLAYER_SKILL_SINGLE;
     m_SkillInfo[SKILL_SINGLE].duration = 0.5f;
     m_SkillInfo[SKILL_SINGLE].damageMultiplier = 2.f;
     m_SkillInfo[SKILL_SINGLE].knockbackPower = 50.f;
-    m_SkillInfo[SKILL_SINGLE].spawnOffset = 1.3f;
+    m_SkillInfo[SKILL_SINGLE].spawnOffset = 0.8f;
     m_SkillInfo[SKILL_SINGLE].hitboxScale = _vec3(0.6f, 0.6f, 0.6f);
     m_SkillInfo[SKILL_SINGLE].chargeTime = 0.5f;
     // 3발
@@ -81,7 +81,7 @@ HRESULT CPlayerSkill::Ready_PlayerCombat()
     m_SkillInfo[SKILL_TRIPLE].duration = 0.5f;
     m_SkillInfo[SKILL_TRIPLE].damageMultiplier = 2.f;
     m_SkillInfo[SKILL_TRIPLE].knockbackPower = 50.f;
-    m_SkillInfo[SKILL_TRIPLE].spawnOffset = 1.3f;
+    m_SkillInfo[SKILL_TRIPLE].spawnOffset = 0.8f;
     m_SkillInfo[SKILL_TRIPLE].hitboxScale = _vec3(0.6f, 0.6f, 0.6f);
     m_SkillInfo[SKILL_TRIPLE].chargeTime =1.5f;
     return S_OK;

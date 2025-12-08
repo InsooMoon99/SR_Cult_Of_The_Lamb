@@ -24,7 +24,7 @@ void CUICharging::Initialize_GameObject()
     CUI::Initialize_GameObject();
 
     m_TransformCom->Set_Scale(1.f, 1.f, 1.f);
-    m_TransformCom->Set_Rotation(_vec3{ D3DXToRadian(90.f), 0.f, 0.f });
+    m_TransformCom->Set_Rotation(_vec3{ D3DXToRadian(30.f), 0.f, 0.f });
 }
 
 int CUICharging::Update_GameObject(const _float& timeDelta)
@@ -47,24 +47,26 @@ int CUICharging::Update_GameObject(const _float& timeDelta)
             changeLength = 0.f;
 
         m_TransformCom->Set_Scale(changeLength, 0.5f, 1.f);
-    
-        float offsetX = Length * (1 - m_ChargeRatio);
+        //float offsetX = (1 - m_ChargeRatio);
 
         _vec3 dir = m_ArrowDir;
 
         D3DXVec3Normalize(&dir, &dir);
+        dir.x = -dir.x;
 
-         dir.x = -dir.x;
 
         float angle = atan2f(dir.z, dir.x);
-        float offset = m_PlayerSkill->Get_SkillInfo().spawnOffset;
 
         dir.x = -dir.x;
 
+        _float offset = m_PlayerSkill->Get_SkillInfo().spawnOffset;
         _vec3 playerPos = m_PlayerSkill->Get_Owner()->Get_Transform()->Get_Pos();
-        _vec3 spawnPos = playerPos + offset * dir;
-        spawnPos.x += offsetX;
-        m_TransformCom->Set_Pos(spawnPos);
+
+        _vec3 tailPos = playerPos + dir * offset;
+        _vec3 centerPos = tailPos + dir * (changeLength * 0.5f);
+       //  centerPos.x += offsetX;
+        centerPos.y = 0.3;
+        m_TransformCom->Set_Pos(centerPos);
 
         _vec3 rot{ D3DXToRadian(90.f), angle, 0.f };
         m_TransformCom->Set_Rotation(rot);
