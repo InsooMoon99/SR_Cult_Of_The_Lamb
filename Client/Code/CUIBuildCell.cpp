@@ -57,7 +57,7 @@ HRESULT CUIBuildCell::Ready_GameObject()
         return E_FAIL;
 
     //인벤토리 아이템 그리기용 객체 생성
-    m_TransformCom->Set_Scale(45.f, 45.f, 0.f);
+    m_TransformCom->Set_Scale(60.f, 60.f, 0.f);
     m_ItemIcon = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_BUILD); //아이템 텍스처
     m_ItemIcon->SetRegister(false); // 아이템 텍스처 렌더 그룹에 중복 등록되는 것 막기 위한 플래그
 
@@ -131,17 +131,17 @@ void CUIBuildCell::Render_GameObject()
     m_CardItemIcon->Get_Transform()->Set_Scale(_vec3(30.f, 30.f, 0.f));
  
     m_ItemIcon->Render_GameObject();
- 
+    m_CardItemIcon->Render_GameObject();
     //셀 선택시 외곽선 그리기
     if (m_IsHovered)
     {
         m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
         m_HighlightTexCom->Set_Texture(1);
 
-        //외곽선 빨강으로 바꾸기
-        D3DCOLOR color = D3DCOLOR_ARGB(255, 255, 0, 0);
+        //외곽선 바꾸기
+        D3DCOLOR mint = D3DCOLOR_ARGB(255, 62, 180, 137);
 
-        m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, color);
+        m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, mint);
 
         m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE); //색상을 곱하기 방식으로 처리하곘다는 뜻
         m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE); //첫번째 인자는 텍스처
@@ -155,11 +155,11 @@ void CUIBuildCell::Render_GameObject()
         m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
         m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
 
-        
-            //카드 그리기
-            m_CardIcon->Render_GameObject();
-            m_CardItemIcon->Render_GameObject();
+        //카드 그리기
+        m_CardIcon->Render_GameObject();
+        m_CardItemIcon->Render_GameObject();
 
+            //TODO 유림 : 이미지 바꿀건지 결정하기
             _vec3 pos = m_CardIcon->Get_Transform()->Get_Pos();
             _vec2 descOffset = { 0.f, 0.f };
             _vec2 screen = { WINCX / 2 + pos.x, WINCY / 2 - pos.y + descOffset.y };
@@ -171,13 +171,13 @@ void CUIBuildCell::Render_GameObject()
         case BUILDITEM::COOKINGFIRE:
             //아이템 이름 출력
             CFontMgr::GetInstance()->Render_Font(L"아이템 이름",
-              L"성지",
+              L"요리용 화덕",
                 &screen,
                 D3DXCOLOR{ 1.f, 1.f, 1.f, 1.f });
 
             //아이템 메인 설명 출력
             CFontMgr::GetInstance()->Render_Font(L"카드 설명",
-              L"추종자들이 기도를 드리는 곳. 성지에서 생성되는 헌신을 축적합니다.",
+              L"날것을 요리해 추종자들이 먹을 수 있는 요리로 만듭니다.",
                 &screen,
                 D3DXCOLOR{ 1.f, 1.f, 1.f, 1.f });
 

@@ -36,5 +36,10 @@ private:
     float m_Speed;
     bool m_IsOpen;
     bool m_IsAnimating;
+
+    int m_Cols;
+    int m_CellWidth;
+    int m_CellHeight;
+
 };
 

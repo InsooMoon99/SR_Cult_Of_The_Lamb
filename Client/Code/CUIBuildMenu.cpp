@@ -11,6 +11,9 @@
 CUIBuildMenu::CUIBuildMenu(DEVICE graphicDev)
     : CUI(graphicDev),
       m_CookingFireCell(nullptr),
+      m_Cols(6),
+      m_CellWidth(200.f),
+      m_CellHeight(150.f),
       m_TempleCell(nullptr),
       m_TargetX(0),
       m_ClosedX(0),
@@ -18,7 +21,18 @@ CUIBuildMenu::CUIBuildMenu(DEVICE graphicDev)
       m_IsOpen(false),
       m_IsAnimating(false) { }
 
-CUIBuildMenu::CUIBuildMenu(const CUI& rhs) : CUI(rhs) { }
+CUIBuildMenu::CUIBuildMenu(const CUI& rhs)
+    : CUI(rhs),
+      m_CookingFireCell(nullptr),
+      m_TempleCell(nullptr),
+      m_TargetX(0),
+      m_ClosedX(0),
+      m_Speed(0),
+      m_IsOpen(false),
+      m_IsAnimating(false),
+      m_Cols(0),
+      m_CellWidth(0),
+      m_CellHeight(0) { }
 
 CUIBuildMenu::~CUIBuildMenu()
 {
@@ -29,7 +43,7 @@ HRESULT CUIBuildMenu::Ready_GameObject()
     if (FAILED(Add_Component()))
         return E_FAIL;
 
-    m_TargetX = 0;
+    m_TargetX = -200;
     m_ClosedX = -WINCX;
     m_Speed = 900.f;
 
@@ -37,6 +51,7 @@ HRESULT CUIBuildMenu::Ready_GameObject()
     m_CookingFireCell = CUIBuildCell::Create(m_GraphicDev);
     m_CookingFireCell->Set_BuildIndex(BUILDITEM::COOKINGFIRE);
     m_CookingFireCell->Set_TextureIndex(0);
+
     m_BuildCells.push_back(m_CookingFireCell);
 
     m_TempleCell = CUIBuildCell::Create(m_GraphicDev);
@@ -73,14 +88,25 @@ _int CUIBuildMenu::Update_GameObject(const _float& timeDelta)
         {
             pos.x = targetX;
             m_IsAnimating = false;
-        }
+        }                 
         m_TransformCom->Set_Pos(pos);
     }
 
     int cellsSize = m_BuildCells.size();
+
+    int materialRenderCount = 0;
+    _vec2 BackPos = { m_TransformCom->Get_Pos().x, m_TransformCom->Get_Pos().y };
+
     for (int i = 0; i < cellsSize; i++)
     {
-        m_BuildCells[i]->Render_GameObject();
+        int col = materialRenderCount % m_Cols;
+        float startOffset = -50.f;
+        float materialOffsetX = startOffset + col * m_CellWidth;
+
+        m_BuildCells[i]->Update_GameObject(timeDelta);
+        m_BuildCells[i]->Get_Transform()->Set_Pos(BackPos.x + materialOffsetX, BackPos.y + 60, 0.f);
+
+        materialRenderCount++;
     }
     Check_Hovered();
 
