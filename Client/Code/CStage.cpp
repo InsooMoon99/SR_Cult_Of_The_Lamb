@@ -439,6 +439,7 @@ CStage* CStage::Create(DEVICE graphicDev)
 
 void CStage::Free()
 {
+    CDroppedItem::Reset_WeaponExplainUI();
     CConstructionMgr::GetInstance()->Release_Placer();
 
     Engine::CScene::Free();
