@@ -35,34 +35,35 @@ int CUICharging::Update_GameObject(const _float& timeDelta)
     {
         CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_ALPHA, this);
 
-        float maxLength = 2;
-        float minLength = 0.1;
+        float Length = 2;
         float chargeTime = m_PlayerSkill->Get_ChargeTime();
         float maxChargeTime = m_PlayerSkill->Get_MaxChargeTime();
 
         m_ChargeRatio = chargeTime / maxChargeTime;
 
-        float changeLength = m_ChargeRatio * (maxLength - minLength);
+        float changeLength = m_ChargeRatio * Length;
 
-        if (changeLength <= minLength)
-            changeLength = minLength;
+        if (changeLength <= 0.f)
+            changeLength = 0.f;
 
-        _vec3 preLength = m_TransformCom->Get_Scale();
         m_TransformCom->Set_Scale(changeLength, 0.5f, 1.f);
-        _vec3 changedLength = m_TransformCom->Get_Scale();
-        _vec3 gap = changedLength - preLength;
+    
+        float offsetX = Length * (1 - m_ChargeRatio);
 
         _vec3 dir = m_ArrowDir;
 
         D3DXVec3Normalize(&dir, &dir);
 
          dir.x = -dir.x;
+
         float angle = atan2f(dir.z, dir.x);
         float offset = m_PlayerSkill->Get_SkillInfo().spawnOffset;
+
         dir.x = -dir.x;
 
         _vec3 playerPos = m_PlayerSkill->Get_Owner()->Get_Transform()->Get_Pos();
-       _vec3 spawnPos = playerPos + offset*dir + gap ;
+        _vec3 spawnPos = playerPos + offset * dir;
+        spawnPos.x += offsetX;
         m_TransformCom->Set_Pos(spawnPos);
 
         _vec3 rot{ D3DXToRadian(90.f), angle, 0.f };
