@@ -3,6 +3,7 @@
 #include "ItemInstance.h"
 #include "Client_Struct.h"
 
+class CUIWeaponExplain;
 BEGIN(Engine)
 class CTransform;
 class CBoxCollider;
@@ -28,6 +29,7 @@ public:
     void    Render_GameObject() override;
 
     void OnBeginOverlap(CCollider* self, CCollider* other) override;
+    void OnStayOverlap(CCollider* self, CCollider* other) override;
     void OnEndOverlap(CCollider* self, CCollider* other) override;
 
 private:
@@ -38,6 +40,7 @@ private:
     Engine::CTransform*   m_TransformCom;
     Engine::CTexture*     m_TextureCom;
     Engine::CBoxCollider* m_BoxColCom;
+    static CUIWeaponExplain* m_WeaponExplainUI;
 
     CSpriteEff* m_SpriteEff;
 

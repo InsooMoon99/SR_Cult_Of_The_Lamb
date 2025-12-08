@@ -244,7 +244,10 @@
     <Filter Include="94. Construction\01. Placer">
       <UniqueIdentifier>{96197f47-b222-4840-94b1-dbb271990129}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05. UI\01. UI\07. UICharging">
+    <Filter Include="05. UI\01. UI\09. UIWeaponExplain">
+      <UniqueIdentifier>{92217d20-ec9e-4b20-9d7b-2b9225e199fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. UI\01. UI\08. UICharging">
       <UniqueIdentifier>{e12d587e-6cb4-4929-857d-7de7606a343a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -621,7 +624,7 @@
     </ClInclude>
     <ClInclude Include="..\Header\CPlayerGathering.h">
       <Filter>헤더 파일</Filter>
-   </ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Header\CEyeball_Idle.h">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
     </ClInclude>
@@ -656,7 +659,10 @@
       <Filter>03. GameObject\10. Fireball</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CUICharging.h">
-      <Filter>05. UI\01. UI\07. UICharging</Filter>
+      <Filter>05. UI\01. UI\08. UICharging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUIWeaponExplain.h">
+      <Filter>05. UI\01. UI\09. UIWeaponExplain</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1032,7 +1038,10 @@
       <Filter>03. GameObject\10. Fireball</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CUICharging.cpp">
-      <Filter>05. UI\01. UI\07. UICharging</Filter>
+      <Filter>05. UI\01. UI\08. UICharging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUIWeaponExplain.cpp">
+      <Filter>05. UI\01. UI\09. UIWeaponExplain</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
