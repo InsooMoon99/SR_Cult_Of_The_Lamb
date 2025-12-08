@@ -319,8 +319,14 @@ void CTexture::Free()
         m_AnimTextures.end(),
         [](auto& keyValue)
         {
-            for (auto*& tex : keyValue.second)
+            const auto& key = keyValue.first;
+            auto& vec = keyValue.second;
+
+            for (auto*& tex : vec)
             {
+                if (tex == nullptr)
+                    continue;
+
                 Safe_Release(tex);
             }
         });

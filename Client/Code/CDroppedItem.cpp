@@ -1,7 +1,7 @@
 ﻿#include"pch.h"
 #include"CDroppedItem.h"
-
-#include <CLayer.h>
+#include "CState.h"
+#include "CLayer.h"
 #include "CBoxCollider.h"
 #include "CComponent.h"
 #include "CCreateHelper.h"
@@ -19,6 +19,7 @@
 #include "CSpriteEff.h"
 #include "CUIWeaponExplain.h"
 #include "CDInputMgr.h"
+#include "CAnimator.h"
 
 CUIWeaponExplain* CDroppedItem::m_WeaponExplainUI = nullptr;
 
@@ -176,6 +177,7 @@ void CDroppedItem::OnStayOverlap(CCollider* self, CCollider* other)
             }
             m_WeaponExplainUI->Set_Active(true);
 
+            // ImGui 클릭 시 무시
             //ImGuiIO& io = ImGui::GetIO();
             //if (io.WantCaptureKeyboard)
             //    return;
@@ -184,11 +186,19 @@ void CDroppedItem::OnStayOverlap(CCollider* self, CCollider* other)
             {
                 dynamic_cast<CWeaponEquip*>(ply->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::WEAPON_EQUIP))->Equip_Weapon(m_itemInst);
 
+                //auto state = dynamic_cast<CState*>(ply->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
+                //auto animator = dynamic_cast<CAnimator*>(ply->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+                //
+                //if (state)
+                //    state->Change_State(ACTORSTATE::PLAYER_WEAPONGET);
+
+                //if (animator->Is_AnimationFinished())
+                //    state->Change_State(ACTORSTATE::IDLE);
+
                 Mark_As_PendingKill();
                 m_WeaponExplainUI->Set_Active(false);
             }
-            //2. 상호작용 키 UI 띄우기
-
+            
 
         }
         else

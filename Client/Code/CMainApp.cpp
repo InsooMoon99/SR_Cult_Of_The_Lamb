@@ -96,13 +96,13 @@ void CMainApp::Render_MainApp()
 
     m_ManagementClass->Render_Scene(m_GraphicDev);
     CMainEditorMgr::GetInstance()->Render_MainEditor();
+    CSceneMgr::GetInstance()->Render_SceneMgr();
 
     // ImGui
     {
         CImGuiManager::GetInstance()->Render();
     }
 
-    CSceneMgr::GetInstance()->Render_SceneMgr();
 
     m_DeviceClass->Render_End();
 }

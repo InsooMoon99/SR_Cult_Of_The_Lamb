@@ -1,6 +1,5 @@
 ﻿#include "pch.h"
 #include "CStage_Boss1.h"
-
 #include "CBossPhase1.h"
 #include "CCameraController.h"
 #include "CCamSetupBuilder.h"

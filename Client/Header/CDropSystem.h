@@ -21,7 +21,7 @@ private:
 
 public:
 
-    void SpawnDrop(DEVICE pGraphicDev, const ItemInstance& item, const _vec3& worldPos,
+    CDroppedItem* SpawnDrop(DEVICE pGraphicDev, const ItemInstance& item, const _vec3& worldPos,
         std::optional<_vec3> scale = _vec3(0.5f, 0.5f, 0.5f),
         std::optional<SpriteBounceDesc> bounceDesc = std::nullopt);
 
@@ -35,8 +35,8 @@ private:
     CScene* m_nowScene = nullptr;
     bool isBouncing = false;
 
-
     list<CDroppedItem*> tmpItem;
+
 private:
     void Free() override;
 };

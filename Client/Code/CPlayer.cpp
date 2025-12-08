@@ -198,9 +198,6 @@ HRESULT CPlayer::Add_Component()
 
 void CPlayer::Animation_Setting()
 {
-    //_float dirX = m_PlayerInputCom->Get_MouseDir().x;
-    //m_AnimatorCom->Set_FlipX(dirX < 0);
-
 #pragma region --- IDLE ---
     m_AnimatorCom->Create_Animation(L"PlayerIdle", 150, 0.02f, _vec2(0.75f, 0.80f));
 
@@ -398,6 +395,17 @@ void CPlayer::Animation_Setting()
 
 #pragma endregion
 #pragma end
+
+#pragma region 기타 상호작용
+    m_AnimatorCom->Create_Animation(L"Player_WeaponGet",
+        77,
+        0.02f,
+        _vec2(1.f, 1.f),
+        _vec2(0.05f, -0.1f));
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_WEAPONGET, L"Player_WeaponGet", ANIMSTATE::ONCE);
+#pragma endregion
+
 }
 
 CPlayer* CPlayer::Create(DEVICE graphicDev)

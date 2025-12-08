@@ -106,6 +106,7 @@ HRESULT CManagement::Request_ChangeScene(CScene* nextScene)
 
     if (m_NextScene != nullptr)
         Safe_Release(m_NextScene);
+
     m_NextScene = nextScene;
 
     m_ShouldChangeScene = true;
