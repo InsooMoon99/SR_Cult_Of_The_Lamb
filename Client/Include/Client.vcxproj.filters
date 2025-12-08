@@ -193,9 +193,6 @@
     <Filter Include="03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball">
       <UniqueIdentifier>{f0f836ab-b4c5-4a9c-b0c6-b534b5f77249}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Scene\05. Building">
-      <UniqueIdentifier>{d128922c-c4b8-47ce-b6cd-7f14a0378dbd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\06. Controller">
       <UniqueIdentifier>{8902134d-20bd-40d8-a9c0-6a01e23a37dc}</UniqueIdentifier>
     </Filter>
@@ -246,6 +243,12 @@
     </Filter>
     <Filter Include="05. UI\01. UI\07. UICharging">
       <UniqueIdentifier>{e12d587e-6cb4-4929-857d-7de7606a343a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\08. Building Object\00. Workbench">
+      <UniqueIdentifier>{5b22c16a-a27a-4e8b-bfd7-233dc3ad3553}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\08. Building Object\01. Construct Range">
+      <UniqueIdentifier>{c7255dbc-2339-461a-99df-c0f4ace0edcf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -35,7 +35,7 @@ protected:
     void Free() override;
 
 protected:
-    Engine::CBoxCollider* m_BoxColCom = nullptr;
+    Engine::CBoxCollider* m_BoxCollCom = nullptr;
 
     _bool m_IsPreview = false;
 };

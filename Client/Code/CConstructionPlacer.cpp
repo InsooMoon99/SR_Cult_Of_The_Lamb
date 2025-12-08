@@ -15,7 +15,7 @@
 CConstructionPlacer::CConstructionPlacer(DEVICE graphicDev)
     : m_GraphicDev(graphicDev),
 
-      m_CurPickPos(10.f, 0.f, 10.f),
+      m_CurPickPos(0.f, 0.f, 0.f),
       m_PreviewOffsetY(0.f)
 {
     m_GraphicDev->AddRef();
@@ -58,7 +58,7 @@ void CConstructionPlacer::Render_Preview()
 {
     NULL_CHECK(m_PreviewObj);
 #pragma region --- RenderState 변경 ---
-    // 1. [핵심] Z-Write 끄기
+    // 1. Z-Write 끄기
     m_GraphicDev->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
     // 2. [수정] Alpha Test를 켜서 텍스처의 검은색(0,0,0)을 날려버릴지 결정  
     // 만약 텍스처가 '검은색=투명' 규칙을 쓴다면 아래 설정이 유효할 수 있으나, 
@@ -70,30 +70,32 @@ void CConstructionPlacer::Render_Preview()
     m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
     m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
     // 4. [색상 혼합] Texture * TFactor (색상 틴트)
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
+    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
     // 5. [알파 혼합] Texture * TFactor (투명도)
     m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
     m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
     m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR);
     // 6. TFactor 설정 (Green/Red 반투명)
-    DWORD previewColor = m_CanPlace ? D3DCOLOR_ARGB(128, 128, 255, 128) : D3DCOLOR_ARGB(128, 255, 128, 128);
-    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, previewColor);
+    //DWORD previewColor = m_CanPlace ? D3DCOLOR_ARGB(128, 64, 255, 64) : D3DCOLOR_ARGB(128, 255, 64, 64);
+
+    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(128, 255, 255, 255));
 #pragma endregion
+
     // 프리뷰 오브젝트 렌더
     m_PreviewObj->Render_GameObject();
+
 #pragma region --- 설정 복구 ---
-    
     // 복구 순서 중요: 변경한 것들은 모두 원상복구 해야 함
     m_GraphicDev->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
     m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE); // 보통 켜둠
     
     // Texture Stage 복구 (기본값: Modulate / Texture / Current)
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE); 
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_CURRENT); // TFACTOR -> CURRENT로 복구
+    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE); 
+    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_CURRENT); // TFACTOR -> CURRENT로 복구
     
     m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1); // 보통 Alpha는 Texture만 봄
     m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
@@ -113,10 +115,12 @@ void CConstructionPlacer::Set_PreviewObject(BUILDING_TYPE type)
     switch (m_CurBuildingType)
     {
     case BUILDING_TYPE::TEMPLE:
+        m_PreviewOffsetY = 3.f;
         m_PreviewObj = CTemple::Create(m_GraphicDev);
         break;
 
     case BUILDING_TYPE::KITCHEN:
+        m_PreviewOffsetY = 1.f;
         // m_PreviewObj = CKitchen::Create(m_GraphicDev);
         break;
 
@@ -132,6 +136,8 @@ void CConstructionPlacer::Set_PreviewObject(BUILDING_TYPE type)
         CTransform* pTransform = dynamic_cast<CTransform*>(m_PreviewObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
         if (pTransform)
             pTransform->Set_Pos(m_CurPickPos);
+
+        //TODO 건축 범위를 나타내는 원을 만들기
     }
 }
 

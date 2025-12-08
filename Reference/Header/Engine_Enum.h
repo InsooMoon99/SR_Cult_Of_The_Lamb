@@ -311,8 +311,8 @@ enum PROJECTION_TYPE
 // 건축물 종류
 enum BUILDING_TYPE
 {
-    TEMPLE,             // 신전
-    KITCHEN,            // 요리용 화덕
+    TEMPLE,                 // 신전
+    KITCHEN,                // 요리용 화덕
 
     BUILDING_END
 };
