@@ -40,7 +40,7 @@ HRESULT CWorldInteractive::Ready_GameObject()
         return E_FAIL;
 
 
-    m_TransformCom->Set_Rotation({ D3DXToRadian(50), 0, 0 });
+    m_TransformCom->Set_Rotation({ D3DXToRadian(40), 0, 0 });
     m_SpriteEffCom->InitOutLine(D3DCOLOR_ARGB(255, 255, 255, 255), 0.05f);
 
     return S_OK;
@@ -59,7 +59,7 @@ _int CWorldInteractive::Update_GameObject(const _float& timeDelta)
         {
             // 플레이어 위치
             _vec3 DropPos = m_CombatStatCom->Get_Dir();
-            int offset = 15; //
+            int offset = 40; //
             CDropSystem::GetInstance()->SpawnAllFromInven(m_GraphicDev, m_InventoryCom, DropPos, offset);
             m_bHovering = false;
             m_bInvenDropped = true;
@@ -78,17 +78,11 @@ _int CWorldInteractive::Update_GameObject(const _float& timeDelta)
         {
             // 호버링이 되어 있을떄 
             m_bHovering = true; // 렌더 아웃라인 용
-            cout << "hovering" << endl;
+           // cout << "hovering" << endl;
 
         }
         else
             m_bHovering = false;
-
-        //hp에 따라 오브젝트 이미지 전환
-
-        //0 이면 아이템 드롭
-
-        
 
     }
     else
@@ -195,8 +189,8 @@ bool CWorldInteractive::Is_Hovering()
     D3DXVec3TransformNormal(&vRayDir, &vRayDir, &matWorld);*/
 
     //_vec3 half = m_BoxColCom->Get_RawSize() * .5f;
-    _vec3 Min = m_BoxColCom->Get_Transform()->Get_Pos() - m_BoxColCom->Get_RawSize() * .5f;
-    _vec3 Max = m_BoxColCom->Get_Transform()->Get_Pos() + m_BoxColCom->Get_RawSize() * .5f;
+    _vec3 Min = m_BoxColCom->Get_Transform()->Get_Pos() - m_BoxColCom->Get_Size() * .5f;
+    _vec3 Max = m_BoxColCom->Get_Transform()->Get_Pos() + m_BoxColCom->Get_Size() * .5f;
 
     //float minX = m_BoxColCom->Get_Transform()->Get_Pos().x - m_BoxColCom->Get_RawSize().x * .5f;
     //float maxX = m_BoxColCom->Get_Transform()->Get_Pos().x + m_BoxColCom->Get_RawSize().x * .5f;

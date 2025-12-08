@@ -55,7 +55,7 @@ public:
 private:
     _vec3 StartPos = { 47 ,0, 60 };
     _vec3 BaseCenter;
-    int BaseLength = 30;
+    int BaseLength = 25;
     float interval = 1.f;
 
     //
