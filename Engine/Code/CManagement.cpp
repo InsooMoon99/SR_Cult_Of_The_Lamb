@@ -117,6 +117,8 @@ void CManagement::Commit_ChangeScene()
 {
     if (!m_ShouldChangeScene) return;
 
+    CRenderer::GetInstance()->Clear_RenderGroup();
+
     Safe_Release(m_Scene);
     m_Scene             = m_NextScene;
     m_NextScene         = nullptr;

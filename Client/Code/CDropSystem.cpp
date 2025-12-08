@@ -19,16 +19,29 @@ CDropSystem::~CDropSystem()
     CDropSystem::Free();
 }
 
-
-
 // 이건 그냥 바닥에 드롭 시킬떄 새로 생성해서 줌
-void CDropSystem::SpawnDrop(DEVICE pGraphicDev, const ItemInstance& itemInst, const _vec3& worldPos, std::optional<SpriteBounceDesc> bounceDesc)
+
+void CDropSystem::SpawnDrop(DEVICE pGraphicDev, const ItemInstance& item, const _vec3& worldPos,
+    std::optional<_vec3> scale, std::optional<SpriteBounceDesc> bounceDesc)
 {
-    CDroppedItem* pDrop = CDroppedItem::Create(pGraphicDev, itemInst, worldPos);
+    CDroppedItem* pDrop = CDroppedItem::Create(pGraphicDev, item, worldPos);
+
+    // Scale 설정
+    if (scale.has_value())
+    {
+        auto transform = pDrop->Get_Transform();
+        if (transform)
+        {
+            transform->Set_Scale(scale.value());
+            transform->Set_RotationAxis(ROT_X, D3DXToRadian(45.f));
+        }
+    }
+
     if (bounceDesc.has_value())
     {
-        pDrop->SetBounceDesc(*bounceDesc);//(*bounceDesc) 해야함
+        pDrop->SetBounceDesc(*bounceDesc);
     }
+
     tmpItem.push_back(pDrop);
     m_nowScene->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, pDrop, OBJTYPE::ITEM);
 }
@@ -74,7 +87,7 @@ void CDropSystem::SpawnAllFromInven(DEVICE pGraphicDev, CInventory* Inven, _vec3
                 d.m_DampingPerSecond = 0.9f;// 공기 저항
                     _vec3 tmppos = { ownerPos.x, ownerPos.y + 1.5f, ownerPos.z };
 
-                SpawnDrop(pGraphicDev, itemInst, tmppos, d);
+                SpawnDrop(pGraphicDev, itemInst, tmppos, _vec3(0.5f, 0.5f, 0.5f), d);
 
                 Inven->RemoveItem(itemInst.itemId, 1);
                 }
@@ -136,7 +149,7 @@ void CDropSystem::SpawnAllFromInven(DEVICE pGraphicDev, CInventory* Inven, _vec3
 
                     _vec3 Startpos = { ownerPos.x, ownerPos.y/*+1.f*/, ownerPos.z };
 
-                    SpawnDrop(pGraphicDev, itemInst, Startpos, d);
+                    SpawnDrop(pGraphicDev, itemInst, Startpos, _vec3(0.5f, 0.5f, 0.5f), d);
 
                     Inven->RemoveItem(itemInst.itemId, 1);
                 }

@@ -5,6 +5,7 @@
 #include "CRenderer.h"
 #include "CTransform.h"
 
+
 CTrigger::CTrigger(DEVICE graphicDev)
     : CGameObject(graphicDev),
     m_ColliderCom(nullptr),

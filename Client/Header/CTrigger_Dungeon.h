@@ -14,6 +14,8 @@ public:
     void    Render_GameObject() override;
     void    Render_Editor() override;
 
+    void OnBeginOverlap(CCollider* self, CCollider* other) override;
+
 public:
     static CTrigger_Dungeon* Create(DEVICE graphicDev);
 

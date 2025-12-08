@@ -12,6 +12,7 @@ END
 
 class CTerrainRenderer;
 class CWallRenderer;
+class CMonsterSpawner;
 
 enum class EDIT_MODE
 {
@@ -43,6 +44,10 @@ public:
     _vec3            Get_CellCenterWorld(_int cellX, _int cellZ);
     _float           Get_CellSize();
 
+public:
+    // 몬스터 소환
+    void Spawn_Monsters(CLayer* layer);
+
 private:
     HRESULT Add_Component();
 
@@ -61,7 +66,9 @@ private:
 
     CTerrainRenderer*           m_TerrainRendererCom;
     CWallRenderer*              m_WallRendererCom;
+    CMonsterSpawner*            m_MonsterSpawnerCom;
 
     _bool                       m_WallSpawn;
+    _bool                       m_MonsterSpawn;
 };
 

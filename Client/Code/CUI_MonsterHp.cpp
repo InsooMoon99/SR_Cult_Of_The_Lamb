@@ -16,7 +16,8 @@ CUI_MonsterHp::CUI_MonsterHp(DEVICE graphicDev, CGameObject* owner)
     m_HpDelayRatio(1.0f),
     m_HpDelaySpeed(1.5f),   
     m_YOffset(3.0f),
-    m_BarSize(0.6f, 0.7f, 1.f)
+    m_BarSize(0.6f, 0.7f, 1.f),
+    m_Buffer_Hp(nullptr), m_Buffer_Delay(nullptr)
 {
     Set_Name(L"Monster Hp");
 
@@ -110,7 +111,7 @@ void CUI_MonsterHp::LateUpdate_GameObject(const _float& timeDelta)
 
 void CUI_MonsterHp::Render_GameObject()
 {
-    if (!m_Owner || !m_TextureCom || !m_BufferCom)
+    if (!m_Owner || !m_TextureCom)
         return;
 
     float ratio = clamp(m_HpRatio, 0.f, 1.f);
@@ -121,66 +122,69 @@ void CUI_MonsterHp::Render_GameObject()
 
     const _matrix& world = m_TransformCom->Get_World();
 
-    auto ApplyBarScaleOffset = [&](float barRatio)
-        {
-            float hw_full = FULL_HALF_WIDTH;
-            float hh_full = FULL_HALF_HEIGHT;
-
-            float hw = hw_full * barRatio;
-
-            float offsetX = hw_full * (1.f - barRatio);
-
-            m_BufferCom->Set_Scale(hw, hh_full);
-            m_BufferCom->Set_Offset(offsetX, 0.f);
-        };
-
     {
-        const float BG_WIDTH_SCALE = 1.08f;
-        const float BG_HEIGHT_SCALE = 0.18f;
+        const float BG_WIDTH = 1.08f;
+        const float BG_HEIGHT = 0.18f;
 
-        m_BufferCom->Set_Scale(BG_WIDTH_SCALE, BG_HEIGHT_SCALE);
+        m_BufferCom->Set_Scale(BG_WIDTH, BG_HEIGHT);
         m_BufferCom->Set_Offset(0.f, 0.f);
 
         m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
-        m_TextureCom->Set_Texture(1); // 배경
+        m_TextureCom->Set_Texture(1);  // 배경 텍스처
         m_BufferCom->Render_Buffer();
     }
 
     if (delayRatio > 0.f)
     {
-        ApplyBarScaleOffset(delayRatio);
+        float hw = FULL_HALF_WIDTH * delayRatio;
+        float offsetX = FULL_HALF_WIDTH * (1.f - delayRatio);
+
+        m_Buffer_Delay->Set_Scale(hw, FULL_HALF_HEIGHT);
+        m_Buffer_Delay->Set_Offset(offsetX, 0.f);
 
         m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
-        m_TextureCom->Set_Texture(2); // 흰색 딜레이 바
-        m_BufferCom->Render_Buffer();
+        m_TextureCom->Set_Texture(2);  // 흰색 텍스처
+        m_Buffer_Delay->Render_Buffer();
     }
 
     if (ratio > 0.f)
     {
-        ApplyBarScaleOffset(ratio);
+        float hw = FULL_HALF_WIDTH * ratio;
+        float offsetX = FULL_HALF_WIDTH * (1.f - ratio);
+
+        m_Buffer_Hp->Set_Scale(hw, FULL_HALF_HEIGHT);
+        m_Buffer_Hp->Set_Offset(offsetX, 0.f);
 
         m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
-        m_TextureCom->Set_Texture(0); 
-        m_BufferCom->Render_Buffer();
+        m_TextureCom->Set_Texture(0);  // HP 바 텍스처
+        m_Buffer_Hp->Render_Buffer();
     }
 }
 
 HRESULT CUI_MonsterHp::Add_Component()
 {
-    // Buffer
-    m_BufferCom = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
-    NULL_CHECK_RETURN(m_BufferCom, E_FAIL);
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::RC_TEX, m_BufferCom });
+    // Texture
+    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_UI_MONSTERHP);
+    NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_UI_MONSTERHP, m_TextureCom });
 
     // Transform
     m_TransformCom = CreateProtoComponent<CTransform>(this, COMPONENTTYPE::TRANSFORM);
     NULL_CHECK_RETURN(m_TransformCom, E_FAIL);
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
-    // Texture
-    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_UI_MONSTERHP);
-    NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_UI_MONSTERHP, m_TextureCom });
+    // Buffer
+    m_BufferCom = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
+    NULL_CHECK_RETURN(m_BufferCom, E_FAIL);
+
+    m_Buffer_Delay = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
+    NULL_CHECK_RETURN(m_Buffer_Delay, E_FAIL);
+
+    m_Buffer_Hp = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
+    NULL_CHECK_RETURN(m_Buffer_Hp, E_FAIL);
+
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::RC_TEX, m_BufferCom });
+    
 
     return S_OK;
 }
@@ -206,6 +210,9 @@ CUI_MonsterHp* CUI_MonsterHp::Create(DEVICE graphicDev, CGameObject* owner)
 
 void CUI_MonsterHp::Free()
 {
+    Safe_Release(m_Buffer_Delay);
+    Safe_Release(m_Buffer_Hp);
     Safe_Release(m_Owner);
+
     CUI::Free();
 }

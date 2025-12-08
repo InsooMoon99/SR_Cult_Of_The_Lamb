@@ -1,6 +1,5 @@
 ﻿#include "pch.h"
 #include "CMainApp.h"
-
 #include "CCollisionManager.h"
 #include "CConstructionMgr.h"
 #include "CDInputMgr.h"
@@ -71,6 +70,7 @@ int CMainApp::Update_MainApp(const float& timeDelta)
 
     CCollisionManager::GetInstance()->Update();
     CSoundMgr::GetInstance()->Update(timeDelta);
+    CSceneMgr::GetInstance()->Update_SceneMgr(timeDelta);
 
     // Imgui
     {
@@ -92,13 +92,14 @@ void CMainApp::Render_MainApp()
     m_DeviceClass->Render_Begin(D3DXCOLOR(0.f, 0.f, 0.f, 1.f));
 
     m_ManagementClass->Render_Scene(m_GraphicDev);
-
     CMainEditorMgr::GetInstance()->Render_MainEditor();
 
     // ImGui
     {
         CImGuiManager::GetInstance()->Render();
     }
+
+    CSceneMgr::GetInstance()->Render_SceneMgr();
 
     m_DeviceClass->Render_End();
 }
