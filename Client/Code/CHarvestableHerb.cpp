@@ -1,36 +1,38 @@
 ﻿#include "pch.h"
-#include "CHarvestableHerb.h""
-#include "CState.h"
-#include "CCombatStat.h"
+#include "CHarvestableHerb.h"
+
 #include "CBoxCollider.h"
-#include "CTransform.h"
+#include "CCombatStat.h"
 #include "CCreateHelper.h"
-#include "CRenderer.h"
-#include "CTexture.h"
-#include "CRcTex.h"
-#include "CPlayer.h"
-#include "CInventory.h"
-#include "ItemInstance.h"
 #include "CDInputMgr.h"
 #include "CDropSystem.h"
+#include "CInventory.h"
+#include "CPlayer.h"
+#include "CRcTex.h"
+#include "CRenderer.h"
 #include "CSpriteEff.h"
-CHarvestableHerb::CHarvestableHerb(DEVICE graphicDev, BERRY m_Berry):CWorldInteractive(graphicDev),m_Berry(m_Berry)
-{
-}
+#include "CState.h"
+#include "CTexture.h"
+#include "CTransform.h"
+#include "ItemInstance.h"
 
-CHarvestableHerb::CHarvestableHerb(const CHarvestableHerb& rhs) : CWorldInteractive(rhs)
-{
-}
+CHarvestableHerb::CHarvestableHerb(DEVICE graphicDev, BERRY m_Berry)
+    : CWorldInteractive(graphicDev),
+      m_Berry(m_Berry)
+{ }
+
+CHarvestableHerb::CHarvestableHerb(const CHarvestableHerb& rhs)
+    : CWorldInteractive(rhs)
+{ }
 
 CHarvestableHerb::~CHarvestableHerb()
-{
-}
+{ }
 
 HRESULT CHarvestableHerb::Ready_GameObject()
 {
     if (FAILED(CWorldInteractive::Ready_GameObject()))
         return E_FAIL;
-   
+
     switch (m_Berry)
     {
     case SMALLBERRY:
@@ -46,7 +48,7 @@ HRESULT CHarvestableHerb::Ready_GameObject()
     case BIGBERRY:
         m_deadTexIndex = 1;
         m_TexIndex1 = 6;
-        m_TexIndex2 = 0; 
+        m_TexIndex2 = 0;
 
         m_ItemNum = 5;
 
@@ -70,11 +72,10 @@ HRESULT CHarvestableHerb::Ready_GameObject()
     if (m_BoxColCom)
     {
         m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::INTERACTIVEOBJ);
-        m_BoxColCom->Set_Size({ 3.f,3.f,3.f });
+        m_BoxColCom->Set_Size({ 3.f, 3.f, 3.f });
     }
 
     m_InventoryCom->SetInvenSlotNum(5);// 기본셋팅 무조건 해야 하는거
-    
 
     return S_OK;
 }
@@ -84,13 +85,12 @@ void CHarvestableHerb::Initialize_GameObject()
     CWorldInteractive::Initialize_GameObject();
     // 인벤 셋팅 (동전 1001, 라즈베리 1002, 잔디 1003, 나무 1005, 돌 1006)
 
-    ItemInstance Item = { 1002,-1,0 };
+    ItemInstance Item = { 1002, -1, 0 };
 
-    for (int i = 0; i < m_ItemNum;i++)
+    for (int i = 0; i < m_ItemNum; i++)
     {
         m_InventoryCom->AddItem(Item);
     }
-    
 }
 
 _int CHarvestableHerb::Update_GameObject(const _float& timeDelta)
@@ -101,7 +101,7 @@ _int CHarvestableHerb::Update_GameObject(const _float& timeDelta)
     if (m_CombatStatCom->Is_Dead() == true)
     {
         // 텍스쳐 바꿈
-       m_CurTexIndex = m_deadTexIndex;
+        m_CurTexIndex = m_deadTexIndex;
         return 0;
     }
 
@@ -111,14 +111,12 @@ _int CHarvestableHerb::Update_GameObject(const _float& timeDelta)
 void CHarvestableHerb::LateUpdate_GameObject(const _float& timeDelta)
 {
     CWorldInteractive::LateUpdate_GameObject(timeDelta);
-
 }
 
 void CHarvestableHerb::Render_GameObject()
 {
     m_TextureCom->Set_Texture(m_CurTexIndex);
     CWorldInteractive::Render_GameObject();
-
 }
 
 HRESULT CHarvestableHerb::Add_Component()
@@ -136,13 +134,11 @@ HRESULT CHarvestableHerb::Add_Component()
 void CHarvestableHerb::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CWorldInteractive::OnBeginOverlap(self, other);
-
 }
 
 void CHarvestableHerb::OnEndOverlap(CCollider* self, CCollider* other)
 {
     CWorldInteractive::OnEndOverlap(self, other);
-
 }
 
 CHarvestableHerb* CHarvestableHerb::Create(DEVICE graphicDev, BERRY berryType)

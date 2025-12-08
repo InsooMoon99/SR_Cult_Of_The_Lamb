@@ -1,17 +1,18 @@
 ﻿#include "pch.h"
 #include "CUIWeaponExplain.h"
+
 #include "CCreateHelper.h"
+#include "CFontMgr.h"
 #include "CItemDB.h"
 #include "CRcTex.h"
+#include "CRenderer.h"
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CUIIcon.h"
-#include "CFontMgr.h"
-#include"CRenderer.h"
 
 CUIWeaponExplain::CUIWeaponExplain(DEVICE graphicDev)
     : CUI(graphicDev),
-    m_ItemID(0)
+      m_ItemID(0)
 { }
 
 CUIWeaponExplain::CUIWeaponExplain(const CUIWeaponExplain& rhs)
@@ -20,9 +21,7 @@ CUIWeaponExplain::CUIWeaponExplain(const CUIWeaponExplain& rhs)
 { }
 
 CUIWeaponExplain::~CUIWeaponExplain()
-{
-    
-}
+{ }
 
 HRESULT CUIWeaponExplain::Ready_GameObject()
 {
@@ -69,29 +68,29 @@ void CUIWeaponExplain::Render_GameObject()
         //아이템 이름 출력
         Item* item = CItemDB::GetInstance()->GetItemById(m_ItemID);
 
-        _vec3 pos = m_TransformCom->Get_Pos();
+        _vec3 pos        = m_TransformCom->Get_Pos();
         _vec2 descOffset = { 0.f, -60.f };
-        _vec2 screenPos = { WINCX / 2 + pos.x, WINCY / 2 - pos.y + descOffset.y };
+        _vec2 screenPos  = { WINCX / 2 + pos.x, WINCY / 2 - pos.y + descOffset.y };
         CFontMgr::GetInstance()->Render_Font(L"아이템 이름",
-            CItemDB::GetInstance()->Utf8ToWstring(item->name),
-            &screenPos,
-            D3DXCOLOR{ 1.f, 1.f, 1.f, 1.f });
+                                             CItemDB::GetInstance()->Utf8ToWstring(item->name),
+                                             &screenPos,
+                                             D3DXCOLOR{ 1.f, 1.f, 1.f, 1.f });
 
         //아이템 메인 설명 출력
         descOffset = { 0.f, 65.f };
-        screenPos = { WINCX / 2 + pos.x, WINCY / 2 - pos.y + descOffset.y };
+        screenPos  = { WINCX / 2 + pos.x, WINCY / 2 - pos.y + descOffset.y };
         CFontMgr::GetInstance()->Render_Font(L"카드 설명",
-            CItemDB::GetInstance()->Utf8ToWstring(item->desc),
-            &screenPos,
-            D3DXCOLOR{ 1.f, 1.f, 1.f, 1.f });
+                                             CItemDB::GetInstance()->Utf8ToWstring(item->desc),
+                                             &screenPos,
+                                             D3DXCOLOR{ 1.f, 1.f, 1.f, 1.f });
 
         //아이템 부연 설명 출력
         descOffset = { 0.f, -20.f };
-        screenPos = { WINCX / 2 + pos.x, WINCY / 2 - pos.y + descOffset.y };
+        screenPos  = { WINCX / 2 + pos.x, WINCY / 2 - pos.y + descOffset.y };
         CFontMgr::GetInstance()->Render_Font(L"부연 설명",
-            CItemDB::GetInstance()->Utf8ToWstring(item->additionalDesc),
-            &screenPos,
-            D3DXCOLOR{ 0.6f, 0.6f, 0.6f, 1.f });
+                                             CItemDB::GetInstance()->Utf8ToWstring(item->additionalDesc),
+                                             &screenPos,
+                                             D3DXCOLOR{ 0.6f, 0.6f, 0.6f, 1.f });
     }
     //Item* WeaponGauntlet = CItemDB::GetInstance()->GetItemById(3002);
     //
@@ -119,14 +118,13 @@ void CUIWeaponExplain::Render_GameObject()
     //    &GaultetScreenPos,
     //    D3DXCOLOR{ 0.6f, 0.6f, 0.6f, 1.f });
     //
-
 }
 
 HRESULT CUIWeaponExplain::Add_Component()
 {
     m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_UI_ICON);
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
-    m_Components[ID_STATIC].insert({COMPONENTTYPE::TEX_UI_ICON, m_TextureCom });
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_UI_ICON, m_TextureCom });
 
     m_TransformCom = CreateProtoComponent<CTransform>(this, COMPONENTTYPE::TRANSFORM);
     NULL_CHECK_RETURN(m_TransformCom, E_FAIL);

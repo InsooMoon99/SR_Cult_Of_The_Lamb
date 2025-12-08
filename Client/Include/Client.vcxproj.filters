@@ -229,9 +229,6 @@
     <Filter Include="05. UI\01. UI\07. UI_MonsterHp">
       <UniqueIdentifier>{64afee0e-3924-4b66-83ff-7eaad8c29212}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\08. Building Object">
-      <UniqueIdentifier>{d4a892b8-5b80-4d48-8a32-2cdc3e6bce19}</UniqueIdentifier>
-    </Filter>
     <Filter Include="94. Construction">
       <UniqueIdentifier>{333e7f9f-7c14-4b8c-92ac-75d6310fa615}</UniqueIdentifier>
     </Filter>
@@ -247,14 +244,26 @@
     <Filter Include="05. UI\01. UI\08. UICharging">
       <UniqueIdentifier>{e12d587e-6cb4-4929-857d-7de7606a343a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\08. Building Object\00. Workbench">
-      <UniqueIdentifier>{5b22c16a-a27a-4e8b-bfd7-233dc3ad3553}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\08. Building Object\01. Construct Range">
-      <UniqueIdentifier>{c7255dbc-2339-461a-99df-c0f4ace0edcf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="05. UI\01. UI\99. Fade">
       <UniqueIdentifier>{7ed145a4-f09b-474f-b0ca-37315f6894df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\08. Building">
+      <UniqueIdentifier>{d4a892b8-5b80-4d48-8a32-2cdc3e6bce19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\08. Building\00. Workbench">
+      <UniqueIdentifier>{5b22c16a-a27a-4e8b-bfd7-233dc3ad3553}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\08. Building\02. Temple">
+      <UniqueIdentifier>{372bb441-596a-4fbe-88e5-cede48434732}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\08. Building\03. Kitchen">
+      <UniqueIdentifier>{ce09c24c-b176-4080-878a-2f9c52c4103d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\08. Building\01. Construct Circle">
+      <UniqueIdentifier>{c7255dbc-2339-461a-99df-c0f4ace0edcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Component\08. Construction">
+      <UniqueIdentifier>{c606b936-f005-49ee-8e66-26353c941753}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -649,9 +658,6 @@
     <ClInclude Include="..\Header\CUI_MonsterHp.h">
       <Filter>05. UI\01. UI\07. UI_MonsterHp</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CTemple.h">
-      <Filter>03. GameObject\08. Building Object</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\CBuildingBase.h">
       <Filter>96. Base</Filter>
     </ClInclude>
@@ -679,11 +685,26 @@
     <ClInclude Include="..\Header\CMonsterSpawner.h">
       <Filter>03. GameObject\09. MapObject</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CTemple.h">
+      <Filter>03. GameObject\08. Building\02. Temple</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CConstructCircle.h">
+      <Filter>03. GameObject\08. Building\01. Construct Circle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CWorkBench.h">
+      <Filter>03. GameObject\08. Building\00. Workbench</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CKitchen.h">
+      <Filter>03. GameObject\08. Building\03. Kitchen</Filter>
+    </ClInclude>
     <ClInclude Include="..\Header\CTree.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CRock.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CPlayerConstruction.h">
+      <Filter>97. Component\08. Construction</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1043,9 +1064,6 @@
     <ClCompile Include="..\Code\CUI_MonsterHp.cpp">
       <Filter>05. UI\01. UI\07. UI_MonsterHp</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CTemple.cpp">
-      <Filter>03. GameObject\08. Building Object</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\CBuildingBase.cpp">
       <Filter>96. Base</Filter>
     </ClCompile>
@@ -1073,11 +1091,26 @@
     <ClCompile Include="..\Code\CConstructionPlacer.cpp">
       <Filter>94. Construction\01. Placer</Filter>
     </ClCompile>
+    <ClCompile Include="..\Code\CTemple.cpp">
+      <Filter>03. GameObject\08. Building\02. Temple</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CConstructCircle.cpp">
+      <Filter>03. GameObject\08. Building\01. Construct Circle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CWorkBench.cpp">
+      <Filter>03. GameObject\08. Building\00. Workbench</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CKitchen.cpp">
+      <Filter>03. GameObject\08. Building\03. Kitchen</Filter>
+    </ClCompile>
     <ClCompile Include="..\Code\CTree.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CRock.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CPlayerConstruction.cpp">
+      <Filter>97. Component\08. Construction</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

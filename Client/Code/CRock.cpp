@@ -1,33 +1,36 @@
 ﻿#include "pch.h"
 #include "CRock.h"
-#include "CHarvestableHerb.h""
-#include "CState.h"
-#include "CCombatStat.h"
+
 #include "CBoxCollider.h"
-#include "CTransform.h"
+#include "CCombatStat.h"
 #include "CCreateHelper.h"
-#include "CRenderer.h"
-#include "CTexture.h"
-#include "CRcTex.h"
-#include "CPlayer.h"
-#include "CInventory.h"
-#include "ItemInstance.h"
 #include "CDInputMgr.h"
 #include "CDropSystem.h"
-#include "CSpriteEff.h"
+#include "CHarvestableHerb.h"
+#include "CInventory.h"
 #include "CParticleHelper.h"
+#include "CPlayer.h"
+#include "CRcTex.h"
+#include "CRenderer.h"
+#include "CSpriteEff.h"
+#include "CState.h"
+#include "CTexture.h"
+#include "CTransform.h"
+#include "ItemInstance.h"
 
-CRock::CRock(DEVICE graphicDev, ROCK rock):CWorldInteractive(graphicDev), m_rock(rock), m_MovedPos(_vec3(0.f, 0.f, 0.f))
-{
-}
+CRock::CRock(DEVICE graphicDev, ROCK rock)
+    : CWorldInteractive(graphicDev),
+      m_rock(rock),
+      m_MovedPos(_vec3(0.f, 0.f, 0.f))
+{ }
 
-CRock::CRock(const CRock& rhs) : CWorldInteractive(rhs), m_MovedPos(rhs.m_MovedPos)
-{
-}
+CRock::CRock(const CRock& rhs)
+    : CWorldInteractive(rhs),
+      m_MovedPos(rhs.m_MovedPos)
+{ }
 
 CRock::~CRock()
-{
-}
+{ }
 
 HRESULT CRock::Ready_GameObject()
 {
@@ -78,20 +81,17 @@ HRESULT CRock::Ready_GameObject()
 
     m_CombatStatCom->Set_Hp(m_CombatStatCom->Get_MaxHp());
 
-
     m_TransformCom->Set_Pos(_vec3(30.f, 1.f, 30.f));// 밖에서 덮어 씌울예정
 
     if (m_BoxColCom)
     {
         m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::INTERACTIVEOBJ);
-        m_BoxColCom->Set_Size({ 3.f,3.f,3.f });
+        m_BoxColCom->Set_Size({ 3.f, 3.f, 3.f });
     }
 
     m_InventoryCom->SetInvenSlotNum(7);// 기본셋팅 무조건 해야 하는거
 
-
     return S_OK;
-
 }
 
 void CRock::Initialize_GameObject()
@@ -99,9 +99,9 @@ void CRock::Initialize_GameObject()
     CWorldInteractive::Initialize_GameObject();
     // 인벤 셋팅 (동전 1001, 라즈베리 1002, 잔디 1003, 나무 1005, 돌 1006)
 
-    ItemInstance Item = { 1006,-1,0 };
+    ItemInstance Item = { 1006, -1, 0 };
 
-    for (int i = 0; i < m_ItemNum;i++)
+    for (int i = 0; i < m_ItemNum; i++)
     {
         m_InventoryCom->AddItem(Item);
     }
@@ -110,18 +110,19 @@ void CRock::Initialize_GameObject()
 
     m_OrignPos = m_TransformCom->Get_Pos();
 
-    m_CombatStatCom->Set_OnDamagedEvent([this]() {
+    m_CombatStatCom->Set_OnDamagedEvent([this]()
+    {
         this->m_OnDamage = true;
 
         // HitEffect_Star
-        CParticleHelper::Spawn_Particle({m_TransformCom->Get_Pos().x, m_TransformCom->Get_Pos().y+0.3f, m_TransformCom->Get_Pos().z}, L"HitEffect_Star", 14);
-
-        });
+        CParticleHelper::Spawn_Particle({ m_TransformCom->Get_Pos().x, m_TransformCom->Get_Pos().y + 0.3f, m_TransformCom->Get_Pos().z },
+                                        L"HitEffect_Star",
+                                        14);
+    });
 }
+
 void CRock::KnockBackEff(const _float& timeDelta)
 {
-
-    
     _vec3 backDir = m_CombatStatCom->Get_Dir();
 
     D3DXVec3Normalize(&backDir, &backDir);
@@ -130,7 +131,7 @@ void CRock::KnockBackEff(const _float& timeDelta)
         // 뒤로 밀리기
         m_KockBackTimer -= timeDelta;
 
-        m_MovedPos +=  backDir * .8f * timeDelta;//1은 스피드
+        m_MovedPos += backDir * .8f * timeDelta;//1은 스피드
         m_TransformCom->Set_Pos(m_OrignPos + m_MovedPos);
 
         return;
@@ -138,17 +139,16 @@ void CRock::KnockBackEff(const _float& timeDelta)
     else
         m_KockDone = true;
 
-    if (m_KockDone==true&& m_ReturnDone ==false)
+    if (m_KockDone == true && m_ReturnDone == false)
     {
-
         LerpTime += timeDelta * 5.f;
 
         if (LerpTime >= 0.f)
         {
-            LerpTime = 0;
+            LerpTime     = 0;
             m_ReturnDone = true;
 
-        return;
+            return;
         }
 
         _vec3 cur = m_TransformCom->Get_Pos();
@@ -160,18 +160,16 @@ void CRock::KnockBackEff(const _float& timeDelta)
 
     if (m_ReturnDone)
     {
-       
         m_TransformCom->Set_Pos(m_OrignPos);
 
-        m_KockDone = false;
-        m_ReturnDone = false;
+        m_KockDone      = false;
+        m_ReturnDone    = false;
         m_KockBackTimer = 0.1f;
-        m_OnDamage = false;
-        LerpTime = 0.f;
+        m_OnDamage      = false;
+        LerpTime        = 0.f;
     }
-
-    
 }
+
 _int CRock::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CWorldInteractive::Update_GameObject(timeDelta);
@@ -179,9 +177,7 @@ _int CRock::Update_GameObject(const _float& timeDelta)
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 
     if (m_OnDamage == true)
-    {
         KnockBackEff(timeDelta);
-    }
 
     if (m_CombatStatCom->Is_Dead() == true)
     {
@@ -221,13 +217,11 @@ HRESULT CRock::Add_Component()
 void CRock::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CWorldInteractive::OnBeginOverlap(self, other);
-
 }
 
 void CRock::OnEndOverlap(CCollider* self, CCollider* other)
 {
     CWorldInteractive::OnEndOverlap(self, other);
-
 }
 
 CRock* CRock::Create(DEVICE graphicDev, ROCK rock)

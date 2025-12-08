@@ -506,6 +506,7 @@ CStage_Dungeon* CStage_Dungeon::Create(DEVICE graphicDev)
 
 void CStage_Dungeon::Free()
 {
+    CDropSystem::GetInstance()->Clear_Item();
     CDroppedItem::Reset_WeaponExplainUI();
 
     m_CamMovement   = nullptr;

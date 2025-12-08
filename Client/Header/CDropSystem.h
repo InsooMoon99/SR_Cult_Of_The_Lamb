@@ -30,6 +30,8 @@ public:
     void Clear_Item();
 
     void SetCurrentScene(CScene* nowScene) { m_nowScene = nowScene; } // 이거 무조건 씬 셋팅 시 해줘야함
+    
+    void Remove_Item(CDroppedItem* item);
 
 private:
     CScene* m_nowScene = nullptr;
