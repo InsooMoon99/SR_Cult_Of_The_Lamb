@@ -911,6 +911,36 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
         COMPONENTTYPE::TEX_BERRY, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec2))))
         return E_FAIL;
 
+    // 돌
+    vector<wstring> pathVec3;
+    pathVec3.push_back(L"../Bin/Resource/Texture/InteractiveObj/Rock0.png");
+    pathVec3.push_back(L"../Bin/Resource/Texture/InteractiveObj/Rock1.png");
+    pathVec3.push_back(L"../Bin/Resource/Texture/InteractiveObj/Rock2.png");
+   
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_ROCK, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec3))))
+        return E_FAIL;
+
+    // 나무
+    vector<wstring> pathVec4;
+    pathVec4.push_back(L"../Bin/Resource/Texture/InteractiveObj/RubbleTree1.png");
+    pathVec4.push_back(L"../Bin/Resource/Texture/InteractiveObj/RubbleTree2.png");
+    pathVec4.push_back(L"../Bin/Resource/Texture/InteractiveObj/RubbleTree3.png");
+    pathVec4.push_back(L"../Bin/Resource/Texture/InteractiveObj/RubbleTree4.png");
+
+    pathVec4.push_back(L"../Bin/Resource/Texture/InteractiveObj/SmallTree1.png");
+    pathVec4.push_back(L"../Bin/Resource/Texture/InteractiveObj/SmallTree2.png");
+    pathVec4.push_back(L"../Bin/Resource/Texture/InteractiveObj/SmallTree3.png");
+    pathVec4.push_back(L"../Bin/Resource/Texture/InteractiveObj/SmallTree4.png");
+
+    pathVec4.push_back(L"../Bin/Resource/Texture/InteractiveObj/BigTree1.png");
+    pathVec4.push_back(L"../Bin/Resource/Texture/InteractiveObj/BigTree2.png");
+    pathVec4.push_back(L"../Bin/Resource/Texture/InteractiveObj/BigTree3.png");
+    pathVec4.push_back(L"../Bin/Resource/Texture/InteractiveObj/BigTree4.png");
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_TREE, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec4))))
+        return E_FAIL;
+
     return S_OK;
 }
 

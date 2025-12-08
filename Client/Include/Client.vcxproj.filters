@@ -681,6 +681,12 @@
     </ClInclude>
     <ClInclude Include="..\Header\CUI_BossHp.h">
       <Filter>05. UI\01. UI\07. UI_MonsterHp</Filter>
+     </ClInclude>
+    <ClInclude Include="..\Header\CTree.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CRock.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1072,6 +1078,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\CUI_BossHp.cpp">
       <Filter>05. UI\01. UI\07. UI_MonsterHp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CTree.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CRock.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
