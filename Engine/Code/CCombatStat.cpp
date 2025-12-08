@@ -114,6 +114,8 @@ void CCombatStat::Apply_Damage(const HITDATA& hitData)
         m_Hp = 0.f;
 
     m_DirForItem = hitData.dir;
+    if (OnDamaged)
+        OnDamaged();
 
     if (m_Hp <= 0.f && !m_IsDead)
         On_Dead();

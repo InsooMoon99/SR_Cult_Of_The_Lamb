@@ -165,6 +165,8 @@ enum class COMPONENTTYPE
     TEX_TEMPLE,
     TEX_OUT,
     TEX_BERRY,
+    TEX_ROCK,
+    TEX_TREE,
     TEX_SKILL,
 
     ANIMATOR,

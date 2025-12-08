@@ -33,11 +33,13 @@ public:
    /* CWorldInteractive::TYPE  GetInteractiveType() { return m_Target->GetInteractiveType(); }*/
 private:
     CState* m_OwnerStateCom = nullptr;
-
+    CAnimator* m_OwnerAnimationCom;
     CWorldInteractive* m_Target = nullptr;
 
     float m_AttackTimer = 0;
     HITDATA h;
+    bool m_AttackFlag = false;
+    
 public:
     static CPlayerGathering* Create(DEVICE graphicDev);
     CComponent* Clone() override;

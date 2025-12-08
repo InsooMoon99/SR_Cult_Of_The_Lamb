@@ -83,7 +83,7 @@ public:
     _int   Get_CurrentCharges() { return m_CurrentCharges; }
     //  아이템용
     _vec3   Get_Dir() { return m_DirForItem; }
-
+    void Set_OnDamagedEvent(function<void()> event) { OnDamaged = event; }
 
     _bool  Is_Dead() { return m_IsDead; }
     _bool  Is_Invincible() const { return m_IsInvincible; }
@@ -141,6 +141,7 @@ private:
 
     //  아이템용
     _vec3 m_DirForItem = {0,0,0};
+    function<void()> OnDamaged;
 };
 
 END
