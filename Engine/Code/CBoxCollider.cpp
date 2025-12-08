@@ -54,7 +54,7 @@ void CBoxCollider::Render()
     if (transform == nullptr)
         return;
 
-    _vec3 center = transform->Get_Pos();
+    _vec3 center = transform->Get_Pos() + m_Offset;
     _vec3 size = Get_Size();
 
     DWORD color = !m_ColliderSet.empty() ? D3DCOLOR_ARGB(255, 255, 0, 0) : D3DCOLOR_ARGB(255, 255, 255, 255);

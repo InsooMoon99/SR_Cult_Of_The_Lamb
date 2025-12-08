@@ -679,6 +679,9 @@
     <ClInclude Include="..\Header\CMonsterSpawner.h">
       <Filter>03. GameObject\09. MapObject</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CUI_BossHp.h">
+      <Filter>05. UI\01. UI\07. UI_MonsterHp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1066,6 +1069,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CConstructionPlacer.cpp">
       <Filter>94. Construction\01. Placer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_BossHp.cpp">
+      <Filter>05. UI\01. UI\07. UI_MonsterHp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

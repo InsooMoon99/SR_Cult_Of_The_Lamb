@@ -213,32 +213,37 @@ CMainApp* CMainApp::Create()
 
 void CMainApp::Free()
 {
-    Safe_Release(m_GraphicDev);
-    Safe_Release(m_DeviceClass);
-
+    
     CConstructionMgr::DestroyInstance();
     CDropSystem::DestroyInstance();
-    CTexture::CleanupTextureSystem();
     CSoundMgr::DestroyInstance();
     CCollisionManager::DestroyInstance();
     CLightMgr::DestroyInstance();
     CDInputMgr::DestroyInstance();
-    CFontMgr::DestroyInstance();
-    CRenderer::DestroyInstance();
+    CRandomMgr::DestroyInstance();
+    CItemDB::DestroyInstance();
+    
+    CMainEditorMgr::DestroyInstance();
+    CImGuiManager::DestroyInstance();
+
+    { // 순서 중요
+        CSceneMgr::DestroyInstance();
+        CManagement::DestroyInstance();
+        CRenderer::DestroyInstance();
+    }
+
     CProtoMgr::DestroyInstance();
+    
     CResourceMgr::DestroyInstance();
     CFrameMgr::DestroyInstance();
     CTimerMgr::DestroyInstance();
-    CMainEditorMgr::DestroyInstance();
-    CImGuiManager::DestroyInstance();
-    CManagement::DestroyInstance();
+    
+    CTexture::CleanupTextureSystem();
+    
+    CFontMgr::DestroyInstance();
+    
     CGraphicDev::DestroyInstance();
-    CSceneMgr::DestroyInstance();
-    CRandomMgr::DestroyInstance();
+    Safe_Release(m_DeviceClass);
+    Safe_Release(m_GraphicDev);
 
-#pragma region 데이터 파싱 테스트
-
-    CItemDB::DestroyInstance();
-
-#pragma endregion
 }

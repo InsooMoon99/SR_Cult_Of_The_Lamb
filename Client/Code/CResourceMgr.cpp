@@ -789,6 +789,8 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     monsterHp_Path.emplace_back(L"../Bin/Resource/Texture/UI/HPBar/hpbar2.png");
     monsterHp_Path.emplace_back(L"../Bin/Resource/Texture/UI/HPBar/hpbarBG.png");
     monsterHp_Path.emplace_back(L"../Bin/Resource/Texture/UI/HPBar/hpbarWhite.png");
+    monsterHp_Path.emplace_back(L"../Bin/Resource/Texture/UI/HPBar/Boss_HpBackground.png");
+    monsterHp_Path.emplace_back(L"../Bin/Resource/Texture/UI/HPBar/HpTemp.png");
 
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_MONSTERHP, CTexture::Create(graphicDev, TEX_NORMAL, monsterHp_Path))))

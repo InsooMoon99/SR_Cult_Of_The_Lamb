@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include "CPlayerController.h"
-
+#include "CAnimator.h"
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
 #include "CDInputMgr.h"
@@ -282,6 +282,9 @@ void CPlayerController::CheckStateTransition()
     {
         if (curState == ACTORSTATE::PLAYER_SKILL_CHARGING)
         {
+            // 슬로우모션 해제
+            CMainEditorMgr::GetInstance()->Set_TimeScale(1.f);
+
             m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
         }
         if (m_OwnerSkillCom->Get_TripleSkillAvailability())
@@ -296,7 +299,6 @@ void CPlayerController::CheckStateTransition()
             if (nextState != ACTORSTATE::STATE_END)
                 m_OwnerStateCom->Change_State(nextState);
         }
-
 
     }
 
@@ -351,7 +353,8 @@ void CPlayerController::CheckStateTransition()
         curState == ACTORSTATE::PLAYER_SKILL_TRIPLE||
         curState == ACTORSTATE::PLAYER_BERRY||
         curState == ACTORSTATE::PLAYER_STONE||
-        curState == ACTORSTATE::PLAYER_WOOD)
+        curState == ACTORSTATE::PLAYER_WOOD ||
+        curState == ACTORSTATE::PLAYER_WEAPONGET)
     {
 
         m_OwnerSkillCom->Set_SingleSkill(false);
@@ -447,6 +450,16 @@ void CPlayerController::Update_State(const _float& timeDelta)
             // 이건 업데이트 안에서 ㄱㄱ
     }
   
+    break;
+
+    case ACTORSTATE::PLAYER_WEAPONGET:
+    {
+        auto animator = dynamic_cast<CAnimator*>(
+            m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+
+        if (animator && animator->Is_AnimationFinished())
+            m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+    }
     break;
 
     case ACTORSTATE::DEAD:

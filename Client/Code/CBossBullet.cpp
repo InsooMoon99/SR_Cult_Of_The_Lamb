@@ -47,9 +47,9 @@ HRESULT CBossBullet::Ready_GameObject()
             COMPONENTTYPE::TRANSFORM));
 
     //TODO:: 나중에 땅의 위치를 알게 되면 수정 
-    m_TransformCom->Set_Pos({ ownerTransform->Get_Pos().x, /*-ownerTransform->Get_Scale().y * .5f*/0.f, ownerTransform->Get_Pos().z });
+    m_TransformCom->Set_Pos({ ownerTransform->Get_Pos().x, /*-ownerTransform->Get_Scale().y * .5f*/1.f, ownerTransform->Get_Pos().z });
 
-    m_TransformCom->Set_Rotation({ D3DXToRadian(90), 0, 0 });
+    //m_TransformCom->Set_Rotation({ D3DXToRadian(90), 0, 0 });
 
     // if (m_BoxColCom)
     //     m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::BOSSPROJECTILE);
@@ -69,7 +69,6 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
         // 생성시의 위치 값 저장
         m_StartPos = m_TransformCom->Get_Pos();
 
-
         CAttackBase* ATBox = nullptr;
         CAttackBuilder(m_GraphicDev, this)
             .Sphere()
@@ -84,7 +83,11 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
             .CollisionLayer(COLLISION_LAYERTYPE::BOSSPROJECTILE)
             .Spawn();
 
+        auto sphereCol = static_cast<CSphereCollider*>(
+            ATBox->Get_Collider());
 
+        if (sphereCol)
+            sphereCol->Set_Radius(0.5f);
 
         m_ATKBoxTransformCom = dynamic_cast<CTransform*>(
             ATBox->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
@@ -160,7 +163,7 @@ void CBossBullet::Render_Core()
     m_GraphicDev->SetRenderState(D3DRS_ALPHAREF, 0);
     //
 
-    m_TextureCom->Set_Texture(0);
+    m_TextureCom->Set_Texture(2);
 
     // m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB((int)(m_fAlpha * 255), 255, 255, 255));
     //

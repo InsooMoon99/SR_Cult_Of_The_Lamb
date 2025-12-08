@@ -94,8 +94,8 @@ bool CCollider::CheckCollisionRect2Rect(CRectCollider* b1, CRectCollider* b2)
     if (t1 == nullptr || t2 == nullptr)
         return false;
 
-    _vec3 p1 = t1->Get_Pos();
-    _vec3 p2 = t2->Get_Pos();
+    _vec3 p1 = t1->Get_Pos() + b1->Get_Offset();
+    _vec3 p2 = t2->Get_Pos() + b2->Get_Offset();;
 
     _vec2 s1 = b1->Get_Size();
     _vec2 s2 = b2->Get_Size();
@@ -132,8 +132,8 @@ bool CCollider::CheckCollisionBox2Box(CBoxCollider* b1, CBoxCollider* b2)
     NULL_CHECK_RETURN(t1, false);
     NULL_CHECK_RETURN(t2, false);
 
-    _vec3 p1 = t1->Get_Pos();
-    _vec3 p2 = t2->Get_Pos();
+    _vec3 p1 = t1->Get_Pos() + b1->Get_Offset();
+    _vec3 p2 = t2->Get_Pos() + b2->Get_Offset();
 
     _vec3 s1 = b1->Get_Size();
     _vec3 s2 = b2->Get_Size();
@@ -182,8 +182,8 @@ bool CCollider::CheckCollisionSphere2Box(CSphereCollider* s1, CBoxCollider* b2)
         return false;
 
     _vec3 cs3, cb3;
-    cs3 = ts->Get_Pos();
-    cb3 = tb->Get_Pos();
+    cs3 = ts->Get_Pos() + s1->Get_Offset();
+    cb3 = tb->Get_Pos() + b2->Get_Offset();
 
     _float radius = s1->Get_Radius();
     _vec3 boxSize = b2->Get_Size();
@@ -241,8 +241,8 @@ bool CCollider::CheckCollisionSphere2Sphere(CSphereCollider* s1, CSphereCollider
         return false;
 
     _vec3 p1, p2;
-    p1 = t1->Get_Pos();
-    p2 = t2->Get_Pos();
+    p1 = t1->Get_Pos() + s1->Get_Offset();
+    p2 = t2->Get_Pos() + s2->Get_Offset();
 
     _float r1 = s1->Get_Radius();
     _float r2 = s2->Get_Radius();
