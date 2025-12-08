@@ -257,6 +257,7 @@
     <ClInclude Include="..\Header\CProjectile.h" />
     <ClInclude Include="..\Header\CRandomMgr.h" />
     <ClInclude Include="..\Header\CResourceMgr.h" />
+    <ClInclude Include="..\Header\CRock.h" />
     <ClInclude Include="..\Header\CSceneMgr.h" />
     <ClInclude Include="..\Header\CSpriteEff.h" />
     <ClInclude Include="..\Header\CStage.h" />
@@ -268,6 +269,7 @@
     <ClInclude Include="..\Header\CStateMachine.h" />
     <ClInclude Include="..\Header\CTemple.h" />
     <ClInclude Include="..\Header\CTrailEff.h" />
+    <ClInclude Include="..\Header\CTree.h" />
     <ClInclude Include="..\Header\CTrigger_Dungeon.h" />
     <ClInclude Include="..\Header\CUICharging.h" />
     <ClInclude Include="..\Header\CUIItemGet.h" />
@@ -389,6 +391,7 @@
     <ClCompile Include="..\Code\CProjectile.cpp" />
     <ClCompile Include="..\Code\CRandomMgr.cpp" />
     <ClCompile Include="..\Code\CResourceMgr.cpp" />
+    <ClCompile Include="..\Code\CRock.cpp" />
     <ClCompile Include="..\Code\CSceneMgr.cpp" />
     <ClCompile Include="..\Code\CSpriteEff.cpp" />
     <ClCompile Include="..\Code\CStage.cpp" />
@@ -400,6 +403,7 @@
     <ClCompile Include="..\Code\CStateMachine.cpp" />
     <ClCompile Include="..\Code\CTemple.cpp" />
     <ClCompile Include="..\Code\CTrailEff.cpp" />
+    <ClCompile Include="..\Code\CTree.cpp" />
     <ClCompile Include="..\Code\CTrigger_Dungeon.cpp" />
     <ClCompile Include="..\Code\CUICharging.cpp" />
     <ClCompile Include="..\Code\CUIItemGet.cpp" />

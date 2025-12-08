@@ -65,7 +65,6 @@ HRESULT CHarvestableHerb::Ready_GameObject()
 
     m_CombatStatCom->Set_Hp(m_CombatStatCom->Get_MaxHp());
 
-
     m_TransformCom->Set_Pos(_vec3(30.f, 1.f, 30.f));// 밖에서 덮어 씌울예정
 
     if (m_BoxColCom)

@@ -127,7 +127,7 @@ void CDropSystem::SpawnAllFromInven(DEVICE pGraphicDev, CInventory* Inven, _vec3
                     d.pos = ownerPos;
                     // d.velocity
                     d.velocity = tmpvec * 30;
-                    d.groundY = 1.f;
+                    d.groundY = .5f;
                     // 중력
                     d.gravity = -300.f;
                     d.restitution = 0.8f;// 튕김 계수

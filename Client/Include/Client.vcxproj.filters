@@ -621,7 +621,7 @@
     </ClInclude>
     <ClInclude Include="..\Header\CPlayerGathering.h">
       <Filter>헤더 파일</Filter>
-   </ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Header\CEyeball_Idle.h">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
     </ClInclude>
@@ -657,6 +657,12 @@
     </ClInclude>
     <ClInclude Include="..\Header\CUICharging.h">
       <Filter>05. UI\01. UI\07. UICharging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CTree.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CRock.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1033,6 +1039,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\CUICharging.cpp">
       <Filter>05. UI\01. UI\07. UICharging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CTree.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CRock.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
