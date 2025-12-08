@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include "CMainEditorMgr.h"
-#include "CPickingHelper.h"
+
 #include "CAnimator.h"
 #include "CBoxCollider.h"
 #include "CCameraCalc.h"
@@ -19,6 +19,7 @@
 #include "CManagement.h"
 #include "CMapEditorPlacer.h"
 #include "CMapObjectMgr.h"
+#include "CPickingHelper.h"
 #include "CPlayerController.h"
 #include "CRigidbody.h"
 #include "CScene.h"
@@ -40,6 +41,7 @@ CMainEditorMgr::~CMainEditorMgr()
 void CMainEditorMgr::Ready_MainEditor(DEVICE graphicDev, CEditContext* ctx)
 {
     m_GraphicDev = graphicDev;
+    m_GraphicDev->AddRef();
 
     Set_EditContext(ctx);
     CMapObjectMgr::GetInstance()->Ready_MapObjectMgr(graphicDev);
