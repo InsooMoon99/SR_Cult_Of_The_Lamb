@@ -2,7 +2,7 @@
 #include "CConstructionPlacer.h"
 
 #include "CBuildingBase.h"
-#include "CDottedCircle.h"
+#include "CConstructCircle.h"
 #include "CGameObject.h"
 #include "CManagement.h"
 #include "CPickingHelper.h"
@@ -140,7 +140,7 @@ void CConstructionPlacer::Set_Preview(BUILDING_TYPE type)
 
         // 프리뷰 원 생성
         NULL_CHECK(m_PreviewCircle =
-            CDottedCircle::Create(m_GraphicDev, _vec3(4.f, 2.8f, 1.f)));
+            CConstructCircle::Create(m_GraphicDev, _vec3(4.f, 2.8f, 1.f)));
 
         m_PreviewOffsetY = 2.0f;
     }
@@ -152,7 +152,7 @@ void CConstructionPlacer::Set_Preview(BUILDING_TYPE type)
 
         // 프리뷰 원 생성
         NULL_CHECK(m_PreviewCircle =
-            CDottedCircle::Create(m_GraphicDev, _vec3(3.5f, 2.5f, 1.f)));
+            CConstructCircle::Create(m_GraphicDev, _vec3(3.5f, 2.5f, 1.f)));
 
         m_PreviewOffsetY = 1.f;
     }
@@ -200,7 +200,7 @@ _bool CConstructionPlacer::Try_PlaceObject()
     default: break;
     }
 
-    CDottedCircle* site = CDottedCircle::Create(m_GraphicDev, scale);
+    CConstructCircle* site = CConstructCircle::Create(m_GraphicDev, scale);
     NULL_CHECK_RETURN(site, false);
 
     site->Setup_Construction(m_CurBuildingType);

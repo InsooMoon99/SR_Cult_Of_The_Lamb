@@ -262,6 +262,9 @@
     <Filter Include="03. GameObject\08. Building\01. Construct Circle">
       <UniqueIdentifier>{c7255dbc-2339-461a-99df-c0f4ace0edcf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97. Component\08. Construction">
+      <UniqueIdentifier>{c606b936-f005-49ee-8e66-26353c941753}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -685,7 +688,7 @@
     <ClInclude Include="..\Header\CTemple.h">
       <Filter>03. GameObject\08. Building\02. Temple</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CDottedCircle.h">
+    <ClInclude Include="..\Header\CConstructCircle.h">
       <Filter>03. GameObject\08. Building\01. Construct Circle</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CWorkBench.h">
@@ -699,6 +702,9 @@
     </ClInclude>
     <ClInclude Include="..\Header\CRock.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CPlayerConstruction.h">
+      <Filter>97. Component\08. Construction</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1088,7 +1094,7 @@
     <ClCompile Include="..\Code\CTemple.cpp">
       <Filter>03. GameObject\08. Building\02. Temple</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CDottedCircle.cpp">
+    <ClCompile Include="..\Code\CConstructCircle.cpp">
       <Filter>03. GameObject\08. Building\01. Construct Circle</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CWorkBench.cpp">
@@ -1102,6 +1108,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CRock.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CPlayerConstruction.cpp">
+      <Filter>97. Component\08. Construction</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

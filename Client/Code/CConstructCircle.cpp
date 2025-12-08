@@ -1,5 +1,5 @@
 ﻿#include "pch.h"
-#include "CDottedCircle.h"
+#include "CConstructCircle.h"
 
 #include <CBoxCollider.h>
 #include <CTimerMgr.h>
@@ -14,18 +14,18 @@
 #include "CTexture.h"
 #include "CTransform.h"
 
-CDottedCircle::CDottedCircle(DEVICE graphicDev)
+CConstructCircle::CConstructCircle(DEVICE graphicDev)
     : CBuildingBase(graphicDev)
 { }
 
-CDottedCircle::CDottedCircle(const CDottedCircle& rhs)
+CConstructCircle::CConstructCircle(const CConstructCircle& rhs)
     : CBuildingBase(rhs)
 { }
 
-CDottedCircle::~CDottedCircle()
+CConstructCircle::~CConstructCircle()
 { }
 
-HRESULT CDottedCircle::Ready_GameObject()
+HRESULT CConstructCircle::Ready_GameObject()
 {
     if (FAILED(CBuildingBase::Ready_GameObject()))
         return E_FAIL;
@@ -33,7 +33,7 @@ HRESULT CDottedCircle::Ready_GameObject()
     return S_OK;
 }
 
-void CDottedCircle::Initialize_GameObject()
+void CConstructCircle::Initialize_GameObject()
 {
     CBuildingBase::Initialize_GameObject();
 
@@ -42,19 +42,19 @@ void CDottedCircle::Initialize_GameObject()
     m_BoxCollCom->Set_RawSize(_vec3(1.5f, 1.f, 3.f));
 }
 
-_int CDottedCircle::Update_GameObject(const _float& timeDelta)
+_int CConstructCircle::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CBuildingBase::Update_GameObject(timeDelta);
 
     return exit;
 }
 
-void CDottedCircle::LateUpdate_GameObject(const _float& timeDelta)
+void CConstructCircle::LateUpdate_GameObject(const _float& timeDelta)
 {
     CBuildingBase::LateUpdate_GameObject(timeDelta);
 }
 
-void CDottedCircle::Render_GameObject()
+void CConstructCircle::Render_GameObject()
 {
     NULL_CHECK(m_TextureCom);
 
@@ -74,12 +74,12 @@ void CDottedCircle::Render_GameObject()
     }
 }
 
-void CDottedCircle::OnBeginOverlap(CCollider* self, CCollider* other)
+void CConstructCircle::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CBuildingBase::OnBeginOverlap(self, other);
 }
 
-void CDottedCircle::OnStayOverlap(CCollider* self, CCollider* other)
+void CConstructCircle::OnStayOverlap(CCollider* self, CCollider* other)
 {
     CBuildingBase::OnStayOverlap(self, other);
 
@@ -88,15 +88,14 @@ void CDottedCircle::OnStayOverlap(CCollider* self, CCollider* other)
 
     if (Engine::CDInputMgr::GetInstance()->KeyPress(DIK_E))
     {
-        CGameObject* owner = other->Get_Owner();
-        NULL_CHECK(owner);
+        CGameObject* playerObj = other->Get_Owner();
+        NULL_CHECK(playerObj);
 
-        // Player Tag check or dynamic_cast
-        if (dynamic_cast<CPlayer*>(owner))
+        if (dynamic_cast<CPlayer*>(playerObj))
         {
-            m_fProgress += 30.f * CTimerMgr::GetInstance()->Get_TimeDelta();
+            m_Progress += 20.f * CTimerMgr::GetInstance()->Get_TimeDelta();
 
-            if (m_fProgress >= 100.f)
+            if (m_Progress >= 100.f)
             {
                 // Create Building
                 CGameObject* newObj = nullptr;
@@ -106,7 +105,7 @@ void CDottedCircle::OnStayOverlap(CCollider* self, CCollider* other)
                     newObj = CTemple::Create(m_GraphicDev);
                     break;
                 case BUILDING_TYPE::KITCHEN:
-                    // pNewObj = CKitchen::Create(m_GraphicDev);
+                    // newObj = CKitchen::Create(m_GraphicDev);
                     break;
                 default: break;
                 }
@@ -120,28 +119,19 @@ void CDottedCircle::OnStayOverlap(CCollider* self, CCollider* other)
 
                     if (transform)
                     {
-                        // Use current circle position (with offset adjustments if needed based on building type)
                         _vec3 myPos = m_TransformCom->Get_Pos();
-                        // Adjust Y if necessary. Temple was preview offset 3. Circle was offset + some.
-                        // We should probably trust the Circle's position to be the ground/base?
-                        // In Placer, Circle was at pickPos + 0.2f. Temple was pickPos + 3.0f.
-                        // So Temple is Circle + 2.8f?
-                        // Simplest: match logical position.
 
-                        // For now, let's just place it at the same X,Z and adjust Y based on building type hardcoded or relative.
                         if (m_TargetBuildingType == BUILDING_TYPE::TEMPLE)
                             myPos.y += 2.f;
                         else if (m_TargetBuildingType == BUILDING_TYPE::KITCHEN)
-                            myPos.y += 1.f; // Example
+                            myPos.y += 1.f;
 
                         transform->Set_Pos(myPos);
                     }
 
-                    CScene* pScene = CManagement::GetInstance()->Get_Scene();
-                    if (pScene)
-                        pScene->AddObjectOnLayer(LAYERTYPE::ENVIRONMENT, newObj, OBJTYPE::TEMPLE);
+                    if (CScene* curScene = CManagement::GetInstance()->Get_Scene())
+                        curScene->AddObjectOnLayer(LAYERTYPE::ENVIRONMENT, newObj, OBJTYPE::TEMPLE);
 
-                    // Kill Self
                     this->Mark_As_PendingKill();
                 }
             }
@@ -149,18 +139,18 @@ void CDottedCircle::OnStayOverlap(CCollider* self, CCollider* other)
     }
 }
 
-void CDottedCircle::OnEndOverlap(CCollider* self, CCollider* other)
+void CConstructCircle::OnEndOverlap(CCollider* self, CCollider* other)
 {
     CBuildingBase::OnEndOverlap(self, other);
 }
 
-void CDottedCircle::Setup_Construction(BUILDING_TYPE type)
+void CConstructCircle::Setup_Construction(BUILDING_TYPE type)
 {
     m_IsPreview          = false;
     m_TargetBuildingType = type;
 }
 
-HRESULT CDottedCircle::Add_Component()
+HRESULT CConstructCircle::Add_Component()
 {
     if (FAILED(CBuildingBase::Add_Component()))
         return E_FAIL;
@@ -173,9 +163,9 @@ HRESULT CDottedCircle::Add_Component()
     return S_OK;
 }
 
-CDottedCircle* CDottedCircle::Create(DEVICE graphicDev, _vec3 scale)
+CConstructCircle* CConstructCircle::Create(DEVICE graphicDev, _vec3 scale)
 {
-    auto dottedCircle = new CDottedCircle(graphicDev);
+    auto dottedCircle = new CConstructCircle(graphicDev);
 
     if (FAILED(dottedCircle->Ready_GameObject()))
     {
@@ -189,7 +179,7 @@ CDottedCircle* CDottedCircle::Create(DEVICE graphicDev, _vec3 scale)
     return dottedCircle;
 }
 
-void CDottedCircle::Free()
+void CConstructCircle::Free()
 {
     CBuildingBase::Free();
 }

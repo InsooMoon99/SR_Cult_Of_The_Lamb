@@ -1,12 +1,13 @@
 ﻿#pragma once
 #include "CBuildingBase.h"
 
-class CDottedCircle : public CBuildingBase
+
+class CConstructCircle : public CBuildingBase
 {
 private:
-    explicit CDottedCircle(DEVICE graphicDev);
-    explicit CDottedCircle(const CDottedCircle& rhs);
-    ~CDottedCircle() override;
+    explicit CConstructCircle(DEVICE graphicDev);
+    explicit CConstructCircle(const CConstructCircle& rhs);
+    ~CConstructCircle() override;
 
 public:
     HRESULT Ready_GameObject() override;
@@ -20,20 +21,19 @@ public:
     void OnStayOverlap(CCollider* self, CCollider* other) override;
     void OnEndOverlap(CCollider* self, CCollider* other) override;
 
-    public:
+public:
     void Setup_Construction(BUILDING_TYPE type);
 
 private:
     HRESULT Add_Component() override;
 
 public:
-    static CDottedCircle* Create(DEVICE graphicDev, _vec3 scale = { 1.f, 1.f, 1.f });
+    static CConstructCircle* Create(DEVICE graphicDev, _vec3 scale = { 1.f, 1.f, 1.f });
 
 private:
- void Free() override;
-
+    void Free() override;
 
 private:
-    BUILDING_TYPE m_TargetBuildingType = BUILDING_END;
-    _float        m_fProgress          = 0.f;
+    BUILDING_TYPE m_TargetBuildingType = BUILDING_END;  // 건설될 건축물 타입
+    _float        m_Progress           = 0.f;           // 건축 진행도
 };

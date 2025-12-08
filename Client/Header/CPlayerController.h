@@ -13,6 +13,7 @@ class CPlayerInput;
 class CPlayerMovement;
 class CPlayerAttack;
 class CPlayerGathering;
+class CPlayerConstruction;
 
 /// @brief 플레이어의 전체적인 행동과 상태를 관리하는 중앙 제어 컴포넌트
 /// @details 
@@ -69,6 +70,7 @@ private:
     void Action_Charging(const _float& timeDelta);
     void Action_SingleSkill(const _float& timeDelta);
     void Action_TripleSkill(const _float& timeDelta);
+    void Action_Construction(const _float& timeDelta);
 private:
 #pragma region Caching owner components
     Engine::CState* m_OwnerStateCom;
@@ -81,6 +83,7 @@ private:
     CPlayerAttack* m_OwnerAttackCom;
     CPlayerSkill* m_OwnerSkillCom;
     CPlayerGathering* m_OwnerGatherCom;
+    CPlayerConstruction* m_OwnerConstructionCom;
 #pragma endregion
 
     _float m_Timers[TIMER_END]; // enum값을 통해 사용하는 타이머

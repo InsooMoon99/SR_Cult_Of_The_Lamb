@@ -7,15 +7,14 @@
 #include "CGameObject.h"
 #include "CMainEditorMgr.h"
 #include "CPlayerAttack.h"
+#include "CPlayerConstruction.h"
+#include "CPlayerGathering.h"
 #include "CPlayerInput.h"
 #include "CPlayerMovement.h"
 #include "CPlayerSkill.h"
 #include "CRigidbody.h"
 #include "CSoundMgr.h"
 #include "CState.h"
-#include "CPlayerSkill.h"
-#include "CPlayerInput.h"
-#include "CPlayerGathering.h"
 #include "CWorldInteractive.h"
 
 CPlayerController::CPlayerController(DEVICE graphicDev)
@@ -27,7 +26,9 @@ CPlayerController::CPlayerController(DEVICE graphicDev)
       m_OwnerInputCom(nullptr),
       m_OwnerMovementCom(nullptr),
       m_OwnerAttackCom(nullptr),
-      m_OwnerSkillCom(nullptr)
+      m_OwnerSkillCom(nullptr),
+      m_OwnerGatherCom(nullptr),
+      m_OwnerConstructionCom(nullptr)
 {
     ZeroMemory(m_Timers, sizeof(m_Timers));
 }
@@ -41,13 +42,15 @@ CPlayerController::CPlayerController(const CPlayerController& rhs)
       m_OwnerInputCom(nullptr),
       m_OwnerMovementCom(nullptr),
       m_OwnerAttackCom(nullptr),
-      m_OwnerSkillCom(nullptr)
+      m_OwnerSkillCom(nullptr),
+      m_OwnerGatherCom(nullptr),
+      m_OwnerConstructionCom(nullptr)
 {
     ZeroMemory(m_Timers, sizeof(m_Timers));
 }
 
 CPlayerController::~CPlayerController()
-{}
+{ }
 
 HRESULT CPlayerController::Ready_PlayerController()
 {
@@ -55,7 +58,9 @@ HRESULT CPlayerController::Ready_PlayerController()
 }
 
 void CPlayerController::Initialize_Component()
-{}
+{
+    m_Timers[TIMER_RUNSOUND] = FLT_MAX;
+}
 
 _int CPlayerController::Update_Component(const _float& timeDelta)
 {
@@ -101,9 +106,14 @@ HRESULT CPlayerController::Init_OwnerComponent()
     m_OwnerAttackCom = dynamic_cast<CPlayerAttack*>(
         m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::PL_ATTACK));
 
-    m_OwnerSkillCom = dynamic_cast<CPlayerSkill*>(m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::PL_SKILL));
+    m_OwnerSkillCom = dynamic_cast<CPlayerSkill*>(
+        m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::PL_SKILL));
 
-    m_OwnerGatherCom = dynamic_cast<CPlayerGathering*>(m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::GATHERING));
+    m_OwnerGatherCom = dynamic_cast<CPlayerGathering*>(
+        m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::GATHERING));
+
+    m_OwnerConstructionCom = dynamic_cast<CPlayerConstruction*>(
+        m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::CONSTRUCTION));
 
     NULL_CHECK_RETURN_MSG(
         m_OwnerStateCom,
@@ -325,25 +335,20 @@ void CPlayerController::CheckStateTransition()
     //    }
     //}
 
-    //TODO LSHIFT로 강공격
+    // [우선순위 3] 건축 상호작용
+    else if (inputMgr->KeyPress(DIK_E))
+    {
+        if (m_OwnerConstructionCom && m_OwnerConstructionCom->Get_ConstructZone())
+        {
+            m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_HAMMER);
+            m_OwnerMovementCom->Stop();
+            return;
+        }
+    }
 
-    //TODO RMB로 스킬
-
-    //!! 공격 or 구르기 중이라면 이동/대기 상태로 넘어가지 않도록 여기서 리턴
-    if (curState == ACTORSTATE::PLAYER_ROLL ||
-        curState == ACTORSTATE::PLAYER_SWORD_COMBO1 ||
-        curState == ACTORSTATE::PLAYER_SWORD_COMBO2 ||
-        curState == ACTORSTATE::PLAYER_SWORD_COMBO3 ||
-        curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO1 ||
-        curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO2 ||
-        curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO3 ||
-        curState == ACTORSTATE::PLAYER_GAUNTLET_HEAVY ||
-        curState == ACTORSTATE::PLAYER_SKILL_CHARGING ||
-        curState == ACTORSTATE::PLAYER_SKILL_SINGLE ||
-        curState == ACTORSTATE::PLAYER_SKILL_TRIPLE ||
-        curState == ACTORSTATE::PLAYER_BERRY ||
-        curState == ACTORSTATE::PLAYER_STONE ||
-        curState == ACTORSTATE::PLAYER_WOOD)
+    // 다른 행동 중이라면 여기서 리턴
+    if (!(curState == ACTORSTATE::RUN) &&
+        !(curState == ACTORSTATE::IDLE))
     {
         m_OwnerSkillCom->Set_SingleSkill(false);
         m_OwnerSkillCom->Set_TripleSkill(false);
@@ -351,14 +356,14 @@ void CPlayerController::CheckStateTransition()
         return;
     }
 
-    // [우선순위 3] 이동 (방향 입력)
+    // 이동 (방향 입력)
     if (D3DXVec3LengthSq(&m_OwnerInputCom->Get_MoveDir()) > 0.001f)
     {
         if (curState != ACTORSTATE::RUN)
             m_OwnerStateCom->Change_State(ACTORSTATE::RUN);
     }
 
-    // [우선순위 4] 대기 (입력 없음)
+    // [우선순위 마지막] 대기 (입력 없음)
     else
     {
         if (curState != ACTORSTATE::IDLE)
@@ -438,6 +443,12 @@ void CPlayerController::Update_State(const _float& timeDelta)
         // 이건 업데이트 안에서 ㄱㄱ
     }
 
+    break;
+
+    case ACTORSTATE::PLAYER_HAMMER:
+    {
+        Action_Construction(timeDelta);
+    }
     break;
 
     case ACTORSTATE::DEAD:
@@ -540,6 +551,22 @@ void CPlayerController::Action_TripleSkill(const _float& timeDelta)
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
 }
 
+void CPlayerController::Action_Construction(const _float& timeDelta)
+{
+    bool bStopConstruction = CDInputMgr::GetInstance()->KeyUp(DIK_E);
+
+    if (!bStopConstruction)
+    {
+        if (!m_OwnerConstructionCom || !m_OwnerConstructionCom->Get_ConstructZone())
+            bStopConstruction = true;
+        else
+            m_OwnerConstructionCom->Action_Construction(timeDelta);
+    }
+
+    if (bStopConstruction)
+        m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+}
+
 CPlayerController* CPlayerController::Create(DEVICE graphicDev)
 {
     auto controller = new CPlayerController(graphicDev);
@@ -562,14 +589,15 @@ CComponent* CPlayerController::Clone()
 void CPlayerController::Free()
 {
     //!! Safe_Release() 등을 호출해 원본을 부수지 말고, nullptr로 빌려온 주소를 반납만 한다. 
-    m_OwnerStateCom      = nullptr;
-    m_OwnerCombatStatCom = nullptr;
-    m_OwnerRigidbodyCom  = nullptr;
-    m_OwnerColliderCom   = nullptr;
-    m_OwnerInputCom      = nullptr;
-    m_OwnerMovementCom   = nullptr;
-    m_OwnerAttackCom     = nullptr;
-    m_OwnerSkillCom      = nullptr;
+    m_OwnerStateCom        = nullptr;
+    m_OwnerCombatStatCom   = nullptr;
+    m_OwnerRigidbodyCom    = nullptr;
+    m_OwnerColliderCom     = nullptr;
+    m_OwnerInputCom        = nullptr;
+    m_OwnerMovementCom     = nullptr;
+    m_OwnerAttackCom       = nullptr;
+    m_OwnerSkillCom        = nullptr;
+    m_OwnerConstructionCom = nullptr;
 
     CComponent::Free();
 }

@@ -13,6 +13,7 @@
 #include "CPlayerAttack.h"
 #include "CPlayerController.h"
 #include "CPlayerGathering.h"
+#include "CPlayerConstruction.h"
 #include "CPlayerInput.h"
 #include "CPlayerMovement.h"
 #include "CPlayerSkill.h"
@@ -32,7 +33,8 @@ CPlayer::CPlayer(DEVICE graphicDev)
       m_PlayerMovementCom(nullptr),
       m_PlayerAttackCom(nullptr),
       m_PlayerSkillCom(nullptr),
-      m_PlayerGatherCom(nullptr)
+      m_PlayerGatherCom(nullptr),
+      m_PlayerConstructionCom(nullptr)
 
 { }
 
@@ -46,7 +48,9 @@ CPlayer::CPlayer(const CPlayer& rhs)
       m_PlayerMovementCom(nullptr),
       m_PlayerAttackCom(nullptr),
       m_PlayerSkillCom(nullptr),
-      m_PlayerGatherCom(nullptr)
+
+      m_PlayerGatherCom(nullptr),
+      m_PlayerConstructionCom(nullptr)
 { }
 
 CPlayer::~CPlayer()
@@ -88,7 +92,10 @@ void CPlayer::Initialize_GameObject()
     m_PlayerControllerCom->Init_OwnerComponent();
     m_PlayerMovementCom->Init_OwnerComponent();
     m_PlayerAttackCom->Init_OwnerComponent();
+
     m_PlayerSkillCom->Init_OwnerComponent();
+    // m_PlayerConstructionCom->Init_OwnerComponent(); // Construction doesn't have Init_Owner logic yet, but safe to add if base has it or we add it later
+
 }
 
 _int CPlayer::Update_GameObject(const _float& timeDelta)
@@ -116,6 +123,7 @@ void CPlayer::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CCharacterBase::OnBeginOverlap(self, other);
     m_PlayerGatherCom->OnBeginOverlap(self, other);
+    m_PlayerConstructionCom->OnOverlapEnter(self, other);
 }
 
 void CPlayer::OnStayOverlap(CCollider* self, CCollider* other)
@@ -127,6 +135,7 @@ void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)
 {
     CCharacterBase::OnEndOverlap(self, other);
     m_PlayerGatherCom->OnEndOverlap(self, other);
+    m_PlayerConstructionCom->OnOverlapExit(self, other);
     //cout << "Player HitOut" << endl;
 }
 
@@ -196,6 +205,11 @@ HRESULT CPlayer::Add_Component()
     m_PlayerGatherCom = CreateProtoComponent<CPlayerGathering>(this, COMPONENTTYPE::GATHERING);
     NULL_CHECK_RETURN(m_PlayerGatherCom, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::GATHERING, m_PlayerGatherCom });
+
+    // CONSTRUCTION
+    m_PlayerConstructionCom = CreateProtoComponent<CPlayerConstruction>(this, COMPONENTTYPE::CONSTRUCTION);
+    NULL_CHECK_RETURN(m_PlayerConstructionCom, E_FAIL);
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::CONSTRUCTION, m_PlayerConstructionCom });
 
     return S_OK;
 }
@@ -364,20 +378,20 @@ void CPlayer::Animation_Setting()
                              ANIMSTATE::LOOP);
 
     m_AnimatorCom->Create_Animation(L"PlayerWood",
-        39,
-        0.02f,
-        _vec2(1.5f, 1.5f),
-        _vec2(0.f, -.5f));
+                                    39,
+                                    0.02f,
+                                    _vec2(1.5f, 1.5f),
+                                    _vec2(0.f, -.5f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_WOOD,
                              L"PlayerWood",
                              ANIMSTATE::LOOP);
 
     m_AnimatorCom->Create_Animation(L"PlayerStone",
-        45,
-        0.02f,
-        _vec2(1.2f, 1.2f),
-        _vec2(0.f, 0.3f));
+                                    45,
+                                    0.02f,
+                                    _vec2(1.2f, 1.2f),
+                                    _vec2(0.f, 0.3f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_STONE,
                              L"PlayerStone",
@@ -412,7 +426,9 @@ void CPlayer::Animation_Setting()
                                     _vec2(1.f, 1.f),
                                     _vec2(0.05f, -0.1f));
 
-    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_WEAPONGET, L"Player_WeaponGet", ANIMSTATE::ONCE);
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_WEAPONGET,
+                             L"Player_WeaponGet",
+                             ANIMSTATE::ONCE);
 #pragma endregion
 }
 

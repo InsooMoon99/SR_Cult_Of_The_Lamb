@@ -11,6 +11,7 @@ class CPlayerAttack;
 class CPlayerInput;
 class CWeaponEquip;
 class CPlayerGathering;
+class CPlayerConstruction;
 
 BEGIN(Engine)
 class CRigidbody;
@@ -50,11 +51,13 @@ private:
     CWeaponEquip*      m_WeaponEquipCom;
     CInventory*        m_InventoryCom;
     CPlayerController* m_PlayerControllerCom;
-    CPlayerInput* m_PlayerInputCom;
-    CPlayerMovement* m_PlayerMovementCom;
-    CPlayerAttack* m_PlayerAttackCom;
-    CPlayerSkill* m_PlayerSkillCom;
-    CPlayerGathering* m_PlayerGatherCom;
+    CPlayerInput*      m_PlayerInputCom;
+    CPlayerMovement*   m_PlayerMovementCom;
+    CPlayerAttack*     m_PlayerAttackCom;
+    CPlayerSkill*      m_PlayerSkillCom;
+    CPlayerGathering*  m_PlayerGatherCom;
+
+    CPlayerConstruction* m_PlayerConstructionCom;
 
 #pragma endregion
 

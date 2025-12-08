@@ -15,7 +15,9 @@
 #include "CEyeballController.h"
 #include "CInventory.h"
 #include "CItemDB.h"
+#include "CMonsterSpawner.h"
 #include "CPlayerAttack.h"
+#include "CPlayerConstruction.h"
 #include "CPlayerController.h"
 #include "CPlayerGathering.h"
 #include "CPlayerInput.h"
@@ -39,7 +41,6 @@
 #include "CWeaponEquip.h"
 #include "ItemData.h"
 #include "ItemInstance.h"
-#include "CMonsterSpawner.h"
 
 IMPLEMENT_SINGLETON(CResourceMgr)
 
@@ -154,6 +155,11 @@ HRESULT CResourceMgr::Ready_Common(DEVICE graphicDev)
     // Effect
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::SPRITEEFFECT, CSpriteEff::Create(graphicDev))))
+        return E_FAIL;
+
+    // Construction
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::CONSTRUCTION, CPlayerConstruction::Create(graphicDev))))
         return E_FAIL;
 
     ////////////
@@ -910,7 +916,7 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     pathVec3.push_back(L"../Bin/Resource/Texture/InteractiveObj/Rock0.png");
     pathVec3.push_back(L"../Bin/Resource/Texture/InteractiveObj/Rock1.png");
     pathVec3.push_back(L"../Bin/Resource/Texture/InteractiveObj/Rock2.png");
-   
+
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_ROCK, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec3))))
         return E_FAIL;

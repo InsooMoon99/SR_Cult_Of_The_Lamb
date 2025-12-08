@@ -73,7 +73,7 @@ enum class COLLISION_LAYERTYPE
     ATTACK,
     TRIGGER,
     INTERACTIVEOBJ,
-    BUILDING,       // 건물
+    BUILDING,           // 건물
 
     COL_LAYER_END
 };
@@ -129,6 +129,7 @@ enum class COMPONENTTYPE
     PROJECTILE,
     SPRITEEFFECT,
     GATHERING,
+    CONSTRUCTION,
 
     WEAPON_EQUIP,           // 플레이어 무기
     PL_INPUT,               // 플레이어 방향 입력
