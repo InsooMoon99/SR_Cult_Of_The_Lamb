@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "CDottedCircle.h"
 
+#include <CBoxCollider.h>
 #include <CTimerMgr.h>
 #include "CCollider.h"
 #include "CCreateHelper.h"
@@ -37,6 +38,8 @@ void CDottedCircle::Initialize_GameObject()
     CBuildingBase::Initialize_GameObject();
 
     m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(90.f));
+
+    m_BoxCollCom->Set_RawSize(_vec3(1.5f, 1.f, 3.f));
 }
 
 _int CDottedCircle::Update_GameObject(const _float& timeDelta)
