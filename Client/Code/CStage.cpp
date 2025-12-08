@@ -31,6 +31,9 @@
 #include "CHarvestableHerb.h"
 #include "CPlayerSkill.h"
 #include "CTrigger_Dungeon.h"
+#include "CUIBuildMenu.h"
+
+class CUIBuildMenu;
 
 CStage::CStage(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -388,6 +391,8 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
                      L"Persistent object setup failed: UI_ItemGetManager")
     dynamic_cast<CUIItemGetManager*>(gameObject)->SetInventory(m_PlayerInventoryCom);
     dynamic_cast<CUIItemGetManager*>(gameObject)->Initialize();
+
+    CUIBuildMenu* uiBuildMenu = CUIBuildMenu::Create(m_GraphicDev);
 
     m_Layers.insert({ layerType, layer });
 

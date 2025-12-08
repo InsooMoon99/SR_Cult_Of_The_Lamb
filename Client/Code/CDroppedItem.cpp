@@ -145,7 +145,6 @@ void CDroppedItem::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CGameObject::OnBeginOverlap(self, other);
 
-    
 }
 
 void CDroppedItem::OnStayOverlap(CCollider* self, CCollider* other)

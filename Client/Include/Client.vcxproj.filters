@@ -16,9 +16,6 @@
     <Filter Include="00. MainApp">
       <UniqueIdentifier>{1d15c077-e92b-4745-a1bb-28c686c8bf97}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. Item">
-      <UniqueIdentifier>{32cd9222-0684-4801-b832-d8f9219a290b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="05. UI">
       <UniqueIdentifier>{2c329504-b509-4cd3-9c28-9acdb3fad354}</UniqueIdentifier>
     </Filter>
@@ -256,6 +253,15 @@
     <Filter Include="05. UI\01. UI\99. Fade">
       <UniqueIdentifier>{7ed145a4-f09b-474f-b0ca-37315f6894df}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Item">
+      <UniqueIdentifier>{32cd9222-0684-4801-b832-d8f9219a290b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. Recipe">
+      <UniqueIdentifier>{9ea3124b-4847-48df-a85d-b1e360ac1fc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. UI\01. UI\10. UIBuildMenu">
+      <UniqueIdentifier>{98f70334-9b9c-4272-a009-7d7d2c2b8f8b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -304,19 +310,19 @@
       <Filter>05. UI\01. UI\00. UIHeartBar</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CItemDB.h">
-      <Filter>03. Item</Filter>
+      <Filter>04. Item</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\ItemData.h">
-      <Filter>03. Item</Filter>
+      <Filter>04. Item</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\ItemInstance.h">
-      <Filter>03. Item</Filter>
+      <Filter>04. Item</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CDroppedItem.h">
       <Filter>03. GameObject\03. Item</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CDropSystem.h">
-      <Filter>03. Item</Filter>
+      <Filter>04. Item</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CEdit.h">
       <Filter>99. ImGui_Editor\02. EditorMap</Filter>
@@ -679,6 +685,12 @@
     <ClInclude Include="..\Header\CMonsterSpawner.h">
       <Filter>03. GameObject\09. MapObject</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CUIBuildMenu.h">
+      <Filter>05. UI\01. UI\10. UIBuildMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUIBuildCell.h">
+      <Filter>05. UI\01. UI\10. UIBuildMenu</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -718,13 +730,13 @@
       <Filter>05. UI\01. UI\00. UIHeartBar</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CItemDB.cpp">
-      <Filter>03. Item</Filter>
+      <Filter>04. Item</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CDroppedItem.cpp">
       <Filter>03. GameObject\03. Item</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CDropSystem.cpp">
-      <Filter>03. Item</Filter>
+      <Filter>04. Item</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CEdit.cpp">
       <Filter>99. ImGui_Editor\02. EditorMap</Filter>
@@ -1066,6 +1078,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\CConstructionPlacer.cpp">
       <Filter>94. Construction\01. Placer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUIBuildMenu.cpp">
+      <Filter>05. UI\01. UI\10. UIBuildMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUIBuildCell.cpp">
+      <Filter>05. UI\01. UI\10. UIBuildMenu</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

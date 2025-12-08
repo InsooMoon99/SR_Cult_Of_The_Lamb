@@ -3,8 +3,7 @@
 #include "CInventory.h"
 
 // TAB 누를 시 나오는 창을 관리하는 최상위 패널
-// 버튼 UI 생성 직접 생성/관리, 페이지 생성/관리, 인벤토리 UI 관리
-// 인벤토리 
+// 버튼 UI 생성/관리, 페이지 생성/관리, 인벤토리 UI 관리
 
 namespace Engine
 {

@@ -794,6 +794,23 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
         COMPONENTTYPE::TEX_UI_MONSTERHP, CTexture::Create(graphicDev, TEX_NORMAL, monsterHp_Path))))
         return E_FAIL;
 
+
+    CTexture* buildTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(buildTex, E_FAIL);
+
+    if (FAILED(
+        buildTex->Add_Texture(L"Icon_CookingFire", TEXTUREID::TEX_NORMAL,
+            L"../Bin/Resource/Texture/UI/Icon_Building/Icon_CookingFire.png", 1)))
+        return E_FAIL;
+
+    if (FAILED(
+        buildTex->Add_Texture(L"Icon_Temple", TEXTUREID::TEX_NORMAL,
+            L"../Bin/Resource/Texture/UI/Icon_Building/Icon_Temple.png", 1)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_BUILD, buildTex)))
+        return E_FAIL;
+
     return S_OK;
 }
 

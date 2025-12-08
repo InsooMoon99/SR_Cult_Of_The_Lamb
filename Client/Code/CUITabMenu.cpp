@@ -225,7 +225,7 @@ CUITabMenu* CUITabMenu::Create(DEVICE graphicDev)
     if (FAILED(tabMenu->Ready_GameObject()))
     {
         Safe_Release(tabMenu);
-        MSG_BOX("CUITabMenu Created Failed");
+        MSG_BOX("CUITabMenu Create Failed");
         return nullptr;
     }
 
