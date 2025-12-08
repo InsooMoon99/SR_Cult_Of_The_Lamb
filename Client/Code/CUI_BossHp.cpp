@@ -132,7 +132,7 @@ void CUI_BossHp::Render_GameObject()
         m_Buffer_Delay->Set_Offset(offsetX, 0.f);
 
         m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
-        m_TextureCom->Set_Texture(2);  // 흰색 텍스처
+        m_TextureCom->Set_Texture(5);  // 흰색 텍스처
         m_Buffer_Delay->Render_Buffer();
     }
 
