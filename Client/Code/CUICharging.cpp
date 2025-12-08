@@ -47,9 +47,10 @@ int CUICharging::Update_GameObject(const _float& timeDelta)
         if (changeLength <= minLength)
             changeLength = minLength;
 
+        _vec3 preLength = m_TransformCom->Get_Scale();
         m_TransformCom->Set_Scale(changeLength, 0.5f, 1.f);
-
-        _vec3 playerPos = m_PlayerSkill->Get_Owner()->Get_Transform()->Get_Pos();
+        _vec3 changedLength = m_TransformCom->Get_Scale();
+        _vec3 gap = changedLength - preLength;
 
         _vec3 dir = m_ArrowDir;
 
@@ -60,7 +61,8 @@ int CUICharging::Update_GameObject(const _float& timeDelta)
         float offset = m_PlayerSkill->Get_SkillInfo().spawnOffset;
         dir.x = -dir.x;
 
-       _vec3 spawnPos = playerPos + offset*dir ;
+        _vec3 playerPos = m_PlayerSkill->Get_Owner()->Get_Transform()->Get_Pos();
+       _vec3 spawnPos = playerPos + offset*dir + gap ;
         m_TransformCom->Set_Pos(spawnPos);
 
         _vec3 rot{ D3DXToRadian(90.f), angle, 0.f };
@@ -74,7 +76,7 @@ void CUICharging::Render_GameObject()
 {
         CUI::Render_GameObject();
         m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-    if (m_PlayerSkill->Get_IsCharging())
+    if (m_Active)
 
     {
        m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
