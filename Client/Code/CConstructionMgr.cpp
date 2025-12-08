@@ -43,16 +43,16 @@ void CConstructionMgr::Update_ConstructionMgr(const _float& fTimeDelta)
         m_pPlacer->Update_Placer(fTimeDelta);
 
         // 마우스 클릭 체크하여 배치 시도
-        if (CDInputMgr::GetInstance()->KeyDown(DIM_LB))
+        if (CDInputMgr::GetInstance()->MouseDown(DIM_LB))
         {
-            if (m_pPlacer->Try_PlaceObject()) 
+            if (m_pPlacer->Try_PlaceObject())
             {
                 // 배치 성공 시 후처리 (아이템 차감, 건설 모드 종료 or 유지)
             }
         }
 
         // 취소 키 체크 (우클릭)
-        if (CDInputMgr::GetInstance()->KeyDown(DIM_RB))
+        if (CDInputMgr::GetInstance()->MouseDown(DIM_RB))
             End_BuildMode();
     }
 }
@@ -72,19 +72,19 @@ void CConstructionMgr::Start_BuildMode(BUILDING_TYPE type)
         return;
 
     m_bIsBuilding = true;
-    m_pPlacer->Set_PreviewObject(type);
+    m_pPlacer->Set_Preview(type);
 }
 
 void CConstructionMgr::End_BuildMode()
 {
     m_bIsBuilding = false;
 
-    // Placer 내부 상태 초기화 필요시 호출
-    // m_pPlacer->Reset(); 
+    // Placer 내부 상태 초기화
+    m_pPlacer->End_Preview();
 }
 
 void CConstructionMgr::Free()
 {
-    Safe_Release(m_GraphicDev);
     Safe_Release(m_pPlacer);
+    Safe_Release(m_GraphicDev);
 }

@@ -20,14 +20,14 @@
 
 CPlayerController::CPlayerController(DEVICE graphicDev)
     : CComponent(graphicDev),
-    m_OwnerStateCom(nullptr),
-    m_OwnerCombatStatCom(nullptr),
-    m_OwnerRigidbodyCom(nullptr),
-    m_OwnerColliderCom(nullptr),
-    m_OwnerInputCom(nullptr),
-    m_OwnerMovementCom(nullptr),
-    m_OwnerAttackCom(nullptr),
-    m_OwnerSkillCom(nullptr)
+      m_OwnerStateCom(nullptr),
+      m_OwnerCombatStatCom(nullptr),
+      m_OwnerRigidbodyCom(nullptr),
+      m_OwnerColliderCom(nullptr),
+      m_OwnerInputCom(nullptr),
+      m_OwnerMovementCom(nullptr),
+      m_OwnerAttackCom(nullptr),
+      m_OwnerSkillCom(nullptr)
 {
     ZeroMemory(m_Timers, sizeof(m_Timers));
 }
@@ -55,8 +55,7 @@ HRESULT CPlayerController::Ready_PlayerController()
 }
 
 void CPlayerController::Initialize_Component()
-{
-}
+{}
 
 _int CPlayerController::Update_Component(const _float& timeDelta)
 {
@@ -208,6 +207,8 @@ void CPlayerController::CheckStateTransition()
                 m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_STONE);
                 m_OwnerMovementCom->Stop();
                 break;
+
+            default: break;
             }
             return;
         }
@@ -222,24 +223,20 @@ void CPlayerController::CheckStateTransition()
         }
         // 공격 중이라면 콤보 예약 시도
         else if (curState == ACTORSTATE::PLAYER_SWORD_COMBO1 ||
-            curState == ACTORSTATE::PLAYER_SWORD_COMBO2 ||
-            curState == ACTORSTATE::PLAYER_SWORD_COMBO3 ||
-            curState == ACTORSTATE::PLAYER_SWORD_COMBO3 ||
-            curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO1 ||
-            curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO2 ||
-            curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO3 ||
-            curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO4)
-        
+                 curState == ACTORSTATE::PLAYER_SWORD_COMBO2 ||
+                 curState == ACTORSTATE::PLAYER_SWORD_COMBO3 ||
+                 curState == ACTORSTATE::PLAYER_SWORD_COMBO3 ||
+                 curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO1 ||
+                 curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO2 ||
+                 curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO3)
+
         {
             m_OwnerAttackCom->Try_NextCombo();
             return;
         }
-
-
     }
     //TODO LSHIFT로 강공격
 
-    //TODO RMB로 스킬
     else if (inputMgr->MouseDown(DIM_RB))
     {
         // cout << "First time Pressed" << endl;
@@ -256,7 +253,6 @@ void CPlayerController::CheckStateTransition()
             if (nextState != ACTORSTATE::STATE_END)
                 m_OwnerStateCom->Change_State(nextState);
         }
-
     }
 
     //else if(inputMgr->MousePress(DIM_RB))
@@ -281,9 +277,7 @@ void CPlayerController::CheckStateTransition()
     else if (inputMgr->MouseUp(DIM_RB))
     {
         if (curState == ACTORSTATE::PLAYER_SKILL_CHARGING)
-        {
             m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
-        }
         if (m_OwnerSkillCom->Get_TripleSkillAvailability())
         {
             ACTORSTATE nextState = m_OwnerSkillCom->Start_TripleSkill();
@@ -296,8 +290,6 @@ void CPlayerController::CheckStateTransition()
             if (nextState != ACTORSTATE::STATE_END)
                 m_OwnerStateCom->Change_State(nextState);
         }
-
-
     }
 
     // 스킬 공격
@@ -348,12 +340,11 @@ void CPlayerController::CheckStateTransition()
         curState == ACTORSTATE::PLAYER_GAUNTLET_HEAVY ||
         curState == ACTORSTATE::PLAYER_SKILL_CHARGING ||
         curState == ACTORSTATE::PLAYER_SKILL_SINGLE ||
-        curState == ACTORSTATE::PLAYER_SKILL_TRIPLE||
-        curState == ACTORSTATE::PLAYER_BERRY||
-        curState == ACTORSTATE::PLAYER_STONE||
+        curState == ACTORSTATE::PLAYER_SKILL_TRIPLE ||
+        curState == ACTORSTATE::PLAYER_BERRY ||
+        curState == ACTORSTATE::PLAYER_STONE ||
         curState == ACTORSTATE::PLAYER_WOOD)
     {
-
         m_OwnerSkillCom->Set_SingleSkill(false);
         m_OwnerSkillCom->Set_TripleSkill(false);
 
@@ -444,9 +435,9 @@ void CPlayerController::Update_State(const _float& timeDelta)
         m_OwnerGatherCom->Update_Component(timeDelta);
         //else
         //    m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
-            // 이건 업데이트 안에서 ㄱㄱ
+        // 이건 업데이트 안에서 ㄱㄱ
     }
-  
+
     break;
 
     case ACTORSTATE::DEAD:
@@ -462,7 +453,6 @@ void CPlayerController::Update_State(const _float& timeDelta)
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
     }
     break;
-
 
     default:
     {
@@ -529,7 +519,7 @@ void CPlayerController::Action_Charging(const _float& timeDelta)
     case ACTORSTATE::PLAYER_SKILL_TRIPLE:
         m_OwnerSkillCom->Set_TripleSkill(true);
         m_OwnerSkillCom->Set_SingleSkill(false);
-        //  m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SKILL_TRIPLE);
+    //  m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_SKILL_TRIPLE);
         break;
 
     default: break;

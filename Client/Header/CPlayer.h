@@ -32,6 +32,7 @@ public:
     void    Render_GameObject() override;
 
     void OnBeginOverlap(CCollider* self, CCollider* other) override;
+    void OnStayOverlap(CCollider* self, CCollider* other) override;
     void OnEndOverlap(CCollider* self, CCollider* other) override;
 
     void Render_Editor() override;

@@ -30,9 +30,7 @@ public:
 
 protected:
     HRESULT Add_Component() override;
-
-protected:
-    void Free() override;
+    void    Free() override;
 
 protected:
     Engine::CBoxCollider* m_BoxCollCom = nullptr;

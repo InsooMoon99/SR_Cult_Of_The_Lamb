@@ -253,14 +253,14 @@
     <Filter Include="03. GameObject\08. Building\00. Workbench">
       <UniqueIdentifier>{5b22c16a-a27a-4e8b-bfd7-233dc3ad3553}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\08. Building\01. Construct Range">
-      <UniqueIdentifier>{c7255dbc-2339-461a-99df-c0f4ace0edcf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\08. Building\02. Temple">
       <UniqueIdentifier>{372bb441-596a-4fbe-88e5-cede48434732}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. GameObject\08. Building\03. Kitchen">
       <UniqueIdentifier>{ce09c24c-b176-4080-878a-2f9c52c4103d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\08. Building\01. Construct Circle">
+      <UniqueIdentifier>{c7255dbc-2339-461a-99df-c0f4ace0edcf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -685,6 +685,15 @@
     <ClInclude Include="..\Header\CTemple.h">
       <Filter>03. GameObject\08. Building\02. Temple</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CDottedCircle.h">
+      <Filter>03. GameObject\08. Building\01. Construct Circle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CWorkBench.h">
+      <Filter>03. GameObject\08. Building\00. Workbench</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CKitchen.h">
+      <Filter>03. GameObject\08. Building\03. Kitchen</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1072,6 +1081,15 @@
     </ClCompile>
     <ClCompile Include="..\Code\CTemple.cpp">
       <Filter>03. GameObject\08. Building\02. Temple</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CDottedCircle.cpp">
+      <Filter>03. GameObject\08. Building\01. Construct Circle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CWorkBench.cpp">
+      <Filter>03. GameObject\08. Building\00. Workbench</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CKitchen.cpp">
+      <Filter>03. GameObject\08. Building\03. Kitchen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
