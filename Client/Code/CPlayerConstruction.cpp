@@ -3,6 +3,7 @@
 
 #include "CCollider.h"
 #include "CConstructCircle.h"
+#include "CSceneMgr.h"
 
 CPlayerConstruction::CPlayerConstruction(DEVICE graphicDev)
     : CComponent(graphicDev)
@@ -25,6 +26,9 @@ void CPlayerConstruction::Initialize_Component()
 
 _int CPlayerConstruction::Update_Component(const _float& timeDelta)
 {
+    if (CSceneMgr::GetInstance()->Is_Changing())
+        m_pConstructZone = nullptr;
+
     // Normally does nothing unless called by Action_Construction or managing state locally
     return 0;
 }
@@ -43,9 +47,7 @@ void CPlayerConstruction::Action_Construction(const _float& timeDelta)
 void CPlayerConstruction::OnOverlapEnter(CCollider* self, CCollider* other)
 {
     if (other->Get_CollisionLayer() == COLLISION_LAYERTYPE::INTERACTIVEOBJ)
-    {
         m_pConstructZone = dynamic_cast<CConstructCircle*>(other->Get_Owner());
-    }
 }
 
 void CPlayerConstruction::OnOverlapExit(CCollider* self, CCollider* other)
@@ -53,9 +55,7 @@ void CPlayerConstruction::OnOverlapExit(CCollider* self, CCollider* other)
     if (other->Get_CollisionLayer() == COLLISION_LAYERTYPE::INTERACTIVEOBJ)
     {
         if (m_pConstructZone == dynamic_cast<CConstructCircle*>(other->Get_Owner()))
-        {
             m_pConstructZone = nullptr;
-        }
     }
 }
 

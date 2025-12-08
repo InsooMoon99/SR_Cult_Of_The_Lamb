@@ -128,7 +128,10 @@ void CConstructionPlacer::Set_Preview(BUILDING_TYPE type)
 
     // 기존 미리보기 제거
     Safe_Release(m_PreviewObj);
+    m_PreviewObj = nullptr;
+
     Safe_Release(m_PreviewCircle);
+    m_PreviewCircle = nullptr;
 
     m_CurBuildingType = type;
 
@@ -256,7 +259,10 @@ void CConstructionPlacer::End_Preview()
 {
     // 기존 미리보기 제거
     Safe_Release(m_PreviewObj);
+    m_PreviewObj = nullptr;
+
     Safe_Release(m_PreviewCircle);
+    m_PreviewCircle = nullptr;
 }
 
 CConstructionPlacer* CConstructionPlacer::Create(DEVICE graphicDev)

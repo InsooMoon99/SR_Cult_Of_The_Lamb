@@ -30,7 +30,10 @@ void CConstructionMgr::Create_Placer(DEVICE graphicDev)
 void CConstructionMgr::Release_Placer()
 {
     if (m_pPlacer)
+    {
         Safe_Release(m_pPlacer);
+        m_pPlacer = nullptr;
+    }
 }
 
 void CConstructionMgr::Update_ConstructionMgr(const _float& fTimeDelta)

@@ -11,9 +11,9 @@
 #include "CDropSystem.h"
 #include "CInventory.h"
 #include "CPlayerAttack.h"
+#include "CPlayerConstruction.h"
 #include "CPlayerController.h"
 #include "CPlayerGathering.h"
-#include "CPlayerConstruction.h"
 #include "CPlayerInput.h"
 #include "CPlayerMovement.h"
 #include "CPlayerSkill.h"
@@ -95,7 +95,6 @@ void CPlayer::Initialize_GameObject()
 
     m_PlayerSkillCom->Init_OwnerComponent();
     // m_PlayerConstructionCom->Init_OwnerComponent(); // Construction doesn't have Init_Owner logic yet, but safe to add if base has it or we add it later
-
 }
 
 _int CPlayer::Update_GameObject(const _float& timeDelta)
@@ -134,6 +133,7 @@ void CPlayer::OnStayOverlap(CCollider* self, CCollider* other)
 void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)
 {
     CCharacterBase::OnEndOverlap(self, other);
+
     m_PlayerGatherCom->OnEndOverlap(self, other);
     m_PlayerConstructionCom->OnOverlapExit(self, other);
     //cout << "Player HitOut" << endl;

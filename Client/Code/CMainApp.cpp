@@ -216,6 +216,9 @@ void CMainApp::Free()
     Safe_Release(m_GraphicDev);
     Safe_Release(m_DeviceClass);
 
+    CSceneMgr::DestroyInstance();
+    CManagement::DestroyInstance();
+
     CConstructionMgr::DestroyInstance();
     CDropSystem::DestroyInstance();
     CTexture::CleanupTextureSystem();
@@ -231,9 +234,8 @@ void CMainApp::Free()
     CTimerMgr::DestroyInstance();
     CMainEditorMgr::DestroyInstance();
     CImGuiManager::DestroyInstance();
-    CManagement::DestroyInstance();
+    
     CGraphicDev::DestroyInstance();
-    CSceneMgr::DestroyInstance();
     CRandomMgr::DestroyInstance();
 
 #pragma region 데이터 파싱 테스트

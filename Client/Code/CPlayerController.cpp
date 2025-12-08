@@ -192,7 +192,7 @@ void CPlayerController::CheckStateTransition()
         }
     }
 
-    // [우선순위 2] 일반공격 입력 처리
+    // [우선순위 2] 좌클릭으로 일반공격 입력 처리
     // - 구르기 상태여도 공격으로 이행 (캔슬)
     else if (inputMgr->MouseDown(DIM_LB))
     {
@@ -200,29 +200,9 @@ void CPlayerController::CheckStateTransition()
         ImGuiIO& io = ImGui::GetIO();
         if (io.WantCaptureMouse)
             return;
-        ////////
-        if (m_OwnerGatherCom->GetInteractiveObj() != nullptr/*&& 마을알때*/)
-        {
-            switch (m_OwnerGatherCom->GetInteractiveObj()->GetInteractiveType())
-            {
-            case CWorldInteractive::TYPE::BERRY:
-                m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_BERRY);
-                m_OwnerMovementCom->Stop();
-                break;
-            case CWorldInteractive::TYPE::WOOD:
-                m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_WOOD);
-                m_OwnerMovementCom->Stop();
-                break;
-            case CWorldInteractive::TYPE::ROCK:
-                m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_STONE);
-                m_OwnerMovementCom->Stop();
-                break;
 
-            default: break;
-            }
-            return;
-        }
-        //////////
+        Living_Interaction();
+
         if (curState == ACTORSTATE::PLAYER_ROLL ||
             curState == ACTORSTATE::IDLE ||
             curState == ACTORSTATE::RUN)
@@ -335,16 +315,9 @@ void CPlayerController::CheckStateTransition()
     //    }
     //}
 
-    // [우선순위 3] 건축 상호작용
+    // [우선순위 3] 생활 상호작용 : 채집, 건축
     else if (inputMgr->KeyPress(DIK_E))
-    {
-        if (m_OwnerConstructionCom && m_OwnerConstructionCom->Get_ConstructZone())
-        {
-            m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_HAMMER);
-            m_OwnerMovementCom->Stop();
-            return;
-        }
-    }
+        Living_Interaction();
 
     // 다른 행동 중이라면 여기서 리턴
     if (!(curState == ACTORSTATE::RUN) &&
@@ -553,7 +526,7 @@ void CPlayerController::Action_TripleSkill(const _float& timeDelta)
 
 void CPlayerController::Action_Construction(const _float& timeDelta)
 {
-    bool bStopConstruction = CDInputMgr::GetInstance()->KeyUp(DIK_E);
+    bool bStopConstruction = CDInputMgr::GetInstance()->KeyUp(DIK_E) || CDInputMgr::GetInstance()->MouseUp(DIM_LB);
 
     if (!bStopConstruction)
     {
@@ -565,6 +538,44 @@ void CPlayerController::Action_Construction(const _float& timeDelta)
 
     if (bStopConstruction)
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+}
+
+void CPlayerController::Living_Interaction()
+{
+    // 채집 상호작용
+    if (m_OwnerGatherCom->GetInteractiveObj() != nullptr)
+    {
+        switch (m_OwnerGatherCom->GetInteractiveObj()->GetInteractiveType())
+        {
+        case CWorldInteractive::TYPE::BERRY:
+            if (m_OwnerStateCom->Get_State() != ACTORSTATE::PLAYER_BERRY)
+                m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_BERRY);
+            m_OwnerMovementCom->Stop();
+            break;
+        case CWorldInteractive::TYPE::WOOD:
+            if (m_OwnerStateCom->Get_State() != ACTORSTATE::PLAYER_WOOD)
+                m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_WOOD);
+            m_OwnerMovementCom->Stop();
+            break;
+        case CWorldInteractive::TYPE::ROCK:
+            if (m_OwnerStateCom->Get_State() != ACTORSTATE::PLAYER_STONE)
+                m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_STONE);
+            m_OwnerMovementCom->Stop();
+            break;
+
+        default: break;
+        }
+        return;
+    }
+
+    // 건축 상호작용
+    if (m_OwnerConstructionCom && m_OwnerConstructionCom->Get_ConstructZone())
+    {
+        if (m_OwnerStateCom->Get_State() != ACTORSTATE::PLAYER_HAMMER)
+            m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_HAMMER);
+        m_OwnerMovementCom->Stop();
+        return;
+    }
 }
 
 CPlayerController* CPlayerController::Create(DEVICE graphicDev)

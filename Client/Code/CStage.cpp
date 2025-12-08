@@ -98,7 +98,7 @@ void CStage::Initialize_Scene()
     CScene::Initialize_Scene();
 
     // 초기 맵 불러오기 <- 이거 꼭 Initialize에서 진행해야 맵 오브젝트가 잘 불러진다.
-    m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Village.map");
+    m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Village2.map");
 
     // 던전 이동 트리거 만들기
     Create_Trigger();
@@ -521,6 +521,7 @@ CStage* CStage::Create(DEVICE graphicDev)
 
 void CStage::Free()
 {
+    CDropSystem::GetInstance()->Clear_Item();
     CDroppedItem::Reset_WeaponExplainUI();
     CConstructionMgr::GetInstance()->Release_Placer();
 

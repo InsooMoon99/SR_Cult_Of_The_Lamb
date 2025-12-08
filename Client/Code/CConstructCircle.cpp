@@ -1,8 +1,7 @@
 ﻿#include "pch.h"
 #include "CConstructCircle.h"
 
-#include <CBoxCollider.h>
-#include <CTimerMgr.h>
+#include "CBoxCollider.h"
 #include "CCollider.h"
 #include "CCreateHelper.h"
 #include "CDInputMgr.h"
@@ -12,6 +11,7 @@
 #include "CScene.h"
 #include "CTemple.h"
 #include "CTexture.h"
+#include "CTimerMgr.h"
 #include "CTransform.h"
 
 CConstructCircle::CConstructCircle(DEVICE graphicDev)
@@ -40,6 +40,7 @@ void CConstructCircle::Initialize_GameObject()
     m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(90.f));
 
     m_BoxCollCom->Set_RawSize(_vec3(1.5f, 1.f, 3.f));
+    m_BoxCollCom->Set_CollisionLayer(COLLISION_LAYERTYPE::INTERACTIVEOBJ);
 }
 
 _int CConstructCircle::Update_GameObject(const _float& timeDelta)
@@ -86,7 +87,8 @@ void CConstructCircle::OnStayOverlap(CCollider* self, CCollider* other)
     if (m_IsPreview)
         return;
 
-    if (Engine::CDInputMgr::GetInstance()->KeyPress(DIK_E))
+    if (Engine::CDInputMgr::GetInstance()->MousePress(DIM_LB) ||
+        Engine::CDInputMgr::GetInstance()->KeyPress(DIK_E))
     {
         CGameObject* playerObj = other->Get_Owner();
         NULL_CHECK(playerObj);
