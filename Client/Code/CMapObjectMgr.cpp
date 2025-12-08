@@ -283,7 +283,7 @@ void CMapObjectMgr::Render_DecoWindow()
 
         if (decoTexture)
         {
-            const _int TOTAL_DECO = 79; 
+            const _int TOTAL_DECO = 83; 
             const _int COLS = 5;
             const ImVec2 buttonSize(50.f, 50.f);
 
@@ -653,6 +653,7 @@ HRESULT CMapObjectMgr::Load_FromStream(ifstream& ifs, _vec3 terrainOffset)
                 _vec3 loadedRotation = data.rotation;
                 loadedRotation.x = -loadedRotation.x;
                 loadedRotation.y = -loadedRotation.y;
+                loadedRotation.z = -loadedRotation.z;
 
                 transform->Set_Rotation(loadedRotation);
             }

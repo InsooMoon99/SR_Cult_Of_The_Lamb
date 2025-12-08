@@ -307,20 +307,29 @@ CComponent* CTexture::Clone()
 
 void CTexture::Free()
 {
+    if (s_LockInitialized)
+    {
+        EnterCriticalSection(&s_D3DLock);
+    }
+
     for_each(m_Textures.begin(), m_Textures.end(), CDeleteObj());
     m_Textures.clear();
 
     for_each(m_AnimTextures.begin(),
-             m_AnimTextures.end(),
-             [](auto& keyValue)
-             {
-                 for (auto*& tex : keyValue.second)
-                 {
-                     Safe_Release(tex);
-                 }
-             });
+        m_AnimTextures.end(),
+        [](auto& keyValue)
+        {
+            for (auto*& tex : keyValue.second)
+            {
+                Safe_Release(tex);
+            }
+        });
 
     m_AnimTextures.clear();
+    if (s_LockInitialized)
+    {
+        LeaveCriticalSection(&s_D3DLock);
+    }
 }
 
 void CTexture::InitTextureSystem()
@@ -329,12 +338,6 @@ void CTexture::InitTextureSystem()
 	{
 		InitializeCriticalSection(&s_D3DLock);
 		s_LockInitialized = true;
-
-		OutputDebugString(L"[CTexture] InitTextureSystem() called!\n");
-	}
-	else
-	{
-		OutputDebugString(L"[CTexture] Already initialized!\n");
 	}
 }
 

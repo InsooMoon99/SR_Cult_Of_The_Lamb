@@ -39,6 +39,8 @@
 #include "CWeaponEquip.h"
 #include "ItemData.h"
 #include "ItemInstance.h"
+#include "CMonsterSpawner.h"
+
 
 IMPLEMENT_SINGLETON(CResourceMgr)
 
@@ -415,6 +417,28 @@ HRESULT CResourceMgr::Ready_Monster(DEVICE graphicDev)
         COMPONENTTYPE::TEX_HUMAN_MONSTER, humanmonsterTex)))
         return E_FAIL;
 
+    // Floater
+    CTexture* floaterTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(floaterTex, E_FAIL);
+
+    if (FAILED(floaterTex->Add_Texture(L"Floater_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Floater/Floater_Idle/Floater_Idle%d.png", 32)))
+        return E_FAIL;
+
+    if (FAILED(floaterTex->Add_Texture(L"Floater_Hit", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Floater/Floater_Hit/Floater_Hit%d.png", 25)))
+        return E_FAIL;
+
+    if (FAILED(floaterTex->Add_Texture(L"Floater_Attack", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Floater/Floater_Attack/Floater_Attack%d.png", 34)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_FLOATER_MONSTER, floaterTex)))
+        return E_FAIL;
+
+
+
     return S_OK;
 }
 
@@ -659,6 +683,8 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     pathVec1.push_back(L"../Bin/Resource/Texture/UI/ItemGet/0.png");
     pathVec1.push_back(L"../Bin/Resource/Texture/UI/ItemGet/1.png");
     pathVec1.push_back(L"../Bin/Resource/Texture/Player/Skill/Arrow_White.png");
+    pathVec1.push_back(L"../Bin/Resource/Texture/UI/Tarot/ExplainBox/ExplainBox.png");
+
 
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_ICON, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec1))))
@@ -800,6 +826,11 @@ HRESULT CResourceMgr::Ready_Terrain(DEVICE graphicDev)
         COMPONENTTYPE::WALL_RENDERER, CWallRenderer::Create(graphicDev))))
         return E_FAIL;
 
+    // Monster Spawner
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::MONSTER_SPAWNER,
+        CMonsterSpawner::Create(graphicDev))))
+        return E_FAIL;
+
     // Terrain_284
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_TILE_284, CTexture::Create(graphicDev, TEX_NORMAL,
@@ -840,7 +871,7 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     // Deco
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_DECO, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/MapObject/Deco/Village_Deco%d.png", 79))))
+            L"../Bin/Resource/Texture/MapObject/Deco/Village_Deco%d.png", 83))))
         return E_FAIL;
 
     // Dungeon_Deco

@@ -55,10 +55,12 @@ _int CWorldInteractive::Update_GameObject(const _float& timeDelta)
 {
     _int  exit = CRenderObject::Update_GameObject(timeDelta);
     
-        if (m_CombatStatCom->Is_Dead() == true && m_bInvenDropped==false) // 컴포넌트 내부에서 처리함 0 만들고 Dead true
+        if (m_CombatStatCom->Is_Dead() == true || m_bInvenDropped == true) // 컴포넌트 내부에서 처리함 0 만들고 Dead true
         {
             // 플레이어 위치
-            CDropSystem::GetInstance()->SpawnAllFromInven(m_GraphicDev, m_InventoryCom);
+            _vec3 DropPos = m_CombatStatCom->Get_Dir();
+            int offset = 15; //
+            CDropSystem::GetInstance()->SpawnAllFromInven(m_GraphicDev, m_InventoryCom, DropPos, offset);
             m_bHovering = false;
             m_bInvenDropped = true;
             return exit;
@@ -85,6 +87,8 @@ _int CWorldInteractive::Update_GameObject(const _float& timeDelta)
         //hp에 따라 오브젝트 이미지 전환
 
         //0 이면 아이템 드롭
+
+        
 
     }
     else

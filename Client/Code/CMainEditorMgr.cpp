@@ -4,6 +4,7 @@
 #include "CAnimator.h"
 #include "CBoxCollider.h"
 #include "CCameraCalc.h"
+#include "CTerrain.h"
 #include "CCameraController.h"
 #include "CCollisionManager.h"
 #include "CCombatStat.h"
@@ -180,6 +181,7 @@ void CMainEditorMgr::Render_MapToolTab()
     bool selTerrain   = (m_MapToolView == MAPTOOL_VIEW::TERRAIN);
     bool selMapObject = (m_MapToolView == MAPTOOL_VIEW::MAP_OBJECT);
     bool selWall      = (m_MapToolView == MAPTOOL_VIEW::WALL);
+    bool selMonster   = (m_MapToolView == MAPTOOL_VIEW::MONSTER_SPAWNER);
 
     if (ImGui::Selectable("Terrain Renderer", selTerrain))
         m_MapToolView = MAPTOOL_VIEW::TERRAIN;
@@ -189,6 +191,9 @@ void CMainEditorMgr::Render_MapToolTab()
 
     if (ImGui::Selectable("Wall", selWall))
         m_MapToolView = MAPTOOL_VIEW::WALL;
+
+    if (ImGui::Selectable("Monster Spawner", selMonster))
+        m_MapToolView = MAPTOOL_VIEW::MONSTER_SPAWNER;
 
     ImGui::EndChild();
 
@@ -223,6 +228,7 @@ void CMainEditorMgr::Render_MapToolTab()
     }
 
     case MAPTOOL_VIEW::WALL:
+    {
         CWallRenderer* wallRenderer = Find_WallRenderer();
 
         if (wallRenderer)
@@ -231,7 +237,31 @@ void CMainEditorMgr::Render_MapToolTab()
         }
 
         break;
-   
+    }
+
+    case MAPTOOL_VIEW::MONSTER_SPAWNER:
+    {
+        CTerrain* terrain = Find_Terrain();
+
+        if (terrain)
+        {
+            CMonsterSpawner* spawner = dynamic_cast<CMonsterSpawner*>(
+                terrain->Get_Component(ID_DYNAMIC, COMPONENTTYPE::MONSTER_SPAWNER));
+
+            if (spawner)
+            {
+                ImGui::Text("Monster Spawner");
+                ImGui::Separator();
+
+                MonsterSpawner_Inspector(spawner);
+            }
+            else
+                ImGui::Text(u8"MonsterSpawner이 없어요");
+        }
+
+        break;
+    }
+
     }
 
     ImGui::EndChild();
@@ -601,6 +631,13 @@ void CMainEditorMgr::Render_SelectComponent()
         }
         break;
 
+        case COMPONENTTYPE::MONSTER_SPAWNER:
+        {
+            auto spawner = dynamic_cast<CMonsterSpawner*>(selectComponent);
+            MonsterSpawner_Inspector(spawner);
+        }
+        break;
+
         default: break;
         // 다른 컴포넌트 타입 ImGui에 보여줄거 있으면 추가하기
         }
@@ -663,6 +700,15 @@ CWallRenderer* CMainEditorMgr::Find_WallRenderer()
     NULL_CHECK_RETURN(wallCom, nullptr);
 
     return wallCom;
+}
+
+CTerrain* CMainEditorMgr::Find_Terrain()
+{
+    auto terrainRenderer = Find_TerrainRenderer();
+    if (!terrainRenderer)
+        return nullptr;
+
+    return dynamic_cast<CTerrain*>(terrainRenderer->Get_Owner());
 }
 
 void CMainEditorMgr::Free()

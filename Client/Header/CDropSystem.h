@@ -21,8 +21,11 @@ private:
 
 public:
 
-    void SpawnDrop(DEVICE pGraphicDev, const ItemInstance& item, const _vec3& worldPos, std::optional<SpriteBounceDesc> bounceDesc = std::nullopt);
-    void SpawnAllFromInven(DEVICE pGraphicDev, CInventory* Inven);
+    void SpawnDrop(DEVICE pGraphicDev, const ItemInstance& item, const _vec3& worldPos,
+        std::optional<_vec3> scale = _vec3(0.5f, 0.5f, 0.5f),
+        std::optional<SpriteBounceDesc> bounceDesc = std::nullopt);
+
+    void SpawnAllFromInven(DEVICE pGraphicDev, CInventory* Inven, _vec3 dropDir = { 0,0,0 }, int offset = 0);
 
     void Clear_Item();
 

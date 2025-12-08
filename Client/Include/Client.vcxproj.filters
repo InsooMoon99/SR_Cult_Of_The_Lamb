@@ -241,7 +241,10 @@
     <Filter Include="94. Construction\01. Placer">
       <UniqueIdentifier>{96197f47-b222-4840-94b1-dbb271990129}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05. UI\01. UI\07. UICharging">
+    <Filter Include="05. UI\01. UI\09. UIWeaponExplain">
+      <UniqueIdentifier>{92217d20-ec9e-4b20-9d7b-2b9225e199fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. UI\01. UI\08. UICharging">
       <UniqueIdentifier>{e12d587e-6cb4-4929-857d-7de7606a343a}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. GameObject\08. Building Object\00. Workbench">
@@ -249,6 +252,9 @@
     </Filter>
     <Filter Include="03. GameObject\08. Building Object\01. Construct Range">
       <UniqueIdentifier>{c7255dbc-2339-461a-99df-c0f4ace0edcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. UI\01. UI\99. Fade">
+      <UniqueIdentifier>{7ed145a4-f09b-474f-b0ca-37315f6894df}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -659,7 +665,19 @@
       <Filter>03. GameObject\10. Fireball</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CUICharging.h">
-      <Filter>05. UI\01. UI\07. UICharging</Filter>
+      <Filter>05. UI\01. UI\08. UICharging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUIWeaponExplain.h">
+      <Filter>05. UI\01. UI\09. UIWeaponExplain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUI_Fade.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CFloaterMonster.h">
+      <Filter>03. GameObject\02. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMonsterSpawner.h">
+      <Filter>03. GameObject\09. MapObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1032,7 +1050,19 @@
       <Filter>03. GameObject\10. Fireball</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CUICharging.cpp">
-      <Filter>05. UI\01. UI\07. UICharging</Filter>
+      <Filter>05. UI\01. UI\08. UICharging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUIWeaponExplain.cpp">
+      <Filter>05. UI\01. UI\09. UIWeaponExplain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_Fade.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CFloaterMonster.cpp">
+      <Filter>03. GameObject\02. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMonsterSpawner.cpp">
+      <Filter>03. GameObject\09. MapObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CConstructionPlacer.cpp">
       <Filter>94. Construction\01. Placer</Filter>

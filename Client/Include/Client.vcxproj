@@ -215,6 +215,7 @@
     <ClInclude Include="..\Header\CEyeball_StartExit.h" />
     <ClInclude Include="..\Header\CEyeball_StateMachine.h" />
     <ClInclude Include="..\Header\CFireball.h" />
+    <ClInclude Include="..\Header\CFloaterMonster.h" />
     <ClInclude Include="..\Header\CHarvestableHerb.h" />
     <ClInclude Include="..\Header\Client_Struct.h" />
     <ClInclude Include="..\Header\CLogo_Boss.h" />
@@ -246,6 +247,7 @@
     <ClInclude Include="..\Header\CMonster.h" />
     <ClInclude Include="..\Header\CMonsterBase.h" />
     <ClInclude Include="..\Header\CMonsterController.h" />
+    <ClInclude Include="..\Header\CMonsterSpawner.h" />
     <ClInclude Include="..\Header\CMonsterState.h" />
     <ClInclude Include="..\Header\CNPCBase.h" />
     <ClInclude Include="..\Header\CPlayerAttack.h" />
@@ -289,11 +291,13 @@
     <ClInclude Include="..\Header\CTarotStageController.h" />
     <ClInclude Include="..\Header\CUITarotDescCard.h" />
     <ClInclude Include="..\Header\CUIWeapon.h" />
+    <ClInclude Include="..\Header\CUI_Fade.h" />
     <ClInclude Include="..\Header\CUI_MonsterHp.h" />
     <ClInclude Include="..\Header\CWarningChain.h" />
     <ClInclude Include="..\Header\CWall.h" />
     <ClInclude Include="..\Header\CWallRenderer.h" />
     <ClInclude Include="..\Header\CWeaponEquip.h" />
+    <ClInclude Include="..\Header\CUIWeaponExplain.h" />
     <ClInclude Include="..\Header\CWorldInteractive.h" />
     <ClInclude Include="..\Header\ItemData.h" />
     <ClInclude Include="..\Header\ItemInstance.h" />
@@ -353,6 +357,7 @@
     <ClCompile Include="..\Code\CEyeball_StartExit.cpp" />
     <ClCompile Include="..\Code\CEyeball_StateMachine.cpp" />
     <ClCompile Include="..\Code\CFireball.cpp" />
+    <ClCompile Include="..\Code\CFloaterMonster.cpp" />
     <ClCompile Include="..\Code\CHarvestableHerb.cpp" />
     <ClCompile Include="..\Code\CHumanMonster.cpp" />
     <ClCompile Include="..\Code\CInventory.cpp" />
@@ -378,6 +383,7 @@
     <ClCompile Include="..\Code\CMonster.cpp" />
     <ClCompile Include="..\Code\CMonsterBase.cpp" />
     <ClCompile Include="..\Code\CMonsterController.cpp" />
+    <ClCompile Include="..\Code\CMonsterSpawner.cpp" />
     <ClCompile Include="..\Code\CMonsterState.cpp" />
     <ClCompile Include="..\Code\CNPCBase.cpp" />
     <ClCompile Include="..\Code\CPlayerAttack.cpp" />
@@ -422,11 +428,13 @@
     <ClCompile Include="..\Code\CTarotStageController.cpp" />
     <ClCompile Include="..\Code\CUITarotDescCard.cpp" />
     <ClCompile Include="..\Code\CUIWeapon.cpp" />
+    <ClCompile Include="..\Code\CUI_Fade.cpp" />
     <ClCompile Include="..\Code\CUI_MonsterHp.cpp" />
     <ClCompile Include="..\Code\CWarningChain.cpp" />
     <ClCompile Include="..\Code\CWall.cpp" />
     <ClCompile Include="..\Code\CWallRenderer.cpp" />
     <ClCompile Include="..\Code\CWeaponEquip.cpp" />
+    <ClCompile Include="..\Code\CUIWeaponExplain.cpp" />
     <ClCompile Include="..\Code\CWorldInteractive.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">

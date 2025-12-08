@@ -2,6 +2,7 @@
 #include "CTrigger_Dungeon.h"
 #include "CTransform.h"
 #include "CBoxCollider.h"
+#include "CPlayer.h"
 
 CTrigger_Dungeon::CTrigger_Dungeon(DEVICE graphicDev)
     : CTrigger(graphicDev)
@@ -43,6 +44,11 @@ void CTrigger_Dungeon::Render_Editor()
     ImGui::Text("=== Dungeon Trigger ===");
 
    
+}
+
+void CTrigger_Dungeon::OnBeginOverlap(CCollider* self, CCollider* other)
+{
+    CTrigger::OnBeginOverlap(self, other);
 }
 
 CTrigger_Dungeon* CTrigger_Dungeon::Create(DEVICE graphicDev)

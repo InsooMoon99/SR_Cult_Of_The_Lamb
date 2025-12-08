@@ -49,10 +49,12 @@ _int CLogo::Update_Scene(const _float& timeDelta)
 {
 	_int exit = Engine::CScene::Update_Scene(timeDelta);
 
-	if (true == m_Loading->Get_Finish())
-	{
+    static bool bLoadingComplete = false;
+    if (!bLoadingComplete && m_Loading->Get_Finish())
+    {
+        bLoadingComplete = true;
         CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_MAINMENU);
-	}
+    }
 
 	return exit;
 }
