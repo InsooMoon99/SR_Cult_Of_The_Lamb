@@ -53,7 +53,7 @@ _int CLogo::Update_Scene(const _float& timeDelta)
     if (!bLoadingComplete && m_Loading->Get_Finish())
     {
         bLoadingComplete = true;
-        CSceneMgr::GetInstance()->Change_SceneMgr_WithFade(SCENETYPE::SC_MAINMENU);
+        CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_MAINMENU);
     }
 
 	return exit;

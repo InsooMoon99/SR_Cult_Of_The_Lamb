@@ -63,7 +63,7 @@ void CStage_Dungeon::Initialize_Scene()
     m_RoomData[static_cast<_int>(Room::START)] =
     {
         {10.f, 1.f, 10.f},                          
-        "../Bin/Resource/Data/Terrain/Terrain_Dungeon1.map",     
+        "../Bin/Resource/Data/Terrain/Terrain_DungeonStart.map",     
         {0.f, 0.f, 0.f}                                   
     };
 
@@ -119,6 +119,9 @@ void CStage_Dungeon::Initialize_Scene()
     // 트리거 생성
     Create_RoomTriggers();
 
+    // 무기 생성
+    Spawn_Weapon();
+
     // Init에서 RoomData 세팅 이후 위치 세팅해줘야 함
     _vec3 startPos = m_RoomData[static_cast<_int>(Room::START)].spawnPos;
     m_PlayerTransform->Set_Pos(_vec3(startPos.x, startPos.y, startPos.z));
@@ -169,6 +172,9 @@ void CStage_Dungeon::Spawn_Weapon()
         int id = CItemDB::GetInstance()->GetVector()[size - i - 1].id;
 
         ItemInstance inst = { id, -1, 0 };
+
+        _vec3 roomPos = m_RoomData
+
         CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 15.f, 1.f, 10.f + (i * 3.f) });
     }
 }
@@ -241,7 +247,7 @@ void CStage_Dungeon::Create_Trigger_Between(Room fromRoom, Room toRoom, _vec3 of
     _vec3 triggerPos = roomBasePos + offsetFromRoom;
 
     trigger->Set_Bounds(triggerPos, size);
-    trigger->Set_TriggerOnce(true);
+    trigger->Set_TriggerOnce(false);
 
     trigger->Set_Callback([this, toRoom]()
         {
@@ -263,7 +269,7 @@ void CStage_Dungeon::Create_Trigger_Between(Room fromRoom, _vec3 offsetFromRoom,
     _vec3 triggerPos = roomBasePos + offsetFromRoom;
 
     trigger->Set_Bounds(triggerPos, size);
-    trigger->Set_TriggerOnce(true);
+    trigger->Set_TriggerOnce(false);
     trigger->Set_Callback(callback);
 
     gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
@@ -273,8 +279,6 @@ void CStage_Dungeon::Change_Room(Room room)
 {
     if (m_UI_Fade)
     {
-
-
         m_NextRoom = room;  
         m_IsFading = true;
         m_UI_Fade->StartFadeOut(3.5f);
@@ -349,36 +353,6 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
             COMPONENTTYPE::COMBATSTAT));
 
     NULL_CHECK_RETURN(m_PlayerCombatStatCom, E_FAIL);
-
-    // -----------------------------
-    // Monster
-    // -----------------------------
-
-    // HumanMonster
-    gameObject = CHumanMonster::Create(m_GraphicDev);
-    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage_Dungeon::Ready_GameLogic_Layer() failed: CHumanMonster::Create() returned null")
-
-        FAILED_CHECK_MSG(
-            layer->Add_GameObject(OBJTYPE::HUMANMONSTER, gameObject),
-            L"CStage_Dungeon::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
-
-    CTransform* humanTr = gameObject->Get_Transform();
-    if (humanTr)
-        humanTr->Set_Pos(_vec3(21.f, 1.f, 10.f));
-
-    {
-        // HumanMonster
-        gameObject = CHumanMonster::Create(m_GraphicDev);
-        NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage_Dungeon::Ready_GameLogic_Layer() failed: CHumanMonster::Create() returned null")
-
-            FAILED_CHECK_MSG(
-                layer->Add_GameObject(OBJTYPE::HUMANMONSTER, gameObject),
-                L"CStage_Dungeon::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
-
-        CTransform* humanTr = gameObject->Get_Transform();
-        if (humanTr)
-            humanTr->Set_Pos(_vec3(26.f, 1.f, 10.f));
-    }
 
     // 카메라 생성
     FAILED_CHECK_MSG(

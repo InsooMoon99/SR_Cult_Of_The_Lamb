@@ -405,12 +405,12 @@ void CStage::Create_Trigger()
 
     // 트리거 위치, 크기 세팅
     trigger->Set_Bounds(triggerPos + offset, _vec3(10.f, 5.f, 5.f));
-    trigger->Set_TriggerOnce(true);
+    trigger->Set_TriggerOnce(false);
 
     trigger->Set_Callback([this]
         {
-            CSceneMgr::GetInstance()->Change_SceneMgr_WithFade(
-                SCENETYPE::SC_DUNGEON, 2.0f);
+            CSceneMgr::GetInstance()->Change_SceneMgr(
+                SCENETYPE::SC_DUNGEON);
         });
 
     gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
