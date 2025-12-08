@@ -5,7 +5,11 @@
 #include "CCreateHelper.h"
 #include "CDInputMgr.h"
 #include "CEnumHelper.h"
+#include "CFloaterMonster.h"
+#include "CHumanMonster.h"
 #include "CLayer.h"
+#include "CMonsterBase.h"
+#include "CMonsterSpawner.h"
 #include "CRenderer.h"
 #include "CTerrainRenderer.h"
 #include "CTerrainTex.h"
@@ -57,19 +61,57 @@ _int CTerrain::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CRenderObject::Update_GameObject(timeDelta);
 
-    if (m_WallSpawn)
+    // 벽 소환, 배치
     {
-        auto layer = CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::ENVIRONMENT);
-        if (layer)
+        if (m_WallSpawn)
         {
-            Spawn_Walls(layer);
-            m_WallSpawn = false;
+            auto layer = CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::ENVIRONMENT);
+            if (layer)
+            {
+                Spawn_Walls(layer);
+                m_WallSpawn = false;
+            }
+        }
+
+        CRenderer::GetInstance()->Add_RenderGroup(RENDER_NONALPHA, this);
+
+        if (m_WallRendererCom && m_WallRendererCom->Get_EditMode())
+        {
+            _int cellX, cellZ;
+
+            if (m_TerrainRendererCom && m_TerrainRendererCom->PickCellMousePos(cellX, cellZ))
+            {
+                auto input = CDInputMgr::GetInstance();
+
+                ImGuiIO& io = ImGui::GetIO();
+                if (!io.WantCaptureMouse)
+                {
+                    if (input->MousePress(DIM_LB))
+                    {
+                        m_WallRendererCom->Set_WallPosition(cellX, cellZ, true);
+                    }
+
+                    else if (input->MousePress(DIM_RB))
+                    {
+                        m_WallRendererCom->Set_WallPosition(cellX, cellZ, false);
+                    }
+                }
+            }
         }
     }
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_NONALPHA, this);
-
-    if (m_WallRendererCom && m_WallRendererCom->Get_EditMode())
+    
+    // 몬스터 소환, 배치
+    if (m_MonsterSpawn)
+    {
+        auto layer = CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::GAMELOGIC);
+        if (layer)
+        {
+            Spawn_Monsters(layer);
+            m_MonsterSpawn = false;
+        }
+    }
+    // 몬스터 에디터 배치
+    if (m_MonsterSpawnerCom && m_MonsterSpawnerCom->Get_EditMode())
     {
         _int cellX, cellZ;
 
@@ -82,16 +124,17 @@ _int CTerrain::Update_GameObject(const _float& timeDelta)
             {
                 if (input->MousePress(DIM_LB))
                 {
-                    m_WallRendererCom->Set_WallPosition(cellX, cellZ, true);
+                    MONSTER_TYPE selectedType = m_MonsterSpawnerCom->Get_SelectedType();
+                    m_MonsterSpawnerCom->Add_SpawnPoint(cellX, cellZ, selectedType);
                 }
-
                 else if (input->MousePress(DIM_RB))
                 {
-                    m_WallRendererCom->Set_WallPosition(cellX, cellZ, false);
+                    m_MonsterSpawnerCom->Remove_SpawnPoint(cellX, cellZ);
                 }
             }
         }
     }
+
 
     return exit;
 }
@@ -134,17 +177,29 @@ HRESULT CTerrain::Add_Component()
         m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_TILE_OUTLINE, m_TextureComOutline });
     }
 
+    // Terrain Renderer
     m_TerrainRendererCom = CreateProtoComponent<CTerrainRenderer>(this, COMPONENTTYPE::TERRAIN_RENDER);
     NULL_CHECK_RETURN(m_TerrainRendererCom, E_FAIL);
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TERRAIN_RENDER, m_TerrainRendererCom });
 
     FAILED_CHECK_RETURN(m_TerrainRendererCom->Ready_TerrainRenderer(), E_FAIL);
 
+    // Wall Renderer
     m_WallRendererCom = CreateProtoComponent<CWallRenderer>(this, COMPONENTTYPE::WALL_RENDERER);
     NULL_CHECK_RETURN(m_WallRendererCom, E_FAIL);
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::WALL_RENDERER , m_WallRendererCom });
 
     m_WallRendererCom->Initialize(
+        m_TerrainRendererCom->Get_SizeX(),
+        m_TerrainRendererCom->Get_SizeZ(),
+        m_TerrainRendererCom->Get_CellSize());
+
+    // Monster Spawner -> Wall Renderer랑 비슷하게 해보기
+    m_MonsterSpawnerCom = CreateProtoComponent<CMonsterSpawner>(this, COMPONENTTYPE::MONSTER_SPAWNER);
+    NULL_CHECK_RETURN(m_MonsterSpawnerCom, E_FAIL);
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::MONSTER_SPAWNER, m_MonsterSpawnerCom });
+
+    m_MonsterSpawnerCom->Initialize(
         m_TerrainRendererCom->Get_SizeX(),
         m_TerrainRendererCom->Get_SizeZ(),
         m_TerrainRendererCom->Get_CellSize());
@@ -166,7 +221,8 @@ void CTerrain::LoadMapOnStart(const char* filePath)
     {
         m_TerrainRendererCom->LoadMap(filePath);
 
-        m_WallSpawn = true;
+        m_WallSpawn = true;         // 벽 생성
+        m_MonsterSpawn = true;      // 몬스터 생성
     }
 }
 
@@ -231,6 +287,51 @@ _float CTerrain::Get_CellSize()
     return m_TerrainRendererCom->Get_CellSize();
 }
 
+void CTerrain::Spawn_Monsters(CLayer* layer)
+{
+    if (!m_MonsterSpawnerCom || !m_TerrainRendererCom || !layer)
+        return;
+
+    const auto& spawnPoints = m_MonsterSpawnerCom->Get_SpawnPoints();
+
+    for (const auto& spawn : spawnPoints)
+    {
+        // 타입에 따라 몬스터 생성
+        CMonsterBase* monster = nullptr;
+        OBJTYPE objType;
+
+        switch (spawn.monsterType)
+        {
+        case MONSTER_TYPE::HUMAN_MONSTER:
+            monster = CHumanMonster::Create(m_GraphicDev);
+            objType = OBJTYPE::MONSTER;
+            break;
+
+        case MONSTER_TYPE::FLOATER_MONSTER:
+            monster = CFloaterMonster::Create(m_GraphicDev);
+            objType = OBJTYPE::MONSTER;
+            break;
+
+        default:
+            continue;
+        }
+        if (!monster)
+            continue;
+
+        // 위치 설정
+        _vec3 spawnPos = m_TerrainRendererCom->GetCellCenterWorld(spawn.cellX, spawn.cellZ);
+
+        auto transform = monster->Get_Transform();
+        if (transform)
+            transform->Set_Pos(spawnPos);
+
+        // Layer에 추가
+        layer->Add_GameObject(objType, monster);
+
+        monster->Initialize_GameObject();
+    }
+}
+
 CTerrain* CTerrain::Create(DEVICE GraphicDev)
 {
     CTerrain* terrain = new CTerrain(GraphicDev);
@@ -247,6 +348,7 @@ CTerrain* CTerrain::Create(DEVICE GraphicDev)
 
 void CTerrain::Free()
 {
+    Safe_Release(m_MonsterSpawnerCom); 
     Safe_Release(m_WallRendererCom);
 
     CRenderObject::Free();
