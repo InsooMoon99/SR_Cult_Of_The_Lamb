@@ -1,6 +1,5 @@
 ﻿#include "pch.h"
 #include "CPlayerSkill.h"
-
 #include "CLayer.h"
 #include "CAttackBuilder.h"
 #include "CGameObject.h"
@@ -8,30 +7,32 @@
 #include "CCombatStat.h"
 #include "CFireball.h"
 #include "CPlayerInput.h"
+#include "CUICharging.h"
 
 CPlayerSkill::CPlayerSkill(DEVICE graphicDev) : CComponent(graphicDev),
-      m_OwnerStateCom(nullptr),
-      m_OwnerCombatStatCom(nullptr),
-      m_Fireball(nullptr),
-      m_OwnerInputCom(nullptr),
-      m_CurrentAttackObj(nullptr),
-      m_IsSkillUnlocked(true),
-      m_SkillInfo{},
-      m_SkillTimer(0),
-      m_ChargeTimer(0),
-      m_MaxChargeTime(5.f),
-      m_ProjectileFired(false),
-      m_SkillIndex(5.f),
-      m_IsCharged(false),
-      m_IsCharging(false), 
-      m_SingleSkillEnable(false),
-      m_TripleSkillEnable(false),
-      m_SingleFired(false),
-      m_TripleFired(false)
+                                                m_OwnerStateCom(nullptr),
+                                                m_OwnerCombatStatCom(nullptr),
+                                                m_Fireball(nullptr),
+                                                m_OwnerInputCom(nullptr),
+                                                m_CurrentAttackObj(nullptr),
+                                                m_IsSkillUnlocked(true),
+                                                m_SkillInfo{},
+                                                m_SkillTimer(0),
+                                                m_ChargeTimer(0),
+                                                m_MaxChargeTime(5.f),
+                                                m_ProjectileFired(false),
+                                                m_SkillIndex(5.f),
+                                                m_IsCharged(false),
+                                                m_IsCharging(false), 
+                                                m_SingleSkillEnable(false),
+                                                m_TripleSkillEnable(false),
+                                                m_SingleFired(false),
+                                                m_TripleFired(false)
 
 {}
 
-CPlayerSkill::CPlayerSkill(const CPlayerSkill& rhs) : CComponent(rhs),
+CPlayerSkill::CPlayerSkill(const CPlayerSkill& rhs)
+    : CComponent(rhs),
       m_OwnerStateCom(nullptr),
       m_OwnerCombatStatCom(nullptr),
       m_OwnerInputCom(nullptr),
@@ -46,7 +47,11 @@ CPlayerSkill::CPlayerSkill(const CPlayerSkill& rhs) : CComponent(rhs),
       m_IsCharging(false),
       m_SingleSkillEnable(false),
       m_TripleSkillEnable(false),
-      m_SingleFired(false)
+      m_SingleFired(false),
+      m_LeftChargingUI(nullptr),
+      m_CenterChargingUI(nullptr),
+      m_RightChargingUI(nullptr),
+      m_SkillInfo{  }
 {
     copy_n(&rhs.m_SkillInfo[0], static_cast<_int>(SKILL_MAX), &m_SkillInfo[0]);
 }
@@ -55,6 +60,7 @@ CPlayerSkill::~CPlayerSkill() {}
 
 HRESULT CPlayerSkill::Ready_PlayerCombat() 
 {
+    
     //충전
     m_SkillInfo[SKILL_CHARGING].state = ACTORSTATE::PLAYER_SKILL_CHARGING;
     m_SkillInfo[SKILL_CHARGING].duration = 0.5f;
@@ -96,6 +102,20 @@ HRESULT     CPlayerSkill::Init_OwnerComponent()
     m_OwnerStateCom = dynamic_cast<CState*>(m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
     m_OwnerCombatStatCom = dynamic_cast<CCombatStat*>(m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
     m_OwnerInputCom = dynamic_cast<CPlayerInput*>(m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::PL_INPUT));
+
+    m_LeftChargingUI = CUICharging::Create(m_GraphicDev);
+    m_LeftChargingUI->Set_PlayerSkill(this);
+    m_LeftChargingUI->Initialize_GameObject();
+    CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::UI)->Add_GameObject(OBJTYPE::UI, m_LeftChargingUI);
+    m_CenterChargingUI = CUICharging::Create(m_GraphicDev);
+    m_CenterChargingUI->Set_PlayerSkill(this);
+    m_CenterChargingUI->Initialize_GameObject();
+    CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::UI)->Add_GameObject(OBJTYPE::UI, m_CenterChargingUI);
+    m_RightChargingUI = CUICharging::Create(m_GraphicDev);
+    m_RightChargingUI->Set_PlayerSkill(this);
+    m_RightChargingUI->Initialize_GameObject();
+    CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::UI)->Add_GameObject(OBJTYPE::UI, m_RightChargingUI);
+
 
     HRESULT result = S_OK;
 
@@ -151,6 +171,7 @@ ACTORSTATE CPlayerSkill::Start_Charging()
     }
 
     m_IsCharging = true;
+    m_CenterChargingUI->Set_IsActive(true);
 
 	return m_SkillInfo[SKILL_CHARGING].state;
 }
@@ -159,6 +180,25 @@ ACTORSTATE      CPlayerSkill::Update_Charging(const float& timeDelta)
     //cout << "Update_Charging" << endl;
 
     _vec3 vMouseDir = m_OwnerInputCom->Get_MouseDir();
+
+    D3DXVec3Normalize(&vMouseDir, &vMouseDir);
+
+    m_CenterChargingUI->Set_Dir(vMouseDir);
+
+
+    D3DXVec3Normalize(&vMouseDir, &vMouseDir);
+    float baseAngle = atan2f(vMouseDir.z, vMouseDir.x);
+
+    float offset = D3DXToRadian(15.f);
+    float leftAngle = baseAngle - offset;
+    float RightAngle = baseAngle + offset;
+
+    _vec3 vLeft = { cosf(leftAngle), 0.f, sinf(leftAngle) };
+    _vec3 vRight = { cosf(RightAngle), 0.f, sinf(RightAngle) };
+
+
+    m_LeftChargingUI->Set_Dir(vLeft);
+    m_RightChargingUI->Set_Dir(vRight);
 
     if(vMouseDir.x <= 0.f)
     {
@@ -169,16 +209,31 @@ ACTORSTATE      CPlayerSkill::Update_Charging(const float& timeDelta)
         m_OwnerStateCom->Change_Dir(ACTORDIR::RIGHT);
     }
 
-    if(!m_IsCharging)
-       return ACTORSTATE::IDLE;
+    if (!m_IsCharging)
+    {
+        m_LeftChargingUI->Set_IsActive(false);
+        m_CenterChargingUI->Set_IsActive(false);
+        m_RightChargingUI->Set_IsActive(false);
 
+        return ACTORSTATE::IDLE;
+    }
     m_ChargeTimer+= timeDelta;
 
-    cout << m_ChargeTimer << endl;
+    //cout << m_ChargeTimer << endl;
 
+    if (m_ChargeTimer >= m_MaxChargeTime)
+    {
+        m_ChargeTimer = m_MaxChargeTime;
+        m_IsCharging = false;
+        m_CenterChargingUI->Set_IsActive(false);
+        return ACTORSTATE::IDLE;
+    }
     if (m_ChargeTimer >= m_SkillInfo[SKILL_TRIPLE].chargeTime)
     {
         //cout << "3발 공격 사용 가능" << endl;
+        m_LeftChargingUI->Set_IsActive(true);
+        m_CenterChargingUI->Set_IsActive(true);
+        m_RightChargingUI->Set_IsActive(true);
         return ACTORSTATE::PLAYER_SKILL_TRIPLE;
     }
 
@@ -188,15 +243,12 @@ ACTORSTATE      CPlayerSkill::Update_Charging(const float& timeDelta)
         return ACTORSTATE::PLAYER_SKILL_SINGLE;
 	}
 
-
-    if (m_ChargeTimer >= m_MaxChargeTime)
-    {
-        m_ChargeTimer = m_MaxChargeTime;
-        m_IsCharging = false;
-
-        return ACTORSTATE::IDLE;
-    }
-
+   // if (m_ChargeTimer < m_SkillInfo[SKILL_SINGLE].chargeTime)
+   // {
+   //     m_LeftChargingUI->Set_IsActive(false);
+   //     m_CenterChargingUI->Set_IsActive(false);
+   //     m_RightChargingUI->Set_IsActive(false);
+   // }
     return ACTORSTATE::PLAYER_SKILL_CHARGING;
 }
 
@@ -215,6 +267,7 @@ ACTORSTATE  CPlayerSkill::Start_SingleSkill()
     {
         m_SkillTimer = 0;
         m_IsCharging = true;
+        m_CenterChargingUI->Set_IsActive(true);
         m_SingleFired = false;
         m_SkillIndex = SKILL_SINGLE;
     }
@@ -252,7 +305,8 @@ _bool       CPlayerSkill::Update_SingleSkill(const float& timeDelta)
         CFireball* fireball = Create_Fireball(m_SkillInfo[m_SkillIndex], m_GraphicDev,m_Owner, MouseDir);
 		m_Fireballs.push_back(fireball);
         cout << "single 투사체 발사 완료" << endl;
-        
+        m_IsCharging = false;
+        m_CenterChargingUI->Set_IsActive(false);
         m_SingleFired = true;
         m_SingleSkillEnable = false;
     }
@@ -278,9 +332,13 @@ ACTORSTATE  CPlayerSkill::Start_TripleSkill()
         m_SkillTimer = 0;
         m_IsCharging = true;
         m_TripleFired = false;
+        m_CenterChargingUI->Set_IsActive(true);
+        m_LeftChargingUI->Set_IsActive(true);
+        m_RightChargingUI->Set_IsActive(true);
         m_SkillIndex = SKILL_TRIPLE;
     }
-	
+
+  
     return m_SkillInfo[SKILL_TRIPLE].state;
 }
 _bool       CPlayerSkill::Update_TripleSkill(const _float& timeDelta)
@@ -300,21 +358,15 @@ _bool       CPlayerSkill::Update_TripleSkill(const _float& timeDelta)
         }
     }
   
-  _vec3  MouseDir = m_OwnerInputCom->Get_MouseDir();
 
     m_SkillTimer += timeDelta;
     m_ChargeTimer += timeDelta;
     const SkillInfo& skillInfo = m_SkillInfo[SKILL_TRIPLE];
 
    // MouseDir.z = 0;
+        _vec3  MouseDir = m_OwnerInputCom->Get_MouseDir();
 
-    D3DXVec3Normalize(&MouseDir, &MouseDir);
-
-    if (!m_TripleFired)
-    {
-        cout << "triple 투사체 발사 완료" << endl;
-        CFireball* center = Create_Fireball(m_SkillInfo[m_SkillIndex], m_GraphicDev, m_Owner, MouseDir);
-
+         D3DXVec3Normalize(&MouseDir, &MouseDir);
         float baseAngle = atan2f(MouseDir.z, MouseDir.x);
 
         float offset = D3DXToRadian(15.f);
@@ -324,14 +376,26 @@ _bool       CPlayerSkill::Update_TripleSkill(const _float& timeDelta)
 		_vec3 vLeft = { cosf(leftAngle), 0.f, sinf(leftAngle) };
 		_vec3 vRight = { cosf(RightAngle), 0.f, sinf(RightAngle) };
 
-		CFireball* left = Create_Fireball(m_SkillInfo[m_SkillIndex], m_GraphicDev, m_Owner, vLeft);
+    if (!m_TripleFired)
+    {
+        cout << "triple 투사체 발사 완료" << endl;
+        CFireball* center = Create_Fireball(m_SkillInfo[m_SkillIndex], m_GraphicDev, m_Owner, MouseDir);
 
+
+		CFireball* left = Create_Fireball(m_SkillInfo[m_SkillIndex], m_GraphicDev, m_Owner, vLeft);
 		CFireball* right = Create_Fireball(m_SkillInfo[m_SkillIndex], m_GraphicDev, m_Owner, vRight);
+
 
 		m_Fireballs.push_back(center);
 		m_Fireballs.push_back(left);
 		m_Fireballs.push_back(right);
-        
+
+        m_IsCharging = false;
+
+        m_CenterChargingUI->Set_IsActive(false);
+        m_LeftChargingUI->Set_IsActive(false);
+        m_RightChargingUI->Set_IsActive(false);
+
         m_TripleFired = true;
         m_TripleSkillEnable = false;
     }
@@ -373,6 +437,12 @@ void        CPlayerSkill::Cancel_Attack()
 }
 void        CPlayerSkill::Reset_AttackData()
 {
+    m_IsCharging = false;
+
+    m_CenterChargingUI->Set_IsActive(false);
+    m_LeftChargingUI->Set_IsActive(false);
+    m_RightChargingUI->Set_IsActive(false);
+
     m_SkillTimer = 0.f;
     m_ChargeTimer = 0.f;
 }

@@ -110,10 +110,10 @@ CUIPlayerImage* CUIPlayerImage::Create(DEVICE graphicDev)
 
 void CUIPlayerImage::Free()
 {
-    Safe_Release(m_BufferCom);
-    Safe_Release(m_TransformCom);
-    Safe_Release(m_TextureCom);
-    Safe_Release(m_AnimatorCom);
-    Safe_Release(m_StateCom);
+    //Safe_Release(m_BufferCom);
+    //Safe_Release(m_TransformCom);
+    //Safe_Release(m_TextureCom);
+    //Safe_Release(m_AnimatorCom);
+    //Safe_Release(m_StateCom);
     CUI::Free();
 }

@@ -82,6 +82,12 @@ HRESULT CPlayer::Ready_GameObject()
 void CPlayer::Initialize_GameObject()
 {
     CCharacterBase::Initialize_GameObject();
+
+    m_PlayerControllerCom->Init_OwnerComponent();
+    m_PlayerMovementCom->Init_OwnerComponent();
+    m_PlayerAttackCom->Init_OwnerComponent();
+    m_PlayerSkillCom->Init_OwnerComponent();
+
 }
 
 _int CPlayer::Update_GameObject(const _float& timeDelta)
@@ -186,10 +192,6 @@ HRESULT CPlayer::Add_Component()
     NULL_CHECK_RETURN(m_PlayerGatherCom, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::GATHERING, m_PlayerGatherCom });
 
-    m_PlayerControllerCom->Init_OwnerComponent();
-    m_PlayerMovementCom->Init_OwnerComponent();
-    m_PlayerAttackCom->Init_OwnerComponent();
-    m_PlayerSkillCom->Init_OwnerComponent();
 
     return S_OK;
 }
