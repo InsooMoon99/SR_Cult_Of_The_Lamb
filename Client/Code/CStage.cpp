@@ -1,11 +1,11 @@
 ﻿#include "pch.h"
 #include "CStage.h"
-
 #include "CCameraController.h"
 #include "CCamSetupBuilder.h"
 #include "CCombatStat.h"
 #include "CConstructionMgr.h"
 #include "CDInputMgr.h"
+#include "CDroppedItem.h"
 #include "CDropSystem.h"
 #include "CFloaterMonster.h"
 #include "CHumanMonster.h"
@@ -31,7 +31,6 @@
 #include "CHarvestableHerb.h"
 #include "CPlayerSkill.h"
 #include "CTrigger_Dungeon.h"
-
 
 CStage::CStage(DEVICE graphicDev)
     : Engine::CScene(graphicDev),

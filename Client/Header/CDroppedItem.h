@@ -36,11 +36,11 @@ private:
     HRESULT Add_Component();
 
 private:
-    Engine::CRcTex*       m_BufferCom;
-    Engine::CTransform*   m_TransformCom;
-    Engine::CTexture*     m_TextureCom;
-    Engine::CBoxCollider* m_BoxColCom;
-    static CUIWeaponExplain* m_WeaponExplainUI;
+    Engine::CRcTex*             m_BufferCom;
+    Engine::CTransform*         m_TransformCom;
+    Engine::CTexture*           m_TextureCom;
+    Engine::CBoxCollider*       m_BoxColCom;
+    static CUIWeaponExplain*    m_WeaponExplainUI;
 
     CSpriteEff* m_SpriteEff;
 

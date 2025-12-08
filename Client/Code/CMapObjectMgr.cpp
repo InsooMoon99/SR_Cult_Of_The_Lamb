@@ -651,6 +651,7 @@ HRESULT CMapObjectMgr::Load_FromStream(ifstream& ifs, _vec3 terrainOffset)
                 _vec3 loadedRotation = data.rotation;
                 loadedRotation.x = -loadedRotation.x;
                 loadedRotation.y = -loadedRotation.y;
+                loadedRotation.z = -loadedRotation.z;
 
                 transform->Set_Rotation(loadedRotation);
             }

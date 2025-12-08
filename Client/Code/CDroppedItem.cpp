@@ -208,8 +208,8 @@ void CDroppedItem::OnStayOverlap(CCollider* self, CCollider* other)
 void CDroppedItem::OnEndOverlap(CCollider* self, CCollider* other)
 {
     CGameObject::OnEndOverlap(self, other);
-	m_WeaponExplainUI->Set_Active(false);
 
+	m_WeaponExplainUI->Set_Active(false);
 }
 
 HRESULT CDroppedItem::Add_Component()

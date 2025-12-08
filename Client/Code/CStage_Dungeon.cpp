@@ -173,9 +173,12 @@ void CStage_Dungeon::Spawn_Weapon()
 
         ItemInstance inst = { id, -1, 0 };
 
-        _vec3 roomPos = m_RoomData
+        _vec3 roomPos = m_RoomData[static_cast<_int>(Room::START)].spawnPos;
 
-        CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 15.f, 1.f, 10.f + (i * 3.f) });
+        CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev,
+            inst,
+            { roomPos.x + (i * 3.f) - 3.f, 1.f, roomPos.z - 2.5f  },
+            _vec3( 0.5f, 0.5f, 0.5f));
     }
 }
 
@@ -185,40 +188,27 @@ void CStage_Dungeon::Create_RoomTriggers()
     Create_Trigger_Between(
         Room::START,
         Room::MONSTER1,
-        _vec3(18.f, 1.f, 27.f),     
-        _vec3(5.f, 5.f, 4.5f)      
-    );
+        _vec3(9.3f, 1.f, 20.f),     
+        _vec3(5.f, 5.f, 4.5f));
 
     // MONSTER1 -> MONSTER2
+    //Create_Trigger_Between(
+    //    Room::MONSTER1,
+    //    Room::MONSTER2,
+    //    _vec3(38.f, 1.f, 10.f),
+    //    _vec3(5.f, 5.f, 4.5f));
+
+    // MONSTER1 -> Boss
     Create_Trigger_Between(
         Room::MONSTER1,
-        Room::MONSTER2,
         _vec3(38.f, 1.f, 10.f),
-        _vec3(5.f, 5.f, 4.5f)
+        _vec3(4.5f, 5.f, 5.f),
+        [this]()
+        {
+            m_RequestChangeScene = true;
+            m_NextSceneType = SCENETYPE::SC_LOGO_BOSS1;
+        }
     );
-
-    // MONSTER2 -> TARO
-    //{
-    //    auto gameLayer = m_Layers[LAYERTYPE::GAMELOGIC];
-    //    NULL_CHECK(gameLayer);
-
-    //    auto trigger = CTrigger_Dungeon::Create(m_GraphicDev);
-
-    //    _vec3 roomBasePos = m_RoomData[(int)Room::MONSTER2].terrainOffset;
-    //    _vec3 triggerPos = roomBasePos + _vec3(18.f, 1.f, 26.f);
-
-    //    trigger->Set_Bounds(triggerPos, _vec3(4.5f, 5.f, 5.f));
-    //    trigger->Set_TriggerOnce(true);
-
-    //    trigger->Set_Callback([this]()
-    //        {
-    //            m_RequestChangeScene = true;
-    //            m_NextSceneType = SCENETYPE::SC_LOGO_BOSS1;
-    //        });
-
-    //    gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
-
-    //}
 
     /*Create_Trigger_Between(
         Room::MONSTER2,
