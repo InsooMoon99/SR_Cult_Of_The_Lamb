@@ -3,7 +3,9 @@
 
 #include "CBoxCollider.h"
 #include "CCreateHelper.h"
+#include "CRcTex.h"
 #include "CRenderer.h"
+#include "CTransform.h"
 
 CBuildingBase::CBuildingBase(DEVICE graphicDev)
     : CRenderObject(graphicDev)
@@ -33,7 +35,8 @@ _int CBuildingBase::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CRenderObject::Update_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
+    if (!m_IsPreview)
+        CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 
     return exit;
 }
@@ -45,10 +48,21 @@ void CBuildingBase::LateUpdate_GameObject(const _float& timeDelta)
 
 void CBuildingBase::Render_GameObject()
 {
-    CRenderObject::Render_GameObject();
+    if (m_IsPreview)
+    {
+        if (m_TransformCom)
+            m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
-    if (m_BoxColCom)
-        m_BoxColCom->Render();
+        if (m_BufferCom)
+            m_BufferCom->Render_Buffer();
+    }
+    else
+    {
+        CRenderObject::Render_GameObject();
+    }
+
+    if (m_BoxCollCom)
+        m_BoxCollCom->Render();
 }
 
 void CBuildingBase::OnBeginOverlap(CCollider* self, CCollider* other)
@@ -72,9 +86,9 @@ HRESULT CBuildingBase::Add_Component()
         return E_FAIL;
 
     // BoxCollider
-    m_BoxColCom = CreateProtoComponent<CBoxCollider>(this, COMPONENTTYPE::BOX_COLL);
-    NULL_CHECK_RETURN(m_BoxColCom, E_FAIL);
-    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::BOX_COLL, m_BoxColCom });
+    m_BoxCollCom = CreateProtoComponent<CBoxCollider>(this, COMPONENTTYPE::BOX_COLL);
+    NULL_CHECK_RETURN(m_BoxCollCom, E_FAIL);
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::BOX_COLL, m_BoxCollCom });
 
     return S_OK;
 }

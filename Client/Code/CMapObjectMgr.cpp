@@ -1,13 +1,14 @@
 ﻿#include "pch.h"
 #include "CMapObjectMgr.h"
+
+#include "CLayer.h"
+#include "CManagement.h"
+#include "CMapEditorPlacer.h"
 #include "CMapObject_Helper.h"
 #include "CProtoMgr.h"
-#include "CTexture.h"
-#include "CMapEditorPlacer.h"
-#include "CTransform.h"
-#include "CLayer.h"
 #include "CScene.h"
-#include "CManagement.h"
+#include "CTexture.h"
+#include "CTransform.h"
 
 IMPLEMENT_SINGLETON(CMapObjectMgr)
 
@@ -18,12 +19,13 @@ CMapObjectMgr::CMapObjectMgr()
 
 CMapObjectMgr::~CMapObjectMgr()
 {
-    Free();
+    CMapObjectMgr::Free();
 }
 
 void CMapObjectMgr::Ready_MapObjectMgr(DEVICE graphicDev)
 {
     m_GraphicDev = graphicDev;
+    m_GraphicDev->AddRef();
 
     m_MapPlacer = CMapEditorPlacer::Create(graphicDev);
 

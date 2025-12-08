@@ -4,6 +4,7 @@
 #include "CBoxCollider.h"
 #include "CCreateHelper.h"
 #include "CRcTex.h"
+#include "CRigidbody.h"
 #include "CTexture.h"
 #include "CTransform.h"
 
@@ -23,8 +24,8 @@ HRESULT CTemple::Ready_GameObject()
     if (FAILED(CBuildingBase::Ready_GameObject()))
         return E_FAIL;
 
-    if (m_BoxColCom)
-        m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::BUILDING);
+    if (m_BoxCollCom)
+        m_BoxCollCom->Set_CollisionLayer(COLLISION_LAYERTYPE::BUILDING);
 
     return S_OK;
 }
@@ -32,6 +33,9 @@ HRESULT CTemple::Ready_GameObject()
 void CTemple::Initialize_GameObject()
 {
     CBuildingBase::Initialize_GameObject();
+
+    m_TransformCom->Set_Scale(4.f, 5.f / 1.5f, 1.f);
+    m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(45.f));
 }
 
 _int CTemple::Update_GameObject(const _float& timeDelta)
@@ -48,8 +52,6 @@ void CTemple::LateUpdate_GameObject(const _float& timeDelta)
 
 void CTemple::Render_GameObject()
 {
-    //TODO 출력 테스트 필요: 오프셋에 따라 두 텍스처가 다른 위치에 출력되고 있는지 검증해야 한다
-
     NULL_CHECK(m_TextureCom);
 
     // 앞면 텍스처 렌더링
@@ -60,7 +62,7 @@ void CTemple::Render_GameObject()
     // 다른 위치에 지붕 텍스처 렌더링
     _matrix matWorld = m_TransformCom->Get_World();
     _matrix matOffset;
-    D3DXMatrixTranslation(&matOffset, 0.f, 2.0f, 0.f);
+    D3DXMatrixTranslation(&matOffset, 0.f, 0.f, 0.03f);
 
     matWorld = matOffset * matWorld;
 
@@ -68,12 +70,14 @@ void CTemple::Render_GameObject()
 
     m_TextureCom->Set_Texture(1);
 
-    Render_Setting();
+    if (!m_IsPreview)
+        Render_Setting();
 
     if (m_BufferCom)
         m_BufferCom->Render_Buffer();
 
-    Render_Reset();
+    if (!m_IsPreview)
+        Render_Reset();
 }
 
 void CTemple::Render_Editor()
@@ -91,6 +95,56 @@ void CTemple::OnBeginOverlap(CCollider* self, CCollider* other)
 void CTemple::OnStayOverlap(CCollider* self, CCollider* other)
 {
     CBuildingBase::OnStayOverlap(self, other);
+
+    if (!m_IsPreview)
+    {
+        CGameObject* hitObject = other->Get_Owner();
+        if (!hitObject) return;
+
+        // 속도 제거
+        auto rigid = dynamic_cast<CRigidbody*>(
+            hitObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::RIGIDBODY));
+
+        if (rigid)
+        {
+            _vec3 vel = rigid->Get_Velocity();
+            vel.x     = 0.f;
+            vel.z     = 0.f;
+            rigid->Set_Velocity(vel);
+        }
+
+        else
+            return;
+
+        auto otherTransform = dynamic_cast<CTransform*>(
+            hitObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+        auto playerCollider = dynamic_cast<CBoxCollider*>(other);
+
+        if (!otherTransform || !playerCollider) return;
+
+        _vec3 wallPos = m_TransformCom->Get_Pos();
+        _vec3 objPos  = otherTransform->Get_Pos();
+
+        // 벽/플레이어 사이즈 합의 절반
+        float halfX = (m_BoxCollCom->Get_Size().x + playerCollider->Get_Size().x) * 0.5f;
+        float halfZ = (m_BoxCollCom->Get_Size().z + playerCollider->Get_Size().z) * 0.5f;
+
+        // 중심 거리
+        float dx = objPos.x - wallPos.x;
+        float dz = objPos.z - wallPos.z;
+
+        float penX = halfX - abs(dx);
+        float penZ = halfZ - abs(dz);
+
+        // 덜 침투한 축으로 밀어냄
+        if (penX < penZ)
+            objPos.x = wallPos.x + (dx > 0 ? halfX : -halfX) + (dx > 0 ? 0.01f : -0.01f);
+        else
+            objPos.z = wallPos.z + (dz > 0 ? halfZ : -halfZ) + (dz > 0 ? 0.01f : -0.01f);
+
+        otherTransform->Set_Pos(objPos);
+    }
 }
 
 void CTemple::OnEndOverlap(CCollider* self, CCollider* other)
