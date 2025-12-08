@@ -45,7 +45,5 @@ private:
 
     _vec3           m_BarSize;
 
-    _float m_HpbarWidthScale = 1.f;
-    _float m_HpbarHeightScale = 0.8f;
 };
 
