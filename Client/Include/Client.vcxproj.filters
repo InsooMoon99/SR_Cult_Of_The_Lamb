@@ -694,6 +694,12 @@
     <ClInclude Include="..\Header\CKitchen.h">
       <Filter>03. GameObject\08. Building\03. Kitchen</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CTree.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CRock.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1090,6 +1096,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\CKitchen.cpp">
       <Filter>03. GameObject\08. Building\03. Kitchen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CTree.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CRock.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

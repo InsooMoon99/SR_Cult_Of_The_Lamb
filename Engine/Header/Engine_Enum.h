@@ -168,6 +168,8 @@ enum class COMPONENTTYPE
     TEX_KITCHEN,
     TEX_OUT,
     TEX_BERRY,
+    TEX_ROCK,
+    TEX_TREE,
     TEX_SKILL,
 
     ANIMATOR,
