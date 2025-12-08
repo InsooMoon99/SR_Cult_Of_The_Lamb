@@ -431,5 +431,7 @@ CStage* CStage::Create(DEVICE graphicDev)
 
 void CStage::Free()
 {
+    CDroppedItem::Reset_WeaponExplainUI();
+
     Engine::CScene::Free();
 }

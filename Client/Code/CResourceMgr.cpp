@@ -381,6 +381,11 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         L"../Bin/Resource/Texture/Player/Lamb_actions_collect_berries/Lamb_actions_collect_berries%d.png", 25)))
         return E_FAIL;
 
+#pragma region --- Tex: 기타 상호작용 ---
+    if (FAILED(playerTex->Add_Texture(L"Player_WeaponGet", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Weapon_Get_Shot/Lamb-weapons-get%d.png", 77)))
+        return E_FAIL;
+
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
     return E_FAIL;
 

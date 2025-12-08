@@ -4,6 +4,7 @@
 #include "CCamSetupBuilder.h"
 #include "CCombatStat.h"
 #include "CDInputMgr.h"
+#include "CDroppedItem.h"
 #include "CDropSystem.h"
 #include "CHumanMonster.h"
 #include "CInventory.h"
@@ -70,7 +71,6 @@ void CStage_Dungeon::Initialize_Scene()
     m_RoomData[static_cast<_int>(Room::MONSTER1)] =
     {
         {60.f, 1.f, 10.f},
-        //"../Bin/Resource/Data/Terrain/Terrain_Mon1Test.map",
         "../Bin/Resource/Data/Terrain/Terrain_Mon1Test.map",
         {50.f, 0.f, 0.f}
     };
@@ -137,16 +137,10 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
         return 0;
     }
 
-    // Fade
-    Fade_Check();
-
     _int exit = Engine::CScene::Update_Scene(timeDelta);
 
-    if (CDInputMgr::GetInstance()->KeyDown(DIK_F))
-        CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS1);
-
-    if (CDInputMgr::GetInstance()->KeyDown(DIK_G))
-        CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS2);
+    // Fade
+    Fade_Check(timeDelta);
 
     return exit;
 }
@@ -154,6 +148,12 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
 void CStage_Dungeon::LateUpdate_Scene(const _float& timeDelta)
 {
     Engine::CScene::LateUpdate_Scene(timeDelta);
+
+    if (CDInputMgr::GetInstance()->KeyDown(DIK_F))
+        CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS1);
+
+    if (CDInputMgr::GetInstance()->KeyDown(DIK_G))
+        CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS2);
 }
 
 void CStage_Dungeon::Render_Scene()
@@ -175,10 +175,12 @@ void CStage_Dungeon::Spawn_Weapon()
 
         _vec3 roomPos = m_RoomData[static_cast<_int>(Room::START)].spawnPos;
 
-        CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev,
+        auto drop = CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev,
             inst,
             { roomPos.x + (i * 3.f) - 3.f, 1.f, roomPos.z - 2.5f  },
             _vec3( 0.5f, 0.5f, 0.5f));
+
+        drop->Initialize_GameObject();
     }
 }
 
@@ -237,7 +239,7 @@ void CStage_Dungeon::Create_Trigger_Between(Room fromRoom, Room toRoom, _vec3 of
     _vec3 triggerPos = roomBasePos + offsetFromRoom;
 
     trigger->Set_Bounds(triggerPos, size);
-    trigger->Set_TriggerOnce(false);
+    trigger->Set_TriggerOnce(true);
 
     trigger->Set_Callback([this, toRoom]()
         {
@@ -267,6 +269,10 @@ void CStage_Dungeon::Create_Trigger_Between(Room fromRoom, _vec3 offsetFromRoom,
 
 void CStage_Dungeon::Change_Room(Room room)
 {
+    // 이미 페이딩 중이면 무시
+    if (m_IsFading)
+        return;
+
     if (m_UI_Fade)
     {
         m_NextRoom = room;  
@@ -500,27 +506,30 @@ CStage_Dungeon* CStage_Dungeon::Create(DEVICE graphicDev)
 
 void CStage_Dungeon::Free()
 {
+    CDroppedItem::Reset_WeaponExplainUI();
+
     m_CamMovement   = nullptr;
     m_UI_Fade       = nullptr;
 
     Engine::CScene::Free();
 }
 
-void CStage_Dungeon::Fade_Check()
+void CStage_Dungeon::Fade_Check(const _float timeDelta)
 {
-    if (m_IsFading && m_UI_Fade && m_UI_Fade->IsFadeComplete())
+    if (!m_IsFading || !m_UI_Fade)
+        return;
+
+    if (!m_UI_Fade->IsFading() && m_UI_Fade->GetAlpha() >= 1.0f)
     {
+        // 페이드 아웃 완료 후, 잠시 대기
+
         m_CurrentRoom = m_NextRoom;
 
+        // TODO : 플레이어 소환 Offset 조절하기
         if (m_PlayerTransform)
-        {
             m_PlayerTransform->Set_Pos(m_RoomData[static_cast<_int>(m_NextRoom)].spawnPos);
-        }
 
         m_UI_Fade->StartFadeIn(0.5f);
         m_IsFading = false;
-
-        if (m_CamMovement)  
-            m_CamMovement->Set_ZoomSpeed(m_PrevZoomSpeed);
     }
 }

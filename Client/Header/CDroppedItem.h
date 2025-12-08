@@ -32,6 +32,8 @@ public:
     void OnStayOverlap(CCollider* self, CCollider* other) override;
     void OnEndOverlap(CCollider* self, CCollider* other) override;
 
+    static void Reset_WeaponExplainUI() { m_WeaponExplainUI = nullptr; }
+
 private:
     HRESULT Add_Component();
 
