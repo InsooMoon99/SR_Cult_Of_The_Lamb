@@ -130,6 +130,7 @@ _int CStage::Update_Scene(const _float& timeDelta)
             CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::TEMPLE);
     }
 
+    // Building Mode Test : Kitchen
     if (CDInputMgr::GetInstance()->KeyDown(DIK_N))
     {
         if (CConstructionMgr::GetInstance()->IsBuilding())
