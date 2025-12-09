@@ -4,6 +4,7 @@
 #include "CBuildingBase.h"
 #include "CConstructCircle.h"
 #include "CGameObject.h"
+#include "CKitchen.h"
 #include "CManagement.h"
 #include "CPickingHelper.h"
 #include "CScene.h"
@@ -151,13 +152,13 @@ void CConstructionPlacer::Set_Preview(BUILDING_TYPE type)
 
     case BUILDING_TYPE::KITCHEN:
     {
-        //m_PreviewObj = CKitchen::Create(m_GraphicDev);
+        NULL_CHECK(m_PreviewObj = CKitchen::Create(m_GraphicDev));
 
         // 프리뷰 원 생성
         NULL_CHECK(m_PreviewCircle =
             CConstructCircle::Create(m_GraphicDev, _vec3(3.5f, 2.5f, 1.f)));
 
-        m_PreviewOffsetY = 1.f;
+        m_PreviewOffsetY = 0.6f;
     }
     break;
 
@@ -224,8 +225,8 @@ _bool CConstructionPlacer::Try_PlaceObject()
     CScene* curScene = CManagement::GetInstance()->Get_Scene();
     if (curScene)
     {
-        // Construction Site는 Environment 레이어
-        curScene->AddObjectOnLayer(LAYERTYPE::ENVIRONMENT, site, OBJTYPE::CONSTRUCTION_SITE);
+        // Construction Site는 GAMELOGIC 레이어
+        curScene->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, site, OBJTYPE::CONSTRUCTION_SITE);
     }
     else
     {

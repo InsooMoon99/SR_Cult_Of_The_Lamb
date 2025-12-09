@@ -2,6 +2,7 @@
 #include "CWorkBench.h"
 
 #include "CBoxCollider.h"
+#include "CCreateHelper.h"
 #include "CTexture.h"
 #include "CTransform.h"
 
@@ -21,9 +22,6 @@ HRESULT CWorkBench::Ready_GameObject()
     if (FAILED(CBuildingBase::Ready_GameObject()))
         return E_FAIL;
 
-    if (m_BoxCollCom)
-        m_BoxCollCom->Set_CollisionLayer(COLLISION_LAYERTYPE::BUILDING);
-
     return S_OK;
 }
 
@@ -31,10 +29,12 @@ void CWorkBench::Initialize_GameObject()
 {
     CBuildingBase::Initialize_GameObject();
 
-    m_TransformCom->Set_Scale(2.f, 2.f, 1.f);
-    m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(45.f));
+    m_TransformCom->Set_Pos(12.7f, 1.1f, 24.7f);
+    m_TransformCom->Set_Scale(1.2f, 1.2f, 1.2f);
+    m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(30.f));
 
-    m_BoxCollCom->Set_RawSize(_vec3(1.5f, 1.f, 1.5f));
+    m_BoxCollCom->Set_RawSize(_vec3(2.0f, 2.0f, 2.0f));
+    m_BoxCollCom->Set_CollisionLayer(COLLISION_LAYERTYPE::WORKBENCH);
 }
 
 _int CWorkBench::Update_GameObject(const _float& timeDelta)
@@ -51,15 +51,17 @@ void CWorkBench::LateUpdate_GameObject(const _float& timeDelta)
 
 void CWorkBench::Render_GameObject()
 {
+    NULL_CHECK(m_TextureCom);
+    m_TextureCom->Set_Texture(0);
+
     CBuildingBase::Render_GameObject();
 }
 
 void CWorkBench::Render_Editor()
 {
-    NULL_CHECK(m_TextureCom);
-    m_TextureCom->Set_Texture(0);
-
     CBuildingBase::Render_Editor();
+
+    ImGui::Text("=== WorkBench ===");
 }
 
 void CWorkBench::OnBeginOverlap(CCollider* self, CCollider* other)
@@ -79,10 +81,27 @@ void CWorkBench::OnEndOverlap(CCollider* self, CCollider* other)
 
 HRESULT CWorkBench::Add_Component()
 {
+    // Texture
+    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_WORKBENCH);
+    NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_WORKBENCH, m_TextureCom });
+
     return CBuildingBase::Add_Component();
 }
 
-CWorkBench* CWorkBench::Create(DEVICE graphicDev) { return nullptr; }
+CWorkBench* CWorkBench::Create(DEVICE graphicDev)
+{
+    auto workBench = new CWorkBench(graphicDev);
+
+    if (FAILED(workBench->Ready_GameObject()))
+    {
+        MSG_BOX("DottedCircle Create Failed");
+        Safe_Release(workBench);
+        return nullptr;
+    }
+
+    return workBench;
+}
 
 void CWorkBench::Free()
 {

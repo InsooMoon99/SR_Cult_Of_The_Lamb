@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include "CBuildingBase.h"
 
+/// @brief 제작대 오브젝트
+/// @details 플레이어와 충돌 중 E 키 상호작용으로 건축 UI 띄울 예정
 class CWorkBench : public CBuildingBase
 {
 private:
