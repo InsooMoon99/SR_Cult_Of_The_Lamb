@@ -91,21 +91,26 @@ bool CInventory::AddItem(ItemInstance itemInst)
     Item* itemData = CItemDB::GetInstance()->GetItemById(itemInst.itemId);
 
     // 스택가능한지
-    for (auto& slot : m_vecInven)
-    {
-        if (slot.itemInst.itemId == itemInst.itemId && itemData->stackable == true)
+
+ 
+        for (auto& slot : m_vecInven)
         {
-            if (itemData->maxStack > slot.count)
+            if (slot.itemInst.itemId == itemInst.itemId && itemData->stackable == true)
             {
-                int oldCount = slot.count;
-                slot.count++;
-                int newCount = slot.count - oldCount;
-                //m_ItemAdded(&slot.itemInst, newCount);
-                return true;
+                if (itemData->maxStack > slot.count)
+                {
+                    int oldCount = slot.count;
+                    slot.count++;
+                    int newCount = slot.count - oldCount;
+                    if (dynamic_cast<CPlayer*>(m_Owner) != nullptr)
+                    {
+                         m_ItemAdded(&slot.itemInst, newCount);
+                    }
+                    return true;
+                }
             }
         }
-    }
-
+   
     if (dynamic_cast<CPlayer*>(m_Owner) != nullptr)
     {
         int slot;

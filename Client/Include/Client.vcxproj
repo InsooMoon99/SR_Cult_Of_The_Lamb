@@ -261,6 +261,7 @@
     <ClInclude Include="..\Header\CPlayerSkill.h" />
     <ClInclude Include="..\Header\CProjectile.h" />
     <ClInclude Include="..\Header\CRandomMgr.h" />
+    <ClInclude Include="..\Header\CRecipeDB.h" />
     <ClInclude Include="..\Header\CResourceMgr.h" />
     <ClInclude Include="..\Header\CRock.h" />
     <ClInclude Include="..\Header\CSceneMgr.h" />
@@ -276,6 +277,8 @@
     <ClInclude Include="..\Header\CTrailEff.h" />
     <ClInclude Include="..\Header\CTree.h" />
     <ClInclude Include="..\Header\CTrigger_Dungeon.h" />
+    <ClInclude Include="..\Header\CUIBuildCell.h" />
+    <ClInclude Include="..\Header\CUIBuildMenu.h" />
     <ClInclude Include="..\Header\CUICharging.h" />
     <ClInclude Include="..\Header\CUIItemGet.h" />
     <ClInclude Include="..\Header\CUIItemGetManager.h" />
@@ -296,6 +299,7 @@
     <ClInclude Include="..\Header\CTarotStageController.h" />
     <ClInclude Include="..\Header\CUITarotDescCard.h" />
     <ClInclude Include="..\Header\CUIWeapon.h" />
+    <ClInclude Include="..\Header\CUI_BossHp.h" />
     <ClInclude Include="..\Header\CUI_Fade.h" />
     <ClInclude Include="..\Header\CUI_MonsterHp.h" />
     <ClInclude Include="..\Header\CWarningChain.h" />
@@ -308,6 +312,7 @@
     <ClInclude Include="..\Header\ItemData.h" />
     <ClInclude Include="..\Header\ItemInstance.h" />
     <ClInclude Include="..\Header\CUIMp.h" />
+    <ClInclude Include="..\Header\RecipeData.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Client_Enum.h" />
     <ClInclude Include="framework.h" />
@@ -418,6 +423,8 @@
     <ClCompile Include="..\Code\CTrailEff.cpp" />
     <ClCompile Include="..\Code\CTree.cpp" />
     <ClCompile Include="..\Code\CTrigger_Dungeon.cpp" />
+    <ClCompile Include="..\Code\CUIBuildCell.cpp" />
+    <ClCompile Include="..\Code\CUIBuildMenu.cpp" />
     <ClCompile Include="..\Code\CUICharging.cpp" />
     <ClCompile Include="..\Code\CUIItemGet.cpp" />
     <ClCompile Include="..\Code\CUIItemGetManager.cpp" />
@@ -439,6 +446,7 @@
     <ClCompile Include="..\Code\CTarotStageController.cpp" />
     <ClCompile Include="..\Code\CUITarotDescCard.cpp" />
     <ClCompile Include="..\Code\CUIWeapon.cpp" />
+    <ClCompile Include="..\Code\CUI_BossHp.cpp" />
     <ClCompile Include="..\Code\CUI_Fade.cpp" />
     <ClCompile Include="..\Code\CUI_MonsterHp.cpp" />
     <ClCompile Include="..\Code\CWarningChain.cpp" />
@@ -448,6 +456,7 @@
     <ClCompile Include="..\Code\CUIWeaponExplain.cpp" />
     <ClCompile Include="..\Code\CWorkBench.cpp" />
     <ClCompile Include="..\Code\CWorldInteractive.cpp" />
+    <ClCompile Include="..\Code\CRecipeDB.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

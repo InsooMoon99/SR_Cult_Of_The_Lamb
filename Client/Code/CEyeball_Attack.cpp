@@ -14,7 +14,8 @@ CEyeball_Attack::CEyeball_Attack(CMonsterBase* owner)
       m_Pattern_Cooldown(0),
       m_LerpSpeed(0),
       m_EyeballAnim(Eyeball_Anim::EYEBALL_ATTACK_END),
-      m_HasFiredBullet(false), m_AttackCount(0), m_IsFinished(false)
+      m_HasFiredBullet(false), m_AttackCount(0), m_IsFinished(false),
+      m_Bullet_AttackType(Attack_Type::ATTACK_TYPE_END)
 {
 }
 
@@ -52,6 +53,7 @@ void CEyeball_Attack::Enter()
     m_fCurStateElapsedTime = 0.f;
 
     m_EyeballAnim = Eyeball_Anim::ATTACK_ANTI;
+    m_Bullet_AttackType = Attack_Type::DISPERSION;
 
     Find_Player(); // 플레이어 찾기
 }
@@ -200,6 +202,23 @@ void CEyeball_Attack::Play_End()
 
 void CEyeball_Attack::Spawn_BulletPattern()
 {
+    switch (m_Bullet_AttackType)
+    {
+    case Attack_Type::DISPERSION:
+        Bullet_Dispresion();
+
+    case Attack_Type::CIRCLE:
+        Bullet_Circle();
+        break;
+
+    case Attack_Type::BURST:
+        Bullet_Burst();
+        break;
+    }
+}
+
+void CEyeball_Attack::Bullet_Dispresion()
+{
     _vec3 eyeballPos = m_Controller->Get_OwnerTransform()->Get_Pos();
 
     // 원형 패턴 8개 탄환 360도 처리
@@ -223,13 +242,19 @@ void CEyeball_Attack::Spawn_BulletPattern()
             .Damage(1.f)
             .Knockback(500.f)
             .LifeTime(5.f)
-            .CollisionLayer(COLLISION_LAYERTYPE::ENEMY)
+            .CollisionLayer(COLLISION_LAYERTYPE::BOSSPROJECTILE)
             .DestroyOnHit(true)
             .Particle(L"HitEffect_Star", 14)
             .Spawn();
 
         if (bullet)
         {
+            auto sphereCol = static_cast<CSphereCollider*>(
+                bullet->Get_Component(ID_DYNAMIC, COMPONENTTYPE::SPHERE_COLL));
+
+            if (sphereCol)
+                sphereCol->Set_Radius(0.5f);
+
             CProjectile* projectileCom = dynamic_cast<CProjectile*>(
                 bullet->Get_Component(ID_STATIC, COMPONENTTYPE::PROJECTILE));
 
@@ -248,6 +273,14 @@ void CEyeball_Attack::Spawn_BulletPattern()
         }
        
     }
+}
+
+void CEyeball_Attack::Bullet_Circle()
+{
+}
+
+void CEyeball_Attack::Bullet_Burst()
+{
 }
 
 CEyeball_Attack* CEyeball_Attack::Create(CMonsterBase* owner)

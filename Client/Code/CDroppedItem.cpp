@@ -74,12 +74,12 @@ void CDroppedItem::Initialize_GameObject()
     if (m_BoxColCom)
         m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::ITEM);
 
-    if (!m_WeaponExplainUI)
-    {
+   // if (!m_WeaponExplainUI)
+   // {
         m_WeaponExplainUI = CUIWeaponExplain::Create(m_GraphicDev);
         m_WeaponExplainUI->Initialize_GameObject();
         CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::UI)->Add_GameObject(OBJTYPE::UI, m_WeaponExplainUI);
-    }
+   // }
 }
 
 _int CDroppedItem::Update_GameObject(const _float& timeDelta)
@@ -182,11 +182,11 @@ void CDroppedItem::OnStayOverlap(CCollider* self, CCollider* other)
             {
                 dynamic_cast<CWeaponEquip*>(ply->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::WEAPON_EQUIP))->Equip_Weapon(m_itemInst);
 
-                //auto state = dynamic_cast<CState*>(ply->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
+                auto state = dynamic_cast<CState*>(ply->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
                 //auto animator = dynamic_cast<CAnimator*>(ply->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
                 //
-                //if (state)
-                //    state->Change_State(ACTORSTATE::PLAYER_WEAPONGET);
+                if (state)
+                    state->Change_State(ACTORSTATE::PLAYER_WEAPONGET);
 
                 //if (animator->Is_AnimationFinished())
                 //    state->Change_State(ACTORSTATE::IDLE);

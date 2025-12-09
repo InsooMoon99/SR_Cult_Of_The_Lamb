@@ -8,6 +8,7 @@
 #include "CFireball.h"
 #include "CPlayerInput.h"
 #include "CUICharging.h"
+#include "CMainEditorMgr.h"
 
 CPlayerSkill::CPlayerSkill(DEVICE graphicDev) : CComponent(graphicDev),
                                                 m_OwnerStateCom(nullptr),
@@ -66,24 +67,24 @@ HRESULT CPlayerSkill::Ready_PlayerCombat()
     m_SkillInfo[SKILL_CHARGING].duration = 0.5f;
     m_SkillInfo[SKILL_CHARGING].damageMultiplier = 2.f;
     m_SkillInfo[SKILL_CHARGING].knockbackPower = 50.f;
-    m_SkillInfo[SKILL_CHARGING].spawnOffset = 1.3f;
+    m_SkillInfo[SKILL_CHARGING].spawnOffset = 0.8f;
     // m_SkillInfo[SKILL_CHARGING].hitboxScale = _vec3(1.f, 1.f, 1.f);
     // 1발
     m_SkillInfo[SKILL_SINGLE].state = ACTORSTATE::PLAYER_SKILL_SINGLE;
     m_SkillInfo[SKILL_SINGLE].duration = 0.5f;
     m_SkillInfo[SKILL_SINGLE].damageMultiplier = 2.f;
     m_SkillInfo[SKILL_SINGLE].knockbackPower = 50.f;
-    m_SkillInfo[SKILL_SINGLE].spawnOffset = 1.3f;
+    m_SkillInfo[SKILL_SINGLE].spawnOffset = 0.8f;
     m_SkillInfo[SKILL_SINGLE].hitboxScale = _vec3(0.6f, 0.6f, 0.6f);
-    m_SkillInfo[SKILL_SINGLE].chargeTime = 0.5f;
+    m_SkillInfo[SKILL_SINGLE].chargeTime = 0.3f;
     // 3발
     m_SkillInfo[SKILL_TRIPLE].state = ACTORSTATE::PLAYER_SKILL_TRIPLE;
     m_SkillInfo[SKILL_TRIPLE].duration = 0.5f;
     m_SkillInfo[SKILL_TRIPLE].damageMultiplier = 2.f;
     m_SkillInfo[SKILL_TRIPLE].knockbackPower = 50.f;
-    m_SkillInfo[SKILL_TRIPLE].spawnOffset = 1.3f;
+    m_SkillInfo[SKILL_TRIPLE].spawnOffset = 0.8f;
     m_SkillInfo[SKILL_TRIPLE].hitboxScale = _vec3(0.6f, 0.6f, 0.6f);
-    m_SkillInfo[SKILL_TRIPLE].chargeTime =1.5f;
+    m_SkillInfo[SKILL_TRIPLE].chargeTime =1.2f;
     return S_OK;
 }
 
@@ -160,6 +161,9 @@ ACTORSTATE CPlayerSkill::Start_Charging()
 	if (!m_IsSkillUnlocked)
 		return ACTORSTATE::STATE_END;
 
+    // 슬로우모션 시작
+    CMainEditorMgr::GetInstance()->Set_TimeScale(0.5f);
+
 	CCombatStat* playerCombatStat = dynamic_cast<CCombatStat*>(m_Owner->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
 
 	if (playerCombatStat->Get_CurrentCharges() <= 0)
@@ -171,7 +175,7 @@ ACTORSTATE CPlayerSkill::Start_Charging()
     }
 
     m_IsCharging = true;
-    m_CenterChargingUI->Set_IsActive(true);
+   m_CenterChargingUI->Set_IsActive(true);
 
 	return m_SkillInfo[SKILL_CHARGING].state;
 }
@@ -225,7 +229,9 @@ ACTORSTATE      CPlayerSkill::Update_Charging(const float& timeDelta)
     {
         m_ChargeTimer = m_MaxChargeTime;
         m_IsCharging = false;
+        m_LeftChargingUI->Set_IsActive(false);
         m_CenterChargingUI->Set_IsActive(false);
+        m_RightChargingUI->Set_IsActive(false);
         return ACTORSTATE::IDLE;
     }
     if (m_ChargeTimer >= m_SkillInfo[SKILL_TRIPLE].chargeTime)
@@ -316,7 +322,6 @@ _bool       CPlayerSkill::Update_SingleSkill(const float& timeDelta)
         return false;
     }
 
-    return true;
 }
 ACTORSTATE  CPlayerSkill::Start_TripleSkill()
 {
