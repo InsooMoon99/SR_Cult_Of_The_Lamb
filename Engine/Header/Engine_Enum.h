@@ -173,6 +173,7 @@ enum class COMPONENTTYPE
     TEX_ROCK,
     TEX_TREE,
     TEX_SKILL,
+    TEX_DIALOGUE,
 
     ANIMATOR,
 

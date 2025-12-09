@@ -7,6 +7,7 @@
 #include "CAnimator.h"
 #include "CSpriteAnimation.h"
 #include "CDInputMgr.h"
+
 CBossTalk::CBossTalk(CBossPhase1* pOwner, CBossStateMachine* pStateMachine)
 {
     m_pOwner = pOwner;
