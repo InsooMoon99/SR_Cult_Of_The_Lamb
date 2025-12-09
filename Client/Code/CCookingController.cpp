@@ -10,6 +10,7 @@
 #include "CUICookingGame.h"
 #include "CCreateHelper.h"
 #include "CInventory.h"
+#include "CRecipeDB.h"
 
 CCookingController::CCookingController(DEVICE graphicDev) : CComponent(graphicDev)
 {
@@ -117,8 +118,15 @@ void CCookingController::SetUIRecipeSlot(/*Slot* slot,*/ int id, CUIButton* quit
 
 bool CCookingController::CanCooK(int recipeID, CInventory* playerInven)
 {
-
-
+    Recipe* recipe =  CRecipeDB::GetInstance()->GetRecipeById(recipeID);
+    for (auto& it : recipe->ingredients)
+    {
+        if (CRecipeDB::GetInstance()->GetIndexById(it.first))
+        {
+            playerInven->
+        }
+    }
+    
     //playerInven->Get_Cnt
 
     return false;

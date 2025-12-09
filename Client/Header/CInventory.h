@@ -50,6 +50,9 @@ private:
     vector<InventorySlot> m_vecInven;
     int                   invenSlotNum;
     int                   m_AddedCount;
+    unordered_map<int, int> m_CountingItem;
+
+
     std::function<void(ItemInstance*, int)>      m_ItemAdded;
 public:
     void Free() override;

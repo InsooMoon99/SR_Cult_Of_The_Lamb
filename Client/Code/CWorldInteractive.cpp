@@ -60,15 +60,20 @@ _int CWorldInteractive::Update_GameObject(const _float& timeDelta)
 {
     _int  exit = CRenderObject::Update_GameObject(timeDelta);
     
-        if (m_CombatStatCom->Is_Dead() == true || m_bInvenDropped == true) // 컴포넌트 내부에서 처리함 0 만들고 Dead true
+        if (m_CombatStatCom->Is_Dead() == true ) // 컴포넌트 내부에서 처리함 0 만들고 Dead true
         {
+            if (m_bInvenDropped == false)
+            {
             // 플레이어 위치
             _vec3 DropPos = m_CombatStatCom->Get_Dir();
             int offset = 40; //
             CDropSystem::GetInstance()->SpawnAllFromInven(m_GraphicDev, m_InventoryCom, DropPos, offset);
             m_bHovering = false;
-            m_bInvenDropped = true;
             m_BoxColCom->Set_CollisionActive(false);
+
+            m_bInvenDropped = true;
+           }
+
             return exit;
         }
 
@@ -121,22 +126,26 @@ void CWorldInteractive::Render_GameObject()
 
 void CWorldInteractive::OnBeginOverlap(CCollider* self, CCollider* other)
 {
-    CRenderObject::OnBeginOverlap(self, other);
+  
+        CRenderObject::OnBeginOverlap(self, other);
 
-    CPlayer* ply = dynamic_cast<CPlayer*>(other->Get_Owner());
-    if (ply)
-        m_bPlayerOverlap = true;
+        CPlayer* ply = dynamic_cast<CPlayer*>(other->Get_Owner());
+        if (ply)
+            m_bPlayerOverlap = true;
+    
 }
 
 void CWorldInteractive::OnEndOverlap(CCollider* self, CCollider* other)
 {
-    CRenderObject::OnEndOverlap(self, other);
+  
+        CRenderObject::OnEndOverlap(self, other);
 
 
-    CPlayer* ply = dynamic_cast<CPlayer*>(other->Get_Owner());
+        CPlayer* ply = dynamic_cast<CPlayer*>(other->Get_Owner());
 
-    if (m_bPlayerOverlap == true && ply != nullptr)
-        m_bPlayerOverlap = false;
+        if (m_bPlayerOverlap == true && ply != nullptr)
+            m_bPlayerOverlap = false;
+  
 }
 
 bool CWorldInteractive::Is_Hovering()

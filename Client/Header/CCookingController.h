@@ -1,15 +1,12 @@
 ﻿#pragma once
 #include "CComponent.h"
 #include "Client_Struct.h"
+#include "RecipeData.h"
 #include <queue>
 
 class CUIButton;
 class CInventory;
 
-struct Recipe
-{
-
-};
 
 
 
