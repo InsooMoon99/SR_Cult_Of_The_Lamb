@@ -182,11 +182,11 @@ void CDroppedItem::OnStayOverlap(CCollider* self, CCollider* other)
             {
                 dynamic_cast<CWeaponEquip*>(ply->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::WEAPON_EQUIP))->Equip_Weapon(m_itemInst);
 
-                //auto state = dynamic_cast<CState*>(ply->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
+                auto state = dynamic_cast<CState*>(ply->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
                 //auto animator = dynamic_cast<CAnimator*>(ply->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
                 //
-                //if (state)
-                //    state->Change_State(ACTORSTATE::PLAYER_WEAPONGET);
+                if (state)
+                    state->Change_State(ACTORSTATE::PLAYER_WEAPONGET);
 
                 //if (animator->Is_AnimationFinished())
                 //    state->Change_State(ACTORSTATE::IDLE);

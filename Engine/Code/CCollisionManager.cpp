@@ -208,7 +208,6 @@ void CCollisionManager::Initialize_CollisionMatrix()
     m_CollisionMatrix[projectile_Index][enemy_Index] = false;
     m_CollisionMatrix[enemy_Index][projectile_Index] = false;
 
-
     //플레이어 투사체와 아이템 충돌 X, 플레이어 투사체와 플레이어 충돌 X
     m_CollisionMatrix[playerprojectile_Index][playerprojectile_Index] = false;
     m_CollisionMatrix[playerprojectile_Index][item_Index] = false;
