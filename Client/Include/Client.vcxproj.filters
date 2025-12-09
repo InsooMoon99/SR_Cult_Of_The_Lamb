@@ -690,12 +690,18 @@
     </ClInclude>
     <ClInclude Include="..\Header\CUIBuildCell.h">
       <Filter>05. UI\01. UI\10. UIBuildMenu</Filter>
-       </ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Header\CTree.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CRock.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CRecipeDB.h">
+      <Filter>06. Recipe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\RecipeData.h">
+      <Filter>06. Recipe</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1096,6 +1102,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CRock.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CRecipeDB.cpp">
+      <Filter>06. Recipe</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

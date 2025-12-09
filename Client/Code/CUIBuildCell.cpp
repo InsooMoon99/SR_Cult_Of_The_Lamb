@@ -122,6 +122,7 @@ void CUIBuildCell::Render_GameObject()
  
     m_ItemIcon->Set_TextureIndex(m_TextureIndex);
     m_CardItemIcon->Set_TextureIndex(m_TextureIndex);
+
     auto iconTransform = m_ItemIcon->Get_Transform();
     iconTransform->Set_Pos(_vec3(
         m_TransformCom->Get_Pos().x,
@@ -157,7 +158,7 @@ void CUIBuildCell::Render_GameObject()
 
         //카드 그리기
         m_CardIcon->Render_GameObject();
-        m_CardItemIcon->Render_GameObject();
+       // m_CardItemIcon->Render_GameObject();
 
             //TODO 유림 : 이미지 바꿀건지 결정하기
             _vec3 pos = m_CardIcon->Get_Transform()->Get_Pos();

@@ -258,6 +258,7 @@
     <ClInclude Include="..\Header\CPlayerSkill.h" />
     <ClInclude Include="..\Header\CProjectile.h" />
     <ClInclude Include="..\Header\CRandomMgr.h" />
+    <ClInclude Include="..\Header\CRecipeDB.h" />
     <ClInclude Include="..\Header\CResourceMgr.h" />
     <ClInclude Include="..\Header\CRock.h" />
     <ClInclude Include="..\Header\CSceneMgr.h" />
@@ -306,6 +307,7 @@
     <ClInclude Include="..\Header\ItemData.h" />
     <ClInclude Include="..\Header\ItemInstance.h" />
     <ClInclude Include="..\Header\CUIMp.h" />
+    <ClInclude Include="..\Header\RecipeData.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Client_Enum.h" />
     <ClInclude Include="framework.h" />
@@ -444,6 +446,7 @@
     <ClCompile Include="..\Code\CWeaponEquip.cpp" />
     <ClCompile Include="..\Code\CUIWeaponExplain.cpp" />
     <ClCompile Include="..\Code\CWorldInteractive.cpp" />
+    <ClCompile Include="..\Code\CRecipeDB.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

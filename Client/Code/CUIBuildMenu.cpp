@@ -70,12 +70,13 @@ _int CUIBuildMenu::Update_GameObject(const _float& timeDelta)
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
-    if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
-    {
-        m_IsOpen = !m_IsOpen;
-        m_IsAnimating = true;
-    }
-
+    //BuildMenu 전체적으로 다시 만들 예정이라 막아 놓음
+   // if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
+   // {
+   //     m_IsOpen = !m_IsOpen;
+   //     m_IsAnimating = true;
+   // }
+   //
     float targetX = m_IsOpen ? m_TargetX : m_ClosedX; //열려있냐 닫혀있냐에 따라서 목표 X값이 달라짐
     _vec3 pos = m_TransformCom->Get_Pos();
 

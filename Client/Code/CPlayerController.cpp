@@ -259,25 +259,6 @@ void CPlayerController::CheckStateTransition()
 
     }
 
-    //else if(inputMgr->MousePress(DIM_RB))
-    //{
-    //    cout << " Pressing" << endl;
-    //
-    //   //  if (curState == ACTORSTATE::PLAYER_SKILL_CHARGING)
-    //   //  {
-    //   //      ACTORSTATE nextState = m_OwnerSkillCom->Start_SingleSkill();
-    //   //      if (nextState != ACTORSTATE::STATE_END);
-    //   //      //m_OwnerStateCom->Change_State(nextState);
-    //   //  }
-    //
-    //    // else if(curState== ACTORSTATE::PLAYER_SKILL_SINGLE)
-    //    // {
-    //    //     ACTORSTATE nextState = m_OwnerSkillCom->Start_TripleSkill();
-    //    //     if (nextState != ACTORSTATE::STATE_END)
-    //    //         m_OwnerStateCom->Change_State(nextState);
-    //    // }
-    //}
-    //
     else if (inputMgr->MouseUp(DIM_RB))
     {
         if (curState == ACTORSTATE::PLAYER_SKILL_CHARGING)
@@ -296,42 +277,10 @@ void CPlayerController::CheckStateTransition()
             if (nextState != ACTORSTATE::STATE_END)
                 m_OwnerStateCom->Change_State(nextState);
         }
-
+        else
+            m_OwnerSkillCom->Cancel_Attack();
 
     }
-
-    // 스킬 공격
-    //else if (inputMgr->MousePress(DIM_RB))
-    //{
-    //    cout << "Pressed" << endl;
-    //    ImGuiIO& io = ImGui::GetIO();
-    //    if (io.WantCaptureMouse)
-    //        return;
-    //
-    //    if (curState == ACTORSTATE::PLAYER_ROLL||
-    //        curState == ACTORSTATE::IDLE ||
-    //        curState == ACTORSTATE::RUN ||
-    //        curState == ACTORSTATE::PLAYER_SKILL_CHARGING)
-    //    {
-    //        ACTORSTATE nextState = m_OwnerSkillCom->Start_Charging();
-    //        if (nextState != ACTORSTATE::STATE_END)
-    //        m_OwnerStateCom->Change_State(nextState);
-    //    }
-    //
-    //   // else if (curState == ACTORSTATE::PLAYER_SKILL_CHARGING)
-    //   // {
-    //   //     ACTORSTATE nextState = m_OwnerSkillCom->Start_SingleSkill();
-    //   //     if (nextState != ACTORSTATE::STATE_END)
-    //   //     m_OwnerStateCom->Change_State(nextState);
-    //   // }
-    //    else if (curState == ACTORSTATE::PLAYER_SKILL_SINGLE)
-    //    {
-    //        //싱글 공격일 때 항상 chargetime 다 지났는지 확인하고 지났으면 triple 스킬 state 안 지났으면 single 스킬 state 반환해서 state 돌리기
-    //        ACTORSTATE nextState = m_OwnerSkillCom->Start_SingleSkill();
-    //        if (nextState != ACTORSTATE::STATE_END)
-    //        m_OwnerStateCom->Change_State(nextState);
-    //    }
-    //}
 
     //TODO LSHIFT로 강공격
 

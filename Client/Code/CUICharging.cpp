@@ -47,16 +47,12 @@ int CUICharging::Update_GameObject(const _float& timeDelta)
             changeLength = 0.f;
 
         m_TransformCom->Set_Scale(changeLength, 0.5f, 1.f);
-        //float offsetX = (1 - m_ChargeRatio);
 
         _vec3 dir = m_ArrowDir;
 
         D3DXVec3Normalize(&dir, &dir);
         dir.x = -dir.x;
-
-
         float angle = atan2f(dir.z, dir.x);
-
         dir.x = -dir.x;
 
         _float offset = m_PlayerSkill->Get_SkillInfo().spawnOffset;
@@ -64,7 +60,6 @@ int CUICharging::Update_GameObject(const _float& timeDelta)
 
         _vec3 tailPos = playerPos + dir * offset;
         _vec3 centerPos = tailPos + dir * (changeLength * 0.5f);
-       //  centerPos.x += offsetX;
         centerPos.y = 0.3;
         m_TransformCom->Set_Pos(centerPos);
 
