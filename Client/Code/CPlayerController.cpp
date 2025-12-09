@@ -270,59 +270,59 @@ void CPlayerController::CheckStateTransition()
 
         }
 
-        //TODO LSHIFT로 강공격
-
-        // [우선순위 3] 생활 상호작용 : 채집, 건축
-        else if (inputMgr->KeyPress(DIK_E))
-            Living_Interaction();
-
-        //TODO RMB로 스킬
-
-        //!! 공격 or 구르기 중이라면 이동/대기 상태로 넘어가지 않도록 여기서 리턴
-        if (curState == ACTORSTATE::PLAYER_ROLL ||
-            curState == ACTORSTATE::PLAYER_SWORD_COMBO1 ||
-            curState == ACTORSTATE::PLAYER_SWORD_COMBO2 ||
-            curState == ACTORSTATE::PLAYER_SWORD_COMBO3 ||
-            curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO1 ||
-            curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO2 ||
-            curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO3 ||
-            curState == ACTORSTATE::PLAYER_GAUNTLET_HEAVY ||
-            curState == ACTORSTATE::PLAYER_SKILL_CHARGING ||
-            curState == ACTORSTATE::PLAYER_SKILL_SINGLE ||
-            curState == ACTORSTATE::PLAYER_SKILL_TRIPLE ||
-            curState == ACTORSTATE::PLAYER_BERRY ||
-            curState == ACTORSTATE::PLAYER_STONE ||
-            curState == ACTORSTATE::PLAYER_WOOD ||
-            curState == ACTORSTATE::PLAYER_WEAPONGET)
-
-            // 다른 행동 중이라면 여기서 리턴
-            if (!(curState == ACTORSTATE::RUN) &&
-                !(curState == ACTORSTATE::IDLE))
-            {
-                m_OwnerSkillCom->Set_SingleSkill(false);
-                m_OwnerSkillCom->Set_TripleSkill(false);
-
-                return;
-            }
-
-        // 이동 (방향 입력)
-        if (D3DXVec3LengthSq(&m_OwnerInputCom->Get_MoveDir()) > 0.001f)
-        {
-            if (curState != ACTORSTATE::RUN)
-                m_OwnerStateCom->Change_State(ACTORSTATE::RUN);
-        }
-
-        // [우선순위 마지막] 대기 (입력 없음)
-        else
-        {
-            if (curState != ACTORSTATE::IDLE)
-            {
-                m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
-                m_OwnerMovementCom->Stop();
-            }
-        }
     }
 
+    //TODO LSHIFT로 강공격
+
+        // [우선순위 3] 생활 상호작용 : 채집, 건축
+    else if (inputMgr->KeyPress(DIK_E))
+        Living_Interaction();
+
+    //TODO RMB로 스킬
+
+    //!! 공격 or 구르기 중이라면 이동/대기 상태로 넘어가지 않도록 여기서 리턴
+    if (curState == ACTORSTATE::PLAYER_ROLL ||
+        curState == ACTORSTATE::PLAYER_SWORD_COMBO1 ||
+        curState == ACTORSTATE::PLAYER_SWORD_COMBO2 ||
+        curState == ACTORSTATE::PLAYER_SWORD_COMBO3 ||
+        curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO1 ||
+        curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO2 ||
+        curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO3 ||
+        curState == ACTORSTATE::PLAYER_GAUNTLET_HEAVY ||
+        curState == ACTORSTATE::PLAYER_SKILL_CHARGING ||
+        curState == ACTORSTATE::PLAYER_SKILL_SINGLE ||
+        curState == ACTORSTATE::PLAYER_SKILL_TRIPLE ||
+        curState == ACTORSTATE::PLAYER_BERRY ||
+        curState == ACTORSTATE::PLAYER_STONE ||
+        curState == ACTORSTATE::PLAYER_WOOD ||
+        curState == ACTORSTATE::PLAYER_WEAPONGET)
+
+        // 다른 행동 중이라면 여기서 리턴
+        if (!(curState == ACTORSTATE::RUN) &&
+            !(curState == ACTORSTATE::IDLE))
+        {
+            m_OwnerSkillCom->Set_SingleSkill(false);
+            m_OwnerSkillCom->Set_TripleSkill(false);
+
+            return;
+        }
+
+    // 이동 (방향 입력)
+    if (D3DXVec3LengthSq(&m_OwnerInputCom->Get_MoveDir()) > 0.001f)
+    {
+        if (curState != ACTORSTATE::RUN)
+            m_OwnerStateCom->Change_State(ACTORSTATE::RUN);
+    }
+
+    // [우선순위 마지막] 대기 (입력 없음)
+    else
+    {
+        if (curState != ACTORSTATE::IDLE)
+        {
+            m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+            m_OwnerMovementCom->Stop();
+        }
+    }
 }
 
 void CPlayerController::Update_State(const _float& timeDelta)
