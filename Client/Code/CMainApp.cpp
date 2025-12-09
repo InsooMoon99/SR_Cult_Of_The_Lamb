@@ -232,6 +232,7 @@ void CMainApp::Free()
     CDInputMgr::DestroyInstance();
     CRandomMgr::DestroyInstance();
     CItemDB::DestroyInstance();
+    CRecipeDB::DestroyInstance();
     
     CMainEditorMgr::DestroyInstance();
     CImGuiManager::DestroyInstance();
