@@ -73,7 +73,7 @@ private:
     void Action_Construction(const _float& timeDelta);
 
     // --- [기타 기능 함수] ---
-    void Living_Interaction(); // 채집, 건축 등의 상황, CheckStateTransition 내에서 사용
+    _bool Living_Interaction(); // 채집, 건축 등의 상황, CheckStateTransition 내에서 사용
 
 private:
 #pragma region Caching owner components

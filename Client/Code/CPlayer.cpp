@@ -411,7 +411,7 @@ void CPlayer::Animation_Setting()
                                     29,
                                     0.02f,
                                     _vec2(1.f, 1.f),
-                                    _vec2(0.f, 0.f));
+                                    _vec2(0.f, -0.1f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_HAMMER,
                              L"PlayerHammer",
