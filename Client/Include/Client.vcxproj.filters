@@ -691,12 +691,15 @@
     <ClInclude Include="..\Header\CMonsterSpawner.h">
       <Filter>03. GameObject\09. MapObject</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CUI_BossHp.h">
+      <Filter>05. UI\01. UI\07. UI_MonsterHp</Filter>
+    </ClInclude>
     <ClInclude Include="..\Header\CUIBuildMenu.h">
       <Filter>05. UI\01. UI\10. UIBuildMenu</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CUIBuildCell.h">
       <Filter>05. UI\01. UI\10. UIBuildMenu</Filter>
-          </ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Header\CTemple.h">
       <Filter>03. GameObject\08. Building\02. Temple</Filter>
     </ClInclude>
@@ -1109,12 +1112,15 @@
     <ClCompile Include="..\Code\CConstructionPlacer.cpp">
       <Filter>94. Construction\01. Placer</Filter>
     </ClCompile>
+    <ClCompile Include="..\Code\CUI_BossHp.cpp">
+      <Filter>05. UI\01. UI\07. UI_MonsterHp</Filter>
+    </ClCompile>
     <ClCompile Include="..\Code\CUIBuildMenu.cpp">
       <Filter>05. UI\01. UI\10. UIBuildMenu</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CUIBuildCell.cpp">
       <Filter>05. UI\01. UI\10. UIBuildMenu</Filter>
-          </ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Code\CTemple.cpp">
       <Filter>03. GameObject\08. Building\02. Temple</Filter>
     </ClCompile>

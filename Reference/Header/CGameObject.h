@@ -63,6 +63,7 @@ public:
     bool SetTexAspectInit(CTexture* texCom, CTransform* transCom, int index, wstring*key = nullptr,bool is_width = true, float width = 2);
     void SetAspectScale(CTransform* transCom,_vec3 magnification);
     //void SetScaleAsp(_vec3 ScaleAsp) { m_ScaleAsp = ScaleAsp; }
+
 private:
     _vec3 m_BaseScaleAsp;
     _vec3 m_ScaleAsp;

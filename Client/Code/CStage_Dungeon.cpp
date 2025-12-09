@@ -6,7 +6,6 @@
 #include "CDInputMgr.h"
 #include "CDroppedItem.h"
 #include "CDropSystem.h"
-#include "CHumanMonster.h"
 #include "CInventory.h"
 #include "CItemDB.h"
 #include "CLayer.h"

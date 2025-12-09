@@ -3,6 +3,8 @@
 
 #include <CCreateHelper.h>
 #include <CDInputMgr.h>
+
+#include "CMainEditorMgr.h"
 #include "CUIInventory.h"
 #include "CUIButton.h"
 #include "CTransform.h"

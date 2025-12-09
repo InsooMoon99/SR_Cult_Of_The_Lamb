@@ -18,7 +18,6 @@ public:
     HRESULT Add_Component();
     void    Set_ItemID(int ID) { m_ItemID = ID; }
     void    Set_Active(_bool tf) { m_Active = tf; }
-
     static CUIWeaponExplain* Create(DEVICE graphicDev);
 
 protected:
