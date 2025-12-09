@@ -100,7 +100,7 @@ public:
     void Set_MaxMp(_float maxMp) { m_MaxMp = maxMp; Set_Mp(maxMp); }
     void Set_Speed(_float speed) { m_Speed = speed; }
     void Set_Invincible(bool invincible) { m_IsInvincible = invincible; }
-
+    void Set_CurrentCharges(int chargeCount) { m_CurrentCharges += chargeCount; }
     void Add_Attack(float attack) { m_Attack += attack; }
 
 public:

@@ -51,12 +51,13 @@ HRESULT CUIBuildMenu::Ready_GameObject()
     m_CookingFireCell = CUIBuildCell::Create(m_GraphicDev);
     m_CookingFireCell->Set_BuildIndex(BUILDITEM::COOKINGFIRE);
     m_CookingFireCell->Set_TextureIndex(0);
-
+	m_CookingFireCell->Set_RecipeId(5001);
     m_BuildCells.push_back(m_CookingFireCell);
 
     m_TempleCell = CUIBuildCell::Create(m_GraphicDev);
     m_TempleCell->Set_BuildIndex(BUILDITEM::TEMPLE);
     m_TempleCell->Set_TextureIndex(1);
+	m_TempleCell->Set_RecipeId(5002);
     m_BuildCells.push_back(m_TempleCell);
 
     m_TransformCom->Set_Scale(450.f, 400.f, 1.f);
@@ -70,13 +71,13 @@ _int CUIBuildMenu::Update_GameObject(const _float& timeDelta)
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
-    //BuildMenu 전체적으로 다시 만들 예정이라 막아 놓음
-   // if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
-   // {
-   //     m_IsOpen = !m_IsOpen;
-   //     m_IsAnimating = true;
-   // }
-   //
+   //BuildMenu 전체적으로 다시 만들 예정이라 막아 놓음
+   if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
+   {
+       m_IsOpen = !m_IsOpen;
+       m_IsAnimating = true;
+   }
+   
     float targetX = m_IsOpen ? m_TargetX : m_ClosedX; //열려있냐 닫혀있냐에 따라서 목표 X값이 달라짐
     _vec3 pos = m_TransformCom->Get_Pos();
 

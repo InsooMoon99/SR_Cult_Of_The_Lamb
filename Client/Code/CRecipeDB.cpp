@@ -94,14 +94,17 @@ HRESULT CRecipeDB::LoadFromJson(const string& fileName)
         //만들기 재료 종류,개수
         for (auto& ingNode : node["ingredients"])
         {
-            Ingredient ingredient;
-            ingredient.id = ingNode["id"];
-            ingredient.count = ingNode["count"];
+            int id = ingNode["id"];
+            int count = ingNode["count"];
 
-            recipe.ingredients.push_back(ingredient);
+            recipe.ingredients[id] = count;
         }
-    }
 
+        int index = m_vecRecipes.size();
+
+        m_RecipeIndex[recipe.id] = index;
+        m_vecRecipes.push_back(recipe);
+    }
     return S_OK;
 }
 
