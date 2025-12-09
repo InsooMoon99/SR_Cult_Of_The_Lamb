@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include "CPlayerController.h"
-
+#include "CAnimator.h"
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
 #include "CDInputMgr.h"
@@ -192,7 +192,7 @@ void CPlayerController::CheckStateTransition()
         }
     }
 
-    // [우선순위 2] 좌클릭으로 일반공격 입력 처리
+    // [우선순위 2] 좌클릭
     // - 구르기 상태여도 공격으로 이행 (캔슬)
     else if (inputMgr->MouseDown(DIM_LB))
     {
@@ -201,7 +201,9 @@ void CPlayerController::CheckStateTransition()
         if (io.WantCaptureMouse)
             return;
 
-        Living_Interaction();
+        // 좌클릭으로 채집, 건축
+        if (Living_Interaction())
+            return;
 
         if (curState == ACTORSTATE::PLAYER_ROLL ||
             curState == ACTORSTATE::IDLE ||
@@ -225,7 +227,6 @@ void CPlayerController::CheckStateTransition()
             return;
         }
     }
-    //TODO LSHIFT로 강공격
 
     else if (inputMgr->MouseDown(DIM_RB))
     {
@@ -248,29 +249,34 @@ void CPlayerController::CheckStateTransition()
     else if (inputMgr->MouseUp(DIM_RB))
     {
         if (curState == ACTORSTATE::PLAYER_SKILL_CHARGING)
-            m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
-        if (m_OwnerSkillCom->Get_TripleSkillAvailability())
         {
-            ACTORSTATE nextState = m_OwnerSkillCom->Start_TripleSkill();
-            if (nextState != ACTORSTATE::STATE_END)
-                m_OwnerStateCom->Change_State(nextState);
-        }
-        if (m_OwnerSkillCom->Get_SingleSkillAvailability())
-        {
-            ACTORSTATE nextState = m_OwnerSkillCom->Start_SingleSkill();
-            if (nextState != ACTORSTATE::STATE_END)
-                m_OwnerStateCom->Change_State(nextState);
-        }
-        else
-            m_OwnerSkillCom->Cancel_Attack();
+            // 슬로우모션 해제
+            CMainEditorMgr::GetInstance()->Set_TimeScale(1.f);
 
+            m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+            if (m_OwnerSkillCom->Get_TripleSkillAvailability())
+            {
+                ACTORSTATE nextState = m_OwnerSkillCom->Start_TripleSkill();
+                if (nextState != ACTORSTATE::STATE_END)
+                    m_OwnerStateCom->Change_State(nextState);
+            }
+            if (m_OwnerSkillCom->Get_SingleSkillAvailability())
+            {
+                ACTORSTATE nextState = m_OwnerSkillCom->Start_SingleSkill();
+                if (nextState != ACTORSTATE::STATE_END)
+                    m_OwnerStateCom->Change_State(nextState);
+            }
+            else
+                m_OwnerSkillCom->Cancel_Attack();
+        }
     }
 
-    //TODO LSHIFT로 강공격
-    
-    // [우선순위 3] 생활 상호작용 : 채집, 건축
+    // [우선순위 3] E 키
     else if (inputMgr->KeyPress(DIK_E))
-        Living_Interaction();
+    {
+        if (Living_Interaction())
+            return;
+    }
 
     // 다른 행동 중이라면 여기서 리턴
     if (!(curState == ACTORSTATE::RUN) &&
@@ -374,6 +380,16 @@ void CPlayerController::Update_State(const _float& timeDelta)
     case ACTORSTATE::PLAYER_HAMMER:
     {
         Action_Construction(timeDelta);
+    }
+    break;
+
+    case ACTORSTATE::PLAYER_WEAPONGET:
+    {
+        auto animator = dynamic_cast<CAnimator*>(
+            m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+
+        if (animator && animator->Is_AnimationFinished())
+            m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
     }
     break;
 
@@ -493,7 +509,7 @@ void CPlayerController::Action_Construction(const _float& timeDelta)
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
 }
 
-void CPlayerController::Living_Interaction()
+_bool CPlayerController::Living_Interaction()
 {
     // 채집 상호작용
     if (m_OwnerGatherCom->GetInteractiveObj() != nullptr)
@@ -501,24 +517,28 @@ void CPlayerController::Living_Interaction()
         switch (m_OwnerGatherCom->GetInteractiveObj()->GetInteractiveType())
         {
         case CWorldInteractive::TYPE::BERRY:
+        {
             if (m_OwnerStateCom->Get_State() != ACTORSTATE::PLAYER_BERRY)
                 m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_BERRY);
             m_OwnerMovementCom->Stop();
-            break;
+            return true;
+        }
         case CWorldInteractive::TYPE::WOOD:
+        {
             if (m_OwnerStateCom->Get_State() != ACTORSTATE::PLAYER_WOOD)
                 m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_WOOD);
             m_OwnerMovementCom->Stop();
-            break;
+            return true;
+        }
         case CWorldInteractive::TYPE::ROCK:
+        {
             if (m_OwnerStateCom->Get_State() != ACTORSTATE::PLAYER_STONE)
                 m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_STONE);
             m_OwnerMovementCom->Stop();
-            break;
-
+            return true;
+        }
         default: break;
         }
-        return;
     }
 
     // 건축 상호작용
@@ -527,8 +547,10 @@ void CPlayerController::Living_Interaction()
         if (m_OwnerStateCom->Get_State() != ACTORSTATE::PLAYER_HAMMER)
             m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_HAMMER);
         m_OwnerMovementCom->Stop();
-        return;
+        return true;
     }
+
+    return false;
 }
 
 CPlayerController* CPlayerController::Create(DEVICE graphicDev)
@@ -562,6 +584,7 @@ void CPlayerController::Free()
     m_OwnerAttackCom       = nullptr;
     m_OwnerSkillCom        = nullptr;
     m_OwnerConstructionCom = nullptr;
+    m_OwnerGatherCom       = nullptr;
 
     CComponent::Free();
 }

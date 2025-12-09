@@ -2,6 +2,7 @@
 #include "CWorkBench.h"
 
 #include "CBoxCollider.h"
+#include "CTexture.h"
 #include "CTransform.h"
 
 CWorkBench::CWorkBench(DEVICE graphicDev)
@@ -32,6 +33,8 @@ void CWorkBench::Initialize_GameObject()
 
     m_TransformCom->Set_Scale(2.f, 2.f, 1.f);
     m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(45.f));
+
+    m_BoxCollCom->Set_RawSize(_vec3(1.5f, 1.f, 1.5f));
 }
 
 _int CWorkBench::Update_GameObject(const _float& timeDelta)
@@ -53,6 +56,9 @@ void CWorkBench::Render_GameObject()
 
 void CWorkBench::Render_Editor()
 {
+    NULL_CHECK(m_TextureCom);
+    m_TextureCom->Set_Texture(0);
+
     CBuildingBase::Render_Editor();
 }
 
