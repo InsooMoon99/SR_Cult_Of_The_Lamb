@@ -29,7 +29,6 @@ _int CPlayerConstruction::Update_Component(const _float& timeDelta)
     if (CSceneMgr::GetInstance()->Is_Changing())
         m_pConstructZone = nullptr;
 
-    // Normally does nothing unless called by Action_Construction or managing state locally
     return 0;
 }
 
@@ -40,19 +39,19 @@ void CPlayerConstruction::Action_Construction(const _float& timeDelta)
 {
     if (m_pConstructZone)
     {
-        // Add custom logic here if needed (e.g. effects, stamina drain)
+        // Add custom logic here if needed
     }
 }
 
 void CPlayerConstruction::OnOverlapEnter(CCollider* self, CCollider* other)
 {
-    if (other->Get_CollisionLayer() == COLLISION_LAYERTYPE::INTERACTIVEOBJ)
+    if (other->Get_CollisionLayer() == COLLISION_LAYERTYPE::CONSTRUCTION_SITE)
         m_pConstructZone = dynamic_cast<CConstructCircle*>(other->Get_Owner());
 }
 
 void CPlayerConstruction::OnOverlapExit(CCollider* self, CCollider* other)
 {
-    if (other->Get_CollisionLayer() == COLLISION_LAYERTYPE::INTERACTIVEOBJ)
+    if (other->Get_CollisionLayer() == COLLISION_LAYERTYPE::CONSTRUCTION_SITE)
     {
         if (m_pConstructZone == dynamic_cast<CConstructCircle*>(other->Get_Owner()))
             m_pConstructZone = nullptr;

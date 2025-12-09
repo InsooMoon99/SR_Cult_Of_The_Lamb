@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include "CBuildingBase.h"
 
-
 class CConstructCircle : public CBuildingBase
 {
 private:
@@ -28,7 +27,9 @@ private:
     HRESULT Add_Component() override;
 
 public:
-    static CConstructCircle* Create(DEVICE graphicDev, _vec3 scale = { 1.f, 1.f, 1.f });
+    // 사이즈가 지정 가능하도록 해서 건축물에 따라 다른 크기로 생성
+    static CConstructCircle* Create(DEVICE graphicDev,
+                                    _vec3  scale = { 1.f, 1.f, 1.f });
 
 private:
     void Free() override;
