@@ -15,7 +15,9 @@
 #include "CEyeballController.h"
 #include "CInventory.h"
 #include "CItemDB.h"
+#include "CMonsterSpawner.h"
 #include "CPlayerAttack.h"
+#include "CPlayerConstruction.h"
 #include "CPlayerController.h"
 #include "CPlayerGathering.h"
 #include "CPlayerInput.h"
@@ -39,8 +41,6 @@
 #include "CWeaponEquip.h"
 #include "ItemData.h"
 #include "ItemInstance.h"
-#include "CMonsterSpawner.h"
-
 
 IMPLEMENT_SINGLETON(CResourceMgr)
 
@@ -157,6 +157,11 @@ HRESULT CResourceMgr::Ready_Common(DEVICE graphicDev)
         COMPONENTTYPE::SPRITEEFFECT, CSpriteEff::Create(graphicDev))))
         return E_FAIL;
 
+    // Construction
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::CONSTRUCTION, CPlayerConstruction::Create(graphicDev))))
+        return E_FAIL;
+
     ////////////
     vector<wstring> pathVec2;
     pathVec2.push_back(L"../Bin/Resource/Texture/BossPhase1/Bullet/Bullet.png");
@@ -251,12 +256,10 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         COMPONENTTYPE::GATHERING, CPlayerGathering::Create(graphicDev))))
         return E_FAIL;
 
-
     // skill
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::PL_SKILL, CPlayerSkill::Create(graphicDev))))
         return E_FAIL;
-
 
     CTexture* playerTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(playerTex, E_FAIL);
@@ -359,10 +362,12 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         L"../Bin/Resource/Texture/Player/Spell2/Lamb-cast-spell2-%d.png",17)))
 #pragma endregion
 #pragma region --- Tex: CRAFT ---
-    //crafting
-    if (FAILED(playerTex->Add_Texture(L"PlayerAction", TEX_NORMAL,
-        L"../Bin/Resource/Texture/Player/Lamb_action/Lamb_action%d.png", 25)))
-        return E_FAIL;
+    {
+        //crafting
+        if (FAILED(playerTex->Add_Texture(L"PlayerAction", TEX_NORMAL,
+            L"../Bin/Resource/Texture/Player/Lamb_action/Lamb_action%d.png", 25)))
+            return E_FAIL;
+    }
 
     if (FAILED(playerTex->Add_Texture(L"PlayerStone", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Lamb_actions_chop_stone/Lamb_actions_chop_stone%d.png", 45)))
@@ -376,19 +381,23 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         L"../Bin/Resource/Texture/Player/Lamb_actions_collect_berries/Lamb_actions_collect_berries%d.png", 25)))
         return E_FAIL;
 
+    if (FAILED(playerTex->Add_Texture(L"PlayerHammer", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Action_Hammer/Lamb-actions-hammer%d.png", 29)))
+        return E_FAIL;
+
 #pragma region --- Tex: 기타 상호작용 ---
     if (FAILED(playerTex->Add_Texture(L"Player_WeaponGet", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Weapon_Get_Shot/Lamb-weapons-get%d.png", 77)))
         return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
-    return E_FAIL;
+        return E_FAIL;
 
 #pragma endregion
 
-  
-
-    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_SKILL, Engine::CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Player/Bullet/Fireball.png", 1))))
+    if (FAILED(
+        protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_SKILL, Engine::CTexture::Create(graphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/Player/Bullet/Fireball.png", 1))))
         return E_FAIL;
 
     return S_OK;
@@ -441,8 +450,6 @@ HRESULT CResourceMgr::Ready_Monster(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_FLOATER_MONSTER, floaterTex)))
         return E_FAIL;
-
-
 
     return S_OK;
 }
@@ -690,7 +697,6 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     pathVec1.push_back(L"../Bin/Resource/Texture/Player/Skill/Arrow_White.png");
     pathVec1.push_back(L"../Bin/Resource/Texture/UI/Tarot/ExplainBox/ExplainBox.png");
 
-
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_ICON, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec1))))
         return E_FAIL;
@@ -908,8 +914,6 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
             L"../Bin/Resource/Texture/MapObject/ETC/ETC%d.png", 40))))
         return E_FAIL;
 
-
-
     // 라즈베리 풀
     vector<wstring> pathVec2;
     pathVec2.push_back(L"../Bin/Resource/Texture/InteractiveObj/BerryBush1.png");
@@ -929,7 +933,7 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     pathVec3.push_back(L"../Bin/Resource/Texture/InteractiveObj/Rock0.png");
     pathVec3.push_back(L"../Bin/Resource/Texture/InteractiveObj/Rock1.png");
     pathVec3.push_back(L"../Bin/Resource/Texture/InteractiveObj/Rock2.png");
-   
+
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_ROCK, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec3))))
         return E_FAIL;
@@ -981,13 +985,38 @@ HRESULT CResourceMgr::Ready_Building(DEVICE graphicDev)
 {
     auto protoMgr = CProtoMgr::GetInstance();
 
-    vector<wstring> templeTextures;
-    templeTextures.emplace_back(L"../Bin/Resource/Texture/Building/Temple_Front.png");
-    templeTextures.emplace_back(L"../Bin/Resource/Texture/Building/Temple_Roof.png");
+    // Workbench
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_WORKBENCH,
+        CTexture::Create(graphicDev,TEX_NORMAL, L"../Bin/Resource/Texture/Building/Workbench.png", 1))))
+        return E_FAIL;
+
+    // Dotted Circle
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_DOTTEDCIRCLE,
+        CTexture::Create(graphicDev,TEX_NORMAL, L"../Bin/Resource/Texture/Building/Dotted_Circle.png", 1))))
+        return E_FAIL;
+
+    // Temple
+    vector<wstring> textures;
+    textures.emplace_back(L"../Bin/Resource/Texture/Building/Temple_Front.png");
+    textures.emplace_back(L"../Bin/Resource/Texture/Building/Temple_Roof.png");
 
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_TEMPLE,
-        CTexture::Create(graphicDev, TEX_NORMAL, templeTextures))))
+        CTexture::Create(graphicDev, TEX_NORMAL, textures))))
+        return E_FAIL;
+
+    // Kitchen
+    textures.clear();
+    textures.emplace_back(L"../Bin/Resource/Texture/Building/Kitchen_Pot.png");
+    textures.emplace_back(L"../Bin/Resource/Texture/Building/Kitchen_Stove.png");
+    textures.emplace_back(L"../Bin/Resource/Texture/Building/Kitchen_RecipeBook.png");
+    textures.emplace_back(L"../Bin/Resource/Texture/Building/Kitchen_Utensils.png");
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_KITCHEN,
+        CTexture::Create(graphicDev, TEX_NORMAL, textures))))
         return E_FAIL;
 
     return S_OK;

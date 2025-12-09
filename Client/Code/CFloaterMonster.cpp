@@ -13,17 +13,21 @@
 #include "CUI_MonsterHp.h"
 
 CFloaterMonster::CFloaterMonster(DEVICE graphicDev)
-    : CMonsterBase(graphicDev), m_RigidbodyCom(nullptr), m_AttackSpawned(false), m_HpBar(nullptr)
-{
-}
+    : CMonsterBase(graphicDev),
+      m_RigidbodyCom(nullptr),
+      m_AttackSpawned(false),
+      m_HpBar(nullptr)
+{ }
 
 CFloaterMonster::CFloaterMonster(const CFloaterMonster& rhs)
-    : CMonsterBase(rhs), m_RigidbodyCom(nullptr), m_AttackSpawned(false), m_HpBar(nullptr)
-{
-}
+    : CMonsterBase(rhs),
+      m_RigidbodyCom(nullptr),
+      m_AttackSpawned(false),
+      m_HpBar(nullptr)
+{ }
 
 CFloaterMonster::~CFloaterMonster()
-{}
+{ }
 
 HRESULT CFloaterMonster::Ready_GameObject()
 {
@@ -47,7 +51,7 @@ HRESULT CFloaterMonster::Ready_GameObject()
 
     // 공격 주기 설정
     m_AttackCooldown = 2.f;
-    m_AttackTimer = 0.f;
+    m_AttackTimer    = 0.f;
 
     // 거리 설정
     Set_StoppingDistance(2.f);
@@ -63,9 +67,9 @@ void CFloaterMonster::Initialize_GameObject()
 
     m_TargetTransform = dynamic_cast<CTransform*>(
         CManagement::GetInstance()->Get_Component(ID_DYNAMIC,
-            LAYERTYPE::GAMELOGIC,
-            OBJTYPE::PLAYER,
-            COMPONENTTYPE::TRANSFORM));
+                                                  LAYERTYPE::GAMELOGIC,
+                                                  OBJTYPE::PLAYER,
+                                                  COMPONENTTYPE::TRANSFORM));
 
     if (m_TargetTransform)
         m_Target = m_TargetTransform->Get_Owner();
@@ -95,11 +99,16 @@ _int CFloaterMonster::Update_GameObject(const _float& timeDelta)
 
     switch (curState)
     {
-    case ACTORSTATE::IDLE:      Update_State_Idle(timeDelta);  break;
-    case ACTORSTATE::RUN:       Update_State_Run(timeDelta); break;
-    case ACTORSTATE::ATTACK:    Update_State_Attack(timeDelta); break;
-    case ACTORSTATE::HIT:       Update_State_Hit(timeDelta); break;
-    case ACTORSTATE::DEAD:      Update_State_Dead(timeDelta); break;
+    case ACTORSTATE::IDLE: Update_State_Idle(timeDelta);
+        break;
+    case ACTORSTATE::RUN: Update_State_Run(timeDelta);
+        break;
+    case ACTORSTATE::ATTACK: Update_State_Attack(timeDelta);
+        break;
+    case ACTORSTATE::HIT: Update_State_Hit(timeDelta);
+        break;
+    case ACTORSTATE::DEAD: Update_State_Dead(timeDelta);
+        break;
     }
 
     return exit;
@@ -108,15 +117,11 @@ _int CFloaterMonster::Update_GameObject(const _float& timeDelta)
 void CFloaterMonster::LateUpdate_GameObject(const _float& timeDelta)
 {
     CMonsterBase::LateUpdate_GameObject(timeDelta);
-
-    
 }
 
 void CFloaterMonster::Render_GameObject()
 {
     CMonsterBase::Render_GameObject();
-
-
 }
 
 _bool CFloaterMonster::Check_CommonTransitions()
@@ -153,9 +158,7 @@ void CFloaterMonster::Update_State_Idle(const _float timeDelta)
     }
     // 추적 범위 안에 있으면 RUN
     else if (Is_InChaseRange())
-    {
         m_StateCom->Change_State(ACTORSTATE::RUN);
-    }
 }
 
 void CFloaterMonster::Update_State_Run(const _float timeDelta)
@@ -164,9 +167,7 @@ void CFloaterMonster::Update_State_Run(const _float timeDelta)
 
     // 멈춤 거리 밖이면 추적
     if (!Is_InStoppingRange())
-    {
         Chase_Target(timeDelta, m_CombatStatCom->Get_Speed());
-    }
     // 공격 가능
     if (Is_InAttackRange() && Can_Attack())
     {
@@ -175,9 +176,7 @@ void CFloaterMonster::Update_State_Run(const _float timeDelta)
     }
     // 추적 범위 밖
     else if (Is_OutofChaseRange())
-    {
         m_StateCom->Change_State(ACTORSTATE::IDLE);
-    }
 }
 
 void CFloaterMonster::Update_State_Attack(const _float timeDelta)
@@ -210,18 +209,14 @@ void CFloaterMonster::Update_State_Hit(const _float timeDelta)
 {
     // 애니메이션이 끝나고, 넉백이 다 밀렸을 때
     if (m_AnimatorCom->Is_AnimationFinished() && !m_CombatStatCom->Is_Knockback())
-    {
         m_StateCom->Change_State(ACTORSTATE::IDLE);
-    }
 }
 
 void CFloaterMonster::Update_State_Dead(const _float timeDelta)
 {
     // CombatStat에서 Dead 상태처리 진행중 Dead 애니메이션이 없다. 밀려나면서, 뼛가루 소환?
     if (m_StateCom->Get_State() == ACTORSTATE::DEAD)
-    {
         Mark_As_PendingKill();
-    }
 }
 
 void CFloaterMonster::Update_Direction()
@@ -240,10 +235,9 @@ void CFloaterMonster::Update_Direction()
         return;
 
     if (m_TargetDir.x > 0.f)
-        m_StateCom->Change_Dir(ACTORDIR::RIGHT); 
+        m_StateCom->Change_Dir(ACTORDIR::RIGHT);
     else
-        m_StateCom->Change_Dir(ACTORDIR::LEFT);  
-
+        m_StateCom->Change_Dir(ACTORDIR::LEFT);
 }
 
 void CFloaterMonster::Animation_Setting()
@@ -258,20 +252,16 @@ void CFloaterMonster::Animation_Setting()
     m_StateCom->Set_AnimInfo(ACTORSTATE::RUN, L"Floater_Idle", ANIMSTATE::LOOP);
     m_StateCom->Set_AnimInfo(ACTORSTATE::HIT, L"Floater_Hit", ANIMSTATE::ONCE);
     m_StateCom->Set_AnimInfo(ACTORSTATE::ATTACK, L"Floater_Attack", ANIMSTATE::ONCE);
-
 }
 
 void CFloaterMonster::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CMonsterBase::OnBeginOverlap(self, other);
-
-
 }
 
 void CFloaterMonster::OnEndOverlap(CCollider* self, CCollider* other)
 {
     CMonsterBase::OnEndOverlap(self, other);
-
 }
 
 void CFloaterMonster::Chase_Target(const float& timeDelta, _float speed)
@@ -279,12 +269,12 @@ void CFloaterMonster::Chase_Target(const float& timeDelta, _float speed)
     if (!m_TargetTransform || !m_TransformCom)
         return;
 
-    _vec3 pos = m_TransformCom->Get_Pos();
+    _vec3 pos       = m_TransformCom->Get_Pos();
     _vec3 targetPos = m_TargetTransform->Get_Pos();
     //m_TransformCom->Chase_Target(&targetPos, timeDelta, speed);
 
     _vec3 dir = targetPos - pos;
-    dir.y = 0.f;
+    dir.y     = 0.f;
 
     D3DXVec3Normalize(&dir, &dir);
 

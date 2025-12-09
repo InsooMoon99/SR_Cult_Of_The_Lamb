@@ -1,44 +1,49 @@
 ﻿#include "pch.h"
 #include "CWorldInteractive.h"
+
 #include "CAnimator.h"
-#include "CState.h"
-#include "CCombatStat.h"
 #include "CBoxCollider.h"
-#include "CTransform.h"
+#include "CCombatStat.h"
 #include "CCreateHelper.h"
-#include "CRenderer.h"
-#include "CTexture.h"
-#include "CRcTex.h"
-#include "CCreateHelper.h"
-#include "CPlayer.h"
-#include "CInventory.h"
-#include "ItemInstance.h"
 #include "CDInputMgr.h"
 #include "CDropSystem.h"
+#include "CInventory.h"
+#include "CPlayer.h"
+#include "CRcTex.h"
+#include "CRenderer.h"
 #include "CSpriteEff.h"
+#include "CState.h"
+#include "CTexture.h"
+#include "CTransform.h"
+#include "ItemInstance.h"
 
+CWorldInteractive::CWorldInteractive(DEVICE graphicDev)
+    : CRenderObject(graphicDev),
 
-CWorldInteractive::CWorldInteractive(DEVICE graphicDev) : CRenderObject(graphicDev),
-m_CombatStatCom(nullptr),
-m_BoxColCom(nullptr),
-m_InventoryCom(nullptr),
-m_SpriteEffCom(nullptr)
-{
-}
+      m_CombatStatCom(nullptr),
+      m_BoxColCom(nullptr),
+      m_InventoryCom(nullptr),
+      m_SpriteEffCom(nullptr)
+{ }
 
-CWorldInteractive::CWorldInteractive(const CWorldInteractive& rhs) : CRenderObject(rhs), m_bPlayerOverlap(rhs.m_bPlayerOverlap)
-{
-}
+CWorldInteractive::CWorldInteractive(const CWorldInteractive& rhs)
+    : CRenderObject(rhs),
+
+      m_CombatStatCom(nullptr),
+      m_BoxColCom(nullptr),
+      m_InventoryCom(nullptr),
+      m_SpriteEffCom(nullptr),
+
+      m_bPlayerOverlap(rhs.m_bPlayerOverlap)
+{ }
 
 CWorldInteractive::~CWorldInteractive()
-{
-}
+{ }
 
 HRESULT CWorldInteractive::Ready_GameObject()
 {
     if (FAILED(CRenderObject::Ready_GameObject()))
         return E_FAIL;
-
 
     m_TransformCom->Set_Rotation({ D3DXToRadian(40), 0, 0 });
     m_SpriteEffCom->InitOutLine(D3DCOLOR_ARGB(255, 255, 255, 255), 0.05f);
@@ -53,22 +58,21 @@ void CWorldInteractive::Initialize_GameObject()
 
 _int CWorldInteractive::Update_GameObject(const _float& timeDelta)
 {
-    _int  exit = CRenderObject::Update_GameObject(timeDelta);
-    
-        if (m_CombatStatCom->Is_Dead() == true || m_bInvenDropped == true) // 컴포넌트 내부에서 처리함 0 만들고 Dead true
-        {
-            // 플레이어 위치
-            _vec3 DropPos = m_CombatStatCom->Get_Dir();
-            int offset = 40; //
-            CDropSystem::GetInstance()->SpawnAllFromInven(m_GraphicDev, m_InventoryCom, DropPos, offset);
-            m_bHovering = false;
-            m_bInvenDropped = true;
-            return exit;
-        }
+    _int exit = CRenderObject::Update_GameObject(timeDelta);
 
+    if (m_CombatStatCom->Is_Dead() == true || m_bInvenDropped == true) // 컴포넌트 내부에서 처리함 0 만들고 Dead true
+    {
+        // 플레이어 위치
+        _vec3 DropPos = m_CombatStatCom->Get_Dir();
+        int   offset  = 40; //
+        CDropSystem::GetInstance()->SpawnAllFromInven(m_GraphicDev, m_InventoryCom, DropPos, offset);
+        m_bHovering     = false;
+        m_bInvenDropped = true;
+        return exit;
+    }
 
     //CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
-        
+
     // 플레이어가 가까이 있을떄만
     if (m_bPlayerOverlap == true)
     {
@@ -78,12 +82,10 @@ _int CWorldInteractive::Update_GameObject(const _float& timeDelta)
         {
             // 호버링이 되어 있을떄 
             m_bHovering = true; // 렌더 아웃라인 용
-           // cout << "hovering" << endl;
-
+            // cout << "hovering" << endl;
         }
         else
             m_bHovering = false;
-
     }
     else
         m_bHovering = false;
@@ -98,19 +100,15 @@ void CWorldInteractive::LateUpdate_GameObject(const _float& timeDelta)
 
 void CWorldInteractive::Render_GameObject()
 {
-
     Render_Setting();
 
-
     if (m_bHovering == true)
-    {
         m_SpriteEffCom->OutLineEff(m_BufferCom);
-    }
 
-     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
+    m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
-     if (m_BufferCom)
-         m_BufferCom->Render_Buffer();
+    if (m_BufferCom)
+        m_BufferCom->Render_Buffer();
 
     Render_Reset();
 
@@ -126,7 +124,6 @@ void CWorldInteractive::OnBeginOverlap(CCollider* self, CCollider* other)
     CPlayer* ply = dynamic_cast<CPlayer*>(other->Get_Owner());
     if (ply)
         m_bPlayerOverlap = true;
-
 }
 
 void CWorldInteractive::OnEndOverlap(CCollider* self, CCollider* other)
@@ -136,7 +133,6 @@ void CWorldInteractive::OnEndOverlap(CCollider* self, CCollider* other)
 
     if (m_bPlayerOverlap == true && ply != nullptr)
         m_bPlayerOverlap = false;
-
 }
 
 bool CWorldInteractive::Is_Hovering()
@@ -163,16 +159,15 @@ bool CWorldInteractive::Is_Hovering()
 
     D3DXMATRIX matProj;
     m_GraphicDev->GetTransform(D3DTS_PROJECTION, &matProj);
-    D3DXMatrixInverse(&matProj, 0, &matProj);
+    D3DXMatrixInverse(&matProj, nullptr, &matProj);
     //coord
     D3DXVec3TransformCoord(&vMousePos, &vMousePos, &matProj);
 
-
     D3DXMATRIX matView;
     m_GraphicDev->GetTransform(D3DTS_VIEW, &matView);
-    D3DXMatrixInverse(&matView, 0, &matView);
+    D3DXMatrixInverse(&matView, nullptr, &matView);
     // 뷰 행렬에서 레이랑 해야함
-    _vec3 vRayPos = { matView._41,matView._42, matView._43 };// RayPos 는 카메라 위치
+    _vec3 vRayPos = { matView._41, matView._42, matView._43 };// RayPos 는 카메라 위치
     //_vec3 vRayDir = vMousePos - vRayPos;
 
     _vec3 vRayDir; //마우스 방향을 월드 방향으로 변환
@@ -224,7 +219,7 @@ bool CWorldInteractive::Is_Hovering()
     if (timeMin > 0.f)
         return true;
 
-
+    return false;
 }
 
 HRESULT CWorldInteractive::Add_Component()
@@ -257,8 +252,6 @@ HRESULT CWorldInteractive::Add_Component()
     NULL_CHECK_RETURN(m_InventoryCom, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::INVENTORY, m_InventoryCom });
 
-
-
     // effect
     m_SpriteEffCom = CreateProtoComponent<CSpriteEff>(this, COMPONENTTYPE::SPRITEEFFECT);
     NULL_CHECK_RETURN(m_SpriteEffCom, E_FAIL);
@@ -266,8 +259,6 @@ HRESULT CWorldInteractive::Add_Component()
 
     return S_OK;
 }
-
-
 
 void CWorldInteractive::Free()
 {

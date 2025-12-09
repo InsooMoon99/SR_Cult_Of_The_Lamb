@@ -21,7 +21,7 @@ CUIInventoryCell::CUIInventoryCell(DEVICE pGraphicDev)
       m_HighlightTexCom(nullptr),
       m_Count(0),
       m_IsHovered(false)
-{}
+{ }
 
 CUIInventoryCell::CUIInventoryCell(const CUIInventoryCell& rhs)
     : CUI(rhs),
@@ -31,10 +31,10 @@ CUIInventoryCell::CUIInventoryCell(const CUIInventoryCell& rhs)
       m_HighlightTexCom(nullptr),
       m_Count(0),
       m_IsHovered(rhs.m_IsHovered)
-{}
+{ }
 
 CUIInventoryCell::~CUIInventoryCell()
-{}
+{ }
 
 void CUIInventoryCell::OnBeginOverlap(CCollider* self, CCollider* other)
 {
