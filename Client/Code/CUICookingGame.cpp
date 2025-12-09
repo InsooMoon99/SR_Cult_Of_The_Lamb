@@ -34,10 +34,11 @@ void CUICookingGame::Initialize_GameObject()
 
     if (m_Owner)
     {
-      
         m_OwnerTransform = dynamic_cast<CTransform*>(
             m_Owner->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
     }
+
+    m_TransformCom->Set_Pos({ m_OwnerTransform->Get_Pos().x ,  m_OwnerTransform->Get_Pos().y + 1.f,  m_OwnerTransform->Get_Pos().z });
 }
 
 _int CUICookingGame::Update_GameObject(const _float& timeDelta)
@@ -62,6 +63,8 @@ void CUICookingGame::LateUpdate_GameObject(const _float& timeDelta)
 void CUICookingGame::Render_GameObject()
 {
     CUI::Render_GameObject();
+
+    //m_TextureCom->Set_Texture();
 }
 
 HRESULT CUICookingGame::Add_Component()

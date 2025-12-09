@@ -21,6 +21,10 @@ public:
 public:
     void SetStockMax(int maxNum) { m_StockMax = maxNum; }
 
+
+    void SetDoneEvent(function<void()> doneEvent) { m_DoneEvent = doneEvent; }
+    void SetResultItemDrop(function<void()> DropDish) { m_ResultItemDrop = DropDish; }
+
 private:
     HRESULT Add_Component();
 
@@ -28,7 +32,8 @@ private:
     RecipeInst  m_recipeInst;
     CTransform* m_OwnerTransform;
 
-    function
+    function<void()> m_DoneEvent;
+    function<void()> m_ResultItemDrop;
 
     int m_StockMax = 0;
 public:

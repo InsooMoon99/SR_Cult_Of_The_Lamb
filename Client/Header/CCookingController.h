@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "CComponent.h"
+#include "Client_Struct.h"
 #include <queue>
 
 class CUIButton;

@@ -9,6 +9,7 @@
 #include "CDroppedItem.h"
 #include "CUICookingGame.h"
 #include "CCreateHelper.h"
+#include "CInventory.h"
 
 CCookingController::CCookingController(DEVICE graphicDev) : CComponent(graphicDev)
 {
@@ -117,6 +118,8 @@ void CCookingController::SetUIRecipeSlot(/*Slot* slot,*/ int id, CUIButton* quit
 bool CCookingController::CanCooK(int recipeID, CInventory* playerInven)
 {
 
+
+    //playerInven->Get_Cnt
 
     return false;
 }
