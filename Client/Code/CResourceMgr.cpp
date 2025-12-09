@@ -794,6 +794,18 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
         COMPONENTTYPE::TEX_UI_MONSTERHP, CTexture::Create(graphicDev, TEX_NORMAL, monsterHp_Path))))
         return E_FAIL;
 
+    // UI_Cooking
+    vector<wstring> cookingUI;
+    cookingUI.push_back(L"../Bin/Resource/Texture/UI/CookUI/CookingBar_White.png");
+    cookingUI.push_back(L"../Bin/Resource/Texture/UI/CookUI/Cooking_Marker.png");
+    cookingUI.push_back(L"../Bin/Resource/Texture/UI/CookUI/CookingBar_Border.png");
+    cookingUI.push_back(L"../Bin/Resource/Texture/UI/CookUI/CookingBar_Green.png");
+    cookingUI.push_back(L"../Bin/Resource/Texture/UI/CookUI/CookingBar_Red.png");
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_UI_COOK, CTexture::Create(graphicDev, TEX_NORMAL, cookingUI))))
+        return E_FAIL;
+
     return S_OK;
 }
 

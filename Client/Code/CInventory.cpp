@@ -100,7 +100,11 @@ bool CInventory::AddItem(ItemInstance itemInst)
                 int oldCount = slot.count;
                 slot.count++;
                 int newCount = slot.count - oldCount;
-                //m_ItemAdded(&slot.itemInst, newCount);
+                // 플레이어 일떄만 UI addItem 이밴트 호출
+                if (dynamic_cast<CPlayer*>(m_Owner) != nullptr)
+                {
+                    m_ItemAdded(&slot.itemInst, newCount);
+                }
                 return true;
             }
         }

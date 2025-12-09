@@ -140,17 +140,18 @@ void CDropSystem::SpawnAllFromInven(DEVICE pGraphicDev, CInventory* Inven, _vec3
                     D3DXVec3TransformNormal(&tmpvec, &tmpvec, &matPitch);
                     D3DXVec3Normalize(&tmpvec, &tmpvec);
 
-                    d.pos = ownerPos;
-                    // d.velocity
+                    _vec3 Startpos = { ownerPos.x, ownerPos.y/*+1.f*/, ownerPos.z };
+                    //d.pos = ownerPos;
+                    d.pos = Startpos;
+              
                     d.velocity = tmpvec * 30;
                     d.groundY = .5f;
-                    // 중력
+                    
                     d.gravity = -300.f;
                     d.restitution = 0.8f;// 튕김 계수
                     d.damping = 0.7f;// 충돌 감쇠(마찰)
                     d.m_DampingPerSecond = 0.9f;// 공기 저항
 
-                    _vec3 Startpos = { ownerPos.x, ownerPos.y/*+1.f*/, ownerPos.z };
 
                     SpawnDrop(pGraphicDev, itemInst, Startpos, _vec3(0.5f, 0.5f, 0.5f), d);
 

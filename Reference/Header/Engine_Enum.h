@@ -167,6 +167,7 @@ enum class COMPONENTTYPE
     TEX_ROCK,
     TEX_TREE,
     TEX_SKILL,
+    TEX_UI_COOK,
 
     ANIMATOR,
 

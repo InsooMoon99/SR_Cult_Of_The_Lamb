@@ -63,6 +63,7 @@ _int CWorldInteractive::Update_GameObject(const _float& timeDelta)
             CDropSystem::GetInstance()->SpawnAllFromInven(m_GraphicDev, m_InventoryCom, DropPos, offset);
             m_bHovering = false;
             m_bInvenDropped = true;
+            m_BoxColCom->Set_CollisionActive(false);
             return exit;
         }
 
@@ -132,6 +133,8 @@ void CWorldInteractive::OnBeginOverlap(CCollider* self, CCollider* other)
 void CWorldInteractive::OnEndOverlap(CCollider* self, CCollider* other)
 {
     CRenderObject::OnEndOverlap(self, other);
+
+
     CPlayer* ply = dynamic_cast<CPlayer*>(other->Get_Owner());
 
     if (m_bPlayerOverlap == true && ply != nullptr)
