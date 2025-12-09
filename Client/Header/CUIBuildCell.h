@@ -36,6 +36,7 @@ public:
  
     void    Set_BuildIndex(BUILDITEM buildItem) { m_BuildIndex = buildItem; }
     void    Set_TextureIndex(int textureIndex) { m_TextureIndex = textureIndex; }
+    void    Set_RecipeId(int recipeId) { m_RecipeId = recipeId; }
 
     CUIIcon* Get_Icon() { return m_ItemIcon; }
 
@@ -43,6 +44,8 @@ protected:
     void Free() override;
 
 private:
+    _vec3           m_TargetScale;
+    _vec3           m_BaseScale;
     int             m_BuildIndex;
     CUIIcon*        m_ItemIcon;
     CUIIcon*        m_CardIcon;
@@ -51,5 +54,6 @@ private:
     D3DXCOLOR       m_D3dxColor;
     bool            m_IsHovered; //외곽선 그리기 여부 판단용
     int             m_TextureIndex;
+    int             m_RecipeId;
 
 };

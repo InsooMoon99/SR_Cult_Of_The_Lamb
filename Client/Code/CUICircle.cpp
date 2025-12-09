@@ -61,7 +61,7 @@ void CUICircle::Render_GameObject()
     m_BufferCom->Render_Buffer();
 
     _vec3 pos = m_TransformCom->Get_Pos();
-    _vec2 fontOffset = { -5.f,10.f };
+    _vec2 fontOffset = { 0.f,10.f };
     _vec2 screen = { WINCX / 2 + pos.x + fontOffset.x,WINCY / 2 - pos.y + fontOffset.y };
 
     int currentCharges = m_CombatStatCom->Get_CurrentCharges();
