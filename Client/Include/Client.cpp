@@ -98,10 +98,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE     hInstance,
 
                 if (CMainEditorMgr::GetInstance()->IsPlaying())
                 {
-                    _float scaledDelta = fTimer_FPS60 * CMainEditorMgr::GetInstance()->Get_TimeScale();
-
-                    pMainApp->Update_MainApp(scaledDelta);
-                    pMainApp->LateUpdate_MainApp(scaledDelta);
+                    pMainApp->Update_MainApp(fTimer_FPS60);
+                    pMainApp->LateUpdate_MainApp(fTimer_FPS60);
                 }
 
                 else // 일시정지

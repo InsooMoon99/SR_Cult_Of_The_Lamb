@@ -275,20 +275,13 @@ static void BoxColl_Inspector(CBoxCollider* collider)
     if (collider == nullptr)
         return;
 
+    ImGui::Text("[ Size ]");
     ImGui::PushID("BoxColl_Inspector");
     {
         _vec3 scale = collider->Get_RawSize();
-        _vec3 offset = collider->Get_Offset();
-
-        ImGui::Text("[ Size ]");
 
         if (ImGui::DragFloat3("##SizeDrag", &scale.x, 0.01f))
             collider->Set_RawSize(scale);
-
-        //ImGui::NewLine();
-
-        if (ImGui::DragFloat3("##OFfsetDrag", &offset.x, 0.01f))
-            collider->Set_Offset(offset);
 
         ImGui::NewLine();
 

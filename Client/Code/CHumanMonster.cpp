@@ -80,6 +80,8 @@ void CHumanMonster::Initialize_GameObject()
     if (m_HpBar)
     {
         SpawnUIOnLayer(m_HpBar, OBJTYPE::UI);
+
+        m_HpBar->Initialize_GameObject();
     }
 }
 

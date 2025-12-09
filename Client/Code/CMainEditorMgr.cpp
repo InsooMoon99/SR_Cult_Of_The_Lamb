@@ -343,28 +343,7 @@ void CMainEditorMgr::Render_ToolBar()
         Menu_CameraInspector(m_MainCameraController);
     }
 
-    ImGui::SameLine();
-
-    // =======
-    // TimeScale
-    // =======
-    {
-        ImGui::AlignTextToFramePadding();
-        ImGui::Text("| Speed:");
-        ImGui::SameLine();
-
-        if (ImGui::Button("-", ImVec2(20.f, 0.f)))
-            m_TimeScale = max(0.5f, m_TimeScale - 0.5f);  
-        ImGui::SameLine();
-
-        ImGui::Text("%.1fx", m_TimeScale);
-
-        ImGui::SameLine();
-
-        if (ImGui::Button("+", ImVec2(20.f, 0.f)))
-            m_TimeScale = min(3.0f, m_TimeScale + 0.5f);  
-        
-    }
+    //ImGui::NextColumn();
 
     // ============
     // Debug Check

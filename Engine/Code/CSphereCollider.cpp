@@ -44,7 +44,7 @@ void CSphereCollider::Render()
     CTransform* transform = Get_Transform();
     NULL_CHECK(transform);
 
-    _vec3 center = transform->Get_Pos() + m_Offset;
+    _vec3 center = transform->Get_Pos();
     _float radius = this->Get_Radius();
 
     DWORD color = !m_ColliderSet.empty() ? D3DCOLOR_ARGB(255, 255, 0, 0) : D3DCOLOR_ARGB(255, 255, 255, 255);  

@@ -423,8 +423,8 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"Player_WeaponGet",
                                     77,
                                     0.02f,
-                                    _vec2(1.3f, 1.67f),
-                                    _vec2(0.01f, 0.1f));
+                                    _vec2(1.f, 1.f),
+                                    _vec2(0.05f, -0.1f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_WEAPONGET,
                              L"Player_WeaponGet",

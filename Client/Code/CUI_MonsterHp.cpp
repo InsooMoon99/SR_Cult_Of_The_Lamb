@@ -16,7 +16,7 @@ CUI_MonsterHp::CUI_MonsterHp(DEVICE graphicDev, CGameObject* owner)
     m_HpDelayRatio(1.0f),
     m_HpDelaySpeed(1.5f),   
     m_YOffset(3.0f),
-    m_BarSize({ 0.6f, 0.7f, 1.f }),
+    m_BarSize(0.6f, 0.7f, 1.f),
     m_Buffer_Hp(nullptr), m_Buffer_Delay(nullptr)
 {
     Set_Name(L"Monster Hp");
@@ -204,8 +204,6 @@ CUI_MonsterHp* CUI_MonsterHp::Create(DEVICE graphicDev, CGameObject* owner)
         MSG_BOX("Monster Hp Create Failed");
         return nullptr;
     }
-
-    hp->Initialize_GameObject();
 
     return hp;
 }

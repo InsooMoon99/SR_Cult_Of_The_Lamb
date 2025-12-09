@@ -67,6 +67,7 @@ void CBoss2_Bullet::Initialize_GameObject()
 {
     CAttackSphere::Initialize_GameObject();
 
+
 }
 
 _int CBoss2_Bullet::Update_GameObject(const _float& timeDelta)

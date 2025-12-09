@@ -2,7 +2,6 @@
 
 #include "CMonsterBase.h"
 
-class CUI_BossHp;
 class CMonsterController;
 class CBoss2_StateMachine;
 
@@ -53,8 +52,7 @@ protected:
     void    Free() override;
 
 private:
-    CMonsterController*     m_BossController;
-    CUI_BossHp*             m_BossHpBar;
+    CMonsterController*    m_BossController;
 
 };
 

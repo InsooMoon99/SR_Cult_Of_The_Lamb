@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include "CPlayerController.h"
-#include "CAnimator.h"
+
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
 #include "CDInputMgr.h"
@@ -248,10 +248,6 @@ void CPlayerController::CheckStateTransition()
     else if (inputMgr->MouseUp(DIM_RB))
     {
         if (curState == ACTORSTATE::PLAYER_SKILL_CHARGING)
-        {
-            // 슬로우모션 해제
-            CMainEditorMgr::GetInstance()->Set_TimeScale(1.f);
-
             m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
         if (m_OwnerSkillCom->Get_TripleSkillAvailability())
         {
@@ -276,25 +272,6 @@ void CPlayerController::CheckStateTransition()
     else if (inputMgr->KeyPress(DIK_E))
         Living_Interaction();
 
-    //TODO RMB로 스킬
-
-    //!! 공격 or 구르기 중이라면 이동/대기 상태로 넘어가지 않도록 여기서 리턴
-    if (curState == ACTORSTATE::PLAYER_ROLL ||
-        curState == ACTORSTATE::PLAYER_SWORD_COMBO1 ||
-        curState == ACTORSTATE::PLAYER_SWORD_COMBO2 ||
-        curState == ACTORSTATE::PLAYER_SWORD_COMBO3 ||
-        curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO1 ||
-        curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO2 ||
-        curState == ACTORSTATE::PLAYER_GAUNTLET_COMBO3 ||
-        curState == ACTORSTATE::PLAYER_GAUNTLET_HEAVY ||
-        curState == ACTORSTATE::PLAYER_SKILL_CHARGING ||
-        curState == ACTORSTATE::PLAYER_SKILL_SINGLE ||
-        curState == ACTORSTATE::PLAYER_SKILL_TRIPLE||
-        curState == ACTORSTATE::PLAYER_BERRY||
-        curState == ACTORSTATE::PLAYER_STONE||
-        curState == ACTORSTATE::PLAYER_WOOD ||
-        curState == ACTORSTATE::PLAYER_WEAPONGET)
-        
     // 다른 행동 중이라면 여기서 리턴
     if (!(curState == ACTORSTATE::RUN) &&
         !(curState == ACTORSTATE::IDLE))
@@ -397,16 +374,6 @@ void CPlayerController::Update_State(const _float& timeDelta)
     case ACTORSTATE::PLAYER_HAMMER:
     {
         Action_Construction(timeDelta);
-    }
-    break;
-
-    case ACTORSTATE::PLAYER_WEAPONGET:
-    {
-        auto animator = dynamic_cast<CAnimator*>(
-            m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
-
-        if (animator && animator->Is_AnimationFinished())
-            m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
     }
     break;
 

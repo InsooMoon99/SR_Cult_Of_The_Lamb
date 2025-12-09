@@ -50,10 +50,6 @@ public:
     // Sphere vs Sphere
     static bool CheckCollisionSphere2Sphere(CSphereCollider* s1, CSphereCollider* s2);
 
-    void         Set_Offset(const _vec3& offset) { m_Offset = offset; }
-    const _vec3& Get_Offset() { return m_Offset; }
-
-
 protected:
     void Free() override;
 
@@ -64,8 +60,6 @@ protected:
     _bool         m_ShowDebug;        // 디버그 렌더링 여부
     _bool         m_IsColliderActive; // 충돌처리용
     CGameObject*  m_Instigator;
-
-    _vec3    m_Offset = { 0.f, 0.f, 0.f };
 
 protected:
     // 현재 프레임 기준으로 겹쳐있는(충돌중인) 다른 Collider들

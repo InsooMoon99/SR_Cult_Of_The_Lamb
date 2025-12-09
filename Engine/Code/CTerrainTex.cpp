@@ -181,11 +181,8 @@ void CTerrainTex::ApplyTileSetting(const vector<_int>& tileIndices, _int atlasCo
             float v1 = v0 + dv;
 
             // 경계에서 한 픽셀 안쪽으로
-            const float insetPixels = 2.0f;  
-            const float insetU = insetPixels / texWidth;
-            const float insetV = insetPixels / texHeight;
-            u0 += insetU;  u1 -= insetU;
-            v0 += insetV;  v1 -= insetV;
+            u0 += epsU * 1.1f;  u1 -= epsU * 1.1f;
+            v0 += epsV * 1.1f;  v1 -= epsV * 1.1f;
 
             vertex[baseIndex + 0].texUV = { u0, v1 }; // 좌상
             vertex[baseIndex + 1].texUV = { u1, v1 }; // 우상

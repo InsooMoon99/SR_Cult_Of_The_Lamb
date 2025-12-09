@@ -20,7 +20,7 @@ class CEyeball_Attack : public CMonsterState
     {
         DISPERSION, //분산
         CIRCLE,
-        BURST,
+        BURTST,
 
         ATTACK_TYPE_END
     };
@@ -44,10 +44,6 @@ public:
 public:
     void Spawn_BulletPattern();
 
-    void Bullet_Dispresion();
-    void Bullet_Circle();
-    void Bullet_Burst();
-
 public:
     static CEyeball_Attack* Create(CMonsterBase* owner);
 
@@ -67,8 +63,6 @@ private:
 
     _int                m_AttackCount;
     _bool               m_IsFinished;
-
-    Attack_Type         m_Bullet_AttackType;
 
 };
 

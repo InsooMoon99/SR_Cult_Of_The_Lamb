@@ -81,6 +81,8 @@ void CFloaterMonster::Initialize_GameObject()
         m_HpBar->Set_YOffset(1.7f);
 
         SpawnUIOnLayer(m_HpBar, OBJTYPE::UI);
+
+        m_HpBar->Initialize_GameObject();
     }
 }
 

@@ -8,7 +8,6 @@
 #include "CFireball.h"
 #include "CPlayerInput.h"
 #include "CUICharging.h"
-#include "CMainEditorMgr.h"
 
 CPlayerSkill::CPlayerSkill(DEVICE graphicDev) : CComponent(graphicDev),
                                                 m_OwnerStateCom(nullptr),
@@ -160,9 +159,6 @@ ACTORSTATE CPlayerSkill::Start_Charging()
 
 	if (!m_IsSkillUnlocked)
 		return ACTORSTATE::STATE_END;
-
-    // 슬로우모션 시작
-    CMainEditorMgr::GetInstance()->Set_TimeScale(0.5f);
 
 	CCombatStat* playerCombatStat = dynamic_cast<CCombatStat*>(m_Owner->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
 

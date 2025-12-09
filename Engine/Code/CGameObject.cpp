@@ -38,7 +38,6 @@ HRESULT CGameObject::Ready_GameObject()
 
 void CGameObject::Initialize_GameObject()
 {
-
     for (auto& components : m_Components)
     {
         for (auto& component : components)
