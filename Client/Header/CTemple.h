@@ -1,10 +1,10 @@
 ﻿#pragma once
 #include "CBuildingBase.h"
 
-// 신전 건물 오브젝트
+// 사원 건물 오브젝트
 
-/// @brief 신전 건물 오브젝트
-/// @details 텍스처 0번은 신전 앞면, 1번은 신전 지붕
+/// @brief 사원 건물 오브젝트
+/// @details 텍스처 0번은 사원 앞면, 1번은 사원 지붕
 class CTemple : public CBuildingBase
 {
 private:

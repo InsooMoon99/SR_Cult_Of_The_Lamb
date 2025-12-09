@@ -35,7 +35,9 @@ void CTemple::Initialize_GameObject()
     CBuildingBase::Initialize_GameObject();
 
     m_TransformCom->Set_Scale(4.f, 5.f / 1.5f, 1.f);
-    m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(45.f));
+    m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(40.f));
+
+    m_BoxCollCom->Set_RawSize(_vec3(1.f, 1.5f, 1.5f));
 }
 
 _int CTemple::Update_GameObject(const _float& timeDelta)
@@ -61,13 +63,18 @@ void CTemple::Render_GameObject()
 
     // 다른 위치에 지붕 텍스처 렌더링
     _matrix matWorld = m_TransformCom->Get_World();
-    _matrix matOffset;
-    D3DXMatrixTranslation(&matOffset, 0.f, 0.f, 0.03f);
+
+    _matrix matOffset, matScale, matTrans;
+
+    D3DXMatrixScaling(&matScale, 1.f, 1.f, 1.f);
+
+    D3DXMatrixTranslation(&matTrans, 0.f, 0.f, 0.35f);
+
+    matOffset = matScale * matTrans;
 
     matWorld = matOffset * matWorld;
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &matWorld);
-
     m_TextureCom->Set_Texture(1);
 
     if (!m_IsPreview)

@@ -12,19 +12,19 @@
 #include "CTransform.h"
 
 CCharacterBase::CCharacterBase(DEVICE graphicDev)
-    : CRenderObject(graphicDev)
-    , m_AnimatorCom(nullptr)
-    , m_StateCom(nullptr)
-    , m_CombatStatCom(nullptr)
-    , m_BoxColCom(nullptr)
+    : CRenderObject(graphicDev),
+      m_AnimatorCom(nullptr),
+      m_StateCom(nullptr),
+      m_CombatStatCom(nullptr),
+      m_BoxColCom(nullptr)
 { }
 
 CCharacterBase::CCharacterBase(const CCharacterBase& rhs)
-    : CRenderObject(rhs)
-    , m_AnimatorCom(nullptr)
-    , m_StateCom(nullptr)
-    , m_CombatStatCom(nullptr)
-    , m_BoxColCom(nullptr)
+    : CRenderObject(rhs),
+      m_AnimatorCom(nullptr),
+      m_StateCom(nullptr),
+      m_CombatStatCom(nullptr),
+      m_BoxColCom(nullptr)
 { }
 
 CCharacterBase::~CCharacterBase()
@@ -50,7 +50,6 @@ HRESULT CCharacterBase::Ready_GameObject()
 void CCharacterBase::Initialize_GameObject()
 {
     CRenderObject::Initialize_GameObject();
-
 }
 
 _int CCharacterBase::Update_GameObject(const _float& timeDelta)
@@ -77,8 +76,8 @@ void CCharacterBase::Render_GameObject()
 
     if (m_TextureCom && m_AnimatorCom)
     {
-        const wstring& key = m_AnimatorCom->Get_CurKey();
-        _int frame = m_AnimatorCom->Get_CurFrame();
+        const wstring& key   = m_AnimatorCom->Get_CurKey();
+        _int           frame = m_AnimatorCom->Get_CurFrame();
 
         m_TextureCom->Set_Texture(key, frame);
     }
@@ -134,6 +133,4 @@ HRESULT CCharacterBase::Add_Component()
 void CCharacterBase::Free()
 {
     CRenderObject::Free();
-
-
 }

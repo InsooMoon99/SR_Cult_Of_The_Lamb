@@ -198,6 +198,9 @@
     <ClInclude Include="..\Header\CCamSetupBuilder.h" />
     <ClInclude Include="..\Header\CBoss_Slave_Test.h" />
     <ClInclude Include="..\Header\CCharacterBase.h" />
+    <ClInclude Include="..\Header\CConstructCircle.h" />
+    <ClInclude Include="..\Header\CKitchen.h" />
+    <ClInclude Include="..\Header\CPlayerConstruction.h" />
     <ClInclude Include="..\Header\CPlayerGathering.h" />
     <ClInclude Include="..\Header\CConstructionMgr.h" />
     <ClInclude Include="..\Header\CConstructionPlacer.h" />
@@ -258,6 +261,7 @@
     <ClInclude Include="..\Header\CPlayerSkill.h" />
     <ClInclude Include="..\Header\CProjectile.h" />
     <ClInclude Include="..\Header\CRandomMgr.h" />
+    <ClInclude Include="..\Header\CRecipeDB.h" />
     <ClInclude Include="..\Header\CResourceMgr.h" />
     <ClInclude Include="..\Header\CRock.h" />
     <ClInclude Include="..\Header\CSceneMgr.h" />
@@ -273,6 +277,8 @@
     <ClInclude Include="..\Header\CTrailEff.h" />
     <ClInclude Include="..\Header\CTree.h" />
     <ClInclude Include="..\Header\CTrigger_Dungeon.h" />
+    <ClInclude Include="..\Header\CUIBuildCell.h" />
+    <ClInclude Include="..\Header\CUIBuildMenu.h" />
     <ClInclude Include="..\Header\CUICharging.h" />
     <ClInclude Include="..\Header\CUIItemGet.h" />
     <ClInclude Include="..\Header\CUIItemGetManager.h" />
@@ -301,10 +307,12 @@
     <ClInclude Include="..\Header\CWallRenderer.h" />
     <ClInclude Include="..\Header\CWeaponEquip.h" />
     <ClInclude Include="..\Header\CUIWeaponExplain.h" />
+    <ClInclude Include="..\Header\CWorkBench.h" />
     <ClInclude Include="..\Header\CWorldInteractive.h" />
     <ClInclude Include="..\Header\ItemData.h" />
     <ClInclude Include="..\Header\ItemInstance.h" />
     <ClInclude Include="..\Header\CUIMp.h" />
+    <ClInclude Include="..\Header\RecipeData.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Client_Enum.h" />
     <ClInclude Include="framework.h" />
@@ -341,6 +349,9 @@
     <ClCompile Include="..\Code\CBoss_Slave_Test.cpp" />
     <ClCompile Include="..\Code\CCharacterBase.cpp" />
     <ClCompile Include="..\Code\CConstructionPlacer.cpp" />
+    <ClCompile Include="..\Code\CConstructCircle.cpp" />
+    <ClCompile Include="..\Code\CKitchen.cpp" />
+    <ClCompile Include="..\Code\CPlayerConstruction.cpp" />
     <ClCompile Include="..\Code\CPlayerGathering.cpp" />
     <ClCompile Include="..\Code\CConstructionMgr.cpp" />
     <ClCompile Include="..\Code\CDroppedItem.cpp" />
@@ -412,6 +423,8 @@
     <ClCompile Include="..\Code\CTrailEff.cpp" />
     <ClCompile Include="..\Code\CTree.cpp" />
     <ClCompile Include="..\Code\CTrigger_Dungeon.cpp" />
+    <ClCompile Include="..\Code\CUIBuildCell.cpp" />
+    <ClCompile Include="..\Code\CUIBuildMenu.cpp" />
     <ClCompile Include="..\Code\CUICharging.cpp" />
     <ClCompile Include="..\Code\CUIItemGet.cpp" />
     <ClCompile Include="..\Code\CUIItemGetManager.cpp" />
@@ -441,7 +454,9 @@
     <ClCompile Include="..\Code\CWallRenderer.cpp" />
     <ClCompile Include="..\Code\CWeaponEquip.cpp" />
     <ClCompile Include="..\Code\CUIWeaponExplain.cpp" />
+    <ClCompile Include="..\Code\CWorkBench.cpp" />
     <ClCompile Include="..\Code\CWorldInteractive.cpp" />
+    <ClCompile Include="..\Code\CRecipeDB.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

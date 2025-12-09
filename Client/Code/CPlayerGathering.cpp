@@ -1,83 +1,92 @@
 ﻿#include "pch.h"
 #include "CPlayerGathering.h"
-#include "CCollider.h"
-#include "CWorldInteractive.h"
-#include "CTransform.h"
-#include "CState.h"
-#include "CDInputMgr.h"
-#include "CCombatStat.h"
+
 #include "CAnimator.h"
+#include "CCollider.h"
+#include "CCombatStat.h"
+#include "CDInputMgr.h"
+#include "CSceneMgr.h"
+#include "CState.h"
+#include "CTransform.h"
+#include "CWorldInteractive.h"
 
-
-CPlayerGathering::CPlayerGathering(DEVICE graphicDev) : CComponent(graphicDev)
+CPlayerGathering::CPlayerGathering(DEVICE graphicDev)
+    : CComponent(graphicDev),
+      m_OwnerAnimationCom(nullptr)
 {
     ZeroMemory(&h, sizeof(h));
 }
 
-CPlayerGathering::CPlayerGathering(const CPlayerGathering& rhs) : CComponent(rhs)
-{
-}
+CPlayerGathering::CPlayerGathering(const CPlayerGathering& rhs)
+    : CComponent(rhs),
+      m_OwnerAnimationCom(nullptr)
+{ }
 
 CPlayerGathering::~CPlayerGathering()
-{
-}
+{ }
 
 HRESULT CPlayerGathering::Ready_PlayerGathering()
 {
-
     return S_OK;
 }
 
 void CPlayerGathering::Initialize_Component()
 {
     CComponent::Initialize_Component();
-    m_OwnerStateCom = dynamic_cast<CState*>(m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
+    m_OwnerStateCom     = dynamic_cast<CState*>(m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
     m_OwnerAnimationCom = dynamic_cast<CAnimator*>(m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
-    h.attacker = m_Owner;
-    h.damage = 1;
-    h.dir = { 0,0,0 };
-    h.hitter = nullptr;
-    h.knockback = 0;;
-    h.knockbackTimer = 0;
+    h.attacker          = m_Owner;
+    h.damage            = 1;
+    h.dir               = { 0, 0, 0 };
+    h.hitter            = nullptr;
+    h.knockback         = 0;;
+    h.knockbackTimer    = 0;
 }
 
 _int CPlayerGathering::Update_Component(const _float& timeDelta)
 {
     _int exit = CComponent::Update_Component(timeDelta);
 
-    if (m_Target==nullptr||CDInputMgr::GetInstance()->MouseUp(DIM_LB)/*&& m_Target */ || m_Target->Get_Hovering() == false)
+    if (CSceneMgr::GetInstance()->Is_Changing())
     {
-           m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
-           m_AttackTimer = 0;
-           return exit;
-
+        m_Target = nullptr;
+        return exit;
     }
 
-       //애니메이션 방향 결정
-       _vec3  vTargetDir = m_Target->Get_Transform()->Get_Pos();
+    if (m_Target == nullptr ||
+        CDInputMgr::GetInstance()->MouseUp(DIM_LB) ||
+        CDInputMgr::GetInstance()->KeyUp(DIK_E)/*&& m_Target */ ||
+        m_Target->Get_Hovering() == false)
+    {
+        m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+        m_AttackTimer = 0;
+        return exit;
+    }
 
-       _vec3 dir = vTargetDir - m_Owner->Get_Transform()->Get_Pos();
+    //애니메이션 방향 결정
+    _vec3 vTargetDir = m_Target->Get_Transform()->Get_Pos();
 
-       D3DXVec3Normalize(&dir, &dir);
+    _vec3 dir = vTargetDir - m_Owner->Get_Transform()->Get_Pos();
 
-       if (dir.x <= 0.f)
-           m_OwnerStateCom->Change_Dir(ACTORDIR::LEFT);
-       else
-           m_OwnerStateCom->Change_Dir(ACTORDIR::RIGHT);
+    D3DXVec3Normalize(&dir, &dir);
 
-       m_AttackTimer += timeDelta;
+    if (dir.x <= 0.f)
+        m_OwnerStateCom->Change_Dir(ACTORDIR::LEFT);
+    else
+        m_OwnerStateCom->Change_Dir(ACTORDIR::RIGHT);
 
+    m_AttackTimer += timeDelta;
 
-   switch(m_Target->GetInteractiveType())
+    switch (m_Target->GetInteractiveType())
     {
     case CWorldInteractive::TYPE::BERRY:
-    
+
         if (m_AttackTimer >= 0.5)
         {
             // 공격 1 씩 주기
             CCombatStat* combat = dynamic_cast<CCombatStat*>(m_Target->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
-            h.dir = dir;
-            h.hitter = m_Target;
+            h.dir               = dir;
+            h.hitter            = m_Target;
 
             combat->Apply_Damage(h);
 
@@ -89,12 +98,12 @@ _int CPlayerGathering::Update_Component(const _float& timeDelta)
 
         if (m_OwnerAnimationCom->Get_CurFrame() == 0)
             m_AttackFlag = false;
-        if (m_OwnerAnimationCom->Get_CurFrame()==25 && m_AttackFlag == false)
+        if (m_OwnerAnimationCom->Get_CurFrame() == 25 && m_AttackFlag == false)
         {
             // 공격 1 씩 주기
             CCombatStat* combat = dynamic_cast<CCombatStat*>(m_Target->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
-            h.dir = dir;
-            h.hitter = m_Target;
+            h.dir               = dir;
+            h.hitter            = m_Target;
 
             combat->Apply_Damage(h);
             m_AttackFlag = true;
@@ -104,19 +113,18 @@ _int CPlayerGathering::Update_Component(const _float& timeDelta)
     case CWorldInteractive::TYPE::ROCK:
         if (m_OwnerAnimationCom->Get_CurFrame() == 0)
             m_AttackFlag = false;
- 
+
         if (m_OwnerAnimationCom->Get_CurFrame() == 28 && m_AttackFlag == false)
         {
             // 공격 1 씩 주기
             CCombatStat* combat = dynamic_cast<CCombatStat*>(m_Target->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
-            h.dir = dir;
-            h.hitter = m_Target;
+            h.dir               = dir;
+            h.hitter            = m_Target;
 
             combat->Apply_Damage(h);
 
             m_AttackTimer = 0;
-            m_AttackFlag = true;
-          
+            m_AttackFlag  = true;
         }
         break;
     }
@@ -127,12 +135,11 @@ _int CPlayerGathering::Update_Component(const _float& timeDelta)
 void CPlayerGathering::LateUpdate_Component()
 {
     CComponent::LateUpdate_Component();
-
 }
 
 void CPlayerGathering::OnBeginOverlap(CCollider* self, CCollider* other)
 {
-    CWorldInteractive* interact = dynamic_cast<CWorldInteractive*>(other->Get_Owner());
+    auto interact = dynamic_cast<CWorldInteractive*>(other->Get_Owner());
     if (interact)
     {
         // 레퍼런스 올리고 내려야 할듯
@@ -143,10 +150,7 @@ void CPlayerGathering::OnBeginOverlap(CCollider* self, CCollider* other)
 void CPlayerGathering::OnEndOverlap(CCollider* self, CCollider* other)
 {
     if (other->Get_Owner() == m_Target)
-    {
-        
         m_Target = nullptr;
-}
 }
 
 CPlayerGathering* CPlayerGathering::Create(DEVICE graphicDev)
@@ -171,5 +175,4 @@ CComponent* CPlayerGathering::Clone()
 void CPlayerGathering::Free()
 {
     CComponent::Free();
-
 }

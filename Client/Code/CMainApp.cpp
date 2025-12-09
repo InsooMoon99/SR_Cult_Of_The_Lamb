@@ -15,6 +15,7 @@
 #include "CManagement.h"
 #include "CProtoMgr.h"
 #include "CRandomMgr.h"
+#include "CRecipeDB.h"
 #include "CRenderer.h"
 #include "CResourceMgr.h"
 #include "CSceneMgr.h"
@@ -39,6 +40,9 @@ HRESULT CMainApp::Ready_MainApp()
 #pragma region 데이터 파싱
 
     if (FAILED(CItemDB::GetInstance()->LoadFromJson("ItemData.txt")))
+        return E_FAIL;
+
+    if (FAILED(CRecipeDB::GetInstance()->LoadFromJson("RecipeData.txt")))
         return E_FAIL;
 
 #pragma endregion
@@ -214,6 +218,12 @@ CMainApp* CMainApp::Create()
 void CMainApp::Free()
 {
     
+    { // 순서 중요
+        CSceneMgr::DestroyInstance();
+        CManagement::DestroyInstance();
+        CRenderer::DestroyInstance();
+    }
+
     CConstructionMgr::DestroyInstance();
     CDropSystem::DestroyInstance();
     CSoundMgr::DestroyInstance();
@@ -226,12 +236,6 @@ void CMainApp::Free()
     CMainEditorMgr::DestroyInstance();
     CImGuiManager::DestroyInstance();
 
-    { // 순서 중요
-        CSceneMgr::DestroyInstance();
-        CManagement::DestroyInstance();
-        CRenderer::DestroyInstance();
-    }
-
     CProtoMgr::DestroyInstance();
     
     CResourceMgr::DestroyInstance();
@@ -243,6 +247,7 @@ void CMainApp::Free()
     CFontMgr::DestroyInstance();
     
     CGraphicDev::DestroyInstance();
+
     Safe_Release(m_DeviceClass);
     Safe_Release(m_GraphicDev);
 

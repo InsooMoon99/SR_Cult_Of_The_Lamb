@@ -10,27 +10,20 @@
 #include "CAttackBuilder.h"
 #include "CWall.h"
 
-
 CFireball::CFireball(DEVICE graphicDev)
     : CAttackSphere(graphicDev),
-    m_ProjectileCom(nullptr),
-    m_Owner(nullptr)
-{
-
-}
+      m_ProjectileCom(nullptr),
+      m_Owner(nullptr)
+{ }
 
 CFireball::CFireball(const CFireball& rhs)
     : CAttackSphere(rhs),
-    m_ProjectileCom(nullptr),   
-    m_Owner(nullptr)
-{
-
-}
+      m_ProjectileCom(nullptr),
+      m_Owner(nullptr)
+{ }
 
 CFireball::~CFireball()
-{
-
-}
+{ }
 
 HRESULT CFireball::Ready_GameObject()
 {
@@ -48,25 +41,20 @@ HRESULT CFireball::Ready_GameObject()
 void CFireball::Initialize_GameObject()
 {
     CAttackSphere::Initialize_GameObject();
-
-
 }
 
 _int CFireball::Update_GameObject(const _float& timeDelta)
 {
-   _int exit = CAttackSphere::Update_GameObject(timeDelta);
+    _int exit = CAttackSphere::Update_GameObject(timeDelta);
 
+    if (m_ProjectileCom)
+    {
+        m_ProjectileCom->Update_Component(timeDelta);
 
-   if (m_ProjectileCom)
-   {
-       m_ProjectileCom->Update_Component(timeDelta);
-
-       CTransform* projectileTransform = m_ProjectileCom->Get_Transform();
-       if (projectileTransform && m_TransformCom)
-       {
-           m_TransformCom->Set_Pos(projectileTransform->Get_Pos());
-       }
-   }
+        CTransform* projectileTransform = m_ProjectileCom->Get_Transform();
+        if (projectileTransform && m_TransformCom)
+            m_TransformCom->Set_Pos(projectileTransform->Get_Pos());
+    }
 
     return exit;
 }
@@ -88,7 +76,6 @@ CFireball* CFireball::Create(DEVICE graphicDev)
 void CFireball::LateUpdate_GameObject(const _float& timeDelta)
 {
     CAttackSphere::LateUpdate_GameObject(timeDelta);
-
 }
 
 void CFireball::Render_GameObject()
@@ -107,7 +94,6 @@ void CFireball::Render_GameObject()
     m_GraphicDev->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
     m_GraphicDev->SetRenderState(D3DRS_ALPHAREF, 0);
 
-
     m_TextureCom->Set_Texture(0);
     m_BufferCom->Render_Buffer();
 
@@ -125,11 +111,8 @@ void CFireball::OnBeginOverlap(CCollider* self, CCollider* other)
         auto wall = dynamic_cast<CWall*>(other->Get_Owner());
 
         if (wall)
-        {
             Mark_As_PendingKill();
-        }
     }
-
 }
 
 void CFireball::OnStayOverlap(CCollider* self, CCollider* other)
@@ -146,7 +129,6 @@ void CFireball::Render_Editor()
 {
     CAttackSphere::Render_Editor();
 }
-
 
 HRESULT CFireball::Add_Component()
 {
@@ -178,11 +160,11 @@ void CFireball::Free()
     Safe_Release(m_BufferCom);
     Safe_Release(m_TextureCom);
 
-  //  if (m_CurrentAttackObj)
-  //  {
-  //      m_CurrentAttackObj->Set_OnDestroyCallback(nullptr);
-  //      m_CurrentAttackObj = nullptr;
-  //  }
+    //  if (m_CurrentAttackObj)
+    //  {
+    //      m_CurrentAttackObj->Set_OnDestroyCallback(nullptr);
+    //      m_CurrentAttackObj = nullptr;
+    //  }
 
     CAttackSphere::Free();
 }

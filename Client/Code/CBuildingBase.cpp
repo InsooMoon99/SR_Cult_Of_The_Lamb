@@ -57,9 +57,7 @@ void CBuildingBase::Render_GameObject()
             m_BufferCom->Render_Buffer();
     }
     else
-    {
         CRenderObject::Render_GameObject();
-    }
 
     if (m_BoxCollCom)
         m_BoxCollCom->Render();

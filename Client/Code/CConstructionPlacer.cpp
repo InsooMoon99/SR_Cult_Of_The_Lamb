@@ -2,6 +2,7 @@
 #include "CConstructionPlacer.h"
 
 #include "CBuildingBase.h"
+#include "CConstructCircle.h"
 #include "CGameObject.h"
 #include "CManagement.h"
 #include "CPickingHelper.h"
@@ -27,6 +28,7 @@ CConstructionPlacer::~CConstructionPlacer()
 void CConstructionPlacer::Update_Placer(const _float& fTimeDelta)
 {
     NULL_CHECK(m_PreviewObj);
+    NULL_CHECK(m_PreviewCircle);
 
     // Picking Logic Test
     if (Engine::PickPlaneY(m_GraphicDev, g_hWnd, 0.f, m_CurPickPos))
@@ -44,6 +46,12 @@ void CConstructionPlacer::Update_Placer(const _float& fTimeDelta)
 
         if (previewTransform)
             previewTransform->Set_Pos(pickPos);
+
+        auto circleTransform = dynamic_cast<CTransform*>(
+            m_PreviewCircle->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+        if (circleTransform)
+            circleTransform->Set_Pos(m_CurPickPos + _vec3(0.f, 0.2f, -0.5f));
     }
     else
     {
@@ -52,93 +60,127 @@ void CConstructionPlacer::Update_Placer(const _float& fTimeDelta)
     }
 
     m_PreviewObj->Update_GameObject(fTimeDelta);
+    m_PreviewCircle->Update_GameObject(fTimeDelta);
 }
 
 void CConstructionPlacer::Render_Preview()
 {
     NULL_CHECK(m_PreviewObj);
+    NULL_CHECK(m_PreviewCircle);
+
 #pragma region --- RenderState 변경 ---
-    // 1. Z-Write 끄기
     m_GraphicDev->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
-    // 2. [수정] Alpha Test를 켜서 텍스처의 검은색(0,0,0)을 날려버릴지 결정  
-    // 만약 텍스처가 '검은색=투명' 규칙을 쓴다면 아래 설정이 유효할 수 있으나, 
-    // 근본적으로는 텍스처에 Alpha Channel이 있어야 깔끔하게 나옵니다.
-    // 우선은 기존처럼 FALSE로 두되, 텍스처 문제 확인이 필요합니다.
-    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE); 
-    // 3. Alpha Blending 켜기
+    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+
+    // Alpha Blending 켜기
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
     m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
     m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-    // 4. [색상 혼합] Texture * TFactor (색상 틴트)
-    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
-    // 5. [알파 혼합] Texture * TFactor (투명도)
+
+    // [알파 혼합] Texture * TFactor (투명도)
     m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
     m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
     m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR);
-    // 6. TFactor 설정 (Green/Red 반투명)
-    //DWORD previewColor = m_CanPlace ? D3DCOLOR_ARGB(128, 64, 255, 64) : D3DCOLOR_ARGB(128, 255, 64, 64);
-
     m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(128, 255, 255, 255));
 #pragma endregion
 
     // 프리뷰 오브젝트 렌더
     m_PreviewObj->Render_GameObject();
 
+#pragma region 프리뷰용 원은 상황에 따라 색상 변경
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
+
+    // TFactor 설정 (Green/Red)
+    DWORD previewColor = m_CanPlace
+                         ? D3DCOLOR_ARGB(255, 64, 255, 64)
+                         : D3DCOLOR_ARGB(255, 255, 64, 64);
+    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, previewColor);
+#pragma endregion
+
+    // 프리뷰 범위 표시용 원 렌더
+    m_PreviewCircle->Render_GameObject();
+
 #pragma region --- 설정 복구 ---
     // 복구 순서 중요: 변경한 것들은 모두 원상복구 해야 함
     m_GraphicDev->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
     m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE); // 보통 켜둠
-    
+
     // Texture Stage 복구 (기본값: Modulate / Texture / Current)
-    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE); 
-    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_CURRENT); // TFACTOR -> CURRENT로 복구
-    
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1); // 보통 Alpha는 Texture만 봄
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_CURRENT); // TFACTOR -> CURRENT로 복구
+
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
     m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
     m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(255, 255, 255, 255));
 #pragma endregion
 }
 
-void CConstructionPlacer::Set_PreviewObject(BUILDING_TYPE type)
+void CConstructionPlacer::Set_Preview(BUILDING_TYPE type)
 {
     if (m_CurBuildingType == type && m_PreviewObj != nullptr)
         return;
 
+    m_CanPlace = false;
+
     // 기존 미리보기 제거
     Safe_Release(m_PreviewObj);
+    m_PreviewObj = nullptr;
+
+    Safe_Release(m_PreviewCircle);
+    m_PreviewCircle = nullptr;
+
     m_CurBuildingType = type;
 
     switch (m_CurBuildingType)
     {
     case BUILDING_TYPE::TEMPLE:
-        m_PreviewOffsetY = 3.f;
-        m_PreviewObj = CTemple::Create(m_GraphicDev);
-        break;
+    {
+        NULL_CHECK(m_PreviewObj = CTemple::Create(m_GraphicDev));
+
+        // 프리뷰 원 생성
+        NULL_CHECK(m_PreviewCircle =
+            CConstructCircle::Create(m_GraphicDev, _vec3(4.f, 2.8f, 1.f)));
+
+        m_PreviewOffsetY = 2.0f;
+    }
+    break;
 
     case BUILDING_TYPE::KITCHEN:
+    {
+        //m_PreviewObj = CKitchen::Create(m_GraphicDev);
+
+        // 프리뷰 원 생성
+        NULL_CHECK(m_PreviewCircle =
+            CConstructCircle::Create(m_GraphicDev, _vec3(3.5f, 2.5f, 1.f)));
+
         m_PreviewOffsetY = 1.f;
-        // m_PreviewObj = CKitchen::Create(m_GraphicDev);
-        break;
+    }
+    break;
 
     default: break;
     }
 
-    if (m_PreviewObj)
-    {
-        dynamic_cast<CBuildingBase*>(m_PreviewObj)->Set_Preview(true);
-        m_PreviewObj->Initialize_GameObject();
+    dynamic_cast<CBuildingBase*>(m_PreviewObj)->Set_Preview(true);
+    dynamic_cast<CBuildingBase*>(m_PreviewCircle)->Set_Preview(true);
+    m_PreviewObj->Initialize_GameObject();
+    m_PreviewCircle->Initialize_GameObject();
 
-        // 초기 위치 설정
-        CTransform* pTransform = dynamic_cast<CTransform*>(m_PreviewObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-        if (pTransform)
-            pTransform->Set_Pos(m_CurPickPos);
+    // 초기 위치 설정
+    auto previewTransform = dynamic_cast<CTransform*>(
+        m_PreviewObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
 
-        //TODO 건축 범위를 나타내는 원을 만들기
-    }
+    if (previewTransform)
+        previewTransform->Set_Pos(m_CurPickPos);
+
+    auto circleTransform = dynamic_cast<CTransform*>(
+        m_PreviewCircle->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+    if (circleTransform)
+        circleTransform->Set_Pos(m_CurPickPos);
 }
 
 _bool CConstructionPlacer::Try_PlaceObject()
@@ -146,46 +188,48 @@ _bool CConstructionPlacer::Try_PlaceObject()
     if (!m_CanPlace)
         return false;
 
-    // 실제 오브젝트 생성
-    CGameObject* pNewObj = nullptr;
+    _vec3 scale = { 1.f, 1.f, 1.f };
 
     switch (m_CurBuildingType)
     {
     case BUILDING_TYPE::TEMPLE:
-        pNewObj = CTemple::Create(m_GraphicDev);
+        scale = _vec3(4.f, 2.8f, 1.f);
         break;
+
     case BUILDING_TYPE::KITCHEN:
-        // pNewObj = CKitchen::Create(m_GraphicDev);
+        scale = _vec3(3.5f, 2.5f, 1.f);
         break;
 
     default: break;
     }
 
-    if (nullptr == pNewObj)
-        return false;
+    CConstructCircle* site = CConstructCircle::Create(m_GraphicDev, scale);
+    NULL_CHECK_RETURN(site, false);
 
-    // 생성 후 Initialize 호출
-    pNewObj->Initialize_GameObject();
+    site->Setup_Construction(m_CurBuildingType);
+    site->Initialize_GameObject();
 
     // 위치 설정
-    CTransform* pTransform = dynamic_cast<CTransform*>(pNewObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-    if (pTransform)
+    auto siteTransform = dynamic_cast<CTransform*>(
+        site->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+    if (siteTransform)
     {
-        _vec3 placePos = m_CurPickPos;
-        placePos.y += m_PreviewOffsetY; // 오프셋 적용
-        pTransform->Set_Pos(placePos);
+        // Preview와 동일한 위치 오프셋 적용
+        _vec3 placePos = m_CurPickPos + _vec3(0.f, 0.2f, -0.5f);
+        siteTransform->Set_Pos(placePos);
     }
 
     // 씬에 추가
-    CScene* pScene = CManagement::GetInstance()->Get_Scene();
-    if (pScene)
+    CScene* curScene = CManagement::GetInstance()->Get_Scene();
+    if (curScene)
     {
-        // 건물은 ENVIRONMENT 레이어에 추가 (또는 기획에 따라 변경)
-        pScene->AddObjectOnLayer(LAYERTYPE::ENVIRONMENT, pNewObj, OBJTYPE::TEMPLE);
+        // Construction Site는 Environment 레이어
+        curScene->AddObjectOnLayer(LAYERTYPE::ENVIRONMENT, site, OBJTYPE::CONSTRUCTION_SITE);
     }
     else
     {
-        Safe_Release(pNewObj);
+        Safe_Release(site);
         return false;
     }
 
@@ -196,8 +240,29 @@ _bool CConstructionPlacer::Try_PlaceObject()
 
 _bool CConstructionPlacer::Check_ValidPosition(_vec3* pOutPos)
 {
-    // TODO: 마우스 피킹 구현, 충돌 검사 등
-    return true;
+    if (pOutPos->x >= 4.5f && pOutPos->x <= 6.f &&
+        pOutPos->z >= 23.f && pOutPos->z <= 27.f)
+        return true;
+
+    if (pOutPos->x >= 11.5f && pOutPos->x <= 13.f &&
+        pOutPos->z >= 30.f && pOutPos->z <= 32.5f)
+        return true;
+
+    if (pOutPos->x >= 23.f && pOutPos->x <= 25.5f &&
+        pOutPos->z >= 30.f && pOutPos->z <= 32.5f)
+        return true;
+
+    return false;
+}
+
+void CConstructionPlacer::End_Preview()
+{
+    // 기존 미리보기 제거
+    Safe_Release(m_PreviewObj);
+    m_PreviewObj = nullptr;
+
+    Safe_Release(m_PreviewCircle);
+    m_PreviewCircle = nullptr;
 }
 
 CConstructionPlacer* CConstructionPlacer::Create(DEVICE graphicDev)
@@ -213,6 +278,7 @@ CConstructionPlacer* CConstructionPlacer::Create(DEVICE graphicDev)
 
 void CConstructionPlacer::Free()
 {
-    Safe_Release(m_PreviewObj);
+    End_Preview();
+
     Safe_Release(m_GraphicDev);
 }

@@ -54,7 +54,6 @@ void CTerrain::Initialize_GameObject()
 {
     CRenderObject::Initialize_GameObject();
 
-
 }
 
 _int CTerrain::Update_GameObject(const _float& timeDelta)

@@ -13,9 +13,9 @@ int CBossBullet::imsdfjlkdsf = 0;
 
 CBossBullet::CBossBullet(DEVICE graphicDev, CGameObject* owner, CGameObject* Target, PROJ_TYPE type)
     : CGameObject(graphicDev),
-    m_pOwner(owner),
-    m_pTarget(Target),
-    m_type(type)
+      m_pOwner(owner),
+      m_pTarget(Target),
+      m_type(type)
 {
     m_pOwner->AddRef();
 
@@ -24,13 +24,10 @@ CBossBullet::CBossBullet(DEVICE graphicDev, CGameObject* owner, CGameObject* Tar
 
 CBossBullet::CBossBullet(const CBossBullet& rhs)
     : CGameObject(rhs)
-{
-}
+{}
 
 CBossBullet::~CBossBullet()
-{
-
-}
+{}
 
 HRESULT CBossBullet::Ready_GameObject()
 {
@@ -98,7 +95,7 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
         //    m_ATKBoxTransformCom = nullptr;
         //    this->Mark_As_PendingKill();});
 
-        ATBox->Set_OnDestroyCallback([bullet = this]() {bullet->Mark_As_PendingKill(); });
+        ATBox->Set_OnDestroyCallback([bullet = this]() { bullet->Mark_As_PendingKill(); });
 
         m_flag = true;
     }
@@ -128,18 +125,12 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
         }
     }
 
-
-
-
     return exit;
 }
 
 void CBossBullet::LateUpdate_GameObject(const _float& timeDelta)
 {
     CGameObject::LateUpdate_GameObject(timeDelta);
-
-
-
 }
 
 void CBossBullet::Render_GameObject()
@@ -232,8 +223,6 @@ void CBossBullet::OnBeginOverlap(CCollider* self, CCollider* other)
     //ATBox->Mark_As_PendingKill();
 
     //Mark_As_PendingKill();
-
-
 }
 
 void CBossBullet::OnEndOverlap(CCollider* self, CCollider* other)
@@ -242,8 +231,7 @@ void CBossBullet::OnEndOverlap(CCollider* self, CCollider* other)
 }
 
 void CBossBullet::Animation_Setting()
-{
-}
+{ }
 
 HRESULT CBossBullet::Add_Component()
 {
@@ -280,7 +268,6 @@ HRESULT CBossBullet::Add_Component()
     return S_OK;
 }
 
-
 CBossBullet* CBossBullet::Create(DEVICE graphicDev, CGameObject* owner, CGameObject* Target, PROJ_TYPE type)
 {
     auto BossBullet = new CBossBullet(graphicDev, owner, Target, type);
@@ -299,7 +286,6 @@ void CBossBullet::Free()
 {
     Safe_Release(m_pOwner);
     Safe_Release(m_pTarget);
-
 
     CGameObject::Free();
 }

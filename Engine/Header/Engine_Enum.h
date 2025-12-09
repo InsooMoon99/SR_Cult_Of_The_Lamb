@@ -73,7 +73,7 @@ enum class COLLISION_LAYERTYPE
     ATTACK,
     TRIGGER,
     INTERACTIVEOBJ,
-    BUILDING,       // 건물
+    BUILDING,           // 건물
 
     COL_LAYER_END
 };
@@ -92,7 +92,7 @@ enum class OBJTYPE
     BOSS1,
     BOSS2,
     INTERACTIVE,
-    TEMPLE,             // 신전
+    TEMPLE,             // 사원
     KITCHEN,            // 요리용 화덕
 
     ATTACK_COL,
@@ -102,6 +102,7 @@ enum class OBJTYPE
     TERRAIN,
     PLACEMENT,
     WALL,
+    CONSTRUCTION_SITE,
 
     OBJ_END
 };
@@ -128,6 +129,7 @@ enum class COMPONENTTYPE
     PROJECTILE,
     SPRITEEFFECT,
     GATHERING,
+    CONSTRUCTION,
 
     WEAPON_EQUIP,           // 플레이어 무기
     PL_INPUT,               // 플레이어 방향 입력
@@ -159,9 +161,13 @@ enum class COMPONENTTYPE
     TEX_MENU_CHAR,
     TEX_UI_ICON,
     TEX_UI_BUTTON,
+    TEX_UI_BUILD,
     TEX_BOSSPHASE1,
     TEX_BULLET,
+    TEX_WORKBENCH,
+    TEX_DOTTEDCIRCLE,
     TEX_TEMPLE,
+    TEX_KITCHEN,
     TEX_OUT,
     TEX_BERRY,
     TEX_ROCK,
@@ -228,7 +234,6 @@ enum class ACTORSTATE
     PLAYER_GAUNTLET_COMBO1,     // 건틀릿 일반공격 콤보 1
     PLAYER_GAUNTLET_COMBO2,     // 건틀릿 일반공격 콤보 2
     PLAYER_GAUNTLET_COMBO3,     // 건틀릿 일반공격 콤보 3
-    PLAYER_GAUNTLET_COMBO4,
     PLAYER_GAUNTLET_HEAVY,      // 건틀릿 강공격
     PLAYER_SKILL_CHARGING,
     PLAYER_SKILL_SINGLE,
@@ -240,6 +245,7 @@ enum class ACTORSTATE
     PLAYER_STONE,
     PLAYER_BERRY,
     PLAYER_WEAPONGET,
+    PLAYER_HAMMER,              // 플레이어 건축
     //GATHERING,
 
     DEAD,
@@ -316,7 +322,7 @@ enum PROJECTION_TYPE
 // 건축물 종류
 enum BUILDING_TYPE
 {
-    TEMPLE,                 // 신전
+    TEMPLE,                 // 사원
     KITCHEN,                // 요리용 화덕
 
     BUILDING_END
