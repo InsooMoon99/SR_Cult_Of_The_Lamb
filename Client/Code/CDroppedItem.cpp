@@ -74,12 +74,12 @@ void CDroppedItem::Initialize_GameObject()
     if (m_BoxColCom)
         m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::ITEM);
 
-    if (!m_WeaponExplainUI)
-    {
+   // if (!m_WeaponExplainUI)
+   // {
         m_WeaponExplainUI = CUIWeaponExplain::Create(m_GraphicDev);
         m_WeaponExplainUI->Initialize_GameObject();
         CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::UI)->Add_GameObject(OBJTYPE::UI, m_WeaponExplainUI);
-    }
+   // }
 }
 
 _int CDroppedItem::Update_GameObject(const _float& timeDelta)

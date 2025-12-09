@@ -24,7 +24,7 @@ void CUICharging::Initialize_GameObject()
     CUI::Initialize_GameObject();
 
     m_TransformCom->Set_Scale(1.f, 1.f, 1.f);
-    m_TransformCom->Set_Rotation(_vec3{ D3DXToRadian(90.f), 0.f, 0.f });
+    m_TransformCom->Set_Rotation(_vec3{ D3DXToRadian(30.f), 0.f, 0.f });
 }
 
 int CUICharging::Update_GameObject(const _float& timeDelta)
@@ -35,33 +35,33 @@ int CUICharging::Update_GameObject(const _float& timeDelta)
     {
         CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_ALPHA, this);
 
-        float maxLength = 2;
-        float minLength = 0.1;
+        float Length = 2;
         float chargeTime = m_PlayerSkill->Get_ChargeTime();
         float maxChargeTime = m_PlayerSkill->Get_MaxChargeTime();
 
         m_ChargeRatio = chargeTime / maxChargeTime;
 
-        float changeLength = m_ChargeRatio * (maxLength - minLength);
+        float changeLength = m_ChargeRatio * Length;
 
-        if (changeLength <= minLength)
-            changeLength = minLength;
+        if (changeLength <= 0.f)
+            changeLength = 0.f;
 
         m_TransformCom->Set_Scale(changeLength, 0.5f, 1.f);
-
-        _vec3 playerPos = m_PlayerSkill->Get_Owner()->Get_Transform()->Get_Pos();
 
         _vec3 dir = m_ArrowDir;
 
         D3DXVec3Normalize(&dir, &dir);
-
-         dir.x = -dir.x;
+        dir.x = -dir.x;
         float angle = atan2f(dir.z, dir.x);
-        float offset = m_PlayerSkill->Get_SkillInfo().spawnOffset;
         dir.x = -dir.x;
 
-       _vec3 spawnPos = playerPos + offset*dir ;
-        m_TransformCom->Set_Pos(spawnPos);
+        _float offset = m_PlayerSkill->Get_SkillInfo().spawnOffset;
+        _vec3 playerPos = m_PlayerSkill->Get_Owner()->Get_Transform()->Get_Pos();
+
+        _vec3 tailPos = playerPos + dir * offset;
+        _vec3 centerPos = tailPos + dir * (changeLength * 0.5f);
+        centerPos.y = 0.3;
+        m_TransformCom->Set_Pos(centerPos);
 
         _vec3 rot{ D3DXToRadian(90.f), angle, 0.f };
         m_TransformCom->Set_Rotation(rot);
@@ -74,7 +74,7 @@ void CUICharging::Render_GameObject()
 {
         CUI::Render_GameObject();
         m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-    if (m_PlayerSkill->Get_IsCharging())
+    if (m_Active)
 
     {
        m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);

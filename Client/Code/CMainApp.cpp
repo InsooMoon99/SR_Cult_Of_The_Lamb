@@ -15,6 +15,7 @@
 #include "CManagement.h"
 #include "CProtoMgr.h"
 #include "CRandomMgr.h"
+#include "CRecipeDB.h"
 #include "CRenderer.h"
 #include "CResourceMgr.h"
 #include "CSceneMgr.h"
@@ -39,6 +40,9 @@ HRESULT CMainApp::Ready_MainApp()
 #pragma region 데이터 파싱
 
     if (FAILED(CItemDB::GetInstance()->LoadFromJson("ItemData.txt")))
+        return E_FAIL;
+
+    if (FAILED(CRecipeDB::GetInstance()->LoadFromJson("RecipeData.txt")))
         return E_FAIL;
 
 #pragma endregion
@@ -241,6 +245,7 @@ void CMainApp::Free()
 #pragma region 데이터 파싱 테스트
 
     CItemDB::DestroyInstance();
+    CRecipeDB::DestroyInstance();
 
 #pragma endregion
 }
