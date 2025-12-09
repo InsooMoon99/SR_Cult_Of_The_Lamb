@@ -44,6 +44,10 @@ public:
 
     _bool IsPlaying() const { return m_IsPlaying; }
 
+    _float Get_TimeScale() const { return m_TimeScale; }
+    void   Set_TimeScale(_float timeScale) { m_TimeScale = timeScale; }
+
+
     _bool IsGuiVisible() const { return m_ShowImGui; }
     void  Toggle_ImGui() { m_ShowImGui = !m_ShowImGui; }
 
@@ -81,6 +85,8 @@ private:
     _bool              m_ShowImGui = true;
 
     MAPTOOL_VIEW m_MapToolView = MAPTOOL_VIEW::TERRAIN;
+
+    _float             m_TimeScale = 1.f;
 
 };
 

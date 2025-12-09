@@ -8,6 +8,7 @@
 #include "CFireball.h"
 #include "CPlayerInput.h"
 #include "CUICharging.h"
+#include "CMainEditorMgr.h"
 
 CPlayerSkill::CPlayerSkill(DEVICE graphicDev) : CComponent(graphicDev),
                                                 m_OwnerStateCom(nullptr),
@@ -66,24 +67,24 @@ HRESULT CPlayerSkill::Ready_PlayerCombat()
     m_SkillInfo[SKILL_CHARGING].duration = 0.5f;
     m_SkillInfo[SKILL_CHARGING].damageMultiplier = 2.f;
     m_SkillInfo[SKILL_CHARGING].knockbackPower = 50.f;
-    m_SkillInfo[SKILL_CHARGING].spawnOffset = 1.3f;
-    // m_SkillInfo[SKILL_CHARGING].hitboxScale = _vec3(1.f, 1.f, 1.f);
+    m_SkillInfo[SKILL_CHARGING].spawnOffset = 0.8f;
+
     // 1발
     m_SkillInfo[SKILL_SINGLE].state = ACTORSTATE::PLAYER_SKILL_SINGLE;
     m_SkillInfo[SKILL_SINGLE].duration = 0.5f;
     m_SkillInfo[SKILL_SINGLE].damageMultiplier = 2.f;
     m_SkillInfo[SKILL_SINGLE].knockbackPower = 50.f;
-    m_SkillInfo[SKILL_SINGLE].spawnOffset = 1.3f;
+    m_SkillInfo[SKILL_SINGLE].spawnOffset = 0.8f;
     m_SkillInfo[SKILL_SINGLE].hitboxScale = _vec3(0.6f, 0.6f, 0.6f);
-    m_SkillInfo[SKILL_SINGLE].chargeTime = 0.5f;
+    m_SkillInfo[SKILL_SINGLE].chargeTime = 0.3f;
     // 3발
     m_SkillInfo[SKILL_TRIPLE].state = ACTORSTATE::PLAYER_SKILL_TRIPLE;
     m_SkillInfo[SKILL_TRIPLE].duration = 0.5f;
     m_SkillInfo[SKILL_TRIPLE].damageMultiplier = 2.f;
     m_SkillInfo[SKILL_TRIPLE].knockbackPower = 50.f;
-    m_SkillInfo[SKILL_TRIPLE].spawnOffset = 1.3f;
+    m_SkillInfo[SKILL_TRIPLE].spawnOffset = 0.8f;
     m_SkillInfo[SKILL_TRIPLE].hitboxScale = _vec3(0.6f, 0.6f, 0.6f);
-    m_SkillInfo[SKILL_TRIPLE].chargeTime =1.5f;
+    m_SkillInfo[SKILL_TRIPLE].chargeTime =1.2f;
     return S_OK;
 }
 
@@ -160,6 +161,9 @@ ACTORSTATE CPlayerSkill::Start_Charging()
 	if (!m_IsSkillUnlocked)
 		return ACTORSTATE::STATE_END;
 
+    // 슬로우모션 시작
+    CMainEditorMgr::GetInstance()->Set_TimeScale(0.5f);
+
 	CCombatStat* playerCombatStat = dynamic_cast<CCombatStat*>(m_Owner->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
 
 	if (playerCombatStat->Get_CurrentCharges() <= 0)
@@ -171,13 +175,12 @@ ACTORSTATE CPlayerSkill::Start_Charging()
     }
 
     m_IsCharging = true;
-    m_CenterChargingUI->Set_IsActive(true);
+   m_CenterChargingUI->Set_IsActive(true);
 
 	return m_SkillInfo[SKILL_CHARGING].state;
 }
 ACTORSTATE      CPlayerSkill::Update_Charging(const float& timeDelta)
 {
-    //cout << "Update_Charging" << endl;
 
     _vec3 vMouseDir = m_OwnerInputCom->Get_MouseDir();
 
@@ -219,18 +222,17 @@ ACTORSTATE      CPlayerSkill::Update_Charging(const float& timeDelta)
     }
     m_ChargeTimer+= timeDelta;
 
-    //cout << m_ChargeTimer << endl;
-
     if (m_ChargeTimer >= m_MaxChargeTime)
     {
         m_ChargeTimer = m_MaxChargeTime;
         m_IsCharging = false;
+        m_LeftChargingUI->Set_IsActive(false);
         m_CenterChargingUI->Set_IsActive(false);
+        m_RightChargingUI->Set_IsActive(false);
         return ACTORSTATE::IDLE;
     }
     if (m_ChargeTimer >= m_SkillInfo[SKILL_TRIPLE].chargeTime)
     {
-        //cout << "3발 공격 사용 가능" << endl;
         m_LeftChargingUI->Set_IsActive(true);
         m_CenterChargingUI->Set_IsActive(true);
         m_RightChargingUI->Set_IsActive(true);
@@ -239,16 +241,9 @@ ACTORSTATE      CPlayerSkill::Update_Charging(const float& timeDelta)
 
 	if(m_ChargeTimer >= m_SkillInfo[SKILL_SINGLE].chargeTime)
 	{
-        //cout << "1발 공격 사용 가능" << endl;
         return ACTORSTATE::PLAYER_SKILL_SINGLE;
 	}
 
-   // if (m_ChargeTimer < m_SkillInfo[SKILL_SINGLE].chargeTime)
-   // {
-   //     m_LeftChargingUI->Set_IsActive(false);
-   //     m_CenterChargingUI->Set_IsActive(false);
-   //     m_RightChargingUI->Set_IsActive(false);
-   // }
     return ACTORSTATE::PLAYER_SKILL_CHARGING;
 }
 
@@ -277,9 +272,7 @@ ACTORSTATE  CPlayerSkill::Start_SingleSkill()
 
 _bool       CPlayerSkill::Update_SingleSkill(const float& timeDelta)
 {
-   // if (m_SingleFired)
-   //     return false;
-   //
+
     for (auto iter = m_Fireballs.begin(); iter != m_Fireballs.end();)
     {
         if ((*iter)->Is_PendingDestroy())
@@ -290,23 +283,27 @@ _bool       CPlayerSkill::Update_SingleSkill(const float& timeDelta)
         }
     }
 
-    //if (m_SkillIndex < SKILL_SINGLE || m_SkillIndex>SKILL_MAX)
 	m_SkillTimer += timeDelta;
 	m_ChargeTimer += timeDelta;
 
     const SkillInfo& skillInfo = m_SkillInfo[SKILL_SINGLE];
     _vec3 MouseDir = m_OwnerInputCom->Get_MouseDir();
 
-    // MouseDir.z = 0;
     D3DXVec3Normalize(&MouseDir, &MouseDir);
 
     if(!m_SingleFired)
     {
         CFireball* fireball = Create_Fireball(m_SkillInfo[m_SkillIndex], m_GraphicDev,m_Owner, MouseDir);
 		m_Fireballs.push_back(fireball);
-        cout << "single 투사체 발사 완료" << endl;
+
         m_IsCharging = false;
+
         m_CenterChargingUI->Set_IsActive(false);
+
+        CCombatStat* playerCombatStat = dynamic_cast<CCombatStat*>(m_Owner->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
+
+        playerCombatStat->Set_CurrentCharges(-1);
+
         m_SingleFired = true;
         m_SingleSkillEnable = false;
     }
@@ -316,7 +313,6 @@ _bool       CPlayerSkill::Update_SingleSkill(const float& timeDelta)
         return false;
     }
 
-    return true;
 }
 ACTORSTATE  CPlayerSkill::Start_TripleSkill()
 {
@@ -345,9 +341,6 @@ _bool       CPlayerSkill::Update_TripleSkill(const _float& timeDelta)
 {
     if (!m_OwnerCombatStatCom || !m_OwnerInputCom) return false;
 
-   // if (m_TripleFired)
-   //     return false;
-
     for (auto iter = m_Fireballs.begin(); iter != m_Fireballs.end();)
     {
         if ((*iter)->Is_PendingDestroy())
@@ -361,9 +354,9 @@ _bool       CPlayerSkill::Update_TripleSkill(const _float& timeDelta)
 
     m_SkillTimer += timeDelta;
     m_ChargeTimer += timeDelta;
+
     const SkillInfo& skillInfo = m_SkillInfo[SKILL_TRIPLE];
 
-   // MouseDir.z = 0;
         _vec3  MouseDir = m_OwnerInputCom->Get_MouseDir();
 
          D3DXVec3Normalize(&MouseDir, &MouseDir);
@@ -378,10 +371,7 @@ _bool       CPlayerSkill::Update_TripleSkill(const _float& timeDelta)
 
     if (!m_TripleFired)
     {
-        cout << "triple 투사체 발사 완료" << endl;
         CFireball* center = Create_Fireball(m_SkillInfo[m_SkillIndex], m_GraphicDev, m_Owner, MouseDir);
-
-
 		CFireball* left = Create_Fireball(m_SkillInfo[m_SkillIndex], m_GraphicDev, m_Owner, vLeft);
 		CFireball* right = Create_Fireball(m_SkillInfo[m_SkillIndex], m_GraphicDev, m_Owner, vRight);
 
@@ -396,31 +386,17 @@ _bool       CPlayerSkill::Update_TripleSkill(const _float& timeDelta)
         m_LeftChargingUI->Set_IsActive(false);
         m_RightChargingUI->Set_IsActive(false);
 
+        CCombatStat* playerCombatStat = dynamic_cast<CCombatStat*>(m_Owner->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
+        playerCombatStat->Set_CurrentCharges(-1);
+
         m_TripleFired = true;
         m_TripleSkillEnable = false;
     }
 
-	//for(auto fireball : m_Fireballs)
-	//{
-	//	fireball->Update_GameObject(timeDelta);
-	//}
-	//
     if (m_SkillTimer >= m_SkillInfo[SKILL_TRIPLE].duration)
     {
         return false;
     }
-
-  //if (!m_ProjectileFired && m_SkillTimer >= skillInfo.projectileInterval) // 나중에 필요하면 시간 제어 조건도 추가
-  //{
-  //    Create_Projectile(skillInfo, vMouseDir);
-  //    m_SkillTimer = 0.f;
-  //    m_ProjectileFired = true;
-  //}
-  //
-  //if (m_ChargeTimer >= skillInfo.tripleChargeTime)
-  //    m_IsCharged = true;
-  //                                                                                                                                                                                                                                                                                                                                                                                                                                                           
-//발사했으면 반환
 
     return true;
 }

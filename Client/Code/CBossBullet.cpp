@@ -13,9 +13,9 @@ int CBossBullet::imsdfjlkdsf = 0;
 
 CBossBullet::CBossBullet(DEVICE graphicDev, CGameObject* owner, CGameObject* Target, PROJ_TYPE type)
     : CGameObject(graphicDev),
-    m_pOwner(owner),
-    m_pTarget(Target),
-    m_type(type)
+      m_pOwner(owner),
+      m_pTarget(Target),
+      m_type(type)
 {
     m_pOwner->AddRef();
 
@@ -24,13 +24,10 @@ CBossBullet::CBossBullet(DEVICE graphicDev, CGameObject* owner, CGameObject* Tar
 
 CBossBullet::CBossBullet(const CBossBullet& rhs)
     : CGameObject(rhs)
-{
-}
+{}
 
 CBossBullet::~CBossBullet()
-{
-
-}
+{}
 
 HRESULT CBossBullet::Ready_GameObject()
 {
@@ -47,9 +44,9 @@ HRESULT CBossBullet::Ready_GameObject()
             COMPONENTTYPE::TRANSFORM));
 
     //TODO:: 나중에 땅의 위치를 알게 되면 수정 
-    m_TransformCom->Set_Pos({ ownerTransform->Get_Pos().x, /*-ownerTransform->Get_Scale().y * .5f*/0.f, ownerTransform->Get_Pos().z });
+    m_TransformCom->Set_Pos({ ownerTransform->Get_Pos().x, /*-ownerTransform->Get_Scale().y * .5f*/1.f, ownerTransform->Get_Pos().z });
 
-    m_TransformCom->Set_Rotation({ D3DXToRadian(90), 0, 0 });
+    //m_TransformCom->Set_Rotation({ D3DXToRadian(90), 0, 0 });
 
     // if (m_BoxColCom)
     //     m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::BOSSPROJECTILE);
@@ -69,7 +66,6 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
         // 생성시의 위치 값 저장
         m_StartPos = m_TransformCom->Get_Pos();
 
-
         CAttackBase* ATBox = nullptr;
         CAttackBuilder(m_GraphicDev, this)
             .Sphere()
@@ -84,7 +80,11 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
             .CollisionLayer(COLLISION_LAYERTYPE::BOSSPROJECTILE)
             .Spawn();
 
+        auto sphereCol = static_cast<CSphereCollider*>(
+            ATBox->Get_Collider());
 
+        if (sphereCol)
+            sphereCol->Set_Radius(0.5f);
 
         m_ATKBoxTransformCom = dynamic_cast<CTransform*>(
             ATBox->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
@@ -95,7 +95,7 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
         //    m_ATKBoxTransformCom = nullptr;
         //    this->Mark_As_PendingKill();});
 
-        ATBox->Set_OnDestroyCallback([bullet = this]() {bullet->Mark_As_PendingKill(); });
+        ATBox->Set_OnDestroyCallback([bullet = this]() { bullet->Mark_As_PendingKill(); });
 
         m_flag = true;
     }
@@ -125,18 +125,12 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
         }
     }
 
-
-
-
     return exit;
 }
 
 void CBossBullet::LateUpdate_GameObject(const _float& timeDelta)
 {
     CGameObject::LateUpdate_GameObject(timeDelta);
-
-
-
 }
 
 void CBossBullet::Render_GameObject()
@@ -160,7 +154,7 @@ void CBossBullet::Render_Core()
     m_GraphicDev->SetRenderState(D3DRS_ALPHAREF, 0);
     //
 
-    m_TextureCom->Set_Texture(0);
+    m_TextureCom->Set_Texture(2);
 
     // m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB((int)(m_fAlpha * 255), 255, 255, 255));
     //
@@ -229,8 +223,6 @@ void CBossBullet::OnBeginOverlap(CCollider* self, CCollider* other)
     //ATBox->Mark_As_PendingKill();
 
     //Mark_As_PendingKill();
-
-
 }
 
 void CBossBullet::OnEndOverlap(CCollider* self, CCollider* other)
@@ -239,8 +231,7 @@ void CBossBullet::OnEndOverlap(CCollider* self, CCollider* other)
 }
 
 void CBossBullet::Animation_Setting()
-{
-}
+{ }
 
 HRESULT CBossBullet::Add_Component()
 {
@@ -277,7 +268,6 @@ HRESULT CBossBullet::Add_Component()
     return S_OK;
 }
 
-
 CBossBullet* CBossBullet::Create(DEVICE graphicDev, CGameObject* owner, CGameObject* Target, PROJ_TYPE type)
 {
     auto BossBullet = new CBossBullet(graphicDev, owner, Target, type);
@@ -296,7 +286,6 @@ void CBossBullet::Free()
 {
     Safe_Release(m_pOwner);
     Safe_Release(m_pTarget);
-
 
     CGameObject::Free();
 }

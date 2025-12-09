@@ -164,6 +164,20 @@ void CDropSystem::SpawnAllFromInven(DEVICE pGraphicDev, CInventory* Inven, _vec3
     return ;
 }
 
+void CDropSystem::Remove_Item(CDroppedItem* item)
+{
+    for (auto it = tmpItem.begin(); it != tmpItem.end(); )
+    {
+        if (*it == item)
+        {
+            it = tmpItem.erase(it);
+            return;
+        }
+        else
+            ++it;
+    }
+}
+
 void CDropSystem::Clear_Item()
 {
     for (auto& it : tmpItem)

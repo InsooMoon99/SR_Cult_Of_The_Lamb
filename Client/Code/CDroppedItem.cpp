@@ -40,7 +40,7 @@ CDroppedItem::CDroppedItem(const CDroppedItem& rhs)
       m_TextureCom(rhs.m_TextureCom),
       m_BoxColCom(rhs.m_BoxColCom),
       m_itemInst(rhs.m_itemInst)
-  
+
 { }
 
 CDroppedItem::~CDroppedItem()
@@ -72,16 +72,14 @@ void CDroppedItem::Initialize_GameObject()
     CGameObject::Initialize_GameObject();
 
     if (m_BoxColCom)
-    {
         m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::ITEM);
-    }
 
-    if (!m_WeaponExplainUI)
-    {
+   // if (!m_WeaponExplainUI)
+   // {
         m_WeaponExplainUI = CUIWeaponExplain::Create(m_GraphicDev);
         m_WeaponExplainUI->Initialize_GameObject();
         CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::UI)->Add_GameObject(OBJTYPE::UI, m_WeaponExplainUI);
-    }
+   // }
 }
 
 _int CDroppedItem::Update_GameObject(const _float& timeDelta)
@@ -95,7 +93,7 @@ _int CDroppedItem::Update_GameObject(const _float& timeDelta)
         is_SetBounceDesc = false;
     }
 
-    if(m_Active==true)
+    if (m_Active == true)
         m_SpriteEff->Update_Component(timeDelta);
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_NONALPHA, this);
@@ -144,8 +142,6 @@ void CDroppedItem::Render_GameObject()
 void CDroppedItem::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CGameObject::OnBeginOverlap(self, other);
-
-    
 }
 
 void CDroppedItem::OnStayOverlap(CCollider* self, CCollider* other)
@@ -186,11 +182,11 @@ void CDroppedItem::OnStayOverlap(CCollider* self, CCollider* other)
             {
                 dynamic_cast<CWeaponEquip*>(ply->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::WEAPON_EQUIP))->Equip_Weapon(m_itemInst);
 
-                //auto state = dynamic_cast<CState*>(ply->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
+                auto state = dynamic_cast<CState*>(ply->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
                 //auto animator = dynamic_cast<CAnimator*>(ply->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
                 //
-                //if (state)
-                //    state->Change_State(ACTORSTATE::PLAYER_WEAPONGET);
+                if (state)
+                    state->Change_State(ACTORSTATE::PLAYER_WEAPONGET);
 
                 //if (animator->Is_AnimationFinished())
                 //    state->Change_State(ACTORSTATE::IDLE);
@@ -198,8 +194,6 @@ void CDroppedItem::OnStayOverlap(CCollider* self, CCollider* other)
                 Mark_As_PendingKill();
                 m_WeaponExplainUI->Set_Active(false);
             }
-            
-
         }
         else
         {
@@ -219,7 +213,8 @@ void CDroppedItem::OnEndOverlap(CCollider* self, CCollider* other)
 {
     CGameObject::OnEndOverlap(self, other);
 
-	m_WeaponExplainUI->Set_Active(false);
+    if (m_WeaponExplainUI)
+        m_WeaponExplainUI->Set_Active(false);
 }
 
 HRESULT CDroppedItem::Add_Component()
@@ -254,10 +249,8 @@ HRESULT CDroppedItem::Add_Component()
 
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::SPRITEEFFECT, m_SpriteEff });
 
-
     return S_OK;
 }
-
 
 CDroppedItem* CDroppedItem::Create(DEVICE graphicDev, ItemInstance itemInst, _vec3 pos)
 {
@@ -275,5 +268,7 @@ CDroppedItem* CDroppedItem::Create(DEVICE graphicDev, ItemInstance itemInst, _ve
 
 void CDroppedItem::Free()
 {
+    CDropSystem::GetInstance()->Remove_Item(this);
+
     CGameObject::Free();
 }

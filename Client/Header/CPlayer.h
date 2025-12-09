@@ -11,6 +11,7 @@ class CPlayerAttack;
 class CPlayerInput;
 class CWeaponEquip;
 class CPlayerGathering;
+class CPlayerConstruction;
 
 BEGIN(Engine)
 class CRigidbody;
@@ -32,6 +33,7 @@ public:
     void    Render_GameObject() override;
 
     void OnBeginOverlap(CCollider* self, CCollider* other) override;
+    void OnStayOverlap(CCollider* self, CCollider* other) override;
     void OnEndOverlap(CCollider* self, CCollider* other) override;
 
     void Render_Editor() override;
@@ -49,11 +51,13 @@ private:
     CWeaponEquip*      m_WeaponEquipCom;
     CInventory*        m_InventoryCom;
     CPlayerController* m_PlayerControllerCom;
-    CPlayerInput* m_PlayerInputCom;
-    CPlayerMovement* m_PlayerMovementCom;
-    CPlayerAttack* m_PlayerAttackCom;
-    CPlayerSkill* m_PlayerSkillCom;
-    CPlayerGathering* m_PlayerGatherCom;
+    CPlayerInput*      m_PlayerInputCom;
+    CPlayerMovement*   m_PlayerMovementCom;
+    CPlayerAttack*     m_PlayerAttackCom;
+    CPlayerSkill*      m_PlayerSkillCom;
+    CPlayerGathering*  m_PlayerGatherCom;
+
+    CPlayerConstruction* m_PlayerConstructionCom;
 
 #pragma endregion
 

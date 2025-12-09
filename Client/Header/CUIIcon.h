@@ -12,6 +12,8 @@ public:
     HRESULT Ready_GameObject(COMPONENTTYPE texProtoTag);
     _int    Update_GameObject(const _float& timeDelta) override;
     void    LateUpdate_GameObject(const _float& timeDelta) override;
+    void    Render_Setting();
+    void     Render_Reset();
     void    Render_GameObject() override;
     HRESULT Add_Component(COMPONENTTYPE texProtoTag);
 

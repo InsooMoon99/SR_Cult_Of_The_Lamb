@@ -145,10 +145,10 @@ void CMenuChar::Render_Reset()
 }
 
 void CMenuChar::OnBeginOverlap(CCollider* self, CCollider* other)
-{}
+{ }
 
 void CMenuChar::OnEndOverlap(CCollider* self, CCollider* other)
-{}
+{ }
 
 CMenuChar* CMenuChar::Create(DEVICE graphicDev)
 {

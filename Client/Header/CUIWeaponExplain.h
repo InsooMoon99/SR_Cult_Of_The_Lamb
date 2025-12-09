@@ -7,7 +7,7 @@ class CUIWeaponExplain : public CUI
 private:
     explicit CUIWeaponExplain(DEVICE graphicDev);
     explicit CUIWeaponExplain(const CUIWeaponExplain& rhs);
-    ~CUIWeaponExplain();
+    ~CUIWeaponExplain() override;
 
 public:
     void    Initialize_GameObject() override;
@@ -17,12 +17,12 @@ public:
     void    Render_GameObject() override;
     HRESULT Add_Component();
     void    Set_ItemID(int ID) { m_ItemID = ID; }
-    void   Set_Active(_bool tf) { m_Active = tf; }
+    void    Set_Active(_bool tf) { m_Active = tf; }
     static CUIWeaponExplain* Create(DEVICE graphicDev);
+
 protected:
     void Free() override;
+
 private:
     int m_ItemID;
 };
-
-

@@ -113,7 +113,7 @@ void CTestMonster::OnBeginOverlap(CCollider* self, CCollider* other)
 
 void CTestMonster::OnEndOverlap(CCollider* self, CCollider* other)
 {
-    CGameObject::OnEndOverlap(self, other);
+     CGameObject::OnEndOverlap(self, other);
 }
 
 HRESULT CTestMonster::Add_Component()

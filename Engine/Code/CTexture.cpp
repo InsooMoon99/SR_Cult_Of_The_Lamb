@@ -311,6 +311,10 @@ void CTexture::Free()
     {
         EnterCriticalSection(&s_D3DLock);
     }
+    else
+    {
+        OutputDebugString(L"[WARNING] CTexture::Free called but s_D3DLock not initialized!\n");
+    }
 
     for_each(m_Textures.begin(), m_Textures.end(), CDeleteObj());
     m_Textures.clear();

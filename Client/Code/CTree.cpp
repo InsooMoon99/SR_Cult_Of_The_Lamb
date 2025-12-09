@@ -1,33 +1,40 @@
 ﻿#include "pch.h"
 #include "CTree.h"
-#include "CHarvestableHerb.h""
-#include "CState.h"
-#include "CCombatStat.h"
+
 #include "CBoxCollider.h"
-#include "CTransform.h"
+#include "CCombatStat.h"
 #include "CCreateHelper.h"
-#include "CRenderer.h"
-#include "CTexture.h"
-#include "CRcTex.h"
-#include "CPlayer.h"
-#include "CInventory.h"
-#include "ItemInstance.h"
 #include "CDInputMgr.h"
 #include "CDropSystem.h"
-#include "CSpriteEff.h"
+#include "CHarvestableHerb.h"
+#include "CInventory.h"
 #include "CParticleHelper.h"
+#include "CPlayer.h"
+#include "CRcTex.h"
+#include "CRenderer.h"
+#include "CSpriteEff.h"
+#include "CState.h"
+#include "CTexture.h"
+#include "CTransform.h"
+#include "ItemInstance.h"
+
 
 CTree::CTree(DEVICE graphicDev, TREE tree) : CWorldInteractive(graphicDev), m_tree(tree), m_MovedPos({0.f,0.f,0.f})
 {
 }
+CTree::CTree(DEVICE graphicDev, TREE tree)
+    : CWorldInteractive(graphicDev),
+      m_tree(tree),
+      m_MovedPos({ 0.f, 0.f, 0.f })
+{ }
 
-CTree::CTree(const CTree& rhs) : CWorldInteractive(rhs),m_MovedPos(rhs.m_MovedPos)
-{
-}
+CTree::CTree(const CTree& rhs)
+    : CWorldInteractive(rhs),
+      m_MovedPos(rhs.m_MovedPos)
+{ }
 
 CTree::~CTree()
-{
-}
+{ }
 
 HRESULT CTree::Ready_GameObject()
 {
@@ -37,7 +44,7 @@ HRESULT CTree::Ready_GameObject()
     if (m_BoxColCom)
     {
         m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::INTERACTIVEOBJ);
-        m_BoxColCom->Set_Size({ 3.f,3.f,3.f });
+        m_BoxColCom->Set_Size({ 3.f, 3.f, 3.f });
     }
 
     switch (m_tree)
@@ -47,7 +54,7 @@ HRESULT CTree::Ready_GameObject()
     case RUBBLE3:
     case RUBBLE4:
         m_deadTexIndex = 999;
-        m_TexIndex1 = (int)m_tree; // 0부터니까 1을 더하기
+        m_TexIndex1 = static_cast<int>(m_tree); // 0부터니까 1을 더하기
         m_TexIndex2 = 999; // 안쓸예정
         m_TexIndex3 = 999; // 안쓸예정
 
@@ -66,7 +73,7 @@ HRESULT CTree::Ready_GameObject()
 
         m_CombatStatCom->Set_MaxHp(6.f);
         m_TransformCom->Set_Scale(_vec3(3.f, 3.f, 3.f));
-        m_BoxColCom->Set_Size({ 1.5f,1.5f,1.5f });
+        m_BoxColCom->Set_Size({ 1.5f, 1.5f, 1.5f });
 
         m_SpriteEffCom->InitOutLine(D3DCOLOR_ARGB(255, 255, 255, 255), 0.025f);
         break;
@@ -80,7 +87,7 @@ HRESULT CTree::Ready_GameObject()
 
         m_CombatStatCom->Set_MaxHp(10.f);
         m_TransformCom->Set_Scale(_vec3(3.f, 3.f, 3.f));
-        m_BoxColCom->Set_Size({ 1.5f,2.5f,1.5f });
+        m_BoxColCom->Set_Size({ 1.5f, 2.5f, 1.5f });
         m_SpriteEffCom->InitOutLine(D3DCOLOR_ARGB(255, 255, 255, 255), 0.025f);
 
         break;
@@ -96,13 +103,9 @@ HRESULT CTree::Ready_GameObject()
 
     m_CombatStatCom->Set_Hp(m_CombatStatCom->Get_MaxHp());
 
-
     m_TransformCom->Set_Pos(_vec3(30.f, 1.f, 30.f));// 밖에서 덮어 씌울예정
 
-
-
     m_InventoryCom->SetInvenSlotNum(7);// 기본셋팅 무조건 해야 하는거
-
 
     return S_OK;
 }
@@ -112,9 +115,9 @@ void CTree::Initialize_GameObject()
     CWorldInteractive::Initialize_GameObject();
     // 인벤 셋팅 (동전 1001, 라즈베리 1002, 잔디 1003, 나무 1005, 돌 1006)
 
-    ItemInstance Item = { 1005,-1,0 };
+    ItemInstance Item = { 1005, -1, 0 };
 
-    for (int i = 0; i < m_ItemNum;i++)
+    for (int i = 0; i < m_ItemNum; i++)
     {
         m_InventoryCom->AddItem(Item);
     }
@@ -123,18 +126,19 @@ void CTree::Initialize_GameObject()
 
     m_OrignPos = m_TransformCom->Get_Pos();
 
-    m_CombatStatCom->Set_OnDamagedEvent([this]() {
+    m_CombatStatCom->Set_OnDamagedEvent([this]()
+    {
         this->m_OnDamage = true;
 
         // HitEffect_Star
-        CParticleHelper::Spawn_Particle({ m_TransformCom->Get_Pos().x, m_TransformCom->Get_Pos().y + 0.5f, m_TransformCom->Get_Pos().z }, L"HitEffect_Star", 14);
-
-        });
+        CParticleHelper::Spawn_Particle({ m_TransformCom->Get_Pos().x, m_TransformCom->Get_Pos().y + 0.5f, m_TransformCom->Get_Pos().z },
+                                        L"HitEffect_Star",
+                                        14);
+    });
 }
 
 _int CTree::Update_GameObject(const _float& timeDelta)
 {
-
     _int exit = CWorldInteractive::Update_GameObject(timeDelta);
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
@@ -147,17 +151,15 @@ _int CTree::Update_GameObject(const _float& timeDelta)
         }
         else
         {
+            int temPhase = m_CombatStatCom->Get_MaxHp() / 3;
 
-        int temPhase = m_CombatStatCom->Get_MaxHp() / 3;
-
-        if(temPhase*3 >= m_CombatStatCom->Get_Hp())
-            m_CurTexIndex = m_TexIndex1;
-        if (temPhase * 2 >= m_CombatStatCom->Get_Hp())
-            m_CurTexIndex = m_TexIndex2;
-        if (temPhase * 1 >= m_CombatStatCom->Get_Hp())
-            m_CurTexIndex = m_TexIndex3;
-        //그다음은 죽음 
-
+            if (temPhase * 3 >= m_CombatStatCom->Get_Hp())
+                m_CurTexIndex = m_TexIndex1;
+            if (temPhase * 2 >= m_CombatStatCom->Get_Hp())
+                m_CurTexIndex = m_TexIndex2;
+            if (temPhase * 1 >= m_CombatStatCom->Get_Hp())
+                m_CurTexIndex = m_TexIndex3;
+            //그다음은 죽음 
         }
         m_OnDamage = false;
     }
@@ -170,13 +172,11 @@ _int CTree::Update_GameObject(const _float& timeDelta)
     }
 
     return exit;
-
 }
 
 void CTree::LateUpdate_GameObject(const _float& timeDelta)
 {
     CWorldInteractive::LateUpdate_GameObject(timeDelta);
-
 }
 
 void CTree::Render_GameObject()
@@ -207,12 +207,11 @@ void CTree::KnockBackEff(const _float& timeDelta)
 
     if (m_KockDone == true && m_ReturnDone == false)
     {
-
         LerpTime += timeDelta * 5.f;
 
         if (LerpTime >= 0.f)
         {
-            LerpTime = 0;
+            LerpTime     = 0;
             m_ReturnDone = true;
 
             return;
@@ -227,14 +226,13 @@ void CTree::KnockBackEff(const _float& timeDelta)
 
     if (m_ReturnDone)
     {
-
         m_TransformCom->Set_Pos(m_OrignPos);
 
-        m_KockDone = false;
-        m_ReturnDone = false;
+        m_KockDone      = false;
+        m_ReturnDone    = false;
         m_KockBackTimer = 0.1f;
-        m_OnDamage = false;
-        LerpTime = 0.f;
+        m_OnDamage      = false;
+        LerpTime        = 0.f;
     }
 }
 
@@ -277,5 +275,4 @@ CTree* CTree::Create(DEVICE graphicDev, TREE rock)
 void CTree::Free()
 {
     CWorldInteractive::Free();
-
 }
