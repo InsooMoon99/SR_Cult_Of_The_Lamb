@@ -5,6 +5,11 @@
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CRenderer.h"
+#include "CDInputMgr.h"
+#include "CRcTex.h"
+#include "CUIIcon.h"
+#include "CItemDB.h"
+#include "CFontMgr.h"
 
 
 CUICookingGame::CUICookingGame(DEVICE graphicDev, CGameObject* owner, RecipeInst recipeInst)
@@ -24,6 +29,7 @@ HRESULT CUICookingGame::Ready_GameObject()
 
 
     m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(45.f));
+    //m_TransformCom->Set_Pos(m_Owner->Get_Transform()->Get_Pos().x, m_Owner->Get_Transform()->Get_Pos().y+2,);
 
     return S_OK;
 }
@@ -39,6 +45,15 @@ void CUICookingGame::Initialize_GameObject()
     }
 
     m_TransformCom->Set_Pos({ m_OwnerTransform->Get_Pos().x ,  m_OwnerTransform->Get_Pos().y + 1.f,  m_OwnerTransform->Get_Pos().z });
+
+    m_ItemIcon = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_ITEM);
+    if (m_ItemIcon)
+    {
+        SpawnUIOnLayer(m_ItemIcon, OBJTYPE::UI);
+    }
+
+//영역 위치 랜덤으로 
+
 }
 
 _int CUICookingGame::Update_GameObject(const _float& timeDelta)
@@ -46,6 +61,20 @@ _int CUICookingGame::Update_GameObject(const _float& timeDelta)
     _int exit = CUI::Update_GameObject(timeDelta);
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
+
+    //커서포즈 계속 왓다 갓다
+
+    if (CDInputMgr::GetInstance()->KeyDown(DIK_U))
+    {
+        //커서포즈 멈춤
+        //위치가 에리어 안이라면
+        //m_DoneEvent()
+        //m_ResultItemDrop(true)
+        // 자신 지우기
+    }
+    
+
+
 
     if (!m_Owner)
         return exit;
@@ -64,7 +93,84 @@ void CUICookingGame::Render_GameObject()
 {
     CUI::Render_GameObject();
 
-    //m_TextureCom->Set_Texture();
+
+    //빨간색 
+    const _matrix& world = m_TransformCom->Get_World();
+
+    {
+        const float BG_WIDTH = 1.0f;
+        const float BG_HEIGHT = 1.0f;
+
+        m_BufferCom->Set_Scale(BG_WIDTH, BG_HEIGHT);
+        m_BufferCom->Set_Offset(0.f, 1.f);
+
+        m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
+        m_TextureCom->Set_Texture(5);  // 위 현제 음식 텍스처
+        m_BufferCom->Render_Buffer();
+    }
+
+    //메인 바 데코 
+
+
+    {
+        const float BG_WIDTH = 1.0f;
+        const float BG_HEIGHT = 1.0f;
+
+        m_BufferCom->Set_Scale(BG_WIDTH, BG_HEIGHT);
+        m_BufferCom->Set_Offset(0.f, 1.f);
+
+        m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
+        m_TextureCom->Set_Texture(5);  // 위 현제 음식 텍스처
+        m_BufferCom->Render_Buffer();
+    }
+
+
+    //배경 
+
+
+    {
+        const float BG_WIDTH = 1.0f;
+        const float BG_HEIGHT = 1.0f;
+
+        m_BufferCom->Set_Scale(BG_WIDTH, BG_HEIGHT);
+        m_BufferCom->Set_Offset(0.f, 1.f);
+
+        m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
+        m_TextureCom->Set_Texture(5);  // 위 현제 음식 텍스처
+        m_BufferCom->Render_Buffer();
+
+        // 배경 안 음식 아이콘
+        m_ItemIcon->Set_TextureIndex(CItemDB::GetInstance()->GetIndexById(m_recipeInst.ResultItemID));
+        m_ItemIcon->SetCloneTexAspectScale({ .2f, .2f, 1 });
+        m_ItemIcon->Get_Transform()->Set_Pos(-WINCX / 3, WINCY / 4.f, 1);
+        
+
+    }
+
+
+    //배경 
+
+    {
+        const float BG_WIDTH = 1.0f;
+        const float BG_HEIGHT = 1.0f;
+
+        m_BufferCom->Set_Scale(BG_WIDTH, BG_HEIGHT);
+        m_BufferCom->Set_Offset(0.f, -1.f);
+
+        m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
+        m_TextureCom->Set_Texture(5);  // 아래 키 텍스처
+        m_BufferCom->Render_Buffer();
+
+        _vec3 center = m_BufferCom->Get_Transform()->Get_Pos();
+        _vec2 rectLT{ center.x - WINCX * .5f, WINCY * 0.5f - center.y };
+
+        CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Regular",
+            L"\"A\" 요리",
+            &rectLT,
+            D3DXCOLOR(1.f, 1.f, 1.f, 1.f));
+    }
+
+ 
 }
 
 HRESULT CUICookingGame::Add_Component()
@@ -78,7 +184,19 @@ HRESULT CUICookingGame::Add_Component()
     m_TransformCom = CreateProtoComponent<CTransform>(this, COMPONENTTYPE::TRANSFORM);
     NULL_CHECK_RETURN(m_TransformCom, E_FAIL);
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
+    
 
+    m_Buffer_Curser = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
+    NULL_CHECK_RETURN(m_Buffer_Curser, E_FAIL);
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::RC_TEX, m_Buffer_Curser });
+
+    m_Buffer_Area = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
+    NULL_CHECK_RETURN(m_Buffer_Area, E_FAIL);
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::RC_TEX, m_Buffer_Area });
+
+    m_Buffer_keyInfo = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
+    NULL_CHECK_RETURN(m_Buffer_keyInfo, E_FAIL);
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::RC_TEX, m_Buffer_keyInfo });
 
     return S_OK;
 }

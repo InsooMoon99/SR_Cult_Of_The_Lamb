@@ -30,7 +30,7 @@ public:
 
 
     bool CanCooK(int recipeID, CInventory* playerInven);// 이게 맞나..///
-    bool AddRecipe(int id);
+    bool AddRecipe(int id, CInventory* playerInven);
 
     bool RemoveRecipe(int slotNum);// 이건 해야할까 말아야 할까
 
@@ -53,8 +53,10 @@ public:
 private:
     vector<Recipe*> RecipeDB;
     // 선택후
-    vector<int> m_vecTmpRecipeID;
+    vector<int> m_vecTmpRecipeID;// 대기열
     queue<RecipeInst> m_queRecipeInst; // 주소로 안하는게 낫데 메모리 관리 신경 쓸 필요 없음
+
+    CGameObject* m_pPlayerInven;
 
     int invenSlotNum = 12;
     int m_StockMax = 0;

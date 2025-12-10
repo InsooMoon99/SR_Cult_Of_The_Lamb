@@ -35,7 +35,7 @@ HRESULT CUIItemGetManager::Ready_GameObject()
 }
 void CUIItemGetManager::Initialize()
 {
-    m_Inventory->SetOnItemAdded([this](ItemInstance* itemInstance, int itemCount) {this->Add_UIItemGet(itemInstance, itemCount); });
+    m_Inventory->SetOnItemAdded([this](ItemInstance* itemInstance/*, int itemCount*/) {this->Add_UIItemGet(itemInstance, 1); }); // 아이템은 1 개씩 처리 로직이라 기본값으로 1
 }
 _int CUIItemGetManager::Update_GameObject(const _float& timeDelta)
 {

@@ -118,27 +118,42 @@ void CCookingController::SetUIRecipeSlot(/*Slot* slot,*/ int id, CUIButton* quit
 
 bool CCookingController::CanCooK(int recipeID, CInventory* playerInven)
 {
+
+
     Recipe* recipe =  CRecipeDB::GetInstance()->GetRecipeById(recipeID);
-    for (auto& it : recipe->ingredients)
+    for (auto& [ID,Num] : recipe->ingredients)
     {
-        if (CRecipeDB::GetInstance()->GetIndexById(it.first))
-        {
-            playerInven->
-        }
+        auto Playeriter = playerInven->GetCountMap().find(ID);
+        if (Playeriter == playerInven->GetCountMap().end())
+            return false;
+      
+        if (playerInven->GetCountMap().at(ID) < Num)
+            return false;
     }
     
     //playerInven->Get_Cnt
 
-    return false;
+    return true;
 }
 
-bool CCookingController::AddRecipe(int id)
+bool CCookingController::AddRecipe(int id, CInventory* playerInven)
 {
-    if (m_vecTmpRecipeID.size() > 12)
+    if (m_vecTmpRecipeID.size() > invenSlotNum)
     {
+        // 대기열 등록
         m_vecTmpRecipeID.push_back(id);
+
+        //픟레이어 인벤에서 삭제
+        Recipe* recipe = CRecipeDB::GetInstance()->GetRecipeById(id);
+        for (auto& [ItemID, Num] : recipe->ingredients)
+        {
+            playerInven->RemoveItem(ItemID, Num);
+        }
+
+
         return true;
     }
+
     return false;
 }
 

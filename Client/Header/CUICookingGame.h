@@ -2,6 +2,7 @@
 #include "CUI.h"
 #include "Client_Struct.h"
 
+class CUIIcon;
 
 class CUICookingGame :
     public CUI
@@ -30,12 +31,22 @@ private:
 
     CGameObject* m_Owner;
     RecipeInst  m_recipeInst;
+
     CTransform* m_OwnerTransform;
+
+    CRcTex* m_Buffer_Curser;
+    CRcTex* m_Buffer_Area;
+    CRcTex* m_Buffer_Info;
+    CRcTex* m_Buffer_keyInfo;
 
     function<void()> m_DoneEvent;
     function<void()> m_ResultItemDrop;
 
+    CUIIcon* m_ItemIcon;
+
+
     int m_StockMax = 0;
+    _vec3 m_CurserPos;
 public:
     static CUICookingGame* Create(DEVICE graphicDev, CGameObject* owner, RecipeInst recipeInst);
 
