@@ -62,7 +62,12 @@ HRESULT CUIBuildMenu::Ready_GameObject()
     m_CookingFireCell->Set_TextureIndex(0);
 	m_CookingFireCell->Set_RecipeId(5001);
     m_CookingFireCell->Set_OnClick([this]() {PlayCloseAnimation(); CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::KITCHEN); });
+    //m_CookingFireCell->Set_OnActive([](){return m_})
     m_BuildCells.push_back(m_CookingFireCell);
+
+
+
+
 
     m_TempleCell = CUIBuildCell::Create(m_GraphicDev);
     m_TempleCell->Set_BuildIndex(BUILDITEM::TEMPLE);
@@ -233,6 +238,15 @@ CUIBuildMenu* CUIBuildMenu::Create(DEVICE graphicDev)
         return nullptr;
     }
     return buildMenu;
+}
+
+void CUIBuildMenu::SetCellEvent(function<bool()> event)
+{
+    if(m_CookingFireCell&& m_TempleCell)
+    {
+        m_CookingFireCell->Set_OnActive(event);
+        m_TempleCell->Set_OnActive(event);
+    }
 }
 
 void CUIBuildMenu::Free()

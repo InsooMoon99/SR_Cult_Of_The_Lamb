@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include "CUI.h"
 
+class CCookingController;
+class CInventory;
 class CUIBuildCell;
 class CUIIcon;
 
@@ -17,6 +19,7 @@ public:
     virtual void    Render_GameObject() override;
     void LateUpdate_GameObject(const _float& timeDelta) override;
 
+    void Set_Inventory(CInventory* inventory) { m_Inventory = inventory; }
     HRESULT Add_Component();
     void Initialize();
     void Check_Hovered();
@@ -24,6 +27,8 @@ public:
     void PlayCloseAnimation();
     static CUIBuildMenu* Create(DEVICE graphicDev);
     void SetOnDeactivate(function<void()> deactivate) { m_Deactivate = deactivate; }
+    void SetCellEvent(function<bool()> event);
+    void Set_CookingController(CCookingController* cookingController) { m_CookingController = cookingController; }
 
 protected:
     void Free() override;
@@ -32,11 +37,11 @@ private:
     CUIBuildCell* m_CookingFireCell; // 성지 셀
     CUIBuildCell* m_TempleCell; // 사원 셀
     vector<CUIBuildCell*> m_BuildCells;
-
+    CInventory* m_Inventory;
     CUIIcon* m_DecoIcon1;
     CUIIcon* m_DecoIcon2;
     CUIIcon* m_InteractionKey;
-
+    CCookingController* m_CookingController;
     float m_TargetX;
     float m_ClosedX;
     float m_Speed;

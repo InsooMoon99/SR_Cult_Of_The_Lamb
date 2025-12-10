@@ -5,6 +5,7 @@
 #include "CCamSetupBuilder.h"
 #include "CCombatStat.h"
 #include "CConstructionMgr.h"
+#include "CCookingController.h"
 #include "CDInputMgr.h"
 #include "CDroppedItem.h"
 #include "CDropSystem.h"
@@ -496,7 +497,12 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiBuildMenu),
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UI_BuildMenu) failed");
     m_WorkBench->Set_BuildMenu(uiBuildMenu);
-
+    CCookingController* cookingController = dynamic_cast<CCookingController*>(m_WorkBench->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::COOKCTRL));
+    uiBuildMenu->Set_Inventory(m_PlayerInventoryCom);
+    uiBuildMenu->Set_CookingController(cookingController);
+    /*uiBuildMenu->SetCellEvent([]()
+    {
+        return dynamic_cast<CCookingController*>(m_WorkBench->Get_Component(COMPONENTID::ID_STATIC,COMPONENTTYPE::COOKCTRL))->CanCooK(uiBuildMenu->,m_PlayerInventoryCom)})*/
     m_Layers.insert({ layerType, layer });
 
     return S_OK;

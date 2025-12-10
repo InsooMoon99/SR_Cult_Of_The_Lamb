@@ -155,7 +155,7 @@ void CUIBuildCell::Render_GameObject()
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
-    if(m_Active)
+    if(m_IsActive())
     {
         m_TextureCom->Set_Texture(1);
     }
