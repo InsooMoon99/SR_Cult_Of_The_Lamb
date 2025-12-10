@@ -154,6 +154,10 @@ HRESULT CMainApp::Ready_DefaultSetting(DEVICE* graphicDev)
         *graphicDev, L"NanumSquare_Heavy", L"나눔스퀘어 네오 Heavy", 33, 35, FW_HEAVY)))
         return E_FAIL;
 
+	if (FAILED(CFontMgr::GetInstance()->Ready_Font(
+		*graphicDev, L"NanumSquare_Big", L"나눔스퀘어 네오 Regular", 30, 33, FW_MEDIUM)))
+		return E_FAIL;
+
     //아이템 숫자 출력용 폰트
     if (FAILED(CFontMgr::GetInstance()->Ready_Font(
         *graphicDev, L"NanumSquare_Number", L"나눔스퀘어 네오 Heavy", 18, 20, FW_HEAVY)))

@@ -104,7 +104,7 @@ void CStage::Initialize_Scene()
     m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Village2.map");
 
     // 던전 이동 트리거 만들기
-    Create_Trigger();
+    //Create_Trigger();
 }
 
 _int CStage::Update_Scene(const _float& timeDelta)
@@ -460,9 +460,9 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     dynamic_cast<CUIItemGetManager*>(gameObject)->SetInventory(m_PlayerInventoryCom);
     dynamic_cast<CUIItemGetManager*>(gameObject)->Initialize();
 
-//    CUIBuildMenu* uiBuildMenu = CUIBuildMenu::Create(m_GraphicDev);
-//    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiBuildMenu),
-//        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UI_BuildMenu) failed");
+    CUIBuildMenu* uiBuildMenu = CUIBuildMenu::Create(m_GraphicDev);
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiBuildMenu),
+        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UI_BuildMenu) failed");
     m_Layers.insert({ layerType, layer });
 
     return S_OK;

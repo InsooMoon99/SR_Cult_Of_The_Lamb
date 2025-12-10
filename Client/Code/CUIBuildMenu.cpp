@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "CUIBuildMenu.h"
+#include "CConstructionMgr.h"
 #include "CTransform.h"
 #include "CRcTex.h"
 #include "CTexture.h"
@@ -7,6 +8,8 @@
 #include "CUIBuildCell.h"
 #include "CDInputMgr.h"
 #include "CRenderer.h"
+#include "CFontMgr.h"
+#include "CUIIcon.h"
 
 CUIBuildMenu::CUIBuildMenu(DEVICE graphicDev)
     : CUI(graphicDev),
@@ -19,7 +22,8 @@ CUIBuildMenu::CUIBuildMenu(DEVICE graphicDev)
       m_ClosedX(0),
       m_Speed(0),
       m_IsOpen(false),
-      m_IsAnimating(false) { }
+      m_IsAnimating(false),
+      m_IsStart(false) { }
 
 CUIBuildMenu::CUIBuildMenu(const CUI& rhs)
     : CUI(rhs),
@@ -30,6 +34,7 @@ CUIBuildMenu::CUIBuildMenu(const CUI& rhs)
       m_Speed(0),
       m_IsOpen(false),
       m_IsAnimating(false),
+      m_IsStart(false),
       m_Cols(0),
       m_CellWidth(0),
       m_CellHeight(0) { }
@@ -43,7 +48,7 @@ HRESULT CUIBuildMenu::Ready_GameObject()
     if (FAILED(Add_Component()))
         return E_FAIL;
 
-    m_TargetX = -200;
+    m_TargetX = -300;
     m_ClosedX = -WINCX;
     m_Speed = 900.f;
 
@@ -52,13 +57,25 @@ HRESULT CUIBuildMenu::Ready_GameObject()
     m_CookingFireCell->Set_BuildIndex(BUILDITEM::COOKINGFIRE);
     m_CookingFireCell->Set_TextureIndex(0);
 	m_CookingFireCell->Set_RecipeId(5001);
+    m_CookingFireCell->Set_OnClick([this]() {m_IsStart = true; CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::KITCHEN); });
     m_BuildCells.push_back(m_CookingFireCell);
 
     m_TempleCell = CUIBuildCell::Create(m_GraphicDev);
     m_TempleCell->Set_BuildIndex(BUILDITEM::TEMPLE);
     m_TempleCell->Set_TextureIndex(1);
 	m_TempleCell->Set_RecipeId(5002);
+    m_TempleCell->Set_OnClick([this]() {m_IsStart = true; CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::TEMPLE); });
     m_BuildCells.push_back(m_TempleCell);
+
+    m_DecoIcon1 = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_DECO);
+    m_DecoIcon1->SetRegister(false);
+    m_DecoIcon1->Get_Transform()->Set_Scale(42.f,18.f,0.f);
+    m_DecoIcon1->Set_TextureIndex(0);
+
+    m_DecoIcon2 = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_DECO);
+    m_DecoIcon2->SetRegister(false);
+    m_DecoIcon2->Get_Transform()->Set_Scale(42.f, 18.f, 0.f);
+    m_DecoIcon2->Set_TextureIndex(1);
 
     m_TransformCom->Set_Scale(450.f, 400.f, 1.f);
     m_TransformCom->Set_Pos(m_ClosedX, 0.f, 0.f);
@@ -71,12 +88,23 @@ _int CUIBuildMenu::Update_GameObject(const _float& timeDelta)
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
+    m_DecoIcon1->Update_GameObject(timeDelta);
+    m_DecoIcon2->Update_GameObject(timeDelta);
+
    //BuildMenu 전체적으로 다시 만들 예정이라 막아 놓음
    if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
    {
        m_IsOpen = !m_IsOpen;
        m_IsAnimating = true;
+       m_IsStart = false;
    }
+
+    if(m_IsStart)
+    {
+        m_IsOpen = !m_IsOpen;
+        m_IsAnimating = true;
+        m_IsStart = false;
+    }
    
     float targetX = m_IsOpen ? m_TargetX : m_ClosedX; //열려있냐 닫혀있냐에 따라서 목표 X값이 달라짐
     _vec3 pos = m_TransformCom->Get_Pos();
@@ -98,15 +126,15 @@ _int CUIBuildMenu::Update_GameObject(const _float& timeDelta)
 
     int materialRenderCount = 0;
     _vec2 BackPos = { m_TransformCom->Get_Pos().x, m_TransformCom->Get_Pos().y };
-
+    
     for (int i = 0; i < cellsSize; i++)
     {
         int col = materialRenderCount % m_Cols;
-        float startOffset = -50.f;
+        float startOffset = -80.f;
         float materialOffsetX = startOffset + col * m_CellWidth;
 
         m_BuildCells[i]->Update_GameObject(timeDelta);
-        m_BuildCells[i]->Get_Transform()->Set_Pos(BackPos.x + materialOffsetX, BackPos.y + 60, 0.f);
+        m_BuildCells[i]->Get_Transform()->Set_Pos(BackPos.x + materialOffsetX, BackPos.y -20, 0.f);
 
         materialRenderCount++;
     }
@@ -130,6 +158,21 @@ void CUIBuildMenu::Render_GameObject()
     {
         m_BuildCells[i]->Render_GameObject();
     }
+    _vec3 pos = m_TransformCom->Get_Pos();
+    _vec2 offset = { 15.f,250.f };
+    _vec2 screen = { WINCX / 2 + pos.x+offset.x, WINCY / 2 - pos.y - offset.y };
+
+    CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Big",
+        L"건설",
+        &screen,
+        D3DXCOLOR{ 1.f, 1.f, 1.f, 1.f });
+
+    _vec2 decoOffset = { 100.f,0.f };
+    m_DecoIcon1->Get_Transform()->Set_Pos(pos.x - decoOffset.x +offset.x, pos.y - decoOffset.y + offset.y,0.f);
+    m_DecoIcon2->Get_Transform()->Set_Pos(pos.x + decoOffset.x+offset.x, pos.y - decoOffset.y + offset.y,0.f);
+    m_DecoIcon1->Render_GameObject();
+    m_DecoIcon2->Render_GameObject();
+
 }
 
 void CUIBuildMenu::LateUpdate_GameObject(const _float& timeDelta)

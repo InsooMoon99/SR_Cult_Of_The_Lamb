@@ -58,8 +58,8 @@
       "desc": "날것을 요리해 추종자들이 먹을 수 있는 요리로 만듭니다.",
       "ingredients": [
         {
-          "id": 1006,
-          "count": 2
+          "id": 1001,
+          "count": 3
         },
       {
           "id": 1005,
@@ -77,9 +77,13 @@
       "desc": "설교와 의식을 수행하는 사원을 짓습니다",
       "ingredients": [
         {
-          "id": 1004,
-          "count": 3
-        }
+          "id": 1001,
+          "count": 4
+        },
+	{
+	"id": 1005,
+	"count": 3
+	}
       ],
       "UIFileName": "Icon_Temple",
       "UIPath": "../Bin/Resource/Texture/UI/Icon_Building/Icon_Temple.png"
