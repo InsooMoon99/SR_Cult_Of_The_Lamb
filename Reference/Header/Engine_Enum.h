@@ -73,7 +73,10 @@ enum class COLLISION_LAYERTYPE
     ATTACK,
     TRIGGER,
     INTERACTIVEOBJ,
-    BUILDING,           // 건물
+
+    WORKBENCH,          // COLLISION : 제작대
+    KITCHEN,            // COLLISION : 요리
+    CONSTRUCTION_SITE,  // COLLISION : 건축 부지
 
     COL_LAYER_END
 };
@@ -92,8 +95,8 @@ enum class OBJTYPE
     BOSS1,
     BOSS2,
     INTERACTIVE,
-    TEMPLE,             // 사원
-    KITCHEN,            // 요리용 화덕
+    BUILDING,           // 오브젝트 : 건물
+    CONSTRUCTION_SITE,  // 오브젝트 : 건축 부지
 
     ATTACK_COL,
     PARTICLE,
@@ -102,7 +105,6 @@ enum class OBJTYPE
     TERRAIN,
     PLACEMENT,
     WALL,
-    CONSTRUCTION_SITE,
 
     OBJ_END
 };

@@ -24,9 +24,6 @@ HRESULT CTemple::Ready_GameObject()
     if (FAILED(CBuildingBase::Ready_GameObject()))
         return E_FAIL;
 
-    if (m_BoxCollCom)
-        m_BoxCollCom->Set_CollisionLayer(COLLISION_LAYERTYPE::BUILDING);
-
     return S_OK;
 }
 
@@ -37,7 +34,8 @@ void CTemple::Initialize_GameObject()
     m_TransformCom->Set_Scale(4.f, 5.f / 1.5f, 1.f);
     m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(40.f));
 
-    m_BoxCollCom->Set_RawSize(_vec3(1.f, 1.5f, 1.5f));
+    m_BoxCollCom->Set_RawSize(_vec3(1.2f, 1.5f, 1.5f));
+    m_BoxCollCom->Set_CollisionLayer(COLLISION_LAYERTYPE::DEFAULT);
 }
 
 _int CTemple::Update_GameObject(const _float& timeDelta)
@@ -63,16 +61,13 @@ void CTemple::Render_GameObject()
 
     // 다른 위치에 지붕 텍스처 렌더링
     _matrix matWorld = m_TransformCom->Get_World();
-
     _matrix matOffset, matScale, matTrans;
 
     D3DXMatrixScaling(&matScale, 1.f, 1.f, 1.f);
-
     D3DXMatrixTranslation(&matTrans, 0.f, 0.f, 0.35f);
 
     matOffset = matScale * matTrans;
-
-    matWorld = matOffset * matWorld;
+    matWorld  = matOffset * matWorld;
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &matWorld);
     m_TextureCom->Set_Texture(1);

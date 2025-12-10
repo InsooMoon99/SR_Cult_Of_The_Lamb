@@ -99,7 +99,11 @@ static const char* ToString(ACTORSTATE state)
     case ACTORSTATE::PLAYER_WOOD:            return "PlayerWood";
     case ACTORSTATE::PLAYER_STONE:           return "PlayerStone";
     case ACTORSTATE::PLAYER_BERRY:           return "PlayerBerry";
-   // case ACTORSTATE::GATHERING:           return "Gathering";
+    //case ACTORSTATE::GATHERING:            return "Gathering";
+    
+    case ACTORSTATE::PLAYER_WEAPONGET:       return "PlayerWeaponGet";
+    case ACTORSTATE::PLAYER_HAMMER:          return "PlayerConstruct";
+
     case ACTORSTATE::STATE_END:              return "StateEnd";
     default:                                 return "UnknownState";
     }
@@ -149,75 +153,94 @@ static const char* ToString(COMPONENTTYPE type)
     case COMPONENTTYPE::WALL_RENDERER:      return "WallRenderer";
 
     // Texture Components (General & Specific)
-    case COMPONENTTYPE::TEXTURE:            return "Texture";
-    case COMPONENTTYPE::TEX_PLAYER:         return "TexPlayer";
-    case COMPONENTTYPE::TEX_MAINBG:         return "TexMainBg";
-    case COMPONENTTYPE::TEX_MONSTER:        return "TexMonster";
-    case COMPONENTTYPE::TEX_HUMAN_MONSTER:  return "TexHumanMonster";
-    case COMPONENTTYPE::TEX_ITEM:           return "TexItem";
-    case COMPONENTTYPE::TEX_OUT:            return "TexOut";
+    case COMPONENTTYPE::TEXTURE:             return "Texture";
+    case COMPONENTTYPE::TEX_PLAYER:          return "TexPlayer";
+    case COMPONENTTYPE::TEX_MAINBG:          return "TexMainBg";
+    case COMPONENTTYPE::TEX_MONSTER:         return "TexMonster";
+    case COMPONENTTYPE::TEX_HUMAN_MONSTER:   return "TexHumanMonster";
+    case COMPONENTTYPE::TEX_ITEM:            return "TexItem";
+    case COMPONENTTYPE::TEX_OUT:             return "TexOut";
 
-    case COMPONENTTYPE::TEX_GRASS:          return "TexGrass";
-    case COMPONENTTYPE::TEX_RUBBLE:         return "TexRubble";
-    case COMPONENTTYPE::TEX_DECO:           return "TexDeco";
+    case COMPONENTTYPE::TEX_GRASS:           return "TexGrass";
+    case COMPONENTTYPE::TEX_RUBBLE:          return "TexRubble";
+    case COMPONENTTYPE::TEX_DECO:            return "TexDeco";
 
     // UI Texture Components
-    case COMPONENTTYPE::TEX_UI_CIRCLE:      return "UI_Circle";
-    case COMPONENTTYPE::TEX_UI_COLOR:       return "UI_Color";
-    case COMPONENTTYPE::TEX_UI_HEART:       return "UI_Heart";
-    case COMPONENTTYPE::TEX_UI_WEAPON:      return "UI_Weapon";
-    case COMPONENTTYPE::TEX_MENU_CHAR:      return "UI_ManuChaR";
-    case COMPONENTTYPE::TEX_UI_ICON:        return "UI_Icon";
-    case COMPONENTTYPE::TEX_UI_CELL:        return "UI_Cell";
-    case COMPONENTTYPE::TEX_UI_SKILLCOUNT:  return "UI_SkillCount";
-    case COMPONENTTYPE::TEX_UI_HIGHLIGHT:   return "UI_Highlight";
-    case COMPONENTTYPE::TEX_UI_INVEN:       return "UI_Inven";
-    case COMPONENTTYPE::TEX_UI_RITUALCARD:  return "UI_RitualCard";
-    case COMPONENTTYPE::TEX_UI_BUTTON:      return "UI_BButton";
-    case COMPONENTTYPE::TEX_BOSSPHASE1:     return "UI_BossPhase1";
+    case COMPONENTTYPE::TEX_UI_CIRCLE:       return "UI_Circle";
+    case COMPONENTTYPE::TEX_UI_COLOR:        return "UI_Color";
+    case COMPONENTTYPE::TEX_UI_HEART:        return "UI_Heart";
+    case COMPONENTTYPE::TEX_UI_WEAPON:       return "UI_Weapon";
+    case COMPONENTTYPE::TEX_MENU_CHAR:       return "UI_ManuChaR";
+    case COMPONENTTYPE::TEX_UI_ICON:         return "UI_Icon";
+    case COMPONENTTYPE::TEX_UI_CELL:         return "UI_Cell";
+    case COMPONENTTYPE::TEX_UI_SKILLCOUNT:   return "UI_SkillCount";
+    case COMPONENTTYPE::TEX_UI_HIGHLIGHT:    return "UI_Highlight";
+    case COMPONENTTYPE::TEX_UI_INVEN:        return "UI_Inven";
+    case COMPONENTTYPE::TEX_UI_RITUALCARD:   return "UI_RitualCard";
+    case COMPONENTTYPE::TEX_UI_BUTTON:       return "UI_BButton";
+    case COMPONENTTYPE::TEX_BOSSPHASE1:      return "UI_BossPhase1";
 
     // Tile Texture Components
-    case COMPONENTTYPE::TEX_TILE_284:       return "TexTile284";
-    case COMPONENTTYPE::TEX_TILE_1024:      return "TexTile1024";
-    case COMPONENTTYPE::TEX_TILE_OUTLINE:   return "TexTileOutline";
+    case COMPONENTTYPE::TEX_TILE_284:        return "TexTile284";
+    case COMPONENTTYPE::TEX_TILE_1024:       return "TexTile1024";
+    case COMPONENTTYPE::TEX_TILE_OUTLINE:    return "TexTileOutline";
 
     // Collider Components
-    case COMPONENTTYPE::RECT_COLL:          return "RectColl";
-    case COMPONENTTYPE::CIRCLE_COLL:        return "CircleColl";
-    case COMPONENTTYPE::BOX_COLL:           return "BoxColl";
-    case COMPONENTTYPE::SPHERE_COLL:        return "SphereColl";
+    case COMPONENTTYPE::RECT_COLL:           return "RectColl";
+    case COMPONENTTYPE::CIRCLE_COLL:         return "CircleColl";
+    case COMPONENTTYPE::BOX_COLL:            return "BoxColl";
+    case COMPONENTTYPE::SPHERE_COLL:         return "SphereColl";
 
     // Physics Component
-    case COMPONENTTYPE::RIGIDBODY:          return "Rigidbody";
+    case COMPONENTTYPE::RIGIDBODY:           return "Rigidbody";
 
     // Player Components
-    case COMPONENTTYPE::WEAPON_EQUIP:       return "WeaponEquip";
-    case COMPONENTTYPE::PL_CONTROLLER:      return "PlayerController";
-    case COMPONENTTYPE::PL_INPUT:           return "PlayerInput";
-    case COMPONENTTYPE::PL_MOVEMENT:        return "PlayerMovement";
-    case COMPONENTTYPE::PL_ATTACK:          return "PlayerAttack";
+    case COMPONENTTYPE::WEAPON_EQUIP:        return "WeaponEquip";
+    case COMPONENTTYPE::PL_CONTROLLER:       return "PlayerController";
+    case COMPONENTTYPE::PL_INPUT:            return "PlayerInput";
+    case COMPONENTTYPE::PL_MOVEMENT:         return "PlayerMovement";
+    case COMPONENTTYPE::PL_ATTACK:           return "PlayerAttack";
 
-    case COMPONENTTYPE::PROJECTILE:         return "Projectile";
+    case COMPONENTTYPE::PROJECTILE:          return "Projectile";
 
-    case COMPONENTTYPE::TEX_UI_HEARTCARD:   return "UI_HeartCard";
-    case COMPONENTTYPE::TEX_UI_EXPLAIN:     return "UI_Explain";
-    case COMPONENTTYPE::TEX_UI_TAROT:       return "UI_Tarot";
-    case COMPONENTTYPE::TEX_BULLET:         return "Bullet";
-    case COMPONENTTYPE::TEX_SLAVE_TEST:     return "Slave_Test";
-    case COMPONENTTYPE::TEX_BOSS2_PHASE2:   return "Boss_Phase2";
-    case COMPONENTTYPE::BOSS2_CONTROLLER:   return "Boss_Controller";
-    case COMPONENTTYPE::TEX_DUNGEON_DECO:   return "Dungeon_Deco";
-    case COMPONENTTYPE::TEX_ETC:            return "ETC";
+    case COMPONENTTYPE::TEX_UI_HEARTCARD:    return "UI_HeartCard";
+    case COMPONENTTYPE::TEX_UI_EXPLAIN:      return "UI_Explain";
+    case COMPONENTTYPE::TEX_UI_TAROT:        return "UI_Tarot";
+    case COMPONENTTYPE::TEX_BULLET:          return "Bullet";
+    case COMPONENTTYPE::TEX_SLAVE_TEST:      return "Slave_Test";
+    case COMPONENTTYPE::TEX_BOSS2_PHASE2:    return "Boss_Phase2";
+    case COMPONENTTYPE::BOSS2_CONTROLLER:    return "Boss_Controller";
+    case COMPONENTTYPE::TEX_DUNGEON_DECO:    return "Dungeon_Deco";
+    case COMPONENTTYPE::TEX_ETC:             return "ETC";
 
-    case COMPONENTTYPE::EYEBALL_CONTROLLER: return "Eyeball_Controller";
-    case COMPONENTTYPE::TEX_BOSS2_EYEBALL:  return "Eyeball";
+    case COMPONENTTYPE::EYEBALL_CONTROLLER:  return "Eyeball_Controller";
+    case COMPONENTTYPE::TEX_BOSS2_EYEBALL:   return "Eyeball";
 
-    case COMPONENTTYPE::SPRITEEFFECT:       return "Sprit_Effect";
-    case COMPONENTTYPE::TEX_PARTICLE:       return "Particle";
+    case COMPONENTTYPE::SPRITEEFFECT:        return "Sprit_Effect";
+    case COMPONENTTYPE::TEX_PARTICLE:        return "Particle";
 
-    case COMPONENTTYPE::COMPONENT_END:      return "ComponentEnd"; // End Marker
+    
 
-    default:                                return "UnknownComponent";
+    case COMPONENTTYPE::MONSTER_SPAWNER:     return "MonsterSpawner";
+    case COMPONENTTYPE::GATHERING:           return "Gathering";
+    case COMPONENTTYPE::CONSTRUCTION:        return "Construction";
+    case COMPONENTTYPE::PL_SKILL:            return "PlayerSkill";
+    case COMPONENTTYPE::TEX_FLOATER_MONSTER: return "TexFloaterMonster";
+    case COMPONENTTYPE::TEX_UI_MONSTERHP:    return "UI_MonsterHP";
+    case COMPONENTTYPE::TEX_UI_BUILD:        return "UI_Build";
+    case COMPONENTTYPE::TEX_WORKBENCH:       return "TexWorkBench";
+    case COMPONENTTYPE::TEX_DOTTEDCIRCLE:    return "TexDottedCircle";
+    case COMPONENTTYPE::TEX_TEMPLE:          return "TexTemple";
+    case COMPONENTTYPE::TEX_KITCHEN:         return "TexKitchen";
+    case COMPONENTTYPE::TEX_BERRY:           return "TexBerry";
+    case COMPONENTTYPE::TEX_ROCK:            return "TexRock";
+    case COMPONENTTYPE::TEX_TREE:            return "TexTree";
+    case COMPONENTTYPE::TEX_SKILL:           return "TexSkill";
+    case COMPONENTTYPE::TEX_WARNING_CHAIN:   return "TexWarningChain";
+    case COMPONENTTYPE::TEX_CHAIN:           return "TexChain";
+
+    case COMPONENTTYPE::COMPONENT_END:       return "ComponentEnd"; // End Marker
+    default:                                 return "UnknownComponent";
     }
 }
 
@@ -238,25 +261,30 @@ static const char* ToString(OBJTYPE type)
 {
     switch (type)
     {
-    case OBJTYPE::PLAYER:           return "Player";
-    case OBJTYPE::MONSTER:          return "Monster";
-    case OBJTYPE::CAMERA:           return "Camera";
-    case OBJTYPE::ITEM:             return "Item";
-    case OBJTYPE::UI:               return "Ui";
-    case OBJTYPE::BOSS2:            return "Boss2";
-    case OBJTYPE::HUMANMONSTER:     return "HumanMonster";
-    case OBJTYPE::TERRAIN:          return "Terrain";
-    case OBJTYPE::PLACEMENT:        return "Placement";
-    case OBJTYPE::ATTACK_COL:       return "Attack_Collider";
-    case OBJTYPE::BOSS1:            return "Boss_Phase1";
-    case OBJTYPE::WALL:             return "Wall";
-    case OBJTYPE::NPC:              return "NPC";
-    case OBJTYPE::LOGIC:            return "Logic";
-    case OBJTYPE::PARTICLE:         return "Particle";
-    case OBJTYPE::TRIGGER:          return "Trigger";
+    case OBJTYPE::PLAYER:            return "Player";
+    case OBJTYPE::MONSTER:           return "Monster";
+    case OBJTYPE::CAMERA:            return "Camera";
+    case OBJTYPE::ITEM:              return "Item";
+    case OBJTYPE::UI:                return "Ui";
+    case OBJTYPE::BOSS2:             return "Boss2";
+    case OBJTYPE::HUMANMONSTER:      return "HumanMonster";
+    case OBJTYPE::TERRAIN:           return "Terrain";
+    case OBJTYPE::PLACEMENT:         return "Placement";
+    case OBJTYPE::ATTACK_COL:        return "Attack_Collider";
+    case OBJTYPE::BOSS1:             return "Boss_Phase1";
+    case OBJTYPE::WALL:              return "Wall";
+    case OBJTYPE::NPC:               return "NPC";
+    case OBJTYPE::LOGIC:             return "Logic";
+    case OBJTYPE::PARTICLE:          return "Particle";
+    case OBJTYPE::TRIGGER:           return "Trigger";
 
-    case OBJTYPE::OBJ_END:          return "ObjectEnd";
-    default:                        return "UnknownObjectType";
+    case OBJTYPE::INTERACTIVE:       return "Interactive";
+    case OBJTYPE::BUILDING:          return "Building";
+    case OBJTYPE::BULLET:            return "Bullet";
+    case OBJTYPE::CONSTRUCTION_SITE: return "ConstructionSite";
+
+    case OBJTYPE::OBJ_END:           return "ObjectEnd";
+    default:                         return "UnknownObjectType";
     }
 }
 

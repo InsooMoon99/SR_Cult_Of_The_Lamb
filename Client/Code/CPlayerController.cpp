@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "CPlayerController.h"
+
 #include "CAnimator.h"
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
@@ -495,12 +496,14 @@ void CPlayerController::Action_TripleSkill(const _float& timeDelta)
 
 void CPlayerController::Action_Construction(const _float& timeDelta)
 {
-    bool bStopConstruction = CDInputMgr::GetInstance()->KeyUp(DIK_E) || CDInputMgr::GetInstance()->MouseUp(DIM_LB);
+    bool bStopConstruction = CDInputMgr::GetInstance()->KeyUp(DIK_E) ||
+                             CDInputMgr::GetInstance()->MouseUp(DIM_LB);
 
     if (!bStopConstruction)
     {
         if (!m_OwnerConstructionCom || !m_OwnerConstructionCom->Get_ConstructZone())
             bStopConstruction = true;
+
         else
             m_OwnerConstructionCom->Action_Construction(timeDelta);
     }
