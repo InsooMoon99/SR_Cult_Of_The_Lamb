@@ -20,6 +20,7 @@ public:
     HRESULT Add_Component();
     void Initialize();
     void Check_Hovered();
+    void Set_IsStart(bool isStart) { m_IsStart = isStart; }
 
     static CUIBuildMenu* Create(DEVICE graphicDev);
     
@@ -36,10 +37,14 @@ private:
     float m_Speed;
     bool m_IsOpen;
     bool m_IsAnimating;
+    bool m_IsStart;
 
     int m_Cols;
     int m_CellWidth;
     int m_CellHeight;
+
+    CUIIcon* m_DecoIcon1;
+    CUIIcon* m_DecoIcon2;
 
 };
 
