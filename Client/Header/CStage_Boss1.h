@@ -3,6 +3,8 @@
 #include "CScene.h"
 
 class CTerrain;
+class CUI_Dialogue;
+class CCameraController;
 
 class CStage_Boss1 : public CScene
 {
@@ -24,6 +26,11 @@ private:
 
     HRESULT Ready_Prototype();
 
+    void    OnDialogueEnd(const string& id);
+
+    void    Create_Trigger(_vec3 pos);
+    void    Begin_BossIntro();  // 카메라 연출
+
 public:
     static CStage_Boss1* Create(DEVICE graphicDev);
 
@@ -31,7 +38,10 @@ private:
     void Free() override;
 
 private:
-    CTerrain*    m_Terrain;
-    CGameObject* m_Boss;
+    CTerrain*           m_Terrain;
+    CGameObject*        m_Boss;
+
+    CUI_Dialogue*       m_Dialogue;
+    CCameraController*  m_CamController;
 
 };

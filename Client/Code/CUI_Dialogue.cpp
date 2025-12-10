@@ -222,11 +222,8 @@ void CUI_Dialogue::Render_DialogueBox()
     m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
     m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
-    // 텍스처가 없으면 검은색 반투명으로 그리기
     if (m_TextureCom)
-    {
-        m_TextureCom->Set_Texture(0);
-    }
+        m_TextureCom->Set_Texture(L"DialogueBox",0);
 
     m_BufferCom->Render_Buffer();
 
@@ -344,14 +341,12 @@ void CUI_Dialogue::Handle_Input()
     if (m_IsShowingChoices)
     {
         // Left
-        if (CDInputMgr::GetInstance()->KeyDown(DIK_A) ||
-            CDInputMgr::GetInstance()->KeyDown(DIK_LEFT))
+        if (CDInputMgr::GetInstance()->KeyDown(DIK_LEFT))
         {
             m_SelectedLeft = true;
         }
 
-        if (CDInputMgr::GetInstance()->KeyDown(DIK_D) ||
-            CDInputMgr::GetInstance()->KeyDown(DIK_RIGHT))
+        if (CDInputMgr::GetInstance()->KeyDown(DIK_RIGHT))
         {
             m_SelectedLeft = false;
         }

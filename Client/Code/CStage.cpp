@@ -21,7 +21,6 @@
 #include "CTransform.h"
 #include "CUICircle.h"
 #include "CUIIcon.h"
-#include "CUIItemGet.h"
 #include "CUIItemGetManager.h"
 #include "CUIMp.h"
 #include "CUIPlayerPanel.h"
@@ -32,9 +31,9 @@
 #include "CPlayerSkill.h"
 #include "CRock.h"
 #include "CTree.h"
-
 #include "CTrigger_Dungeon.h"
 #include "CUIBuildMenu.h"
+#include "CUI_Dialogue.h"
 
 class CUIBuildMenu;
 
@@ -42,9 +41,10 @@ CStage::CStage(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
       m_PlayerCombatStatCom(nullptr),
       m_PlayerInventoryCom(nullptr),
-      m_WeaponEquipCom(nullptr),
+      m_WeaponEquipCom(nullptr), m_PlayerSkillCom(nullptr),
       m_Terrain(nullptr)
-{ }
+{
+}
 
 CStage::~CStage()
 { }
@@ -100,7 +100,7 @@ void CStage::Initialize_Scene()
 {
     CScene::Initialize_Scene();
 
-    // 초기 맵 불러오기 <- 이거 꼭 Initialize에서 진행해야 맵 오브젝트가 잘 불러진다.
+    // 초기 맵 불러오기 <- 이거 Initialize에서 진행해야 맵 오브젝트가 잘 불러진다.
     m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Village2.map");
 
     // 던전 이동 트리거 만들기
@@ -460,9 +460,10 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     dynamic_cast<CUIItemGetManager*>(gameObject)->SetInventory(m_PlayerInventoryCom);
     dynamic_cast<CUIItemGetManager*>(gameObject)->Initialize();
 
-   // CUIBuildMenu* uiBuildMenu = CUIBuildMenu::Create(m_GraphicDev);
-   // FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiBuildMenu),
-   //     L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UI_BuildMenu) failed");
+    // CUIBuildMenu* uiBuildMenu = CUIBuildMenu::Create(m_GraphicDev);
+    // FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiBuildMenu),
+    //     L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UI_BuildMenu) failed");
+    
     m_Layers.insert({ layerType, layer });
 
     return S_OK;

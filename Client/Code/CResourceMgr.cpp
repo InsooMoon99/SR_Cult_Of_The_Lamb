@@ -809,7 +809,6 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
         COMPONENTTYPE::TEX_UI_MONSTERHP, CTexture::Create(graphicDev, TEX_NORMAL, monsterHp_Path))))
         return E_FAIL;
 
-
     CTexture* buildTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(buildTex, E_FAIL);
 
@@ -824,6 +823,17 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
         return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_BUILD, buildTex)))
+        return E_FAIL;
+
+    // Dialogue
+    CTexture* dialogueTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(dialogueTex, E_FAIL);
+
+    if (FAILED(dialogueTex->Add_Texture(L"DialogueBox", TEX_NORMAL,
+        L"../Bin/Resource/Texture/UI/Talk/SpeechBubble1.png", 1)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_DIALOGUE, dialogueTex)))
         return E_FAIL;
 
     return S_OK;
