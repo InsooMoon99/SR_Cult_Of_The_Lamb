@@ -18,6 +18,7 @@
 #include "CTransform.h"
 #include "ItemInstance.h"
 
+
 CTree::CTree(DEVICE graphicDev, TREE tree)
     : CWorldInteractive(graphicDev),
       m_tree(tree),

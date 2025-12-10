@@ -7,10 +7,10 @@
 #include "CTransform.h"
 #include "CRenderer.h"
 
-CUI_MonsterHp::CUI_MonsterHp(DEVICE graphicDev, CGameObject* owner)
+CUI_MonsterHp::CUI_MonsterHp(DEVICE graphicDev, CCombatStat* combat)
     : CUI(graphicDev),
-    m_Owner(owner),
-    m_OwnerCombatStat(nullptr),
+    m_Owner(combat->Get_Owner()),
+    m_OwnerCombatStat(combat),
     m_OwnerTransform(nullptr),
     m_HpRatio(1.0f),
     m_HpDelayRatio(1.0f),
@@ -130,7 +130,6 @@ void CUI_MonsterHp::Render_GameObject()
         m_BufferCom->Set_Offset(0.f, 0.f);
 
         m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
-        m_TextureCom->Set_Texture(1);  // 배경 텍스처
         m_BufferCom->Render_Buffer();
     }
 
@@ -194,9 +193,9 @@ void CUI_MonsterHp::Update_Billboard()
 
 }
 
-CUI_MonsterHp* CUI_MonsterHp::Create(DEVICE graphicDev, CGameObject* owner)
+CUI_MonsterHp* CUI_MonsterHp::Create(DEVICE graphicDev, CCombatStat* combat)
 {
-    CUI_MonsterHp* hp = new CUI_MonsterHp(graphicDev, owner);
+    CUI_MonsterHp* hp = new CUI_MonsterHp(graphicDev, combat);
 
     if (FAILED(hp->Ready_GameObject()))
     {

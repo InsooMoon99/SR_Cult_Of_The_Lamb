@@ -386,8 +386,14 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         return E_FAIL;
 
 #pragma region --- Tex: 기타 상호작용 ---
+    // 무기 들기. 그런데 스프라이트가 조금 다른거같은데
     if (FAILED(playerTex->Add_Texture(L"Player_WeaponGet", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Weapon_Get_Shot/Lamb-weapons-get%d.png", 77)))
+        return E_FAIL;
+
+    // Hit
+    if (FAILED(playerTex->Add_Texture(L"Player_Hit", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Knockback_Shot/Lamb-knockback%d.png", 34)))
         return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
@@ -803,6 +809,21 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
         COMPONENTTYPE::TEX_UI_MONSTERHP, CTexture::Create(graphicDev, TEX_NORMAL, monsterHp_Path))))
         return E_FAIL;
 
+    // UI_Cooking
+    vector<wstring> cookingUI;
+    cookingUI.push_back(L"../Bin/Resource/Texture/UI/CookUI/CookingBar_White.png");
+    cookingUI.push_back(L"../Bin/Resource/Texture/UI/CookUI/Cooking_Marker.png");
+    cookingUI.push_back(L"../Bin/Resource/Texture/UI/CookUI/CookingBar_Border.png");
+    cookingUI.push_back(L"../Bin/Resource/Texture/UI/CookUI/CookingBar_Green.png");
+    cookingUI.push_back(L"../Bin/Resource/Texture/UI/CookUI/CookingBar_Red.png");
+    cookingUI.push_back(L"../Bin/Resource/Texture/UI/CookUI/SpeechBubble.png");
+
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_UI_COOK, CTexture::Create(graphicDev, TEX_NORMAL, cookingUI))))
+        return E_FAIL;
+
+
     vector<wstring> buildTex;
     buildTex.emplace_back(L"../Bin/Resource/Texture/UI/Icon_Building/Icon_CookingFire.png");
     buildTex.emplace_back(L"../Bin/Resource/Texture/UI/Icon_Building/Icon_Temple.png");
@@ -816,7 +837,18 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_DECO, CTexture::Create(graphicDev, TEX_NORMAL, decoTex))))
         return E_FAIL;
-   
+
+    // Dialogue
+    CTexture* dialogueTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(dialogueTex, E_FAIL);
+
+    if (FAILED(dialogueTex->Add_Texture(L"DialogueBox", TEX_NORMAL,
+        L"../Bin/Resource/Texture/UI/Talk/SpeechBubble1.png", 1)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_DIALOGUE, dialogueTex)))
+        return E_FAIL;
+
     return S_OK;
 }
 

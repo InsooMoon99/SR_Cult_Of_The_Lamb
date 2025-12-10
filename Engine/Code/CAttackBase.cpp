@@ -80,6 +80,10 @@ void CAttackBase::OnBeginOverlap(CCollider* self, CCollider* other)
     if (!combat)
         return;
 
+    // 무적처리
+    if (combat->Is_Invincible())
+        return;
+
     // 방향 보정
     CTransform* atkTransform = dynamic_cast<CTransform*>(
         m_Instigator->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));

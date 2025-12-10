@@ -35,6 +35,7 @@ private:
 
     _vec3               m_Current_Direction;
     _vec3               m_Target_Direction;
+
     _float              m_Direction_ChangeTimer;
     _float              m_Direction_Timer;
     _float              m_MoveSpeed;

@@ -7,6 +7,7 @@ class CWeaponEquip;
 class CTerrain;
 class CPlayerSkill;
 
+
 BEGIN(Engine)
 class CCombatStat;
 END
@@ -56,4 +57,5 @@ private:
     CWorkBench*   m_WorkBench;
     CPlayerSkill* m_PlayerSkillCom;
     CTerrain*     m_Terrain;
+
 };
