@@ -165,4 +165,20 @@ public:
 
 private:
     void Free() override;
+
+public:
+    // 카메라 연출용
+    using OnTransitionEnd = function<void()>;
+    void  Set_OnTransitionEnd(OnTransitionEnd callback) { m_OnTransitionEnd = callback; }
+
+    _bool Check_TransitionComplete(_float threshold = 0.1f);
+
+    void Start_Transition()
+    {
+        m_IsInTransition = true;
+    }
+
+private:
+    _bool m_IsInTransition = false;  // 연출 중인지?
+    OnTransitionEnd m_OnTransitionEnd = nullptr;
 };

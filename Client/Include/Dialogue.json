@@ -1,7 +1,25 @@
 {
   "dialogues": [
     {
-      "dialogueId": "boss_Sacrifice",
+      "dialogueId": "Boss_Start",
+      "speaker": "기다리는 자",
+      "lines": [
+        {
+          "lineIndex": 0,
+          "speaker": "기다리는 자",
+          "text": "드디어... 내가 자유로워진다!",
+          "hasChoices": false
+        },
+        {
+          "lineIndex": 1,
+          "speaker": "기다리는 자",
+          "text": "다가오라, 그릇이여, 그리고 네 삶을 내 발에 바쳐라.",
+          "hasChoices": false
+        }
+      ]
+    },
+    {
+      "dialogueId": "Boss_Sacrifice",
       "speaker": "",
       "lines": [
         {
@@ -12,12 +30,35 @@
           "choice": {
             "leftText": "거절한다",
             "rightText": "수락",
-            "leftNextId": "Sacrifice_Reject",
-            "rightNextId": "Sacrifice_Accept"
+            "leftNextId": "",
+            "rightNextId": ""
           }
         }
       ]
+    },
+    {
+      "dialogueId": "Boss_Reject",
+      "speaker": "기다리는 자",
+      "lines": [
+        {
+          "lineIndex": 0,
+          "speaker": "기다리는 자",
+          "text": "그렇게 날 배신하는구나, 어린 양이여, 나의 명을 거부하고는, 스스로 거짓된 우상이 되는구나.",
+          "hasChoices": false
+        },
+        {
+          "lineIndex": 1,
+          "speaker": "기다리는 자",
+          "text": "그 왕관은 본디 나의 것! 네가 감히 죽음과 맞서려 하는가?",
+          "hasChoices": false
+        },
+        {
+          "lineIndex": 2,
+          "speaker": "기다리는 자",
+          "text": "내 너를 죽이고 난 후에도, 너의 고통은 끝나지 않을 것이다. 죽음 후에도 넌 날 벗어날 수 없다.",
+          "hasChoices": false
+        }
+      ]
     }
-  ] 
-
+  ]
 }

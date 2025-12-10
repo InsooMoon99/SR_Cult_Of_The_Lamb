@@ -36,16 +36,16 @@ CPlayerController::CPlayerController(DEVICE graphicDev)
 
 CPlayerController::CPlayerController(const CPlayerController& rhs)
     : CComponent(rhs),
-      m_OwnerStateCom(nullptr),
-      m_OwnerCombatStatCom(nullptr),
-      m_OwnerRigidbodyCom(nullptr),
-      m_OwnerColliderCom(nullptr),
-      m_OwnerInputCom(nullptr),
-      m_OwnerMovementCom(nullptr),
-      m_OwnerAttackCom(nullptr),
-      m_OwnerSkillCom(nullptr),
-      m_OwnerGatherCom(nullptr),
-      m_OwnerConstructionCom(nullptr)
+    m_OwnerStateCom(nullptr),
+    m_OwnerCombatStatCom(nullptr),
+    m_OwnerRigidbodyCom(nullptr),
+    m_OwnerColliderCom(nullptr),
+    m_OwnerInputCom(nullptr),
+    m_OwnerMovementCom(nullptr),
+    m_OwnerAttackCom(nullptr),
+    m_OwnerSkillCom(nullptr),
+    m_OwnerGatherCom(nullptr),
+    m_OwnerConstructionCom(nullptr)
 {
     ZeroMemory(m_Timers, sizeof(m_Timers));
 }
@@ -570,6 +570,9 @@ void CPlayerController::Action_Refuse(const _float& timeDetla)
 
     if (animator->Is_AnimationFinished())
     {
+        if (m_OnRefuseEnd)
+            m_OnRefuseEnd();
+
         // 일단은 Idle로 ?
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
     }

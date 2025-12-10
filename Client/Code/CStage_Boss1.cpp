@@ -4,6 +4,7 @@
 #include "CBossPhase1.h"
 #include "CCameraController.h"
 #include "CCamSetupBuilder.h"
+#include "CRigidbody.h"
 #include "CDInputMgr.h"
 #include "CDropSystem.h"
 #include "CLayer.h"
@@ -25,7 +26,12 @@
 #include "CUI_Dialogue.h"
 #include "CWall.h"
 #include "CAnimator.h"
+#include "CBossController.h"
+#include "CBossStateMachine.h"
+#include "CBossTalk.h"
+#include "CPlayerController.h"
 #include "CWeaponEquip.h"
+#include "CPlayerMovement.h"
 
 CStage_Boss1::CStage_Boss1(DEVICE graphicDev)
     : Engine::CScene(graphicDev), m_Terrain(nullptr), m_Boss(nullptr), m_Player(nullptr), m_Dialogue(nullptr),
@@ -65,19 +71,18 @@ void CStage_Boss1::Initialize_Scene()
 
     // 트리거 생성
     const _vec3 firstTriggerPos = _vec3(47.3f, 1.f, 30.f);
-    const _vec3 secondTriggerPos = _vec3(47.8f, 1.f, 47.f);
+    const _vec3 secondTriggerPos = _vec3(47.8f, 1.f, 49.f);
 
     Create_Trigger(firstTriggerPos, _vec3(10.f, 5.f, 5.f), [this]()
         {
             Hide_PlayerUI();
-        }, false);
+        }, true);
 
     Create_Trigger(secondTriggerPos, _vec3(5.f, 5.f, 5.f), [this]()
         {
-            // 대사 시작 -> 대사 끝나면 Begin_BossIntro 호출하면서 카메라 연출 변경 예정
-            Begin_BossIntro();
+            Begin_PlayerDecide();
 
-        }, false);
+        }, true);
 
     NULL_CHECK(m_Dialogue);
 
@@ -87,7 +92,16 @@ void CStage_Boss1::Initialize_Scene()
             OnDialogueEnd(id);
         });
 
-    
+    auto controller = dynamic_cast<CPlayerController*>(m_Player->Get_Component(
+        ID_DYNAMIC, COMPONENTTYPE::PL_CONTROLLER));
+
+    NULL_CHECK(controller);
+
+    controller->Set_OnRefuseEnd([this]()
+        {
+            OnRefusedEnd();
+        });
+
 }
 
 _int CStage_Boss1::Update_Scene(const _float& timeDelta)
@@ -95,6 +109,19 @@ _int CStage_Boss1::Update_Scene(const _float& timeDelta)
     _int exit = Engine::CScene::Update_Scene(timeDelta);
 
     Move_PlayerUI(timeDelta);
+
+    if (m_WaitingForDialogue)
+    {
+        m_DialogueDelayTimer += timeDelta;
+
+        if (m_DialogueDelayTimer >= 1.1f)
+        {
+            m_Dialogue->Start_Dialogue("Boss_Start", _vec2(0.f, 200.f), _vec2(300.f, 80.f));
+
+            m_WaitingForDialogue = false;
+        }
+    }
+
 
     return exit;
 }
@@ -323,55 +350,29 @@ HRESULT CStage_Boss1::Ready_UI_Layer(LAYERTYPE layerType)
 
 void CStage_Boss1::OnDialogueEnd(const string& id)
 {
-    auto weapon = dynamic_cast<CWeaponEquip*>(
-        m_Player->Get_Component(ID_STATIC, COMPONENTTYPE::WEAPON_EQUIP));
-
-    NULL_CHECK(weapon);
-
-    auto animator = dynamic_cast<CAnimator*>(
-        m_Player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
-
-    NULL_CHECK(animator);
-
-    //if (id == "Sacrifice_Accept")
-    //{
-    //    // 수락은 만들기 귀찮. 안고를거임
-    //}
-
-    if (id == "Sacrifice_Reject" || id == "Sacrifice_Accept")
+    if (id == "Boss_Start")
     {
-        // 3001 : 검, 3002 : 건틀릿
-        if (weapon->Get_CurrentWeaponID() == 3001)
-        {
-            animator->Play_Animation(L"Refuse_Sword", ANIMSTATE::ONCE);
-        }
-
-        else if (weapon->Get_CurrentWeaponID() == 3002)
-        {
-            animator->Play_Animation(L"Refuse_Gauntlet", ANIMSTATE::ONCE);
-        }
-        // 디버깅 할 때 무기 안들대 기본값
-        else 
-            animator->Play_Animation(L"Refuse_Sword", ANIMSTATE::ONCE);
-
-        auto state = dynamic_cast<CState*>(m_Player->Get_Component(
-                        ID_DYNAMIC, COMPONENTTYPE::STATE));
-
-        NULL_CHECK(state);
-
-        ImGui::Begin("TeSTT");
-        if (ImGui::Button("Idle"))
-        {
-            state->Change_State(ACTORSTATE::IDLE);
-        }
-        ImGui::End();
-
-        state->Change_State(ACTORSTATE::PLAYER_REFUSE);
+        On_BossStartEnd();
     }
+    else if (id == "Boss_Sacrifice")
+    {
+        On_SacrificeEnd();
+    }
+    else if (id == "Boss_Reject")
+    {
+        On_RejectEnd();
+    }
+
 }
 
-void CStage_Boss1::Begin_BossIntro()
+void CStage_Boss1::Begin_PlayerDecide()
 {
+    auto rigidbody = dynamic_cast<CRigidbody*>(
+        m_Player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::RIGIDBODY));
+
+    if (rigidbody)
+        rigidbody->Set_Velocity({ 0.f, 0.f, 0.f });
+
     auto state = dynamic_cast<CState*>(m_Player->Get_Component(
         ID_DYNAMIC, COMPONENTTYPE::STATE));
 
@@ -379,14 +380,11 @@ void CStage_Boss1::Begin_BossIntro()
 
     state->Change_State(ACTORSTATE::PLAYER_DECIDE);
 
-    m_Dialogue->Start_Dialogue("boss_Sacrifice", _vec2(0.f, 200.f), _vec2(300.f, 80.f));
+    m_Dialogue->Start_Dialogue("Boss_Sacrifice", _vec2(0.f, 200.f), _vec2(300.f, 80.f));
 
     CCamSetupBuilder(m_CamController)
         .SetTarget(m_PlayerTransformCom)
-        //.PivotOffset({ 0.f, 0.f, 0.f })
         .Distance(8.f)
-        //.RotX(45.f)
-        //.RotY(0.f)
         .LagSpeed(3.f)
         .ZoomSpeed(1.f)
         .Apply();
@@ -396,9 +394,19 @@ void CStage_Boss1::Begin_BossIntro()
 void CStage_Boss1::Hide_PlayerUI()
 {
     Setup_UIAnimation(220.f);
+
+    CCamSetupBuilder(m_CamController)
+        .SetTarget(m_Boss->Get_Transform())
+        .Distance(11.f)
+        .LagSpeed(3.f)
+        .ZoomSpeed(0.5f)
+        .Apply();
+
+    m_WaitingForDialogue = true;
+    m_DialogueDelayTimer = 0.f;
 }
 
-void CStage_Boss1::SHow_PlayerUI()
+void CStage_Boss1::Show_PlayerUI()
 {
     Setup_UIAnimation(-220.f);
 }
@@ -420,9 +428,110 @@ void CStage_Boss1::Setup_UIAnimation(_float offsetY)
     }
 }
 
+void CStage_Boss1::OnRefusedEnd()
+{
+    // 첫 번째 연출 끝났을 때 콜백
+    m_CamController->Get_OwnerCamMovement()->Set_OnTransitionEnd([this]()
+        {
+            // 두 번쨰 연출 끝났을 때 콜백
+            m_CamController->Get_OwnerCamMovement()->Set_OnTransitionEnd([this]()
+                {
+                    // 대사 시작
+                    m_Dialogue->Start_Dialogue("Boss_Reject", _vec2(0.f, 200.f), _vec2(300.f, 80.f));
+                });
+
+            // Refuse 카메라 연출 끝, 이제 보스한테 줌
+            CCamSetupBuilder(m_CamController)
+                .SetTarget(m_Boss->Get_Transform())
+                .Distance(8.f)
+                .LagSpeed(3.f)
+                .ZoomSpeed(3.f)
+                .Apply();
+        });
+
+
+    // 카메라 플레이어한테 원래대로 돌리기
+    CCamSetupBuilder(m_CamController)
+        .SetTarget(m_PlayerTransformCom)
+        .Distance(12.f)
+        .LagSpeed(3.f)
+        .ZoomSpeed(3.f)
+        .Apply();
+
+}
+
 void CStage_Boss1::End_CutScene()
 {
 
+}
+
+void CStage_Boss1::On_BossStartEnd()
+{
+    Reset_Cam();
+}
+
+void CStage_Boss1::On_SacrificeEnd()
+{
+    auto weapon = dynamic_cast<CWeaponEquip*>(
+        m_Player->Get_Component(ID_STATIC, COMPONENTTYPE::WEAPON_EQUIP));
+
+    NULL_CHECK(weapon);
+
+    auto animator = dynamic_cast<CAnimator*>(
+        m_Player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+
+    NULL_CHECK(animator);
+
+    int weaponID = weapon->Get_CurrentWeaponID();
+    cout << "Current Weapon ID: " << weaponID << endl;
+
+    // 3001 : 검, 3002 : 건틀릿
+    if (weapon->Get_CurrentWeaponID() == 3001)
+    {
+        animator->Play_Animation(L"Refuse_Sword", ANIMSTATE::ONCE);
+    }
+
+    else if (weapon->Get_CurrentWeaponID() == 3002)
+    {
+        animator->Play_Animation(L"Refuse_Gauntlet", ANIMSTATE::ONCE);
+    }
+    // 디버깅 할 때 무기 안들대 기본값
+    else
+        animator->Play_Animation(L"Refuse_Sword", ANIMSTATE::ONCE);
+
+    auto state = dynamic_cast<CState*>(m_Player->Get_Component(
+        ID_DYNAMIC, COMPONENTTYPE::STATE));
+
+    NULL_CHECK(state);
+
+    state->Change_State(ACTORSTATE::PLAYER_REFUSE);
+}
+
+void CStage_Boss1::On_RejectEnd()
+{
+    auto boss = dynamic_cast<CBossPhase1*>(m_Boss);
+    if (boss)
+    {
+        auto stateMachine = boss->Get_StateMachine();
+
+        auto talkState = dynamic_cast<CBossTalk*>(
+            stateMachine->Get_CurState());
+
+        if (talkState)
+            talkState->Set_Phase(CBossTalk::PHASE::CAHANGE);
+
+        Reset_Cam();
+    }
+}
+
+void CStage_Boss1::Reset_Cam()
+{
+    CCamSetupBuilder(m_CamController)
+        .SetTarget(m_PlayerTransformCom)
+        .Distance(18.f) // 게임이랑 비슷하게할거면 Distance좀 더 조절해야 할듯
+        .LagSpeed(3.f)
+        .ZoomSpeed(0.5f)
+        .Apply();
 }
 
 void CStage_Boss1::Move_PlayerUI(const _float timeDelta)

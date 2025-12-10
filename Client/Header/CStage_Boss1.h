@@ -39,14 +39,23 @@ private:
 
     void    OnDialogueEnd(const string& id);
 
-    void    Begin_BossIntro();  // 카메라 연출
+    void    Begin_PlayerDecide();
     void    Move_PlayerUI(const _float timeDelta);
 
     void    Hide_PlayerUI();
-    void    SHow_PlayerUI();
+    void    Show_PlayerUI();
 
     void    Setup_UIAnimation(_float offsetY);
+    void    OnRefusedEnd();
+
     void    End_CutScene();
+
+    // 대화 끝났을 때 호출
+    void    On_BossStartEnd();    
+    void    On_SacrificeEnd();    
+    void    On_RejectEnd();
+
+    void    Reset_Cam();
 
 public:
     static CStage_Boss1* Create(DEVICE graphicDev);
@@ -80,5 +89,8 @@ private:
 
     vector<_vec3>       m_OriginalUIPositions;
     vector<_vec3>       m_TargetUIPositions;
+
+    _float              m_DialogueDelayTimer = 0.f;
+    _bool               m_WaitingForDialogue = false;
 
 };

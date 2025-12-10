@@ -19,6 +19,8 @@ public:
     virtual void Enter();
     virtual void Exit();
 
+    void Set_Phase(PHASE phase) { m_ePhase = phase; }
+
 
 public:
     virtual HRESULT Ready_State();

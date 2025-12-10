@@ -57,6 +57,9 @@ public: // --- Getters for Inspector ---
     CPlayerMovement* Get_MovementCom() const { return m_OwnerMovementCom; }
     CPlayerAttack* Get_AttackCom() const { return m_OwnerAttackCom; }
 
+    using   OnRefuseEndCallback = function<void()>;
+    void    Set_OnRefuseEnd(OnRefuseEndCallback callback) { m_OnRefuseEnd = callback; }
+
 private:
     // --- [핵심 로직 파이프라인] ---
     void CheckStateTransition();                 // 상태 전환이 가능한지 판단
@@ -95,6 +98,8 @@ private:
 #pragma endregion
 
     _float m_Timers[TIMER_END]; // enum값을 통해 사용하는 타이머
+
+    OnRefuseEndCallback m_OnRefuseEnd = nullptr;
 
 public:
     static CPlayerController* Create(DEVICE graphicDev);

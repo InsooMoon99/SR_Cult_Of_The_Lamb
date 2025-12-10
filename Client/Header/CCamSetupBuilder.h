@@ -109,7 +109,12 @@ public:
             m_CamController->Set_CamTarget(nullptr);
 
         if (m_CamMovementCom)
+        {
             m_CamMovementCom->Apply_Preset(m_CamPreset, m_Snap);
+
+            if (!m_Snap) // Snap이 아닐 때에만, 연출 시작
+                m_CamMovementCom->Start_Transition();
+        }
     }
 
 private:
