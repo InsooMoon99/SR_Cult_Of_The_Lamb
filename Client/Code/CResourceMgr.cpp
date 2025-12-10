@@ -386,8 +386,14 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         return E_FAIL;
 
 #pragma region --- Tex: 기타 상호작용 ---
+    // 무기 들기. 그런데 스프라이트가 조금 다른거같은데
     if (FAILED(playerTex->Add_Texture(L"Player_WeaponGet", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Weapon_Get_Shot/Lamb-weapons-get%d.png", 77)))
+        return E_FAIL;
+
+    // Hit
+    if (FAILED(playerTex->Add_Texture(L"Player_Hit", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Knockback_Shot/Lamb-knockback%d.png", 34)))
         return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))

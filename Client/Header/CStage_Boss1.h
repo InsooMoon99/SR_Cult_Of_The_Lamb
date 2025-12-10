@@ -31,6 +31,7 @@ private:
     void Free() override;
 
 private:
-    CTerrain* m_Terrain;
+    CTerrain*    m_Terrain;
+    CGameObject* m_Boss;
 
 };

@@ -96,14 +96,14 @@ HRESULT CEyeball_Idle::Ready_State()
     m_fMinStateTime = 0.5f;
     m_Pattern_Cooldown = 4.f;
 
-    m_Current_Direction = {};
-    m_Target_Direction = {};
+    m_Current_Direction = {0.f, 0.f, 0.f};
+    m_Target_Direction = {0.f, 0.f, 0.f};
+
     m_Direction_ChangeTimer = 1.5f;
     m_Direction_Timer = 0.f;
     m_MoveSpeed = 1;
     m_LerpSpeed = 0.05f;
 
-    
     return S_OK;
 }
 

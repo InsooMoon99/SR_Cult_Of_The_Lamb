@@ -28,8 +28,7 @@ HRESULT CEyeball::Ready_GameObject()
     if (FAILED(CMonsterBase::Ready_GameObject()))
         return E_FAIL;
 
-    m_CombatStatCom->Set_MaxHp(20.f);
-    m_CombatStatCom->Set_Hp(20.f);
+    m_CombatStatCom->Set_MaxHp(200.f);
 
     return S_OK;
 }
@@ -43,6 +42,27 @@ void CEyeball::Initialize_GameObject()
     auto stateMachine = CEyeball_StateMachine::Create(this);
     m_EyeballController->Set_StateMachine(stateMachine);
     Safe_Release(stateMachine);
+
+    // 보스한테 데미지 전달
+    if (m_Boss && m_CombatStatCom)
+    {
+        m_CombatStatCom->Set_OnDamagedEvent([this]()
+            {
+                CCombatStat* bossCombat = dynamic_cast<CCombatStat*>(
+                    m_Boss->Get_Component(ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
+
+                if (bossCombat)
+                {
+                    HITDATA hitData;
+                    hitData.damage = 100.f;
+                    hitData.dir = { 0.f, 0.f, 0.f };
+
+                    bossCombat->Apply_Damage(hitData);
+                }
+
+                m_Boss->Set_Hurt(true);
+            });
+    }
 
 }
 

@@ -76,11 +76,11 @@ void CHumanMonster::Initialize_GameObject()
         m_Target = m_TargetTransform->Get_Owner();
 
     // Hp Bar 추가
-    m_HpBar = CUI_MonsterHp::Create(m_GraphicDev, this);
+    /*m_HpBar = CUI_MonsterHp::Create(m_GraphicDev, this);
     if (m_HpBar)
     {
         SpawnUIOnLayer(m_HpBar, OBJTYPE::UI);
-    }
+    }*/
 }
 
 _int CHumanMonster::Update_GameObject(const _float& timeDelta)

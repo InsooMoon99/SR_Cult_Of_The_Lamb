@@ -107,7 +107,6 @@ void CMainApp::Render_MainApp()
         CImGuiManager::GetInstance()->Render();
     }
 
-
     m_DeviceClass->Render_End();
 }
 

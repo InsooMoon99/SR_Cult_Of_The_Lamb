@@ -4,6 +4,7 @@
 
 class CMonsterController;
 class CMonsterBase;
+class CBoss2_Bullet;
 
 class CEyeball_Attack : public CMonsterState
 {
@@ -26,49 +27,61 @@ class CEyeball_Attack : public CMonsterState
     };
 
 private:
-    explicit CEyeball_Attack(CMonsterBase* owner);
-    virtual ~CEyeball_Attack();
+    explicit     CEyeball_Attack(CMonsterBase* owner);
+    virtual     ~CEyeball_Attack();
 
 public:
-    void    Enter() override;
-    _int    Update_State(const _float& timeDelta) override;
-    void    Exit() override;
+    void        Enter() override;
+    _int        Update_State(const _float& timeDelta) override;
+    void        Exit() override;
 
-    HRESULT Ready_State() override;
-
-public:
-    void Play_Anti();
-    void Play_Loop();
-    void Play_End();
+    HRESULT     Ready_State() override;
 
 public:
-    void Spawn_BulletPattern();
+    void        Play_Anti();
+    void        Play_Loop();
+    void        Play_End();
 
-    void Bullet_Dispresion();
-    void Bullet_Circle();
-    void Bullet_Burst();
+public:
+    void        Bullet_Dispresion();
+    void        Bullet_Circle();
+    void        Bullet_Brust();
 
 public:
     static CEyeball_Attack* Create(CMonsterBase* owner);
 
 private:
+    void Attack_Reset(CAnimator* animator);
+    void Random_Movement(const _float& timeDelta);
+
+private:
     void Free() override;
 
 private:
-    CMonsterBase*       m_Owner;
-    _float              m_Pattern_Cooldown;
+    DEVICE                  m_GraphicDev;
 
-    _vec3               m_StartPos{};         
-    _vec3               m_TargetPos{};        
-    _float              m_LerpSpeed;        
+    CMonsterBase*           m_Owner;
+    _float                  m_Pattern_Cooldown;
 
-    Eyeball_Anim        m_EyeballAnim;
-    _bool               m_HasFiredBullet;
+    Eyeball_Anim            m_EyeballAnim;
+    _bool                   m_HasFiredBullet;
 
-    _int                m_AttackCount;
-    _bool               m_IsFinished;
+    _int                    m_AttackCount;
+    _bool                   m_IsFinished;
 
-    Attack_Type         m_Bullet_AttackType;
+    Attack_Type             m_Bullet_AttackType;
+    _float                  m_circleTimer = 0.f;
+    _int                    m_Spawn_BulletCount = 0;
+    vector<CBoss2_Bullet*>  m_CircleBullets;
+
+    // 랜덤 이동
+    _vec3                   m_Current_Direction;
+    _vec3                   m_Target_Direction;
+
+    _float                  m_Direction_ChangeTimer;
+    _float                  m_Direction_Timer;      
+    _float                  m_MoveSpeed;            
+    _float                  m_LerpSpeed;        
 
 };
 

@@ -75,13 +75,13 @@ void CFloaterMonster::Initialize_GameObject()
         m_Target = m_TargetTransform->Get_Owner();
 
     // Hp Bar 추가
-    m_HpBar = CUI_MonsterHp::Create(m_GraphicDev, this);
+    /*m_HpBar = CUI_MonsterHp::Create(m_GraphicDev, this);
     if (m_HpBar)
     {
         m_HpBar->Set_YOffset(1.7f);
 
         SpawnUIOnLayer(m_HpBar, OBJTYPE::UI);
-    }
+    }*/
 }
 
 _int CFloaterMonster::Update_GameObject(const _float& timeDelta)

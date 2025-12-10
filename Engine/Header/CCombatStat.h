@@ -81,34 +81,35 @@ public:
     _float Get_Speed() { return m_Speed; }
     _float Get_MaxMp() { return m_MaxMp; }
     _int   Get_CurrentCharges() { return m_CurrentCharges; }
+
     //  아이템용
     _vec3   Get_Dir() { return m_DirForItem; }
-    void Set_OnDamagedEvent(function<void()> event) { OnDamaged = event; }
+    void    Set_OnDamagedEvent(function<void()> event) { OnDamaged = event; }
 
-    _bool  Is_Dead() { return m_IsDead; }
-    _bool  Is_Invincible() const { return m_IsInvincible; }
-    _bool  Is_Knockback() const { return m_KnockbackTimer > 0.f; }
+    _bool   Is_Dead() { return m_IsDead; }
+    _bool   Is_Invincible() const { return m_IsInvincible; }
+    _bool   Is_Knockback() const { return m_KnockbackTimer > 0.f; }
 
-    _bool  Can_HitState() { return m_CanHitState; }
-    void Set_HitState(_bool flag) { m_CanHitState = flag; }
+    _bool   Can_HitState() { return m_CanHitState; }
+    void    Set_HitState(_bool flag) { m_CanHitState = flag; }
 
-    void Set_Attack(_float attack) { m_Attack = attack; }
-    void Set_AttackSpeed(_float attackSpeed) { m_AttackSpeed = attackSpeed; }
-    void Set_Hp(_float hp) { m_Hp = hp; }
-    void Set_MaxHp(_float maxHp) { m_MaxHp = maxHp; Set_Hp(maxHp); }
-    void Set_Mp(_float mp) { m_Mp = mp; }
-    void Set_MaxMp(_float maxMp) { m_MaxMp = maxMp; Set_Mp(maxMp); }
-    void Set_Speed(_float speed) { m_Speed = speed; }
-    void Set_Invincible(bool invincible) { m_IsInvincible = invincible; }
+    void    Set_Attack(_float attack) { m_Attack = attack; }
+    void    Set_AttackSpeed(_float attackSpeed) { m_AttackSpeed = attackSpeed; }
+    void    Set_Hp(_float hp) { m_Hp = hp; }
+    void    Set_MaxHp(_float maxHp) { m_MaxHp = maxHp; Set_Hp(maxHp); }
+    void    Set_Mp(_float mp) { m_Mp = mp; }
+    void    Set_MaxMp(_float maxMp) { m_MaxMp = maxMp; Set_Mp(maxMp); }
+    void    Set_Speed(_float speed) { m_Speed = speed; }
+    void    Set_Invincible(bool invincible) { m_IsInvincible = invincible; }
 
-    void Add_Attack(float attack) { m_Attack += attack; }
+    void    Add_Attack(float attack) { m_Attack += attack; }
 
 public:
-    void Take_Damage(const HITDATA& hitData);
+    void    Take_Damage(const HITDATA& hitData);
 
-    void Apply_Damage(const HITDATA& hitData);
-    void Apply_Knockback(const HITDATA& hitData);
-    void On_Dead();
+    void    Apply_Damage(const HITDATA& hitData);
+    void    Apply_Knockback(const HITDATA& hitData);
+    void    On_Dead();
 
 public:
     static CCombatStat* Create(DEVICE graphicDev);

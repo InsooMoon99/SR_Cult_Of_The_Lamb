@@ -39,8 +39,8 @@ public:
     void Clear_All();
 
     // 조회
-    _int Get_MonsterCount() { return static_cast<_int>(m_SpawnPoints.size()); }
-    _bool Has_Monster(_int x, _int z);
+    _bool   Has_Monster(_int x, _int z);
+    _int    Get_MonsterCount() { return static_cast<_int>(m_SpawnPoints.size()); }
     const vector<MonsterSpawnData>& Get_SpawnPoints() const { return m_SpawnPoints; }
 
     // 저장/로드

@@ -11,7 +11,7 @@
 #include "CCreateHelper.h"
 #include "CCombatStat.h"
 #include "CMonsterState.h"
-
+#include "CUI_BossHp.h"
 
 
 CBossPhase1::CBossPhase1(DEVICE graphicDev)
@@ -60,11 +60,12 @@ HRESULT CBossPhase1::Ready_GameObject()
 
 void CBossPhase1::Initialize_GameObject()
 {
-   
     BaseCenter = { 47 ,m_TransformCom->Get_Scale().y, 47 };
     m_TransformCom->Set_Pos(StartPos.x, m_TransformCom->Get_Scale().y, StartPos.z);
+    
 
 }
+
 void CBossPhase1::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CMonsterBase::OnBeginOverlap(self, other);
@@ -72,11 +73,13 @@ void CBossPhase1::OnBeginOverlap(CCollider* self, CCollider* other)
     m_bHurt = true;
 
 }
+
 void CBossPhase1::OnEndOverlap(CCollider* self, CCollider* other)
 {
     CMonsterBase::OnEndOverlap(self, other);
 
 }
+
 _int CBossPhase1::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CMonsterBase::Update_GameObject(timeDelta);

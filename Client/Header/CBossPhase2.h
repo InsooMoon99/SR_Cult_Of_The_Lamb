@@ -54,7 +54,6 @@ protected:
 
 private:
     CMonsterController*     m_BossController;
-    CUI_BossHp*             m_BossHpBar;
 
 };
 

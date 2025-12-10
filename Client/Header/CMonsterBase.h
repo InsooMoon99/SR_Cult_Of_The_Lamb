@@ -51,11 +51,9 @@ public:
     virtual void    FlashRenderStart(DWORD color = D3DCOLOR_ARGB(255, 255, 255, 255));
     virtual void    FlashRenderEnd() ;
     virtual void    AlphaRenderStart(float alpha = 0.8f) ;
-    virtual void    AlphaRenderEnd(); 
+    virtual void    AlphaRenderEnd();
+    void            Set_Hurt(bool hurt) { m_bHurt = hurt; }
 
-    bool m_bHurt = false;
-    float HurtTime = 0;
-    float flashTime = 0.1f;
 protected:
     void            Free() override;
 
@@ -74,5 +72,12 @@ protected:
     _float          m_AttackCooldown;    // 몇초마다 공격할건지
     _float          m_AttackTimer;       // 현재 공격 타이머
     _bool           m_CanAttack;         // Timer >= Cooldown 공격이 가능한지 ?
+
+private:
+    bool    m_bHurt = false;
+    float   HurtTime = 0;
+    float   flashTime = 0.1f;
+
+
 };
 

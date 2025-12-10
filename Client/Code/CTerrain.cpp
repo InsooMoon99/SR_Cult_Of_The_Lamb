@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include "CTerrain.h"
-
+#include "CCombatStat.h"
 #include "CBoxCollider.h"
 #include "CCreateHelper.h"
 #include "CDInputMgr.h"
@@ -15,6 +15,7 @@
 #include "CTerrainTex.h"
 #include "CTexture.h"
 #include "CTransform.h"
+#include "CUI_MonsterHp.h"
 #include "CWall.h"
 #include "CWallRenderer.h"
 
@@ -328,6 +329,16 @@ void CTerrain::Spawn_Monsters(CLayer* layer)
         layer->Add_GameObject(objType, monster);
 
         monster->Initialize_GameObject();
+
+        // HpBar 생성
+        auto combat = dynamic_cast<CCombatStat*>(monster->Get_Component(ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
+        if (combat)
+        {
+            CUI_MonsterHp* monsterHp = CUI_MonsterHp::Create(m_GraphicDev, combat);
+            SpawnUIOnLayer(monsterHp, OBJTYPE::UI);
+
+            monsterHp->Initialize_GameObject();
+        }
     }
 }
 

@@ -14,6 +14,7 @@ class CState;
 class CCombatStat;
 END
 
+class CUI_BossHp;
 class CBossStateMachine;
 
 class CBossPhase1 : public CMonsterBase
@@ -63,6 +64,7 @@ private:
     bool m_bHurt = false;
     float m_fAlpha = 0.8f;
     float m_bHurtTime = 0;
+
 private:
     void Free() override;
 };

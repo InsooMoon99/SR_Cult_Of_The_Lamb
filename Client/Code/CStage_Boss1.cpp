@@ -8,6 +8,7 @@
 #include "CLayer.h"
 #include "CMainCamera.h"
 #include "CMainEditorMgr.h"
+#include "CCombatStat.h"
 #include "CMainMenu.h"
 #include "CMonster.h"
 #include "CPersistentObjectHelper.h"
@@ -16,10 +17,11 @@
 #include "CState.h"
 #include "CTerrain.h"
 #include "CTransform.h"
+#include "CUI_BossHp.h"
 #include "CWall.h"
 
 CStage_Boss1::CStage_Boss1(DEVICE graphicDev)
-    : Engine::CScene(graphicDev), m_Terrain(nullptr)
+    : Engine::CScene(graphicDev), m_Terrain(nullptr), m_Boss(nullptr)
 {
 }
 
@@ -174,12 +176,13 @@ HRESULT CStage_Boss1::Ready_GameLogic_Layer(LAYERTYPE layerType)
     // -----------------------------
 
     // 보스 생성
-    gameObject = CBossPhase1::Create(m_GraphicDev);
-    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase1::Create() returned null")
+    m_Boss = CBossPhase1::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(m_Boss, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase2::Create() returned null")
 
     FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::BOSS1, gameObject),
-        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
+        layer->Add_GameObject(OBJTYPE::BOSS1, m_Boss),
+        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Boss) failed");
+
 
     m_Layers.insert({ layerType, layer });
 
@@ -193,7 +196,13 @@ HRESULT CStage_Boss1::Ready_UI_Layer(LAYERTYPE layerType)
     if (nullptr == layer)
         return E_FAIL;
 
-    Engine::CGameObject* pGameObject = nullptr;
+    Engine::CGameObject* gameObject = nullptr;
+
+    auto combat = dynamic_cast<CCombatStat*>(m_Boss->Get_Component(ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
+    NULL_CHECK_RETURN(combat, E_FAIL);
+
+    gameObject = CUI_BossHp::Create(m_GraphicDev, combat);
+    layer->Add_GameObject(OBJTYPE::UI, gameObject);
 
     m_Layers.insert({ layerType, layer });
 
