@@ -136,12 +136,11 @@ _int CUIBuildCell::Update_GameObject(const _float& timeDelta)
         if (m_OnClick)
         {
             m_OnClick();
-
         }
-
     }
 
     int exit = CUI::Update_GameObject(timeDelta);
+
     return exit;
 }
 
@@ -156,8 +155,15 @@ void CUIBuildCell::Render_GameObject()
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
+    if(m_Active)
+    {
+        m_TextureCom->Set_Texture(1);
+    }
+    else
+    {
+        m_TextureCom->Set_Texture(2);
+    }
 
-    m_TextureCom->Set_Texture(1);
     m_ItemIcon->Set_TextureIndex(m_TextureIndex);
     m_CardItemIcon->Set_TextureIndex(m_TextureIndex);
 
@@ -192,9 +198,8 @@ void CUIBuildCell::Render_GameObject()
         &coinScreen,
         D3DXCOLOR{ 1.f, 1.f, 1.f, 1.f });
 
-
     //셀 선택시 외곽선 그리기
-    if (m_IsHovered)
+    if (m_IsHovered && m_Active)
     {
         m_TargetScale = m_BaseScale * 1.2;
 
@@ -243,7 +248,6 @@ void CUIBuildCell::Render_GameObject()
         m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
         m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
         m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-
     }
     else
     {

@@ -84,6 +84,11 @@ HRESULT CUIBuildMenu::Ready_GameObject()
     m_TransformCom->Set_Scale(450.f, 400.f, 1.f);
     m_TransformCom->Set_Pos(m_ClosedX, 0.f, 0.f);
 
+    m_InteractionKey = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_INTERACTION);
+    m_InteractionKey->SetRegister(false);
+    m_InteractionKey->Get_Transform()->Set_Scale(30.f,30.f,0.f);
+    m_InteractionKey->Set_TextureIndex(0);
+
     return S_OK;
 }
 
@@ -99,7 +104,7 @@ _int CUIBuildMenu::Update_GameObject(const _float& timeDelta)
 
     m_DecoIcon1->Update_GameObject(timeDelta);
     m_DecoIcon2->Update_GameObject(timeDelta);
-
+    m_InteractionKey->Update_GameObject(timeDelta);
 
     if (CDInputMgr::GetInstance()->KeyDown(DIK_E) && m_IsOpen == true)
     {
@@ -171,12 +176,22 @@ void CUIBuildMenu::Render_GameObject()
         &screen,
         D3DXCOLOR{ 1.f, 1.f, 1.f, 1.f });
 
+    _vec2 offset2 = { 180.f,280.f };
+    _vec2 screen2 = { WINCX / 2 + pos.x - offset2.x, WINCY / 2 - pos.y + offset2.y };
+    CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Regular",
+        L"창 닫기",
+        &screen2,
+        D3DXCOLOR{ 1.f, 1.f, 1.f, 1.f });
+
     _vec2 decoOffset = { 100.f,0.f };
+    _vec2 keyOffset = { 250.f,280.f };
     m_DecoIcon1->Get_Transform()->Set_Pos(pos.x - decoOffset.x +offset.x, pos.y - decoOffset.y + offset.y,0.f);
     m_DecoIcon2->Get_Transform()->Set_Pos(pos.x + decoOffset.x+offset.x, pos.y - decoOffset.y + offset.y,0.f);
+    m_InteractionKey->Get_Transform()->Set_Pos(pos.x - keyOffset.x , pos.y - keyOffset.y , 0.f);
+
     m_DecoIcon1->Render_GameObject();
     m_DecoIcon2->Render_GameObject();
-
+    m_InteractionKey->Render_GameObject();
 }
 
 void CUIBuildMenu::LateUpdate_GameObject(const _float& timeDelta)

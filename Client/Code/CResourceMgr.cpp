@@ -849,6 +849,14 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_DIALOGUE, dialogueTex)))
         return E_FAIL;
 
+    //UI 상호작용 키 
+    vector<wstring> interactionTex;
+    interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InterAction_E.png");
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_UI_INTERACTION, CTexture::Create(graphicDev, TEX_NORMAL, interactionTex))))
+        return E_FAIL;
+    
+
     return S_OK;
 }
 

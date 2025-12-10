@@ -119,7 +119,6 @@ void CCookingController::SetUIRecipeSlot(/*Slot* slot,*/ int id, CUIButton* quit
 bool CCookingController::CanCooK(int recipeID, CInventory* playerInven)
 {
 
-
     Recipe* recipe =  CRecipeDB::GetInstance()->GetRecipeById(recipeID);
     for (auto& [ID,Num] : recipe->ingredients)
     {
@@ -130,9 +129,7 @@ bool CCookingController::CanCooK(int recipeID, CInventory* playerInven)
         if (playerInven->GetCountMap().at(ID) < Num)
             return false;
     }
-    
     //playerInven->Get_Cnt
-
     return true;
 }
 

@@ -35,7 +35,7 @@ private:
 
     CUIIcon* m_DecoIcon1;
     CUIIcon* m_DecoIcon2;
-
+    CUIIcon* m_InteractionKey;
 
     float m_TargetX;
     float m_ClosedX;
@@ -46,7 +46,6 @@ private:
     int m_Cols;
     int m_CellWidth;
     int m_CellHeight;
-
 
     function<void()>    m_Deactivate;
 };
