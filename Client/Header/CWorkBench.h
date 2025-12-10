@@ -43,6 +43,6 @@ private:
     bool m_bPlayerOverlap = false;
     bool m_bHovering = false;
 
-    CSpriteEff* m_SpriteEffCom;
+
     CUIBuildMenu* m_BuildMenu;
 };

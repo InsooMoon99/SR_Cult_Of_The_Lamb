@@ -30,20 +30,20 @@ public:
 private:
     HRESULT Add_Component();
 
-    CGameObject* m_Owner;
+    CGameObject* m_Owner = nullptr;
     RecipeInst  m_recipeInst;
 
-    CTransform* m_OwnerTransform;
+    CTransform* m_OwnerTransform = nullptr;
 
-    CRcTex* m_Buffer_Curser;
-    CRcTex* m_Buffer_Area;
-    CRcTex* m_Buffer_Info;
-    CRcTex* m_Buffer_keyInfo;
+    CRcTex* m_Buffer_Deco = nullptr;
+    //CRcTex* m_Buffer_Area = nullptr;
+    CRcTex* m_Buffer_Info = nullptr;
+    CRcTex* m_Buffer_keyInfo = nullptr;
 
     function<void()> m_DoneEvent;
     function<void(int,bool)> m_ResultItemDrop;
 
-    CUIIcon* m_ItemIcon;
+    CUIIcon* m_ItemIcon = nullptr;
 
     bool m_result = false;
     int m_StockMax = 0;

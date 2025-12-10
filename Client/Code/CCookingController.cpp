@@ -198,11 +198,13 @@ bool CCookingController::ReloadForMiniGame()
     {
 
         int i = id;
+        Recipe* r = CRecipeDB::GetInstance()->GetRecipeById(i);
         if (tmpMap.count(i) == 0)
         {
         RecipeInst inst;
         inst.RecipeID = id;
         inst.StockNum = 1;
+        inst.ResultItemID = r->result; //여기에 결과물
 
         tmpMap[i] = inst;
         }

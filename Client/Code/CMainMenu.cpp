@@ -18,6 +18,7 @@
 #include "CTransform.h"
 #include "CUIButton.h"
 #include "CUIIcon.h"
+#include "CMainEditorMgr.h"
 
 CMainMenu::CMainMenu(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -108,7 +109,7 @@ HRESULT CMainMenu::Ready_Environment_Layer(LAYERTYPE layerType)
             ID_DYNAMIC,
             COMPONENTTYPE::TRANSFORM));
     playerTransform->Set_Pos({ 0, 0, 2 });
-    //playerTransform->Set_Scale({ 2.2f,1.2f,0.f });
+    playerTransform->Set_Scale({ 2.2f,1.2f,0.f });
     pGameObject->SetAspectScale(playerTransform, { 1.1f, 1.2f, 1.f });
     if (FAILED(layer->Add_GameObject(OBJTYPE::PLAYER, pGameObject)))
         return E_FAIL;
@@ -171,6 +172,37 @@ HRESULT CMainMenu::Ready_GameLogic_Layer(LAYERTYPE layerType)
             .Apply();
     }
 
+
+    //// 카메라 생성
+    //FAILED_CHECK_MSG(
+    //    Engine::AcquirePersistentObject<CMainCamera>(
+    //        OBJTYPE::CAMERA, L"MainCamera", m_GraphicDev, layer, &gameObject),
+    //    L"Persistent object setup failed"
+    //);
+
+    //auto camController = dynamic_cast<CCameraController*>(
+    //    gameObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAM_CONTROLLER));
+
+    //// 카메라 설정값 초기화
+    //if (camController != nullptr)
+    //{
+    //    // 씬에서 카메라 생성 시 값 초기화
+    //    // : CCameraSetup을 카메라 설정을 중도에 바꿀 때 사용 가능하고,
+    //    //   그럴 때는 필요한 것만 사용해 .Apply() 하면 된다.
+    //    CCamSetupBuilder(camController)
+    //        .SetTarget(playerTransform)
+    //        //.PivotOffset({ 0.f, 0.f, 0.f })
+    //        //.Distance(12.f)
+    //        //.RotX(45.f)
+    //        //.RotY(0.f)
+    //        //.LagSpeed(10.f)
+    //        //.ZoomSpeed(5.f)
+    //        .Snap()
+    //        .Apply();
+
+    //    // 에디터에 카메라 설정
+    //    CMainEditorMgr::GetInstance()->Set_MainCamera(camController);
+    //}
     if (nullptr == layer)
         return E_FAIL;
 
