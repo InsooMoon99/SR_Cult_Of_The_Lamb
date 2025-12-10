@@ -28,7 +28,6 @@
 #include "CUIBuildMenu.h"
 #include "CUICircle.h"
 #include "CUIIcon.h"
-#include "CUIItemGet.h"
 #include "CUIItemGetManager.h"
 #include "CUIMp.h"
 #include "CUIPlayerPanel.h"
@@ -36,6 +35,13 @@
 #include "CUIWeapon.h"
 #include "CWorkBench.h"
 #include "ItemInstance.h"
+#include "CHarvestableHerb.h"
+#include "CPlayerSkill.h"
+#include "CRock.h"
+#include "CTree.h"
+#include "CTrigger_Dungeon.h"
+#include "CUIBuildMenu.h"
+#include "CUI_Dialogue.h"
 
 class CUIBuildMenu;
 
@@ -46,7 +52,8 @@ CStage::CStage(DEVICE graphicDev)
       m_WeaponEquipCom(nullptr),
       m_PlayerSkillCom(nullptr),
       m_Terrain(nullptr)
-{ }
+{
+}
 
 CStage::~CStage()
 { }
@@ -102,7 +109,7 @@ void CStage::Initialize_Scene()
 {
     CScene::Initialize_Scene();
 
-    // 초기 맵 불러오기 <- 이거 꼭 Initialize에서 진행해야 맵 오브젝트가 잘 불러진다.
+    // 초기 맵 불러오기 <- 이거 Initialize에서 진행해야 맵 오브젝트가 잘 불러진다.
     m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Village2.map");
 
     // 던전 이동 트리거 만들기

@@ -252,7 +252,7 @@
     </Filter>
     <Filter Include="05. UI\01. UI\10. UIBuildMenu">
       <UniqueIdentifier>{98f70334-9b9c-4272-a009-7d7d2c2b8f8b}</UniqueIdentifier>
-          </Filter>
+    </Filter>
     <Filter Include="03. GameObject\08. Building">
       <UniqueIdentifier>{d4a892b8-5b80-4d48-8a32-2cdc3e6bce19}</UniqueIdentifier>
     </Filter>
@@ -270,6 +270,9 @@
     </Filter>
     <Filter Include="97. Component\08. Construction">
       <UniqueIdentifier>{c606b936-f005-49ee-8e66-26353c941753}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. Dialogue">
+      <UniqueIdentifier>{2b20be73-2c6c-40c0-85a5-c40c2ab45975}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -632,8 +635,6 @@
     <ClInclude Include="..\Header\CStage_Dungeon.h">
       <Filter>02. Scene\01. Stage</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CTrigger_Dungeon.h">
-    </ClInclude>
     <ClInclude Include="..\Header\CWorldInteractive.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -729,9 +730,18 @@
     </ClInclude>
     <ClInclude Include="..\Header\RecipeData.h">
       <Filter>06. Recipe</Filter>
-          </ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Header\CPlayerConstruction.h">
       <Filter>97. Component\08. Construction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUI_Dialogue.h">
+      <Filter>07. Dialogue</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CTrigger_Dungeon.h">
+      <Filter>03. GameObject\07. Trigger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CDialogueDB.h">
+      <Filter>07. Dialogue</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1062,8 +1072,6 @@
     <ClCompile Include="..\Code\CStage_Dungeon.cpp">
       <Filter>02. Scene\01. Stage</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CTrigger_Dungeon.cpp">
-    </ClCompile>
     <ClCompile Include="..\Code\CWorldInteractive.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -1153,9 +1161,18 @@
      </ClCompile>
     <ClCompile Include="..\Code\CRecipeDB.cpp">
       <Filter>06. Recipe</Filter>
-          </ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Code\CPlayerConstruction.cpp">
       <Filter>97. Component\08. Construction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_Dialogue.cpp">
+      <Filter>07. Dialogue</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CTrigger_Dungeon.cpp">
+      <Filter>03. GameObject\07. Trigger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CDialogueDB.cpp">
+      <Filter>07. Dialogue</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1170,5 +1187,10 @@
     <Image Include="Client.ico">
       <Filter>리소스 파일</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Dialogue.json">
+      <Filter>07. Dialogue</Filter>
+    </None>
   </ItemGroup>
 </Project>
