@@ -94,6 +94,7 @@ void CConstructCircle::OnStayOverlap(CCollider* self, CCollider* other)
 
     auto playerState = dynamic_cast<CState*>(
         playerObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
+    NULL_CHECK(playerState);
 
     if (playerState->Get_State() == ACTORSTATE::PLAYER_HAMMER)
     {

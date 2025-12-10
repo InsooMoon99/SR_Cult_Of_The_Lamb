@@ -199,6 +199,12 @@
     <ClInclude Include="..\Header\CBoss_Slave_Test.h" />
     <ClInclude Include="..\Header\CCharacterBase.h" />
     <ClInclude Include="..\Header\CCookingController.h" />
+    <ClInclude Include="..\Header\CInteractionChecker.h" />
+    <ClInclude Include="..\Header\CNPCController.h" />
+    <ClInclude Include="..\Header\CNPCState.h" />
+    <ClInclude Include="..\Header\CNPCStateMachine.h" />
+    <ClInclude Include="..\Header\CNPCState_Idle.h" />
+    <ClInclude Include="..\Header\CNPCState_Run.h" />
     <ClInclude Include="..\Header\CUICookingGame.h" />
     <ClInclude Include="..\Header\CConstructCircle.h" />
     <ClInclude Include="..\Header\CDialogueDB.h" />
@@ -354,6 +360,12 @@
     <ClCompile Include="..\Code\CCharacterBase.cpp" />
     <ClCompile Include="..\Code\CConstructionPlacer.cpp" />
     <ClCompile Include="..\Code\CCookingController.cpp" />
+    <ClCompile Include="..\Code\CInteractionChecker.cpp" />
+    <ClCompile Include="..\Code\CNPCController.cpp" />
+    <ClCompile Include="..\Code\CNPCState.cpp" />
+    <ClCompile Include="..\Code\CNPCStateMachine.cpp" />
+    <ClCompile Include="..\Code\CNPCState_Idle.cpp" />
+    <ClCompile Include="..\Code\CNPCState_Run.cpp" />
     <ClCompile Include="..\Code\CUICookingGame.cpp" />
     <ClCompile Include="..\Code\CConstructCircle.cpp" />
     <ClCompile Include="..\Code\CDialogueDB.cpp" />

@@ -32,5 +32,6 @@ private:
     DEVICE               m_GraphicDev = nullptr;
     CConstructionPlacer* m_pPlacer    = nullptr;
 
-    _bool m_bIsBuilding = false;
+    _bool m_bIsBuilding     = false;
+    _bool m_bWaitForRelease = false;
 };
