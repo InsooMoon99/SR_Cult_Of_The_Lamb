@@ -10,6 +10,7 @@
 #include "CPlayer.h"
 #include "CRcTex.h"
 #include "CScene.h"
+#include "CState.h"
 #include "CTemple.h"
 #include "CTexture.h"
 #include "CTimerMgr.h"
@@ -88,15 +89,17 @@ void CConstructCircle::OnStayOverlap(CCollider* self, CCollider* other)
     if (m_IsPreview)
         return;
 
-    if (Engine::CDInputMgr::GetInstance()->MousePress(DIM_LB) ||
-        Engine::CDInputMgr::GetInstance()->KeyPress(DIK_E))
-    {
-        CGameObject* playerObj = other->Get_Owner();
-        NULL_CHECK(playerObj);
+    CGameObject* playerObj = other->Get_Owner();
+    NULL_CHECK(playerObj);
 
+    auto playerState = dynamic_cast<CState*>(
+        playerObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
+
+    if (playerState->Get_State() == ACTORSTATE::PLAYER_HAMMER)
+    {
         if (dynamic_cast<CPlayer*>(playerObj))
         {
-            m_Progress += 20.f * CTimerMgr::GetInstance()->Get_TimeDelta();
+            m_Progress += 10.f * CTimerMgr::GetInstance()->Get_TimeDelta();
 
             if (m_Progress >= 100.f)
             {
