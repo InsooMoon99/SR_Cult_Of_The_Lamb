@@ -439,6 +439,37 @@ void CPlayer::Animation_Setting()
                              ANIMSTATE::ONCE);
 
 #pragma endregion
+
+#pragma region Final
+    m_AnimatorCom->Create_Animation(L"Decide_Start",
+                                    41,
+                                    0.02f,
+                                    _vec2(1.f, 1.00f),
+                                    _vec2(0.f, 0.f));
+
+    m_AnimatorCom->Create_Animation(L"Decide_Loop",
+                                    50,
+                                    0.02f,
+                                    _vec2(1.f, 1.00f),
+                                    _vec2(0.f, 0.f));
+
+    m_AnimatorCom->Create_Animation(L"Refuse_Sword",
+                                    54,
+                                    0.04f,
+                                    _vec2(1.f, 1.0f),
+                                    _vec2(0.f, 0.f));
+
+    m_AnimatorCom->Create_Animation(L"Refuse_Gauntlet",
+                                    55,
+                                    0.04f,
+                                    _vec2(1.f, 1.0f),
+                                    _vec2(0.f, 0.f));
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_DECIDE, L"Decide_Start", ANIMSTATE::ONCE);
+
+#pragma endregion
+
+
 }
 
 CPlayer* CPlayer::Create(DEVICE graphicDev)

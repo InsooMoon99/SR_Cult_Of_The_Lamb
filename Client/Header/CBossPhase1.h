@@ -53,6 +53,7 @@ public:
 
     _vec3 Get_Center() { return BaseCenter; }
     float Get_Length() { return BaseLength; }
+
 private:
     _vec3 StartPos = { 48.2f ,3.8f, 57.f };
     _vec3 BaseCenter;

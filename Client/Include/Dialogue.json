@@ -1,54 +1,23 @@
 {
   "dialogues": [
     {
-      "dialogueId": "boss1_intro",
-      "speaker": "기다리는 자",
+      "dialogueId": "boss_Sacrifice",
+      "speaker": "",
       "lines": [
         {
           "lineIndex": 0,
-          "speaker": "기다리는 자",
-          "text": "안녕하세요 ㅋㅋ",
-          "hasChoices": false
-        },
-        {
-          "lineIndex": 1,
-          "speaker": "기다리는 자",
-          "text": "선택 해봐",
+          "speaker": "",
+          "text": "제물로 바쳐지기 위해 무릎 꿇기",
           "hasChoices": true,
           "choice": {
-            "leftText": "한다",
-            "rightText": "안 해",
-            "leftNextId": "boss1_accept",
-            "rightNextId": "boss1_reject"
+            "leftText": "거절한다",
+            "rightText": "수락",
+            "leftNextId": "Sacrifice_Reject",
+            "rightNextId": "Sacrifice_Accept"
           }
         }
       ]
-    },
-    {
-      "dialogueId": "boss1_accept",
-      "speaker": "기다리는 자",
-      "lines": [
-        {
-          "lineIndex": 0,
-          "speaker": "기다리는 자",
-          "text": "수락 골랐음",
-          "hasChoices": false
-        }
-      ]
-    },
-    {
-      "dialogueId": "boss1_reject",
-      "speaker": "기다리는 자",
-      "lines": [
-        {
-          "lineIndex": 0,
-          "speaker": "기다리는 자",
-          "text": "거절 골랐음",
-          "hasChoices": false
-        }
-      ]
     }
-
   ] 
 
 }

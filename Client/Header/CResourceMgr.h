@@ -39,6 +39,7 @@ public:
 
 public:
     HRESULT Ready_BossP1(DEVICE graphicDev);
+    HRESULT Ready_BossPlayer(DEVICE graphicDev);
 
 public:
     HRESULT Ready_BossP2(DEVICE graphicDev);
