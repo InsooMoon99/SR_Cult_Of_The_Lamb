@@ -16,6 +16,9 @@ struct SpriteBounceDesc;
 
 class CDroppedItem : public CGameObject
 {
+public:
+    enum FOODQUALITY {GOOD,BAD,NO_FOOD};
+private:
     explicit CDroppedItem(DEVICE graphicDev, ItemInstance itemInst);
     explicit CDroppedItem(const CDroppedItem& rhs);
     ~CDroppedItem() override;
@@ -23,7 +26,7 @@ class CDroppedItem : public CGameObject
 public:
     HRESULT Ready_GameObject() override;
     HRESULT Ready_GameObject(_vec3 pos);
-    void    Initialize_GameObject() override;;
+    void    Initialize_GameObject() override;
     _int    Update_GameObject(const _float& timeDelta) override;
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
@@ -32,7 +35,11 @@ public:
     void OnStayOverlap(CCollider* self, CCollider* other) override;
     void OnEndOverlap(CCollider* self, CCollider* other) override;
 
+    void SetFoodQuality(FOODQUALITY quality) { m_foodQuality = quality; }
+
     static void Reset_WeaponExplainUI() { m_WeaponExplainUI = nullptr; }
+
+
 
 private:
     HRESULT Add_Component();
@@ -56,6 +63,8 @@ private:
 
     ItemInstance m_itemInst;
     int          m_index = 0;
+
+    FOODQUALITY m_foodQuality = FOODQUALITY::NO_FOOD;
 
 private:
     void Free() override;

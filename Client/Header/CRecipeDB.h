@@ -14,7 +14,7 @@ public:
     HRESULT Ready_RecipeDB();
     HRESULT LoadFromJson(const string& fileName);
 
-    int GetIndexById(int id);
+    int GetNumByItemId(int id);
     Recipe* GetRecipeById(int id);
     wstring  ToWString(const string& str);
     wstring Utf8ToWstring(const string& str);

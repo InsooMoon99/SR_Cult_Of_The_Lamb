@@ -23,4 +23,10 @@ struct SpriteBounceDesc
 
 };
 
+struct RecipeInst
+{
+    int RecipeID;
+    int StockNum;
+    int ResultItemID;
+};
 
