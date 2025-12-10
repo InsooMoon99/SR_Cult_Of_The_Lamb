@@ -105,6 +105,8 @@ HRESULT CUIBuildCell::Ready_GameObject()
 _int CUIBuildCell::Update_GameObject(const _float& timeDelta)
 {
 
+    m_TransformCom->Set_Scale(m_TargetScale);
+
     if (m_ItemIcon)
         m_ItemIcon->Update_GameObject(timeDelta);
         m_ItemIcon->Get_Transform()->Set_Scale(m_TargetScale);
@@ -138,7 +140,6 @@ _int CUIBuildCell::Update_GameObject(const _float& timeDelta)
         }
 
     }
-    m_TransformCom->Set_Scale(m_TargetScale);
 
     int exit = CUI::Update_GameObject(timeDelta);
     return exit;

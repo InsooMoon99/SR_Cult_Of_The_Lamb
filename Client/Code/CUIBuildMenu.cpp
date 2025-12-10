@@ -22,8 +22,10 @@ CUIBuildMenu::CUIBuildMenu(DEVICE graphicDev)
       m_ClosedX(0),
       m_Speed(0),
       m_IsOpen(false),
-      m_IsAnimating(false),
-      m_IsStart(false) { }
+      m_IsAnimating(false)
+{
+    
+}
 
 CUIBuildMenu::CUIBuildMenu(const CUI& rhs)
     : CUI(rhs),
@@ -34,10 +36,12 @@ CUIBuildMenu::CUIBuildMenu(const CUI& rhs)
       m_Speed(0),
       m_IsOpen(false),
       m_IsAnimating(false),
-      m_IsStart(false),
       m_Cols(0),
       m_CellWidth(0),
-      m_CellHeight(0) { }
+      m_CellHeight(0)
+{
+    
+}
 
 CUIBuildMenu::~CUIBuildMenu()
 {
@@ -57,14 +61,14 @@ HRESULT CUIBuildMenu::Ready_GameObject()
     m_CookingFireCell->Set_BuildIndex(BUILDITEM::COOKINGFIRE);
     m_CookingFireCell->Set_TextureIndex(0);
 	m_CookingFireCell->Set_RecipeId(5001);
-    m_CookingFireCell->Set_OnClick([this]() {m_IsStart = true; CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::KITCHEN); });
+    m_CookingFireCell->Set_OnClick([this]() {PlayCloseAnimation(); CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::KITCHEN); });
     m_BuildCells.push_back(m_CookingFireCell);
 
     m_TempleCell = CUIBuildCell::Create(m_GraphicDev);
     m_TempleCell->Set_BuildIndex(BUILDITEM::TEMPLE);
     m_TempleCell->Set_TextureIndex(1);
 	m_TempleCell->Set_RecipeId(5002);
-    m_TempleCell->Set_OnClick([this]() {m_IsStart = true; CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::TEMPLE); });
+    m_TempleCell->Set_OnClick([this]() {PlayCloseAnimation(); CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::TEMPLE); });
     m_BuildCells.push_back(m_TempleCell);
 
     m_DecoIcon1 = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_DECO);
@@ -79,6 +83,7 @@ HRESULT CUIBuildMenu::Ready_GameObject()
 
     m_TransformCom->Set_Scale(450.f, 400.f, 1.f);
     m_TransformCom->Set_Pos(m_ClosedX, 0.f, 0.f);
+
     return S_OK;
 }
 
@@ -86,26 +91,21 @@ _int CUIBuildMenu::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
 
+    if (!m_Active)
+        return 0;
+
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+
 
     m_DecoIcon1->Update_GameObject(timeDelta);
     m_DecoIcon2->Update_GameObject(timeDelta);
 
-   //BuildMenu 전체적으로 다시 만들 예정이라 막아 놓음
-   if (CDInputMgr::GetInstance()->KeyDown(DIK_E) && m_IsOpen==true)
-   {
-       m_IsOpen = !m_IsOpen;
-       m_IsAnimating = true;
-       m_IsStart = false;
-   }
 
-    if(m_IsStart)
+    if (CDInputMgr::GetInstance()->KeyDown(DIK_E) && m_IsOpen == true)
     {
-        m_IsOpen = !m_IsOpen;
-        m_IsAnimating = true;
-        m_IsStart = false;
+        PlayCloseAnimation();
     }
-   
+
     float targetX = m_IsOpen ? m_TargetX : m_ClosedX; //열려있냐 닫혀있냐에 따라서 목표 X값이 달라짐
     _vec3 pos = m_TransformCom->Get_Pos();
 
@@ -147,6 +147,9 @@ void CUIBuildMenu::Render_GameObject()
 {
     CUI::Render_GameObject();
 
+    if (!m_Active)
+        return;
+
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
     //배경 그리기
@@ -158,6 +161,7 @@ void CUIBuildMenu::Render_GameObject()
     {
         m_BuildCells[i]->Render_GameObject();
     }
+
     _vec3 pos = m_TransformCom->Get_Pos();
     _vec2 offset = { 15.f,250.f };
     _vec2 screen = { WINCX / 2 + pos.x+offset.x, WINCY / 2 - pos.y - offset.y };
@@ -264,4 +268,16 @@ void CUIBuildMenu::Check_Hovered()
         }
 
     }
+}
+
+void CUIBuildMenu::PlayOpenAnimation()
+{
+    m_IsOpen = true;
+    m_IsAnimating = true;
+}
+void CUIBuildMenu::PlayCloseAnimation()
+{
+    m_IsOpen = false;
+    m_IsAnimating = true;
+    m_Deactivate();
 }
