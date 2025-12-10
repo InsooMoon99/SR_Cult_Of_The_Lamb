@@ -18,7 +18,7 @@ CUIBuildCell::CUIBuildCell(DEVICE pGraphicDev)
     m_ItemIcon(nullptr),
     m_CardIcon(nullptr),
     m_CardItemIcon(nullptr),
-    m_HighlightTexCom(nullptr),
+    m_Highlight(nullptr),
     m_IsHovered(false)
 {
 }
@@ -28,7 +28,7 @@ CUIBuildCell::CUIBuildCell(const CUIBuildCell& rhs)
     m_ItemIcon(nullptr),
     m_CardIcon(nullptr),
     m_CardItemIcon(nullptr),
-    m_HighlightTexCom(nullptr),
+    m_Highlight(nullptr),
     m_IsHovered(rhs.m_IsHovered)
 {
 }
@@ -80,16 +80,30 @@ HRESULT CUIBuildCell::Ready_GameObject()
     _vec2 itemOffset = { 0.f, 70.f };
     m_CardItemIcon->Get_Transform()->Set_Scale(_vec3(40.f, 40.f, 0.f));
     m_CardItemIcon->Get_Transform()->Set_Pos(cardPos.x + itemOffset.x, cardPos.y + itemOffset.y, 0.f);
+
+    //외곽선용 객체 생성
+    m_Highlight = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_HIGHLIGHT);
+    m_Highlight->SetRegister(false);
+    m_Highlight->Get_Transform()->Set_Scale(_vec3(78.f, 78.f, 0.f));
+
+    //재료 표시용 아이콘
+    m_LogIcon = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_ITEM);
+    m_LogIcon->SetRegister(false);
+    int logIndex = CItemDB::GetInstance()->GetIndexById(1005);
+    m_LogIcon->Set_TextureIndex(logIndex);
+    m_LogIcon->Get_Transform()->Set_Scale(20.f,20.f,0.f);
+
+    m_CoinIcon = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_ITEM);
+    m_CoinIcon->SetRegister(false);
+    int coinIndex = CItemDB::GetInstance()->GetIndexById(1001);
+    m_CoinIcon->Set_TextureIndex(coinIndex);
+    m_CoinIcon->Get_Transform()->Set_Scale(20.f, 20.f, 0);
+
     return S_OK;
 }
 
 _int CUIBuildCell::Update_GameObject(const _float& timeDelta)
 {
-
-    //if (m_IsHovered)
-    //    m_IsHovered = false;
-
-    m_TransformCom->Set_Scale(m_TargetScale);
 
     if (m_ItemIcon)
         m_ItemIcon->Update_GameObject(timeDelta);
@@ -100,6 +114,31 @@ _int CUIBuildCell::Update_GameObject(const _float& timeDelta)
 
     if (m_CardItemIcon)
         m_CardItemIcon->Update_GameObject(timeDelta);
+
+    if (m_Highlight)
+    {
+        _vec3 cellPos = m_TransformCom->Get_Pos();
+        m_Highlight->Get_Transform()->Set_Pos(cellPos);
+        m_Highlight->Update_GameObject(timeDelta);
+    }
+
+    if (m_LogIcon)
+        m_LogIcon->Update_GameObject(timeDelta);
+
+    if (m_CoinIcon)
+        m_CoinIcon->Update_GameObject(timeDelta);
+
+    if (m_IsHovered &&
+        (CDInputMgr::GetInstance()->Get_DIMouseState(MOUSEKEYSTATE::DIM_LB) & 0x80))
+    {
+        if (m_OnClick)
+        {
+            m_OnClick();
+
+        }
+
+    }
+    m_TransformCom->Set_Scale(m_TargetScale);
 
     int exit = CUI::Update_GameObject(timeDelta);
     return exit;
@@ -116,64 +155,59 @@ void CUIBuildCell::Render_GameObject()
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
-    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(180, 100, 100, 100));
 
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG2);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);   // 무시됨
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
-
-    m_TextureCom->Set_Texture(0);
-    m_BufferCom->Render_Buffer();
-
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(255, 255, 255, 255));
-
- 
+    m_TextureCom->Set_Texture(1);
     m_ItemIcon->Set_TextureIndex(m_TextureIndex);
     m_CardItemIcon->Set_TextureIndex(m_TextureIndex);
 
-    auto iconTransform = m_ItemIcon->Get_Transform(); // 셀 아이템은 셀을 따라다니도록
-    iconTransform->Set_Pos(_vec3(
-        m_TransformCom->Get_Pos().x,
-        m_TransformCom->Get_Pos().y,
-        m_TransformCom->Get_Pos().z));
- 
+    _vec3 cellPos = m_TransformCom->Get_Pos();
+    _vec2 logOffset = { -45.f, -100.f };
+    _vec2 coinOffset = { 20.f, -100.f };
+
+    m_ItemIcon->Get_Transform()->Set_Pos(cellPos);
+    m_LogIcon->Get_Transform()->Set_Pos(cellPos.x+logOffset.x, cellPos.y+logOffset.y, cellPos.z);
+    m_CoinIcon->Get_Transform()->Set_Pos(cellPos.x + coinOffset.x, cellPos.y + coinOffset.y, cellPos.z);
+
+    m_BufferCom->Render_Buffer();
     m_ItemIcon->Render_GameObject();
-    //m_CardItemIcon->Render_GameObject();
+    m_LogIcon->Render_GameObject();
+    m_CoinIcon->Render_GameObject();
+
+    _vec3 logPos = m_LogIcon->Get_Transform()->Get_Pos();
+    float logOffsetX = 35.f;
+    _vec2 logScreen = {WINCX / 2 + logPos.x + logOffsetX,WINCY / 2 - logPos.y};
+    Recipe* recipe1 =CRecipeDB::GetInstance()->GetRecipeById(m_RecipeId);
+    CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Small",
+        to_wstring(recipe1->ingredients[1005]),
+        &logScreen,
+        D3DXCOLOR{ 1.f, 1.f, 1.f, 1.f });
+
+    _vec3 coinPos = m_CoinIcon->Get_Transform()->Get_Pos();
+    float coinOffsetX = 35.f;
+    _vec2 coinScreen = { WINCX / 2 + coinPos.x + coinOffsetX,WINCY / 2 - coinPos.y };
+    Recipe* recipe2 = CRecipeDB::GetInstance()->GetRecipeById(m_RecipeId);
+    CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Small",
+        to_wstring(recipe2->ingredients[1001]),
+        &coinScreen,
+        D3DXCOLOR{ 1.f, 1.f, 1.f, 1.f });
+
 
     //셀 선택시 외곽선 그리기
     if (m_IsHovered)
     {
-        m_TargetScale = m_BaseScale * 1.3;
+        m_TargetScale = m_BaseScale * 1.2;
 
         m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-        m_HighlightTexCom->Set_Texture(1);
-
-        //외곽선 바꾸기
-        D3DCOLOR mint = D3DCOLOR_ARGB(255, 62, 180, 137);
-
-        m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, mint);
-
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE); //색상을 곱하기 방식으로 처리하곘다는 뜻
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE); //첫번째 인자는 텍스처
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR); //두번째 인자는 색상
-        m_BufferCom->Render_Buffer();
-
-        //RenderState 원상태로 돌리기
-        m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(255, 255, 255, 255));
-
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+        m_Highlight->Set_TextureIndex(0);
 
         //카드 그리기
+        m_CardIcon->Set_TextureIndex(1);
         m_CardIcon->Render_GameObject();
         m_CardItemIcon->Render_GameObject();
 
         //TODO 유림 : 이미지 바꿀건지 결정하기
         _vec3 pos = m_CardIcon->Get_Transform()->Get_Pos();
-        _vec2 descOffset = { 0.f, 0.f };
+        _vec2 descOffset = { 0.f, 15.f };
         _vec2 screen = { WINCX / 2 + pos.x, WINCY / 2 - pos.y + descOffset.y };
         _vec2 descOffset2 = { 0.f, 95.f };
         _vec2 screen2 = { WINCX / 2 + pos.x, WINCY / 2 - pos.y + descOffset2.y };
@@ -190,7 +224,25 @@ void CUIBuildCell::Render_GameObject()
             CItemDB::GetInstance()->Utf8ToWstring(recipe->desc),
             &screen2,
             D3DXCOLOR{ 1.f, 1.f, 1.f, 1.f });
-            
+
+        //외곽선 바꾸기
+        D3DCOLOR color = D3DCOLOR_ARGB(255, 255, 255, 255);
+
+        m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, color);
+
+        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE); //색상을 곱하기 방식으로 처리하곘다는 뜻
+        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE); //첫번째 인자는 텍스처
+        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR); //두번째 인자는 색상
+
+        m_Highlight->Render_GameObject();
+
+        //RenderState 원상태로 돌리기
+        m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(255, 255, 255, 255));
+
+        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+
     }
     else
     {
@@ -220,12 +272,6 @@ HRESULT CUIBuildCell::Add_Component()
 
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_UI_CELL, m_TextureCom });
 
-    //highlight texture
-    m_HighlightTexCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_UI_HIGHLIGHT);
-    NULL_CHECK_RETURN(m_HighlightTexCom, E_FAIL);
-
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_UI_HIGHLIGHT, m_HighlightTexCom });
-
     return S_OK;
 }
 
@@ -244,9 +290,11 @@ CUIBuildCell* CUIBuildCell::Create(DEVICE graphicDev)
 void CUIBuildCell::Free()
 {
     Safe_Release(m_ItemIcon);
-    Safe_Release(m_HighlightTexCom);
+    Safe_Release(m_Highlight);
     Safe_Release(m_CardIcon);
     Safe_Release(m_CardItemIcon);
+    Safe_Release(m_LogIcon);
+    Safe_Release(m_CoinIcon);
 
     CUI::Free();
 }

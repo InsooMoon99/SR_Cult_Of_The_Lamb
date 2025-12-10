@@ -181,6 +181,7 @@ void CUIInventoryCell::Render_GameObject()
         if (!(m_ItemInst.itemId == -1))
         {
             //카드 그리기
+            m_CardIcon->Set_TextureIndex(0);
             m_CardIcon->Render_GameObject();
             m_CardItemIcon->Render_GameObject();
 
