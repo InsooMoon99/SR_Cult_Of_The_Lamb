@@ -6,6 +6,7 @@
 #include "CMainCamera.h"
 #include "CPersistentObjectHelper.h"
 #include "CPlayer.h"
+#include "CCombatStat.h"
 #include "CState.h"
 #include "CTerrain.h"
 #include "CTransform.h"
@@ -16,6 +17,7 @@
 #include "CBoss_Slave_Test.h"
 #include "CCameraController.h"
 #include "CCamSetupBuilder.h"
+#include "CUI_BossHp.h"
 
 CStage_Boss2::CStage_Boss2(DEVICE graphicDev)
     : Engine::CScene(graphicDev), m_Terrain(nullptr)
@@ -161,10 +163,10 @@ HRESULT CStage_Boss2::Ready_GameLogic_Layer(LAYERTYPE layerType)
     layer->Add_GameObject(OBJTYPE::NPC, gameObject);
 
     // 보스 소환
-    gameObject = CBossPhase2::Create(m_GraphicDev);
-    NULL_CHECK_RETURN(gameObject, E_FAIL);
+    m_Boss = CBossPhase2::Create(m_GraphicDev);
+    NULL_CHECK_RETURN(m_Boss, E_FAIL);
 
-    layer->Add_GameObject(OBJTYPE::BOSS2, gameObject);
+    layer->Add_GameObject(OBJTYPE::BOSS2, m_Boss);
 
     m_Layers.insert({ layerType, layer });
 
@@ -178,7 +180,13 @@ HRESULT CStage_Boss2::Ready_UI_Layer(LAYERTYPE layerType)
     if (nullptr == layer)
         return E_FAIL;
 
-    Engine::CGameObject* pGameObject = nullptr;
+    Engine::CGameObject* gameObject = nullptr;
+
+    auto combat = dynamic_cast<CCombatStat*>(m_Boss->Get_Component(ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
+    NULL_CHECK_RETURN(combat, E_FAIL);
+
+    gameObject = CUI_BossHp::Create(m_GraphicDev, combat);
+    layer->Add_GameObject(OBJTYPE::UI, gameObject);
 
     m_Layers.insert({ layerType, layer });
 

@@ -11,12 +11,12 @@
 #include "CUI_BossHp.h"
 
 CBossPhase2::CBossPhase2(DEVICE graphicDev)
-    : CMonsterBase(graphicDev), m_BossController(nullptr), m_BossHpBar(nullptr)
+    : CMonsterBase(graphicDev), m_BossController(nullptr)
 {
 }
 
 CBossPhase2::CBossPhase2(const CBossPhase2& rhs)
-    : CMonsterBase(rhs), m_BossController(rhs.m_BossController), m_BossHpBar(rhs.m_BossHpBar)
+    : CMonsterBase(rhs), m_BossController(rhs.m_BossController)
 {
 }
 
@@ -29,8 +29,8 @@ HRESULT CBossPhase2::Ready_GameObject()
     if (FAILED(CMonsterBase::Ready_GameObject()))
         return E_FAIL;
 
-    m_CombatStatCom->Set_MaxHp(300.f);
-    m_CombatStatCom->Set_HitState(false);
+    m_CombatStatCom->Set_MaxHp(1000.f);
+    m_CombatStatCom->Set_HitState(false); // Hit State로 변경할건지
 
     m_TransformCom->Set_Pos(67.1f, 6.8f, 50.f);
     m_TransformCom->Set_Scale(_vec3(15.f, 7.4f, 3.f));
@@ -50,12 +50,7 @@ void CBossPhase2::Initialize_GameObject()
     m_BossController->Set_StateMachine(stateMachine); 
     Safe_Release(stateMachine);
 
-    m_BossHpBar = CUI_BossHp::Create(m_GraphicDev, this);
-
-    if (m_BossHpBar)
-    {
-        SpawnUIOnLayer(m_BossHpBar);
-    }
+    
 }
 
 _int CBossPhase2::Update_GameObject(const _float& timeDelta)

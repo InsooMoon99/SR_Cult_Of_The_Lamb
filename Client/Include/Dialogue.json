@@ -1,0 +1,54 @@
+{
+  "dialogues": [
+    {
+      "dialogueId": "boss1_intro",
+      "speaker": "기다리는 자",
+      "lines": [
+        {
+          "lineIndex": 0,
+          "speaker": "기다리는 자",
+          "text": "안녕하세요 ㅋㅋ",
+          "hasChoices": false
+        },
+        {
+          "lineIndex": 1,
+          "speaker": "기다리는 자",
+          "text": "선택 해봐",
+          "hasChoices": true,
+          "choice": {
+            "leftText": "한다",
+            "rightText": "안 해",
+            "leftNextId": "boss1_accept",
+            "rightNextId": "boss1_reject"
+          }
+        }
+      ]
+    },
+    {
+      "dialogueId": "boss1_accept",
+      "speaker": "기다리는 자",
+      "lines": [
+        {
+          "lineIndex": 0,
+          "speaker": "기다리는 자",
+          "text": "수락 골랐음",
+          "hasChoices": false
+        }
+      ]
+    },
+    {
+      "dialogueId": "boss1_reject",
+      "speaker": "기다리는 자",
+      "lines": [
+        {
+          "lineIndex": 0,
+          "speaker": "기다리는 자",
+          "text": "거절 골랐음",
+          "hasChoices": false
+        }
+      ]
+    }
+
+  ] 
+
+}

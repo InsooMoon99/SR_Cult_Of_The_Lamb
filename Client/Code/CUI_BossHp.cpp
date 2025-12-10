@@ -6,18 +6,19 @@
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CRenderer.h"
+#include "CFontMgr.h"
 
-CUI_BossHp::CUI_BossHp(DEVICE graphicDev, CGameObject* owner)
+CUI_BossHp::CUI_BossHp(DEVICE graphicDev, CCombatStat* combatStat)
      : CUI(graphicDev),
-     m_Owner(owner),
-     m_OwnerCombatStat(nullptr),
+     m_Owner(combatStat->Get_Owner()),
+     m_OwnerCombatStat(combatStat),
      m_HpRatio(1.0f),
      m_HpDelayRatio(1.0f),
-     m_HpDelaySpeed(1.5f),
-     m_BarSize({ 0.6f, 0.7f, 1.f }),
+     m_HpDelayLerpSpeed(0.f),
      m_Buffer_Hp(nullptr), m_Buffer_Delay(nullptr)
 {
     Set_Name(L"Boss Hp");
+
     if (m_Owner)
         m_Owner->AddRef();
 }
@@ -31,9 +32,8 @@ HRESULT CUI_BossHp::Ready_GameObject()
     if (FAILED(Add_Component()))
         return E_FAIL;
 
-    m_BarSize = _vec3(80.6f, 10.7f, 1.f);
     m_HpRatio = 1.f;
-    m_HpDelaySpeed = 1.5f;
+    m_HpDelayLerpSpeed = 0.7f;
 
     if (m_TransformCom)
     {
@@ -47,11 +47,7 @@ HRESULT CUI_BossHp::Ready_GameObject()
 void CUI_BossHp::Initialize_GameObject()
 {
     CUI::Initialize_GameObject();
-    if (m_Owner)
-    {
-        m_OwnerCombatStat = dynamic_cast<CCombatStat*>(
-            m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
-    }
+    
 
 }
 
@@ -80,11 +76,14 @@ _int CUI_BossHp::Update_GameObject(const _float& timeDelta)
 
     if (m_HpDelayRatio > m_HpRatio)
     {
-        m_HpDelayRatio -= m_HpDelaySpeed * timeDelta;
+        float diff = m_HpDelayRatio - m_HpRatio;
+
+        m_HpDelayRatio -= (diff / m_HpDelayLerpSpeed) * timeDelta;
 
         if (m_HpDelayRatio < m_HpRatio)
             m_HpDelayRatio = m_HpRatio;
     }
+
     return exit;
 }
 
@@ -98,47 +97,70 @@ void CUI_BossHp::Render_GameObject()
     if (!m_Owner || !m_TextureCom)
         return;
 
-    float ratio = clamp(m_HpRatio, 0.f, 1.f);
-    float delayRatio = clamp(m_HpDelayRatio, 0.f, 1.f);
+    _float ratio         = clamp(m_HpRatio, 0.f, 1.f);
+    _float delayRatio    = clamp(m_HpDelayRatio, 0.f, 1.f);
+
     const _matrix& world = m_TransformCom->Get_World();
 
-    const float HALF_WIDTH = 150.f;
-    const float HALF_HEIGHT = 75.f;
+    const _float HALF_WIDTH = 200.f;
+    const _float HALF_HEIGHT = 75.f;
     
-    // 1) 배경
-
-    m_BufferCom->Set_Scale(HALF_WIDTH, HALF_HEIGHT);
+    // Hp 백그라운드
+    m_BufferCom->Set_Scale(HALF_WIDTH + 4.f, HALF_HEIGHT);
     m_BufferCom->Set_Offset(0.f, 0.f);
     m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
     m_TextureCom->Set_Texture(3);
     m_BufferCom->Render_Buffer();
-    // 2) 딜레이 바
+
+    const float UV_LEFT = 30.f / 300.f;
+    const float UV_RIGHT = 270.f / 300.f;
+    const float UV_RANGE = UV_RIGHT - UV_LEFT;
+
+    // 체력 딜레이
     if (delayRatio > 0.f)
     {
         float hw = HALF_WIDTH * delayRatio;
         float offsetX = HALF_WIDTH * (1.f - delayRatio);
+
         m_Buffer_Delay->Set_Scale(hw, HALF_HEIGHT);
         m_Buffer_Delay->Set_Offset(offsetX, 0.f);
+
+        float u_end = UV_LEFT + UV_RANGE * delayRatio;
+
+        m_Buffer_Delay->Set_UV(UV_LEFT, 0.f, u_end, 1.f);
         m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
         m_TextureCom->Set_Texture(5);
         m_Buffer_Delay->Render_Buffer();
     }
-    // 3) HP 바
+    // 체력
     if (ratio > 0.f)
     {
-        float hw = HALF_WIDTH * ratio * 0.97f;  
+        float hw = HALF_WIDTH * ratio;
         float offsetX = HALF_WIDTH * (1.f - ratio);
 
         m_Buffer_Hp->Set_Scale(hw, HALF_HEIGHT);
         m_Buffer_Hp->Set_Offset(offsetX, 0.f);
-        const float UV_LEFT = 30.f / 300.f;
-        const float UV_RIGHT = 270.f / 300.f;
-        const float UV_RANGE = UV_RIGHT - UV_LEFT;
+
         float u_end = UV_LEFT + UV_RANGE * ratio;
+
         m_Buffer_Hp->Set_UV(UV_LEFT, 0.f, u_end, 1.f);
         m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
         m_TextureCom->Set_Texture(4);
         m_Buffer_Hp->Render_Buffer();
+    }
+
+    // 폰트
+    {
+        _vec3 pos = m_TransformCom->Get_Pos();
+        _vec2 screen = { WINCX / 2 + pos.x, WINCY / 2 - pos.y + 2.f };
+
+        CFontMgr::GetInstance()->Render_FontOutlined(
+            L"NanumSquare_Regular",
+            L"기다리는 자",
+            &screen,
+            D3DXCOLOR(1.f, 1.f, 1.f, 1.f),
+            D3DXCOLOR(0.f, 0.f, 0.f, 1.f),
+            1);
 
     }
 }
@@ -166,9 +188,9 @@ HRESULT CUI_BossHp::Add_Component()
     return S_OK;
 }
 
-CUI_BossHp* CUI_BossHp::Create(DEVICE graphicDev, CGameObject* owner)
+CUI_BossHp* CUI_BossHp::Create(DEVICE graphicDev, CCombatStat* combatStat)
 {
-    CUI_BossHp* hp = new CUI_BossHp(graphicDev, owner);
+    CUI_BossHp* hp = new CUI_BossHp(graphicDev, combatStat);
 
     if (FAILED(hp->Ready_GameObject()))
     {

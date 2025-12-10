@@ -28,7 +28,6 @@
 #include "CUIBuildMenu.h"
 #include "CUICircle.h"
 #include "CUIIcon.h"
-#include "CUIItemGet.h"
 #include "CUIItemGetManager.h"
 #include "CUIMp.h"
 #include "CUIPlayerPanel.h"
@@ -36,6 +35,14 @@
 #include "CUIWeapon.h"
 #include "CWorkBench.h"
 #include "ItemInstance.h"
+#include "CHarvestableHerb.h"
+#include "CPlayerSkill.h"
+#include "CRock.h"
+#include "CTree.h"
+#include "CTrigger_Dungeon.h"
+#include "CUIBuildMenu.h"
+#include "CUI_Dialogue.h"
+#include "CKitchen.h"
 
 class CUIBuildMenu;
 
@@ -46,7 +53,8 @@ CStage::CStage(DEVICE graphicDev)
       m_WeaponEquipCom(nullptr),
       m_PlayerSkillCom(nullptr),
       m_Terrain(nullptr)
-{ }
+{
+}
 
 CStage::~CStage()
 { }
@@ -102,7 +110,7 @@ void CStage::Initialize_Scene()
 {
     CScene::Initialize_Scene();
 
-    // 초기 맵 불러오기 <- 이거 꼭 Initialize에서 진행해야 맵 오브젝트가 잘 불러진다.
+    // 초기 맵 불러오기 <- 이거 Initialize에서 진행해야 맵 오브젝트가 잘 불러진다.
     m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Village2.map");
 
     // 던전 이동 트리거 만들기
@@ -384,13 +392,20 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
         layer->Add_GameObject(OBJTYPE::BUILDING, tmpTree),
         L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
     tmpTree->Get_Transform()->Set_Pos(10.f, 2.5f, 30.f);
-
+    //
     auto workBench = CWorkBench::Create(m_GraphicDev);
     m_WorkBench = workBench;
     
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::BUILDING, workBench),
         L"Add_GameObject(CWorkBench) failed");
+    //
+    auto kitchen = CKitchen::Create(m_GraphicDev);
+
+    FAILED_CHECK_MSG(
+        layer->Add_GameObject(OBJTYPE::BUILDING, kitchen),
+        L"Add_GameObject(CWorkBench) failed");
+
 
     m_Layers.insert({ layerType, layer });
 

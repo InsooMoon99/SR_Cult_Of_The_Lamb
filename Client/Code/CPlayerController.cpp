@@ -159,9 +159,18 @@ void CPlayerController::CheckStateTransition()
     ACTORSTATE curState = m_OwnerStateCom->Get_State();
     const auto inputMgr = CDInputMgr::GetInstance();
 
-    //!! 상태 변경 불가 조건 (피격, 사망)
-    if (curState == ACTORSTATE::DEAD || curState == ACTORSTATE::HIT)
+    //!! 상태 변경 불가 조건 (사망)
+    if (curState == ACTORSTATE::DEAD)
         return;
+
+    // 피격 시 Hit 처리
+    if (m_OwnerCombatStatCom->Is_Knockback() && curState != ACTORSTATE::HIT)
+    {
+        m_OwnerStateCom->Change_State(ACTORSTATE::HIT);
+
+        return;
+    }
+
 
     // [우선순위 1] 구르기 (Space)
     // - 공격 상태여도 구르기로 이행 (캔슬)
@@ -189,6 +198,9 @@ void CPlayerController::CheckStateTransition()
             // 구르기 시작
             m_OwnerMovementCom->Start_Roll(moveDir);
             m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_ROLL);
+
+            m_OwnerCombatStatCom->Set_Invincible(true); // 무적
+
             return;
         }
     }
@@ -358,9 +370,7 @@ void CPlayerController::Update_State(const _float& timeDelta)
         Action_TripleSkill(timeDelta);
         break;
     case ACTORSTATE::HIT:
-    {
-        //TODO 피격 상태 및 애니메이션이 필요할 경우 구성
-    }
+        Action_Hit(timeDelta);
     break;
 
     case ACTORSTATE::PLAYER_BERRY:
@@ -441,7 +451,10 @@ void CPlayerController::Action_Roll(const _float& timeDelta)
 {
     // 구르기 업데이트 (false 반환 시 종료)
     if (!m_OwnerMovementCom->Update_Roll(timeDelta))
+    {
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+        m_OwnerCombatStatCom->Set_Invincible(false); // 무적 끝
+    }
 }
 
 void CPlayerController::Action_NormalAttack(const _float& timeDelta)
@@ -510,6 +523,20 @@ void CPlayerController::Action_Construction(const _float& timeDelta)
 
     if (bStopConstruction)
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+}
+
+void CPlayerController::Action_Hit(const _float& timeDetla)
+{
+    m_OwnerMovementCom->Stop(); // Stop을 해야하는가? 넉백당하다가
+
+    auto animator = dynamic_cast<CAnimator*>(
+        m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+
+    if (animator && animator->Is_AnimationFinished() &&
+        !m_OwnerCombatStatCom->Is_Knockback())
+    {
+        m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+    }
 }
 
 _bool CPlayerController::Living_Interaction()

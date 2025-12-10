@@ -201,6 +201,7 @@
     <ClInclude Include="..\Header\CCookingController.h" />
     <ClInclude Include="..\Header\CUICookingGame.h" />
     <ClInclude Include="..\Header\CConstructCircle.h" />
+    <ClInclude Include="..\Header\CDialogueDB.h" />
     <ClInclude Include="..\Header\CKitchen.h" />
     <ClInclude Include="..\Header\CPlayerConstruction.h" />
     <ClInclude Include="..\Header\CPlayerGathering.h" />
@@ -302,6 +303,7 @@
     <ClInclude Include="..\Header\CUITarotDescCard.h" />
     <ClInclude Include="..\Header\CUIWeapon.h" />
     <ClInclude Include="..\Header\CUI_BossHp.h" />
+    <ClInclude Include="..\Header\CUI_Dialogue.h" />
     <ClInclude Include="..\Header\CUI_Fade.h" />
     <ClInclude Include="..\Header\CUI_MonsterHp.h" />
     <ClInclude Include="..\Header\CWarningChain.h" />
@@ -354,6 +356,7 @@
     <ClCompile Include="..\Code\CCookingController.cpp" />
     <ClCompile Include="..\Code\CUICookingGame.cpp" />
     <ClCompile Include="..\Code\CConstructCircle.cpp" />
+    <ClCompile Include="..\Code\CDialogueDB.cpp" />
     <ClCompile Include="..\Code\CKitchen.cpp" />
     <ClCompile Include="..\Code\CPlayerConstruction.cpp" />
     <ClCompile Include="..\Code\CPlayerGathering.cpp" />
@@ -451,6 +454,7 @@
     <ClCompile Include="..\Code\CUITarotDescCard.cpp" />
     <ClCompile Include="..\Code\CUIWeapon.cpp" />
     <ClCompile Include="..\Code\CUI_BossHp.cpp" />
+    <ClCompile Include="..\Code\CUI_Dialogue.cpp" />
     <ClCompile Include="..\Code\CUI_Fade.cpp" />
     <ClCompile Include="..\Code\CUI_MonsterHp.cpp" />
     <ClCompile Include="..\Code\CWarningChain.cpp" />
@@ -475,6 +479,9 @@
   <ItemGroup>
     <Image Include="Client.ico" />
     <Image Include="small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Dialogue.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

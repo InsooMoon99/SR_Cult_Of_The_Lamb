@@ -1,6 +1,5 @@
 ﻿#include "pch.h"
 #include "CPlayer.h"
-
 #include "CAnimator.h"
 #include "CAttackBuilder.h"
 #include "CAttackSphere.h"
@@ -48,7 +47,6 @@ CPlayer::CPlayer(const CPlayer& rhs)
       m_PlayerMovementCom(nullptr),
       m_PlayerAttackCom(nullptr),
       m_PlayerSkillCom(nullptr),
-
       m_PlayerGatherCom(nullptr),
       m_PlayerConstructionCom(nullptr)
 { }
@@ -67,8 +65,8 @@ HRESULT CPlayer::Ready_GameObject()
     m_CombatStatCom->Set_Mp(5.f);
     m_CombatStatCom->Set_Speed(5.f);
 
-    // Test
-    m_CombatStatCom->Set_HitState(false);
+    // Hit 상태로 전환할 것인가? [ 보스1, 보스2 ]만 False로 세팅할듯 추가로 중간보스가 있다면 세팅
+    m_CombatStatCom->Set_HitState(true);
 
     m_TransformCom->Set_Pos(_vec3(20.f, 1.f, 15.f));
     m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
@@ -429,6 +427,17 @@ void CPlayer::Animation_Setting()
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_WEAPONGET,
                              L"Player_WeaponGet",
                              ANIMSTATE::ONCE);
+
+    m_AnimatorCom->Create_Animation(L"Player_Hit",
+                                    34,
+                                    0.01f,
+                                    _vec2(1.f, 0.97f),
+                                    _vec2(0.f, 0.18f));
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::HIT,
+                             L"Player_Hit",
+                             ANIMSTATE::ONCE);
+
 #pragma endregion
 }
 
