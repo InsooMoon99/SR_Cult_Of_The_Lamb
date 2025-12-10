@@ -29,7 +29,7 @@ HRESULT CUICookingGame::Ready_GameObject()
 
 
     m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(45.f));
-    //m_TransformCom->Set_Pos(m_Owner->Get_Transform()->Get_Pos().x, m_Owner->Get_Transform()->Get_Pos().y+2,);
+   // m_TransformCom->Set_Pos(m_Owner->Get_Transform()->Get_Pos().x, m_Owner->Get_Transform()->Get_Pos().y+2, m_Owner->Get_Transform()->Get_Pos().z);
 
     return S_OK;
 }
@@ -144,7 +144,16 @@ void CUICookingGame::Render_GameObject()
         m_ItemIcon->SetCloneTexAspectScale({ .2f, .2f, 1 });
         m_ItemIcon->Get_Transform()->Set_Pos(-WINCX / 3, WINCY / 4.f, 1);
         
+        _vec3 center = m_BufferCom->Get_Transform()->Get_Pos();
+        _vec2 rectLT{ center.x - WINCX * .5f, WINCY * 0.5f - center.y };
 
+        wchar_t buffer[32];
+        swprintf_s(buffer, L"%d/%d", m_recipeInst.StockNum, m_StockMax);
+
+        CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Regular",
+            buffer,
+            &rectLT,
+            D3DXCOLOR(1.f, 1.f, 1.f, 1.f));
     }
 
 

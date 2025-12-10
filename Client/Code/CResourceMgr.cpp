@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+﻿﻿#include "pch.h"
 #include "CResourceMgr.h"
 
 #include "CAnimator.h"
@@ -45,7 +45,8 @@
 IMPLEMENT_SINGLETON(CResourceMgr)
 
 CResourceMgr::CResourceMgr()
-{ }
+{
+}
 
 CResourceMgr::~CResourceMgr()
 {
@@ -359,7 +360,7 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         return E_FAIL;
 
     if (FAILED(playerTex->Add_Texture(L"PlayerSkillCharging", TEX_NORMAL,
-        L"../Bin/Resource/Texture/Player/Spell2/Lamb-cast-spell2-%d.png",17)))
+        L"../Bin/Resource/Texture/Player/Spell2/Lamb-cast-spell2-%d.png", 17)))
 #pragma endregion
 #pragma region --- Tex: CRAFT ---
     {
@@ -708,7 +709,7 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
 
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_CELL, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/UI/Inventory/InventoryIcon_BG%d.png",2))))
+            L"../Bin/Resource/Texture/UI/Inventory/InventoryIcon_BG%d.png", 2))))
         return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(
@@ -831,7 +832,7 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_DECO, CTexture::Create(graphicDev, TEX_NORMAL, decoTex))))
         return E_FAIL;
-   
+
     return S_OK;
 }
 
@@ -1003,13 +1004,13 @@ HRESULT CResourceMgr::Ready_Building(DEVICE graphicDev)
     // Workbench
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_WORKBENCH,
-        CTexture::Create(graphicDev,TEX_NORMAL, L"../Bin/Resource/Texture/Building/Workbench.png", 1))))
+        CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Building/Workbench.png", 1))))
         return E_FAIL;
 
     // Dotted Circle
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_DOTTEDCIRCLE,
-        CTexture::Create(graphicDev,TEX_NORMAL, L"../Bin/Resource/Texture/Building/Dotted_Circle.png", 1))))
+        CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Building/Dotted_Circle.png", 1))))
         return E_FAIL;
 
     // Temple
@@ -1038,4 +1039,5 @@ HRESULT CResourceMgr::Ready_Building(DEVICE graphicDev)
 }
 
 void CResourceMgr::Free()
-{ }
+{
+}

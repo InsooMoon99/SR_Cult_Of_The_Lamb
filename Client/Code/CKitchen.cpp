@@ -7,6 +7,7 @@
 #include "CRigidbody.h"
 #include "CTexture.h"
 #include "CTransform.h"
+#include "CCookingController.h"
 
 CKitchen::CKitchen(DEVICE graphicDev)
     : CBuildingBase(graphicDev)
@@ -30,6 +31,8 @@ HRESULT CKitchen::Ready_GameObject()
 void CKitchen::Initialize_GameObject()
 {
     CBuildingBase::Initialize_GameObject();
+
+    m_TransformCom->Set_Pos(20.f, 1.f, 20.f);
 
     m_TransformCom->Set_Scale(1.f, 1.f, 1.f);
     m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(40.f));
@@ -139,6 +142,7 @@ void CKitchen::OnBeginOverlap(CCollider* self, CCollider* other)
 void CKitchen::OnStayOverlap(CCollider* self, CCollider* other)
 {
     CBuildingBase::OnStayOverlap(self, other);
+
 }
 
 void CKitchen::OnEndOverlap(CCollider* self, CCollider* other)
@@ -155,6 +159,12 @@ HRESULT CKitchen::Add_Component()
     m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_KITCHEN);
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_KITCHEN, m_TextureCom });
+
+
+    //m_CookingCtrlCom = CreateProtoComponent<CCookingController>(this, COMPONENTTYPE::COOKCTRL);
+    //NULL_CHECK_RETURN(m_CookingCtrlCom, E_FAIL);
+    //m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::COOKCTRL, m_CookingCtrlCom });
+
 
     return S_OK;
 }
