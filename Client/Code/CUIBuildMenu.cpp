@@ -92,7 +92,7 @@ _int CUIBuildMenu::Update_GameObject(const _float& timeDelta)
     m_DecoIcon2->Update_GameObject(timeDelta);
 
    //BuildMenu 전체적으로 다시 만들 예정이라 막아 놓음
-   if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
+   if (CDInputMgr::GetInstance()->KeyDown(DIK_E) && m_IsOpen==true)
    {
        m_IsOpen = !m_IsOpen;
        m_IsAnimating = true;
@@ -218,6 +218,18 @@ CUIBuildMenu* CUIBuildMenu::Create(DEVICE graphicDev)
 
 void CUIBuildMenu::Free()
 {
+    Safe_Release(m_DecoIcon1);
+    Safe_Release(m_DecoIcon2);
+    Safe_Release(m_CookingFireCell);
+    Safe_Release(m_TempleCell);
+
+    for (auto& cell : m_BuildCells)
+    {
+        Safe_Release(cell);
+    }
+
+    m_BuildCells.clear();
+
     CUI::Free();
 }
 

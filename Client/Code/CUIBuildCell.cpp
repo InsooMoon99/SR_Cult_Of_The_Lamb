@@ -293,6 +293,8 @@ void CUIBuildCell::Free()
     Safe_Release(m_Highlight);
     Safe_Release(m_CardIcon);
     Safe_Release(m_CardItemIcon);
+    Safe_Release(m_LogIcon);
+    Safe_Release(m_CoinIcon);
 
     CUI::Free();
 }

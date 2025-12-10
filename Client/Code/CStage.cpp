@@ -386,7 +386,8 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     tmpTree->Get_Transform()->Set_Pos(10.f, 2.5f, 30.f);
 
     auto workBench = CWorkBench::Create(m_GraphicDev);
-
+    m_WorkBench = workBench;
+    
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::BUILDING, workBench),
         L"Add_GameObject(CWorkBench) failed");
@@ -479,6 +480,8 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     CUIBuildMenu* uiBuildMenu = CUIBuildMenu::Create(m_GraphicDev);
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiBuildMenu),
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UI_BuildMenu) failed");
+    m_WorkBench->Set_BuildMenu(uiBuildMenu);
+
     m_Layers.insert({ layerType, layer });
 
     return S_OK;
