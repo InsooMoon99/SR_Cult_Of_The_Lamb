@@ -198,6 +198,8 @@
     <ClInclude Include="..\Header\CCamSetupBuilder.h" />
     <ClInclude Include="..\Header\CBoss_Slave_Test.h" />
     <ClInclude Include="..\Header\CCharacterBase.h" />
+    <ClInclude Include="..\Header\CCookingController.h" />
+    <ClInclude Include="..\Header\CUICookingGame.h" />
     <ClInclude Include="..\Header\CConstructCircle.h" />
     <ClInclude Include="..\Header\CDialogueDB.h" />
     <ClInclude Include="..\Header\CKitchen.h" />
@@ -351,6 +353,8 @@
     <ClCompile Include="..\Code\CBoss_Slave_Test.cpp" />
     <ClCompile Include="..\Code\CCharacterBase.cpp" />
     <ClCompile Include="..\Code\CConstructionPlacer.cpp" />
+    <ClCompile Include="..\Code\CCookingController.cpp" />
+    <ClCompile Include="..\Code\CUICookingGame.cpp" />
     <ClCompile Include="..\Code\CConstructCircle.cpp" />
     <ClCompile Include="..\Code\CDialogueDB.cpp" />
     <ClCompile Include="..\Code\CKitchen.cpp" />

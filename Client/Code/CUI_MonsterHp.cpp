@@ -130,7 +130,6 @@ void CUI_MonsterHp::Render_GameObject()
         m_BufferCom->Set_Offset(0.f, 0.f);
 
         m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
-        m_TextureCom->Set_Texture(1);  // 배경 텍스처
         m_BufferCom->Render_Buffer();
     }
 

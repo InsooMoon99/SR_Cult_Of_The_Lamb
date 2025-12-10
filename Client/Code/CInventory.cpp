@@ -8,16 +8,19 @@
 
 CInventory::CInventory(DEVICE graphicDev)
     : CComponent(graphicDev),
-      invenSlotNum(0)
-{ }
+    invenSlotNum(0)
+{
+}
 
 CInventory::CInventory(const CInventory& rhs)
     : CComponent(rhs),
-      invenSlotNum(0)
-{ }
+    invenSlotNum(0)
+{
+}
 
 CInventory::~CInventory()
-{ }
+{
+}
 
 HRESULT CInventory::Ready_Inventory()
 {
@@ -85,32 +88,35 @@ void CInventory::DropItemfromSlot(int slotNum, _vec3 DropPos)
 
 bool CInventory::AddItem(ItemInstance itemInst)
 {
-    m_AddedCount = 0;
+    //m_AddedCount = 0;
     //ItemInstance의 id(= itemId)는 “인스턴스를 만들 때 즉시 넣어준다.”
 
     Item* itemData = CItemDB::GetInstance()->GetItemById(itemInst.itemId);
 
     // 스택가능한지
 
- 
-        for (auto& slot : m_vecInven)
+
+    for (auto& slot : m_vecInven)
+    {
+        if (slot.itemInst.itemId == itemInst.itemId && itemData->stackable == true)
         {
-            if (slot.itemInst.itemId == itemInst.itemId && itemData->stackable == true)
+            //int oldCount = slot.count;
+            slot.count++;
+            //int newCount = slot.count - oldCount;
+            AddItemOnMap(slot.itemInst.itemId);
+
+
+            // 플레이어 일떄만 UI addItem 이밴트 호출
+            if (dynamic_cast<CPlayer*>(m_Owner) != nullptr)
             {
-                if (itemData->maxStack > slot.count)
-                {
-                    int oldCount = slot.count;
-                    slot.count++;
-                    int newCount = slot.count - oldCount;
-                    if (dynamic_cast<CPlayer*>(m_Owner) != nullptr)
-                    {
-                         m_ItemAdded(&slot.itemInst, newCount);
-                    }
-                    return true;
-                }
+                m_UIItemAdded(&slot.itemInst);
+
             }
+
+            return true;
         }
-   
+    }
+
     if (dynamic_cast<CPlayer*>(m_Owner) != nullptr)
     {
         int slot;
@@ -124,13 +130,14 @@ bool CInventory::AddItem(ItemInstance itemInst)
             else
             {
                 m_vecInven[slot].itemInst = itemInst;
-                int oldCount = m_vecInven[slot].count;
+                //int oldCount = m_vecInven[slot].count;
                 m_vecInven[slot].count++;
-                int newCount = m_vecInven[slot].count - oldCount;
-                if(!(m_vecInven[slot].itemInst.itemId == 3001 && m_vecInven[slot].itemInst.itemId == 3002))
-                {
-                m_ItemAdded(&m_vecInven[slot].itemInst, newCount);
-                }
+                //int newCount = m_vecInven[slot].count - oldCount;
+
+                AddItemOnMap(m_vecInven[slot].itemInst.itemId);
+
+                m_UIItemAdded(&m_vecInven[slot].itemInst);
+
                 return true;
             }
 
@@ -147,10 +154,13 @@ bool CInventory::AddItem(ItemInstance itemInst)
             {
                 m_vecInven[slot].itemInst = itemInst;
 
-                int oldCount = m_vecInven[slot].count;
+                // int oldCount = m_vecInven[slot].count;
                 m_vecInven[slot].count++;
-                int newCount =  m_vecInven[slot].count - oldCount;
-                m_ItemAdded(&m_vecInven[slot].itemInst, newCount);
+                // int newCount =  m_vecInven[slot].count - oldCount;
+
+                AddItemOnMap(m_vecInven[slot].itemInst.itemId);
+
+                m_UIItemAdded(&m_vecInven[slot].itemInst);
                 return true;
             }
             break;
@@ -162,14 +172,17 @@ bool CInventory::AddItem(ItemInstance itemInst)
     }
     else
     {
-        int slot = FindEmptySlot(ItemType::None);
+        int slot = FindEmptySlot(ItemType::None); // 이건 몬스터용
         if (slot != -1)
         {
             m_vecInven[slot].itemInst = itemInst;
             m_vecInven[slot].count++;
 
+            AddItemOnMap(m_vecInven[slot].itemInst.itemId);
+
+
             return true;
-        }                                            
+        }
     }
 
 
@@ -206,7 +219,7 @@ bool CInventory::RemoveItem(int itemID, int count)
             if (slot.count <= remainCount)
             {
                 remainCount -= slot.count;
-                slot.count           = 0;
+                slot.count = 0;
                 slot.itemInst.itemId = -1;
 
                 if (remainCount == 0)
@@ -220,6 +233,8 @@ bool CInventory::RemoveItem(int itemID, int count)
             }
         }
     }
+
+    RemoveItemOnMap(itemID);
 
     return false;
 }
@@ -239,12 +254,42 @@ bool CInventory::RemoveItemBySlot(int slotNum, int count)
 
     slot.count -= count;
 
-	if (slot.count == 0)
-	{
-		slot.itemInst.itemId = -1;
-	}
+    if (slot.count == 0)
+    {
+        slot.itemInst.itemId = -1;
+    }
+
+
+    RemoveItemOnMap(slot.itemInst.itemId);
 
     return true;
+}
+
+void CInventory::AddItemOnMap(int itemID)
+{
+    if (m_CountingItem.count(itemID) == 0)// map에 해당 키를 쓰고 있지 않다
+    {
+        m_CountingItem[itemID] = 1; //m_CountingItem[itemID]는 find(itemID).second 비슷한거 + (없는 키는 자동 생성)
+    }
+    else
+    {
+        m_CountingItem[itemID]++;
+    }
+}
+
+void CInventory::RemoveItemOnMap(int itemID)
+{
+    auto iterator = m_CountingItem.find(itemID);
+
+    if (iterator != m_CountingItem.end())
+    {
+       iterator->second--;
+
+        if (iterator->second <=0)
+        {
+            m_CountingItem.erase(itemID);
+        }
+    }
 }
 
 CInventory* CInventory::Create(DEVICE graphicDev)

@@ -5,6 +5,7 @@
 #include "CCollider.h"
 #include "CCreateHelper.h"
 #include "CDInputMgr.h"
+#include "CKitchen.h"
 #include "CManagement.h"
 #include "CPlayer.h"
 #include "CRcTex.h"
@@ -40,7 +41,7 @@ void CConstructCircle::Initialize_GameObject()
     m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(90.f));
 
     m_BoxCollCom->Set_RawSize(_vec3(1.5f, 1.f, 3.f));
-    m_BoxCollCom->Set_CollisionLayer(COLLISION_LAYERTYPE::INTERACTIVEOBJ);
+    m_BoxCollCom->Set_CollisionLayer(COLLISION_LAYERTYPE::CONSTRUCTION_SITE);
 }
 
 _int CConstructCircle::Update_GameObject(const _float& timeDelta)
@@ -107,7 +108,7 @@ void CConstructCircle::OnStayOverlap(CCollider* self, CCollider* other)
                     newObj = CTemple::Create(m_GraphicDev);
                     break;
                 case BUILDING_TYPE::KITCHEN:
-                    // newObj = CKitchen::Create(m_GraphicDev);
+                    newObj = CKitchen::Create(m_GraphicDev);
                     break;
                 default: break;
                 }
@@ -126,13 +127,13 @@ void CConstructCircle::OnStayOverlap(CCollider* self, CCollider* other)
                         if (m_TargetBuildingType == BUILDING_TYPE::TEMPLE)
                             myPos.y += 2.f;
                         else if (m_TargetBuildingType == BUILDING_TYPE::KITCHEN)
-                            myPos.y += 1.f;
+                            myPos.y += 0.6f;
 
                         transform->Set_Pos(myPos);
                     }
 
                     if (CScene* curScene = CManagement::GetInstance()->Get_Scene())
-                        curScene->AddObjectOnLayer(LAYERTYPE::ENVIRONMENT, newObj, OBJTYPE::TEMPLE);
+                        curScene->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, newObj, OBJTYPE::BUILDING);
 
                     this->Mark_As_PendingKill();
                 }

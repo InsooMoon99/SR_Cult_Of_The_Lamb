@@ -36,20 +36,27 @@ public:
  
     void    Set_BuildIndex(BUILDITEM buildItem) { m_BuildIndex = buildItem; }
     void    Set_TextureIndex(int textureIndex) { m_TextureIndex = textureIndex; }
-
+    void    Set_RecipeId(int recipeId) { m_RecipeId = recipeId; }
+    void    Set_OnClick(function<void()> onclick) { m_OnClick = onclick; }
     CUIIcon* Get_Icon() { return m_ItemIcon; }
 
 protected:
     void Free() override;
 
 private:
+    _vec3           m_TargetScale;
+    _vec3           m_BaseScale;
     int             m_BuildIndex;
     CUIIcon*        m_ItemIcon;
     CUIIcon*        m_CardIcon;
     CUIIcon*        m_CardItemIcon;
-    CTexture*       m_HighlightTexCom;
+    CUIIcon*        m_Highlight;
+    CUIIcon*        m_LogIcon;
+    CUIIcon*        m_CoinIcon;
     D3DXCOLOR       m_D3dxColor;
     bool            m_IsHovered; //외곽선 그리기 여부 판단용
     int             m_TextureIndex;
+    int             m_RecipeId;
 
+    function<void()> m_OnClick;
 };

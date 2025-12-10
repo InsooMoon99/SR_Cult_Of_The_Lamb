@@ -1,0 +1,56 @@
+﻿#pragma once
+#include "CUI.h"
+#include "Client_Struct.h"
+
+class CUIIcon;
+
+class CUICookingGame :
+    public CUI
+{
+private:
+    explicit CUICookingGame(DEVICE graphicDev,CGameObject* owner, RecipeInst recipeInst);
+    explicit CUICookingGame(const CUICookingGame& rhs) = delete;
+    virtual ~CUICookingGame();
+
+public:
+    HRESULT Ready_GameObject() override;
+    void    Initialize_GameObject() override;
+    _int    Update_GameObject(const _float& timeDelta) override;
+    void    LateUpdate_GameObject(const _float& timeDelta) override;
+    void    Render_GameObject() override;
+
+public:
+    void SetStockMax(int maxNum) { m_StockMax = maxNum; }
+
+
+    void SetDoneEvent(function<void()> doneEvent) { m_DoneEvent = doneEvent; }
+    void SetResultItemDrop(function<void()> DropDish) { m_ResultItemDrop = DropDish; }
+
+private:
+    HRESULT Add_Component();
+
+    CGameObject* m_Owner;
+    RecipeInst  m_recipeInst;
+
+    CTransform* m_OwnerTransform;
+
+    CRcTex* m_Buffer_Curser;
+    CRcTex* m_Buffer_Area;
+    CRcTex* m_Buffer_Info;
+    CRcTex* m_Buffer_keyInfo;
+
+    function<void()> m_DoneEvent;
+    function<void()> m_ResultItemDrop;
+
+    CUIIcon* m_ItemIcon;
+
+
+    int m_StockMax = 0;
+    _vec3 m_CurserPos;
+public:
+    static CUICookingGame* Create(DEVICE graphicDev, CGameObject* owner, RecipeInst recipeInst);
+
+protected:
+    void Free() override;
+};
+

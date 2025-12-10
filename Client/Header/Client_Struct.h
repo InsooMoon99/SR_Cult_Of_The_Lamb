@@ -22,6 +22,13 @@ struct SpriteBounceDesc
 
 };
 
+struct RecipeInst
+{
+    int RecipeID;
+    int StockNum;
+    int ResultItemID;
+};
+
 // 선택지 구조체
 struct DialogueChoice
 {
@@ -50,4 +57,3 @@ struct Dialogue
 
     vector<DialogueLine> lines;      // 대사 라인들
 };
-

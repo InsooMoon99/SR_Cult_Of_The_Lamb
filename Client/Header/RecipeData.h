@@ -5,11 +5,6 @@ enum class RECIPETYPE
     COOK,
     BUILD
 };
-struct Ingredient
-{
-    int id;
-    int count;
-};
 
 struct Recipe
 {
@@ -20,8 +15,14 @@ struct Recipe
     string UIFileName;
     string UIPath;
     int  quality;
-    int  price;
     int  hunger;
 
-   vector<Ingredient> ingredients;
+   unordered_map<int,int> ingredients;
+
+   int GetRequiredCount(int ingredientId) const
+   {
+       auto it = ingredients.find(ingredientId);
+       return (it != ingredients.end()) ? it->second : 0;
+   }
+    //int need = recipe->ingredients[itemId]; 이렇게 사용했을 때 없는 아이디 검색하는 실수 방지용
 };
