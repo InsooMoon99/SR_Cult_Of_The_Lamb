@@ -3,6 +3,11 @@
 
 /// @brief 요리용 화덕 오브젝트
 /// @details 플레이어와 충돌 중 E키 상호작용으로 요리 UI 띄울 예정
+///
+
+
+class CCookingController;
+
 class CKitchen : public CBuildingBase
 {
 private:
@@ -27,6 +32,7 @@ public:
 
 private:
     HRESULT Add_Component() override;
+    CCookingController* m_CookingCtrlCom;
 
 public:
     static CKitchen* Create(DEVICE graphicDev);

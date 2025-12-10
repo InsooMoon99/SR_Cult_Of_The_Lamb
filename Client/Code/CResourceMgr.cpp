@@ -41,6 +41,7 @@
 #include "CWeaponEquip.h"
 #include "ItemData.h"
 #include "ItemInstance.h"
+#include "CCookingController.h"
 
 IMPLEMENT_SINGLETON(CResourceMgr)
 
@@ -161,6 +162,13 @@ HRESULT CResourceMgr::Ready_Common(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::CONSTRUCTION, CPlayerConstruction::Create(graphicDev))))
         return E_FAIL;
+
+
+    // cook
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::COOKCTRL, CCookingController::Create(graphicDev))))
+        return E_FAIL;
+
 
     ////////////
     vector<wstring> pathVec2;
