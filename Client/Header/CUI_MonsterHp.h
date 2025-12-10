@@ -9,7 +9,7 @@ END
 class CUI_MonsterHp : public CUI
 {
 private:
-    explicit CUI_MonsterHp(DEVICE graphicDev, CGameObject* owner);
+    explicit CUI_MonsterHp(DEVICE graphicDev, CCombatStat* combat);
 
     // 특정 몬스터한테 1:1로 매칭될 거기 때문에 복사 생성자가 안필요할듯?
     explicit CUI_MonsterHp(const CUI_MonsterHp& rhs) = delete;
@@ -31,7 +31,7 @@ private:
     void    Update_Billboard();  // 빌보드 계산
 
 public:
-    static CUI_MonsterHp* Create(DEVICE graphicDev, CGameObject* owner);
+    static CUI_MonsterHp* Create(DEVICE graphicDev, CCombatStat* combat);
 
 protected:
     void Free() override;

@@ -1,4 +1,4 @@
-﻿﻿#include "pch.h"
+﻿#include "pch.h"
 #include "CResourceMgr.h"
 
 #include "CAnimator.h"
@@ -45,8 +45,7 @@
 IMPLEMENT_SINGLETON(CResourceMgr)
 
 CResourceMgr::CResourceMgr()
-{
-}
+{ }
 
 CResourceMgr::~CResourceMgr()
 {
@@ -360,7 +359,7 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         return E_FAIL;
 
     if (FAILED(playerTex->Add_Texture(L"PlayerSkillCharging", TEX_NORMAL,
-        L"../Bin/Resource/Texture/Player/Spell2/Lamb-cast-spell2-%d.png", 17)))
+        L"../Bin/Resource/Texture/Player/Spell2/Lamb-cast-spell2-%d.png",17)))
 #pragma endregion
 #pragma region --- Tex: CRAFT ---
     {
@@ -387,8 +386,14 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         return E_FAIL;
 
 #pragma region --- Tex: 기타 상호작용 ---
+    // 무기 들기. 그런데 스프라이트가 조금 다른거같은데
     if (FAILED(playerTex->Add_Texture(L"Player_WeaponGet", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Weapon_Get_Shot/Lamb-weapons-get%d.png", 77)))
+        return E_FAIL;
+
+    // Hit
+    if (FAILED(playerTex->Add_Texture(L"Player_Hit", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Knockback_Shot/Lamb-knockback%d.png", 34)))
         return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
@@ -709,7 +714,7 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
 
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_CELL, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/UI/Inventory/InventoryIcon_BG%d.png", 2))))
+            L"../Bin/Resource/Texture/UI/Inventory/InventoryIcon_BG%d.png",2))))
         return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(
@@ -831,6 +836,17 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     decoTex.emplace_back(L"../Bin/Resource/Texture/UI/Inventory/Title_Bracket_Right.png");
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_DECO, CTexture::Create(graphicDev, TEX_NORMAL, decoTex))))
+        return E_FAIL;
+
+    // Dialogue
+    CTexture* dialogueTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(dialogueTex, E_FAIL);
+
+    if (FAILED(dialogueTex->Add_Texture(L"DialogueBox", TEX_NORMAL,
+        L"../Bin/Resource/Texture/UI/Talk/SpeechBubble1.png", 1)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_DIALOGUE, dialogueTex)))
         return E_FAIL;
 
     return S_OK;
@@ -1004,13 +1020,13 @@ HRESULT CResourceMgr::Ready_Building(DEVICE graphicDev)
     // Workbench
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_WORKBENCH,
-        CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Building/Workbench.png", 1))))
+        CTexture::Create(graphicDev,TEX_NORMAL, L"../Bin/Resource/Texture/Building/Workbench.png", 1))))
         return E_FAIL;
 
     // Dotted Circle
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_DOTTEDCIRCLE,
-        CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Building/Dotted_Circle.png", 1))))
+        CTexture::Create(graphicDev,TEX_NORMAL, L"../Bin/Resource/Texture/Building/Dotted_Circle.png", 1))))
         return E_FAIL;
 
     // Temple
@@ -1039,5 +1055,4 @@ HRESULT CResourceMgr::Ready_Building(DEVICE graphicDev)
 }
 
 void CResourceMgr::Free()
-{
-}
+{ }

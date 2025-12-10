@@ -2,6 +2,7 @@
 #include "CMainApp.h"
 #include "CCollisionManager.h"
 #include "CConstructionMgr.h"
+#include "CDialogueDB.h"
 #include "CDInputMgr.h"
 #include "CDropSystem.h"
 #include "CEditContext.h"
@@ -43,6 +44,9 @@ HRESULT CMainApp::Ready_MainApp()
         return E_FAIL;
 
     if (FAILED(CRecipeDB::GetInstance()->LoadFromJson("RecipeData.txt")))
+        return E_FAIL;
+
+    if (FAILED(CDialogueDB::GetInstance()->LoadFromJson("Dialogue.json")))
         return E_FAIL;
 
 #pragma endregion
@@ -106,7 +110,6 @@ void CMainApp::Render_MainApp()
     {
         CImGuiManager::GetInstance()->Render();
     }
-
 
     m_DeviceClass->Render_End();
 }
@@ -228,6 +231,7 @@ void CMainApp::Free()
         CRenderer::DestroyInstance();
     }
 
+    CDialogueDB::DestroyInstance();
     CConstructionMgr::DestroyInstance();
     CDropSystem::DestroyInstance();
     CSoundMgr::DestroyInstance();

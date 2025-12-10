@@ -81,7 +81,7 @@ void CCombatStat::LateUpdate_Component()
 
 void CCombatStat::Take_Damage(const HITDATA& hitData)
 {
-    if (m_IsInvincible) // 무적 체크
+    if (m_IsInvincible) // 무적 체크 -> AttackBase에서 하도록 변경하긴 했음
         return;
 
     if (m_IsDead)
@@ -114,6 +114,7 @@ void CCombatStat::Apply_Damage(const HITDATA& hitData)
         m_Hp = 0.f;
 
     m_DirForItem = hitData.dir;
+
     if (OnDamaged)
         OnDamaged();
 

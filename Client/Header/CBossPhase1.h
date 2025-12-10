@@ -14,6 +14,7 @@ class CState;
 class CCombatStat;
 END
 
+class CUI_BossHp;
 class CBossStateMachine;
 
 class CBossPhase1 : public CMonsterBase
@@ -53,7 +54,7 @@ public:
     _vec3 Get_Center() { return BaseCenter; }
     float Get_Length() { return BaseLength; }
 private:
-    _vec3 StartPos = { 47 ,0, 60 };
+    _vec3 StartPos = { 48.2f ,3.8f, 57.f };
     _vec3 BaseCenter;
     int BaseLength = 25;
     float interval = 1.f;
@@ -63,6 +64,7 @@ private:
     bool m_bHurt = false;
     float m_fAlpha = 0.8f;
     float m_bHurtTime = 0;
+
 private:
     void Free() override;
 };
