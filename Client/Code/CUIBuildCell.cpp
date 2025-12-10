@@ -116,7 +116,11 @@ _int CUIBuildCell::Update_GameObject(const _float& timeDelta)
         m_CardItemIcon->Update_GameObject(timeDelta);
 
     if (m_Highlight)
+    {
+        _vec3 cellPos = m_TransformCom->Get_Pos();
+        m_Highlight->Get_Transform()->Set_Pos(cellPos);
         m_Highlight->Update_GameObject(timeDelta);
+    }
 
     if (m_LogIcon)
         m_LogIcon->Update_GameObject(timeDelta);
@@ -192,9 +196,6 @@ void CUIBuildCell::Render_GameObject()
     if (m_IsHovered)
     {
         m_TargetScale = m_BaseScale * 1.2;
-
-        _vec3 cellPos = m_TransformCom->Get_Pos();
-        m_Highlight->Get_Transform()->Set_Pos(cellPos);
 
         m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
         m_Highlight->Set_TextureIndex(0);
