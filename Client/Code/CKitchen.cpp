@@ -161,9 +161,9 @@ HRESULT CKitchen::Add_Component()
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_KITCHEN, m_TextureCom });
 
 
-    //m_CookingCtrlCom = CreateProtoComponent<CCookingController>(this, COMPONENTTYPE::COOKCTRL);
-    //NULL_CHECK_RETURN(m_CookingCtrlCom, E_FAIL);
-    //m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::COOKCTRL, m_CookingCtrlCom });
+    m_CookingCtrlCom = CreateProtoComponent<CCookingController>(this, COMPONENTTYPE::COOKCTRL);
+    NULL_CHECK_RETURN(m_CookingCtrlCom, E_FAIL);
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::COOKCTRL, m_CookingCtrlCom });
 
 
     return S_OK;

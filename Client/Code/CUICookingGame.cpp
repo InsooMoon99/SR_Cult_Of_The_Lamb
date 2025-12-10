@@ -12,6 +12,7 @@
 #include "CFontMgr.h"
 
 
+
 CUICookingGame::CUICookingGame(DEVICE graphicDev, CGameObject* owner, RecipeInst recipeInst)
     : CUI(graphicDev),m_Owner(owner), m_recipeInst(recipeInst)
 {
@@ -29,7 +30,7 @@ HRESULT CUICookingGame::Ready_GameObject()
 
 
     m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(45.f));
-   // m_TransformCom->Set_Pos(m_Owner->Get_Transform()->Get_Pos().x, m_Owner->Get_Transform()->Get_Pos().y+2, m_Owner->Get_Transform()->Get_Pos().z);
+    m_TransformCom->Set_Pos(m_Owner->Get_Transform()->Get_Pos().x, m_Owner->Get_Transform()->Get_Pos().y+2, m_Owner->Get_Transform()->Get_Pos().z);
 
     return S_OK;
 }
@@ -64,12 +65,13 @@ _int CUICookingGame::Update_GameObject(const _float& timeDelta)
 
     //커서포즈 계속 왓다 갓다
 
-    if (CDInputMgr::GetInstance()->KeyDown(DIK_U))
+    if (CDInputMgr::GetInstance()->KeyDown(DIK_A))
     {
         //커서포즈 멈춤
+        
         //위치가 에리어 안이라면
-        //m_DoneEvent()
-        //m_ResultItemDrop(true)
+        m_DoneEvent();
+        m_ResultItemDrop(m_recipeInst.ResultItemID,m_result);
         // 자신 지우기
     }
     
@@ -102,25 +104,24 @@ void CUICookingGame::Render_GameObject()
         const float BG_HEIGHT = 1.0f;
 
         m_BufferCom->Set_Scale(BG_WIDTH, BG_HEIGHT);
-        m_BufferCom->Set_Offset(0.f, 1.f);
+        m_BufferCom->Set_Offset(0.f, 0.f);
 
         m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
-        m_TextureCom->Set_Texture(5);  // 위 현제 음식 텍스처
+        m_TextureCom->Set_Texture(4);  // 레드
         m_BufferCom->Render_Buffer();
     }
 
     //메인 바 데코 
-
 
     {
         const float BG_WIDTH = 1.0f;
         const float BG_HEIGHT = 1.0f;
 
         m_BufferCom->Set_Scale(BG_WIDTH, BG_HEIGHT);
-        m_BufferCom->Set_Offset(0.f, 1.f);
+        m_BufferCom->Set_Offset(0.f, 0.f);
 
         m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
-        m_TextureCom->Set_Texture(5);  // 위 현제 음식 텍스처
+        m_TextureCom->Set_Texture(2);  // 데코
         m_BufferCom->Render_Buffer();
     }
 
@@ -197,15 +198,15 @@ HRESULT CUICookingGame::Add_Component()
 
     m_Buffer_Curser = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
     NULL_CHECK_RETURN(m_Buffer_Curser, E_FAIL);
-    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::RC_TEX, m_Buffer_Curser });
+   // m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::RC_TEX, m_Buffer_Curser });
 
     m_Buffer_Area = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
     NULL_CHECK_RETURN(m_Buffer_Area, E_FAIL);
-    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::RC_TEX, m_Buffer_Area });
+    //m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::RC_TEX, m_Buffer_Area });
 
     m_Buffer_keyInfo = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
     NULL_CHECK_RETURN(m_Buffer_keyInfo, E_FAIL);
-    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::RC_TEX, m_Buffer_keyInfo });
+    //m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::RC_TEX, m_Buffer_keyInfo });
 
     return S_OK;
 }
@@ -227,7 +228,7 @@ CUICookingGame* CUICookingGame::Create(DEVICE graphicDev, CGameObject* owner, Re
 void CUICookingGame::Free()
 {
 
-    Safe_Release(m_Owner);
+
 
     CUI::Free();
 }

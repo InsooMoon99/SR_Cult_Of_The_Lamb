@@ -11,6 +11,7 @@
 #include "CCreateHelper.h"
 #include "CInventory.h"
 #include "CRecipeDB.h"
+#include "CDInputMgr.h"
 
 CCookingController::CCookingController(DEVICE graphicDev) : CComponent(graphicDev)
 {
@@ -41,7 +42,15 @@ _int CCookingController::Update_Component(const _float& timeDelta)
     _int exit = CComponent::Update_Component(timeDelta);
 
 
-
+    //// 테스트
+    //if (CDInputMgr::GetInstance()->KeyDown(DIK_U))
+    //{
+    //    m_bStart = true;
+    //}
+    //else
+    //{
+    //    m_bStart = false;
+    //}
 
     if (m_bStart)
     {
@@ -65,6 +74,11 @@ _int CCookingController::Update_Component(const _float& timeDelta)
 
             miniGame->Initialize_GameObject();
             miniGame->SetStockMax(m_StockMax);
+
+            CInventory* inven = dynamic_cast<CInventory*>(m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::INVENTORY));
+
+            miniGame->SetDoneEvent([this]() {m_bDone = true;});
+            miniGame->SetResultItemDrop([this](int _dishID, bool _quality) {DropDish(_dishID, _quality);});
         }
         m_queRecipeInst.front().StockNum--;
 
@@ -94,6 +108,7 @@ _int CCookingController::Update_Component(const _float& timeDelta)
             m_bStart = false;
             m_bDone = false;
 
+           
         }
 
     }
