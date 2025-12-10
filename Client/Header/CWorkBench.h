@@ -1,6 +1,9 @@
 ﻿#pragma once
 #include "CBuildingBase.h"
 
+class CUIBuildMenu;
+class CSpriteEff;
+
 /// @brief 제작대 오브젝트
 /// @details 플레이어와 충돌 중 E 키 상호작용으로 건축 UI 띄울 예정
 class CWorkBench : public CBuildingBase
@@ -19,6 +22,8 @@ public:
 
 public:
     void Render_Editor() override;
+    bool Is_Hovering();
+    void Set_BuildMenu(CUIBuildMenu* buildMenu) { m_BuildMenu = buildMenu; }
 
 public:
     void OnBeginOverlap(CCollider* self, CCollider* other) override;
@@ -33,4 +38,11 @@ public:
 
 private:
     void Free() override;
+
+private:
+    bool m_bPlayerOverlap = false;
+    bool m_bHovering = false;
+
+    CSpriteEff* m_SpriteEffCom;
+    CUIBuildMenu* m_BuildMenu;
 };

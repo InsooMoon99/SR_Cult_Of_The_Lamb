@@ -162,6 +162,7 @@ enum class COMPONENTTYPE
     TEX_ITEM,
     TEX_MENU_CHAR,
     TEX_UI_ICON,
+    TEX_UI_DECO,
     TEX_UI_BUTTON,
     TEX_UI_BUILD,
     TEX_BOSSPHASE1,
@@ -175,6 +176,7 @@ enum class COMPONENTTYPE
     TEX_ROCK,
     TEX_TREE,
     TEX_SKILL,
+    TEX_UI_COOK,
 
     ANIMATOR,
 

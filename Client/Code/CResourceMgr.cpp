@@ -708,7 +708,7 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
 
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_CELL, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/UI/Inventory/InventoryIcon_BG.png", 1))))
+            L"../Bin/Resource/Texture/UI/Inventory/InventoryIcon_BG%d.png",2))))
         return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(
@@ -751,8 +751,8 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
         Engine::CTexture::Create(
             graphicDev,
             TEX_NORMAL,
-            L"../Bin/Resource/Texture/UI/Inventory/RitualCard.png",
-            1))))
+            L"../Bin/Resource/Texture/UI/Inventory/RitualCard%d.png",
+            2))))
         return E_FAIL;
 
     CTexture* tarotTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
@@ -803,12 +803,33 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
         COMPONENTTYPE::TEX_UI_MONSTERHP, CTexture::Create(graphicDev, TEX_NORMAL, monsterHp_Path))))
         return E_FAIL;
 
+    // UI_Cooking
+    vector<wstring> cookingUI;
+    cookingUI.push_back(L"../Bin/Resource/Texture/UI/CookUI/CookingBar_White.png");
+    cookingUI.push_back(L"../Bin/Resource/Texture/UI/CookUI/Cooking_Marker.png");
+    cookingUI.push_back(L"../Bin/Resource/Texture/UI/CookUI/CookingBar_Border.png");
+    cookingUI.push_back(L"../Bin/Resource/Texture/UI/CookUI/CookingBar_Green.png");
+    cookingUI.push_back(L"../Bin/Resource/Texture/UI/CookUI/CookingBar_Red.png");
+    cookingUI.push_back(L"../Bin/Resource/Texture/UI/CookUI/SpeechBubble.png");
+
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_UI_COOK, CTexture::Create(graphicDev, TEX_NORMAL, cookingUI))))
+        return E_FAIL;
+
 
     vector<wstring> buildTex;
     buildTex.emplace_back(L"../Bin/Resource/Texture/UI/Icon_Building/Icon_CookingFire.png");
     buildTex.emplace_back(L"../Bin/Resource/Texture/UI/Icon_Building/Icon_Temple.png");
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_BUILD, CTexture::Create(graphicDev, TEX_NORMAL, buildTex))))
+        return E_FAIL;
+
+    vector<wstring> decoTex;
+    decoTex.emplace_back(L"../Bin/Resource/Texture/UI/Inventory/Title_Bracket_Left.png");
+    decoTex.emplace_back(L"../Bin/Resource/Texture/UI/Inventory/Title_Bracket_Right.png");
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_UI_DECO, CTexture::Create(graphicDev, TEX_NORMAL, decoTex))))
         return E_FAIL;
    
     return S_OK;
