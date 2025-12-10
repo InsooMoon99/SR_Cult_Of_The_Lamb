@@ -175,12 +175,6 @@
     <Filter Include="97. Component\06. SkillEquip">
       <UniqueIdentifier>{12547d9a-7e03-42d3-9f2c-46e9b362b9b6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="97. Component\06.Effect">
-      <UniqueIdentifier>{0a2588d6-9b6a-44ba-9c7f-e2fd96563550}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="97. Component\06.Effect\00.Base">
-      <UniqueIdentifier>{8a0d49d8-10a4-4675-9c64-616209693762}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\04. Boss\02. Boss2\03. State">
       <UniqueIdentifier>{d74a9f17-2586-44d3-a875-b196eaed53a4}</UniqueIdentifier>
     </Filter>
@@ -204,12 +198,6 @@
     </Filter>
     <Filter Include="97. Component\07. State">
       <UniqueIdentifier>{e34a7dc5-e0ec-4ffb-8b09-7b4b921f27cb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="97. Component\06. Effect">
-      <UniqueIdentifier>{0a2588d6-9b6a-44ba-9c7f-e2fd96563550}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="97. Component\06. Effect\00.Base">
-      <UniqueIdentifier>{8a0d49d8-10a4-4675-9c64-616209693762}</UniqueIdentifier>
     </Filter>
     <Filter Include="02. Scene\03. MainMenu">
       <UniqueIdentifier>{d480312a-efaf-4078-93cf-c7487930aaa7}</UniqueIdentifier>
@@ -273,6 +261,27 @@
     </Filter>
     <Filter Include="07. Dialogue">
       <UniqueIdentifier>{2b20be73-2c6c-40c0-85a5-c40c2ab45975}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="93. Crafting">
+      <UniqueIdentifier>{df30e963-03c3-4d96-82cb-0e75b4ac8abf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="92. Cooking">
+      <UniqueIdentifier>{d5fe05d1-08dc-4e3e-95f4-d2711fb78852}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. UI\01. UI\11. UICooking">
+      <UniqueIdentifier>{c24b5657-eba6-47a1-880c-3050ccc06163}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Utility\00. Helper">
+      <UniqueIdentifier>{f7c56a9e-51ea-4779-bc67-c18f14269457}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Utility\01. Interface">
+      <UniqueIdentifier>{8ecb93b1-85b6-49f0-b5d7-31b82825bf5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\09. MapObject\01. Editor">
+      <UniqueIdentifier>{b8a6c8b2-6905-4bda-97eb-471703f1cc1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\09. MapObject\02. Crafting">
+      <UniqueIdentifier>{d314f0bf-f1b8-460d-96f3-adee58dfec4d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -435,20 +444,8 @@
     <ClInclude Include="..\Header\CMapObjectMgr.h">
       <Filter>99. ImGui_Editor\01. EditorScript</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CMapObject_Grass.h">
-      <Filter>03. GameObject\09. MapObject</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\CMapObjectBase.h">
-      <Filter>03. GameObject\09. MapObject</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\CMapObject_Helper.h">
       <Filter>98. Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\CMapObject_Rubble.h">
-      <Filter>03. GameObject\09. MapObject</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\CMapObject_Deco.h">
-      <Filter>03. GameObject\09. MapObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CMenuChar.h">
       <Filter>05. UI\01. UI</Filter>
@@ -473,9 +470,6 @@
     </ClInclude>
     <ClInclude Include="..\Header\CUIPlayerImage.h">
       <Filter>05. UI\01. UI\04. UITabMenu</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\CWall.h">
-      <Filter>03. GameObject\09. MapObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CWallRenderer.h">
       <Filter>97. Component\04. Wall</Filter>
@@ -527,12 +521,6 @@
     </ClInclude>
     <ClInclude Include="..\Header\CProjectile.h">
       <Filter>97. Component\05. Projectile</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\CMapObject_DungeonDeco.h">
-      <Filter>03. GameObject\09. MapObject</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\CMapObject_ETC.h">
-      <Filter>03. GameObject\09. MapObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CLogo_Boss.h">
       <Filter>02. Scene\00. Logo</Filter>
@@ -624,28 +612,10 @@
     <ClInclude Include="..\Header\CSpriteEff.h">
       <Filter>97. Component\07. Effect</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CBossTalk.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\CPlayerSkill.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\CFireball.h">
     </ClInclude>
     <ClInclude Include="..\Header\CStage_Dungeon.h">
       <Filter>02. Scene\01. Stage</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\CWorldInteractive.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\CHarvestableHerb.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="IHitFlashEff.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\CPlayerGathering.h">
-      <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CEyeball_Idle.h">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
@@ -683,14 +653,8 @@
     <ClInclude Include="..\Header\CUIWeaponExplain.h">
       <Filter>05. UI\01. UI\09. UIWeaponExplain</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CUI_Fade.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\CFloaterMonster.h">
       <Filter>03. GameObject\02. Monster</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\CMonsterSpawner.h">
-      <Filter>03. GameObject\09. MapObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CUI_BossHp.h">
       <Filter>05. UI\01. UI\07. UI_MonsterHp</Filter>
@@ -713,18 +677,6 @@
     <ClInclude Include="..\Header\CKitchen.h">
       <Filter>03. GameObject\08. Building\03. Kitchen</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CTree.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\CRock.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\CUICookingGame.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\CCookingController.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\CRecipeDB.h">
       <Filter>06. Recipe</Filter>
     </ClInclude>
@@ -742,6 +694,63 @@
     </ClInclude>
     <ClInclude Include="..\Header\CDialogueDB.h">
       <Filter>07. Dialogue</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBossTalk.h">
+      <Filter>03. GameObject\04. Boss\01. Boss1\01.State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CCookingController.h">
+      <Filter>92. Cooking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CHarvestableHerb.h">
+      <Filter>93. Crafting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CPlayerGathering.h">
+      <Filter>93. Crafting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUICookingGame.h">
+      <Filter>05. UI\01. UI\11. UICooking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CPlayerSkill.h">
+      <Filter>03. GameObject\01. Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CWorldInteractive.h">
+      <Filter>93. Crafting</Filter>
+    </ClInclude>
+    <ClInclude Include="IHitFlashEff.h">
+      <Filter>98. Utility\01. Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUI_Fade.h">
+      <Filter>05. UI\01. UI\99. Fade</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMapObject_Deco.h">
+      <Filter>03. GameObject\09. MapObject\01. Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMapObject_DungeonDeco.h">
+      <Filter>03. GameObject\09. MapObject\01. Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMapObject_ETC.h">
+      <Filter>03. GameObject\09. MapObject\01. Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMapObject_Grass.h">
+      <Filter>03. GameObject\09. MapObject\01. Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMapObject_Rubble.h">
+      <Filter>03. GameObject\09. MapObject\01. Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMapObjectBase.h">
+      <Filter>03. GameObject\09. MapObject\01. Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CMonsterSpawner.h">
+      <Filter>03. GameObject\09. MapObject\01. Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CWall.h">
+      <Filter>03. GameObject\09. MapObject\01. Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CRock.h">
+      <Filter>03. GameObject\09. MapObject\02. Crafting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CTree.h">
+      <Filter>03. GameObject\09. MapObject\02. Crafting</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -886,18 +895,6 @@
     <ClCompile Include="..\Code\CMapObjectMgr.cpp">
       <Filter>99. ImGui_Editor\01. EditorScript</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CMapObject_Grass.cpp">
-      <Filter>03. GameObject\09. MapObject</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\CMapObjectBase.cpp">
-      <Filter>03. GameObject\09. MapObject</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\CMapObject_Rubble.cpp">
-      <Filter>03. GameObject\09. MapObject</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\CMapObject_Deco.cpp">
-      <Filter>03. GameObject\09. MapObject</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\CMenuChar.cpp">
       <Filter>05. UI\01. UI</Filter>
     </ClCompile>
@@ -921,9 +918,6 @@
     </ClCompile>
     <ClCompile Include="..\Code\CUIPlayerImage.cpp">
       <Filter>05. UI\01. UI\04. UITabMenu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\CWall.cpp">
-      <Filter>03. GameObject\09. MapObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CWallRenderer.cpp">
       <Filter>97. Component\04. Wall</Filter>
@@ -972,12 +966,6 @@
     </ClCompile>
     <ClCompile Include="..\Code\CProjectile.cpp">
       <Filter>97. Component\05. Projectile</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\CMapObject_DungeonDeco.cpp">
-      <Filter>03. GameObject\09. MapObject</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\CMapObject_ETC.cpp">
-      <Filter>03. GameObject\09. MapObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CLogo_Boss.cpp">
       <Filter>02. Scene\00. Logo</Filter>
@@ -1063,23 +1051,8 @@
     <ClCompile Include="..\Code\CSpriteEff.cpp">
       <Filter>97. Component\07. Effect</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CBossTalk.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\CPlayerSkill.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\CStage_Dungeon.cpp">
       <Filter>02. Scene\01. Stage</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\CWorldInteractive.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\CHarvestableHerb.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\CPlayerGathering.cpp">
-      <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CEyeball_Idle.cpp">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
@@ -1114,14 +1087,8 @@
     <ClCompile Include="..\Code\CUIWeaponExplain.cpp">
       <Filter>05. UI\01. UI\09. UIWeaponExplain</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CUI_Fade.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\CFloaterMonster.cpp">
       <Filter>03. GameObject\02. Monster</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\CMonsterSpawner.cpp">
-      <Filter>03. GameObject\09. MapObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CConstructionPlacer.cpp">
       <Filter>94. Construction\01. Placer</Filter>
@@ -1147,18 +1114,6 @@
     <ClCompile Include="..\Code\CKitchen.cpp">
       <Filter>03. GameObject\08. Building\03. Kitchen</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CTree.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\CRock.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\CUICookingGame.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\CCookingController.cpp">
-      <Filter>소스 파일</Filter>
-     </ClCompile>
     <ClCompile Include="..\Code\CRecipeDB.cpp">
       <Filter>06. Recipe</Filter>
     </ClCompile>
@@ -1173,6 +1128,60 @@
     </ClCompile>
     <ClCompile Include="..\Code\CDialogueDB.cpp">
       <Filter>07. Dialogue</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBossTalk.cpp">
+      <Filter>03. GameObject\04. Boss\01. Boss1\01.State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CCookingController.cpp">
+      <Filter>92. Cooking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CHarvestableHerb.cpp">
+      <Filter>93. Crafting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CPlayerGathering.cpp">
+      <Filter>93. Crafting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUICookingGame.cpp">
+      <Filter>05. UI\01. UI\11. UICooking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CPlayerSkill.cpp">
+      <Filter>03. GameObject\01. Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CWorldInteractive.cpp">
+      <Filter>93. Crafting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_Fade.cpp">
+      <Filter>05. UI\01. UI\99. Fade</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMapObject_Deco.cpp">
+      <Filter>03. GameObject\09. MapObject\01. Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMapObject_DungeonDeco.cpp">
+      <Filter>03. GameObject\09. MapObject\01. Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMapObject_ETC.cpp">
+      <Filter>03. GameObject\09. MapObject\01. Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMapObject_Grass.cpp">
+      <Filter>03. GameObject\09. MapObject\01. Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMapObject_Rubble.cpp">
+      <Filter>03. GameObject\09. MapObject\01. Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMapObjectBase.cpp">
+      <Filter>03. GameObject\09. MapObject\01. Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMonsterSpawner.cpp">
+      <Filter>03. GameObject\09. MapObject\01. Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CWall.cpp">
+      <Filter>03. GameObject\09. MapObject\01. Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CRock.cpp">
+      <Filter>03. GameObject\09. MapObject\02. Crafting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CTree.cpp">
+      <Filter>03. GameObject\09. MapObject\02. Crafting</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
