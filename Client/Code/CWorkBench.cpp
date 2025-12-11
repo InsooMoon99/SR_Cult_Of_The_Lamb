@@ -10,6 +10,7 @@
 #include "CRcTex.h"
 #include "CDInputMgr.h"
 #include "CUIBuildMenu.h"
+#include "CCookingController.h"
 
 CWorkBench::CWorkBench(DEVICE graphicDev)
     : CBuildingBase(graphicDev)
@@ -30,7 +31,6 @@ HRESULT CWorkBench::Ready_GameObject()
     if (FAILED(CBuildingBase::Ready_GameObject()))
         return E_FAIL;
 
-
     return S_OK;
 }
 
@@ -44,6 +44,8 @@ void CWorkBench::Initialize_GameObject()
 
     m_BoxCollCom->Set_RawSize(_vec3(2.0f, 2.0f, 2.0f));
     m_BoxCollCom->Set_CollisionLayer(COLLISION_LAYERTYPE::WORKBENCH);
+
+    m_BuildMenu->SetOnDeactivate([this]() {m_Active = false; });
 }
 
 _int CWorkBench::Update_GameObject(const _float& timeDelta)
@@ -55,7 +57,10 @@ _int CWorkBench::Update_GameObject(const _float& timeDelta)
        
             if (CDInputMgr::GetInstance()->MouseDown(DIM_LB))
             {
-                m_BuildMenu->Set_IsStart(true);
+                m_BuildMenu->Set_IsActive(true);
+                m_BuildMenu->PlayOpenAnimation();
+
+                m_Active = true;
             }
 
 
