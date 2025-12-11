@@ -84,6 +84,7 @@ HRESULT CRecipeDB::LoadFromJson(const string& fileName)
         recipe.id = node["id"];
         recipe.name = node["name"];
         recipe.desc = node["desc"];
+        recipe.result = node.value("result", 0);
         recipe.UIFileName = node["UIFileName"];
         recipe.UIPath = node["UIPath"];
 

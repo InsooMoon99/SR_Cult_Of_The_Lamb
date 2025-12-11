@@ -16,7 +16,7 @@ struct Recipe
     string UIPath;
     int  quality;
     int  hunger;
-    int  result;
+    int result;
 
    unordered_map<int,int> ingredients;
 

@@ -86,6 +86,8 @@ _int CDroppedItem::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CGameObject::Update_GameObject(timeDelta);
 
+        m_ignoreTime += timeDelta;
+
     if (is_SetBounceDesc == true)
     {
         m_Active = true;
@@ -125,6 +127,35 @@ void CDroppedItem::Render_GameObject()
 
     m_BufferCom->Render_Buffer();
 
+    if (CItemDB::GetInstance()->GetItemById(m_itemInst.itemId)->type == ItemType::Food&& m_foodQuality != FOODQUALITY::NO_FOOD)
+    {
+
+        const _matrix& world = m_TransformCom->Get_World();
+
+    
+            const float BG_WIDTH = .8f;
+            const float BG_HEIGHT =1.5f;
+
+            m_Buffer_Cook->Set_Scale(BG_WIDTH, BG_HEIGHT);
+            m_Buffer_Cook->Set_Offset(0.f, 2.5f);
+            
+            m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
+   
+
+        if (m_foodQuality == FOODQUALITY::BAD)
+        {
+            m_TextureComCook->Set_Texture(6);  // 레드
+
+        }
+        else if (m_foodQuality == FOODQUALITY::GOOD)
+        {
+
+            m_TextureComCook->Set_Texture(6);  // 레드
+        }
+        m_Buffer_Cook->Render_Buffer();
+    }
+
+
     //
 
     m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
@@ -141,11 +172,21 @@ void CDroppedItem::Render_GameObject()
 
 void CDroppedItem::OnBeginOverlap(CCollider* self, CCollider* other)
 {
+    if (m_ignoreTime < 0.5f)
+    {
+        return;
+        // 생성 후 잠깐 충돌 무시
+    }
+
     CGameObject::OnBeginOverlap(self, other);
 }
 
 void CDroppedItem::OnStayOverlap(CCollider* self, CCollider* other)
 {
+
+    if (m_ignoreTime < 0.5f)
+        return; // ★ 추가해야 함!!
+
     CGameObject::OnStayOverlap(self, other);
 
     CPlayer* ply = dynamic_cast<CPlayer*>(other->Get_Owner());
@@ -237,6 +278,13 @@ HRESULT CDroppedItem::Add_Component()
 
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_ITEM, m_TextureCom });
 
+
+    // cook ui tex
+    m_TextureComCook = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_UI_COOK);
+    NULL_CHECK_RETURN(m_TextureComCook, E_FAIL);
+
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_UI_COOK, m_TextureComCook });
+
     // Box Col
     m_BoxColCom = CreateProtoComponent<CBoxCollider>(this, COMPONENTTYPE::BOX_COLL);
     NULL_CHECK_RETURN(m_BoxColCom, E_FAIL);
@@ -248,6 +296,10 @@ HRESULT CDroppedItem::Add_Component()
     NULL_CHECK_RETURN(m_SpriteEff, E_FAIL);
 
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::SPRITEEFFECT, m_SpriteEff });
+
+
+    m_Buffer_Cook = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
+    NULL_CHECK_RETURN(m_Buffer_Cook, E_FAIL);
 
     return S_OK;
 }
@@ -268,6 +320,7 @@ CDroppedItem* CDroppedItem::Create(DEVICE graphicDev, ItemInstance itemInst, _ve
 
 void CDroppedItem::Free()
 {
+    Safe_Release(m_Buffer_Cook);
     CDropSystem::GetInstance()->Remove_Item(this);
 
     CGameObject::Free();
