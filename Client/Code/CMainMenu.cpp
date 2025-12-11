@@ -132,11 +132,46 @@ HRESULT CMainMenu::Ready_GameLogic_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::UI, gameObject),
         L"CMainMenu::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CMenuChar) failed");
-    //const auto playerTransform =
-    //    dynamic_cast<CTransform*>(pGameObject->Get_Component(
-    //        ID_DYNAMIC,
-    //        COMPONENTTYPE::TRANSFORM));
-    //playerTransform->Set_Pos({ 0,0,20 });
+    const auto playerTransform =
+        dynamic_cast<CTransform*>(gameObject->Get_Component(
+            ID_DYNAMIC,
+            COMPONENTTYPE::TRANSFORM));
+    playerTransform->Set_Pos({ 0,0,20 });
+
+    //// 카메라 생성
+    //FAILED_CHECK_MSG(
+    //    Engine::AcquirePersistentObject<CMainCamera>(
+    //        OBJTYPE::CAMERA, L"MainCamera", m_GraphicDev, layer, &gameObject),
+    //    L"Persistent object setup failed"
+    //);
+    //
+    //auto camTransform = dynamic_cast<CTransform*>(
+    //    gameObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+    //
+    //camTransform->Set_Pos(0.f, 0.f, 0.f);
+    //camTransform->Set_Rotation({ 0.f, 0.f, 0.f });
+    //
+    //auto camController = dynamic_cast<CCameraController*>(
+    //    gameObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAM_CONTROLLER));
+    //
+    //// 카메라 설정값 초기화
+    //if (camController != nullptr)
+    //{
+    //    // 씬에서 카메라 생성 시 값 초기화
+    //    // : CCameraSetup을 카메라 설정을 중도에 바꿀 때 사용 가능하고,
+    //    //   그럴 때는 필요한 것만 사용해 .Apply() 하면 된다.
+    //    CCamSetupBuilder(camController)
+    //        .SetTarget(nullptr)
+    //        //.PivotOffset({ 0.f, 0.f, 0.f })
+    //        //.Distance(12.f)
+    //        //.RotX(45.f)
+    //        //.RotY(0.f)
+    //        //.LagSpeed(10.f)
+    //        //.ZoomSpeed(5.f)
+    //        .Snap()
+    //        .Apply();
+    //}
+
 
     // 카메라 생성
     FAILED_CHECK_MSG(
@@ -144,12 +179,6 @@ HRESULT CMainMenu::Ready_GameLogic_Layer(LAYERTYPE layerType)
             OBJTYPE::CAMERA, L"MainCamera", m_GraphicDev, layer, &gameObject),
         L"Persistent object setup failed"
     );
-
-    auto camTransform = dynamic_cast<CTransform*>(
-        gameObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-
-    camTransform->Set_Pos(0.f, 0.f, 0.f);
-    camTransform->Set_Rotation({ 0.f, 0.f, 0.f });
 
     auto camController = dynamic_cast<CCameraController*>(
         gameObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAM_CONTROLLER));
@@ -161,7 +190,7 @@ HRESULT CMainMenu::Ready_GameLogic_Layer(LAYERTYPE layerType)
         // : CCameraSetup을 카메라 설정을 중도에 바꿀 때 사용 가능하고,
         //   그럴 때는 필요한 것만 사용해 .Apply() 하면 된다.
         CCamSetupBuilder(camController)
-            .SetTarget(nullptr)
+            .SetTarget(playerTransform)
             //.PivotOffset({ 0.f, 0.f, 0.f })
             //.Distance(12.f)
             //.RotX(45.f)
@@ -170,39 +199,10 @@ HRESULT CMainMenu::Ready_GameLogic_Layer(LAYERTYPE layerType)
             //.ZoomSpeed(5.f)
             .Snap()
             .Apply();
+
+        // 에디터에 카메라 설정
+        CMainEditorMgr::GetInstance()->Set_MainCamera(camController);
     }
-
-
-    //// 카메라 생성
-    //FAILED_CHECK_MSG(
-    //    Engine::AcquirePersistentObject<CMainCamera>(
-    //        OBJTYPE::CAMERA, L"MainCamera", m_GraphicDev, layer, &gameObject),
-    //    L"Persistent object setup failed"
-    //);
-
-    //auto camController = dynamic_cast<CCameraController*>(
-    //    gameObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAM_CONTROLLER));
-
-    //// 카메라 설정값 초기화
-    //if (camController != nullptr)
-    //{
-    //    // 씬에서 카메라 생성 시 값 초기화
-    //    // : CCameraSetup을 카메라 설정을 중도에 바꿀 때 사용 가능하고,
-    //    //   그럴 때는 필요한 것만 사용해 .Apply() 하면 된다.
-    //    CCamSetupBuilder(camController)
-    //        .SetTarget(playerTransform)
-    //        //.PivotOffset({ 0.f, 0.f, 0.f })
-    //        //.Distance(12.f)
-    //        //.RotX(45.f)
-    //        //.RotY(0.f)
-    //        //.LagSpeed(10.f)
-    //        //.ZoomSpeed(5.f)
-    //        .Snap()
-    //        .Apply();
-
-    //    // 에디터에 카메라 설정
-    //    CMainEditorMgr::GetInstance()->Set_MainCamera(camController);
-    //}
     if (nullptr == layer)
         return E_FAIL;
 
