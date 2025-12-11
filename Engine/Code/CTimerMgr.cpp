@@ -88,6 +88,7 @@ _float CTimerMgr::Get_RealTimeDelta()
     return timer->Get_TimeDelta();
 }
 
+// Ex) duration = 0.2, scale = 0.1이라면 -> 0.2초 동안 10% 속도로 슬로우 모션
 void CTimerMgr::Start_HitStop(_float duration, _float scale)
 {
     m_HitStopDuration = duration;

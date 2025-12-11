@@ -277,8 +277,6 @@ void CCameraMovement::Update_DynamicTargetMode(const _float& timeDelta)
         _vec3 vecDistance = (bossPos - playerPos);
         _float distance = D3DXVec3Length(&vecDistance);
 
-        cout << "플레이어 - 보스 거리"  << distance << endl;
-
         // 거리 비율 계산
         _float ratio = Engine::Clamp(
             (distance - m_PlayerDistMin) / (m_PlayerDistMax - m_PlayerDistMin), 0.f, 1.f);

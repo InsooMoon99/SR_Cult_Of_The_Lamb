@@ -147,10 +147,12 @@ void CTerrain::LateUpdate_GameObject(const _float& timeDelta)
 
 void CTerrain::Render_GameObject()
 {
-    if (m_TerrainRendererCom == nullptr)
-        return;
+    Render_Setting();
 
-    m_TerrainRendererCom->Render_TerrainRenderer();
+    if (m_TerrainRendererCom)
+        m_TerrainRendererCom->Render_TerrainRenderer();
+
+    Render_Reset();
 }
 
 HRESULT CTerrain::Add_Component()
@@ -205,6 +207,28 @@ HRESULT CTerrain::Add_Component()
         m_TerrainRendererCom->Get_CellSize());
 
     return S_OK;
+}
+
+void CTerrain::Set_Material()
+{
+    D3DMATERIAL9 material;
+    ZeroMemory(&material, sizeof(D3DMATERIAL9));
+
+    material.Diffuse = COLOR(1.f, 1.f, 1.f, 1.f);       // 빛을 받았을 때 색
+    material.Ambient = COLOR(0.2f, 0.2f, 0.2f, 1.f);    // 배경광 색
+    material.Specular = COLOR(1.f, 1.f, 1.f, 1.f);      // 반사광 색
+    material.Emissive = COLOR(0.f, 0.f, 0.f, 1.f);      // 자체 발광
+    material.Power = 0.f; // 반사광 세기
+
+    m_GraphicDev->SetMaterial(&material);
+}
+
+void CTerrain::Render_Setting()
+{
+    CRenderObject::Render_Setting();
+
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE); 
+    Set_Material();
 }
 
 void CTerrain::Render_Editor()

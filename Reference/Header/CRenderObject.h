@@ -29,6 +29,8 @@ protected:
     virtual void Render_Setting();
     virtual void Render_Reset();
 
+    virtual void Set_Material();
+
 protected:
     CTransform* m_TransformCom;
     CRcTex*     m_BufferCom;

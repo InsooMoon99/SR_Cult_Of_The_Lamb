@@ -5,7 +5,6 @@
 #include "CCameraController.h"
 #include "CCamSetupBuilder.h"
 #include "CRigidbody.h"
-#include "CDInputMgr.h"
 #include "CDropSystem.h"
 #include "CLayer.h"
 #include "CMainCamera.h"
@@ -26,12 +25,11 @@
 #include "CUI_Dialogue.h"
 #include "CWall.h"
 #include "CAnimator.h"
-#include "CBossController.h"
+#include "CBossDead.h"
 #include "CBossStateMachine.h"
 #include "CBossTalk.h"
 #include "CPlayerController.h"
 #include "CWeaponEquip.h"
-#include "CPlayerMovement.h"
 
 CStage_Boss1::CStage_Boss1(DEVICE graphicDev)
     : Engine::CScene(graphicDev), m_Terrain(nullptr), m_Boss(nullptr), m_Player(nullptr), m_Dialogue(nullptr),
@@ -39,7 +37,7 @@ CStage_Boss1::CStage_Boss1(DEVICE graphicDev)
       m_PlayerTransformCom(nullptr),
       m_PlayerCombatStatCom(nullptr), m_PlayerInventoryCom(nullptr),
       m_WeaponEquipCom(nullptr),
-      m_PlayerSkillCom(nullptr)
+      m_PlayerSkillCom(nullptr), m_BossHpbar(nullptr)
 {
 }
 
@@ -69,37 +67,10 @@ void CStage_Boss1::Initialize_Scene()
 
     m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Boss1.map");
 
-    // 트리거 생성
-    const _vec3 firstTriggerPos = _vec3(47.3f, 1.f, 30.f);
-    const _vec3 secondTriggerPos = _vec3(47.8f, 1.f, 49.f);
-
-    Create_Trigger(firstTriggerPos, _vec3(10.f, 5.f, 5.f), [this]()
-        {
-            Hide_PlayerUI();
-        }, true);
-
-    Create_Trigger(secondTriggerPos, _vec3(5.f, 5.f, 5.f), [this]()
-        {
-            Begin_PlayerDecide();
-        }, true);
-
-    NULL_CHECK(m_Dialogue);
-
-    // 대화 종료
-    m_Dialogue->Set_OnDialogueEnd([this](const string& id)
-        {
-            OnDialogueEnd(id);
-        });
-
-    auto controller = dynamic_cast<CPlayerController*>(m_Player->Get_Component(
-        ID_DYNAMIC, COMPONENTTYPE::PL_CONTROLLER));
-
-    NULL_CHECK(controller);
-
-    controller->Set_OnRefuseEnd([this]()
-        {
-            OnRefusedEnd();
-        });
+    Setup_TriggerCallbacks();
+    Setup_DialogueCallbacks();
+    Setup_BossCallbacks();
+    Setup_PlayerCallbacks();
 
     // 처음에는 거리비례 카메라 Off
     auto camMovement = m_CamController->Get_OwnerCamMovement();
@@ -111,6 +82,7 @@ _int CStage_Boss1::Update_Scene(const _float& timeDelta)
     _int exit = Engine::CScene::Update_Scene(timeDelta);
 
     Move_PlayerUI(timeDelta);
+    Move_BossUI(timeDelta);
 
     if (m_WaitingForDialogue)
     {
@@ -303,7 +275,7 @@ HRESULT CStage_Boss1::Ready_UI_Layer(LAYERTYPE layerType)
     dynamic_cast<CUIMp*>(gameObject)->Set_PlayerCombatStat(m_PlayerCombatStatCom);
     m_Player_UI.push_back(dynamic_cast<CUI*>(gameObject));
 
-    // CUICircle
+    // CUI_Circle
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CUICircle>(
             OBJTYPE::UI, L"UI_Circle", m_GraphicDev, layer, &gameObject), L"Persistent object setup failed: UI_Circle");
@@ -311,7 +283,7 @@ HRESULT CStage_Boss1::Ready_UI_Layer(LAYERTYPE layerType)
     dynamic_cast<CUICircle*>(gameObject)->Set_PlayerCombatStat(m_PlayerCombatStatCom);
     m_Player_UI.push_back(dynamic_cast<CUI*>(gameObject));
 
-    // CUIWeapon
+    // CUI_Weapon
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CUIWeapon>(
             OBJTYPE::UI, L"UI_Weapon", m_GraphicDev, layer, &gameObject), L"Persistent object setup failed: UI_Weapon");
@@ -336,12 +308,12 @@ HRESULT CStage_Boss1::Ready_UI_Layer(LAYERTYPE layerType)
 
     NULL_CHECK_RETURN(combat, E_FAIL);
 
-    gameObject = CUI_BossHp::Create(m_GraphicDev, combat);
-    dynamic_cast<CUI*>(gameObject)->Set_Visible(false);
+    m_BossHpbar = CUI_BossHp::Create(m_GraphicDev, combat);
+    m_BossHpbar->Get_Transform()->Set_Pos(_vec3(0.f, -400.f, 0.f));
 
-    layer->Add_GameObject(OBJTYPE::UI, gameObject);
+    layer->Add_GameObject(OBJTYPE::UI, m_BossHpbar);
 
-    // Dialogue
+    // ==== Dialogue ==== 
     m_Dialogue = CUI_Dialogue::Create(m_GraphicDev);
     layer->Add_GameObject(OBJTYPE::UI, m_Dialogue);
 
@@ -363,6 +335,10 @@ void CStage_Boss1::OnDialogueEnd(const string& id)
     else if (id == "Boss_Reject")
     {
         On_RejectEnd();
+    }
+    else if (id == "Boss1_Dead")
+    {
+        On_DeadEnd();
     }
 
 }
@@ -510,6 +486,7 @@ void CStage_Boss1::On_SacrificeEnd()
 
 void CStage_Boss1::On_RejectEnd()
 {
+    // 대사 끝, 전투 시작
     auto boss = dynamic_cast<CBossPhase1*>(m_Boss);
     NULL_CHECK(boss);
     
@@ -521,13 +498,31 @@ void CStage_Boss1::On_RejectEnd()
     if (talkState)
         talkState->Set_Phase(CBossTalk::PHASE::CAHANGE);
 
-    Reset_Cam();
+    Reset_Cam();        // Cam 원래대로 돌리고,
+    Setup_DynamicCam(); // Dynamic Cam 시작
 
-    // UI 원래대로, 이후 보스 체력바도 보이도록
-    Show_PlayerUI();
+    Show_PlayerUI();    // // UI 원래대로, 이후 보스 체력바도 보이도록
 
-    // Dynamic Cam 시작
-    Setup_DynamicCam();
+    if (m_BossHpbar)
+    {
+        m_BossHpbar->Set_Visible(true);
+        m_IsBossUIMoving = true;
+    }
+        
+}
+
+void CStage_Boss1::On_DeadEnd()
+{
+    auto boss = dynamic_cast<CBossPhase1*>(m_Boss);
+
+    auto deadState = dynamic_cast<CBossDead*>(
+        boss->Get_StateMachine()->Get_CurState());
+
+    if (deadState)
+    {
+        // 여기서 보스 Disappear로 전환하면서 애니메이션 끝나면 씬전환
+        deadState->Set_DialogueFinished();
+    }
 }
 
 void CStage_Boss1::Reset_Cam()
@@ -548,6 +543,68 @@ void CStage_Boss1::Setup_DynamicCam()
     camMovement->Set_DynamicDistanceParams(14.f, 23.f, 7.f, 15.f);
 
     camMovement->Enable_DynamicDistance(true);
+}
+
+void CStage_Boss1::Setup_TriggerCallbacks()
+{
+    // 트리거 생성
+    const _vec3 firstTriggerPos = _vec3(47.3f, 1.f, 30.f);
+    const _vec3 secondTriggerPos = _vec3(47.8f, 1.f, 49.f);
+
+    Create_Trigger(firstTriggerPos, _vec3(10.f, 5.f, 5.f), [this]()
+        {
+            Hide_PlayerUI();
+        }, true);
+
+    Create_Trigger(secondTriggerPos, _vec3(5.f, 5.f, 5.f), [this]()
+        {
+            Begin_PlayerDecide();
+        }, true);
+}
+
+void CStage_Boss1::Setup_DialogueCallbacks()
+{
+    NULL_CHECK(m_Dialogue);
+
+    // 대화 종료
+    m_Dialogue->Set_OnDialogueEnd([this](const string& id)
+        {
+            OnDialogueEnd(id);
+        });
+}
+
+void CStage_Boss1::Setup_BossCallbacks()
+{
+    auto boss = dynamic_cast<CBossPhase1*>(m_Boss);
+
+    boss->Set_OnDeadTalkStart([this]()
+        {
+            m_CamController->Get_OwnerCamMovement()->Disable_DynamicDistance();
+
+            CCamSetupBuilder(m_CamController)
+                .SetTarget(m_Boss->Get_Transform())
+                .Distance(10.f)
+                .PivotOffset(_vec3(0.f, 0.f, -3.f))
+                .LagSpeed(3.f)
+                .ZoomSpeed(0.5f)
+                .Apply();
+
+            m_Dialogue->Start_Dialogue("Boss1_Dead");
+        });
+
+}
+
+void CStage_Boss1::Setup_PlayerCallbacks()
+{
+    auto controller = dynamic_cast<CPlayerController*>(m_Player->Get_Component(
+        ID_DYNAMIC, COMPONENTTYPE::PL_CONTROLLER));
+
+    NULL_CHECK(controller);
+
+    controller->Set_OnRefuseEnd([this]()
+        {
+            OnRefusedEnd();
+        });
 }
 
 void CStage_Boss1::Move_PlayerUI(const _float timeDelta)
@@ -572,6 +629,30 @@ void CStage_Boss1::Move_PlayerUI(const _float timeDelta)
 
     if (ratio >= 1.f)
         m_IsUIMoving = false;
+}
+
+void CStage_Boss1::Move_BossUI(const _float timeDelta)
+{
+    if (!m_IsBossUIMoving || !m_BossHpbar)
+        return;
+
+    const _vec3 startPos  = { 0.f, -400.f, 0.f };
+    const _vec3 targetPos = { 0.f, -250.f, 0.f };
+
+    _float ratio = clamp(m_UIAnimTime / m_UIAnimDuration, 0.f, 1.f);
+
+    _vec3 current = Engine::Lerp_EaseIn(
+        startPos,
+        targetPos,
+        ratio,
+        3.3f
+    );
+
+    m_BossHpbar->Get_Transform()->Set_Pos(current);
+
+    if (ratio >= 1.f)
+        m_IsBossUIMoving = false;
+
 }
 
 CStage_Boss1* CStage_Boss1::Create(DEVICE graphicDev)

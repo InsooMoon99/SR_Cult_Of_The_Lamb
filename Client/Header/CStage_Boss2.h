@@ -24,6 +24,7 @@ private:
     HRESULT Ready_Environment_Layer(LAYERTYPE layerType);
     HRESULT Ready_GameLogic_Layer(LAYERTYPE layerType);
     HRESULT Ready_UI_Layer(LAYERTYPE layerType);
+    HRESULT Ready_Light();
 
 public:
     static CStage_Boss2* Create(DEVICE graphicDev);

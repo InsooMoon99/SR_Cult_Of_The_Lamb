@@ -7,6 +7,7 @@
 #include "CRcTex.h"
 #include "CState.h"
 #include "CAnimator.h"
+#include "CBossDead.h"
 #include "CBoxCollider.h"
 #include "CCreateHelper.h"
 #include "CCombatStat.h"
@@ -84,9 +85,12 @@ _int CBossPhase1::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CMonsterBase::Update_GameObject(timeDelta);
 
-    m_StateMachine->Update_StateMachine(timeDelta);
+    _int result = m_StateMachine->Update_StateMachine(timeDelta);
 
-
+    if (result == BOSS_END && m_OnBossDead)
+    {
+        m_OnBossDead();
+    }
 
     return exit;
 }
@@ -142,11 +146,11 @@ void CBossPhase1::Animation_Setting()
 
     m_AnimatorCom->Create_Animation(L"BossAwake", 105, 0.02f);
     m_AnimatorCom->Create_Animation(L"BossAttack", 97, 0.02f);
-    m_AnimatorCom->Create_Animation(L"BossDead", 167, 0.02f);
+    m_AnimatorCom->Create_Animation(L"BossDead", 167, 0.02f, _vec2(1.f, 1.f), _vec2(0.f, -0.13f));
     m_AnimatorCom->Create_Animation(L"BossMove_up", 50, 0.02f);
     m_AnimatorCom->Create_Animation(L"BossMove_Down", 28, 0.02f);
     
-    m_AnimatorCom->Create_Animation(L"BossGroggy_start", 115, 0.02f);
+    m_AnimatorCom->Create_Animation(L"BossGroggy_start", 115, 0.02f, _vec2(1.f, 1.f), _vec2(0.f, -0.13f));
     
     m_AnimatorCom->Create_Animation(L"BossGroggy_loop", 84, 0.02f);
     m_AnimatorCom->Create_Animation(L"BossGroggy_end", 67, 0.01f);
@@ -154,7 +158,7 @@ void CBossPhase1::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"BossChainEff", 34, 0.02f);
     m_AnimatorCom->Create_Animation(L"ChainGroundEff", 1, 0.02f);
 
-    m_AnimatorCom->Create_Animation(L"Before_Idle", 112, 0.02f, _vec2(1.26f, 1.f));
+    m_AnimatorCom->Create_Animation(L"Before_Idle", 334, 0.03f, _vec2(1.26f, 1.f));
     m_AnimatorCom->Create_Animation(L"Escape",119, 0.02f, _vec2(1.26f, 1.f));
 
 }
@@ -198,4 +202,13 @@ void CBossPhase1::Free()
 
     CMonsterBase::Free();
 
+}
+
+void CBossPhase1::Set_OnDeadTalkStart(OnDeadTalkStartCallback callback)
+{
+    auto deadState = dynamic_cast<CBossDead*>(
+        m_StateMachine->Get_State(BOSSDEAD));
+
+    if (deadState)
+        deadState->Set_OnTalkStart(callback);
 }

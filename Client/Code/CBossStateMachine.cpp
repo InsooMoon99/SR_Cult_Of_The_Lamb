@@ -40,13 +40,18 @@ _int CBossStateMachine::Update_StateMachine(const _float& timeDelta)
     {
         _uint nextState = m_pCurState->Update_State(timeDelta);
 
+        if (nextState == CBossPhase1::BOSSPHASE1::BOSS_END)
+        {
+            return nextState;
+        }
+
         if (nextState < CBossPhase1::BOSSPHASE1::BOSS_END && nextState != m_dwCurStateKey)
         {
             Change_State(nextState);
         }
     }
 
-    return 0; //일단 0, 형식 통일 떄문에 int로 함 void 여도 됨
+    return (_int)m_dwCurStateKey;
 }
 
 void CBossStateMachine::LateUpdate_StateMachine(const _float& timeDelta)
@@ -82,6 +87,14 @@ void CBossStateMachine::Change_State(_uint changeStateKey)
 _int CBossStateMachine::GetCurStateNum()
 {
     { return m_pCurState->Get_StateKey(); }
+}
+
+CMonsterState* CBossStateMachine::Get_State(_uint stateKey)
+{
+    if (stateKey < m_vecState.size())
+        return static_cast<CMonsterState*>(m_vecState[stateKey]);
+
+    return nullptr;
 }
 
 HRESULT CBossStateMachine::Ready_BossStates()

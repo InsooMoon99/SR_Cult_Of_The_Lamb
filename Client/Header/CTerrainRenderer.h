@@ -70,6 +70,9 @@ protected:
     void Free() override;
 
 private:
+    void    Set_Material();
+
+private:
     CTransform*     m_TransformCom;
     CTerrainTex*    m_BufferCom;
 
