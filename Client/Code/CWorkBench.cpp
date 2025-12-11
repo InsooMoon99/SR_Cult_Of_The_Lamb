@@ -10,6 +10,7 @@
 #include "CRcTex.h"
 #include "CDInputMgr.h"
 #include "CUIBuildMenu.h"
+#include "CCookingController.h"
 
 CWorkBench::CWorkBench(DEVICE graphicDev)
     : CBuildingBase(graphicDev),
@@ -206,11 +207,15 @@ _int CWorkBench::Update_GameObject(const _float& timeDelta)
         NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
         m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_WORKBENCH, m_TextureCom });
 
-
         // effect
         m_SpriteEffCom = CreateProtoComponent<CSpriteEff>(this, COMPONENTTYPE::SPRITEEFFECT);
         NULL_CHECK_RETURN(m_SpriteEffCom, E_FAIL);
         m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::SPRITEEFFECT, m_SpriteEffCom });
+
+        //cooking controller
+        m_CookingController = CreateProtoComponent<CCookingController>(this, COMPONENTTYPE::COOKCTRL);
+        NULL_CHECK_RETURN(m_CookingController, E_FAIL);
+        m_Components[ID_STATIC].insert({ COMPONENTTYPE::COOKCTRL, m_CookingController });
 
         return CBuildingBase::Add_Component();
     }

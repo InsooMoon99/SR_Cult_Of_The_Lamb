@@ -44,6 +44,7 @@
 #include "CUIBuildMenu.h"
 #include "CUI_Dialogue.h"
 #include "CKitchen.h"
+#include "CUICookingMenu.h"
 
 class CUIBuildMenu;
 
@@ -503,6 +504,11 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     /*uiBuildMenu->SetCellEvent([]()
     {
         return dynamic_cast<CCookingController*>(m_WorkBench->Get_Component(COMPONENTID::ID_STATIC,COMPONENTTYPE::COOKCTRL))->CanCooK(uiBuildMenu->,m_PlayerInventoryCom)})*/
+
+    CUICookingMenu* uiCookingMenu = CUICookingMenu::Create(m_GraphicDev);
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiCookingMenu),
+        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UI_CookingMenu) failed");
+
     m_Layers.insert({ layerType, layer });
 
     return S_OK;

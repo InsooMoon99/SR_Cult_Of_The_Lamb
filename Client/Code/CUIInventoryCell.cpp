@@ -58,6 +58,7 @@ HRESULT CUIInventoryCell::Ready_GameObject()
 
     //인벤토리 아이템 그리기용 객체 생성
     m_TransformCom->Set_Scale(45.f, 45.f, 0.f);
+
     m_ItemIcon = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_ITEM); //아이템 텍스처
     m_ItemIcon->SetRegister(false); // 아이템 텍스처 렌더 그룹에 중복 등록되는 것 막기 위한 플래그
 

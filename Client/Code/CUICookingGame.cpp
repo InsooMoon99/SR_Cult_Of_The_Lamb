@@ -227,8 +227,12 @@ CUICookingGame* CUICookingGame::Create(DEVICE graphicDev, CGameObject* owner, Re
 
 void CUICookingGame::Free()
 {
-
-
-
+    Safe_Release(m_Owner);
+    Safe_Release(m_ItemIcon);
+    Safe_Release(m_OwnerTransform);
+    Safe_Release(m_Buffer_Area);
+    Safe_Release(m_Buffer_Curser);
+    Safe_Release(m_Buffer_Info);
+    Safe_Release(m_Buffer_keyInfo);
     CUI::Free();
 }

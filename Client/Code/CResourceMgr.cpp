@@ -722,7 +722,7 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
 
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_CELL, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/UI/Inventory/InventoryIcon_BG%d.png",2))))
+            L"../Bin/Resource/Texture/UI/Inventory/InventoryIcon_BG%d.png",3))))
         return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(
@@ -863,7 +863,6 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_INTERACTION, CTexture::Create(graphicDev, TEX_NORMAL, interactionTex))))
         return E_FAIL;
-    
 
     return S_OK;
 }

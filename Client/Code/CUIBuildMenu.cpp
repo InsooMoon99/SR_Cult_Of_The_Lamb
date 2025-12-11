@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "CUIBuildMenu.h"
 #include "CConstructionMgr.h"
+#include "CCookingController.h"
 #include "CTransform.h"
 #include "CRcTex.h"
 #include "CTexture.h"
@@ -56,24 +57,24 @@ HRESULT CUIBuildMenu::Ready_GameObject()
     m_ClosedX = -WINCX;
     m_Speed = 900.f;
 
+
     //건축물 아이템 셀
     m_CookingFireCell = CUIBuildCell::Create(m_GraphicDev);
     m_CookingFireCell->Set_BuildIndex(BUILDITEM::COOKINGFIRE);
     m_CookingFireCell->Set_TextureIndex(0);
 	m_CookingFireCell->Set_RecipeId(5001);
     m_CookingFireCell->Set_OnClick([this]() {PlayCloseAnimation(); CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::KITCHEN); });
-    //m_CookingFireCell->Set_OnActive([](){return m_})
+    m_CookingFireCell->Set_OnActive([this]() {return m_CookingController->CanCooK(5001, m_Inventory); });
+    m_CookingFireCell->Set_BuildMenu(this);
     m_BuildCells.push_back(m_CookingFireCell);
-
-
-
-
 
     m_TempleCell = CUIBuildCell::Create(m_GraphicDev);
     m_TempleCell->Set_BuildIndex(BUILDITEM::TEMPLE);
     m_TempleCell->Set_TextureIndex(1);
 	m_TempleCell->Set_RecipeId(5002);
     m_TempleCell->Set_OnClick([this]() {PlayCloseAnimation(); CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::TEMPLE); });
+    m_TempleCell->Set_OnActive([this]() {return m_CookingController->CanCooK(5002, m_Inventory); });
+    m_TempleCell ->Set_BuildMenu(this);
     m_BuildCells.push_back(m_TempleCell);
 
     m_DecoIcon1 = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_DECO);
@@ -105,7 +106,6 @@ _int CUIBuildMenu::Update_GameObject(const _float& timeDelta)
         return 0;
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
-
 
     m_DecoIcon1->Update_GameObject(timeDelta);
     m_DecoIcon2->Update_GameObject(timeDelta);
@@ -148,6 +148,9 @@ _int CUIBuildMenu::Update_GameObject(const _float& timeDelta)
 
         materialRenderCount++;
     }
+
+
+
     Check_Hovered();
 
     return exit;
@@ -249,23 +252,6 @@ void CUIBuildMenu::SetCellEvent(function<bool()> event)
     }
 }
 
-void CUIBuildMenu::Free()
-{
-    Safe_Release(m_DecoIcon1);
-    Safe_Release(m_DecoIcon2);
-    Safe_Release(m_CookingFireCell);
-    Safe_Release(m_TempleCell);
-
-    for (auto& cell : m_BuildCells)
-    {
-        Safe_Release(cell);
-    }
-
-    m_BuildCells.clear();
-
-    CUI::Free();
-}
-
 void CUIBuildMenu::Initialize()
 {
     
@@ -305,8 +291,25 @@ void CUIBuildMenu::PlayOpenAnimation()
     m_IsAnimating = true;
 }
 void CUIBuildMenu::PlayCloseAnimation()
-{
+{                   
     m_IsOpen = false;
     m_IsAnimating = true;
     m_Deactivate();
+}
+
+void CUIBuildMenu::Free()
+{
+    Safe_Release(m_DecoIcon1);
+    Safe_Release(m_DecoIcon2);
+    Safe_Release(m_CookingFireCell);
+    Safe_Release(m_TempleCell);
+    Safe_Release(m_InteractionKey);
+    for (auto& cell : m_BuildCells)
+    {
+        Safe_Release(cell);
+    }
+
+    m_BuildCells.clear();
+
+    CUI::Free();
 }

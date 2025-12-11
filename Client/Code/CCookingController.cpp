@@ -150,7 +150,7 @@ bool CCookingController::CanCooK(int recipeID, CInventory* playerInven)
 
 bool CCookingController::AddRecipe(int id, CInventory* playerInven)
 {
-    if (m_vecTmpRecipeID.size() > invenSlotNum)
+    if (m_vecTmpRecipeID.size() < invenSlotNum)
     {
         // 대기열 등록
         m_vecTmpRecipeID.push_back(id);
@@ -161,7 +161,6 @@ bool CCookingController::AddRecipe(int id, CInventory* playerInven)
         {
             playerInven->RemoveItem(ItemID, Num);
         }
-
 
         return true;
     }
@@ -252,6 +251,15 @@ void CCookingController::DropDish(int ResultItemID, bool quality)
        tmpItem->SetFoodQuality(CDroppedItem::FOODQUALITY::BAD);
 
 }
+void CCookingController::Quit()
+{
+    m_vecTmpRecipeID.clear(); // int 라서 그냥 클리어 해도 되는듯
+
+    if (!m_queRecipeInst.empty())
+    {
+        m_queRecipeInst.pop();// 이건 안에 new 한거 아니라서 따로지우지는 않고  clear 없으니까 pop을 하나하나 지워야힘
+    }
+}
 
 CCookingController* CCookingController::Create(DEVICE graphicDev)
 {
@@ -276,11 +284,6 @@ void CCookingController::Free()
 {
     CComponent::Free();
 
-    m_vecTmpRecipeID.clear(); // int 라서 그냥 클리어 해도 되는듯
-
-    if (!m_queRecipeInst.empty())
-    {
-        m_queRecipeInst.pop();// 이건 안에 new 한거 아니라서 따로지우지는 않고  clear 없으니까 pop을 하나하나 지워야힘
-    }
+    Quit();
 
 }

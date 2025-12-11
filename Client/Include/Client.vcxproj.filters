@@ -752,6 +752,15 @@
     <ClInclude Include="..\Header\CTree.h">
       <Filter>03. GameObject\09. MapObject\02. Crafting</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CUICookingMenu.h">
+      <Filter>05. UI\01. UI\11. UICooking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUICookingCell.h">
+      <Filter>05. UI\01. UI\11. UICooking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUICookedFoodCell.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1182,6 +1191,15 @@
     </ClCompile>
     <ClCompile Include="..\Code\CTree.cpp">
       <Filter>03. GameObject\09. MapObject\02. Crafting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUICookingMenu.cpp">
+      <Filter>05. UI\01. UI\11. UICooking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUICookingCell.cpp">
+      <Filter>05. UI\01. UI\11. UICooking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUICookedFoodCell.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -12,6 +12,7 @@
           "count": 5
         }
       ],
+	"result": 2001,
       "hunger": 30,
       "UIFileName": "Meal_Grass",
       "UIPath": "../Bin/Resource/ItemUI/Meal_Grass.png"
@@ -29,6 +30,7 @@
           "count": 6
         }
       ],
+	"result": 2003,
       "hunger": 60,
       "UIFileName": "Meal_Berries",
       "UIPath": "../Bin/Resource/ItemUI/Meal_Berries.png"
@@ -46,6 +48,7 @@
           "count": 3
         }
       ],
+	"result": 2002,
       "hunger": 10,
       "UIFileName": "Meal_Poop",
       "UIPath": "../Bin/Resource/ItemUI/Meal_Poop.png"

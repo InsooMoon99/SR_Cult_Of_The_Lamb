@@ -29,7 +29,7 @@ public:
     void SetOnDeactivate(function<void()> deactivate) { m_Deactivate = deactivate; }
     void SetCellEvent(function<bool()> event);
     void Set_CookingController(CCookingController* cookingController) { m_CookingController = cookingController; }
-
+    bool Get_IsOpen() { return m_IsOpen; }
 protected:
     void Free() override;
 
@@ -37,12 +37,13 @@ private:
     CUIBuildCell* m_CookingFireCell; // 성지 셀
     CUIBuildCell* m_TempleCell; // 사원 셀
     vector<CUIBuildCell*> m_BuildCells;
-    CInventory* m_Inventory;
+    CInventory* m_Inventory;    
     CUIIcon* m_DecoIcon1;
     CUIIcon* m_DecoIcon2;
     CUIIcon* m_InteractionKey;
     CCookingController* m_CookingController;
-    float m_TargetX;
+
+    float m_TargetX;                
     float m_ClosedX;
     float m_Speed;
     bool m_IsOpen;
