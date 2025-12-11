@@ -81,7 +81,6 @@ void CStage_Boss1::Initialize_Scene()
     Create_Trigger(secondTriggerPos, _vec3(5.f, 5.f, 5.f), [this]()
         {
             Begin_PlayerDecide();
-
         }, true);
 
     NULL_CHECK(m_Dialogue);
