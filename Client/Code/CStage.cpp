@@ -47,6 +47,7 @@
 #include "CUICookingGame.h"
 #include "CCookingController.h"
 #include "CCreateHelper.h"
+#include "CUICookingMenu.h"
 
 class CUIBuildMenu;
 
