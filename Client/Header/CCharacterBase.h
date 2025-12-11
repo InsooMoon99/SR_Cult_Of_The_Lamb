@@ -1,5 +1,4 @@
 ﻿#pragma once
-
 #include "CRenderObject.h"
 
 BEGIN(Engine)

@@ -232,9 +232,6 @@
     <Filter Include="05. UI\01. UI\99. Fade">
       <UniqueIdentifier>{7ed145a4-f09b-474f-b0ca-37315f6894df}</UniqueIdentifier>
     </Filter>
-    <Filter Include="04. Item">
-      <UniqueIdentifier>{32cd9222-0684-4801-b832-d8f9219a290b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06. Recipe">
       <UniqueIdentifier>{9ea3124b-4847-48df-a85d-b1e360ac1fc6}</UniqueIdentifier>
     </Filter>
@@ -282,6 +279,45 @@
     </Filter>
     <Filter Include="03. GameObject\09. MapObject\02. Crafting">
       <UniqueIdentifier>{d314f0bf-f1b8-460d-96f3-adee58dfec4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\11. NPC">
+      <UniqueIdentifier>{d9791a97-6140-4719-bcd0-d54f10a0e47b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\11. NPC\98. Components">
+      <UniqueIdentifier>{060b6474-9b16-4e06-be04-aace22e6dc7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\11. NPC\98. Components\00. Interaction Checker">
+      <UniqueIdentifier>{a6b944ca-5f79-4577-b4a5-dfdd125f2f23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\11. NPC\98. Components\01. Controller">
+      <UniqueIdentifier>{1c5ddf7a-5624-4052-86ef-7f74ee98af2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\11. NPC\99. Class for FSM">
+      <UniqueIdentifier>{2298d335-5a5e-4d9d-9291-8e17a7891fb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\11. NPC\99. Class for FSM\00. State Machine">
+      <UniqueIdentifier>{f112c0c8-f96d-4006-b15f-400421694c73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\11. NPC\99. Class for FSM\01. State">
+      <UniqueIdentifier>{e8ee7db6-b53e-499a-9f00-92f32320e55c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\11. NPC\99. Class for FSM\01. State\00. Idle">
+      <UniqueIdentifier>{b00b2642-a5d8-4e28-b342-554240077ed0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\11. NPC\99. Class for FSM\01. State\01. Run">
+      <UniqueIdentifier>{bfb0f602-176e-4aee-a97e-508018cc9b2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\11. NPC\00. Follower Cow">
+      <UniqueIdentifier>{dfad4f31-d030-4911-bd92-4c4463837d5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Item">
+      <UniqueIdentifier>{32cd9222-0684-4801-b832-d8f9219a290b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\11. NPC\01. Follower Elephant">
+      <UniqueIdentifier>{38b262b5-ff8f-476b-9243-75f068d67be9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\11. NPC\02. Follower Pig">
+      <UniqueIdentifier>{cde8de59-1ca8-4cbf-be17-003063709891}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -752,6 +788,24 @@
     <ClInclude Include="..\Header\CTree.h">
       <Filter>03. GameObject\09. MapObject\02. Crafting</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CInteractionChecker.h">
+      <Filter>03. GameObject\11. NPC\98. Components\00. Interaction Checker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CNPCController.h">
+      <Filter>03. GameObject\11. NPC\98. Components\01. Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CNPCStateMachine.h">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\00. State Machine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CNPCState.h">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CNPCState_Idle.h">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\00. Idle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CNPCState_Run.h">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\01. Run</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1182,6 +1236,24 @@
     </ClCompile>
     <ClCompile Include="..\Code\CTree.cpp">
       <Filter>03. GameObject\09. MapObject\02. Crafting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CInteractionChecker.cpp">
+      <Filter>03. GameObject\11. NPC\98. Components\00. Interaction Checker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CNPCController.cpp">
+      <Filter>03. GameObject\11. NPC\98. Components\01. Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CNPCStateMachine.cpp">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\00. State Machine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CNPCState.cpp">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CNPCState_Idle.cpp">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\00. Idle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CNPCState_Run.cpp">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\01. Run</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
