@@ -258,6 +258,7 @@ void CUICookingCell::Free()
     Safe_Release(m_ItemIcon);
     Safe_Release(m_CardItemIcon);
     Safe_Release(m_Highlight);
+    Safe_Release(m_CardIcon);
 
     CUI::Free();
 }

@@ -432,7 +432,7 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
         L"Add_GameObject(CWorkBench) failed");
     //
     auto kitchen = CKitchen::Create(m_GraphicDev);
-
+    m_Kitchen = kitchen;
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::BUILDING, kitchen),
         L"Add_GameObject(CWorkBench) failed");
@@ -537,7 +537,7 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     CUICookingMenu* uiCookingMenu = CUICookingMenu::Create(m_GraphicDev);
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiCookingMenu),
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UI_CookingMenu) failed");
-
+    m_Kitchen->Set_CookingMenu(uiCookingMenu);
     m_Layers.insert({ layerType, layer });
 
     return S_OK;

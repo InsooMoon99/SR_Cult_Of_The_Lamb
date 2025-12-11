@@ -132,19 +132,6 @@ _int CUICookingMenu::Update_GameObject(const _float& timeDelta)
         }
     }
 
-    if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
-    {
-        switch(m_IsOpen)
-        {
-        case true:
-            PlayCloseAnimation();
-            break;
-        case false:
-            PlayOpenAnimation();
-            break;
-        }
-    }
-
     float targetX = m_IsOpen ? m_TargetX : m_ClosedX; //열려있냐 닫혀있냐에 따라서 목표 X값이 달라짐
     _vec3 pos = m_TransformCom->Get_Pos();
 

@@ -27,6 +27,7 @@ public:
     HRESULT Add_Component();
     static CUICookingMenu* Create(DEVICE graphicDev);
 
+    void SetOnDeactivate(function<void()> deactivate) { m_Deactivate = deactivate; }
     void Free() override;
 private:
     vector<CUICookingCell*> m_CookingCells;
@@ -47,6 +48,8 @@ private:
     int m_Cols;
     int m_CellWidth;
     int m_CellHeight;
+
+    function<void()>    m_Deactivate;
 
 };
 
