@@ -80,6 +80,12 @@ void CCameraController::LateUpdate_Component()
 
 void CCameraController::Set_CamTarget(Engine::CTransform* targetTransform)
 {
+    if (nullptr == m_OwnerCamMovementCom)
+    {
+        m_OwnerCamMovementCom = dynamic_cast<CCameraMovement*>(
+            m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::CAM_MOVEMENT));
+    }
+
     NULL_CHECK(m_OwnerCamMovementCom);
 
     // Movement 컴포넌트에 타겟 정보 갱신
@@ -104,6 +110,12 @@ void CCameraController::Set_CamMode(CAM_MODE camMode)
 
 void CCameraController::Set_ProjType(PROJECTION_TYPE projType)
 {
+    if (nullptr == m_OwnerCamCalcCom)
+    {
+        m_OwnerCamCalcCom = dynamic_cast<CCameraCalc*>(
+            m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAM_CALC));
+    }
+
     NULL_CHECK(m_OwnerCamCalcCom);
 
     m_OwnerCamCalcCom->Set_ProjType(projType);

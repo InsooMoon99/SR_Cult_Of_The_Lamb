@@ -48,6 +48,11 @@ HRESULT CMainMenu::Ready_Scene()
     return S_OK;
 }
 
+void CMainMenu::Initialize_Scene()
+{
+    CScene::Initialize_Scene();
+}
+
 _int CMainMenu::Update_Scene(const _float& timeDelta)
 {
     _int exit = Engine::CScene::Update_Scene(timeDelta);
@@ -103,13 +108,13 @@ HRESULT CMainMenu::Ready_Environment_Layer(LAYERTYPE layerType)
     pGameObject = CMainBG::Create(m_GraphicDev);
     NULL_CHECK_RETURN(m_GraphicDev, E_FAIL)
 
-    const auto playerTransform =
+    const auto bgTransform =
         dynamic_cast<CTransform*>(pGameObject->Get_Component(
             ID_DYNAMIC,
             COMPONENTTYPE::TRANSFORM));
-    playerTransform->Set_Pos({ 0, 0, 2 });
+    bgTransform->Set_Pos({ 0, 0, -3 });
     //playerTransform->Set_Scale({ 2.2f,1.2f,0.f });
-    pGameObject->SetAspectScale(playerTransform, { 1.1f, 1.2f, 1.f });
+    pGameObject->SetAspectScale(bgTransform, { 1.1f, 1.2f, 1.f });
     if (FAILED(layer->Add_GameObject(OBJTYPE::PLAYER, pGameObject)))
         return E_FAIL;
 
@@ -131,11 +136,11 @@ HRESULT CMainMenu::Ready_GameLogic_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::UI, gameObject),
         L"CMainMenu::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CMenuChar) failed");
-    //const auto playerTransform =
-    //    dynamic_cast<CTransform*>(pGameObject->Get_Component(
-    //        ID_DYNAMIC,
-    //        COMPONENTTYPE::TRANSFORM));
-    //playerTransform->Set_Pos({ 0,0,20 });
+
+    const auto charTransform =
+        dynamic_cast<CTransform*>(gameObject->Get_Component(
+            ID_DYNAMIC,
+            COMPONENTTYPE::TRANSFORM));
 
     // 카메라 생성
     FAILED_CHECK_MSG(
@@ -160,13 +165,13 @@ HRESULT CMainMenu::Ready_GameLogic_Layer(LAYERTYPE layerType)
         // : CCameraSetup을 카메라 설정을 중도에 바꿀 때 사용 가능하고,
         //   그럴 때는 필요한 것만 사용해 .Apply() 하면 된다.
         CCamSetupBuilder(camController)
-            .SetTarget(nullptr)
-            //.PivotOffset({ 0.f, 0.f, 0.f })
-            //.Distance(12.f)
-            //.RotX(45.f)
-            //.RotY(0.f)
-            //.LagSpeed(10.f)
-            //.ZoomSpeed(5.f)
+            .SetTarget(charTransform)
+            .PivotOffset({ 0.f, 0.f, 0.f })
+            .Distance(6.f)
+            .RotX(0.f)
+            .RotY(0.f)
+            .LagSpeed(15.f)
+            .ZoomSpeed(5.f)
             .Snap()
             .Apply();
     }
