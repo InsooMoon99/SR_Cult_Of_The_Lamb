@@ -527,7 +527,7 @@ HRESULT CResourceMgr::Ready_BossP1(DEVICE graphicDev)
         return E_FAIL;
 
     if (FAILED(BossP1Tex->Add_Texture(L"Before_Idle", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase1/TOWW_BeforeIdle/TOWW_BeforeIdle%d.png", 334)))
+        L"../Bin/Resource/Texture/BossPhase1/TOWW_BeforeIdle_Shot/TOWW_BeforeIdle_Shot1.png", 112)))
         return E_FAIL;
 
     if (FAILED(BossP1Tex->Add_Texture(L"Escape", TEX_NORMAL,

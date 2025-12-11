@@ -101,6 +101,9 @@ void CStage_Boss1::Initialize_Scene()
             OnRefusedEnd();
         });
 
+    // 처음에는 거리비례 카메라 Off
+    auto camMovement = m_CamController->Get_OwnerCamMovement();
+    camMovement->Disable_DynamicDistance();
 }
 
 _int CStage_Boss1::Update_Scene(const _float& timeDelta)
@@ -422,8 +425,8 @@ void CStage_Boss1::Setup_UIAnimation(_float offsetY)
     {
         _vec3 pos = ui->Get_Transform()->Get_Pos();
 
-        m_OriginalUIPositions.push_back(pos);
-        m_TargetUIPositions.push_back({ pos.x, pos.y + offsetY, pos.z });
+        m_OriginalUIPositions.emplace_back(pos);
+        m_TargetUIPositions.emplace_back(_vec3(pos.x, pos.y + offsetY, pos.z));
     }
 }
 
@@ -442,7 +445,7 @@ void CStage_Boss1::OnRefusedEnd()
             // Refuse 카메라 연출 끝, 이제 보스한테 줌
             CCamSetupBuilder(m_CamController)
                 .SetTarget(m_Boss->Get_Transform())
-                .Distance(8.f)
+                .Distance(11.f)
                 .LagSpeed(3.f)
                 .ZoomSpeed(3.f)
                 .Apply();
@@ -482,7 +485,6 @@ void CStage_Boss1::On_SacrificeEnd()
     NULL_CHECK(animator);
 
     int weaponID = weapon->Get_CurrentWeaponID();
-    cout << "Current Weapon ID: " << weaponID << endl;
 
     // 3001 : 검, 3002 : 건틀릿
     if (weapon->Get_CurrentWeaponID() == 3001)
@@ -509,18 +511,23 @@ void CStage_Boss1::On_SacrificeEnd()
 void CStage_Boss1::On_RejectEnd()
 {
     auto boss = dynamic_cast<CBossPhase1*>(m_Boss);
-    if (boss)
-    {
-        auto stateMachine = boss->Get_StateMachine();
+    NULL_CHECK(boss);
+    
+    auto stateMachine = boss->Get_StateMachine();
 
-        auto talkState = dynamic_cast<CBossTalk*>(
-            stateMachine->Get_CurState());
+    auto talkState = dynamic_cast<CBossTalk*>(
+        stateMachine->Get_CurState());
 
-        if (talkState)
-            talkState->Set_Phase(CBossTalk::PHASE::CAHANGE);
+    if (talkState)
+        talkState->Set_Phase(CBossTalk::PHASE::CAHANGE);
 
-        Reset_Cam();
-    }
+    Reset_Cam();
+
+    // UI 원래대로, 이후 보스 체력바도 보이도록
+    Show_PlayerUI();
+
+    // Dynamic Cam 시작
+    Setup_DynamicCam();
 }
 
 void CStage_Boss1::Reset_Cam()
@@ -531,6 +538,16 @@ void CStage_Boss1::Reset_Cam()
         .LagSpeed(3.f)
         .ZoomSpeed(0.5f)
         .Apply();
+}
+
+void CStage_Boss1::Setup_DynamicCam()
+{
+    auto camMovement = m_CamController->Get_OwnerCamMovement();
+
+    camMovement->Set_SecondTarget(m_Boss->Get_Transform());
+    camMovement->Set_DynamicDistanceParams(14.f, 23.f, 7.f, 15.f);
+
+    camMovement->Enable_DynamicDistance(true);
 }
 
 void CStage_Boss1::Move_PlayerUI(const _float timeDelta)
@@ -547,7 +564,7 @@ void CStage_Boss1::Move_PlayerUI(const _float timeDelta)
             m_OriginalUIPositions[i],
             m_TargetUIPositions[i],
             ratio,
-            2.f  
+            3.3f  
         );
 
         m_Player_UI[i]->Get_Transform()->Set_Pos(current);

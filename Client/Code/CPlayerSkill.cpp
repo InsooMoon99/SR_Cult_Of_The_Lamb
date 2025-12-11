@@ -8,7 +8,7 @@
 #include "CFireball.h"
 #include "CPlayerInput.h"
 #include "CUICharging.h"
-#include "CMainEditorMgr.h"
+#include "CTimerMgr.h"
 
 CPlayerSkill::CPlayerSkill(DEVICE graphicDev) : CComponent(graphicDev),
                                                 m_OwnerStateCom(nullptr),
@@ -162,7 +162,7 @@ ACTORSTATE CPlayerSkill::Start_Charging()
 		return ACTORSTATE::STATE_END;
 
     // 슬로우모션 시작
-    CMainEditorMgr::GetInstance()->Set_TimeScale(0.5f);
+    CTimerMgr::GetInstance()->Set_TimeScale(0.5f);
 
 	CCombatStat* playerCombatStat = dynamic_cast<CCombatStat*>(m_Owner->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
 
@@ -421,6 +421,8 @@ void        CPlayerSkill::Reset_AttackData()
 
     m_SkillTimer = 0.f;
     m_ChargeTimer = 0.f;
+
+    CTimerMgr::GetInstance()->Set_TimeScale(1.f);
 }
 
 CFireball* CPlayerSkill::Create_Fireball(const SkillInfo& skillInfo, DEVICE graphicDev, CGameObject* instigator,_vec3 skillDir)

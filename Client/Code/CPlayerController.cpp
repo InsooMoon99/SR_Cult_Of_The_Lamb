@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "CPlayerController.h"
 #include "CWeaponEquip.h"
+#include "CTimerMgr.h"
 #include "CAnimator.h"
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
@@ -264,8 +265,7 @@ void CPlayerController::CheckStateTransition()
     {
         if (curState == ACTORSTATE::PLAYER_SKILL_CHARGING)
         {
-            // 슬로우모션 해제
-            CMainEditorMgr::GetInstance()->Set_TimeScale(1.f);
+            CTimerMgr::GetInstance()->Set_TimeScale(1.f);
 
             m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
             if (m_OwnerSkillCom->Get_TripleSkillAvailability())

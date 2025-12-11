@@ -21,7 +21,7 @@ _float CTimerMgr::Get_TimeDelta(const wstring& timerTag)
     if (nullptr == timer)
         return 0.f;
 
-    return timer->Get_TimeDelta();
+    return timer->Get_TimeDelta() * m_TimeScale;
 }
 
 void CTimerMgr::Set_TimeDelta(const wstring& timerTag)
@@ -76,4 +76,35 @@ void CTimerMgr::Free()
 {
     for_each(m_Timers.begin(), m_Timers.end(), CDeleteMap());
     m_Timers.clear();
+}
+
+_float CTimerMgr::Get_RealTimeDelta()
+{
+    CTimer* timer = Find_Timer(DEFAULT_FRAME_TIMER);
+
+    if (timer == nullptr)
+        return 0.f;
+
+    return timer->Get_TimeDelta();
+}
+
+void CTimerMgr::Start_HitStop(_float duration, _float scale)
+{
+    m_HitStopDuration = duration;
+    m_HitStopScale = scale;
+    m_TimeScale = scale;
+}
+
+void CTimerMgr::Update_HitStop(_float realDelta)
+{
+    if (m_HitStopDuration > 0.f)
+    {
+        m_HitStopDuration -= realDelta;
+
+        if (m_HitStopDuration <= 0.f)
+        {
+            m_HitStopDuration = 0.f;
+            m_TimeScale = 1.f; // 원래대로 복귀
+        }
+    }
 }

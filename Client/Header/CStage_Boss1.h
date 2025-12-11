@@ -55,7 +55,11 @@ private:
     void    On_SacrificeEnd();    
     void    On_RejectEnd();
 
+    // 보스 스테이지 1 기본 카메라 세팅
     void    Reset_Cam();
+
+    // 보스 거리 비례해서 카메라 세팅
+    void    Setup_DynamicCam();
 
 public:
     static CStage_Boss1* Create(DEVICE graphicDev);
@@ -85,7 +89,7 @@ private:
     _bool               m_IsUIShowing = false;
 
     _float              m_UIAnimTime = 0.f;
-    _float              m_UIAnimDuration = 0.5f;
+    _float              m_UIAnimDuration = 0.75f;
 
     vector<_vec3>       m_OriginalUIPositions;
     vector<_vec3>       m_TargetUIPositions;
