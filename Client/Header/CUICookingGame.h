@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CUI.h"
 #include "Client_Struct.h"
+#include <functional>
 
 class CUIIcon;
 
@@ -24,7 +25,7 @@ public:
 
 
     void SetDoneEvent(function<void()> doneEvent) { m_DoneEvent = doneEvent; }
-    void SetResultItemDrop(function<void()> DropDish) { m_ResultItemDrop = DropDish; }
+    void SetResultItemDrop(function<void(int ,bool)> DropDish) { m_ResultItemDrop = DropDish; }
 
 private:
     HRESULT Add_Component();
@@ -40,11 +41,11 @@ private:
     CRcTex* m_Buffer_keyInfo;
 
     function<void()> m_DoneEvent;
-    function<void()> m_ResultItemDrop;
+    function<void(int,bool)> m_ResultItemDrop;
 
     CUIIcon* m_ItemIcon;
 
-
+    bool m_result = false;
     int m_StockMax = 0;
     _vec3 m_CurserPos;
 public:

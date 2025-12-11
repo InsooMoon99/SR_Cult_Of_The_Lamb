@@ -132,13 +132,17 @@ enum class COMPONENTTYPE
     SPRITEEFFECT,
     GATHERING,
     CONSTRUCTION,
+    COOKCTRL,
 
-    WEAPON_EQUIP,           // 플레이어 무기
-    PL_INPUT,               // 플레이어 방향 입력
-    PL_CONTROLLER,          // 플레이어 FSM 컨트롤러
-    PL_MOVEMENT,            // 플레이어 움직임
-    PL_ATTACK,              // 플레이어 공격
-    PL_SKILL,
+    WEAPON_EQUIP,            // 플레이어 무기
+    PL_INPUT,                // 플레이어 방향 입력
+    PL_CONTROLLER,           // 플레이어 FSM 컨트롤러
+    PL_MOVEMENT,             // 플레이어 움직임
+    PL_ATTACK,               // 플레이어 공격
+    PL_SKILL,                // 플레이어 스킬
+
+    NPC_INTERACTION_CHECKER, // NPC 상호작용 오브젝트 감지기
+    NPC_CONTROLLER,          // NPC 제어
 
     TEXTURE,
     TEX_PLAYER,
@@ -189,6 +193,13 @@ enum class COMPONENTTYPE
     CIRCLE_COLL,
     BOX_COLL,
     SPHERE_COLL,
+
+    ////////////////
+    //  Follower  //
+    ////////////////
+    TEX_COW,
+    TEX_ELEPHANT,
+    TEX_PIG,
 
     ////////////////
     //   Boss 2   //

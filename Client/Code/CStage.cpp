@@ -42,6 +42,7 @@
 #include "CTrigger_Dungeon.h"
 #include "CUIBuildMenu.h"
 #include "CUI_Dialogue.h"
+#include "CKitchen.h"
 
 class CUIBuildMenu;
 
@@ -391,13 +392,20 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
         layer->Add_GameObject(OBJTYPE::BUILDING, tmpTree),
         L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
     tmpTree->Get_Transform()->Set_Pos(10.f, 2.5f, 30.f);
-
+    //
     auto workBench = CWorkBench::Create(m_GraphicDev);
     m_WorkBench = workBench;
     
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::BUILDING, workBench),
         L"Add_GameObject(CWorkBench) failed");
+    //
+    auto kitchen = CKitchen::Create(m_GraphicDev);
+
+    FAILED_CHECK_MSG(
+        layer->Add_GameObject(OBJTYPE::BUILDING, kitchen),
+        L"Add_GameObject(CWorkBench) failed");
+
 
     m_Layers.insert({ layerType, layer });
 
