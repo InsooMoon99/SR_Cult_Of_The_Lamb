@@ -59,7 +59,7 @@ void CUICookingGame::Initialize_GameObject()
     m_ItemIcon = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_ITEM);
     if (m_ItemIcon)
     {
-        SpawnUIOnLayer(m_ItemIcon, OBJTYPE::UI);
+        //SpawnUIOnLayer(m_ItemIcon, OBJTYPE::UI);
     }
 
     // 움직이는 화살표
@@ -85,6 +85,7 @@ _int CUICookingGame::Update_GameObject(const _float& timeDelta)
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
     m_Curser->Update_GameObject(timeDelta);
+    m_ItemIcon->Update_GameObject(timeDelta);
 
     if (CDInputMgr::GetInstance()->KeyDown(DIK_P))
     {
@@ -139,6 +140,7 @@ void CUICookingGame::LateUpdate_GameObject(const _float& timeDelta)
     CUI::LateUpdate_GameObject(timeDelta);
     m_Curser->Get_Transform()->Set_Pos({ m_CurserX , m_TransformCom->Get_Pos().y, 1.f });
     m_Curser->LateUpdate_GameObject(timeDelta);
+    m_ItemIcon->LateUpdate_GameObject(timeDelta);
 }
 
 void CUICookingGame::Render_GameObject()
@@ -366,12 +368,12 @@ void CUICookingGame::Free()
 {
 
     Safe_Release(m_Buffer_Deco);
-    //Safe_Release(m_Buffer_Area);
     Safe_Release(m_Buffer_keyInfo);
     Safe_Release(m_Buffer_blue);
     Safe_Release(m_MaskBuffer);
     Safe_Release(m_Buffer_Info);
 
+    Safe_Release(m_ItemIcon);
     Safe_Release(m_Curser);
 
     CUI::Free();
