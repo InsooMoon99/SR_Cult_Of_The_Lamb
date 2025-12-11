@@ -104,7 +104,11 @@ static const char* ToString(ACTORSTATE state)
     case ACTORSTATE::PLAYER_WEAPONGET:       return "PlayerWeaponGet";
     case ACTORSTATE::PLAYER_HAMMER:          return "PlayerConstruct";
 
+    case ACTORSTATE::PLAYER_DECIDE:          return "PlayerDecide";
+    case ACTORSTATE::PLAYER_REFUSE:          return "PlayerRefuse";
+
     case ACTORSTATE::STATE_END:              return "StateEnd";
+
     default:                                 return "UnknownState";
     }
 }

@@ -264,6 +264,10 @@ enum class ACTORSTATE
     PLAYER_HAMMER,              // 플레이어 건축
     //GATHERING,
 
+    // 보스 1페
+    PLAYER_DECIDE,
+    PLAYER_REFUSE,
+
     DEAD,
 
     STATE_END

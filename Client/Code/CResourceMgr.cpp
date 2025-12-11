@@ -406,6 +406,23 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
         return E_FAIL;
 
+#pragma region --- Tex: Final
+    if (FAILED(playerTex->Add_Texture(L"Decide_Start", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Final/Decide_Start/Decide_Start%d.png", 41)))
+        return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"Decide_Loop", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Final/Decide_Loop/Decide_Loop%d.png", 50)))
+        return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"Refuse_Sword", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Final/Refuse_Sword/Refuse_Sword%d.png", 55)))
+        return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"Refuse_Gauntlet", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Final/Refuse_Guantlets/Refuse_Guantlets%d.png", 54)))
+        return E_FAIL;
+
 #pragma endregion
 
     if (FAILED(
