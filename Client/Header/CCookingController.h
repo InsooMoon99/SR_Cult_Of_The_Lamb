@@ -51,7 +51,7 @@ public:
     static CCookingController* Create(DEVICE graphicDev);
     CComponent* Clone() override;
 private:
-    //vector<Recipe*> RecipeDB;
+    //vector<Recipe*> RecipeShop;
     // 선택후
     vector<int> m_vecTmpRecipeID;// 대기열
     queue<RecipeInst> m_queRecipeInst; // 주소로 안하는게 낫데 메모리 관리 신경 쓸 필요 없음
