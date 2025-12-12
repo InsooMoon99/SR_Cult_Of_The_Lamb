@@ -55,6 +55,9 @@ HRESULT CStage_Boss1::Ready_Scene()
     if (FAILED(Ready_UI_Layer(LAYERTYPE::UI)))
         return E_FAIL;
 
+    if (FAILED(Ready_Light()))
+        return E_FAIL;
+
     //아이템 드롭 할거면 씬 셋팅 필수
     CDropSystem::GetInstance()->SetCurrentScene(this);
 
@@ -108,6 +111,11 @@ void CStage_Boss1::LateUpdate_Scene(const _float& timeDelta)
 void CStage_Boss1::Render_Scene()
 {
     // debug 용
+}
+
+HRESULT CStage_Boss1::Ready_Light()
+{
+    return CScene::Ready_Light();
 }
 
 void CStage_Boss1::Create_Trigger(_vec3 pos, _vec3 size, OnTriggerCallback callback, _bool autoDestroy)

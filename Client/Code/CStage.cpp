@@ -70,6 +70,10 @@ HRESULT CStage::Ready_Scene()
     if (FAILED(Ready_UI_Layer(LAYERTYPE::UI)))
         return E_FAIL;
 
+    if (FAILED(Ready_Light()))
+        return E_FAIL;
+
+
     // 안은수 test
     CDropSystem::GetInstance()->SetCurrentScene(this);
 
@@ -505,6 +509,13 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
 HRESULT CStage::Ready_Prototype()
 {
     return S_OK;
+}
+
+HRESULT CStage::Ready_Light()
+{
+    return CScene::Ready_Light();
+
+
 }
 
 void CStage::Create_Trigger()
