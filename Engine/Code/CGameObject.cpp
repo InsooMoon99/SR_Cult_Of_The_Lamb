@@ -38,7 +38,6 @@ HRESULT CGameObject::Ready_GameObject()
 
 void CGameObject::Initialize_GameObject()
 {
-
     for (auto& components : m_Components)
     {
         for (auto& component : components)
@@ -46,7 +45,6 @@ void CGameObject::Initialize_GameObject()
             component.second->Initialize_Component();
         }
     }
-
 }
 
 _int CGameObject::Update_GameObject(const _float& timeDelta)

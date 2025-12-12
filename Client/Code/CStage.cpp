@@ -156,8 +156,6 @@ _int CStage::Update_Scene(const _float& timeDelta)
             CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::KITCHEN);
     }
 
-
-
     //// xptmxm dksdmstn
     //if(CDInputMgr::GetInstance()->KeyDown(DIK_U))
     //{
@@ -445,9 +443,9 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     // Follower
     // -----------------------------
     gameObject = CFollowerCow::Create(m_GraphicDev);
-
+    
     NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"Create NPC object has failed")
-
+    
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::NPC, gameObject),
         L"Add NPC object on layer has failed");

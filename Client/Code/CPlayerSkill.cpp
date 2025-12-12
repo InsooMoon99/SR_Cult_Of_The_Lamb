@@ -107,14 +107,19 @@ HRESULT     CPlayerSkill::Init_OwnerComponent()
     m_LeftChargingUI = CUICharging::Create(m_GraphicDev);
     m_LeftChargingUI->Set_PlayerSkill(this);
     m_LeftChargingUI->Initialize_GameObject();
+
     CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::UI)->Add_GameObject(OBJTYPE::UI, m_LeftChargingUI);
+
     m_CenterChargingUI = CUICharging::Create(m_GraphicDev);
     m_CenterChargingUI->Set_PlayerSkill(this);
     m_CenterChargingUI->Initialize_GameObject();
+
     CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::UI)->Add_GameObject(OBJTYPE::UI, m_CenterChargingUI);
+
     m_RightChargingUI = CUICharging::Create(m_GraphicDev);
     m_RightChargingUI->Set_PlayerSkill(this);
     m_RightChargingUI->Initialize_GameObject();
+
     CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::UI)->Add_GameObject(OBJTYPE::UI, m_RightChargingUI);
 
 

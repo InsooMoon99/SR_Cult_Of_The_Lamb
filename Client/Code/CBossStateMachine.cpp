@@ -45,13 +45,13 @@ _int CBossStateMachine::Update_StateMachine(const _float& timeDelta)
             return nextState;
         }
 
-        if (nextState < CBossPhase1::BOSSPHASE1::BOSS_END && nextState != m_dwCurStateKey)
+        if (nextState < CBossPhase1::BOSSPHASE1::BOSS_END && nextState != m_CurStateKey)
         {
-            Change_State(nextState);
+            Change_State(nextState);    
         }
     }
 
-    return (_int)m_dwCurStateKey;
+    return (_int)m_CurStateKey;
 }
 
 void CBossStateMachine::LateUpdate_StateMachine(const _float& timeDelta)
