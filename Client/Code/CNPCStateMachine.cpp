@@ -63,9 +63,10 @@ void CNPCStateMachine::Change_State(_uint dwStateKey)
     m_CurState->Enter();
 }
 
-CNPCStateMachine* CNPCStateMachine::Create()
+CNPCStateMachine* CNPCStateMachine::Create(CNPCBase* owner)
 {
     auto instance = new CNPCStateMachine;
+    instance->Set_Owner(owner);
 
     if (FAILED(instance->Ready_StateMachine()))
     {

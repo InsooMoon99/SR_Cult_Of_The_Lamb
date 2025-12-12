@@ -38,6 +38,6 @@ public:
 
 protected:
     CInteractionChecker* m_Checker       = nullptr;
-    CRigidbody*          m_Rigidbody     = nullptr;
     CNPCController*      m_NPCController = nullptr;
+    CRigidbody*          m_Rigidbody     = nullptr;
 };

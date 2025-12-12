@@ -125,7 +125,7 @@ HRESULT CNPCBase::Add_Component()
     NULL_CHECK_RETURN(m_Checker, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::NPC_INTERACTION_CHECKER, m_Checker });
 
-   // --- NPC Controller ---
+    // --- NPC Controller ---
     m_NPCController = CreateProtoComponent<CNPCController>(
         this,
         COMPONENTTYPE::NPC_CONTROLLER);
