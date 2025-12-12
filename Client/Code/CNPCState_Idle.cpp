@@ -37,9 +37,10 @@ _int CNPCState_Idle::Update_State(const _float& timeDelta)
 
     if (m_Owner)
     {
-        // 1. Check Construction
+        // 상호작용 검사 작동
         CInteractionChecker* checker = m_Owner->Get_InteractionChecker();
 
+        // 건축 부지 탐색
         if (checker)
         {
             _vec3             pos        = m_OwnerTransform->Get_Pos();
@@ -47,25 +48,25 @@ _int CNPCState_Idle::Update_State(const _float& timeDelta)
 
             if (nearCircle)
             {
-                // Found Construction -> Move to it (RUN) -> Build
+                // 건축 부지 탐색
                 if (m_Controller)
                 {
                     _vec3 vTargetPos = nearCircle->Get_Transform()->Get_Pos();
                     m_Controller->Set_TargetPos(vTargetPos);
+                    m_Controller->Set_TargetObject(nearCircle); // Set Target Object
 
-                    // 거리 체크 (이미 가까우면 바로 BUILD로 갈 수도 있음)
                     _vec3 toTarget = vTargetPos - pos;
 
                     _float dist = D3DXVec3Length(&toTarget);
 
-                    if (dist < 1.0f) // 임의의 거리 임계값
-                        return static_cast<_int>(CNPCStateMachine::NPC_STATE::BUILD); // TODO: BUILD State 구현 시 활성화
+                    if (dist < 0.2f) 
+                        return static_cast<_int>(CNPCStateMachine::NPC_STATE::BUILD);
                     else
                         return static_cast<_int>(CNPCStateMachine::NPC_STATE::RUN);
                 }
             }
 
-            // 2. Check Job (If no construction)
+            //TODO 직업에 따라 벌목 또는 채광 진행
             /*
             JOB eJob = m_pController->Get_Work();
             switch (eJob) {

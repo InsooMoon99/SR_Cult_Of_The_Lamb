@@ -53,11 +53,7 @@ void CNPCState::Find_Player()
         return;
 
     CGameObject* object = nullptr;
-    // CManagement::GetInstance()->Get_PersistentObject(L"Player", &pObject); 
-    // 위 방식이 아니라면 Layer 검색
-    // 기존 CMonsterState::Find_Player 참고
-
-    // 만약 PersistentObject가 아니라면:
+    
     CScene* scene = CManagement::GetInstance()->Get_Scene();
     if (scene)
     {

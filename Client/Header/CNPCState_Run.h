@@ -18,5 +18,11 @@ public:
     static CNPCState_Run* Create(CNPCBase* owner, CNPCStateMachine* stateMachine);
 
 private:
+    void Set_WalkPastCoolTime(_float time) { m_WalkPastCooldown = time; }
+
+private:
     void Free() override;
+
+private:
+   _float m_WalkPastCooldown = 0.f;
 };

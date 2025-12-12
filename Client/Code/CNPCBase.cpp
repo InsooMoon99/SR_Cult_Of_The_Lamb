@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "CNPCBase.h"
 
+#include <CCombatStat.h>
 #include "CAnimator.h"
 #include "CBoxCollider.h"
 #include "CCreateHelper.h"
@@ -34,6 +35,9 @@ void CNPCBase::Initialize_GameObject()
 {
     CCharacterBase::Initialize_GameObject();
 
+    if (m_CombatStatCom)
+        m_CombatStatCom->Set_Speed(5.f);
+
     if (m_Rigidbody)
     {
         m_Rigidbody->Set_UseAccel(true);
@@ -61,35 +65,28 @@ void CNPCBase::Render_GameObject()
 
     Render_Setting();
 
-    // 4) 텍스처 바인딩
+    // 텍스처 바인딩
     if (m_AnimatorCom)
     {
         const wstring& key   = m_AnimatorCom->Get_CurKey();
         int            frame = m_AnimatorCom->Get_CurFrame();
-        // TextureCom은 각 NPC 자식이 가지고 있으므로 map에서 찾아서 바인딩하거나
-        // m_TextureCom을 CNPCBase로 올리는 것도 방법이지만,
-        // 현재 구조상 자식이 Add_Component에서 m_TextureCom을 멤버로 갖고 있지 않고
-        // m_Components map에만 넣었을 수 있음.
-        // 하지만 CFollowerCow를 보면 m_TextureCom 멤버변수를 사용함.
-        // CNPCBase는 CCharacterBase를 상속받고, CCharacterBase는 CRenderObject를 상속받음.
-        // CRenderObject에 m_TextureCom이 있음.
-        // 따라서 m_TextureCom 사용 가능.
+        
         if (m_TextureCom)
             m_TextureCom->Set_Texture(key, frame);
     }
 
-    // 5) 기본 초기화
+    // 기본 초기화
     m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
     m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
     m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
 
-    // 7) 버텍스 버퍼 렌더
+    // 버텍스 버퍼 렌더
     if (m_BufferCom)
         m_BufferCom->Render_Buffer();
 
     Render_Reset();
 
-    // 충돌체 렌더 (디버그용)
+    // 충돌체 렌더
     if (m_BoxColCom)
         m_BoxColCom->Render();
 }
@@ -117,7 +114,7 @@ HRESULT CNPCBase::Add_Component()
         return E_FAIL;
     }
 
-    // --- Checker ---
+    // --- Interaction Checker ---
     m_Checker = CreateProtoComponent<CInteractionChecker>(
         this,
         COMPONENTTYPE::NPC_INTERACTION_CHECKER);

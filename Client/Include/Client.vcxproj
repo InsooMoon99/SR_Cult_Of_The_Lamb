@@ -199,6 +199,8 @@
     <ClInclude Include="..\Header\CBoss_Slave_Test.h" />
     <ClInclude Include="..\Header\CCharacterBase.h" />
     <ClInclude Include="..\Header\CCookingController.h" />
+    <ClInclude Include="..\Header\CNPCState_Build.h" />
+    <ClInclude Include="..\Header\CNPCState_WalkPast.h" />
     <ClInclude Include="..\Header\CUICookedFoodCell.h" />
     <ClInclude Include="..\Header\CUICookingCell.h" />
     <ClInclude Include="..\Header\CFollowerCow.h" />
@@ -365,6 +367,8 @@
     <ClCompile Include="..\Code\CCharacterBase.cpp" />
     <ClCompile Include="..\Code\CConstructionPlacer.cpp" />
     <ClCompile Include="..\Code\CCookingController.cpp" />
+    <ClCompile Include="..\Code\CNPCState_Build.cpp" />
+    <ClCompile Include="..\Code\CNPCState_WalkPast.cpp" />
     <ClCompile Include="..\Code\CUICookedFoodCell.cpp" />
     <ClCompile Include="..\Code\CUICookingCell.cpp" />
     <ClCompile Include="..\Code\CFollowerCow.cpp" />

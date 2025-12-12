@@ -3,6 +3,7 @@
 
 #include "CAnimator.h"
 #include "CCombatStat.h"
+#include "CGameObject.h"
 #include "CNPCBase.h"
 #include "CNPCController.h"
 #include "CNPCStateMachine.h"
@@ -35,51 +36,67 @@ _int CNPCState_Run::Update_State(const _float& timeDelta)
 {
     CNPCState::Update_State(timeDelta);
 
-    // Movement Logic
+    Find_Player();
+
+    if (m_WalkPastCooldown > 0.f)
+        m_WalkPastCooldown -= timeDelta;
+
+    // 플레이어 근처일 경우
+    if (m_PlayerTransform && m_OwnerTransform)
+    {
+        const _vec3  playerPos    = m_PlayerTransform->Get_Pos();
+        const _vec3  myPos        = m_OwnerTransform->Get_Pos();
+        const _vec3  vecToPlayer  = playerPos - myPos;
+        const _float distToPlayer = D3DXVec3Length(&vecToPlayer);
+
+        if (distToPlayer < 2.0f && m_WalkPastCooldown <= 0.f)
+        {
+            m_WalkPastCooldown = 5.f; // 쿨타임 설정
+            return static_cast<_int>(CNPCStateMachine::NPC_STATE::WALKPAST);
+        }
+    }
+
+    // 이동 로직
     if (m_Controller && m_OwnerTransform && m_OwnerRigidbody)
     {
-        _vec3  targetPos = m_Controller->Get_TargetPos();
-        _vec3  myPos     = m_OwnerTransform->Get_Pos();
-        _vec3  dir       = targetPos - myPos;
-        _float dist      = D3DXVec3Length(&dir);
+        const _vec3  targetPos    = m_Controller->Get_TargetPos();
+        const _vec3  myPos        = m_OwnerTransform->Get_Pos();
+        _vec3        vecToTarget  = targetPos - myPos;
+        const _float distToTarget = D3DXVec3Length(&vecToTarget);
 
-        if (dist < 0.2f) // Arrival Threshold
-            return static_cast<_int>(CNPCStateMachine::NPC_STATE::IDLE);
+        // 건축
+        if (distToTarget < 0.2f)
+        {
+            CGameObject* targetObj = m_Controller->Get_TargetObject();
+            if (targetObj && !targetObj->Is_PendingDestroy())
+                return static_cast<_int>(CNPCStateMachine::NPC_STATE::BUILD);
+            else
+                return static_cast<_int>(CNPCStateMachine::NPC_STATE::IDLE);
+        }
 
-        D3DXVec3Normalize(&dir, &dir);
+        D3DXVec3Normalize(&vecToTarget, &vecToTarget);
 
-        // Change Direction (Left/Right only for now)
-        // Use CCharacterBase::Change_Dir (via Owner -> Get_State -> Change_Dir) or CCombatStat logic?
-        // CNPCBase inherits CCharacterBase, which has m_StateCom (CState).
-        // CState manages ACTORDIR.
-        // We need to access Owner's State Component.
-        // Assuming CMonsterController or CNPCController provides access or we access it via Owner.
-        // CNPCBase has Get_StateCom() (inherited from CCharacterBase? Let's check).
-        // Actually we can just implement helper here or in Controller.
-
-        // Helper Logic for Direction
+        // ACTORDIR 설정
         if (m_Owner)
         {
             auto state = dynamic_cast<CState*>(m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
+
             if (state)
             {
-                if (dir.x > 0.1f) state->Change_Dir(ACTORDIR::RIGHT);
-                else if (dir.x < -0.1f) state->Change_Dir(ACTORDIR::LEFT);
+                if (vecToTarget.x > 0.1f) state->Change_Dir(ACTORDIR::RIGHT);
+                else if (vecToTarget.x < -0.1f) state->Change_Dir(ACTORDIR::LEFT);
             }
         }
 
-        // Move Force
-        // _float speed = m_pController->Get_OwnerCombatStat()->Get_Speed(); // If available
-        _float speed = 3.0f; // Default for now
+        _float speed = 0.f;
 
-        // CMonsterController has Get_OwnerCombatStat()
         if (m_Controller)
         {
             auto stat = m_Controller->Get_OwnerCombatStat();
             if (stat) speed = stat->Get_Speed();
         }
 
-        m_OwnerRigidbody->Add_Force(dir * speed * 20.f);
+        m_OwnerRigidbody->Add_Force(vecToTarget * speed * 5.f);
     }
 
     return static_cast<_int>(CNPCStateMachine::NPC_STATE::RUN);

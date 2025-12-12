@@ -4,6 +4,8 @@
 
 #include "CNPCState_Idle.h"
 #include "CNPCState_Run.h"
+#include "CNPCState_WalkPast.h"
+#include "CNPCState_Build.h"
 #include "CNPCState_Spawn.h"
 
 CNPCStateMachine::CNPCStateMachine()
@@ -20,6 +22,12 @@ HRESULT CNPCStateMachine::Ready_StateMachine()
         return E_FAIL;
 
     if (FAILED(RegisterState<CNPCState_Run>(NPC_STATE::RUN, m_Owner)))
+        return E_FAIL;
+
+    if (FAILED(RegisterState<CNPCState_WalkPast>(NPC_STATE::WALKPAST, m_Owner)))
+        return E_FAIL;
+
+    if (FAILED(RegisterState<CNPCState_Build>(NPC_STATE::BUILD, m_Owner)))
         return E_FAIL;
 
     // 초기 상태

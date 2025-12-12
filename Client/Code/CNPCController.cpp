@@ -1,14 +1,17 @@
 ﻿#include "pch.h"
 #include "CNPCController.h"
-#include "CNPCStateMachine.h"
+
 #include "CNPCBase.h"
+#include "CNPCStateMachine.h"
 
 CNPCController::CNPCController(DEVICE graphicDev)
     : CMonsterController(graphicDev)
+    , m_TargetObject(nullptr)
 { }
 
 CNPCController::CNPCController(const CNPCController& rhs)
     : CMonsterController(rhs)
+    , m_TargetObject(rhs.m_TargetObject)
 { }
 
 CNPCController::~CNPCController()
@@ -47,7 +50,7 @@ _int CNPCController::Update_Component(const _float& timeDelta)
 
 CNPCController* CNPCController::Create(DEVICE graphicDev)
 {
-    CNPCController* instance = new CNPCController(graphicDev);
+    auto instance = new CNPCController(graphicDev);
 
     if (FAILED(instance->Ready_Controller()))
     {

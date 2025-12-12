@@ -100,9 +100,7 @@ _int CWorkBench::Update_GameObject(const _float& timeDelta)
         ImGui::Text("=== WorkBench ===");
     }
 
-
-
-    void CWorkBench::OnBeginOverlap(CCollider * self, CCollider * other)
+void CWorkBench::OnBeginOverlap(CCollider * self, CCollider * other)
     {
         CBuildingBase::OnBeginOverlap(self, other);
 

@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "CMonsterController.h"
+#include "CNPCStateMachine.h"
 
 class CNPCController : public CMonsterController
 {
@@ -16,8 +17,7 @@ public:
     void    Initialize_Component() override;
     _int    Update_Component(const _float& timeDelta) override;
 
-    // ImGui or Debug Render if needed
-    // void    Render_Editor() override;
+    // void Render_Editor() override;
 
 public:
     static CNPCController* Create(DEVICE graphicDev);
@@ -36,9 +36,20 @@ public:
     void           Set_AnimKeyPrefix(const wstring& prefix) { m_AnimKeyPrefix = prefix; }
     const wstring& Get_AnimKeyPrefix() const { return m_AnimKeyPrefix; }
 
-private:
-    NPC_WORK m_Work      = NPC_WORK::NONE;
-    _vec3    m_TargetPos = { 0.f, 0.f, 0.f };
+    // State Helper
+    CNPCStateMachine::NPC_STATE Get_CurNPCState() { 
+        return static_cast<CNPCStateMachine::NPC_STATE>(Get_CurrentState()); 
+    }
 
-    wstring  m_AnimKeyPrefix = L"";
+    // Interaction Object Setter
+    void          Set_TargetObject(CGameObject* obj) { m_TargetObject = obj; }
+    CGameObject*  Get_TargetObject()                 { return m_TargetObject; }
+
+private:
+    NPC_WORK m_Work = NPC_WORK::NONE;
+
+    _vec3 m_TargetPos = { 0.f, 0.f, 0.f };
+    CGameObject* m_TargetObject = nullptr;
+
+    wstring m_AnimKeyPrefix;
 };

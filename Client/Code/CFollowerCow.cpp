@@ -5,6 +5,7 @@
 #include "CCreateHelper.h"
 #include "CNPCController.h"
 #include "CTexture.h"
+#include "CTransform.h"
 
 CFollowerCow::CFollowerCow(DEVICE graphicDev)
     : CNPCBase(graphicDev)
@@ -32,6 +33,7 @@ void CFollowerCow::Initialize_GameObject()
 {
     CNPCBase::Initialize_GameObject();
 
+    m_TransformCom->Set_Pos(15.f, 0.f, 15.f);
 }
 
 _int CFollowerCow::Update_GameObject(const _float& timeDelta)
