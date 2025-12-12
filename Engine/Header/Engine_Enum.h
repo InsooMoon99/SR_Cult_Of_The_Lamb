@@ -214,6 +214,8 @@ enum class COMPONENTTYPE
     TEX_WARNING_CHAIN,
     TEX_CHAIN,
 
+    TEX_FOG,
+
     ////////////////
     //  MapObject //
     ////////////////

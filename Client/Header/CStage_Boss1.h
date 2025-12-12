@@ -2,6 +2,7 @@
 
 #include "CScene.h"
 
+class CFog;
 class CUI_BossHp;
 class CTerrain;
 class CUI_Dialogue;
@@ -110,5 +111,15 @@ private:
 
     _float              m_DialogueDelayTimer = 0.f;
     _bool               m_WaitingForDialogue = false;
+
+private:
+    // Fog
+    CFog*               m_Fog = nullptr;
+
+    _vec3               m_FogPos = { 30.f, 3.f, 40.f };
+    _float              m_FogSwaySpeed = 0.5f;
+    _float              m_FogSwayAmount = 2.f;
+    _float              m_FogAlpha = 0.5f;
+    _vec3               m_FogScale = { 15.f, 10.f, 1.f };
 
 };

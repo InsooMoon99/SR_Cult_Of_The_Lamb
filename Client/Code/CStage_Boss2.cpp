@@ -71,7 +71,7 @@ void CStage_Boss2::LateUpdate_Scene(const _float& timeDelta)
 
 void CStage_Boss2::Render_Scene()
 {
-    // debug 용
+    
 }
 
 HRESULT CStage_Boss2::Ready_Environment_Layer(LAYERTYPE layerType)
@@ -202,14 +202,23 @@ HRESULT CStage_Boss2::Ready_Light()
     D3DLIGHT9 lightInfo;
     ZeroMemory(&lightInfo, sizeof(D3DLIGHT9));
 
-    lightInfo.Type = D3DLIGHT_DIRECTIONAL;  // 방향성 조명
+    //lightInfo.Type = D3DLIGHT_DIRECTIONAL;  // 방향성 조명
+    lightInfo.Type = D3DLIGHT_POINT;          // Point Light
 
-    // 일단 조금 빨간 톤으로 만들어보기
-    lightInfo.Diffuse = COLOR(1.f, 0.3f, 0.3f, 1.f);
-    lightInfo.Specular = COLOR(1.f, 0.5f, 0.5f, 1.f);
-    lightInfo.Ambient = COLOR(0.4f, 0.1f, 0.1f, 1.f);
+    lightInfo.Diffuse = m_LightDiffuse;
+    lightInfo.Ambient = m_LightAmbient;   // 그림자 영역
+    lightInfo.Specular = m_LightSpecular;
 
-    lightInfo.Direction = { 1.f, -1.f, 1.f };
+    // 빛의 위치 (보스맵 가운데, 위쪽으로 설정)
+    lightInfo.Position = m_LightPos;
+
+    // 빛의 범위 (설정한 범위 밖이면 완전히 어둡게?)
+    lightInfo.Range = m_LightRange;
+
+    // 감쇠 (거리에 따라 어두워지도록 해보기)
+    lightInfo.Attenuation0 = m_Attenuation0;       // 상수 (0 = 기본 밝기 100%)
+    lightInfo.Attenuation1 = m_Attenuation1;       // 거리 비례 (클수록 빨리 어두워진다)
+    lightInfo.Attenuation2 = m_Attenuation2;       // 거리^2 비례
 
     if (FAILED(CLightMgr::GetInstance()->Ready_Light(m_GraphicDev, &lightInfo, 0)))
         return E_FAIL;

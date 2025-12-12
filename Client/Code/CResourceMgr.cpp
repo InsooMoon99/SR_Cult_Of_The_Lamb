@@ -1044,6 +1044,11 @@ HRESULT CResourceMgr::Ready_Particle(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PARTICLE, particleTex)))
         return E_FAIL;
 
+    // FOG
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_FOG,
+        CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Effect/Fog/fog.png", 1))))
+        return E_FAIL;
+
     return S_OK;
 }
 

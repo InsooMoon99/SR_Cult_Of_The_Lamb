@@ -322,6 +322,9 @@
     <Filter Include="03. GameObject\11. NPC\99. Class for FSM\01. State\09. Spawn">
       <UniqueIdentifier>{88c83b1d-06f9-4a18-bcfb-08d1f320233c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\09. MapObject\03. Fog">
+      <UniqueIdentifier>{2f846c5f-7436-4050-b8a3-cfae036bed3d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -799,7 +802,7 @@
     </ClInclude>
     <ClInclude Include="..\Header\CUICookedFoodCell.h">
       <Filter>헤더 파일</Filter>
-          </ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Header\CInteractionChecker.h">
       <Filter>03. GameObject\11. NPC\98. Components\00. Interaction Checker</Filter>
     </ClInclude>
@@ -823,6 +826,9 @@
     </ClInclude>
     <ClInclude Include="..\Header\CFollowerCow.h">
       <Filter>03. GameObject\11. NPC\00. Follower Cow</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CFog.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1263,7 +1269,7 @@
     </ClCompile>
     <ClCompile Include="..\Code\CUICookedFoodCell.cpp">
       <Filter>소스 파일</Filter>
-     </ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Code\CInteractionChecker.cpp">
       <Filter>03. GameObject\11. NPC\98. Components\00. Interaction Checker</Filter>
     </ClCompile>
@@ -1287,6 +1293,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CFollowerCow.cpp">
       <Filter>03. GameObject\11. NPC\00. Follower Cow</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CFog.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
