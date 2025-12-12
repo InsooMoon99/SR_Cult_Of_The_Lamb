@@ -136,16 +136,28 @@ bool CCookingController::CanCook(int recipeID, CInventory* playerInven)
 {
 
     Recipe* recipe = CRecipeDB::GetInstance()->GetRecipeById(recipeID);
-    for (auto& [ID, Num] : recipe->ingredients)
+
+    //
+    //
+    //for (auto& [ID, Num] : recipe->ingredients)
+    //{
+    //    auto Playeriter = playerInven->GetCountMap().find(ID);
+    //    if (Playeriter == playerInven->GetCountMap().end())
+    //        return false;
+    //
+    //    if (playerInven->GetCountMap().at(ID) < Num)
+    //        return false;
+    //}
+    const auto& CountMap = playerInven->GetCountMap();
+    for(const auto& [ID, Num] : recipe->ingredients)
     {
-        auto Playeriter = playerInven->GetCountMap().find(ID);
-        if (Playeriter == playerInven->GetCountMap().end())
+        auto it = CountMap.find(ID);
+        if (it == CountMap.end())                                                                                                                                       
             return false;
 
-        if (playerInven->GetCountMap().at(ID) < Num)
+        if (it->second < Num)
             return false;
     }
-    //playerInven->Get_Cnt
     return true;
 }
 

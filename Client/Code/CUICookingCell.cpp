@@ -113,9 +113,9 @@ _int CUICookingCell::Update_GameObject(const _float& timeDelta)
     if (m_IsHovered &&
         (CDInputMgr::GetInstance()->MouseDown(MOUSEKEYSTATE::DIM_LB)))
     {
-        if (m_OnClick)// 여기 있는걸 왜 밑에도?
+        if (m_OnClick)
         {
-            m_OnClick();// 머지 왜?
+            m_OnClick();
         }
     }
 
@@ -234,14 +234,12 @@ void CUICookingCell::Render_GameObject()
           //      text.c_str(),
           //      &screen3,
           //      D3DXCOLOR{ 1.f, 1.f, 1.f, 1.f });
-            if(m_GetCount&&(m_GetCount() == recipe->ingredients.begin()->second))
+            if(m_GetCount&&(m_GetCount() == recipe->ingredients.begin()->second)) //필요 재료 & 현재 보유 재료
             {
                 std::wstring text2 =
                     L"필요한 재료\n\n" +
                     to_wstring(recipe->ingredients.begin()->second);
 
-                //if (m_GetCount)
-                //{
                     std::wstring text3 =
                         L"(" + to_wstring(m_GetCount()) + L")";
 
@@ -250,7 +248,6 @@ void CUICookingCell::Render_GameObject()
                         &screen5,
                         D3DXCOLOR{ 0.3f, 0.7f, 0.1f, 1.f });
 
-               // }
 
                 CFontMgr::GetInstance()->Render_Font(L"카드 설명",
                     text2,
