@@ -46,38 +46,35 @@ HRESULT CTexture::Ready_Texture(TEXTUREID texType, const wstring& filePath, cons
 {
     m_Textures.reserve(count);
 
-    IDirect3DBaseTexture9* texture = nullptr;
-
     for (_uint i = 0; i < count; ++i)
     {
         wchar_t fileName[MAX_PATH] = L"";
-
         swprintf_s(fileName, MAX_PATH, filePath.c_str(), i + 1);
 
-         // 동기화 시작
+        IDirect3DBaseTexture9* texture = nullptr;
+        HRESULT hr = S_OK;
+
         EnterCriticalSection(&s_D3DLock);
 
         switch (texType)
         {
         case TEX_NORMAL:
-        {
-            if (FAILED(D3DXCreateTextureFromFile(
-                m_GraphicDev, fileName, (LPDIRECT3DTEXTURE9*)&texture)))
-                return E_FAIL;
-        }
-        break;
+            hr = D3DXCreateTextureFromFile(m_GraphicDev, fileName, (LPDIRECT3DTEXTURE9*)&texture);
+            break;
+
         case TEX_CUBE:
-        {
-            if (FAILED(D3DXCreateCubeTextureFromFile(
-                m_GraphicDev, fileName, (LPDIRECT3DCUBETEXTURE9*)&texture)))
-                return E_FAIL;
-        }
-        break;
+            hr = D3DXCreateCubeTextureFromFile(m_GraphicDev, fileName, (LPDIRECT3DCUBETEXTURE9*)&texture);
+            break;
+
         default:
-            return E_FAIL;
+            hr = E_FAIL;
+            break;
         }
 
-        LeaveCriticalSection(&s_D3DLock);  // 동기화 완료
+        LeaveCriticalSection(&s_D3DLock);
+
+        if (FAILED(hr) || texture == nullptr)
+            return E_FAIL;
 
         m_Textures.push_back(texture);
     }

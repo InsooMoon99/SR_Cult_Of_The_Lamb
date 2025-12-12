@@ -13,7 +13,7 @@
 #include "CBossTalk.h"
 
 CBossStateMachine::CBossStateMachine(CMonsterBase* owner)
-: m_pOwner(owner)
+    : m_pOwner(owner)
 {
 }
 
