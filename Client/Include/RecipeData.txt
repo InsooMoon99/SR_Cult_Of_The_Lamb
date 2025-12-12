@@ -2,7 +2,7 @@
   "recipes": [
     {
       "id": 4001,
-	"type" : "Cook",
+    "type" : "Cook",
       "name": "풀투성이 귀리죽",
       "desc": "없는 것보다 낫습니다.",
       "quality": 1,
@@ -12,6 +12,7 @@
           "count": 5
         }
       ],
+    "result": 2001,
       "hunger": 30,
       "UIFileName": "Meal_Grass",
       "UIPath": "../Bin/Resource/ItemUI/Meal_Grass.png"
@@ -19,7 +20,7 @@
 
     {
       "id": 4002,
-	"type" : "Cook",
+    "type" : "Cook",
       "name": "평범한 베리가 담긴 그릇",
       "desc": "베리로 만든 단순한 음식입니다.",
       "quality": 2,
@@ -29,6 +30,7 @@
           "count": 6
         }
       ],
+    "result": 2003,
       "hunger": 60,
       "UIFileName": "Meal_Berries",
       "UIPath": "../Bin/Resource/ItemUI/Meal_Berries.png"
@@ -36,7 +38,7 @@
 
     {
       "id": 4003,
-	"type" : "Cook",
+    "type" : "Cook",
       "name": "똥 한 사발",
       "desc": "없는 것보다 낫습니다.",
       "quality": 0,
@@ -46,6 +48,7 @@
           "count": 3
         }
       ],
+    "result": 2002,
       "hunger": 10,
       "UIFileName": "Meal_Poop",
       "UIPath": "../Bin/Resource/ItemUI/Meal_Poop.png"
@@ -53,7 +56,7 @@
 
    {
       "id": 5001,
-	"type" : "Build",
+    "type" : "Build",
       "name": "요리용 화덕",
       "desc": "날것을 요리해 추종자들이 먹을 수 있는 요리로 만듭니다.",
       "ingredients": [
@@ -72,7 +75,7 @@
 
    {
       "id": 5002,
-	"type" : "Build",
+    "type" : "Build",
       "name": "사원",
       "desc": "설교와 의식을 수행하는 사원을 짓습니다",
       "ingredients": [
@@ -80,10 +83,10 @@
           "id": 1001,
           "count": 4
         },
-	{
-	"id": 1005,
-	"count": 3
-	}
+    {
+    "id": 1005,
+    "count": 3
+    }
       ],
       "UIFileName": "Icon_Temple",
       "UIPath": "../Bin/Resource/Texture/UI/Icon_Building/Icon_Temple.png"

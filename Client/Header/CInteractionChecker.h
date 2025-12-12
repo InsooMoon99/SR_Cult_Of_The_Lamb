@@ -15,8 +15,8 @@ private:
 public:
     HRESULT Ready_InteractionChecker();
     void    Initialize_Component() override;
-    //_int  Update_Component(const _float& timeDelta) override;
-    //void  LateUpdate_Component() override;
+    _int    Update_Component(const _float& timeDelta) override;
+    void    LateUpdate_Component() override;
 
 public:
     CWorldInteractive* Get_NearestRock(const _vec3& srcPos);

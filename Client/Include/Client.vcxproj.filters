@@ -319,6 +319,9 @@
     <Filter Include="03. GameObject\11. NPC\02. Follower Pig">
       <UniqueIdentifier>{cde8de59-1ca8-4cbf-be17-003063709891}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\11. NPC\99. Class for FSM\01. State\09. Spawn">
+      <UniqueIdentifier>{88c83b1d-06f9-4a18-bcfb-08d1f320233c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -788,6 +791,15 @@
     <ClInclude Include="..\Header\CTree.h">
       <Filter>03. GameObject\09. MapObject\02. Crafting</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CUICookingMenu.h">
+      <Filter>05. UI\01. UI\11. UICooking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUICookingCell.h">
+      <Filter>05. UI\01. UI\11. UICooking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUICookedFoodCell.h">
+      <Filter>헤더 파일</Filter>
+          </ClInclude>
     <ClInclude Include="..\Header\CInteractionChecker.h">
       <Filter>03. GameObject\11. NPC\98. Components\00. Interaction Checker</Filter>
     </ClInclude>
@@ -805,6 +817,12 @@
     </ClInclude>
     <ClInclude Include="..\Header\CNPCState_Run.h">
       <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\01. Run</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CNPCState_Spawn.h">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\09. Spawn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CFollowerCow.h">
+      <Filter>03. GameObject\11. NPC\00. Follower Cow</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1237,6 +1255,15 @@
     <ClCompile Include="..\Code\CTree.cpp">
       <Filter>03. GameObject\09. MapObject\02. Crafting</Filter>
     </ClCompile>
+    <ClCompile Include="..\Code\CUICookingMenu.cpp">
+      <Filter>05. UI\01. UI\11. UICooking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUICookingCell.cpp">
+      <Filter>05. UI\01. UI\11. UICooking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUICookedFoodCell.cpp">
+      <Filter>소스 파일</Filter>
+     </ClCompile>
     <ClCompile Include="..\Code\CInteractionChecker.cpp">
       <Filter>03. GameObject\11. NPC\98. Components\00. Interaction Checker</Filter>
     </ClCompile>
@@ -1254,6 +1281,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\CNPCState_Run.cpp">
       <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\01. Run</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CNPCState_Spawn.cpp">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\09. Spawn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CFollowerCow.cpp">
+      <Filter>03. GameObject\11. NPC\00. Follower Cow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

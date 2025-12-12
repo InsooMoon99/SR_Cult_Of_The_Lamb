@@ -18,7 +18,7 @@ CEyeball_StateMachine::CEyeball_StateMachine(CMonsterBase* owner)
 
 CEyeball_StateMachine::~CEyeball_StateMachine()
 {
-    Free();
+    CEyeball_StateMachine::Free();
        
 }
 
@@ -74,20 +74,20 @@ HRESULT CEyeball_StateMachine::Ready_StateMachine()
     
 
     // 초기 상태 설정
-    m_pCurState = m_vecState[CEyeball::PATTERN::EYEBALL_START];
-    m_dwCurStateKey = CEyeball::PATTERN::EYEBALL_START;
-    m_pCurState->Enter();
+    m_CurState = m_vecState[CEyeball::PATTERN::EYEBALL_START];
+    m_CurStateKey = CEyeball::PATTERN::EYEBALL_START;
+    m_CurState->Enter();
 
     return S_OK;
 }
 
 _int CEyeball_StateMachine::Update_StateMachine(const _float& timeDelta)
 {
-    if (m_pCurState)
+    if (m_CurState)
     {
-        _uint nextState = m_pCurState->Update_State(timeDelta);
+        _uint nextState = m_CurState->Update_State(timeDelta);
 
-        if (nextState < CEyeball::PATTERN::EYEBALL_END && nextState != m_dwCurStateKey)
+        if (nextState < CEyeball::PATTERN::EYEBALL_END && nextState != m_CurStateKey)
         {
             Change_State(nextState);
         }
@@ -102,14 +102,14 @@ void CEyeball_StateMachine::Change_State(_uint dwStateKey)
         return;
 
     // 기존 상태 정리
-    if (m_pCurState)
-        m_pCurState->Exit();
+    if (m_CurState)
+        m_CurState->Exit();
 
-    m_dwPrevStateKey = m_dwCurStateKey;
-    m_dwCurStateKey = dwStateKey;
-    m_pCurState = m_vecState[dwStateKey];
+    m_PrevStateKey = m_CurStateKey;
+    m_CurStateKey = dwStateKey;
+    m_CurState = m_vecState[dwStateKey];
 
-    m_pCurState->Enter();
+    m_CurState->Enter();
 }
 
 CEyeball_StateMachine* CEyeball_StateMachine::Create(CMonsterBase* owner)

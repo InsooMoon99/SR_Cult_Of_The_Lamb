@@ -12,9 +12,10 @@
 #include "CTransform.h"
 #include "CUIIcon.h"
 #include "ItemData.h"
+#include "CUIBuildMenu.h"
 
-CUIBuildCell::CUIBuildCell(DEVICE pGraphicDev)
-    : CUI(pGraphicDev),
+CUIBuildCell::CUIBuildCell(DEVICE graphicDev)
+    : CUI(graphicDev),
     m_ItemIcon(nullptr),
     m_CardIcon(nullptr),
     m_CardItemIcon(nullptr),
@@ -105,6 +106,8 @@ HRESULT CUIBuildCell::Ready_GameObject()
 _int CUIBuildCell::Update_GameObject(const _float& timeDelta)
 {
 
+    m_TransformCom->Set_Scale(m_TargetScale);
+
     if (m_ItemIcon)
         m_ItemIcon->Update_GameObject(timeDelta);
         m_ItemIcon->Get_Transform()->Set_Scale(m_TargetScale);
@@ -128,19 +131,17 @@ _int CUIBuildCell::Update_GameObject(const _float& timeDelta)
     if (m_CoinIcon)
         m_CoinIcon->Update_GameObject(timeDelta);
 
-    if (m_IsHovered &&
+    if (m_IsHovered && m_IsActive()&&
         (CDInputMgr::GetInstance()->Get_DIMouseState(MOUSEKEYSTATE::DIM_LB) & 0x80))
     {
         if (m_OnClick)
         {
             m_OnClick();
-
         }
-
     }
-    m_TransformCom->Set_Scale(m_TargetScale);
 
     int exit = CUI::Update_GameObject(timeDelta);
+
     return exit;
 }
 
@@ -155,8 +156,17 @@ void CUIBuildCell::Render_GameObject()
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
+    if(m_IsActive())
+    {
+        m_TextureCom->Set_Texture(1);
+        m_BufferCom->Render_Buffer();
+    }
+    else
+    {
+        m_TextureCom->Set_Texture(2);
+        m_BufferCom->Render_Buffer();
+    }
 
-    m_TextureCom->Set_Texture(1);
     m_ItemIcon->Set_TextureIndex(m_TextureIndex);
     m_CardItemIcon->Set_TextureIndex(m_TextureIndex);
 
@@ -168,7 +178,6 @@ void CUIBuildCell::Render_GameObject()
     m_LogIcon->Get_Transform()->Set_Pos(cellPos.x+logOffset.x, cellPos.y+logOffset.y, cellPos.z);
     m_CoinIcon->Get_Transform()->Set_Pos(cellPos.x + coinOffset.x, cellPos.y + coinOffset.y, cellPos.z);
 
-    m_BufferCom->Render_Buffer();
     m_ItemIcon->Render_GameObject();
     m_LogIcon->Render_GameObject();
     m_CoinIcon->Render_GameObject();
@@ -191,9 +200,8 @@ void CUIBuildCell::Render_GameObject()
         &coinScreen,
         D3DXCOLOR{ 1.f, 1.f, 1.f, 1.f });
 
-
     //셀 선택시 외곽선 그리기
-    if (m_IsHovered)
+    if (m_IsHovered && m_IsActive() &&m_BuildMenu->Get_IsOpen())
     {
         m_TargetScale = m_BaseScale * 1.2;
 
@@ -242,7 +250,6 @@ void CUIBuildCell::Render_GameObject()
         m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
         m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
         m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-
     }
     else
     {

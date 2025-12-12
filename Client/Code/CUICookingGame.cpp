@@ -10,11 +10,12 @@
 #include "CUIIcon.h"
 #include "CItemDB.h"
 #include "CFontMgr.h"
+#include "CRandomMgr.h"
 
 
 
 CUICookingGame::CUICookingGame(DEVICE graphicDev, CGameObject* owner, RecipeInst recipeInst)
-    : CUI(graphicDev),m_Owner(owner), m_recipeInst(recipeInst)
+    : CUI(graphicDev), m_Owner(owner), m_recipeInst(recipeInst)
 {
 }
 
@@ -29,8 +30,14 @@ HRESULT CUICookingGame::Ready_GameObject()
 
 
 
-    m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(45.f));
-    m_TransformCom->Set_Pos(m_Owner->Get_Transform()->Get_Pos().x, m_Owner->Get_Transform()->Get_Pos().y+2, m_Owner->Get_Transform()->Get_Pos().z);
+    // m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(45.f));
+    // m_TransformCom->Set_Pos(m_Owner->Get_Transform()->Get_Pos().x, m_Owner->Get_Transform()->Get_Pos().y+2, m_Owner->Get_Transform()->Get_Pos().z);
+
+    if (m_TransformCom)
+    {
+        m_TransformCom->Set_Pos(_vec3(0.f, 150.f, .5f));  // 화면 하단
+        m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
+    }
 
     return S_OK;
 }
@@ -45,63 +52,125 @@ void CUICookingGame::Initialize_GameObject()
             m_Owner->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
     }
 
-    m_TransformCom->Set_Pos({ m_OwnerTransform->Get_Pos().x ,  m_OwnerTransform->Get_Pos().y + 1.f,  m_OwnerTransform->Get_Pos().z });
+    //m_TransformCom->Set_Pos({ m_OwnerTransform->Get_Pos().x ,  m_OwnerTransform->Get_Pos().y + 3.f,  m_OwnerTransform->Get_Pos().z +2.f});
 
+
+   // 결과물 이미지
     m_ItemIcon = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_ITEM);
     if (m_ItemIcon)
     {
-        SpawnUIOnLayer(m_ItemIcon, OBJTYPE::UI);
+        //SpawnUIOnLayer(m_ItemIcon, OBJTYPE::UI);
     }
 
-//영역 위치 랜덤으로 
+    // 움직이는 화살표
+    m_Curser = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_COOK);
+    if (m_ItemIcon)
+    {
+        //SpawnUIOnLayer(m_ItemIcon, OBJTYPE::UI);
+        m_Curser->Set_TextureIndex(1);
+        m_Curser->SetCloneTexAspectScale({ .01f, .2f, 1 });
+    }
 
+//영역 위치 랜덤으로
+    m_StencilLength = CRandomMgr::GetInstance()->Get_Int_Random(20, 60);
+    m_StencilPosX = CRandomMgr::GetInstance()->Get_Int_Random(int(m_TransformCom->Get_Pos().x - m_StencilLength*.5f),int (m_TransformCom->Get_Pos().x + m_StencilLength*.5f));
+    m_StencilLeft = m_StencilPosX - m_StencilLength;
+    m_StencilRight = m_StencilPosX + m_StencilLength;
+    // 기본 버퍼 크기 생각 해야할듯
 }
 
 _int CUICookingGame::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
-    //커서포즈 계속 왓다 갓다
+    m_Curser->Update_GameObject(timeDelta);
+    m_ItemIcon->Update_GameObject(timeDelta);
 
-    if (CDInputMgr::GetInstance()->KeyDown(DIK_A))
+    if (CDInputMgr::GetInstance()->KeyDown(DIK_P))
     {
         //커서포즈 멈춤
-        
-        //위치가 에리어 안이라면
-        m_DoneEvent();
-        m_ResultItemDrop(m_recipeInst.ResultItemID,m_result);
-        // 자신 지우기
-    }
-    
+        OnClick = true;
 
+    }
+
+    if (OnClick == false)
+    {
+         m_CurserX += timeDelta * m_Speed;
+        //커서포즈 계속 왓다 갓다
+        if (m_CurserX <= m_BaseLeft || m_CurserX >= m_BaseRight)
+        {
+            m_Speed *= -1;
+        }
+        
+
+    }
+
+    if (OnClick == true)
+    {
+        DelayTime += timeDelta;
+
+        if (m_CurserX <= m_StencilRight && m_CurserX >= m_StencilLeft)
+        {
+            m_result = false;
+        }
+        else
+        {
+            m_result = true;
+        }
+
+        if (DelayTime > 1.f)
+        {
+            //위치가 에리어 안이라면
+           
+           m_DoneEvent();
+            m_ResultItemDrop(m_recipeInst.ResultItemID, m_result);
+
+            Mark_As_PendingKill();
+        }
+
+    }
 
 
     if (!m_Owner)
         return exit;
 
-
-   
     return exit;
 }
 
 void CUICookingGame::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
+    m_Curser->Get_Transform()->Set_Pos({ m_CurserX , m_TransformCom->Get_Pos().y, 1.f });
+    m_Curser->LateUpdate_GameObject(timeDelta);
+    m_ItemIcon->LateUpdate_GameObject(timeDelta);
 }
 
 void CUICookingGame::Render_GameObject()
 {
     CUI::Render_GameObject();
 
+    //m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
-    //빨간색 
+    //m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    //m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+    //m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
+    //m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+    //m_GraphicDev->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+    //m_GraphicDev->SetRenderState(D3DRS_ALPHAREF, 0);
+
+
+//빨간색 
     const _matrix& world = m_TransformCom->Get_World();
 
     {
-        const float BG_WIDTH = 1.0f;
-        const float BG_HEIGHT = 1.0f;
+        const float BG_WIDTH = 45.f * 3.5f;
+        const float BG_HEIGHT = 6.f * 3.5f;
+
+        m_BaseRight = m_TransformCom->Get_Pos().x + (BG_WIDTH /** .5f*/);
+        m_BaseLeft = m_TransformCom->Get_Pos().x - (BG_WIDTH /** .5f*/);
 
         m_BufferCom->Set_Scale(BG_WIDTH, BG_HEIGHT);
         m_BufferCom->Set_Offset(0.f, 0.f);
@@ -114,15 +183,15 @@ void CUICookingGame::Render_GameObject()
     //메인 바 데코 
 
     {
-        const float BG_WIDTH = 1.0f;
-        const float BG_HEIGHT = 1.0f;
+        const float BG_WIDTH = 62.f * 3.5f;
+        const float BG_HEIGHT = 16.f * 3.5f;
 
-        m_BufferCom->Set_Scale(BG_WIDTH, BG_HEIGHT);
-        m_BufferCom->Set_Offset(0.f, 0.f);
+        m_Buffer_Deco->Set_Scale(BG_WIDTH, BG_HEIGHT);
+        m_Buffer_Deco->Set_Offset(0.f, 5.f);
 
         m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
         m_TextureCom->Set_Texture(2);  // 데코
-        m_BufferCom->Render_Buffer();
+        m_Buffer_Deco->Render_Buffer();
     }
 
 
@@ -130,28 +199,34 @@ void CUICookingGame::Render_GameObject()
 
 
     {
-        const float BG_WIDTH = 1.0f;
-        const float BG_HEIGHT = 1.0f;
+        const float BG_WIDTH = 110.f;
+        const float BG_HEIGHT = 35.f;
+        const float offX = 0.f;
+        const float offY = 110.f;
 
-        m_BufferCom->Set_Scale(BG_WIDTH, BG_HEIGHT);
-        m_BufferCom->Set_Offset(0.f, 1.f);
+        _vec2 partPos{ m_TransformCom->Get_Pos().x + offX,m_TransformCom->Get_Pos().y + offY };
+
+        m_Buffer_Info->Set_Scale(BG_WIDTH, BG_HEIGHT);
+        m_Buffer_Info->Set_Offset(offX, offY);
 
         m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
-        m_TextureCom->Set_Texture(5);  // 위 현제 음식 텍스처
-        m_BufferCom->Render_Buffer();
+        m_TextureCom->Set_Texture(5);  // 위 검은 텍스처
+        m_Buffer_Info->Render_Buffer();
 
         // 배경 안 음식 아이콘
+
         m_ItemIcon->Set_TextureIndex(CItemDB::GetInstance()->GetIndexById(m_recipeInst.ResultItemID));
         m_ItemIcon->SetCloneTexAspectScale({ .2f, .2f, 1 });
-        m_ItemIcon->Get_Transform()->Set_Pos(-WINCX / 3, WINCY / 4.f, 1);
-        
-        _vec3 center = m_BufferCom->Get_Transform()->Get_Pos();
-        _vec2 rectLT{ center.x - WINCX * .5f, WINCY * 0.5f - center.y };
+        m_ItemIcon->Get_Transform()->Set_Pos({ partPos.x - 50.f, partPos.y + 5.f, 0.f });
+
+        _vec3 center = { partPos.x + 30.f, partPos.y, 0.f };
+
+        _vec2 rectLT{ center.x + WINCX * .5f, WINCY * 0.5f - center.y };
 
         wchar_t buffer[32];
         swprintf_s(buffer, L"%d/%d", m_recipeInst.StockNum, m_StockMax);
 
-        CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Regular",
+        CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Big",
             buffer,
             &rectLT,
             D3DXCOLOR(1.f, 1.f, 1.f, 1.f));
@@ -161,18 +236,23 @@ void CUICookingGame::Render_GameObject()
     //배경 
 
     {
-        const float BG_WIDTH = 1.0f;
-        const float BG_HEIGHT = 1.0f;
+        const float BG_WIDTH = 90.f;
+        const float BG_HEIGHT = 20.f;
+        const float offX = 0.f;
+        const float offY = -55.f;
 
-        m_BufferCom->Set_Scale(BG_WIDTH, BG_HEIGHT);
-        m_BufferCom->Set_Offset(0.f, -1.f);
+        _vec2 partPos{ m_TransformCom->Get_Pos().x + offX,m_TransformCom->Get_Pos().y + offY };
+
+
+        m_Buffer_keyInfo->Set_Scale(BG_WIDTH, BG_HEIGHT);
+        m_Buffer_keyInfo->Set_Offset(offX, offY);
 
         m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
         m_TextureCom->Set_Texture(5);  // 아래 키 텍스처
-        m_BufferCom->Render_Buffer();
+        m_Buffer_keyInfo->Render_Buffer();
 
-        _vec3 center = m_BufferCom->Get_Transform()->Get_Pos();
-        _vec2 rectLT{ center.x - WINCX * .5f, WINCY * 0.5f - center.y };
+        _vec3 center = { partPos.x , partPos.y,0.f };
+        _vec2 rectLT{ center.x + WINCX * .5f, WINCY * 0.5f - center.y };
 
         CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Regular",
             L"\"A\" 요리",
@@ -180,7 +260,58 @@ void CUICookingGame::Render_GameObject()
             D3DXCOLOR(1.f, 1.f, 1.f, 1.f));
     }
 
- 
+
+    Stencil();
+
+
+    //// 화살표 렌더 젤 마지막
+m_Curser->Render_GameObject();
+    ////
+
+
+    //m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+    //m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+    //m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+}
+
+void CUICookingGame::Stencil()
+{
+    // 스텐실 초기화
+    m_GraphicDev->SetRenderState(D3DRS_STENCILENABLE, TRUE);
+    m_GraphicDev->Clear(0, NULL, D3DCLEAR_STENCIL, 0, 0, 0);
+    m_GraphicDev->SetRenderState(D3DRS_STENCILFUNC, D3DCMP_ALWAYS);
+    m_GraphicDev->SetRenderState(D3DRS_STENCILREF,1);
+    m_GraphicDev->SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP_REPLACE);
+    m_GraphicDev->SetRenderState(D3DRS_COLORWRITEENABLE, 0); // 색상출력 끄기
+
+    // 마스크 랜더
+
+    m_MaskBuffer->Set_Scale(m_StencilLength*2.f, 100);
+    m_MaskBuffer->Set_Offset(m_StencilPosX- m_TransformCom->Get_Pos().x, 0);
+    m_MaskBuffer->Render_Buffer();
+
+    //
+    //스텐실 안에서만 프린트 되야하는 이미지 출력
+    // 준비
+    m_GraphicDev->SetRenderState(D3DRS_COLORWRITEENABLE,
+        D3DCOLORWRITEENABLE_RED |
+        D3DCOLORWRITEENABLE_GREEN |
+        D3DCOLORWRITEENABLE_BLUE |
+        D3DCOLORWRITEENABLE_ALPHA
+    );// 색상출력 켜기
+
+    m_GraphicDev->SetRenderState(D3DRS_STENCILFUNC, D3DCMP_EQUAL);
+    m_GraphicDev->SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP_KEEP);
+    m_GraphicDev->SetRenderState(D3DRS_STENCILREF, 1);
+
+    // 버퍼 출력
+    m_Buffer_blue->Set_Scale(45.f * 3.5f, 6.f * 3.5f);
+    m_Buffer_blue->Set_Offset(0,0);
+    m_TextureCom->Set_Texture(3);
+    m_Buffer_blue->Render_Buffer();
+
+    // 스텐실 종료
+    m_GraphicDev->SetRenderState(D3DRS_STENCILENABLE, FALSE);
 }
 
 HRESULT CUICookingGame::Add_Component()
@@ -194,19 +325,31 @@ HRESULT CUICookingGame::Add_Component()
     m_TransformCom = CreateProtoComponent<CTransform>(this, COMPONENTTYPE::TRANSFORM);
     NULL_CHECK_RETURN(m_TransformCom, E_FAIL);
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
-    
 
-    m_Buffer_Curser = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
-    NULL_CHECK_RETURN(m_Buffer_Curser, E_FAIL);
-   // m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::RC_TEX, m_Buffer_Curser });
+    m_BufferCom = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
+    NULL_CHECK_RETURN(m_BufferCom, E_FAIL);
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::RC_TEX, m_BufferCom });
 
-    m_Buffer_Area = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
-    NULL_CHECK_RETURN(m_Buffer_Area, E_FAIL);
-    //m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::RC_TEX, m_Buffer_Area });
+    m_Buffer_Deco = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
+    NULL_CHECK_RETURN(m_Buffer_Deco, E_FAIL);
+    //m_Components[ID_STATIC].insert({ COMPONENTTYPE::RC_TEX, m_Buffer_Deco });
+
 
     m_Buffer_keyInfo = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
     NULL_CHECK_RETURN(m_Buffer_keyInfo, E_FAIL);
-    //m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::RC_TEX, m_Buffer_keyInfo });
+    // m_Components[ID_STATIC].insert({ COMPONENTTYPE::RC_TEX, m_Buffer_keyInfo });
+
+    m_Buffer_Info = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
+    NULL_CHECK_RETURN(m_Buffer_Info, E_FAIL);
+    //m_Components[ID_STATIC].insert({ COMPONENTTYPE::RC_TEX, m_Buffer_Info });
+
+    m_Buffer_blue = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
+    NULL_CHECK_RETURN(m_Buffer_blue, E_FAIL);
+    //m_Components[ID_STATIC].insert({ COMPONENTTYPE::RC_TEX, m_Buffer_Info });
+
+    m_MaskBuffer = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
+    NULL_CHECK_RETURN(m_MaskBuffer, E_FAIL);
+    //m_Components[ID_STATIC].insert({ COMPONENTTYPE::RC_TEX, m_Buffer_Info });
 
     return S_OK;
 }
@@ -228,7 +371,14 @@ CUICookingGame* CUICookingGame::Create(DEVICE graphicDev, CGameObject* owner, Re
 void CUICookingGame::Free()
 {
 
+    Safe_Release(m_Buffer_Deco);
+    Safe_Release(m_Buffer_keyInfo);
+    Safe_Release(m_Buffer_blue);
+    Safe_Release(m_MaskBuffer);
+    Safe_Release(m_Buffer_Info);
 
+    Safe_Release(m_ItemIcon);
+    Safe_Release(m_Curser);
 
     CUI::Free();
 }

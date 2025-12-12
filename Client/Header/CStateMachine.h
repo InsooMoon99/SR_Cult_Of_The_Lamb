@@ -14,15 +14,15 @@ public:
     virtual _int    Update_StateMachine(const _float& timeDelta) = 0;
     virtual void    Change_State(_uint dwStateKey) = 0;
 
-    _uint Get_CurStateNum() { return m_dwCurStateKey; }
+    _uint Get_CurStateNum() { return m_CurStateKey; }
 
 protected:
     vector<CBaseState*> m_vecState;
-    CBaseState*         m_pCurState;
+    CBaseState*         m_CurState;
     // CBaseState* m_pPrevState;
 
-    _uint m_dwPrevStateKey;
-    _uint m_dwCurStateKey;
+    _uint m_PrevStateKey;
+    _uint m_CurStateKey;
 
 protected:
     void Free() override;

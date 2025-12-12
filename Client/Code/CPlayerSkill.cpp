@@ -76,7 +76,7 @@ HRESULT CPlayerSkill::Ready_PlayerCombat()
     m_SkillInfo[SKILL_SINGLE].knockbackPower = 50.f;
     m_SkillInfo[SKILL_SINGLE].spawnOffset = 0.8f;
     m_SkillInfo[SKILL_SINGLE].hitboxScale = _vec3(0.6f, 0.6f, 0.6f);
-    m_SkillInfo[SKILL_SINGLE].chargeTime = 0.3f;
+    m_SkillInfo[SKILL_SINGLE].chargeTime = 0.15f;
     // 3발
     m_SkillInfo[SKILL_TRIPLE].state = ACTORSTATE::PLAYER_SKILL_TRIPLE;
     m_SkillInfo[SKILL_TRIPLE].duration = 0.5f;
@@ -84,7 +84,7 @@ HRESULT CPlayerSkill::Ready_PlayerCombat()
     m_SkillInfo[SKILL_TRIPLE].knockbackPower = 50.f;
     m_SkillInfo[SKILL_TRIPLE].spawnOffset = 0.8f;
     m_SkillInfo[SKILL_TRIPLE].hitboxScale = _vec3(0.6f, 0.6f, 0.6f);
-    m_SkillInfo[SKILL_TRIPLE].chargeTime =1.2f;
+    m_SkillInfo[SKILL_TRIPLE].chargeTime =0.6f;
     return S_OK;
 }
 

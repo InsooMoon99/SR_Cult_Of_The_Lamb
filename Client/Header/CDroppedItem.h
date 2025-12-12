@@ -52,7 +52,9 @@ private:
     static CUIWeaponExplain*    m_WeaponExplainUI;
 
     CSpriteEff* m_SpriteEff;
-
+    // 추가
+    Engine::CRcTex* m_Buffer_Cook = nullptr;
+    Engine::CTexture* m_TextureComCook = nullptr;
 public:
     static CDroppedItem* Create(DEVICE graphicDev, ItemInstance itemInst, _vec3 pos);
 
@@ -64,8 +66,9 @@ private:
     ItemInstance m_itemInst;
     int          m_index = 0;
 
-    FOODQUALITY m_foodQuality = FOODQUALITY::NO_FOOD;
+    FOODQUALITY m_foodQuality = FOODQUALITY::BAD;
 
+    float m_ignoreTime = 0;
 private:
     void Free() override;
 };

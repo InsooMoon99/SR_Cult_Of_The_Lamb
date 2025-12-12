@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CBuildingBase.h"
 
+class CCookingController;
 class CUIBuildMenu;
 class CSpriteEff;
 
@@ -35,7 +36,7 @@ private:
 
 public:
     static CWorkBench* Create(DEVICE graphicDev);
-
+   
 private:
     void Free() override;
 
@@ -43,6 +44,7 @@ private:
     bool m_bPlayerOverlap = false;
     bool m_bHovering = false;
 
+    CCookingController* m_CookingController;
     CSpriteEff* m_SpriteEffCom;
     CUIBuildMenu* m_BuildMenu;
 };

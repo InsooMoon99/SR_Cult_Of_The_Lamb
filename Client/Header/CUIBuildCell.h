@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CUI.h"
 
+class CUIBuildMenu;
 class CUIIcon;
 
 enum BUILDITEM
@@ -13,7 +14,7 @@ enum BUILDITEM
 class CUIBuildCell : public CUI
 {
 private:
-    explicit CUIBuildCell(DEVICE pGraphicDev);
+    explicit CUIBuildCell(DEVICE graphicDev);
     explicit CUIBuildCell(const CUIBuildCell& rhs);
     ~CUIBuildCell() override;
 
@@ -38,12 +39,15 @@ public:
     void    Set_TextureIndex(int textureIndex) { m_TextureIndex = textureIndex; }
     void    Set_RecipeId(int recipeId) { m_RecipeId = recipeId; }
     void    Set_OnClick(function<void()> onclick) { m_OnClick = onclick; }
+    void    Set_OnActive(function<bool()> active) { m_IsActive = active; }
+    void     Set_BuildMenu(CUIBuildMenu* buildmenu) { m_BuildMenu = buildmenu; }
     CUIIcon* Get_Icon() { return m_ItemIcon; }
 
 protected:
     void Free() override;
 
 private:
+    CUIBuildMenu*   m_BuildMenu;
     _vec3           m_TargetScale;
     _vec3           m_BaseScale;
     int             m_BuildIndex;
@@ -59,4 +63,5 @@ private:
     int             m_RecipeId;
 
     function<void()> m_OnClick;
+    function<bool()> m_IsActive;
 };
