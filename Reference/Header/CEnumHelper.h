@@ -239,7 +239,20 @@ static const char* ToString(COMPONENTTYPE type)
     case COMPONENTTYPE::TEX_WARNING_CHAIN:   return "TexWarningChain";
     case COMPONENTTYPE::TEX_CHAIN:           return "TexChain";
 
+    
+
+    case COMPONENTTYPE::NPC_INTERACTION_CHECKER:  return "NPCInteractionChecker";
+    case COMPONENTTYPE::NPC_CONTROLLER:           return "NPCController";
+    case COMPONENTTYPE::TEX_COW:                  return "TexCow";
+    case COMPONENTTYPE::TEX_ELEPHANT:             return "TexElephant";
+    case COMPONENTTYPE::TEX_PIG:                  return "TexPig";
+
     case COMPONENTTYPE::COMPONENT_END:       return "ComponentEnd"; // End Marker
+
+    case COMPONENTTYPE::COOKCTRL:
+    case COMPONENTTYPE::TEX_UI_DECO: 
+    case COMPONENTTYPE::TEX_DIALOGUE:
+    case COMPONENTTYPE::TEX_UI_COOK: 
     default:                                 return "UnknownComponent";
     }
 }

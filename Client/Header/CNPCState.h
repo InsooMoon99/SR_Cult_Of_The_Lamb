@@ -4,6 +4,7 @@
 BEGIN(Engine)
 class CTransform;
 class CAnimator;
+class CRigidbody;
 END
 
 class CNPCBase;
@@ -35,6 +36,7 @@ protected:
 
     Engine::CTransform* m_OwnerTransform = nullptr;
     Engine::CAnimator*  m_OwnerAnimator  = nullptr;
+    Engine::CRigidbody* m_OwnerRigidbody = nullptr;
 
     CPlayer*            m_Player          = nullptr;
     Engine::CTransform* m_PlayerTransform = nullptr;

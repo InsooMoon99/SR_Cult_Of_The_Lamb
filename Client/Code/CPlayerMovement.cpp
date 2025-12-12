@@ -162,8 +162,6 @@ void CPlayerMovement::ImpulseMove(const _vec3 dir, _float force)
     m_OwnerRigidbodyCom->Add_Force(dir * force);
 }
 
-// @formatter:off
-
 void CPlayerMovement::ChangeActorDir(const _vec3& dir)
 {
     if (D3DXVec3LengthSq(&dir) <= 0.001f) return;
@@ -211,8 +209,6 @@ _vec3 CPlayerMovement::ActorDirToVec(ACTORDIR dir)
     D3DXVec3Normalize(&vDir, &vDir);
     return vDir;
 }
-
-// @formatter:on
 
 CPlayerMovement* CPlayerMovement::Create(DEVICE graphicDev)
 {

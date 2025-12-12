@@ -4,6 +4,7 @@
 
 #include "CNPCState_Idle.h"
 #include "CNPCState_Run.h"
+#include "CNPCState_Spawn.h"
 
 CNPCStateMachine::CNPCStateMachine()
 { }
@@ -22,20 +23,20 @@ HRESULT CNPCStateMachine::Ready_StateMachine()
         return E_FAIL;
 
     // 초기 상태
-    m_pCurState     = m_vecState[static_cast<_uint>(NPC_STATE::IDLE)];
-    m_dwCurStateKey = static_cast<_uint>(NPC_STATE::IDLE);
-    m_pCurState->Enter();
+    m_CurState     = m_vecState[static_cast<_uint>(NPC_STATE::IDLE)];
+    m_CurStateKey = static_cast<_uint>(NPC_STATE::IDLE);
+    m_CurState->Enter();
 
     return S_OK;
 }
 
 _int CNPCStateMachine::Update_StateMachine(const _float& timeDelta)
 {
-    if (m_pCurState)
+    if (m_CurState)
     {
-        _uint nextState = m_pCurState->Update_State(timeDelta);
+        _uint nextState = m_CurState->Update_State(timeDelta);
 
-        if (nextState != m_dwCurStateKey)
+        if (nextState != m_CurStateKey)
             Change_State(nextState);
     }
 
@@ -44,7 +45,7 @@ _int CNPCStateMachine::Update_StateMachine(const _float& timeDelta)
 
 void CNPCStateMachine::Change_State(_uint dwStateKey)
 {
-    if (m_dwCurStateKey == dwStateKey)
+    if (m_CurStateKey == dwStateKey)
         return;
 
     // 범위 체크 및 nullptr 체크
@@ -52,14 +53,14 @@ void CNPCStateMachine::Change_State(_uint dwStateKey)
         return;
 
     // 기존 상태 정리
-    if (m_pCurState)
-        m_pCurState->Exit();
+    if (m_CurState)
+        m_CurState->Exit();
 
-    m_dwPrevStateKey = m_dwCurStateKey;
-    m_dwCurStateKey  = dwStateKey;
+    m_PrevStateKey = m_CurStateKey;
+    m_CurStateKey  = dwStateKey;
 
-    m_pCurState = m_vecState[dwStateKey];
-    m_pCurState->Enter();
+    m_CurState = m_vecState[dwStateKey];
+    m_CurState->Enter();
 }
 
 CNPCStateMachine* CNPCStateMachine::Create()

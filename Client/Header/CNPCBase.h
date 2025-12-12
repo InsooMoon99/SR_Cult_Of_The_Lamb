@@ -1,6 +1,10 @@
 ﻿#pragma once
 #include "CCharacterBase.h"
 
+BEGIN(Engine)
+class CRigidbody;
+END
+
 class CInteractionChecker;
 class CNPCController;
 
@@ -28,7 +32,12 @@ protected:
     HRESULT Add_Component() override;
     void    Free() override;
 
+public:
+    CInteractionChecker* Get_InteractionChecker() { return m_Checker; }
+    CRigidbody*          Get_Rigidbody() { return m_Rigidbody; }
+
 protected:
-    CInteractionChecker* m_Checker = nullptr;
+    CInteractionChecker* m_Checker       = nullptr;
+    CRigidbody*          m_Rigidbody     = nullptr;
     CNPCController*      m_NPCController = nullptr;
 };

@@ -406,7 +406,7 @@ void CPlayerController::Update_State(const _float& timeDelta)
 
     case ACTORSTATE::DEAD:
     {
-        MSG_BOX("CPlayerController: Player Dead!");
+        //MSG_BOX("CPlayerController: Player Dead!");
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
     }
     break;

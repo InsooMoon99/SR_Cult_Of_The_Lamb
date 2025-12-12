@@ -116,14 +116,14 @@ void CAttackBase::OnBeginOverlap(CCollider* self, CCollider* other)
         const auto& particle = m_AttackData.hitParticle;
 
         // Pos나 Offset에서 랜덤값 줘야 좀 괜찮을듯
-        CParticleHelper::Spawn_Particle(
-            hitterPos,
-            particle.key,
-            particle.frames,
-            particle.interval,
-            particle.scale,
-            particle.offset
-        );
+        //CParticleHelper::Spawn_Particle(
+        //    hitterPos,
+        //    particle.key,
+        //    particle.frames,
+        //    particle.interval,
+        //    particle.scale,
+        //    particle.offset
+        //);
     }
 
     // 데미지를 줬으면, 삭제 요청 -> AttackBuilder에서 세팅

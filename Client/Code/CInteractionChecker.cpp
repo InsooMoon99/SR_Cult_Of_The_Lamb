@@ -30,6 +30,16 @@ void CInteractionChecker::Initialize_Component()
     // 컴포넌트의 초기 동작
 }
 
+_int CInteractionChecker::Update_Component(const _float& timeDelta)
+{
+    return CComponent::Update_Component(timeDelta);
+}
+
+void CInteractionChecker::LateUpdate_Component()
+{
+    CComponent::LateUpdate_Component();
+}
+
 CWorldInteractive* CInteractionChecker::Get_NearestRock(const _vec3& srcPos)
 {
     CScene* curScene = CManagement::GetInstance()->Get_Scene();

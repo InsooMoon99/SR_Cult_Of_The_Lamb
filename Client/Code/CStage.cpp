@@ -9,6 +9,7 @@
 #include "CDroppedItem.h"
 #include "CDropSystem.h"
 #include "CFloaterMonster.h"
+#include "CFollowerCow.h"
 #include "CHarvestableHerb.h"
 #include "CHumanMonster.h"
 #include "CInventory.h"
@@ -53,8 +54,7 @@ CStage::CStage(DEVICE graphicDev)
       m_WeaponEquipCom(nullptr),
       m_PlayerSkillCom(nullptr),
       m_Terrain(nullptr)
-{
-}
+{}
 
 CStage::~CStage()
 { }
@@ -394,8 +394,8 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     tmpTree->Get_Transform()->Set_Pos(10.f, 2.5f, 30.f);
     //
     auto workBench = CWorkBench::Create(m_GraphicDev);
-    m_WorkBench = workBench;
-    
+    m_WorkBench    = workBench;
+
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::BUILDING, workBench),
         L"Add_GameObject(CWorkBench) failed");
@@ -406,6 +406,16 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
         layer->Add_GameObject(OBJTYPE::BUILDING, kitchen),
         L"Add_GameObject(CWorkBench) failed");
 
+    // -----------------------------
+    // Follower
+    // -----------------------------
+    gameObject = CFollowerCow::Create(m_GraphicDev);
+
+    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"Create NPC object has failed")
+
+    FAILED_CHECK_MSG(
+        layer->Add_GameObject(OBJTYPE::NPC, gameObject),
+        L"Add NPC object on layer has failed");
 
     m_Layers.insert({ layerType, layer });
 
@@ -494,7 +504,7 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
 
     CUIBuildMenu* uiBuildMenu = CUIBuildMenu::Create(m_GraphicDev);
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiBuildMenu),
-        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UI_BuildMenu) failed");
+                     L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UI_BuildMenu) failed");
     m_WorkBench->Set_BuildMenu(uiBuildMenu);
 
     m_Layers.insert({ layerType, layer });
