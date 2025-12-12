@@ -57,6 +57,9 @@ public: // --- Getters for Inspector ---
     CPlayerMovement* Get_MovementCom() const { return m_OwnerMovementCom; }
     CPlayerAttack* Get_AttackCom() const { return m_OwnerAttackCom; }
 
+    using   OnRefuseEndCallback = function<void()>;
+    void    Set_OnRefuseEnd(OnRefuseEndCallback callback) { m_OnRefuseEnd = callback; }
+
 private:
     // --- [핵심 로직 파이프라인] ---
     void CheckStateTransition();                 // 상태 전환이 가능한지 판단
@@ -72,6 +75,9 @@ private:
     void Action_TripleSkill(const _float& timeDelta);
     void Action_Construction(const _float& timeDelta);
     void Action_Hit(const _float& timeDetla);
+
+    void Action_Decide(const _float& timeDetla);
+    void Action_Refuse(const _float& timeDetla);
 
     // --- [기타 기능 함수] ---
     _bool Living_Interaction(); // 채집, 건축 등의 상황, CheckStateTransition 내에서 사용
@@ -92,6 +98,8 @@ private:
 #pragma endregion
 
     _float m_Timers[TIMER_END]; // enum값을 통해 사용하는 타이머
+
+    OnRefuseEndCallback m_OnRefuseEnd = nullptr;
 
 public:
     static CPlayerController* Create(DEVICE graphicDev);

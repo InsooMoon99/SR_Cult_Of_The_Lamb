@@ -243,3 +243,24 @@ void CCameraMovement::Free()
 
     CComponent::Free();
 }
+
+_bool CCameraMovement::Check_TransitionComplete(_float threshold)
+{
+    if (!m_IsInTransition || !m_OnTransitionEnd)
+        return false;
+
+    _float distDiff = abs(m_CurrentDistance - m_CamPreset.dist);
+
+    if (distDiff < threshold && m_OnTransitionEnd)
+    {
+        auto callback = m_OnTransitionEnd;
+
+        m_OnTransitionEnd = nullptr;
+        m_IsInTransition = false;  
+
+        callback(); 
+
+        return true;
+    }
+    return false;
+}

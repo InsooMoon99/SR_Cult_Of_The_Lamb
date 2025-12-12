@@ -25,7 +25,9 @@ public:
 
 public:
     // 대화
-    void    Start_Dialogue(const string& dialogueId);
+    void    Start_Dialogue(const string& dialogueId,
+                            const _vec2 boxPos = {0.f, -200.f},
+                            const _vec2& boxSize = {300.f, 150.f});
     void    End_Dialogue();
 
     void    Next_Line();
@@ -38,6 +40,10 @@ public:
     // 대화 종료
     using   OnDialougeEnd = function<void(const string&)>;
     void    Set_OnDialogueEnd(OnDialougeEnd callback) { m_OnDialogueEnd = callback; }
+
+    // 크기 설정
+    void    Set_BoxPos(const _vec2& pos) { m_BoxPos = pos; }
+    void    Set_BoxSize(const _vec2& size) { m_BoxSize = size; }
 
 private:
     HRESULT Add_Component();

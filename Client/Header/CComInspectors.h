@@ -101,22 +101,60 @@ static void State_Inspector(CState* state)
 {
     if (state == nullptr)
         return;
-
-    const char* curState = ToString(state->Get_State());
-    const char* curDir   = ToString(state->Get_Dir());
+    
+    static bool showStateWindow = false;
 
     ImGui::PushID("State_Inspector");
     {
-        // --- State ---
-        ImGui::Text("State : ");
-        ImGui::SameLine();
-        ImGui::TextUnformatted(curState);
+        ImGui::Checkbox("State Debug Window", &showStateWindow);
+        int curStateIdx = static_cast<int>(state->Get_State());
+        static const char* stateNames[] =
+        {
+            "IDLE", "RUN", "ATTACK",
+            "PLAYER_ROLL",
+            "PLAYER_SWORD_COMBO1", "PLAYER_SWORD_COMBO2", "PLAYER_SWORD_COMBO3",
+            "PLAYER_SWORD_HEAVY",
+            "PLAYER_GAUNTLET_COMBO1", "PLAYER_GAUNTLET_COMBO2", "PLAYER_GAUNTLET_COMBO3",
+            "PLAYER_GAUNTLET_HEAVY",
+            "PLAYER_SKILL_CHARGING", "PLAYER_SKILL_SINGLE", "PLAYER_SKILL_TRIPLE",
+            "HIT",
+            "PLAYER_ACTION", "PLAYER_WOOD", "PLAYER_STONE", "PLAYER_BERRY",
+            "PLAYER_WEAPONGET", "PLAYER_HAMMER",
+            "PLAYER_DECIDE", "PLAYER_REFUSE",
+            "DEAD",
+            "STATE_END"
+        };
 
-        // --- Dir ---
+        // 별도 창으로 띄울지 여부
+        if (showStateWindow)
+        {
+            ImGui::Begin("State Debug");
+            {
+                ImGui::Text("State : ");
+                ImGui::SameLine();
+
+                if (ImGui::Combo("##StateCombo", &curStateIdx, stateNames, IM_ARRAYSIZE(stateNames)))
+                {
+                    state->Change_State(static_cast<ACTORSTATE>(curStateIdx));
+                }
+            }
+            ImGui::End();
+        }
+        else
+        {
+            const char* curState = ToString(state->Get_State());
+            ImGui::Text("State : ");
+            ImGui::SameLine();
+            ImGui::TextUnformatted(curState);
+        }
+
+        // Dir 
+        const char* curDir = ToString(state->Get_Dir());
         ImGui::Text("Dir   : ");
         ImGui::SameLine();
         ImGui::TextUnformatted(curDir);
     }
+
     ImGui::PopID();
 }
 

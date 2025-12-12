@@ -53,6 +53,9 @@ public:
 
     _vec3 Get_Center() { return BaseCenter; }
     float Get_Length() { return BaseLength; }
+
+    CBossStateMachine* Get_StateMachine() { return m_StateMachine; }
+
 private:
     _vec3 StartPos = { 48.2f ,3.8f, 57.f };
     _vec3 BaseCenter;

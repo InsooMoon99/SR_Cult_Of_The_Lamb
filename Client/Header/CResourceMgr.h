@@ -28,6 +28,9 @@ public:
     HRESULT Ready_Particle(DEVICE graphicDev);
     HRESULT Ready_Building(DEVICE graphicDev);
     HRESULT Ready_BossP1(DEVICE graphicDev);
+    HRESULT Ready_BossPlayer(DEVICE graphicDev);
+
+public:
     HRESULT Ready_BossP2(DEVICE graphicDev);
     HRESULT Ready_BossP2_Eyeball(DEVICE graphicDev);
     HRESULT Ready_Follower(DEVICE graphicDev);

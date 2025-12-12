@@ -52,7 +52,7 @@ HRESULT CUI_Dialogue::Ready_GameObject()
     m_SpeakerOffset = { -200.f, -30.f };
 
     m_ChoiceStartOffset = { 0.f, 0.f };     
-    m_ChoiceSpacing = 30.f;             
+    m_ChoiceSpacing = 60.f;             
 
     m_IsActive = false;
 
@@ -109,8 +109,11 @@ void CUI_Dialogue::Render_GameObject()
     }
 }
 
-void CUI_Dialogue::Start_Dialogue(const string& dialogueId)
+void CUI_Dialogue::Start_Dialogue(const string& dialogueId, const _vec2 boxPos, const _vec2& boxSize)
 {
+    m_BoxPos = boxPos;
+    m_BoxSize = boxSize;
+
     m_CurrentDialogue = CDialogueDB::GetInstance()->GetDialogueById(dialogueId);
 
     NULL_CHECK(m_CurrentDialogue);
@@ -291,12 +294,30 @@ void CUI_Dialogue::Render_Choices()
     const DialogueLine& line = m_CurrentDialogue->lines[m_CurrentLineIndex];
     const DialogueChoice& choice = line.choice;
 
-    // 기준 스크린 좌표
+    const _float textOffset = 49.f;
+
     _float centerX = m_BoxPos.x + WINCX * 0.5f;
-    _float centerY = WINCY * 0.5f - m_BoxPos.y + m_TextOffset.y;
+    _float centerY = WINCY * 0.5f - m_BoxPos.y + m_TextOffset.y - textOffset;
+
+    // 텍스트 있으면 위쪽에 먼저
+    if (!line.text.empty())
+    {
+        _vec2 textPos = { centerX, centerY };
+
+        wstring dialogueText = CDialogueDB::GetInstance()->Utf8ToWstring(line.text);
+        CFontMgr::GetInstance()->Render_Font(
+            L"NanumSquare_Regular",
+            dialogueText,
+            &textPos,
+            D3DXCOLOR(1.f, 1.f, 1.f, 1.f) 
+        );
+    }
+
+    // 선택지는 텍스트 아래에 나올 수 있도록
+    _float choiceY = centerY + 50.f;
 
     // 왼쪽
-    _vec2 leftPos = { centerX - m_ChoiceSpacing, centerY };
+    _vec2 leftPos = { centerX - m_ChoiceSpacing, choiceY };
     wstring leftText = CDialogueDB::GetInstance()->Utf8ToWstring(choice.leftText);
 
     D3DXCOLOR leftColor = m_SelectedLeft
@@ -305,7 +326,7 @@ void CUI_Dialogue::Render_Choices()
 
     // 선택된 쪽에 화살표 표시 -> 텍스쳐로 변경 예정
     if (m_SelectedLeft)
-        leftText = L"<- " + leftText;
+        leftText = L"[ " + leftText + L" ]";
 
     CFontMgr::GetInstance()->Render_Font(
         L"NanumSquare_Regular",
@@ -315,7 +336,7 @@ void CUI_Dialogue::Render_Choices()
     );
 
     // 오른쪽
-    _vec2 rightPos = { centerX + m_ChoiceSpacing, centerY };
+    _vec2 rightPos = { centerX + m_ChoiceSpacing, choiceY };
 
     wstring rightText = CDialogueDB::GetInstance()->Utf8ToWstring(choice.rightText);
 
@@ -325,7 +346,7 @@ void CUI_Dialogue::Render_Choices()
 
     if (!m_SelectedLeft)
 
-        rightText = L"-> " + rightText;
+        rightText = L"[ " + rightText + L" ]";
     CFontMgr::GetInstance()->Render_Font(
         L"NanumSquare_Regular",
         rightText,
