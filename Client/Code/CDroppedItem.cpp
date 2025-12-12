@@ -20,6 +20,7 @@
 #include "CUIWeaponExplain.h"
 #include "CDInputMgr.h"
 #include "CAnimator.h"
+#include "CParticleHelper.h"
 
 CUIWeaponExplain* CDroppedItem::m_WeaponExplainUI = nullptr;
 
@@ -233,7 +234,7 @@ void CDroppedItem::OnStayOverlap(CCollider* self, CCollider* other)
 
                 //if (animator->Is_AnimationFinished())
                 //    state->Change_State(ACTORSTATE::IDLE);
-
+                DisappearEff();
                 Mark_As_PendingKill();
                 m_WeaponExplainUI->Set_Active(false);
             }
@@ -243,6 +244,7 @@ void CDroppedItem::OnStayOverlap(CCollider* self, CCollider* other)
             CComponent* com = ply->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::INVENTORY);
             if (dynamic_cast<CInventory*>(com)->AddItem(m_itemInst) == true)
             {
+                DisappearEff();
                 //*** 아이템 지우기 ***
                 Mark_As_PendingKill();
             }
@@ -258,6 +260,15 @@ void CDroppedItem::OnEndOverlap(CCollider* self, CCollider* other)
 
     if (m_WeaponExplainUI)
         m_WeaponExplainUI->Set_Active(false);
+}
+
+void CDroppedItem::DisappearEff()
+{
+    // HitEffect_Star
+    CParticleHelper::Spawn_Particle({ m_TransformCom->Get_Pos().x, m_TransformCom->Get_Pos().y + 0.5f, m_TransformCom->Get_Pos().z },
+        L"Pickup_Item",
+        5);
+    
 }
 
 HRESULT CDroppedItem::Add_Component()
@@ -302,6 +313,14 @@ HRESULT CDroppedItem::Add_Component()
 
     m_Buffer_Cook = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
     NULL_CHECK_RETURN(m_Buffer_Cook, E_FAIL);
+    //이건 컴포넌트모음에 안넣고 이 클래스가 관리
+
+
+    // animation
+    //m_AnimationCom = CreateProtoComponent<CAnimator>(this, COMPONENTTYPE::ANIMATOR);
+    //NULL_CHECK_RETURN(m_AnimationCom, E_FAIL);
+    //
+    //m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::ANIMATOR, m_AnimationCom });
 
     return S_OK;
 }

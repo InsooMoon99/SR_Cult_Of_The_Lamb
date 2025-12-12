@@ -485,6 +485,24 @@ HRESULT CResourceMgr::Ready_Monster(DEVICE graphicDev)
         COMPONENTTYPE::TEX_FLOATER_MONSTER, floaterTex)))
         return E_FAIL;
 
+    // 보물상자....
+    CTexture* chest = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(floaterTex, E_FAIL);
+
+    if (FAILED(chest->Add_Texture(L"Chest-reveal", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Chest/Chest-reveal/Chest-reveal%d.png", 57)))
+        return E_FAIL;
+
+    if (FAILED(chest->Add_Texture(L"Chest-open", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Chest/Chest-open/Chest-open%d.png", 50)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_CHEST, chest)))
+        return E_FAIL;
+
+
+
     return S_OK;
 }
 
@@ -1041,6 +1059,10 @@ HRESULT CResourceMgr::Ready_Particle(DEVICE graphicDev)
         return E_FAIL;
 
     // 추가 예정
+
+    if (FAILED(particleTex->Add_Texture(L"Pickup_Item", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Effect/Pickup_Item/Pickup_Item%d.png", 5)))
+        return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PARTICLE, particleTex)))
         return E_FAIL;

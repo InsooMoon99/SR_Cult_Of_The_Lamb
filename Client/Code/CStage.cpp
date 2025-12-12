@@ -49,6 +49,7 @@
 #include "CCookingController.h"
 #include "CCreateHelper.h"
 #include "CUICookingMenu.h"
+#include "CChest.h"
 
 class CUIBuildMenu;
 
@@ -156,28 +157,31 @@ _int CStage::Update_Scene(const _float& timeDelta)
             CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::KITCHEN);
     }
 
-    //// xptmxm dksdmstn
-    //if(CDInputMgr::GetInstance()->KeyDown(DIK_U))
-    //{
-    //   CHarvestableHerb*  tmpObject = CHarvestableHerb::Create(m_GraphicDev, CHarvestableHerb::BERRY::SMALLBERRY);
-    //   NULL_CHECK_RETURN_MSG(tmpObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
+    // xptmxm dksdmstn
+    if(CDInputMgr::GetInstance()->KeyDown(DIK_U))
+    {
+       /*CHarvestableHerb*  tmpObject = CHarvestableHerb::Create(m_GraphicDev, CHarvestableHerb::BERRY::SMALLBERRY);
+       NULL_CHECK_RETURN_MSG(tmpObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
 
-    //       SpawnObjectOnLayer(tmpObject, OBJTYPE::INTERACTIVE);
+           SpawnObjectOnLayer(tmpObject, OBJTYPE::INTERACTIVE);
 
-    //    tmpObject->Get_Transform()->Set_Pos(20.f, 0.6f, 20.f);
+        tmpObject->Get_Transform()->Set_Pos(20.f, 0.6f, 20.f);
 
 
-    //    RecipeInst r{ 4001 ,3,2001 };
+        RecipeInst r{ 4001 ,3,2001 };
 
-    //    CUICookingGame* cook = CUICookingGame::Create(m_GraphicDev, tmpObject, r);
+        CUICookingGame* cook = CUICookingGame::Create(m_GraphicDev, tmpObject, r);
 
-    //    SpawnUIOnLayer(cook, OBJTYPE::UI);
+        SpawnUIOnLayer(cook, OBJTYPE::UI);
 
-    //    cook->Initialize_GameObject();
+        cook->Initialize_GameObject();*/
 
- 
+        CChest* tmp = CChest::Create(m_GraphicDev, { 23,2,23 });
+        tmp->AddItem(1002, 4);
+        tmp->Initialize_GameObject();
+        SpawnObjectOnLayer(tmp, OBJTYPE::INTERACTIVE);
   
-    //}
+    }
 
 
     return exit;

@@ -100,11 +100,7 @@ bool CInventory::AddItem(ItemInstance itemInst)
     {
         if (slot.itemInst.itemId == itemInst.itemId && itemData->stackable == true)
         {
-            //int oldCount = slot.count;
             slot.count++;
-            //int newCount = slot.count - oldCount;
-            AddItemOnMap(slot.itemInst.itemId);
-
 
             // 플레이어 일떄만 UI addItem 이밴트 호출
             if (dynamic_cast<CPlayer*>(m_Owner) != nullptr)
@@ -130,9 +126,7 @@ bool CInventory::AddItem(ItemInstance itemInst)
             else
             {
                 m_vecInven[slot].itemInst = itemInst;
-                //int oldCount = m_vecInven[slot].count;
                 m_vecInven[slot].count++;
-                //int newCount = m_vecInven[slot].count - oldCount;
 
                 AddItemOnMap(m_vecInven[slot].itemInst.itemId);
 
@@ -153,10 +147,8 @@ bool CInventory::AddItem(ItemInstance itemInst)
             else
             {
                 m_vecInven[slot].itemInst = itemInst;
-
-                // int oldCount = m_vecInven[slot].count;
                 m_vecInven[slot].count++;
-                // int newCount =  m_vecInven[slot].count - oldCount;
+
 
                 AddItemOnMap(m_vecInven[slot].itemInst.itemId);
 
@@ -225,7 +217,7 @@ bool CInventory::RemoveItem(int itemID, int count)
                 if (remainCount == 0)
                     return true;
             }
-            else //if (slot.count > count)
+            else
             {
                 slot.count -= remainCount;
                 remainCount = 0;

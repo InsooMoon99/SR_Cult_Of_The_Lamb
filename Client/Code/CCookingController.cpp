@@ -256,11 +256,11 @@ void CCookingController::DropDish(int ResultItemID, FOODQUALITY quality)
 
     // 인자 - DEVICE pGraphicDev, const ItemInstance& item, const _vec3& worldPos,std::optional<_vec3> scale, std::optional<SpriteBounceDesc> bounceDesc
    CDroppedItem* tmpItem =  CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, Startpos, _vec3(0.5f, 0.5f, 0.5f), b);
-
-   if (quality == true)
+   tmpItem->SetFoodQuality(quality);
+ /*  if (quality == true)
        tmpItem->SetFoodQuality(CDroppedItem::FOODQUALITY::GOOD);
    else if(quality == false)
-       tmpItem->SetFoodQuality(CDroppedItem::FOODQUALITY::BAD);
+       tmpItem->SetFoodQuality(CDroppedItem::FOODQUALITY::BAD);*/
 
 
 }
