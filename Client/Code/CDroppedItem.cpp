@@ -80,6 +80,8 @@ void CDroppedItem::Initialize_GameObject()
         m_WeaponExplainUI->Initialize_GameObject();
         CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::UI)->Add_GameObject(OBJTYPE::UI, m_WeaponExplainUI);
    // }
+        m_TransformCom->Set_Scale({ 0.4f, 0.4f, 0.4f });
+        m_BoxColCom->Set_Size(_vec3(2.f, 2.f, 2.f));
 }
 
 _int CDroppedItem::Update_GameObject(const _float& timeDelta)
@@ -150,7 +152,7 @@ void CDroppedItem::Render_GameObject()
         else if (m_foodQuality == FOODQUALITY::GOOD)
         {
 
-            m_TextureComCook->Set_Texture(6);  // 레드
+            m_TextureComCook->Set_Texture(7);  // 레드
         }
         m_Buffer_Cook->Render_Buffer();
     }
