@@ -1,5 +1,7 @@
-﻿#include "pch.h"
+﻿
+#include "pch.h"
 #include "CUICookingMenu.h"
+
 #include "CCookingController.h"
 #include "CTexture.h"
 #include "CRcTex.h"
@@ -19,7 +21,7 @@ CUICookingMenu::CUICookingMenu(DEVICE graphicDev)
     : CUI(graphicDev),
       m_Cols(6),
       m_CellWidth(100.f),
-      m_CellHeight(0)
+      m_CellHeight(100.f)
 {}
 
 CUICookingMenu::~CUICookingMenu() {}
@@ -36,43 +38,43 @@ HRESULT CUICookingMenu::Ready_GameObject()
     m_TransformCom->Set_Scale(450.f, 400.f, 1.f);
     m_TransformCom->Set_Pos(m_ClosedX, 0.f, 0.f);
 
-    m_RecipeIds.resize(6);
+    return S_OK;
+}
 
-    auto Recipes = CRecipeDB::GetInstance()->GetVector();
+void CUICookingMenu::Initialize_GameObject()
+{
+    CUI::Initialize_GameObject();
+    
+   // m_RecipeIds.resize(6);
+    m_CookingController = dynamic_cast<CCookingController*>(CManagement::GetInstance()->Get_Component(ID_DYNAMIC, LAYERTYPE::GAMELOGIC, OBJTYPE::BUILDING, COMPONENTTYPE::COOKCTRL));
 
-    for(auto& id: m_RecipeIds)
-    {
-        id = -1;
-    }
-
-    for (int i = 0; i<3;i++)
-    {
-        m_RecipeIds[i] = Recipes[i].id;
-    }
+    vector<Recipe> recipes = CRecipeDB::GetInstance()->GetVector();
 
     //TEX_ITEM 중 8~10이 요리 텍스처
-    for(int i = 0; i < 6; i++)
+    for (int i = 0; i < 6; i++)
     {
-       auto* cookingCell =  CUICookingCell::Create(m_GraphicDev);
-       cookingCell->Set_CookingMenu(this);
-       int texindex = 0;
+        auto* cookingCell = CUICookingCell::Create(m_GraphicDev);
+        cookingCell->Set_CookingMenu(this);
+        int texindex = 0;
 
-       if (i < 3)
-       {
-           texindex = i + 8;
-           cookingCell->Set_OnClick([this,i]() {m_CookingController->AddRecipe(m_RecipeIds[i], m_Inventory); });
-       }
-       else
-       {
-           texindex = -1;
-       }
-        cookingCell->Set_TextureIndex(texindex);
-       cookingCell->Set_RecipeId(m_RecipeIds[i]);
-       m_CookingCells.push_back(cookingCell);
+        if (i < 3)
+        {
+            int recipeId = recipes[i].id;
+           // texindex = i + 8;
+            cookingCell->Set_OnClick([this, recipeId]() {m_CookingController->AddRecipe(recipeId, m_Inventory); });
+            cookingCell->Set_RecipeId(recipeId);
+        }
+        else
+        {
+            //texindex = -1;
+            cookingCell->Set_RecipeId(-1);
+        }
+       // cookingCell->Set_TextureIndex(texindex);
+        m_CookingCells.push_back(cookingCell);
     }
-	
 
-    for(int i = 0; i<6;i++)
+
+    for (int i = 0; i < 12; i++)
     {
         auto* cookedFoodCell = CUICookedFoodCell::Create(m_GraphicDev);
 
@@ -92,14 +94,9 @@ HRESULT CUICookingMenu::Ready_GameObject()
     m_CancelButton->Set_Text(L"취소");
     m_CancelButton->SetCloneTexAspectScale({ 0.17f, 0.22f, 0.f });
     m_CancelButton->SetOnClick([this]() { PlayCloseAnimation(); m_CookingController->Quit(); });
-   // m_CancelButton->Set_Selected(true);
+    // m_CancelButton->Set_Selected(true);
 
-    return S_OK;
-}
 
-void CUICookingMenu::Initialize_GameObject()
-{
-    CUI::Initialize_GameObject();
 }
 
 _int CUICookingMenu::Update_GameObject(const _float& timeDelta)
@@ -111,39 +108,20 @@ _int CUICookingMenu::Update_GameObject(const _float& timeDelta)
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
     m_Inventory = dynamic_cast<CInventory*>(CManagement::GetInstance()->Get_Component(ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::INVENTORY));
-    m_CookingController = dynamic_cast<CCookingController*>(CManagement::GetInstance()->Get_Component(ID_DYNAMIC, LAYERTYPE::GAMELOGIC, OBJTYPE::BUILDING, COMPONENTTYPE::COOKCTRL));
-    m_RecipeQueue = m_CookingController->Get_Vector();
-    if (!m_RecipeQueue.empty())
-    {
-        for (int i = 0; i < m_CookedFoodCells.size(); i++)
-        {
-            if(i<m_RecipeQueue.size())
-            {
-            m_CookedFoodCells[i]->Set_RecipeId(m_RecipeQueue[i]);
-            }
-            else
-            {
-                m_CookedFoodCells[i]->Set_RecipeId(-1);
-            }
-        }
-        for (int i = m_CookedFoodCells.size(); i < 6; i++)
-        {
-            m_CookedFoodCells[i]->Set_RecipeId(-1);
-        }
-    }
 
-    if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
-    {
-        switch(m_IsOpen)
-        {
-        case true:
-            PlayCloseAnimation();
-            break;
-        case false:
-            PlayOpenAnimation();
-            break;
-        }
-    }
+    vector<int> RecipeQueue = m_CookingController->Get_Vector();
+   
+     for (int i = 0; i < m_CookedFoodCells.size(); i++)
+     {
+         if(i< RecipeQueue.size())
+         {
+            m_CookedFoodCells[i]->Set_RecipeId(RecipeQueue[i]);
+         }
+         else
+         {
+             m_CookedFoodCells[i]->Set_RecipeId(-1);
+         }
+     }
 
     float targetX = m_IsOpen ? m_TargetX : m_ClosedX; //열려있냐 닫혀있냐에 따라서 목표 X값이 달라짐
     _vec3 pos = m_TransformCom->Get_Pos();
@@ -174,7 +152,7 @@ _int CUICookingMenu::Update_GameObject(const _float& timeDelta)
         float recipeOffsetX = offset.x + col * m_CellWidth;
 
         m_CookingCells[i]->Update_GameObject(timeDelta);
-        m_CookingCells[i]->Get_Transform()->Set_Pos(BackPos.x + recipeOffsetX + offset.x, BackPos.y + 130, 0.f);
+        m_CookingCells[i]->Get_Transform()->Set_Pos(BackPos.x + recipeOffsetX + offset.x, BackPos.y + 160, 0.f);
 
         RenderCount++;
     }
@@ -186,11 +164,12 @@ _int CUICookingMenu::Update_GameObject(const _float& timeDelta)
     for (int i = 0; i < cookedCellsSize; i++)
     {
         int col2 = RenderCount2 % m_Cols;
+        int row = i / m_Cols;
         _vec2 offset = { -120.f,0.f };
         float foodOffsetX = offset.x + col2 * m_CellWidth;
-
+        float foodOffsetY = row * m_CellHeight;
         m_CookedFoodCells[i]->Update_GameObject(timeDelta);
-        m_CookedFoodCells[i]->Get_Transform()->Set_Pos(BackPos.x + foodOffsetX + offset.x, BackPos.y - 130, 0.f);
+        m_CookedFoodCells[i]->Get_Transform()->Set_Pos(BackPos.x + foodOffsetX + offset.x, BackPos.y -60 - foodOffsetY, 0.f);
 
         RenderCount2++;
     }
@@ -269,18 +248,18 @@ void CUICookingMenu::Render_GameObject()
     }
 
     _vec3 pos = m_TransformCom->Get_Pos();
-    _vec2 offset = { 225,250.f };
+    _vec2 offset = { 245,250.f };
     _vec2 screen = { WINCX / 2 + pos.x - offset.x, WINCY / 2 - pos.y - offset.y };
 
-    CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Big",
+    CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Large",
         L"레시피",
         &screen,
         D3DXCOLOR{ 0.6f, 0.6f, 0.6f, 0.6f });
 
-    _vec2 offset2 = { 245,40.f };
+    _vec2 offset2 = { 255,-30.f };
     _vec2 screen2 = { WINCX / 2 + pos.x - offset2.x, WINCY / 2 - pos.y + offset2.y };
 
-    CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Big",
+    CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Large",
         L"요리",
         &screen2,
         D3DXCOLOR{ 0.6f, 0.6f, 0.6f, 0.6f });
@@ -340,8 +319,7 @@ void CUICookingMenu::Free()
         Safe_Release(cell);
     }
     m_CookedFoodCells.clear();
-    m_RecipeIds.clear();
-    m_RecipeQueue.clear();
+//    m_RecipeIds.clear();
 
     Safe_Release(m_StartButton);
     Safe_Release(m_CancelButton);

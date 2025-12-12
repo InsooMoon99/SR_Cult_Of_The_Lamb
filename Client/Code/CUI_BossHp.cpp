@@ -55,7 +55,7 @@ _int CUI_BossHp::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+    //CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
     if (!m_Owner)
         return exit;
@@ -94,6 +94,9 @@ void CUI_BossHp::LateUpdate_GameObject(const _float& timeDelta)
 }
 void CUI_BossHp::Render_GameObject()
 {
+    if (m_Invisible)
+        return;
+
     if (!m_Owner || !m_TextureCom)
         return;
 

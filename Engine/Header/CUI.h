@@ -24,7 +24,7 @@ public:
     //! 석호 : Get_ID를 CUI의 자식에서도 사용 가능하도록 가상함수(virtual) 로 바꿈
     // ↑ 확인했으면 지우세요
 
-    void    Set_Visible(_bool visible) { m_Invisible = visible; }
+    void    Set_Visible(_bool visible) { m_Invisible = !visible; }
     _bool   Get_Visible() { return m_Invisible; }
 
 protected:

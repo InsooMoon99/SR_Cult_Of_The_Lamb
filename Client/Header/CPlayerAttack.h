@@ -101,8 +101,8 @@ public:  // --- 동작 명령 함수 (Controller가 호출) ---
     void       Try_NextCombo();                              // 일반공격 콤보 예약 (일반공격 중 클릭시 호출)
     _bool      Update_NormalAttack(const _float& timeDelta); // 일반공격 중 매 프레임 호출. false면 종료
 
-    void  Start_HeavyAttack();                          // 강공격 시작
-    _bool Update_HeavyAttack(const _float& timeDelta);  // 강공격 중 매 프레임 호출. false면 종료
+    void    Start_HeavyAttack();                          // 강공격 시작
+    _bool   Update_HeavyAttack(const _float& timeDelta);  // 강공격 중 매 프레임 호출. false면 종료
 
     void Cancel_Attack(); // 공격이 강제 취소될 때 직접 호출
 

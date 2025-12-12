@@ -41,7 +41,7 @@ _int CBuildingBase::Update_GameObject(const _float& timeDelta)
     _int exit = CRenderObject::Update_GameObject(timeDelta);
 
     if (!m_IsPreview)
-        CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
+        CRenderer::GetInstance()->Add_RenderGroup(RENDER_PRIORITY_ALPHA, this);
 
 
     m_bHovering = Is_Hovering();

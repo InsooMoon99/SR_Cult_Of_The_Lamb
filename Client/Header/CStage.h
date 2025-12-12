@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CScene.h"
 
+class CKitchen;
 class CWorkBench;
 class CInventory;
 class CWeaponEquip;
@@ -57,5 +58,6 @@ private:
     CWorkBench*   m_WorkBench;
     CPlayerSkill* m_PlayerSkillCom;
     CTerrain*     m_Terrain;
+    CKitchen*     m_Kitchen;
 
 };

@@ -10,6 +10,7 @@
 #include "CDroppedItem.h"
 #include "CDropSystem.h"
 #include "CFloaterMonster.h"
+#include "CFollowerCow.h"
 #include "CHarvestableHerb.h"
 #include "CHumanMonster.h"
 #include "CInventory.h"
@@ -58,8 +59,7 @@ CStage::CStage(DEVICE graphicDev)
       m_WeaponEquipCom(nullptr),
       m_PlayerSkillCom(nullptr),
       m_Terrain(nullptr)
-{
-}
+{}
 
 CStage::~CStage()
 { }
@@ -313,12 +313,12 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
         //   그럴 때는 필요한 것만 사용해 .Apply() 하면 된다.
         CCamSetupBuilder(camController)
             .SetTarget(playerTransform)
-            //.PivotOffset({ 0.f, 0.f, 0.f })
-            //.Distance(12.f)
-            //.RotX(45.f)
-            //.RotY(0.f)
-            //.LagSpeed(10.f)
-            //.ZoomSpeed(5.f)
+            .PivotOffset({ 0.f, 0.f, 0.f })
+            .Distance(12.f)
+            .RotX(45.f)
+            .RotY(0.f)
+            .LagSpeed(10.f)
+            .ZoomSpeed(5.f)
             .Snap()
             .Apply();
 
@@ -425,18 +425,28 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     tmpTree->Get_Transform()->Set_Pos(10.f, 2.5f, 30.f);
     //
     auto workBench = CWorkBench::Create(m_GraphicDev);
-    m_WorkBench = workBench;
-    
+    m_WorkBench    = workBench;
+
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::BUILDING, workBench),
         L"Add_GameObject(CWorkBench) failed");
     //
     auto kitchen = CKitchen::Create(m_GraphicDev);
-
+    m_Kitchen = kitchen;
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::BUILDING, kitchen),
         L"Add_GameObject(CWorkBench) failed");
 
+    // -----------------------------
+    // Follower
+    // -----------------------------
+    gameObject = CFollowerCow::Create(m_GraphicDev);
+
+    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"Create NPC object has failed")
+
+    FAILED_CHECK_MSG(
+        layer->Add_GameObject(OBJTYPE::NPC, gameObject),
+        L"Add NPC object on layer has failed");
 
     m_Layers.insert({ layerType, layer });
 
@@ -525,7 +535,7 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
 
     CUIBuildMenu* uiBuildMenu = CUIBuildMenu::Create(m_GraphicDev);
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiBuildMenu),
-        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UI_BuildMenu) failed");
+                     L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UI_BuildMenu) failed");
     m_WorkBench->Set_BuildMenu(uiBuildMenu);
     CCookingController* cookingController = dynamic_cast<CCookingController*>(m_WorkBench->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::COOKCTRL));
     uiBuildMenu->Set_Inventory(m_PlayerInventoryCom);
@@ -537,7 +547,7 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     CUICookingMenu* uiCookingMenu = CUICookingMenu::Create(m_GraphicDev);
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiCookingMenu),
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UI_CookingMenu) failed");
-
+    m_Kitchen->Set_CookingMenu(uiCookingMenu);
     m_Layers.insert({ layerType, layer });
 
     return S_OK;

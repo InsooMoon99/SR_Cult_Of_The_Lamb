@@ -38,6 +38,7 @@ private:
     CUICookingMenu* m_CookingMenu;
     CUIIcon*        m_ItemIcon;
     CUIIcon*        m_CardIcon;
+    //CUIIcon*        m_IngredientIcon;
     CUIIcon*        m_CardItemIcon;
     CUIIcon*        m_Highlight;
 
@@ -47,6 +48,10 @@ private:
 
     _vec3           m_TargetScale;
     _vec3           m_BaseScale;
+
+
+    _vec3           m_ItemTargetScale;
+    _vec3           m_ItemBaseScale;
 
     function<void()> m_OnClick;
     function<bool()> m_IsActive;

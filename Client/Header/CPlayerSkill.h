@@ -104,7 +104,6 @@ private:
 
     _bool     m_SingleSkillEnable;
     _bool     m_TripleSkillEnable;
-
     _bool     m_SingleFired;
     _bool    m_TripleFired{};
 

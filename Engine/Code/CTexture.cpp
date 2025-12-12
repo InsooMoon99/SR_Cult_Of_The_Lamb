@@ -54,6 +54,9 @@ HRESULT CTexture::Ready_Texture(TEXTUREID texType, const wstring& filePath, cons
 
         swprintf_s(fileName, MAX_PATH, filePath.c_str(), i + 1);
 
+         // 동기화 시작
+        EnterCriticalSection(&s_D3DLock);
+
         switch (texType)
         {
         case TEX_NORMAL:
@@ -73,6 +76,8 @@ HRESULT CTexture::Ready_Texture(TEXTUREID texType, const wstring& filePath, cons
         default:
             return E_FAIL;
         }
+
+        LeaveCriticalSection(&s_D3DLock);  // 동기화 완료
 
         m_Textures.push_back(texture);
     }

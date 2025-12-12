@@ -19,16 +19,16 @@ CBossStateMachine::CBossStateMachine(CMonsterBase* owner)
 
 CBossStateMachine::~CBossStateMachine()
 {
-    Free();
+    CBossStateMachine::Free();
 }
 
 HRESULT CBossStateMachine::Ready_StateMachine()
 {
     Ready_BossStates();
 
-    m_pCurState = m_vecState[CBossPhase1::BOSSPHASE1::TALK];
+    m_CurState = m_vecState[CBossPhase1::BOSSPHASE1::TALK];
 
-    m_pCurState->Enter();
+    m_CurState->Enter();
 
     return S_OK;
 }
@@ -36,11 +36,11 @@ HRESULT CBossStateMachine::Ready_StateMachine()
 _int CBossStateMachine::Update_StateMachine(const _float& timeDelta)
 {
     // 씬메니져의 리퀘스트 씬 같은 느낌?
-    if (m_pCurState)
+    if (m_CurState)
     {
-        _uint nextState = m_pCurState->Update_State(timeDelta);
+        _uint nextState = m_CurState->Update_State(timeDelta);
 
-        if (nextState < CBossPhase1::BOSSPHASE1::BOSS_END && nextState != m_dwCurStateKey)
+        if (nextState < CBossPhase1::BOSSPHASE1::BOSS_END && nextState != m_CurStateKey)
         {
             Change_State(nextState);
         }
@@ -51,37 +51,37 @@ _int CBossStateMachine::Update_StateMachine(const _float& timeDelta)
 
 void CBossStateMachine::LateUpdate_StateMachine(const _float& timeDelta)
 {
-    m_pCurState->LateUpdate_State(timeDelta);
+    m_CurState->LateUpdate_State(timeDelta);
 }
 
 void CBossStateMachine::Change_State(_uint changeStateKey)
 {
     // 체인지 씬이랑 비슷한 느낌
 
-    if (m_dwCurStateKey == changeStateKey)
+    if (m_CurStateKey == changeStateKey)
         return; // 이전이랑 같은 상황
 
     if(m_vecState[changeStateKey] == nullptr || changeStateKey >= CBossPhase1::BOSSPHASE1::BOSS_END)
         return; // 인덱스 범위 확인
 
     // 이전 상태 나가기
-    if (m_pCurState)
-       m_pCurState->Exit();
+    if (m_CurState)
+       m_CurState->Exit();
 
     // 이전 상태 등록
-    //m_pPrevState = m_pCurState;
-    m_dwPrevStateKey = m_dwCurStateKey;
-    m_dwCurStateKey = changeStateKey;
+    //m_pPrevState = m_CurState;
+    m_PrevStateKey = m_CurStateKey;
+    m_CurStateKey = changeStateKey;
 
     // 새 상태로 가져오기
-    m_pCurState = m_vecState[changeStateKey];
-    m_pCurState->Enter();
+    m_CurState = m_vecState[changeStateKey];
+    m_CurState->Enter();
 
 }
 
 _int CBossStateMachine::GetCurStateNum()
 {
-    { return m_pCurState->Get_StateKey(); }
+    { return m_CurState->Get_StateKey(); }
 }
 
 HRESULT CBossStateMachine::Ready_BossStates()

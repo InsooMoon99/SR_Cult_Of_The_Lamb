@@ -51,18 +51,13 @@ _int CBossTalk::Update_State(const _float& timeDelta)
     switch (m_ePhase)
     {
     case PHASE::IDLE:
-     
-
         if (CDInputMgr::GetInstance()->Get_DIKeyState(DIK_0))
             m_ePhase = PHASE::TALK;
         break;
 
     case PHASE::TALK://움직임 + idle
-
-       
         if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
         {
-        //cout << "말" << endl;
 
         }
 

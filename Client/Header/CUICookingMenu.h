@@ -27,12 +27,12 @@ public:
     HRESULT Add_Component();
     static CUICookingMenu* Create(DEVICE graphicDev);
 
+    void SetOnDeactivate(function<void()> deactivate) { m_Deactivate = deactivate; }
     void Free() override;
 private:
     vector<CUICookingCell*> m_CookingCells;
     vector<CUICookedFoodCell*> m_CookedFoodCells;
-    vector<int>             m_RecipeIds;
-    vector<int>             m_RecipeQueue;
+    //vector<int>             m_RecipeIds;
     CUIButton*              m_StartButton{};
     CUIButton*              m_CancelButton{};
 
@@ -47,6 +47,8 @@ private:
     int m_Cols;
     int m_CellWidth;
     int m_CellHeight;
+
+    function<void()>    m_Deactivate;
 
 };
 

@@ -77,8 +77,8 @@ _int CCookingController::Update_Component(const _float& timeDelta)
 
             CInventory* inven = dynamic_cast<CInventory*>(m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::INVENTORY));
 
-            miniGame->SetDoneEvent([this]() {m_bDone = true;});
-            miniGame->SetResultItemDrop([this](int _dishID, bool _quality) {DropDish(_dishID, _quality);});
+            miniGame->SetDoneEvent([this]() {m_bDone = true; });
+            miniGame->SetResultItemDrop([this](int _dishID, bool _quality) {DropDish(_dishID, _quality); });
         }
         m_queRecipeInst.front().StockNum--;
 
@@ -97,7 +97,7 @@ _int CCookingController::Update_Component(const _float& timeDelta)
     {
         if (!m_queRecipeInst.empty())
         {
-            
+
             m_bStart = true;
             m_bDone = false;
         }
@@ -135,13 +135,13 @@ void CCookingController::SetUIRecipeSlot(/*Slot* slot,*/ int id, CUIButton* quit
 bool CCookingController::CanCooK(int recipeID, CInventory* playerInven)
 {
 
-    Recipe* recipe =  CRecipeDB::GetInstance()->GetRecipeById(recipeID);
-    for (auto& [ID,Num] : recipe->ingredients)
+    Recipe* recipe = CRecipeDB::GetInstance()->GetRecipeById(recipeID);
+    for (auto& [ID, Num] : recipe->ingredients)
     {
         auto Playeriter = playerInven->GetCountMap().find(ID);
         if (Playeriter == playerInven->GetCountMap().end())
             return false;
-      
+
         if (playerInven->GetCountMap().at(ID) < Num)
             return false;
     }
@@ -173,7 +173,7 @@ bool CCookingController::RemoveRecipe(int slotNum)
 {
     for (auto i = m_vecTmpRecipeID.begin(); i < m_vecTmpRecipeID.end();)
     {
-        if((*i) == slotNum)
+        if ((*i) == slotNum)
         {
             (*i) = 999;
 
@@ -198,18 +198,18 @@ bool CCookingController::ReloadForMiniGame()
         Recipe* r = CRecipeDB::GetInstance()->GetRecipeById(i);
         if (tmpMap.count(i) == 0)
         {
-        RecipeInst inst;
-        inst.RecipeID = id;
-        inst.StockNum = 1;
-        inst.ResultItemID = r->result; //여기에 결과물
+            RecipeInst inst;
+            inst.RecipeID = id;
+            inst.StockNum = 1;
+            inst.ResultItemID = r->result; //여기에 결과물
 
-        tmpMap[i] = inst;
+            tmpMap[i] = inst;
         }
         else
         {
             tmpMap[i].StockNum++;
         }
-        
+
     }
 
     for (auto& it : tmpMap)

@@ -2,7 +2,7 @@
 #include "CStateMachine.h"
 #include "CBaseState.h"
 
-CStateMachine::CStateMachine() :m_pCurState(nullptr),m_dwPrevStateKey(0),m_dwCurStateKey(0)
+CStateMachine::CStateMachine() :m_CurState(nullptr),m_PrevStateKey(0),m_CurStateKey(0)
 {
 }
 

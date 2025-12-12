@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include "CKitchen.h"
-
+#include "CDInputMgr.h"
 #include "CBoxCollider.h"
 #include "CCreateHelper.h"
 #include "CRcTex.h"
@@ -8,14 +8,22 @@
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CCookingController.h"
+#include "CPlayer.h"
 #include "CSpriteEff.h"
+#include "CUICookingMenu.h"
 
 CKitchen::CKitchen(DEVICE graphicDev)
-    : CBuildingBase(graphicDev)
+    : CBuildingBase(graphicDev),
+      m_CookingCtrlCom(nullptr),
+      m_CookingMenu(nullptr),
+      m_bPlayerOverlap(false)
 { }
 
 CKitchen::CKitchen(const CKitchen& rhs)
-    : CBuildingBase(rhs)
+    : CBuildingBase(rhs),
+      m_CookingCtrlCom(nullptr),
+      m_CookingMenu(nullptr),
+      m_bPlayerOverlap(false)
 { }
 
 CKitchen::~CKitchen()
@@ -40,11 +48,26 @@ void CKitchen::Initialize_GameObject()
 
     m_BoxCollCom->Set_RawSize(_vec3(5.f, 5.f, 5.f));
     m_BoxCollCom->Set_CollisionLayer(COLLISION_LAYERTYPE::KITCHEN);
+
 }
 
 _int CKitchen::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CBuildingBase::Update_GameObject(timeDelta);
+
+    if (m_bPlayerOverlap == true)
+    {
+
+        if (CDInputMgr::GetInstance()->MouseDown(DIM_LB))
+        {
+            m_CookingMenu->Set_IsActive(true);
+            m_CookingMenu->PlayOpenAnimation();
+
+            m_Active = true;
+        }
+
+
+    }
 
     return exit;
 }
@@ -147,8 +170,6 @@ void CKitchen::Render_GameObject()
     m_GraphicDev->SetTransform(D3DTS_WORLD, &matWorld);
     m_TextureCom->Set_Texture(3);
 
-
-
     if (!m_IsPreview)
     {
         Render_Setting();
@@ -167,6 +188,7 @@ void CKitchen::Render_GameObject()
 
     if (m_BoxCollCom)
         m_BoxCollCom->Render();
+
 }
 
 void CKitchen::Render_Editor()
@@ -179,6 +201,10 @@ void CKitchen::Render_Editor()
 void CKitchen::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CBuildingBase::OnBeginOverlap(self, other);
+
+    CPlayer* ply = dynamic_cast<CPlayer*>(other->Get_Owner());
+    if (ply)
+        m_bPlayerOverlap = true;
 }
 
 void CKitchen::OnStayOverlap(CCollider* self, CCollider* other)
@@ -190,6 +216,11 @@ void CKitchen::OnStayOverlap(CCollider* self, CCollider* other)
 void CKitchen::OnEndOverlap(CCollider* self, CCollider* other)
 {
     CBuildingBase::OnEndOverlap(self, other);
+
+    CPlayer* ply = dynamic_cast<CPlayer*>(other->Get_Owner());
+
+    if (m_bPlayerOverlap == true && ply != nullptr)
+        m_bPlayerOverlap = false;
 }
 
 HRESULT CKitchen::Add_Component()

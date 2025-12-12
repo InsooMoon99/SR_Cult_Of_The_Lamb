@@ -28,13 +28,13 @@ HRESULT CUICookedFoodCell::Ready_GameObject()
         return E_FAIL;
 
     //셀 크기 지정
-    m_TransformCom->Set_Scale(45.f, 45.f, 0.f);
+    m_TransformCom->Set_Scale(70.f, 70.f, 0.f);
 
     //셀 아이템 그리기용 객체 생성
     m_ItemIcon = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_ITEM); //아이템 텍스처
-    m_ItemIcon->Get_Transform()->Set_Scale(_vec3(30.f, 30.f, 0.f));
+	m_ItemIcon->SetCloneTexAspectScale({ .2f, .2f, 1 });
     m_ItemIcon->SetRegister(false); // 아이템 텍스처 렌더 그룹에 중복 등록되는 것 막기 위한 플래그
-
+	m_ItemIcon->Get_Transform()->Set_Pos(-500.f, -500.f, 0.f);
     return S_OK;
 }
 
@@ -60,19 +60,19 @@ void CUICookedFoodCell::Render_GameObject()
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
-    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(180, 100, 100, 100));
-
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG2);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);   // 무시됨
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
-
-    m_TextureCom->Set_Texture(0);
+    //m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(180, 100, 100, 100));
+	//
+    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG2);
+    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);   // 무시됨
+    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
+	//
+    m_TextureCom->Set_Texture(4);
     m_BufferCom->Render_Buffer();
 
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(255, 255, 255, 255));
-
+    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    //m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(255, 255, 255, 255));
+	//
     if (!(m_RecipeId == -1))
     {
         int TextureIndex = CItemDB::GetInstance()->GetIndexById(CRecipeDB::GetInstance()->GetRecipeById(m_RecipeId)->result);// 여기서 터졌었습
