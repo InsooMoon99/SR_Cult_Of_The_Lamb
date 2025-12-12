@@ -73,7 +73,7 @@ void CUICookingGame::Initialize_GameObject()
 
 //영역 위치 랜덤으로
     m_StencilLength = CRandomMgr::GetInstance()->Get_Int_Random(20, 60);
-    m_StencilPosX = CRandomMgr::GetInstance()->Get_Int_Random((int)(m_TransformCom->Get_Pos().x - m_StencilLength),(int) m_TransformCom->Get_Pos().x + m_StencilLength);
+    m_StencilPosX = CRandomMgr::GetInstance()->Get_Int_Random(int(m_TransformCom->Get_Pos().x - m_StencilLength*.5f),int (m_TransformCom->Get_Pos().x + m_StencilLength*.5f));
     m_StencilLeft = m_StencilPosX - m_StencilLength;
     m_StencilRight = m_StencilPosX + m_StencilLength;
     // 기본 버퍼 크기 생각 해야할듯
@@ -97,7 +97,7 @@ _int CUICookingGame::Update_GameObject(const _float& timeDelta)
 
     if (OnClick == false)
     {
-            m_CurserX += timeDelta * m_Speed;
+         m_CurserX += timeDelta * m_Speed;
         //커서포즈 계속 왓다 갓다
         if (m_CurserX <= m_BaseLeft || m_CurserX >= m_BaseRight)
         {
@@ -113,11 +113,11 @@ _int CUICookingGame::Update_GameObject(const _float& timeDelta)
 
         if (m_CurserX <= m_StencilRight && m_CurserX >= m_StencilLeft)
         {
-            m_result = true;
+            m_result = false;
         }
         else
         {
-            m_result = false;
+            m_result = true;
         }
 
         if (DelayTime > 1.f)
@@ -286,7 +286,7 @@ void CUICookingGame::Stencil()
 
     // 마스크 랜더
 
-    m_MaskBuffer->Set_Scale(m_StencilLength, 100);
+    m_MaskBuffer->Set_Scale(m_StencilLength*2.f, 100);
     m_MaskBuffer->Set_Offset(m_StencilPosX- m_TransformCom->Get_Pos().x, 0);
     m_MaskBuffer->Render_Buffer();
 

@@ -140,11 +140,18 @@ void CDropSystem::SpawnAllFromInven(DEVICE pGraphicDev, CInventory* Inven, _vec3
                     D3DXVec3TransformNormal(&tmpvec, &tmpvec, &matPitch);
                     D3DXVec3Normalize(&tmpvec, &tmpvec);
 
-                    _vec3 Startpos = { ownerPos.x, ownerPos.y/*+1.f*/, ownerPos.z };
+                    float horizontal = 10.f;
+                    float vertical = 40.f;
+
+
+                    _vec3 Startpos = { ownerPos.x, 0.5f, ownerPos.z };
                     //d.pos = ownerPos;
                     d.pos = Startpos;
               
-                    d.velocity = tmpvec * 30;
+                    d.velocity.x = tmpvec.x * horizontal;
+                    d.velocity.z = tmpvec.z * horizontal;
+                    d.velocity.y = vertical;
+
                     d.groundY = .5f;
                     
                     d.gravity = -300.f;
