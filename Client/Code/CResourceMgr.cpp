@@ -10,12 +10,15 @@
 #include "CCameraController.h"
 #include "CCameraMovement.h"
 #include "CCombatStat.h"
+#include "CCookingController.h"
 #include "CEffectBaseCom.h"
 #include "CEnumHelper.h"
 #include "CEyeballController.h"
+#include "CInteractionChecker.h"
 #include "CInventory.h"
 #include "CItemDB.h"
 #include "CMonsterSpawner.h"
+#include "CNPCController.h"
 #include "CPlayerAttack.h"
 #include "CPlayerConstruction.h"
 #include "CPlayerController.h"
@@ -41,8 +44,6 @@
 #include "CWeaponEquip.h"
 #include "ItemData.h"
 #include "ItemInstance.h"
-#include "CCookingController.h"
-#include "CInteractionChecker.h"
 
 IMPLEMENT_SINGLETON(CResourceMgr)
 
@@ -65,6 +66,7 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
     if (FAILED(Ready_Terrain(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Decoration(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Building(graphicDev))) return E_FAIL;
+    if (FAILED(Ready_Follower(graphicDev))) return E_FAIL;
 
     return S_OK;
 }
@@ -1080,11 +1082,15 @@ HRESULT CResourceMgr::Ready_Follower(DEVICE graphicDev)
 {
     auto protoMgr = CProtoMgr::GetInstance();
 
-#pragma region --- Components ---
+#pragma region --- NPC Components ---
 
     // Interaction Checker
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::NPC_INTERACTION_CHECKER, CInteractionChecker::Create(graphicDev))))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::NPC_CONTROLLER, CNPCController::Create(graphicDev))))
         return E_FAIL;
 
 #pragma endregion
@@ -1153,7 +1159,7 @@ HRESULT CResourceMgr::Ready_Follower(DEVICE graphicDev)
         return E_FAIL;
 
     if (FAILED(elephantTex->Add_Texture(L"CowWalkpast", TEX_NORMAL,
-        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Walkpast/Follower-conversations-walkpast-nice%d.png", 86)))
+        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Walkpast/Follower-conversations-walkpast-love%d.png", 86)))
         return E_FAIL;
 
     if (FAILED(elephantTex->Add_Texture(L"CowBuild", TEX_NORMAL,

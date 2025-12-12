@@ -199,12 +199,12 @@ HRESULT CPlayer::Add_Component()
     NULL_CHECK_RETURN(m_PlayerSkillCom, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::PL_SKILL, m_PlayerSkillCom });
 
-    //GTHERING
+    // Gathering
     m_PlayerGatherCom = CreateProtoComponent<CPlayerGathering>(this, COMPONENTTYPE::GATHERING);
     NULL_CHECK_RETURN(m_PlayerGatherCom, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::GATHERING, m_PlayerGatherCom });
 
-    // CONSTRUCTION
+    // Construction
     m_PlayerConstructionCom = CreateProtoComponent<CPlayerConstruction>(this, COMPONENTTYPE::CONSTRUCTION);
     NULL_CHECK_RETURN(m_PlayerConstructionCom, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::CONSTRUCTION, m_PlayerConstructionCom });

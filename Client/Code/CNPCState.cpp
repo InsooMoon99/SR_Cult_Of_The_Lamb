@@ -8,6 +8,7 @@
 #include "CNPCController.h"
 #include "CNPCStateMachine.h"
 #include "CPlayer.h"
+#include "CRigidbody.h"
 #include "CScene.h"
 #include "CTransform.h"
 
@@ -21,9 +22,10 @@ CNPCState::CNPCState(CNPCBase* owner, CNPCStateMachine* stateMachine)
         m_OwnerTransform = m_Owner->Get_Transform();
 
         // Animator는 Controller에 있을 수도 있고 Owner에 있을 수도 있음.
-        // CMonsterController는 m_AnimatorCom을 가지고 있음.
         if (m_Controller)
             m_OwnerAnimator = m_Controller->Get_OwnerAnimator();
+
+        m_OwnerRigidbody = m_Owner->Get_Rigidbody();
     }
 }
 

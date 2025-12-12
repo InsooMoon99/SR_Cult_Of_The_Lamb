@@ -20,11 +20,12 @@ public:
 public:
     HRESULT Ready_Loading(LOADINGID eID);
     _uint   Loading_ForState();
-    _uint   Loading_ForBoss1();  // 보스 전용 로딩
-    _uint   Loading_ForBoss2();  // 보스 전용 로딩
+    _uint   Loading_ForBoss1();     // 보스 전용 로딩
+    _uint   Loading_ForBoss2();     // 보스 전용 로딩
+    _uint   Loading_ForFollower();  // 추종자 NPC 로딩
 
 public:
-    _uint Loading_ForState_Parallel();
+    _uint                         Loading_ForState_Parallel();
     static unsigned int __stdcall Thread_Main(void* pArg);
 
 private:
