@@ -72,10 +72,11 @@ void CUICookingGame::Initialize_GameObject()
     }
 
 //영역 위치 랜덤으로
-    m_StencilLength = CRandomMgr::GetInstance()->Get_Int_Random(50, 100);
+    m_StencilLength = CRandomMgr::GetInstance()->Get_Int_Random(20, 60);
     m_StencilPosX = CRandomMgr::GetInstance()->Get_Int_Random((int)(m_TransformCom->Get_Pos().x - m_StencilLength),(int) m_TransformCom->Get_Pos().x + m_StencilLength);
     m_StencilLeft = m_StencilPosX - m_StencilLength;
     m_StencilRight = m_StencilPosX + m_StencilLength;
+    // 기본 버퍼 크기 생각 해야할듯
 }
 
 _int CUICookingGame::Update_GameObject(const _float& timeDelta)
@@ -98,7 +99,7 @@ _int CUICookingGame::Update_GameObject(const _float& timeDelta)
     {
             m_CurserX += timeDelta * m_Speed;
         //커서포즈 계속 왓다 갓다
-        if (m_CurserX <= m_BaseRight || m_CurserX >= m_BaseLeft)
+        if (m_CurserX <= m_BaseLeft || m_CurserX >= m_BaseRight)
         {
             m_Speed *= -1;
         }
@@ -109,19 +110,22 @@ _int CUICookingGame::Update_GameObject(const _float& timeDelta)
     if (OnClick == true)
     {
         DelayTime += timeDelta;
+
+        if (m_CurserX <= m_StencilRight && m_CurserX >= m_StencilLeft)
+        {
+            m_result = true;
+        }
+        else
+        {
+            m_result = false;
+        }
+
         if (DelayTime > 1.f)
         {
             //위치가 에리어 안이라면
-            if (m_CurserX <= m_StencilRight && m_CurserX >= m_StencilLeft)
-            {
-                m_result = true;
-            }
-            else
-            {
-                m_result = false;
-            }
-           /* m_DoneEvent();
-            m_ResultItemDrop(m_recipeInst.ResultItemID, m_result);*/
+           
+           m_DoneEvent();
+            m_ResultItemDrop(m_recipeInst.ResultItemID, m_result);
 
             Mark_As_PendingKill();
         }
@@ -165,8 +169,8 @@ void CUICookingGame::Render_GameObject()
         const float BG_WIDTH = 45.f * 3.5f;
         const float BG_HEIGHT = 6.f * 3.5f;
 
-        m_BaseLeft = m_TransformCom->Get_Pos().x + (BG_WIDTH/* * .5f*/);
-        m_BaseRight = m_TransformCom->Get_Pos().x - (BG_WIDTH/* * .5f*/);
+        m_BaseRight = m_TransformCom->Get_Pos().x + (BG_WIDTH /** .5f*/);
+        m_BaseLeft = m_TransformCom->Get_Pos().x - (BG_WIDTH /** .5f*/);
 
         m_BufferCom->Set_Scale(BG_WIDTH, BG_HEIGHT);
         m_BufferCom->Set_Offset(0.f, 0.f);

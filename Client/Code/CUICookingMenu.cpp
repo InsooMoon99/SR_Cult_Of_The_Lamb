@@ -111,7 +111,7 @@ _int CUICookingMenu::Update_GameObject(const _float& timeDelta)
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
     m_Inventory = dynamic_cast<CInventory*>(CManagement::GetInstance()->Get_Component(ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::INVENTORY));
-    m_CookingController = dynamic_cast<CCookingController*>(CManagement::GetInstance()->Get_Component(ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::BUILDING, COMPONENTTYPE::COOKCTRL));
+    m_CookingController = dynamic_cast<CCookingController*>(CManagement::GetInstance()->Get_Component(ID_DYNAMIC, LAYERTYPE::GAMELOGIC, OBJTYPE::BUILDING, COMPONENTTYPE::COOKCTRL));
     m_RecipeQueue = m_CookingController->Get_Vector();
     if (!m_RecipeQueue.empty())
     {

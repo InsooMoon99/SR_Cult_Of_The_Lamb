@@ -109,6 +109,7 @@ _int CCookingController::Update_Component(const _float& timeDelta)
             m_bDone = false;
 
            
+
         }
 
     }
@@ -216,7 +217,7 @@ bool CCookingController::ReloadForMiniGame()
         m_queRecipeInst.push(it.second);
     }
 
-
+    m_vecTmpRecipeID.clear(); //대기열 삭제
     return true;
 }
 
@@ -228,7 +229,7 @@ void CCookingController::DropDish(int ResultItemID, bool quality)
     ItemInstance inst{ ResultItemID,-1,0 };
 
 
-    int RandOffSet = CRandomMgr::GetInstance()->Get_Int_Random(360,0); // y 축 회전
+    int RandOffSet = CRandomMgr::GetInstance()->Get_Int_Random(0,360); // y 축 회전
     _vec3 tmpvec = { cos(D3DXToRadian(RandOffSet)),1,sin(D3DXToRadian(RandOffSet)) };
     D3DXVec3Normalize(&tmpvec, &tmpvec);
 
@@ -245,12 +246,13 @@ void CCookingController::DropDish(int ResultItemID, bool quality)
 
 
     // 인자 - DEVICE pGraphicDev, const ItemInstance& item, const _vec3& worldPos,std::optional<_vec3> scale, std::optional<SpriteBounceDesc> bounceDesc
-   CDroppedItem* tmpItem =  CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, m_Owner->Get_Transform()->Get_Pos(), b.pos, b);
+   CDroppedItem* tmpItem =  CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, m_Owner->Get_Transform()->Get_Pos(), _vec3(0.5f, 0.5f, 0.5f), b);
 
-   if (quality = true)
+   if (quality == true)
        tmpItem->SetFoodQuality(CDroppedItem::FOODQUALITY::GOOD);
-   else if(quality = false)
+   else if(quality == false)
        tmpItem->SetFoodQuality(CDroppedItem::FOODQUALITY::BAD);
+
 
 }
 void CCookingController::Quit()
