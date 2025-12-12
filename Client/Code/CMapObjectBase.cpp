@@ -45,8 +45,6 @@ _int CMapObjectBase::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CRenderObject::Update_GameObject(timeDelta);
 
-    if (!m_IsPreview)
-        CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_PRIORITY_ALPHA, this);
 
     return exit;
 }
@@ -54,6 +52,9 @@ _int CMapObjectBase::Update_GameObject(const _float& timeDelta)
 void CMapObjectBase::LateUpdate_GameObject(const _float& timeDelta)
 {
     CRenderObject::LateUpdate_GameObject(timeDelta);
+
+    if (!m_IsPreview)
+        CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_PRIORITY_ALPHA, this);
 }
 
 void CMapObjectBase::Render_GameObject()
@@ -74,7 +75,7 @@ void CMapObjectBase::Render_GameObject()
 
 void CMapObjectBase::Set_Material()
 {
-    //m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
 
     D3DMATERIAL9 material;
 
