@@ -28,13 +28,10 @@ void CNPCController::Initialize_Component()
 
     // StateMachine 생성 및 설정
     // NPC는 개별적으로 StateMachine을 가질 수 있으므로 여기서 생성
-    CNPCStateMachine* stateMachine = CNPCStateMachine::Create();
+    CNPCStateMachine* stateMachine = CNPCStateMachine::Create(dynamic_cast<CNPCBase*>(m_Owner));
 
     if (stateMachine)
     {
-        // Owner 설정 (CNPCBase로 캐스팅)
-        stateMachine->Set_Owner(dynamic_cast<CNPCBase*>(m_Owner));
-        
         Set_StateMachine(stateMachine);
         Safe_Release(stateMachine); // Set_StateMachine에서 AddRef 함
     }

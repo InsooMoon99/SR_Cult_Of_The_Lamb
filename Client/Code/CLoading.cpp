@@ -146,9 +146,9 @@ _uint CLoading::Loading_ForState_Parallel()
     futures.push_back(async(launch::async, [&]() {
         return resourceMgr->Ready_Building(m_GraphicDev);
         }));
-    futures.push_back(async(launch::async, [&]() {
-        return resourceMgr->Ready_Follower(m_GraphicDev);
-        }));
+    //futures.push_back(async(launch::async, [&]() {
+    //    return resourceMgr->Ready_Follower(m_GraphicDev);
+    //    }));
 
     // 병렬 태스크 완료 대기
     for (auto& future : futures)
@@ -179,8 +179,7 @@ unsigned CLoading::Thread_Main(void* pArg)
     switch (pLoading->Get_LoadingID())
     {
     case LOADING_STAGE:
-        iFlag = pLoading->Loading_ForState();
-        //iFlag = pLoading->Loading_ForState_Parallel();
+        iFlag = pLoading->Loading_ForState_Parallel();
         break;
     case LOADING_BOSS1:
         iFlag = pLoading->Loading_ForBoss1();
