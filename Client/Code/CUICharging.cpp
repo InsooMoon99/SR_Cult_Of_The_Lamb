@@ -24,7 +24,7 @@ void CUICharging::Initialize_GameObject()
     CUI::Initialize_GameObject();
 
     m_TransformCom->Set_Scale(1.f, 1.f, 1.f);
-    m_TransformCom->Set_Rotation(_vec3{ D3DXToRadian(30.f), 0.f, 0.f });
+    m_TransformCom->Set_Rotation(_vec3{ D3DXToRadian(20.f), 0.f, 0.f });
 }
 
 int CUICharging::Update_GameObject(const _float& timeDelta)
@@ -35,7 +35,7 @@ int CUICharging::Update_GameObject(const _float& timeDelta)
     {
         CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_ALPHA, this);
 
-        float Length = 2;
+        float Length = 2.5;
         float chargeTime = m_PlayerSkill->Get_ChargeTime();
         float maxChargeTime = m_PlayerSkill->Get_MaxChargeTime();
 

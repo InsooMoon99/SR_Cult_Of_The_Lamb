@@ -722,7 +722,7 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
 
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_CELL, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/UI/Inventory/InventoryIcon_BG%d.png",3))))
+            L"../Bin/Resource/Texture/UI/Inventory/InventoryIcon_BG%d.png",5))))
         return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(
@@ -766,7 +766,7 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
             graphicDev,
             TEX_NORMAL,
             L"../Bin/Resource/Texture/UI/Inventory/RitualCard%d.png",
-            2))))
+            3))))
         return E_FAIL;
 
     CTexture* tarotTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);

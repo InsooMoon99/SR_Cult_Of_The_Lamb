@@ -77,8 +77,8 @@ _int CCookingController::Update_Component(const _float& timeDelta)
 
             CInventory* inven = dynamic_cast<CInventory*>(m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::INVENTORY));
 
-            miniGame->SetDoneEvent([this]() {m_bDone = true;});
-            miniGame->SetResultItemDrop([this](int _dishID, bool _quality) {DropDish(_dishID, _quality);});
+            miniGame->SetDoneEvent([this]() {m_bDone = true; });
+            miniGame->SetResultItemDrop([this](int _dishID, bool _quality) {DropDish(_dishID, _quality); });
         }
         m_queRecipeInst.front().StockNum--;
 
@@ -97,7 +97,7 @@ _int CCookingController::Update_Component(const _float& timeDelta)
     {
         if (!m_queRecipeInst.empty())
         {
-            
+
             m_bStart = true;
             m_bDone = false;
         }
@@ -108,7 +108,7 @@ _int CCookingController::Update_Component(const _float& timeDelta)
             m_bStart = false;
             m_bDone = false;
 
-           
+
         }
 
     }
@@ -134,13 +134,13 @@ void CCookingController::SetUIRecipeSlot(/*Slot* slot,*/ int id, CUIButton* quit
 bool CCookingController::CanCooK(int recipeID, CInventory* playerInven)
 {
 
-    Recipe* recipe =  CRecipeDB::GetInstance()->GetRecipeById(recipeID);
-    for (auto& [ID,Num] : recipe->ingredients)
+    Recipe* recipe = CRecipeDB::GetInstance()->GetRecipeById(recipeID);
+    for (auto& [ID, Num] : recipe->ingredients)
     {
         auto Playeriter = playerInven->GetCountMap().find(ID);
         if (Playeriter == playerInven->GetCountMap().end())
             return false;
-      
+
         if (playerInven->GetCountMap().at(ID) < Num)
             return false;
     }
@@ -172,7 +172,7 @@ bool CCookingController::RemoveRecipe(int slotNum)
 {
     for (auto i = m_vecTmpRecipeID.begin(); i < m_vecTmpRecipeID.end();)
     {
-        if((*i) == slotNum)
+        if ((*i) == slotNum)
         {
             (*i) = 999;
 
@@ -192,22 +192,23 @@ bool CCookingController::ReloadForMiniGame()
     unordered_map<int, RecipeInst> tmpMap;// 포인터로 하면 new 해 줘야해서 그냥 객체로 ㄱㄱ
     for (auto& id : m_vecTmpRecipeID)
     {
+
         int i = id;
         Recipe* r = CRecipeDB::GetInstance()->GetRecipeById(i);
         if (tmpMap.count(i) == 0)
         {
-        RecipeInst inst;
-        inst.RecipeID = id;
-        inst.StockNum = 1;
-        inst.ResultItemID = r->result; //여기에 결과물
+            RecipeInst inst;
+            inst.RecipeID = id;
+            inst.StockNum = 1;
+            inst.ResultItemID = r->result; //여기에 결과물
 
-        tmpMap[i] = inst;
+            tmpMap[i] = inst;
         }
         else
         {
             tmpMap[i].StockNum++;
         }
-        
+
     }
 
     for (auto& it : tmpMap)
@@ -215,6 +216,7 @@ bool CCookingController::ReloadForMiniGame()
         m_queRecipeInst.push(it.second);
     }
 
+    m_vecTmpRecipeID.clear();
 
     return true;
 }
@@ -227,7 +229,7 @@ void CCookingController::DropDish(int ResultItemID, bool quality)
     ItemInstance inst{ ResultItemID,-1,0 };
 
 
-    int RandOffSet = CRandomMgr::GetInstance()->Get_Int_Random(360,0); // y 축 회전
+    int RandOffSet = CRandomMgr::GetInstance()->Get_Int_Random(360, 0); // y 축 회전
     _vec3 tmpvec = { cos(D3DXToRadian(RandOffSet)),1,sin(D3DXToRadian(RandOffSet)) };
     D3DXVec3Normalize(&tmpvec, &tmpvec);
 
@@ -244,12 +246,12 @@ void CCookingController::DropDish(int ResultItemID, bool quality)
 
 
     // 인자 - DEVICE pGraphicDev, const ItemInstance& item, const _vec3& worldPos,std::optional<_vec3> scale, std::optional<SpriteBounceDesc> bounceDesc
-   CDroppedItem* tmpItem =  CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, m_Owner->Get_Transform()->Get_Pos(), b.pos, b);
+    CDroppedItem* tmpItem = CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, m_Owner->Get_Transform()->Get_Pos(), b.pos, b);
 
-   if (quality = true)
-       tmpItem->SetFoodQuality(CDroppedItem::FOODQUALITY::GOOD);
-   else if(quality = false)
-       tmpItem->SetFoodQuality(CDroppedItem::FOODQUALITY::BAD);
+    if (quality = true)
+        tmpItem->SetFoodQuality(CDroppedItem::FOODQUALITY::GOOD);
+    else if (quality = false)
+        tmpItem->SetFoodQuality(CDroppedItem::FOODQUALITY::BAD);
 
 }
 void CCookingController::Quit()

@@ -32,8 +32,7 @@ public:
 private:
     vector<CUICookingCell*> m_CookingCells;
     vector<CUICookedFoodCell*> m_CookedFoodCells;
-    vector<int>             m_RecipeIds;
-    vector<int>             m_RecipeQueue;
+    //vector<int>             m_RecipeIds;
     CUIButton*              m_StartButton{};
     CUIButton*              m_CancelButton{};
 
