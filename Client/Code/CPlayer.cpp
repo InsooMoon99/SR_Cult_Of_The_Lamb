@@ -92,7 +92,7 @@ void CPlayer::Initialize_GameObject()
     m_PlayerAttackCom->Init_OwnerComponent();
 
     m_PlayerSkillCom->Init_OwnerComponent();
-    // m_PlayerConstructionCom->Init_OwnerComponent(); // Construction doesn't have Init_Owner logic yet, but safe to add if base has it or we add it later
+    //m_PlayerConstructionCom->Init_OwnerComponent(); // Construction doesn't have Init_Owner logic yet, but safe to add if base has it or we add it later
 }
 
 _int CPlayer::Update_GameObject(const _float& timeDelta)

@@ -68,11 +68,36 @@ _uint CLoading::Loading_ForBoss1()
 {
     auto start = chrono::high_resolution_clock::now();
 
+	// 이제 보스 1,2 동시에 로딩
+	
     m_LoadingText = L"Boss Loading...";
     auto resourceMgr = CResourceMgr::GetInstance();
 
-    if (FAILED(resourceMgr->Ready_BossP1(m_GraphicDev)))
-        return E_FAIL;
+    vector<future<HRESULT>> futures;
+
+    futures.push_back(async(launch::async, [&]() {
+        return resourceMgr->Ready_BossP1(m_GraphicDev);
+        }));
+
+    futures.push_back(async(launch::async, [&]() {
+        return resourceMgr->Ready_BossP2(m_GraphicDev);
+        }));
+
+    futures.push_back(async(launch::async, [&]() {
+        return resourceMgr->Ready_BossP2_Eyeball(m_GraphicDev);
+        }));
+
+    // 병렬 태스크 완료 대기
+    for (auto& future : futures)
+    {
+        if (FAILED(future.get()))
+            return E_FAIL;
+    }
+
+	// 로딩 시간 체크
+	auto end = chrono::high_resolution_clock::now();
+	auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
+	OutputDebugString((L"Loading Time: " + to_wstring(duration.count()) + L"ms\n").c_str());
 
     m_IsFinish = true;
 

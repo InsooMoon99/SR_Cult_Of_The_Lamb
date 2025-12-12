@@ -144,7 +144,6 @@ void CTerrainRenderer::Render_TerrainRenderer()
     if (m_BufferCom == nullptr || m_TextureCom284 == nullptr || m_TransformCom == nullptr)
         return;
 
-
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
     m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
@@ -153,6 +152,8 @@ void CTerrainRenderer::Render_TerrainRenderer()
     m_GraphicDev->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_NONE);
     m_GraphicDev->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
     m_GraphicDev->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
+
+    Set_Material();
 
     // 알파블렌딩 안켜주면 투명타일 검은색으로 나옴
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
@@ -210,6 +211,7 @@ void CTerrainRenderer::Render_TerrainRenderer()
 
 
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
 }
 
 void CTerrainRenderer::Render_Editor()
@@ -801,4 +803,18 @@ void CTerrainRenderer::Free()
     Safe_Release(m_BufferCom);
 
     CComponent::Free();
+}
+
+void CTerrainRenderer::Set_Material()
+{
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
+
+    D3DMATERIAL9 material;
+    ZeroMemory(&material, sizeof(D3DMATERIAL9));
+
+    material.Diffuse = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
+    material.Ambient = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
+    material.Specular = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
+
+    m_GraphicDev->SetMaterial(&material);
 }

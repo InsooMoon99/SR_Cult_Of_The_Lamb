@@ -96,6 +96,10 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].particle.interval = 0.03f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].particle.scale    = _vec3(1.5f, 1.5f, 1.5f);
 
+    // 인수 : HitStop은 일단 각 무기 1타에만 넣어놓을게요
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitStopDuration = 0.01f;   // 0.01초 동안
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitStopScale = 0.3f;       // 30%로 슬로우
+
     // 2타
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].state            = ACTORSTATE::PLAYER_SWORD_COMBO2;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].duration         = 0.02f * 38;
@@ -163,6 +167,9 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].particle.frames   = 14;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].particle.interval = 0.03f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].particle.scale    = _vec3(1.5f, 1.5f, 1.5f);
+
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].hitStopDuration = 0.01f;   
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].hitStopScale = 0.3f;       
 
     //2타
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].state            = ACTORSTATE::PLAYER_GAUNTLET_COMBO2;
@@ -539,6 +546,7 @@ void CPlayerAttack::Create_AttackObj(const AttackInfo& attackInfo, const _vec3& 
                   attackInfo.particle.interval,
                   attackInfo.particle.scale,
                   attackInfo.particle.offset)
+        .HitStop(attackInfo.hitStopDuration, attackInfo.hitStopScale)
         // 모든 설정을 마치고 생성
         .Spawn();
 

@@ -173,6 +173,7 @@ xcopy /Y /I "$(SolutionDir)Engine\Header\*.*" "$(SolutionDir)Reference\Header\"<
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>true</EnableUAC>
+      <AdditionalDependencies>d3d9.lib;d3dx9.lib;dxguid.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y /I "$(SolutionDir)Engine\Bin\Engine.dll" "$(SolutionDir)Client\Bin\"

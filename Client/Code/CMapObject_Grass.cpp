@@ -13,7 +13,7 @@ CMapObject_Grass::CMapObject_Grass(const CMapObjectBase& rhs)
 
 CMapObject_Grass::~CMapObject_Grass()
 { }
-
+ 
 HRESULT CMapObject_Grass::Ready_GameObject()
 {
     if (FAILED(Add_BaseComponent(COMPONENTTYPE::TEX_GRASS)))

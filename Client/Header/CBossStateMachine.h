@@ -24,6 +24,8 @@ public:
     //CBaseState* Get_PrevState() { return  m_pPrevState; }
     _uint Get_PrevStateKey() { return  m_PrevStateKey; }
 
+    CMonsterState* Get_State(_uint stateKey);
+
 private:
     CMonsterBase* m_pOwner;
 

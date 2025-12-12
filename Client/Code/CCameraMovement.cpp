@@ -125,6 +125,8 @@ _bool CCameraMovement::Update_TargetMode(const _float& timeDelta)
     NULL_CHECK_RETURN(m_TransformCom, false);
     NULL_CHECK_RETURN(m_TargetTransformCom, false);
 
+    Update_DynamicTargetMode(timeDelta);
+
     // 피벗 위치 계산
     _vec3 targetPos = m_TargetTransformCom->Get_Pos() + m_CamPreset.pivotOffset;
 
@@ -263,4 +265,38 @@ _bool CCameraMovement::Check_TransitionComplete(_float threshold)
         return true;
     }
     return false;
+}
+
+void CCameraMovement::Update_DynamicTargetMode(const _float& timeDelta)
+{
+    if (m_UseDynamicDistance && m_SecondTargetTransform)
+    {
+        _vec3 playerPos = m_TargetTransformCom->Get_Pos();
+        _vec3 bossPos = m_SecondTargetTransform->Get_Pos();
+
+        _vec3 vecDistance = (bossPos - playerPos);
+        _float distance = D3DXVec3Length(&vecDistance);
+
+        // 거리 비율 계산
+        _float ratio = Engine::Clamp(
+            (distance - m_PlayerDistMin) / (m_PlayerDistMax - m_PlayerDistMin), 0.f, 1.f);
+
+        // 카메라 거리 보간
+        m_CamPreset.dist = m_DynamicCamDistMin + ratio * (m_DynamicCamDistMax - m_DynamicCamDistMin);
+    }
+}
+
+void CCameraMovement::Set_DynamicDistanceParams(_float camMin, _float camMax, _float distMin, _float distMax)
+{
+    m_DynamicCamDistMin = camMin;
+    m_DynamicCamDistMax = camMax;
+
+    m_PlayerDistMin = distMin;
+    m_PlayerDistMax = distMax;
+}
+
+void CCameraMovement::Disable_DynamicDistance()
+{
+    m_UseDynamicDistance = false;
+    m_SecondTargetTransform = nullptr;
 }

@@ -26,11 +26,12 @@ public:
                               COMPONENTTYPE componentType);
 
 public:
-    virtual HRESULT Ready_Scene();
-    virtual void    Initialize_Scene();
-    virtual _int    Update_Scene(const _float& timeDelta);
-    virtual void    LateUpdate_Scene(const _float& timeDelta);
-    virtual void    Render_Scene() PURE;
+    virtual HRESULT     Ready_Scene();
+    virtual void        Initialize_Scene();
+    virtual _int        Update_Scene(const _float& timeDelta);
+    virtual void        LateUpdate_Scene(const _float& timeDelta);
+    virtual void        Render_Scene() PURE;
+    virtual HRESULT     Ready_Light();
 
     void AddObjectOnLayer(LAYERTYPE layerType, CGameObject* obj, OBJTYPE objType);
 

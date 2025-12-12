@@ -1,5 +1,7 @@
 ﻿#pragma once
+
 #include "CGameObject.h"
+#include "CRenderObject.h"
 
 class CTerrain;
 
@@ -25,7 +27,7 @@ typedef struct tagMapData
 
 } MapObjectData;
 
-class CMapObjectBase : public CGameObject
+class CMapObjectBase : public CRenderObject
 {
 protected:
     explicit CMapObjectBase(DEVICE graphicDev);
@@ -60,13 +62,12 @@ public:
 
 protected:
     HRESULT Add_BaseComponent(COMPONENTTYPE InType);
+    void    Render_Setting() override;
 
 protected:
     void Free() override;
 
 protected:
-    CRcTex*     m_BufferCom;
-    CTransform* m_TransformCom;
     CTexture*   m_TextureCom;
 
     _bool m_AttachTerrain;

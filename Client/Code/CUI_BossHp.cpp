@@ -55,7 +55,7 @@ _int CUI_BossHp::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
 
-    //CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
     if (!m_Owner)
         return exit;

@@ -318,13 +318,16 @@ void CUICookingMenu::Free()
     {
         Safe_Release(cell);
     }
+
     m_CookedFoodCells.clear();
-//    m_RecipeIds.clear();
+    // m_RecipeIds.clear();
 
     Safe_Release(m_StartButton);
     Safe_Release(m_CancelButton);
-    Safe_Release(m_Inventory);
-    Safe_Release(m_CookingController);
+
+    m_Inventory = nullptr;          
+    m_CookingController = nullptr;  
+
     CUI::Free();
 }
 
