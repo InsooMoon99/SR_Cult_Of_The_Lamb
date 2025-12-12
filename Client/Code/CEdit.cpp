@@ -42,6 +42,9 @@ HRESULT CEdit::Ready_Scene()
     if (FAILED(Ready_UI_Layer(LAYERTYPE::UI)))
         return E_FAIL;
 
+    if (FAILED(Ready_Light()))
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -60,6 +63,12 @@ void CEdit::LateUpdate_Scene(const _float& timeDelta)
 void CEdit::Render_Scene()
 {
     // debug 용
+}
+
+HRESULT CEdit::Ready_Light()
+{
+    return CScene::Ready_Light();
+
 }
 
 HRESULT CEdit::Ready_Environment_Layer(LAYERTYPE layerType)

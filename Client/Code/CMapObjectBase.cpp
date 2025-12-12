@@ -31,7 +31,14 @@ CMapObjectBase::~CMapObjectBase()
 
 HRESULT CMapObjectBase::Ready_GameObject()
 {
+    // 여기에 Light?
     return S_OK;
+}
+
+void CMapObjectBase::Initialize_GameObject()
+{
+    CRenderObject::Initialize_GameObject();
+
 }
 
 _int CMapObjectBase::Update_GameObject(const _float& timeDelta)
@@ -58,10 +65,28 @@ void CMapObjectBase::Render_GameObject()
 
     Render_Setting();
 
-    m_TextureCom->Set_Texture(m_TextureIndex);
+    m_TextureCom->Set_Texture(m_TextureIndex); 
     m_BufferCom->Render_Buffer();
 
-    Render_Reset(); 
+    Render_Reset();
+
+}
+
+void CMapObjectBase::Set_Material()
+{
+    //m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
+
+    D3DMATERIAL9 material;
+
+    ZeroMemory(&material, sizeof(D3DMATERIAL9));
+
+    material.Diffuse  = COLOR(1.f, 1.f, 1.f, 1.f);
+    material.Ambient  = COLOR(1.f, 1.f, 1.f, 1.f);
+    material.Specular = COLOR(1.f, 1.f, 1.f, 1.f);
+    material.Emissive = COLOR(0.f, 0.f, 0.f, 1.f);
+    material.Power = 0.f;
+
+    m_GraphicDev->SetMaterial(&material);
 }
 
 void CMapObjectBase::Set_WorldPos(const _vec3& pos)
@@ -96,8 +121,7 @@ void CMapObjectBase::Render_Setting()
 {
     CRenderObject::Render_Setting();
 
-    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);  
-    Set_Material(); 
+    
 }
 
 void CMapObjectBase::Free()

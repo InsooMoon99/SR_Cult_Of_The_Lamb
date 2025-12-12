@@ -12,6 +12,7 @@ public:
     _int    Update_Scene(const _float& timeDelta) override;
     void    LateUpdate_Scene(const _float& timeDelta) override;
     void    Render_Scene() override;
+    HRESULT Ready_Light() override;
 
 private:
     HRESULT Ready_Environment_Layer(LAYERTYPE layerType);
