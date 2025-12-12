@@ -2,6 +2,7 @@
 
 #include "CScene.h"
 
+class CUI_BossHp;
 class CTerrain;
 class CUI_Dialogue;
 class CCameraController;
@@ -19,7 +20,7 @@ class CStage_Boss1 : public CScene
 {
 private:
     explicit CStage_Boss1(DEVICE graphicDev);
-    ~CStage_Boss1() override;
+    virtual ~CStage_Boss1() override;
 
 public:
     HRESULT Ready_Scene() override;
@@ -27,6 +28,8 @@ public:
     _int    Update_Scene(const _float& timeDelta) override;
     void    LateUpdate_Scene(const _float& timeDelta) override;
     void    Render_Scene() override;
+
+    HRESULT Ready_Light() override;
 
 public:
     using   OnTriggerCallback = function<void()>;
@@ -41,6 +44,7 @@ private:
 
     void    Begin_PlayerDecide();
     void    Move_PlayerUI(const _float timeDelta);
+    void    Move_BossUI(const _float timeDelta);
 
     void    Hide_PlayerUI();
     void    Show_PlayerUI();
@@ -51,11 +55,22 @@ private:
     void    End_CutScene();
 
     // 대화 끝났을 때 호출
-    void    On_BossStartEnd();    
-    void    On_SacrificeEnd();    
+    void    On_BossStartEnd();
+    void    On_SacrificeEnd();
     void    On_RejectEnd();
+    void    On_DeadEnd();
 
+    // 보스 스테이지 1 기본 카메라 세팅
     void    Reset_Cam();
+
+    // 보스 거리 비례해서 카메라 세팅
+    void    Setup_DynamicCam();
+
+    // 콜백 설정 함수들
+    void    Setup_TriggerCallbacks();
+    void    Setup_DialogueCallbacks();
+    void    Setup_BossCallbacks();
+    void    Setup_PlayerCallbacks();
 
 public:
     static CStage_Boss1* Create(DEVICE graphicDev);
@@ -80,12 +95,15 @@ private:
 
     vector<CUI*>        m_Player_UI;
 
+    CUI_BossHp*         m_BossHpbar;
+
 private:
     _bool               m_IsUIMoving = false;
+    _bool               m_IsBossUIMoving = false;
     _bool               m_IsUIShowing = false;
 
     _float              m_UIAnimTime = 0.f;
-    _float              m_UIAnimDuration = 0.5f;
+    _float              m_UIAnimDuration = 0.75f;
 
     vector<_vec3>       m_OriginalUIPositions;
     vector<_vec3>       m_TargetUIPositions;

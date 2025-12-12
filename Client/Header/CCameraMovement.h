@@ -166,8 +166,9 @@ public:
 private:
     void Free() override;
 
+#pragma region 카메라 연출
+
 public:
-    // 카메라 연출용
     using OnTransitionEnd = function<void()>;
     void  Set_OnTransitionEnd(OnTransitionEnd callback) { m_OnTransitionEnd = callback; }
 
@@ -179,6 +180,33 @@ public:
     }
 
 private:
-    _bool m_IsInTransition = false;  // 연출 중인지?
+    _bool           m_IsInTransition = false;  // 연출 중인지?
     OnTransitionEnd m_OnTransitionEnd = nullptr;
+
+public:
+    void        Update_DynamicTargetMode(const _float& timeDelta);
+    void        Set_SecondTarget(CTransform* transform) { m_SecondTargetTransform = transform; }
+    void        Set_DynamicDistanceParams(_float camMin, _float camMax, _float distMin, _float distMax);
+
+    void        Enable_DynamicDistance(_bool enable) { m_UseDynamicDistance = enable; }
+    void        Disable_DynamicDistance();
+
+private:
+    // 거리 비교해서 카메라 Distance 조절
+    CTransform* m_SecondTargetTransform = nullptr;
+    _bool       m_UseDynamicDistance = false;
+
+    // 카메라 거리 최소, 최대치
+    _float      m_DynamicCamDistMin = 12.f;
+    _float      m_DynamicCamDistMax = 22.f;
+
+    // 플레이어 - 보스 거리 범위
+    _float      m_PlayerDistMin = 5.f;
+    _float      m_PlayerDistMax = 20.f;
+
+
+#pragma endregion
+
+    
 };
+

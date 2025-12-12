@@ -14,12 +14,15 @@ typedef struct tagAttackData
     _float knockback;  // 넉백량
     _float duration;   // 넉백 유지 시간(필요하면 사용 ㄱㄱ)
 
+    _float hitStopDuration;
+    _float hitStopScale;
+
     PARTICLEDATA hitParticle;
 
     tagAttackData()
         : damage(0.f),
           knockback(0.f),
-          duration(0.f)   
+          duration(0.f), hitStopDuration(0), hitStopScale(0)
     {
     }
 } ATTACKDATA;
@@ -73,14 +76,14 @@ public:
     void    LateUpdate_Component() override;
 
 public:
-    _float Get_Attack() { return m_Attack; }
-    _float Get_AttackSpeed() { return m_AttackSpeed; }
-    _float Get_Hp() { return m_Hp; }
-    _float Get_MaxHp() { return m_MaxHp; }
-    _float Get_Mp() { return m_Mp; }
-    _float Get_Speed() { return m_Speed; }
-    _float Get_MaxMp() { return m_MaxMp; }
-    _int   Get_CurrentCharges() { return m_CurrentCharges; }
+    _float  Get_Attack() { return m_Attack; }
+    _float  Get_AttackSpeed() { return m_AttackSpeed; }
+    _float  Get_Hp() { return m_Hp; }
+    _float  Get_MaxHp() { return m_MaxHp; }
+    _float  Get_Mp() { return m_Mp; }
+    _float  Get_Speed() { return m_Speed; }
+    _float  Get_MaxMp() { return m_MaxMp; }
+    _int    Get_CurrentCharges() { return m_CurrentCharges; }
 
     //  아이템용
     _vec3   Get_Dir() { return m_DirForItem; }

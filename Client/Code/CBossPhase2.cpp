@@ -32,8 +32,7 @@ HRESULT CBossPhase2::Ready_GameObject()
     m_CombatStatCom->Set_MaxHp(1000.f);
     m_CombatStatCom->Set_HitState(false); // Hit State로 변경할건지
 
-    m_TransformCom->Set_Pos(67.1f, 6.8f, 50.f);
-    m_TransformCom->Set_Scale(_vec3(15.f, 7.4f, 3.f));
+    m_TransformCom->Set_Scale(_vec3(13.7f, 6.3f, 3.f));
 
     m_BoxColCom->Set_Size(_vec3(1.2f, 1.6f, 1.f));
     m_BoxColCom->Set_Offset(_vec3(0.f, -2.1f, 0.f));

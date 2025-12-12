@@ -54,6 +54,8 @@ void CRenderObject::Render_GameObject()
     // 렌더 설정
     Render_Setting();
 
+    Set_Material();
+
     // 버퍼 렌더링
     if (m_BufferCom)
         m_BufferCom->Render_Buffer();
@@ -86,6 +88,8 @@ void CRenderObject::Render_Setting()
     m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
     m_GraphicDev->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
     m_GraphicDev->SetRenderState(D3DRS_ALPHAREF, 0);
+
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
 }
 
 void CRenderObject::Render_Reset()
@@ -93,6 +97,23 @@ void CRenderObject::Render_Reset()
     m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
     m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
+}
+
+void CRenderObject::Set_Material()
+{
+    D3DMATERIAL9 material;
+
+    ZeroMemory(&material, sizeof(D3DMATERIAL9));
+
+    material.Diffuse = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
+    material.Ambient = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);  
+    material.Specular = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
+    material.Emissive = D3DXCOLOR(0.f, 0.f, 0.f, 1.f);
+    material.Power = 0.f;
+
+    m_GraphicDev->SetMaterial(&material);
 }
 
 void CRenderObject::Free()

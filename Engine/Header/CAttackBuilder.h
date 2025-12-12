@@ -164,6 +164,14 @@ public:
         return *this;
     }
 
+    CAttackBuilder& HitStop(_float duration, _float scale = 0.f)
+    {
+        m_AttackData.hitStopDuration = duration;
+        m_AttackData.hitStopScale = scale;
+
+        return *this;
+    }
+
     void Spawn()
     {
         NULL_CHECK(m_AttackObj);

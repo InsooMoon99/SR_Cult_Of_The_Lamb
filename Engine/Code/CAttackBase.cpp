@@ -5,6 +5,7 @@
 #include "CCreateHelper.h"
 #include "CParticleHelper.h"
 #include "CRenderer.h"
+#include "CTimerMgr.h"
 #include "CTransform.h"
 
 CAttackBase::CAttackBase(DEVICE graphicDev)
@@ -109,6 +110,15 @@ void CAttackBase::OnBeginOverlap(CCollider* self, CCollider* other)
     hit.hitter   = hitter;
 
     combat->Take_Damage(hit);
+
+    // HitStop
+    if (m_AttackData.hitStopDuration > 0.f)
+    {
+        CTimerMgr::GetInstance()->Start_HitStop(
+            m_AttackData.hitStopDuration,
+            m_AttackData.hitStopScale
+        );
+    }
 
     // 파티클 있는지 확인
     if (m_AttackData.hitParticle.IsValid())

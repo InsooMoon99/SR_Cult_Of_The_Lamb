@@ -18,11 +18,11 @@
 #include "CCameraController.h"
 #include "CCamSetupBuilder.h"
 #include "CUI_BossHp.h"
+#include "CLightMgr.h"
 
 CStage_Boss2::CStage_Boss2(DEVICE graphicDev)
-    : Engine::CScene(graphicDev), m_Terrain(nullptr)
+    : Engine::CScene(graphicDev), m_Terrain(nullptr), m_Boss(nullptr)
 {
-
 }
 
 CStage_Boss2::~CStage_Boss2()
@@ -39,7 +39,10 @@ HRESULT CStage_Boss2::Ready_Scene()
     if (FAILED(Ready_UI_Layer(LAYERTYPE::UI)))
         return E_FAIL;
 
-    //아이템 드롭 할거면 씬 셋팅 필수
+    if (FAILED(Ready_Light()))
+        return E_FAIL;
+
+    // 아이템 드롭을 위한 씬 세팅 Eyeball 죽일 때마다 체력 아이템 떨구기 ?
     CDropSystem::GetInstance()->SetCurrentScene(this);
 
     return S_OK;
@@ -50,8 +53,7 @@ void CStage_Boss2::Initialize_Scene()
     CScene::Initialize_Scene();
 
     if (m_Terrain)
-        m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Boss2.map");
-
+        m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Boss1.map");
 
 }   
 
@@ -158,13 +160,15 @@ HRESULT CStage_Boss2::Ready_GameLogic_Layer(LAYERTYPE layerType)
     const auto chunSikTrans = gameObject->Get_Transform();
     NULL_CHECK_RETURN(chunSikTrans, E_FAIL);
 
-    chunSikTrans->Set_Pos(_vec3(27.f, 3.1f, 18.f));
+    chunSikTrans->Set_Pos(_vec3(37.f, 3.1f, 38.f));
 
     layer->Add_GameObject(OBJTYPE::NPC, gameObject);
 
     // 보스 소환
     m_Boss = CBossPhase2::Create(m_GraphicDev);
     NULL_CHECK_RETURN(m_Boss, E_FAIL);
+
+    m_Boss->Get_Transform()->Set_Pos(_vec3(48.f, 5.7f, 58.3f));
 
     layer->Add_GameObject(OBJTYPE::BOSS2, m_Boss);
 
@@ -189,6 +193,26 @@ HRESULT CStage_Boss2::Ready_UI_Layer(LAYERTYPE layerType)
     layer->Add_GameObject(OBJTYPE::UI, gameObject);
 
     m_Layers.insert({ layerType, layer });
+
+    return S_OK;
+}
+
+HRESULT CStage_Boss2::Ready_Light()
+{
+    D3DLIGHT9 lightInfo;
+    ZeroMemory(&lightInfo, sizeof(D3DLIGHT9));
+
+    lightInfo.Type = D3DLIGHT_DIRECTIONAL;  // 방향성 조명
+
+    // 일단 조금 빨간 톤으로 만들어보기
+    lightInfo.Diffuse = COLOR(1.f, 0.3f, 0.3f, 1.f);
+    lightInfo.Specular = COLOR(1.f, 0.5f, 0.5f, 1.f);
+    lightInfo.Ambient = COLOR(0.4f, 0.1f, 0.1f, 1.f);
+
+    lightInfo.Direction = { 1.f, -1.f, 1.f };
+
+    if (FAILED(CLightMgr::GetInstance()->Ready_Light(m_GraphicDev, &lightInfo, 0)))
+        return E_FAIL;
 
     return S_OK;
 }

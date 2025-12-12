@@ -122,6 +122,21 @@ void CFont::Render_FontOutlined(const wstring& text,
     m_Sprite->End();
 }
 
+void CFont::Render_FontWrapped(const wstring& text, const RECT& boxRect, D3DXCOLOR color)
+{
+    m_Sprite->Begin(D3DXSPRITE_ALPHABLEND);
+    RECT rc = boxRect;
+    m_Font->DrawTextW(
+        m_Sprite,
+        text.c_str(),
+        static_cast<int>(text.length()),
+        &rc,
+        DT_LEFT | DT_WORDBREAK, // 자동 줄바꿈
+        color
+    );
+    m_Sprite->End();
+}
+
 CFont* CFont::Create(DEVICE         graphicDev,
                      const wstring& fontType,
                      const _uint&   width,

@@ -48,6 +48,12 @@ public:
         D3DXCOLOR      outlineColor,
         int            thickness);
 
+    void Render_FontWrapped(
+        const wstring& fontTag,
+        const wstring& text,
+        const RECT& boxRect,
+        D3DXCOLOR color);
+
 private:
     CFont* Find_Font(const wstring& fontTag);
 

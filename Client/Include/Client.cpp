@@ -94,6 +94,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE     hInstance,
             {
                 CTimerMgr::GetInstance()->Set_TimeDelta(L"Timer_FPS60");
 
+                _float realDelta = CTimerMgr::GetInstance()->Get_RealTimeDelta();
+                CTimerMgr::GetInstance()->Update_HitStop(realDelta);
+
                 _float fTimer_FPS60 = CTimerMgr::GetInstance()->Get_TimeDelta(L"Timer_FPS60");
 
                 if (CMainEditorMgr::GetInstance()->IsPlaying())

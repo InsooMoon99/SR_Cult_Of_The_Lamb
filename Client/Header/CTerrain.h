@@ -49,7 +49,9 @@ public:
     void Spawn_Monsters(CLayer* layer);
 
 private:
-    HRESULT Add_Component();
+    HRESULT Add_Component() override;
+    void    Set_Material() override;
+    void    Render_Setting() override;
 
 public:
     static CTerrain* Create(DEVICE GraphicDev);

@@ -75,6 +75,10 @@ HRESULT CStage::Ready_Scene()
     if (FAILED(Ready_UI_Layer(LAYERTYPE::UI)))
         return E_FAIL;
 
+    if (FAILED(Ready_Light()))
+        return E_FAIL;
+
+
     // 안은수 test
     CDropSystem::GetInstance()->SetCurrentScene(this);
 
@@ -151,8 +155,6 @@ _int CStage::Update_Scene(const _float& timeDelta)
         else
             CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::KITCHEN);
     }
-
-
 
     //// xptmxm dksdmstn
     //if(CDInputMgr::GetInstance()->KeyDown(DIK_U))
@@ -440,13 +442,13 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     // -----------------------------
     // Follower
     // -----------------------------
-    gameObject = CFollowerCow::Create(m_GraphicDev);
-
+    /*gameObject = CFollowerCow::Create(m_GraphicDev);
+    
     NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"Create NPC object has failed")
-
+    
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::NPC, gameObject),
-        L"Add NPC object on layer has failed");
+        L"Add NPC object on layer has failed");*/
 
     m_Layers.insert({ layerType, layer });
 
@@ -556,6 +558,13 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
 HRESULT CStage::Ready_Prototype()
 {
     return S_OK;
+}
+
+HRESULT CStage::Ready_Light()
+{
+    return CScene::Ready_Light();
+
+
 }
 
 void CStage::Create_Trigger()

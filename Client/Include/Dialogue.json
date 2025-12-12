@@ -59,6 +59,24 @@
           "hasChoices": false
         }
       ]
+    },
+    {
+      "dialogueId": "Boss1_Dead",
+      "speaker": "기다리는 자",
+      "lines": [
+        {
+          "lineIndex": 0,
+          "speaker": "기다리는 자",
+          "text": "내가 쓰러졌다고 생각했느냐? 그게 나라는 존재의 모든 것이라고 생각했느냐?",
+          "hasChoices": false
+        },
+        {
+          "lineIndex": 1,
+          "speaker": "기다리는 자",
+          "text": "스스로 신을 넘어설 수 있다고 생각했느냐?",
+          "hasChoices": false
+        }
+      ]
     }
   ]
 }

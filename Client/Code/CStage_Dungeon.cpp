@@ -50,6 +50,9 @@ HRESULT CStage_Dungeon::Ready_Scene()
     if (FAILED(Ready_UI_Layer(LAYERTYPE::UI)))
         return E_FAIL;
 
+    if (FAILED(Ready_Light()))
+        return E_FAIL;
+
     // BGM Test
     // CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Intro.wav", 0.5f);
 
@@ -158,6 +161,12 @@ void CStage_Dungeon::LateUpdate_Scene(const _float& timeDelta)
 void CStage_Dungeon::Render_Scene()
 {
     
+}
+
+HRESULT CStage_Dungeon::Ready_Light()
+{
+    return CScene::Ready_Light();
+
 }
 
 void CStage_Dungeon::Spawn_Weapon()

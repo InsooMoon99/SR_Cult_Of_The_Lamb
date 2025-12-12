@@ -35,6 +35,8 @@ private:
 
     HRESULT Ready_Prototype();
 
+    HRESULT Ready_Light() override;
+
 private:
     // 마을 -> 던전 씬 전환용 트리거
     void Create_Trigger();
