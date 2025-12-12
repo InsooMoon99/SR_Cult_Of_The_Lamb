@@ -230,6 +230,7 @@ void CTree::KnockBackEff(const _float& timeDelta)
         m_KockBackTimer = 0.1f;
         m_OnDamage      = false;
         LerpTime        = 0.f;
+        m_MovedPos = { 0.f,0.f, 0.f };
     }
 }
 

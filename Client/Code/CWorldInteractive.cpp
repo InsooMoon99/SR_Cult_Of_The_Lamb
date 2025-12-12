@@ -65,9 +65,9 @@ _int CWorldInteractive::Update_GameObject(const _float& timeDelta)
             if (m_bInvenDropped == false)
             {
             // 플레이어 위치
-            _vec3 DropPos = m_CombatStatCom->Get_Dir();
+            _vec3 DropDir = m_CombatStatCom->Get_Dir();
             int offset = 40; //
-            CDropSystem::GetInstance()->SpawnAllFromInven(m_GraphicDev, m_InventoryCom, DropPos, offset);
+            CDropSystem::GetInstance()->SpawnAllFromInven(m_GraphicDev, m_InventoryCom, DropDir, offset);
             m_bHovering = false;
             m_BoxColCom->Set_CollisionActive(false);
 

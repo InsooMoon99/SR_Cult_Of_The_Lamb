@@ -179,6 +179,7 @@ unsigned CLoading::Thread_Main(void* pArg)
     switch (pLoading->Get_LoadingID())
     {
     case LOADING_STAGE:
+        //iFlag = pLoading->Loading_ForState();
         iFlag = pLoading->Loading_ForState_Parallel();
         break;
     case LOADING_BOSS1:

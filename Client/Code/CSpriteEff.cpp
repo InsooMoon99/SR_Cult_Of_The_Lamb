@@ -176,6 +176,53 @@ bool CSpriteEff::OutLineEff(Engine::CRcTex* m_BufferCom)
     return false;
 }
 
+bool CSpriteEff::OutLineEffMTRX(D3DXMATRIX partWorld, Engine::CRcTex* m_BufferCom)
+{
+    if (m_IsSetOutLineInit == true)
+    {
+
+        //m_TransformCom = m_Owner->Get_Transform();
+
+        //_vec3 OriginPos = m_TransformCom->Get_Pos();
+
+        //D3DXMATRIX originWorld = m_TransformCom->Get_World();
+
+
+        _vec3 partPos = { partWorld._41,partWorld._42,partWorld._43 };
+        for (int i = 0; i < 8; i++)
+        {
+            // 2. 오프셋 벡터를 행렬에 곱하여 로컬 회전을 적용합니다.
+            _vec3 RotatedOffset;
+            D3DXVec3TransformNormal(&RotatedOffset, &DIR8[i], &partWorld); // 회전/스케일만 적용
+            //
+            _vec3 tmpPos = partPos + RotatedOffset;
+            //
+            D3DXMATRIX tempWorld = partWorld;
+            tempWorld._41 = tmpPos.x;
+            tempWorld._42 = tmpPos.y;
+            tempWorld._43 = tmpPos.z;
+
+            m_GraphicDev->SetTransform(D3DTS_WORLD, &tempWorld);
+
+            FlashRenderStart(D3DCOLOR_ARGB(255, 255, 255, 255));// AGRB
+            if (m_BufferCom)
+                m_BufferCom->Render_Buffer();
+        }
+
+        FlashRenderEnd();
+
+
+        m_GraphicDev->SetTransform(D3DTS_WORLD, &partWorld);
+
+        if (m_BufferCom)
+            m_BufferCom->Render_Buffer();
+
+        return true;
+    }
+
+    return false;
+}
+
 CSpriteEff* CSpriteEff::Create(DEVICE graphicDev)
 {
     auto SpriteEff = new CSpriteEff(graphicDev);

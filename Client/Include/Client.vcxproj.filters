@@ -791,6 +791,15 @@
     <ClInclude Include="..\Header\CTree.h">
       <Filter>03. GameObject\09. MapObject\02. Crafting</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CUICookingMenu.h">
+      <Filter>05. UI\01. UI\11. UICooking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUICookingCell.h">
+      <Filter>05. UI\01. UI\11. UICooking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUICookedFoodCell.h">
+      <Filter>헤더 파일</Filter>
+          </ClInclude>
     <ClInclude Include="..\Header\CInteractionChecker.h">
       <Filter>03. GameObject\11. NPC\98. Components\00. Interaction Checker</Filter>
     </ClInclude>
@@ -1246,6 +1255,15 @@
     <ClCompile Include="..\Code\CTree.cpp">
       <Filter>03. GameObject\09. MapObject\02. Crafting</Filter>
     </ClCompile>
+    <ClCompile Include="..\Code\CUICookingMenu.cpp">
+      <Filter>05. UI\01. UI\11. UICooking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUICookingCell.cpp">
+      <Filter>05. UI\01. UI\11. UICooking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUICookedFoodCell.cpp">
+      <Filter>소스 파일</Filter>
+     </ClCompile>
     <ClCompile Include="..\Code\CInteractionChecker.cpp">
       <Filter>03. GameObject\11. NPC\98. Components\00. Interaction Checker</Filter>
     </ClCompile>

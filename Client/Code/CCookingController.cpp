@@ -77,8 +77,8 @@ _int CCookingController::Update_Component(const _float& timeDelta)
 
             CInventory* inven = dynamic_cast<CInventory*>(m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::INVENTORY));
 
-            miniGame->SetDoneEvent([this]() {m_bDone = true;});
-            miniGame->SetResultItemDrop([this](int _dishID, bool _quality) {DropDish(_dishID, _quality);});
+            miniGame->SetDoneEvent([this]() {m_bDone = true; });
+            miniGame->SetResultItemDrop([this](int _dishID, bool _quality) {DropDish(_dishID, _quality); });
         }
         m_queRecipeInst.front().StockNum--;
 
@@ -97,7 +97,7 @@ _int CCookingController::Update_Component(const _float& timeDelta)
     {
         if (!m_queRecipeInst.empty())
         {
-            
+
             m_bStart = true;
             m_bDone = false;
         }
@@ -109,6 +109,7 @@ _int CCookingController::Update_Component(const _float& timeDelta)
             m_bDone = false;
 
            
+
         }
 
     }
@@ -134,26 +135,23 @@ void CCookingController::SetUIRecipeSlot(/*Slot* slot,*/ int id, CUIButton* quit
 bool CCookingController::CanCooK(int recipeID, CInventory* playerInven)
 {
 
-
-    Recipe* recipe =  CRecipeDB::GetInstance()->GetRecipeById(recipeID);
-    for (auto& [ID,Num] : recipe->ingredients)
+    Recipe* recipe = CRecipeDB::GetInstance()->GetRecipeById(recipeID);
+    for (auto& [ID, Num] : recipe->ingredients)
     {
         auto Playeriter = playerInven->GetCountMap().find(ID);
         if (Playeriter == playerInven->GetCountMap().end())
             return false;
-      
+
         if (playerInven->GetCountMap().at(ID) < Num)
             return false;
     }
-    
     //playerInven->Get_Cnt
-
     return true;
 }
 
 bool CCookingController::AddRecipe(int id, CInventory* playerInven)
 {
-    if (m_vecTmpRecipeID.size() > invenSlotNum)
+    if (m_vecTmpRecipeID.size() < invenSlotNum)
     {
         // 대기열 등록
         m_vecTmpRecipeID.push_back(id);
@@ -165,7 +163,6 @@ bool CCookingController::AddRecipe(int id, CInventory* playerInven)
             playerInven->RemoveItem(ItemID, Num);
         }
 
-
         return true;
     }
 
@@ -176,7 +173,7 @@ bool CCookingController::RemoveRecipe(int slotNum)
 {
     for (auto i = m_vecTmpRecipeID.begin(); i < m_vecTmpRecipeID.end();)
     {
-        if((*i) == slotNum)
+        if ((*i) == slotNum)
         {
             (*i) = 999;
 
@@ -198,19 +195,21 @@ bool CCookingController::ReloadForMiniGame()
     {
 
         int i = id;
+        Recipe* r = CRecipeDB::GetInstance()->GetRecipeById(i);
         if (tmpMap.count(i) == 0)
         {
-        RecipeInst inst;
-        inst.RecipeID = id;
-        inst.StockNum = 1;
+            RecipeInst inst;
+            inst.RecipeID = id;
+            inst.StockNum = 1;
+            inst.ResultItemID = r->result; //여기에 결과물
 
-        tmpMap[i] = inst;
+            tmpMap[i] = inst;
         }
         else
         {
             tmpMap[i].StockNum++;
         }
-        
+
     }
 
     for (auto& it : tmpMap)
@@ -218,7 +217,7 @@ bool CCookingController::ReloadForMiniGame()
         m_queRecipeInst.push(it.second);
     }
 
-
+    m_vecTmpRecipeID.clear(); //대기열 삭제
     return true;
 }
 
@@ -230,14 +229,23 @@ void CCookingController::DropDish(int ResultItemID, bool quality)
     ItemInstance inst{ ResultItemID,-1,0 };
 
 
-    int RandOffSet = CRandomMgr::GetInstance()->Get_Int_Random(360,0); // y 축 회전
+    int RandOffSet = CRandomMgr::GetInstance()->Get_Int_Random(0,360); // y 축 회전
     _vec3 tmpvec = { cos(D3DXToRadian(RandOffSet)),1,sin(D3DXToRadian(RandOffSet)) };
     D3DXVec3Normalize(&tmpvec, &tmpvec);
 
-    SpriteBounceDesc b;
-    b.pos = m_Owner->Get_Transform()->Get_Pos();
+    float horizontal = 20.f;
+    float vertical = 40.f;
 
-    b.velocity = tmpvec * 30;
+
+    _vec3 Startpos = { m_Owner->Get_Transform()->Get_Pos().x, 0.5f, m_Owner->Get_Transform()->Get_Pos().z };
+    SpriteBounceDesc b;
+    b.pos = Startpos;
+
+
+    b.velocity.x = tmpvec.x * horizontal;
+    b.velocity.z = tmpvec.z * horizontal;
+    b.velocity.y = vertical;
+
     b.groundY = .5f;
     // 중력
     b.gravity = -300.f;
@@ -247,13 +255,23 @@ void CCookingController::DropDish(int ResultItemID, bool quality)
 
 
     // 인자 - DEVICE pGraphicDev, const ItemInstance& item, const _vec3& worldPos,std::optional<_vec3> scale, std::optional<SpriteBounceDesc> bounceDesc
-   CDroppedItem* tmpItem =  CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, m_Owner->Get_Transform()->Get_Pos(), b.pos, b);
+   CDroppedItem* tmpItem =  CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, Startpos, _vec3(0.5f, 0.5f, 0.5f), b);
 
-   if (quality = true)
+   if (quality == true)
        tmpItem->SetFoodQuality(CDroppedItem::FOODQUALITY::GOOD);
-   else if(quality = false)
+   else if(quality == false)
        tmpItem->SetFoodQuality(CDroppedItem::FOODQUALITY::BAD);
 
+
+}
+void CCookingController::Quit()
+{
+    m_vecTmpRecipeID.clear(); // int 라서 그냥 클리어 해도 되는듯
+
+    if (!m_queRecipeInst.empty())
+    {
+        m_queRecipeInst.pop();// 이건 안에 new 한거 아니라서 따로지우지는 않고  clear 없으니까 pop을 하나하나 지워야힘
+    }
 }
 
 CCookingController* CCookingController::Create(DEVICE graphicDev)
@@ -279,11 +297,6 @@ void CCookingController::Free()
 {
     CComponent::Free();
 
-    m_vecTmpRecipeID.clear(); // int 라서 그냥 클리어 해도 되는듯
-
-    if (!m_queRecipeInst.empty())
-    {
-        m_queRecipeInst.pop();// 이건 안에 new 한거 아니라서 따로지우지는 않고  clear 없으니까 pop을 하나하나 지워야힘
-    }
+    Quit();
 
 }

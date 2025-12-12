@@ -30,6 +30,9 @@ public:
     bool BounceEff(const _float& timeDelta);
     bool OutLineEff(Engine::CRcTex* m_BufferCom);
 
+    bool OutLineEffMTRX(D3DXMATRIX originWorld, Engine::CRcTex* m_BufferCom);
+
+
 public:// 함수로만 호출 가능 한 애들
 // 플레시 알파 이팩트 함수
     void FlashRenderStart(DWORD color);// AGRB

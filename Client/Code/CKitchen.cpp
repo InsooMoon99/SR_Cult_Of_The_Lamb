@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include "CKitchen.h"
-
+#include "CDInputMgr.h"
 #include "CBoxCollider.h"
 #include "CCreateHelper.h"
 #include "CRcTex.h"
@@ -8,13 +8,22 @@
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CCookingController.h"
+#include "CPlayer.h"
+#include "CSpriteEff.h"
+#include "CUICookingMenu.h"
 
 CKitchen::CKitchen(DEVICE graphicDev)
-    : CBuildingBase(graphicDev)
+    : CBuildingBase(graphicDev),
+      m_CookingCtrlCom(nullptr),
+      m_CookingMenu(nullptr),
+      m_bPlayerOverlap(false)
 { }
 
 CKitchen::CKitchen(const CKitchen& rhs)
-    : CBuildingBase(rhs)
+    : CBuildingBase(rhs),
+      m_CookingCtrlCom(nullptr),
+      m_CookingMenu(nullptr),
+      m_bPlayerOverlap(false)
 { }
 
 CKitchen::~CKitchen()
@@ -32,18 +41,33 @@ void CKitchen::Initialize_GameObject()
 {
     CBuildingBase::Initialize_GameObject();
 
-    m_TransformCom->Set_Pos(20.f, 1.f, 20.f);
+    m_TransformCom->Set_Pos(20.f, 1.f, 15.f);
 
     m_TransformCom->Set_Scale(1.f, 1.f, 1.f);
     m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(40.f));
 
-    m_BoxCollCom->Set_RawSize(_vec3(3.f, 3.f, 3.f));
+    m_BoxCollCom->Set_RawSize(_vec3(5.f, 5.f, 5.f));
     m_BoxCollCom->Set_CollisionLayer(COLLISION_LAYERTYPE::KITCHEN);
+
 }
 
 _int CKitchen::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CBuildingBase::Update_GameObject(timeDelta);
+
+    if (m_bPlayerOverlap == true)
+    {
+
+        if (CDInputMgr::GetInstance()->MouseDown(DIM_LB))
+        {
+            m_CookingMenu->Set_IsActive(true);
+            m_CookingMenu->PlayOpenAnimation();
+
+            m_Active = true;
+        }
+
+
+    }
 
     return exit;
 }
@@ -58,25 +82,48 @@ void CKitchen::Render_GameObject()
     NULL_CHECK(m_TextureCom);
 
     // 0번 텍스처: 냄비
+    _matrix matWorld = m_TransformCom->Get_World();
+    m_GraphicDev->SetTransform(D3DTS_WORLD, &matWorld);
     m_TextureCom->Set_Texture(0);
 
-    CBuildingBase::Render_GameObject();
+    //CBuildingBase::Render_GameObject();
+
+    if (!m_IsPreview)
+    {
+        Render_Setting();
+        if (m_bHovering == true && m_bPlayerOverlap == true)
+            m_SpritEff->OutLineEffMTRX(matWorld, m_BufferCom);
+    }
+
+    if (m_BufferCom)
+        m_BufferCom->Render_Buffer();
+
+    if (!m_IsPreview)
+        Render_Reset();
+
+
+
+
 
     // 1번 텍스처 : 화덕
-    _matrix matWorld = m_TransformCom->Get_World();
+    matWorld = m_TransformCom->Get_World();
     _matrix matOffset, matScale, matTrans;
 
     D3DXMatrixScaling(&matScale, 1.f, 1.f, 1.f);
     D3DXMatrixTranslation(&matTrans, -1.3f, 0.f, -0.3f);
 
-    matOffset = matScale * matTrans;
+    matOffset = matTrans*matScale;
     matWorld  = matOffset * matWorld;
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &matWorld);
     m_TextureCom->Set_Texture(1);
 
     if (!m_IsPreview)
+    {
         Render_Setting();
+        if (m_bHovering == true && m_bPlayerOverlap == true)
+            m_SpritEff->OutLineEffMTRX(matWorld,m_BufferCom);
+    }
 
     if (m_BufferCom)
         m_BufferCom->Render_Buffer();
@@ -97,7 +144,13 @@ void CKitchen::Render_GameObject()
     m_TextureCom->Set_Texture(2);
 
     if (!m_IsPreview)
+    {
         Render_Setting();
+        if (m_bHovering == true && m_bPlayerOverlap == true)
+            m_SpritEff->OutLineEffMTRX(matWorld, m_BufferCom);
+    }
+
+   // CBuildingBase::Render_GameObject();
 
     if (m_BufferCom)
         m_BufferCom->Render_Buffer();
@@ -118,13 +171,24 @@ void CKitchen::Render_GameObject()
     m_TextureCom->Set_Texture(3);
 
     if (!m_IsPreview)
+    {
         Render_Setting();
+        if (m_bHovering == true && m_bPlayerOverlap == true)
+            m_SpritEff->OutLineEffMTRX(matWorld, m_BufferCom);
+    }
+
+    // CBuildingBase::Render_GameObject();
 
     if (m_BufferCom)
         m_BufferCom->Render_Buffer();
 
     if (!m_IsPreview)
         Render_Reset();
+
+
+    if (m_BoxCollCom)
+        m_BoxCollCom->Render();
+
 }
 
 void CKitchen::Render_Editor()
@@ -137,6 +201,10 @@ void CKitchen::Render_Editor()
 void CKitchen::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CBuildingBase::OnBeginOverlap(self, other);
+
+    CPlayer* ply = dynamic_cast<CPlayer*>(other->Get_Owner());
+    if (ply)
+        m_bPlayerOverlap = true;
 }
 
 void CKitchen::OnStayOverlap(CCollider* self, CCollider* other)
@@ -148,6 +216,11 @@ void CKitchen::OnStayOverlap(CCollider* self, CCollider* other)
 void CKitchen::OnEndOverlap(CCollider* self, CCollider* other)
 {
     CBuildingBase::OnEndOverlap(self, other);
+
+    CPlayer* ply = dynamic_cast<CPlayer*>(other->Get_Owner());
+
+    if (m_bPlayerOverlap == true && ply != nullptr)
+        m_bPlayerOverlap = false;
 }
 
 HRESULT CKitchen::Add_Component()
