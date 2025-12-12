@@ -63,7 +63,7 @@ HRESULT CUIBuildMenu::Ready_GameObject()
     m_CookingFireCell->Set_TextureIndex(0);
 	m_CookingFireCell->Set_RecipeId(5001);
     m_CookingFireCell->Set_OnClick([this]() {PlayCloseAnimation(); CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::KITCHEN); });
-    m_CookingFireCell->Set_OnActive([this]() {return m_CookingController->CanCooK(5001, m_Inventory); });
+    m_CookingFireCell->Set_OnActive([this]() {return m_CookingController->CanCook(5001, m_Inventory); });
     m_CookingFireCell->Set_BuildMenu(this);
     m_BuildCells.push_back(m_CookingFireCell);
 
@@ -72,7 +72,7 @@ HRESULT CUIBuildMenu::Ready_GameObject()
     m_TempleCell->Set_TextureIndex(1);
 	m_TempleCell->Set_RecipeId(5002);
     m_TempleCell->Set_OnClick([this]() {PlayCloseAnimation(); CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::TEMPLE); });
-    m_TempleCell->Set_OnActive([this]() {return m_CookingController->CanCooK(5002, m_Inventory); });
+    m_TempleCell->Set_OnActive([this]() {return m_CookingController->CanCook(5002, m_Inventory); });
     m_TempleCell ->Set_BuildMenu(this);
     m_BuildCells.push_back(m_TempleCell);
 

@@ -59,14 +59,14 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
 {
     if (FAILED(Ready_Buffer(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Player(graphicDev))) return E_FAIL;
-    if (FAILED(Ready_Monster(graphicDev))) return E_FAIL;
+    //if (FAILED(Ready_Monster(graphicDev))) return E_FAIL;
     if (FAILED(Ready_UI(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Item(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Common(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Terrain(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Decoration(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Building(graphicDev))) return E_FAIL;
-    if (FAILED(Ready_Follower(graphicDev))) return E_FAIL;
+    //if (FAILED(Ready_Follower(graphicDev))) return E_FAIL;
 
     return S_OK;
 }

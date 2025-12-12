@@ -266,21 +266,21 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     // Monster
     // -----------------------------
 
-    // HumanMonster
-    gameObject = CHumanMonster::Create(m_GraphicDev);
-    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CHumanMonster::Create() returned null")
-
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::HUMANMONSTER, gameObject),
-        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
-
-    gameObject = CFloaterMonster::Create(m_GraphicDev);
-    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CHumanMonster::Create() returned null")
-
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::HUMANMONSTER, gameObject),
-        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
-
+    //// HumanMonster
+    //gameObject = CHumanMonster::Create(m_GraphicDev);
+    //NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CHumanMonster::Create() returned null")
+    //
+    //FAILED_CHECK_MSG(
+    //    layer->Add_GameObject(OBJTYPE::HUMANMONSTER, gameObject),
+    //    L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
+    //
+    //gameObject = CFloaterMonster::Create(m_GraphicDev);
+    //NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CHumanMonster::Create() returned null")
+    //
+    //FAILED_CHECK_MSG(
+    //    layer->Add_GameObject(OBJTYPE::HUMANMONSTER, gameObject),
+    //    L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
+    //
     // -----------------------------
     // Boss
     // -----------------------------
@@ -440,14 +440,14 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     // -----------------------------
     // Follower
     // -----------------------------
-    gameObject = CFollowerCow::Create(m_GraphicDev);
-
-    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"Create NPC object has failed")
-
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::NPC, gameObject),
-        L"Add NPC object on layer has failed");
-
+//    gameObject = CFollowerCow::Create(m_GraphicDev);
+//
+//    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"Create NPC object has failed")
+//
+//    FAILED_CHECK_MSG(
+//        layer->Add_GameObject(OBJTYPE::NPC, gameObject),
+//        L"Add NPC object on layer has failed");
+//
     m_Layers.insert({ layerType, layer });
 
     return S_OK;

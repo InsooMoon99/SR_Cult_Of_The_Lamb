@@ -36,6 +36,8 @@ HRESULT CUICookingMenu::Ready_GameObject()
     m_Speed = 900.f;
 
     m_TransformCom->Set_Scale(450.f, 400.f, 1.f);
+    m_TransformCom->Set_Pos(m_ClosedX, 0.f, 1.f);
+	m_Active = false;
 
     return S_OK;
 }
@@ -46,10 +48,8 @@ void CUICookingMenu::Initialize_GameObject()
     
    // m_RecipeIds.resize(6);
     m_CookingController = dynamic_cast<CCookingController*>(CManagement::GetInstance()->Get_Component(ID_DYNAMIC, LAYERTYPE::GAMELOGIC, OBJTYPE::BUILDING, COMPONENTTYPE::COOKCTRL));
-
     vector<Recipe> recipes = CRecipeDB::GetInstance()->GetVector();
 
-    //TEX_ITEM 중 8~10이 요리 텍스처
     for (int i = 0; i < 6; i++)
     {
         auto* cookingCell = CUICookingCell::Create(m_GraphicDev);
@@ -59,17 +59,19 @@ void CUICookingMenu::Initialize_GameObject()
         if (i < 3)
         {
             int recipeId = recipes[i].id;
-           // texindex = i + 8;
-            cookingCell->Set_OnClick([this, recipeId]() {m_CookingController->AddRecipe(recipeId, m_Inventory); });
-            cookingCell->Set_OnActive([this,recipeId]() { return m_CookingController->CanCook(recipeId,m_Inventory); });
+            int IngredientId = CRecipeDB::GetInstance()->GetRecipeById(recipeId)->ingredients.begin()->first;
+
+            cookingCell->Set_OnClick([this, recipeId]() {if (m_CookingController->CanCook(recipeId, m_Inventory)) m_CookingController->AddRecipe(recipeId, m_Inventory); });
+            cookingCell->Set_OnActive([this, recipeId]() { return m_CookingController->CanCook(recipeId, m_Inventory); });
+            cookingCell->Set_GetCount([this, IngredientId]() {return m_Inventory->GetItemCount(IngredientId); });
             cookingCell->Set_RecipeId(recipeId);
         }
         else
         {
-            //texindex = -1;
+       
             cookingCell->Set_RecipeId(-1);
         }
-       // cookingCell->Set_TextureIndex(texindex);
+
         m_CookingCells.push_back(cookingCell);
     }
 
@@ -308,6 +310,7 @@ CUICookingMenu* CUICookingMenu::Create(DEVICE graphicDev)
 
 void CUICookingMenu::Free()
 {
+    CUI::Free();
     for (auto cell : m_CookingCells)
     {
         Safe_Release(cell);
@@ -319,13 +322,10 @@ void CUICookingMenu::Free()
         Safe_Release(cell);
     }
     m_CookedFoodCells.clear();
-//    m_RecipeIds.clear();
 
     Safe_Release(m_StartButton);
     Safe_Release(m_CancelButton);
-    Safe_Release(m_Inventory);
     Safe_Release(m_CookingController);
-    CUI::Free();
 }
 
 void            CUICookingMenu::PlayOpenAnimation()

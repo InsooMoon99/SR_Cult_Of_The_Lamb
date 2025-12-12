@@ -132,7 +132,7 @@ void CCookingController::SetUIRecipeSlot(/*Slot* slot,*/ int id, CUIButton* quit
     //startCook->SetCookCallBack
 }
 
-bool CCookingController::CanCooK(int recipeID, CInventory* playerInven)
+bool CCookingController::CanCook(int recipeID, CInventory* playerInven)
 {
 
     Recipe* recipe = CRecipeDB::GetInstance()->GetRecipeById(recipeID);

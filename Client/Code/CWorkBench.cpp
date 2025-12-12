@@ -52,7 +52,7 @@ _int CWorkBench::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CBuildingBase::Update_GameObject(timeDelta);
 
-    if (m_bPlayerOverlap == true)
+    if (m_bPlayerOverlap == true && m_bHovering == true)
     {
        
             if (CDInputMgr::GetInstance()->MouseDown(DIM_LB))

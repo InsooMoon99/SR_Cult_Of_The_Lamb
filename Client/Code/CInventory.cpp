@@ -292,6 +292,14 @@ void CInventory::RemoveItemOnMap(int itemID)
     }
 }
 
+int CInventory::GetItemCount(int itemID)
+{
+    auto it = m_CountingItem.find(itemID);
+
+    return  (it != m_CountingItem.end()) ? it->second : 0;
+
+}
+
 CInventory* CInventory::Create(DEVICE graphicDev)
 {
     auto Inven = new CInventory(graphicDev);

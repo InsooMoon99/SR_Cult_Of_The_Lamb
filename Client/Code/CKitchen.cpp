@@ -55,7 +55,7 @@ _int CKitchen::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CBuildingBase::Update_GameObject(timeDelta);
 
-    if (m_bPlayerOverlap == true)
+    if (m_bPlayerOverlap == true && m_bHovering == true)
     {
 
         if (CDInputMgr::GetInstance()->MouseDown(DIM_LB))
@@ -65,7 +65,6 @@ _int CKitchen::Update_GameObject(const _float& timeDelta)
 
             m_Active = true;
         }
-
 
     }
 
@@ -100,10 +99,6 @@ void CKitchen::Render_GameObject()
 
     if (!m_IsPreview)
         Render_Reset();
-
-
-
-
 
     // 1번 텍스처 : 화덕
     matWorld = m_TransformCom->Get_World();
@@ -176,8 +171,6 @@ void CKitchen::Render_GameObject()
         if (m_bHovering == true && m_bPlayerOverlap == true)
             m_SpritEff->OutLineEffMTRX(matWorld, m_BufferCom);
     }
-
-    // CBuildingBase::Render_GameObject();
 
     if (m_BufferCom)
         m_BufferCom->Render_Buffer();
