@@ -59,9 +59,12 @@ HRESULT CUICookingCell::Ready_GameObject()
     m_CardItemIcon = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_ITEM); //아이템 텍스처
     m_CardItemIcon->SetRegister(false);
     _vec3 cardPos = m_CardIcon->Get_Transform()->Get_Pos();
-    _vec2 itemOffset = { 0.f, 70.f };
+    _vec2 itemOffset = { 0.f, 100.f };
     m_CardItemIcon->Get_Transform()->Set_Scale(_vec3(40.f, 40.f, 0.f));
     m_CardItemIcon->Get_Transform()->Set_Pos(cardPos.x + itemOffset.x, cardPos.y + itemOffset.y, 0.f);
+
+    //필요 재료 표시용 객체 생성
+
 
     //외곽선용 객체 생성
     m_Highlight = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_HIGHLIGHT);
@@ -187,9 +190,9 @@ void CUICookingCell::Render_GameObject()
 
             //TODO 유림 : 이미지 바꿀건지 결정하기
             _vec3 pos = m_CardIcon->Get_Transform()->Get_Pos();
-            _vec2 descOffset = { 0.f, 15.f };
+            _vec2 descOffset = { 0.f, -10.f };
             _vec2 screen = { WINCX / 2 + pos.x, WINCY / 2 - pos.y + descOffset.y };
-            _vec2 descOffset2 = { 0.f, 95.f };
+            _vec2 descOffset2 = { 0.f, 110.f };
             _vec2 screen2 = { WINCX / 2 + pos.x, WINCY / 2 - pos.y + descOffset2.y };
 
             //아이템 이름 출력
@@ -224,6 +227,7 @@ void CUICookingCell::Render_GameObject()
             //   
             //    }
         }
+    }
         else
         {
             m_ItemTargetScale = m_ItemBaseScale;
@@ -231,7 +235,7 @@ void CUICookingCell::Render_GameObject()
         }
 
     }
-}
+
 void CUICookingCell::Render_Editor()
 {
     CUI::Render_Editor();
