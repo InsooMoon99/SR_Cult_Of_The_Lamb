@@ -5,6 +5,8 @@ BEGIN(Engine)
 class CBoxCollider;
 END
 
+class CSpriteEff;
+
 // 건축물 오브젝트의 베이스
 class CBuildingBase : public CRenderObject
 {
@@ -20,6 +22,8 @@ public:
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
 
+    bool Is_Hovering();
+
 public:
     void OnBeginOverlap(CCollider* self, CCollider* other) override;
     void OnStayOverlap(CCollider* self, CCollider* other) override;
@@ -34,6 +38,9 @@ protected:
 
 protected:
     Engine::CBoxCollider* m_BoxCollCom = nullptr;
+    CSpriteEff* m_SpritEff = nullptr;
 
     _bool m_IsPreview = false;
+    _bool m_bPlayerOverlap = false;
+    _bool m_bHovering = false;
 };

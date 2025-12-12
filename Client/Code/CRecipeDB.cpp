@@ -84,12 +84,14 @@ HRESULT CRecipeDB::LoadFromJson(const string& fileName)
         recipe.id = node["id"];
         recipe.name = node["name"];
         recipe.desc = node["desc"];
+        recipe.result = node.value("result", 0);
         recipe.UIFileName = node["UIFileName"];
         recipe.UIPath = node["UIPath"];
 
         //JSON에 해당 키가 없을 때 사용할 기본값을 지정 있으면 데이터
         recipe.quality = node.value("quality", 0);
         recipe.hunger = node.value("hunger", 0);
+        recipe.result = node.value("result", 0);
 
         //만들기 재료 종류,개수
         for (auto& ingNode : node["ingredients"])

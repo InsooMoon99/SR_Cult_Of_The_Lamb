@@ -5,6 +5,7 @@
 #include "CCamSetupBuilder.h"
 #include "CCombatStat.h"
 #include "CConstructionMgr.h"
+#include "CCookingController.h"
 #include "CDInputMgr.h"
 #include "CDroppedItem.h"
 #include "CDropSystem.h"
@@ -44,6 +45,10 @@
 #include "CUIBuildMenu.h"
 #include "CUI_Dialogue.h"
 #include "CKitchen.h"
+#include "CUICookingGame.h"
+#include "CCookingController.h"
+#include "CCreateHelper.h"
+#include "CUICookingMenu.h"
 
 class CUIBuildMenu;
 
@@ -146,6 +151,32 @@ _int CStage::Update_Scene(const _float& timeDelta)
         else
             CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::KITCHEN);
     }
+
+
+
+    //// xptmxm dksdmstn
+    //if(CDInputMgr::GetInstance()->KeyDown(DIK_U))
+    //{
+    //   CHarvestableHerb*  tmpObject = CHarvestableHerb::Create(m_GraphicDev, CHarvestableHerb::BERRY::SMALLBERRY);
+    //   NULL_CHECK_RETURN_MSG(tmpObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
+
+    //       SpawnObjectOnLayer(tmpObject, OBJTYPE::INTERACTIVE);
+
+    //    tmpObject->Get_Transform()->Set_Pos(20.f, 0.6f, 20.f);
+
+
+    //    RecipeInst r{ 4001 ,3,2001 };
+
+    //    CUICookingGame* cook = CUICookingGame::Create(m_GraphicDev, tmpObject, r);
+
+    //    SpawnUIOnLayer(cook, OBJTYPE::UI);
+
+    //    cook->Initialize_GameObject();
+
+ 
+  
+    //}
+
 
     return exit;
 }
@@ -401,7 +432,7 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
         L"Add_GameObject(CWorkBench) failed");
     //
     auto kitchen = CKitchen::Create(m_GraphicDev);
-
+    m_Kitchen = kitchen;
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::BUILDING, kitchen),
         L"Add_GameObject(CWorkBench) failed");
@@ -506,7 +537,17 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiBuildMenu),
                      L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UI_BuildMenu) failed");
     m_WorkBench->Set_BuildMenu(uiBuildMenu);
+    CCookingController* cookingController = dynamic_cast<CCookingController*>(m_WorkBench->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::COOKCTRL));
+    uiBuildMenu->Set_Inventory(m_PlayerInventoryCom);
+    uiBuildMenu->Set_CookingController(cookingController);
+    /*uiBuildMenu->SetCellEvent([]()
+    {
+        return dynamic_cast<CCookingController*>(m_WorkBench->Get_Component(COMPONENTID::ID_STATIC,COMPONENTTYPE::COOKCTRL))->CanCooK(uiBuildMenu->,m_PlayerInventoryCom)})*/
 
+    CUICookingMenu* uiCookingMenu = CUICookingMenu::Create(m_GraphicDev);
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiCookingMenu),
+        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UI_CookingMenu) failed");
+    m_Kitchen->Set_CookingMenu(uiCookingMenu);
     m_Layers.insert({ layerType, layer });
 
     return S_OK;
