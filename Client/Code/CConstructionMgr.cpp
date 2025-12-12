@@ -46,11 +46,19 @@ void CConstructionMgr::Update_ConstructionMgr(const _float& fTimeDelta)
         m_pPlacer->Update_Placer(fTimeDelta);
 
         // 마우스 클릭 체크하여 배치 시도
-        if (CDInputMgr::GetInstance()->MouseDown(DIM_LB))
+        if (m_bWaitForRelease)
         {
-            if (m_pPlacer->Try_PlaceObject())
+            if (!(CDInputMgr::GetInstance()->Get_DIMouseState(DIM_LB) & 0x80))
+                m_bWaitForRelease = false;
+        }
+        else
+        {
+            if (CDInputMgr::GetInstance()->MouseDown(DIM_LB))
             {
-                // 배치 성공 시 후처리 (아이템 차감, 건설 모드 종료 or 유지)
+                if (m_pPlacer->Try_PlaceObject())
+                {
+                    // 배치 성공 시 후처리
+                }
             }
         }
 
@@ -74,7 +82,8 @@ void CConstructionMgr::Start_BuildMode(BUILDING_TYPE type)
     if (!m_pPlacer)
         return;
 
-    m_bIsBuilding = true;
+    m_bIsBuilding     = true;
+    m_bWaitForRelease = true;
     m_pPlacer->Set_Preview(type);
 }
 

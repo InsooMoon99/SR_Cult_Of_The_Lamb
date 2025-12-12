@@ -199,12 +199,12 @@ HRESULT CPlayer::Add_Component()
     NULL_CHECK_RETURN(m_PlayerSkillCom, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::PL_SKILL, m_PlayerSkillCom });
 
-    //GTHERING
+    // Gathering
     m_PlayerGatherCom = CreateProtoComponent<CPlayerGathering>(this, COMPONENTTYPE::GATHERING);
     NULL_CHECK_RETURN(m_PlayerGatherCom, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::GATHERING, m_PlayerGatherCom });
 
-    // CONSTRUCTION
+    // Construction
     m_PlayerConstructionCom = CreateProtoComponent<CPlayerConstruction>(this, COMPONENTTYPE::CONSTRUCTION);
     NULL_CHECK_RETURN(m_PlayerConstructionCom, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::CONSTRUCTION, m_PlayerConstructionCom });
@@ -439,6 +439,38 @@ void CPlayer::Animation_Setting()
                              ANIMSTATE::ONCE);
 
 #pragma endregion
+
+#pragma region Final
+    m_AnimatorCom->Create_Animation(L"Decide_Start",
+                                    41,
+                                    0.04f,
+                                    _vec2(0.77f, 1.12f),
+                                    _vec2(0.f, 0.32f));
+
+    m_AnimatorCom->Create_Animation(L"Decide_Loop",
+                                    50,
+                                    0.04f,
+                                    _vec2(0.76f, 0.73f),
+                                    _vec2(0.f, -0.05f));
+
+    m_AnimatorCom->Create_Animation(L"Refuse_Sword",
+                                    55,
+                                    0.04f,
+                                    _vec2(2.24f, 2.32f),
+                                    _vec2(0.f, 1.43f));
+
+    m_AnimatorCom->Create_Animation(L"Refuse_Gauntlet",
+                                    54,
+                                    0.04f,
+                                    _vec2(2.24f, 2.32f),
+                                    _vec2(0.f, 1.06f));
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_DECIDE, L"Decide_Start", ANIMSTATE::ONCE);
+    //m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_REFUSE, L"Refuse_Sword", ANIMSTATE::ONCE);
+
+#pragma endregion
+
+
 }
 
 CPlayer* CPlayer::Create(DEVICE graphicDev)

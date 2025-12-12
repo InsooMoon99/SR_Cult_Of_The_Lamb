@@ -32,7 +32,7 @@ void CBossAwake::Exit()
 
 HRESULT CBossAwake::Ready_State()
 {
-    //m_dwCurStateKey = CBoss::BOSS_STATE::AWAKE;
+    //m_CurStateKey = CBoss::BOSS_STATE::AWAKE;
 
     m_fMinStateTime = 0.f;
 

@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include "CPlayerController.h"
-
+#include "CWeaponEquip.h"
 #include "CAnimator.h"
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
@@ -36,16 +36,16 @@ CPlayerController::CPlayerController(DEVICE graphicDev)
 
 CPlayerController::CPlayerController(const CPlayerController& rhs)
     : CComponent(rhs),
-      m_OwnerStateCom(nullptr),
-      m_OwnerCombatStatCom(nullptr),
-      m_OwnerRigidbodyCom(nullptr),
-      m_OwnerColliderCom(nullptr),
-      m_OwnerInputCom(nullptr),
-      m_OwnerMovementCom(nullptr),
-      m_OwnerAttackCom(nullptr),
-      m_OwnerSkillCom(nullptr),
-      m_OwnerGatherCom(nullptr),
-      m_OwnerConstructionCom(nullptr)
+    m_OwnerStateCom(nullptr),
+    m_OwnerCombatStatCom(nullptr),
+    m_OwnerRigidbodyCom(nullptr),
+    m_OwnerColliderCom(nullptr),
+    m_OwnerInputCom(nullptr),
+    m_OwnerMovementCom(nullptr),
+    m_OwnerAttackCom(nullptr),
+    m_OwnerSkillCom(nullptr),
+    m_OwnerGatherCom(nullptr),
+    m_OwnerConstructionCom(nullptr)
 {
     ZeroMemory(m_Timers, sizeof(m_Timers));
 }
@@ -159,8 +159,10 @@ void CPlayerController::CheckStateTransition()
     ACTORSTATE curState = m_OwnerStateCom->Get_State();
     const auto inputMgr = CDInputMgr::GetInstance();
 
-    //!! 상태 변경 불가 조건 (사망)
-    if (curState == ACTORSTATE::DEAD)
+    //!! 상태 변경 불가 조건 (사망, 결정, 거절)
+    if (curState == ACTORSTATE::DEAD ||
+        curState == ACTORSTATE::PLAYER_DECIDE ||
+        curState == ACTORSTATE::PLAYER_REFUSE)
         return;
 
     // 피격 시 Hit 처리
@@ -170,7 +172,6 @@ void CPlayerController::CheckStateTransition()
 
         return;
     }
-
 
     // [우선순위 1] 구르기 (Space)
     // - 공격 상태여도 구르기로 이행 (캔슬)
@@ -394,6 +395,14 @@ void CPlayerController::Update_State(const _float& timeDelta)
     }
     break;
 
+    case ACTORSTATE::PLAYER_DECIDE:
+        Action_Decide(timeDelta);
+        break;
+
+    case ACTORSTATE::PLAYER_REFUSE:
+        Action_Refuse(timeDelta);
+        break;
+
     case ACTORSTATE::PLAYER_WEAPONGET:
     {
         auto animator = dynamic_cast<CAnimator*>(
@@ -406,7 +415,7 @@ void CPlayerController::Update_State(const _float& timeDelta)
 
     case ACTORSTATE::DEAD:
     {
-        MSG_BOX("CPlayerController: Player Dead!");
+        //MSG_BOX("CPlayerController: Player Dead!");
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
     }
     break;
@@ -527,7 +536,7 @@ void CPlayerController::Action_Construction(const _float& timeDelta)
 
 void CPlayerController::Action_Hit(const _float& timeDetla)
 {
-    m_OwnerMovementCom->Stop(); // Stop을 해야하는가? 넉백당하다가
+    m_OwnerMovementCom->Stop();
 
     auto animator = dynamic_cast<CAnimator*>(
         m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
@@ -535,6 +544,36 @@ void CPlayerController::Action_Hit(const _float& timeDetla)
     if (animator && animator->Is_AnimationFinished() &&
         !m_OwnerCombatStatCom->Is_Knockback())
     {
+        m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+    }
+}
+
+void CPlayerController::Action_Decide(const _float& timeDetla)
+{
+    auto animator = dynamic_cast<CAnimator*>(
+        m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+
+    NULL_CHECK(animator);
+
+    if (animator->Is_AnimationFinished())
+    {
+        animator->Play_Animation(L"Decide_Loop", ANIMSTATE::LOOP);
+    }
+}
+
+void CPlayerController::Action_Refuse(const _float& timeDetla)
+{
+    auto animator = dynamic_cast<CAnimator*>(
+        m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+
+    NULL_CHECK(animator);
+
+    if (animator->Is_AnimationFinished())
+    {
+        if (m_OnRefuseEnd)
+            m_OnRefuseEnd();
+
+        // 일단은 Idle로 ?
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
     }
 }

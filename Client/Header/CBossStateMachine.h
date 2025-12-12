@@ -20,9 +20,9 @@ public:
     virtual void Change_State(_uint changeStateKey);
     _int GetCurStateNum();
 
-    CBaseState* Get_CurState() { return m_pCurState; }
+    CBaseState* Get_CurState() { return m_CurState; }
     //CBaseState* Get_PrevState() { return  m_pPrevState; }
-    _uint Get_PrevStateKey() { return  m_dwPrevStateKey; }
+    _uint Get_PrevStateKey() { return  m_PrevStateKey; }
 
 private:
     CMonsterBase* m_pOwner;

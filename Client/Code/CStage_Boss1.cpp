@@ -1,8 +1,10 @@
 ﻿#include "pch.h"
 #include "CStage_Boss1.h"
+#include "CState.h"
 #include "CBossPhase1.h"
 #include "CCameraController.h"
 #include "CCamSetupBuilder.h"
+#include "CRigidbody.h"
 #include "CDInputMgr.h"
 #include "CDropSystem.h"
 #include "CLayer.h"
@@ -15,13 +17,31 @@
 #include "CTerrain.h"
 #include "CTransform.h"
 #include "CTrigger_Dungeon.h"
+#include "CUICircle.h"
+#include "CUIIcon.h"
+#include "CUIMp.h"
+#include "CUIPlayerPanel.h"
+#include "CUIWeapon.h"
 #include "CUI_BossHp.h"
 #include "CUI_Dialogue.h"
 #include "CWall.h"
+#include "CAnimator.h"
+#include "CBossController.h"
+#include "CBossStateMachine.h"
+#include "CBossTalk.h"
+#include "CPlayerController.h"
+#include "CWeaponEquip.h"
+#include "CPlayerMovement.h"
 
 CStage_Boss1::CStage_Boss1(DEVICE graphicDev)
-    : Engine::CScene(graphicDev), m_Terrain(nullptr), m_Boss(nullptr), m_Dialogue(nullptr)
-{ }
+    : Engine::CScene(graphicDev), m_Terrain(nullptr), m_Boss(nullptr), m_Player(nullptr), m_Dialogue(nullptr),
+      m_CamController(nullptr),
+      m_PlayerTransformCom(nullptr),
+      m_PlayerCombatStatCom(nullptr), m_PlayerInventoryCom(nullptr),
+      m_WeaponEquipCom(nullptr),
+      m_PlayerSkillCom(nullptr)
+{
+}
 
 CStage_Boss1::~CStage_Boss1()
 { }
@@ -49,21 +69,58 @@ void CStage_Boss1::Initialize_Scene()
 
     m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Boss1.map");
 
-    // Dialogue
+    // 트리거 생성
+    const _vec3 firstTriggerPos = _vec3(47.3f, 1.f, 30.f);
+    const _vec3 secondTriggerPos = _vec3(47.8f, 1.f, 49.f);
+
+    Create_Trigger(firstTriggerPos, _vec3(10.f, 5.f, 5.f), [this]()
+        {
+            Hide_PlayerUI();
+        }, true);
+
+    Create_Trigger(secondTriggerPos, _vec3(5.f, 5.f, 5.f), [this]()
+        {
+            Begin_PlayerDecide();
+        }, true);
+
     NULL_CHECK(m_Dialogue);
 
-    // 대화 종료 시 콜백
+    // 대화 종료
     m_Dialogue->Set_OnDialogueEnd([this](const string& id)
         {
             OnDialogueEnd(id);
         });
 
-    m_Dialogue->Start_Dialogue("boss1_intro");
+    auto controller = dynamic_cast<CPlayerController*>(m_Player->Get_Component(
+        ID_DYNAMIC, COMPONENTTYPE::PL_CONTROLLER));
+
+    NULL_CHECK(controller);
+
+    controller->Set_OnRefuseEnd([this]()
+        {
+            OnRefusedEnd();
+        });
+
 }
 
 _int CStage_Boss1::Update_Scene(const _float& timeDelta)
 {
     _int exit = Engine::CScene::Update_Scene(timeDelta);
+
+    Move_PlayerUI(timeDelta);
+
+    if (m_WaitingForDialogue)
+    {
+        m_DialogueDelayTimer += timeDelta;
+
+        if (m_DialogueDelayTimer >= 1.1f)
+        {
+            m_Dialogue->Start_Dialogue("Boss_Start", _vec2(0.f, 200.f), _vec2(300.f, 80.f));
+
+            m_WaitingForDialogue = false;
+        }
+    }
+
 
     return exit;
 }
@@ -76,6 +133,28 @@ void CStage_Boss1::LateUpdate_Scene(const _float& timeDelta)
 void CStage_Boss1::Render_Scene()
 {
     // debug 용
+}
+
+void CStage_Boss1::Create_Trigger(_vec3 pos, _vec3 size, OnTriggerCallback callback, _bool autoDestroy)
+{
+    auto gameLayer = m_Layers[LAYERTYPE::GAMELOGIC];
+    NULL_CHECK(gameLayer);
+
+    auto trigger = CTrigger_Dungeon::Create(m_GraphicDev);
+    NULL_CHECK(trigger);
+
+    trigger->Set_Bounds(pos, size);
+    trigger->Set_TriggerOnce(false); // 한 번만 실행, 테스트 용으로 일단 fasle
+
+    trigger->Set_Callback([callback, trigger, autoDestroy]()
+        {
+            callback();
+
+            if (autoDestroy)
+                trigger->Mark_As_PendingKill();
+        });
+
+    gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
 }
 
 HRESULT CStage_Boss1::Ready_Environment_Layer(LAYERTYPE layerType)
@@ -116,8 +195,7 @@ HRESULT CStage_Boss1::Ready_GameLogic_Layer(LAYERTYPE layerType)
     Engine::CLayer* layer = Engine::CLayer::Create();
 
     NULL_CHECK_RETURN_MSG(
-        layer,
-        E_FAIL,
+        layer, E_FAIL,
         L"CStage::Ready_GameLogic_Layer() failed: CLayer::Create() returned null");
 
     Engine::CGameObject* gameObject = nullptr;
@@ -133,28 +211,23 @@ HRESULT CStage_Boss1::Ready_GameLogic_Layer(LAYERTYPE layerType)
             L"Player",
             m_GraphicDev,
             layer,
-            &gameObject),
+            &m_Player),
         L"Persistent object setup failed");
 
     // 플레이어의 Transform 가져오기
-    const auto playerTransform =
-        dynamic_cast<CTransform*>(gameObject->Get_Component(
-            ID_DYNAMIC,
-            COMPONENTTYPE::TRANSFORM));
+    m_PlayerTransformCom = m_Player->Get_Transform();
+    m_PlayerTransformCom->Set_Pos({ 47.f,1.f,10.f });
 
-    playerTransform->Set_Pos({ 47.f,1.f,10.f });
-   
+    m_PlayerCombatStatCom = dynamic_cast<CCombatStat*>(
+        m_Player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
 
     // -----------------------------
     // Camera
     // -----------------------------
-
-    // 카메라 생성
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CMainCamera>(
             OBJTYPE::CAMERA, L"MainCamera", m_GraphicDev, layer, &gameObject),
-        L"Persistent object setup failed"
-    );
+        L"Persistent object setup failed");
 
     m_CamController = dynamic_cast<CCameraController*>(
         gameObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAM_CONTROLLER));
@@ -166,7 +239,7 @@ HRESULT CStage_Boss1::Ready_GameLogic_Layer(LAYERTYPE layerType)
         // : CCameraSetup을 카메라 설정을 중도에 바꿀 때 사용 가능하고,
         //   그럴 때는 필요한 것만 사용해 .Apply() 하면 된다.
         CCamSetupBuilder(m_CamController)
-            .SetTarget(playerTransform)
+            .SetTarget(m_PlayerTransformCom)
             //.PivotOffset({ 0.f, 0.f, 0.f })
             //.Distance(12.f)
             //.RotX(45.f)
@@ -201,16 +274,68 @@ HRESULT CStage_Boss1::Ready_GameLogic_Layer(LAYERTYPE layerType)
 HRESULT CStage_Boss1::Ready_UI_Layer(LAYERTYPE layerType)
 {
     Engine::CLayer* layer = Engine::CLayer::Create();
-
-    if (nullptr == layer)
-        return E_FAIL;
+    NULL_CHECK_RETURN(layer, E_FAIL);
 
     Engine::CGameObject* gameObject = nullptr;
 
-    auto combat = dynamic_cast<CCombatStat*>(m_Boss->Get_Component(ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
+    // ==== 플레이어 UI ====
+
+    // Panel
+    FAILED_CHECK_MSG(
+        Engine::AcquirePersistentObject<CUIPlayerPanel>(
+            OBJTYPE::UI, L"UI_PlayerPanel", m_GraphicDev, layer, &gameObject), L"Persistent object setup failed: UI_PlayerPanel");
+
+    CUIPlayerPanel* playerPanel = dynamic_cast<CUIPlayerPanel*>(gameObject);
+    NULL_CHECK_RETURN(playerPanel, E_FAIL);
+
+    playerPanel->Set_PlayerCombatStat(m_PlayerCombatStatCom);
+    playerPanel->Set_Resister(true);
+    m_Player_UI.push_back(playerPanel);
+
+    // Mp
+    FAILED_CHECK_MSG(
+        Engine::AcquirePersistentObject<CUIMp>(
+            OBJTYPE::UI, L"UI_Mp", m_GraphicDev, layer, &gameObject), L"Persistent object setup failed: UI_Mp");
+
+    dynamic_cast<CUIMp*>(gameObject)->Set_PlayerCombatStat(m_PlayerCombatStatCom);
+    m_Player_UI.push_back(dynamic_cast<CUI*>(gameObject));
+
+    // CUICircle
+    FAILED_CHECK_MSG(
+        Engine::AcquirePersistentObject<CUICircle>(
+            OBJTYPE::UI, L"UI_Circle", m_GraphicDev, layer, &gameObject), L"Persistent object setup failed: UI_Circle");
+
+    dynamic_cast<CUICircle*>(gameObject)->Set_PlayerCombatStat(m_PlayerCombatStatCom);
+    m_Player_UI.push_back(dynamic_cast<CUI*>(gameObject));
+
+    // CUIWeapon
+    FAILED_CHECK_MSG(
+        Engine::AcquirePersistentObject<CUIWeapon>(
+            OBJTYPE::UI, L"UI_Weapon", m_GraphicDev, layer, &gameObject), L"Persistent object setup failed: UI_Weapon");
+
+    m_Player_UI.push_back(dynamic_cast<CUI*>(gameObject));
+
+    //왼쪽 상단 스킬 아이콘 UI
+    CUIIcon* uiIcon = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_ICON);
+    uiIcon->Set_TextureIndex(1);
+    uiIcon->Get_Transform()->Set_Pos(-524.f, 260.f, 0.f);
+    uiIcon->Get_Transform()->Set_Scale(12.5f, 15.f, 0.f);
+
+    FAILED_CHECK_MSG(
+        layer->Add_GameObject(OBJTYPE::UI, uiIcon),
+        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUIIcon) failed");
+
+    m_Player_UI.push_back(uiIcon);
+
+    // ===== 보스 UI =====
+    auto combat = dynamic_cast<CCombatStat*>(
+        m_Boss->Get_Component(ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
+
     NULL_CHECK_RETURN(combat, E_FAIL);
 
     gameObject = CUI_BossHp::Create(m_GraphicDev, combat);
+    dynamic_cast<CUI*>(gameObject)->Set_Visible(false);
+
     layer->Add_GameObject(OBJTYPE::UI, gameObject);
 
     // Dialogue
@@ -222,52 +347,214 @@ HRESULT CStage_Boss1::Ready_UI_Layer(LAYERTYPE layerType)
     return S_OK;
 }
 
-HRESULT CStage_Boss1::Ready_Prototype()
-{
-    // Move Loading Scene
-
-    return S_OK;
-}
-
 void CStage_Boss1::OnDialogueEnd(const string& id)
 {
-    if (id == "boss1_accept")
+    if (id == "Boss_Start")
     {
-        cout << "수락" << endl;
+        On_BossStartEnd();
+    }
+    else if (id == "Boss_Sacrifice")
+    {
+        On_SacrificeEnd();
+    }
+    else if (id == "Boss_Reject")
+    {
+        On_RejectEnd();
     }
 
-    else if (id == "boss1_reject")
+}
+
+void CStage_Boss1::Begin_PlayerDecide()
+{
+    auto rigidbody = dynamic_cast<CRigidbody*>(
+        m_Player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::RIGIDBODY));
+
+    if (rigidbody)
+        rigidbody->Set_Velocity({ 0.f, 0.f, 0.f });
+
+    auto state = dynamic_cast<CState*>(m_Player->Get_Component(
+        ID_DYNAMIC, COMPONENTTYPE::STATE));
+
+    NULL_CHECK(state);
+
+    state->Change_State(ACTORSTATE::PLAYER_DECIDE);
+
+    m_Dialogue->Start_Dialogue("Boss_Sacrifice", _vec2(0.f, 200.f), _vec2(300.f, 80.f));
+
+    CCamSetupBuilder(m_CamController)
+        .SetTarget(m_PlayerTransformCom)
+        .Distance(8.f)
+        .LagSpeed(3.f)
+        .ZoomSpeed(1.f)
+        .Apply();
+
+}
+
+void CStage_Boss1::Hide_PlayerUI()
+{
+    Setup_UIAnimation(220.f);
+
+    CCamSetupBuilder(m_CamController)
+        .SetTarget(m_Boss->Get_Transform())
+        .Distance(11.f)
+        .LagSpeed(3.f)
+        .ZoomSpeed(0.5f)
+        .Apply();
+
+    m_WaitingForDialogue = true;
+    m_DialogueDelayTimer = 0.f;
+}
+
+void CStage_Boss1::Show_PlayerUI()
+{
+    Setup_UIAnimation(-220.f);
+}
+
+void CStage_Boss1::Setup_UIAnimation(_float offsetY)
+{
+    m_IsUIMoving = true;
+    m_UIAnimTime = 0.f;
+
+    m_OriginalUIPositions.clear();
+    m_TargetUIPositions.clear();
+
+    for (const auto& ui : m_Player_UI)
     {
-        cout << "거절" << endl;
+        _vec3 pos = ui->Get_Transform()->Get_Pos();
+
+        m_OriginalUIPositions.push_back(pos);
+        m_TargetUIPositions.push_back({ pos.x, pos.y + offsetY, pos.z });
     }
 }
 
-void CStage_Boss1::Create_Trigger(_vec3 pos)
+void CStage_Boss1::OnRefusedEnd()
 {
-    // 보스 연출용 처음 한번만 사용할 트리거
-    auto gameLayer = m_Layers[LAYERTYPE::GAMELOGIC];
-    NULL_CHECK(gameLayer);
-
-    auto trigger = CTrigger_Dungeon::Create(m_GraphicDev);
-    NULL_CHECK(trigger);
-
-    trigger->Set_Bounds(pos, _vec3(5.f, 5.f, 5.f));
-    trigger->Set_TriggerOnce(true); // 한 번만 실행
-
-    trigger->Set_Callback([this]()
+    // 첫 번째 연출 끝났을 때 콜백
+    m_CamController->Get_OwnerCamMovement()->Set_OnTransitionEnd([this]()
         {
-            Begin_BossIntro();
+            // 두 번쨰 연출 끝났을 때 콜백
+            m_CamController->Get_OwnerCamMovement()->Set_OnTransitionEnd([this]()
+                {
+                    // 대사 시작
+                    m_Dialogue->Start_Dialogue("Boss_Reject", _vec2(0.f, 200.f), _vec2(300.f, 80.f));
+                });
+
+            // Refuse 카메라 연출 끝, 이제 보스한테 줌
+            CCamSetupBuilder(m_CamController)
+                .SetTarget(m_Boss->Get_Transform())
+                .Distance(8.f)
+                .LagSpeed(3.f)
+                .ZoomSpeed(3.f)
+                .Apply();
         });
 
-    gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
+
+    // 카메라 플레이어한테 원래대로 돌리기
+    CCamSetupBuilder(m_CamController)
+        .SetTarget(m_PlayerTransformCom)
+        .Distance(12.f)
+        .LagSpeed(3.f)
+        .ZoomSpeed(3.f)
+        .Apply();
 
 }
 
-void CStage_Boss1::Begin_BossIntro()
+void CStage_Boss1::End_CutScene()
 {
-    // 카메라 연출 하면서, UI를 모두 끄는 식으로 가는게 좋을거같다.
-    // 그리고 연출이 끝나면 
-    cout << "일단 들어옴" << endl;
+
+}
+
+void CStage_Boss1::On_BossStartEnd()
+{
+    Reset_Cam();
+}
+
+void CStage_Boss1::On_SacrificeEnd()
+{
+    auto weapon = dynamic_cast<CWeaponEquip*>(
+        m_Player->Get_Component(ID_STATIC, COMPONENTTYPE::WEAPON_EQUIP));
+
+    NULL_CHECK(weapon);
+
+    auto animator = dynamic_cast<CAnimator*>(
+        m_Player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+
+    NULL_CHECK(animator);
+
+    int weaponID = weapon->Get_CurrentWeaponID();
+    cout << "Current Weapon ID: " << weaponID << endl;
+
+    // 3001 : 검, 3002 : 건틀릿
+    if (weapon->Get_CurrentWeaponID() == 3001)
+    {
+        animator->Play_Animation(L"Refuse_Sword", ANIMSTATE::ONCE);
+    }
+
+    else if (weapon->Get_CurrentWeaponID() == 3002)
+    {
+        animator->Play_Animation(L"Refuse_Gauntlet", ANIMSTATE::ONCE);
+    }
+    // 디버깅 할 때 무기 안들대 기본값
+    else
+        animator->Play_Animation(L"Refuse_Sword", ANIMSTATE::ONCE);
+
+    auto state = dynamic_cast<CState*>(m_Player->Get_Component(
+        ID_DYNAMIC, COMPONENTTYPE::STATE));
+
+    NULL_CHECK(state);
+
+    state->Change_State(ACTORSTATE::PLAYER_REFUSE);
+}
+
+void CStage_Boss1::On_RejectEnd()
+{
+    auto boss = dynamic_cast<CBossPhase1*>(m_Boss);
+    if (boss)
+    {
+        auto stateMachine = boss->Get_StateMachine();
+
+        auto talkState = dynamic_cast<CBossTalk*>(
+            stateMachine->Get_CurState());
+
+        if (talkState)
+            talkState->Set_Phase(CBossTalk::PHASE::CAHANGE);
+
+        Reset_Cam();
+    }
+}
+
+void CStage_Boss1::Reset_Cam()
+{
+    CCamSetupBuilder(m_CamController)
+        .SetTarget(m_PlayerTransformCom)
+        .Distance(18.f) // 게임이랑 비슷하게할거면 Distance좀 더 조절해야 할듯
+        .LagSpeed(3.f)
+        .ZoomSpeed(0.5f)
+        .Apply();
+}
+
+void CStage_Boss1::Move_PlayerUI(const _float timeDelta)
+{
+    if (!m_IsUIMoving)
+        return;
+
+    m_UIAnimTime += timeDelta;
+    _float ratio = clamp(m_UIAnimTime / m_UIAnimDuration, 0.f, 1.f);
+
+    for (size_t i = 0; i < m_Player_UI.size(); ++i)
+    {
+        _vec3 current = Engine::Lerp_EaseIn(
+            m_OriginalUIPositions[i],
+            m_TargetUIPositions[i],
+            ratio,
+            2.f  
+        );
+
+        m_Player_UI[i]->Get_Transform()->Set_Pos(current);
+    }
+
+    if (ratio >= 1.f)
+        m_IsUIMoving = false;
 }
 
 CStage_Boss1* CStage_Boss1::Create(DEVICE graphicDev)
