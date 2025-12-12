@@ -52,7 +52,6 @@ HRESULT CUICookingCell::Ready_GameObject()
     m_CardIcon = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_RITUALCARD);
     m_CardIcon->SetRegister(false);
     m_CardIcon->Get_Transform()->Set_Scale(250.f, 264, 0.f);
-    //m_CardIcon->Get_Transform()->Set_Scale(250.f, 220.f, 0.f);
     m_CardIcon->Get_Transform()->Set_Pos(370.f, 0.f, 0.f);
 
     //카드 아이템 그리기용 객체 생성
@@ -60,13 +59,16 @@ HRESULT CUICookingCell::Ready_GameObject()
     m_CardItemIcon->SetRegister(false);
     _vec3 cardPos = m_CardIcon->Get_Transform()->Get_Pos();
     _vec2 itemOffset = { 0.f, 100.f };
-    m_CardItemIcon->Get_Transform()->Set_Scale(_vec3(40.f, 40.f, 0.f));
+    m_CardItemIcon->SetCloneTexAspectScale({ .05f, .05f, 1 });
     m_CardItemIcon->Get_Transform()->Set_Pos(cardPos.x + itemOffset.x, cardPos.y + itemOffset.y, 0.f);
 
-    //필요 재료 표시용 객체 생성
-
-
-    //외곽선용 객체 생성
+    ////필요 재료 표시용 객체 생성
+    //m_IngredientIcon->CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_ITEM);
+    //m_IngredientIcon->SetRegister(false);A
+    //_vec2 itemOffset2 = { -50.f,0.f };
+    //m_IngredientIcon->Get_Transform()->Set_Scale(_vec3(10.f, 10.f, 0.f));
+    //m_IngredientIcon->Get_Transform()->Set_Pos(cardPos.x + itemOffset2.x, cardPos.y + itemOffset2.y, 0.f);
+  
     m_Highlight = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_HIGHLIGHT);
     m_Highlight->SetRegister(false);
     m_Highlight->Get_Transform()->Set_Scale(_vec3(54.f, 54.f, 0.f));
@@ -87,6 +89,9 @@ _int CUICookingCell::Update_GameObject(const _float& timeDelta)
 
     if (m_CardItemIcon)
         m_CardItemIcon->Update_GameObject(timeDelta);
+
+    //if (m_IngredientIcon)
+    //    m_IngredientIcon->Update_GameObject(timeDelta);
 
     if (m_Highlight)
     {
@@ -134,14 +139,9 @@ void CUICookingCell::Render_GameObject()
     m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
     m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
     m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(255, 255, 255, 255));
+
     if (!(m_RecipeId == -1))
     {
-        //m_CardItemIcon->Set_TextureIndex(m_TextureIndex);
-
-            // int TextureIndex = CRecipeDB::GetInstance()->GetIndexById(m_RecipeId);
-             //m_ItemIcon->Set_TextureIndex(TextureIndex);
-             //m_CardItemIcon->Set_TextureIndex(TextureIndex);
-
         int TextureIndex = CItemDB::GetInstance()->GetIndexById(CRecipeDB::GetInstance()->GetRecipeById(m_RecipeId)->result);
         m_ItemIcon->Set_TextureIndex(TextureIndex);
         auto iconTransform = m_ItemIcon->Get_Transform();
@@ -161,7 +161,6 @@ void CUICookingCell::Render_GameObject()
         m_ItemTargetScale = m_ItemBaseScale * 1.2;
 
         m_Highlight->Set_TextureIndex(0);
-        //  m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
           //외곽선 바꾸기
         D3DCOLOR color = D3DCOLOR_ARGB(255, 255, 0, 0);
 
@@ -187,7 +186,9 @@ void CUICookingCell::Render_GameObject()
             int TextureIndex = CItemDB::GetInstance()->GetIndexById(CRecipeDB::GetInstance()->GetRecipeById(m_RecipeId)->result);
             m_CardItemIcon->Set_TextureIndex(TextureIndex);
             m_CardItemIcon->Render_GameObject();
-
+            //m_IngredientIcon->Set_TextureIndex();
+            //int TextureIndex2 = CItemDB::GetInstance()->GetIndexById(CRecipeDB::GetInstance()->GetRecipeById(m_RecipeId)->ingredient);
+            //m_IngredientIcon->Render_GameObject();
             //TODO 유림 : 이미지 바꿀건지 결정하기
             _vec3 pos = m_CardIcon->Get_Transform()->Get_Pos();
             _vec2 descOffset = { 0.f, -10.f };

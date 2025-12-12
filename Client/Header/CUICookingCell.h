@@ -38,7 +38,7 @@ private:
     CUICookingMenu* m_CookingMenu;
     CUIIcon*        m_ItemIcon;
     CUIIcon*        m_CardIcon;
-    //CUIIcon*        m_IngredientIcon; -> 진행중
+    //CUIIcon*        m_IngredientIcon;
     CUIIcon*        m_CardItemIcon;
     CUIIcon*        m_Highlight;
 

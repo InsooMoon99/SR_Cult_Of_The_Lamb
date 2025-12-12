@@ -35,7 +35,7 @@ int CUICharging::Update_GameObject(const _float& timeDelta)
     {
         CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_ALPHA, this);
 
-        float Length = 2.5;
+        float Length = 1.5;
         float chargeTime = m_PlayerSkill->Get_ChargeTime();
         float maxChargeTime = m_PlayerSkill->Get_MaxChargeTime();
 
