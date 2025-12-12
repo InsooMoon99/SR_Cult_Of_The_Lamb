@@ -1,7 +1,6 @@
 ﻿
 #include "pch.h"
 #include "CUICookingMenu.h"
-
 #include "CCookingController.h"
 #include "CTexture.h"
 #include "CRcTex.h"
@@ -19,6 +18,7 @@
 
 CUICookingMenu::CUICookingMenu(DEVICE graphicDev)
     : CUI(graphicDev),
+      m_CookingController(nullptr),
       m_Cols(6),
       m_CellWidth(100.f),
       m_CellHeight(100.f)
@@ -36,7 +36,6 @@ HRESULT CUICookingMenu::Ready_GameObject()
     m_Speed = 900.f;
 
     m_TransformCom->Set_Scale(450.f, 400.f, 1.f);
-    m_TransformCom->Set_Pos(m_ClosedX, 0.f, 0.f);
 
     return S_OK;
 }
@@ -62,6 +61,7 @@ void CUICookingMenu::Initialize_GameObject()
             int recipeId = recipes[i].id;
            // texindex = i + 8;
             cookingCell->Set_OnClick([this, recipeId]() {m_CookingController->AddRecipe(recipeId, m_Inventory); });
+            cookingCell->Set_OnActive([this,recipeId]() { return m_CookingController->CanCook(recipeId,m_Inventory); });
             cookingCell->Set_RecipeId(recipeId);
         }
         else

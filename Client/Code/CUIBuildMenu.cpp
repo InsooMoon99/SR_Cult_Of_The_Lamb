@@ -57,7 +57,6 @@ HRESULT CUIBuildMenu::Ready_GameObject()
     m_ClosedX = -WINCX;
     m_Speed = 900.f;
 
-
     //건축물 아이템 셀
     m_CookingFireCell = CUIBuildCell::Create(m_GraphicDev);
     m_CookingFireCell->Set_BuildIndex(BUILDITEM::COOKINGFIRE);

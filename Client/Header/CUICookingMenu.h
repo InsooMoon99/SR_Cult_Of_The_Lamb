@@ -1,7 +1,8 @@
 ﻿#pragma once
 #include "CUI.h"
+#include "CCookingController.h"
+
 class CInventory;
-class CCookingController;
 class CUICookedFoodCell;
 struct Recipe;
 class CUIButton;
@@ -26,7 +27,6 @@ public:
     void    Check_Hovered();
     HRESULT Add_Component();
     static CUICookingMenu* Create(DEVICE graphicDev);
-
     void SetOnDeactivate(function<void()> deactivate) { m_Deactivate = deactivate; }
     void Free() override;
 private:
@@ -37,7 +37,7 @@ private:
     CUIButton*              m_CancelButton{};
 
     CInventory*             m_Inventory;
-    CCookingController* m_CookingController;
+    CCookingController*     m_CookingController;
     float                   m_TargetX{};
     float                   m_ClosedX{};
     float                   m_Speed{};

@@ -48,6 +48,7 @@ HRESULT CUICookingCell::Ready_GameObject()
     m_ItemIcon->SetRegister(false); // 아이템 텍스처 렌더 그룹에 중복 등록되는 것 막기 위한 플래그
     m_ItemBaseScale=m_ItemIcon->Get_Transform()->Get_Scale();
     m_ItemTargetScale = m_ItemBaseScale;
+
     //설명 카드 그리기용 객체 생성
     m_CardIcon = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_RITUALCARD);
     m_CardIcon->SetRegister(false);
