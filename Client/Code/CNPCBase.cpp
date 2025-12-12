@@ -78,7 +78,7 @@ void CNPCBase::Render_GameObject()
             m_TextureCom->Set_Texture(key, frame);
     }
 
-    // 5) 기본 초기화 (White Render 방지)
+    // 5) 기본 초기화
     m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
     m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
     m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
