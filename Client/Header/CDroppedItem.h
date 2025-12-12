@@ -66,7 +66,7 @@ private:
     ItemInstance m_itemInst;
     int          m_index = 0;
 
-    FOODQUALITY m_foodQuality = FOODQUALITY::BAD;
+    FOODQUALITY m_foodQuality = FOODQUALITY::NO_FOOD;
 
     float m_ignoreTime = 0;
 private:

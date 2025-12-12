@@ -23,7 +23,7 @@ public:
 public:
     void SetStockMax(int maxNum) { m_StockMax = maxNum; }
     void SetDoneEvent(function<void()> doneEvent) { m_DoneEvent = doneEvent; }
-    void SetResultItemDrop(function<void(int ,bool)> DropDish) { m_ResultItemDrop = DropDish; }
+    void SetResultItemDrop(function<void(int , FOODQUALITY)> DropDish) { m_ResultItemDrop = DropDish; }
 
     void Stencil();
 private:
@@ -42,12 +42,12 @@ private:
 
     RecipeInst  m_recipeInst;
     function<void()> m_DoneEvent;
-    function<void(int,bool)> m_ResultItemDrop;
+    function<void(int, FOODQUALITY)> m_ResultItemDrop;
 
     CUIIcon* m_ItemIcon = nullptr;
     CUIIcon* m_Curser = nullptr;
 
-    bool m_result = false;
+    FOODQUALITY m_result = NO_FOOD;
     int m_StockMax = 0;
     _vec3 m_CurserPos;
 

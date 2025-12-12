@@ -54,13 +54,20 @@ void CUICookingGame::Initialize_GameObject()
 
     //m_TransformCom->Set_Pos({ m_OwnerTransform->Get_Pos().x ,  m_OwnerTransform->Get_Pos().y + 3.f,  m_OwnerTransform->Get_Pos().z +2.f});
 
+    {
+        // 테스트
+        const float BG_WIDTH = 45.f * 3.5f;
+        const float BG_HEIGHT = 6.f * 3.5f;
 
+        m_BaseRight = m_TransformCom->Get_Pos().x + (BG_WIDTH );
+        m_BaseLeft = m_TransformCom->Get_Pos().x - (BG_WIDTH );
+
+        m_BufferCom->Set_Scale(BG_WIDTH, BG_HEIGHT);
+        m_BufferCom->Set_Offset(0.f, 0.f);
+}
    // 결과물 이미지
     m_ItemIcon = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_ITEM);
-    if (m_ItemIcon)
-    {
-        //SpawnUIOnLayer(m_ItemIcon, OBJTYPE::UI);
-    }
+
 
     // 움직이는 화살표
     m_Curser = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_COOK);
@@ -72,10 +79,10 @@ void CUICookingGame::Initialize_GameObject()
     }
 
 //영역 위치 랜덤으로
-    m_StencilLength = CRandomMgr::GetInstance()->Get_Int_Random(20, 60);
-    m_StencilPosX = CRandomMgr::GetInstance()->Get_Int_Random(int(m_TransformCom->Get_Pos().x - m_StencilLength*.5f),int (m_TransformCom->Get_Pos().x + m_StencilLength*.5f));
-    m_StencilLeft = m_StencilPosX - m_StencilLength;
-    m_StencilRight = m_StencilPosX + m_StencilLength;
+    m_StencilLength = CRandomMgr::GetInstance()->Get_Int_Random(80, 140);
+    m_StencilPosX = (CRandomMgr::GetInstance()->Get_Int_Random((int)(m_BaseLeft + m_StencilLength*.5f),(int) (m_BaseRight - m_StencilLength*.5f)));
+    m_StencilLeft = m_StencilPosX - m_StencilLength * .5f;
+    m_StencilRight = m_StencilPosX + m_StencilLength * .5f;
     // 기본 버퍼 크기 생각 해야할듯
 }
 
@@ -92,7 +99,6 @@ _int CUICookingGame::Update_GameObject(const _float& timeDelta)
     {
         //커서포즈 멈춤
         OnClick = true;
-
     }
 
     if (OnClick == false)
@@ -103,25 +109,35 @@ _int CUICookingGame::Update_GameObject(const _float& timeDelta)
         {
             m_Speed *= -1;
         }
-        
-
+        cout << "m_CurserX" << m_CurserX << endl;
     }
 
     if (OnClick == true)
     {
         DelayTime += timeDelta;
-
-        if (m_CurserX <= m_StencilRight && m_CurserX >= m_StencilLeft)
+        //일단 부호 반대로 transform 이랑 retex 좌표계안맞는득
+        if (m_CurserX >= -m_StencilRight && m_CurserX <= -m_StencilLeft)
         {
-            m_result = false;
+            m_result = GOOD; // 안탄거
+            cout << "curser" << "true" << endl;
         }
         else
         {
-            m_result = true;
+            m_result = BAD; // 탄거
+            cout << "curser" << "false" << endl;
+
         }
+
 
         if (DelayTime > 1.f)
         {
+            cout << "m_StencilLeft" << m_StencilLeft << endl;
+            cout << "m_StencilRight" << m_StencilRight << endl;
+            cout << "m_StencilLength" << m_StencilLength << endl;
+            cout << "m_StencilPosX" << m_StencilPosX << endl;
+
+
+           
             //위치가 에리어 안이라면
            
            m_DoneEvent();
@@ -166,14 +182,14 @@ void CUICookingGame::Render_GameObject()
     const _matrix& world = m_TransformCom->Get_World();
 
     {
-        const float BG_WIDTH = 45.f * 3.5f;
-        const float BG_HEIGHT = 6.f * 3.5f;
+        //const float BG_WIDTH = 45.f * 3.5f;
+        //const float BG_HEIGHT = 6.f * 3.5f;
 
-        m_BaseRight = m_TransformCom->Get_Pos().x + (BG_WIDTH /** .5f*/);
-        m_BaseLeft = m_TransformCom->Get_Pos().x - (BG_WIDTH /** .5f*/);
+        //m_BaseRight = m_TransformCom->Get_Pos().x + (BG_WIDTH /** .5f*/);
+        //m_BaseLeft = m_TransformCom->Get_Pos().x - (BG_WIDTH /** .5f*/);
 
-        m_BufferCom->Set_Scale(BG_WIDTH, BG_HEIGHT);
-        m_BufferCom->Set_Offset(0.f, 0.f);
+        //m_BufferCom->Set_Scale(BG_WIDTH, BG_HEIGHT);
+        //m_BufferCom->Set_Offset(0.f, 0.f);
 
         m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
         m_TextureCom->Set_Texture(4);  // 레드
@@ -285,9 +301,10 @@ void CUICookingGame::Stencil()
     m_GraphicDev->SetRenderState(D3DRS_COLORWRITEENABLE, 0); // 색상출력 끄기
 
     // 마스크 랜더
-
-    m_MaskBuffer->Set_Scale(m_StencilLength*2.f, 100);
-    m_MaskBuffer->Set_Offset(m_StencilPosX- m_TransformCom->Get_Pos().x, 0);
+    //float localOffsetX = m_StencilPosX - m_TransformCom->Get_Pos().x;
+    //m_MaskBuffer->Set_Offset(localOffsetX, 0);
+    m_MaskBuffer->Set_Scale((int)m_StencilLength*.5f, 100);//기본 rctex가 2x2라서 length의 두배일거임
+ m_MaskBuffer->Set_Offset(m_StencilPosX , 0);
     m_MaskBuffer->Render_Buffer();
 
     //

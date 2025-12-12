@@ -78,7 +78,7 @@ _int CCookingController::Update_Component(const _float& timeDelta)
             CInventory* inven = dynamic_cast<CInventory*>(m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::INVENTORY));
 
             miniGame->SetDoneEvent([this]() {m_bDone = true; });
-            miniGame->SetResultItemDrop([this](int _dishID, bool _quality) {DropDish(_dishID, _quality); });
+            miniGame->SetResultItemDrop([this](int _dishID, FOODQUALITY _quality) {DropDish(_dishID, _quality); });
         }
         m_queRecipeInst.front().StockNum--;
 
@@ -221,7 +221,7 @@ bool CCookingController::ReloadForMiniGame()
     return true;
 }
 
-void CCookingController::DropDish(int ResultItemID, bool quality)
+void CCookingController::DropDish(int ResultItemID, FOODQUALITY quality)
 {
 
     if (CItemDB::GetInstance()->GetIndexById(ResultItemID)); // 유효성 검사 함수 내부에 assert
@@ -234,7 +234,7 @@ void CCookingController::DropDish(int ResultItemID, bool quality)
     D3DXVec3Normalize(&tmpvec, &tmpvec);
 
     float horizontal = 20.f;
-    float vertical = 40.f;
+    float vertical = 35.f;
 
 
     _vec3 Startpos = { m_Owner->Get_Transform()->Get_Pos().x, 0.5f, m_Owner->Get_Transform()->Get_Pos().z };

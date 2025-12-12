@@ -437,16 +437,16 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
         layer->Add_GameObject(OBJTYPE::BUILDING, kitchen),
         L"Add_GameObject(CWorkBench) failed");
 
-    // -----------------------------
-    // Follower
-    // -----------------------------
-    gameObject = CFollowerCow::Create(m_GraphicDev);
+    //// -----------------------------
+    //// Follower
+    //// -----------------------------
+    //gameObject = CFollowerCow::Create(m_GraphicDev);
 
-    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"Create NPC object has failed")
+    //NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"Create NPC object has failed")
 
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::NPC, gameObject),
-        L"Add NPC object on layer has failed");
+    //FAILED_CHECK_MSG(
+    //    layer->Add_GameObject(OBJTYPE::NPC, gameObject),
+    //    L"Add NPC object on layer has failed");
 
     m_Layers.insert({ layerType, layer });
 

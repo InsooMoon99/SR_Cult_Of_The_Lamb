@@ -37,7 +37,7 @@ public:
 
     //미니 게임
     bool ReloadForMiniGame();
-    void DropDish(int dishID, bool quality);
+    void DropDish(int dishID, FOODQUALITY quality);
     void Quit();
 
     bool m_EnterFlag = false;
