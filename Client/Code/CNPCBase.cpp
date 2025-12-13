@@ -1,14 +1,15 @@
 ﻿#include "pch.h"
 #include "CNPCBase.h"
 
-#include <CCombatStat.h>
 #include "CAnimator.h"
 #include "CBoxCollider.h"
+#include "CCombatStat.h"
 #include "CCreateHelper.h"
 #include "CInteractionChecker.h"
 #include "CNPCController.h"
 #include "CRcTex.h"
 #include "CRigidbody.h"
+#include "CState.h"
 #include "CTexture.h"
 #include "CTransform.h"
 
@@ -35,13 +36,20 @@ void CNPCBase::Initialize_GameObject()
 {
     CCharacterBase::Initialize_GameObject();
 
+    // NPC는 방향에 따라 자동 반전을 사용
+    if (m_StateCom)
+        m_StateCom->Set_StateIndependentDir(true);
+
     if (m_CombatStatCom)
-        m_CombatStatCom->Set_Speed(5.f);
+        m_CombatStatCom->Set_Speed(3.f);
+
+    m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(45.f));
 
     if (m_Rigidbody)
     {
-        m_Rigidbody->Set_UseAccel(true);
-        m_Rigidbody->Set_UseFriction(true);
+        // 벽 충돌판정을 위해 존재는 하나 연산은 하나도 안하겠다
+        m_Rigidbody->Set_UseAccel(false);
+        m_Rigidbody->Set_UseFriction(false);
         m_Rigidbody->Set_UseGravity(false);
     }
 }
@@ -70,7 +78,7 @@ void CNPCBase::Render_GameObject()
     {
         const wstring& key   = m_AnimatorCom->Get_CurKey();
         int            frame = m_AnimatorCom->Get_CurFrame();
-        
+
         if (m_TextureCom)
             m_TextureCom->Set_Texture(key, frame);
     }

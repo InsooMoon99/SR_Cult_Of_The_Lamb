@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CNPCState.h"
 
+/// @brief NPC의 이동(Run) 상태
 class CNPCState_Run : public CNPCState
 {
 private:

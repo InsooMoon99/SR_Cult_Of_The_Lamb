@@ -9,6 +9,9 @@
 #include "CNPCStateMachine.h"
 #include "CRigidbody.h"
 #include "CTransform.h"
+#include "CDropSystem.h"
+#include "CDroppedItem.h"
+#include "CItemDB.h"
 
 CNPCState_Idle::CNPCState_Idle(CNPCBase* owner, CNPCStateMachine* stateMachine)
     : CNPCState(owner, stateMachine)
@@ -54,6 +57,7 @@ _int CNPCState_Idle::Update_State(const _float& timeDelta)
                     _vec3 vTargetPos = nearCircle->Get_Transform()->Get_Pos();
                     m_Controller->Set_TargetPos(vTargetPos);
                     m_Controller->Set_TargetObject(nearCircle); // Set Target Object
+                    m_Controller->Set_TargetType(CNPCController::NPC_TARGET_TYPE::CONSTRUCTION);
 
                     _vec3 toTarget = vTargetPos - pos;
 
@@ -63,6 +67,21 @@ _int CNPCState_Idle::Update_State(const _float& timeDelta)
                         return static_cast<_int>(CNPCStateMachine::NPC_STATE::BUILD);
                     else
                         return static_cast<_int>(CNPCStateMachine::NPC_STATE::RUN);
+                }
+            }
+
+            // Food Search
+            CDroppedItem* pNearestFood = checker->Get_NearestFood(m_OwnerTransform->Get_Pos());
+
+            if (pNearestFood)
+            {
+                if (m_Controller)
+                {
+                    _vec3 itemPos = pNearestFood->Get_Transform()->Get_Pos();
+                    m_Controller->Set_TargetPos(itemPos);
+                    m_Controller->Set_TargetObject(pNearestFood);
+                    m_Controller->Set_TargetType(CNPCController::NPC_TARGET_TYPE::FOOD);
+                    return static_cast<_int>(CNPCStateMachine::NPC_STATE::RUN);
                 }
             }
 

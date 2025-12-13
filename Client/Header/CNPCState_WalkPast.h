@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CNPCState.h"
 
+/// @brief NPC가 플레이어를 지나쳐 이동하는 상태
 class CNPCState_WalkPast : public CNPCState
 {
 public:

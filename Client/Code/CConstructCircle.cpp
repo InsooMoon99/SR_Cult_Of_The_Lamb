@@ -18,6 +18,7 @@
 #include "CTexture.h"
 #include "CTimerMgr.h"
 #include "CTransform.h"
+#include "CVillageStateMgr.h"
 
 CConstructCircle::CConstructCircle(DEVICE graphicDev)
     : CBuildingBase(graphicDev)
@@ -155,6 +156,10 @@ void CConstructCircle::OnStayOverlap(CCollider* self, CCollider* other)
 
             if (CScene* curScene = CManagement::GetInstance()->Get_Scene())
                 curScene->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, newObj, OBJTYPE::BUILDING);
+
+            // 월드 상태 업데이트 (건설 완료)
+            _vec3 myPos = m_TransformCom->Get_Pos();
+            CVillageStateMgr::GetInstance()->Update_Building(myPos, true);
 
             this->Mark_As_PendingKill();
         }

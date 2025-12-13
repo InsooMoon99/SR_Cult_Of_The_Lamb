@@ -33,7 +33,8 @@ void CFollowerCow::Initialize_GameObject()
 {
     CNPCBase::Initialize_GameObject();
 
-    m_TransformCom->Set_Pos(15.f, 0.f, 15.f);
+    m_TransformCom->Set_Pos(15.f, 1.f, 15.f);
+    Set_Name(L"FollowerCow");
 }
 
 _int CFollowerCow::Update_GameObject(const _float& timeDelta)
@@ -73,71 +74,71 @@ void CFollowerCow::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"CowIdle",
                                     49,
                                     0.02f,
-                                    _vec2(1.f, 1.f),
-                                    _vec2(1.f, 1.f));
+                                    _vec2(0.75f, 0.67f),
+                                    _vec2(0.f, -0.13f));
     //TODO LOOP
 
     m_AnimatorCom->Create_Animation(L"CowRun",
                                     29,
                                     0.02f,
-                                    _vec2(1.f, 1.f),
-                                    _vec2(1.f, 1.f));
+                                    _vec2(0.7f, 0.7f),
+                                    _vec2(0.f, -0.13f));
     //TODO LOOP
 
-    m_AnimatorCom->Create_Animation(L"CowWalkpast",
+    m_AnimatorCom->Create_Animation(L"CowWalkPast",
                                     86,
                                     0.02f,
-                                    _vec2(1.f, 1.f),
-                                    _vec2(1.f, 1.f));
+                                    _vec2(0.7f, 0.7f),
+                                    _vec2(0.f, -0.13f));
     //TODO ONCE
 
     m_AnimatorCom->Create_Animation(L"CowBuild",
                                     53,
                                     0.02f,
-                                    _vec2(1.f, 1.f),
-                                    _vec2(1.f, 1.f));
+                                    _vec2(0.8f, 0.8f),
+                                    _vec2(0.f, -0.13f));
     //TODO LOOP
 
     m_AnimatorCom->Create_Animation(L"CowChopWood",
                                     81,
                                     0.02f,
-                                    _vec2(1.f, 1.f),
-                                    _vec2(1.f, 1.f));
+                                    _vec2(0.8f, 0.8f),
+                                    _vec2(0.f, 0.f));
     //TODO LOOP
 
     m_AnimatorCom->Create_Animation(L"CowMining",
                                     48,
                                     0.02f,
-                                    _vec2(1.f, 1.f),
-                                    _vec2(1.f, 1.f));
+                                    _vec2(0.8f, 0.8f),
+                                    _vec2(0.f, 0.f));
     //TODO LOOP
 
     m_AnimatorCom->Create_Animation(L"CowPray_Half",
                                     62,
                                     0.04f,
                                     _vec2(1.f, 1.f),
-                                    _vec2(1.f, 1.f));
+                                    _vec2(0.f, 0.f));
     //TODO LOOP
 
     m_AnimatorCom->Create_Animation(L"CowPrayPeek_Half",
                                     62,
                                     0.04f,
                                     _vec2(1.f, 1.f),
-                                    _vec2(1.f, 1.f));
+                                    _vec2(0.f, 0.f));
     //TODO ONCE
 
     m_AnimatorCom->Create_Animation(L"CowEat_Half",
                                     50,
                                     0.04f,
                                     _vec2(1.f, 1.f),
-                                    _vec2(1.f, 1.f));
+                                    _vec2(0.f, 0.f));
     //TODO ONCE
 
     m_AnimatorCom->Create_Animation(L"CowSpawn_Half",
                                     172,
                                     0.04f,
-                                    _vec2(1.f, 1.f),
-                                    _vec2(1.f, 1.f));
+                                    _vec2(1.5f, 1.5f),
+                                    _vec2(0.f, 0.2f));
     //TODO ONCE
 }
 

@@ -1,15 +1,18 @@
 ﻿#pragma once
 #include "CWorldInteractive.h"
-class CRock :
-    public CWorldInteractive
+
+class CRock : public CWorldInteractive
 {
 public:
     enum ROCK { BIGROCK, MIDDLEROCK, SMALLROCK, END_ROCK };
-protected:
 
+protected:
     explicit CRock(DEVICE graphicDev, ROCK rock);
     explicit CRock(const CRock& rhs);
-    virtual ~CRock();
+    ~CRock() override;
+
+public:
+    void OnInteractiveDamaged() override;
 
 public:
     HRESULT Ready_GameObject() override;
@@ -20,11 +23,10 @@ public:
 
     void KnockBackEff(const _float& timeDelta);
 protected:
-    virtual HRESULT Add_Component();
+    HRESULT Add_Component() override;
 
-    void    OnBeginOverlap(CCollider* self, CCollider* other) override;
-    void    OnEndOverlap(CCollider* self, CCollider* other) override;
-
+    void OnBeginOverlap(CCollider* self, CCollider* other) override;
+    void OnEndOverlap(CCollider* self, CCollider* other) override;
 
 protected:
     ROCK m_rock;
@@ -37,18 +39,17 @@ protected:
     _int m_ItemNum;
 
     // 넉백
-    bool m_OnDamage = false;
+    bool  m_OnDamage = false;
     _vec3 m_OrignPos;
     float m_KockBackTimer = 0;
-    bool m_KockDone = false;
-    bool m_ReturnDone = false;
-    _vec3 m_MovedPos {0.f, 0.f, 0.f};
-    float LerpTime=0;
+    bool  m_KockDone      = false;
+    bool  m_ReturnDone    = false;
+    _vec3 m_MovedPos{ 0.f, 0.f, 0.f };
+    float LerpTime = 0;
+
 public:
     static CRock* Create(DEVICE graphicDev, ROCK rock);
 
 protected:
-
     void Free() override;
 };
-

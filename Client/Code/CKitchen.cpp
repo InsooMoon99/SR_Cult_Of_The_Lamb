@@ -16,15 +16,13 @@
 CKitchen::CKitchen(DEVICE graphicDev)
     : CBuildingBase(graphicDev),
       m_CookingCtrlCom(nullptr),
-      m_CookingMenu(nullptr),
-      m_bPlayerOverlap(false)
+      m_CookingMenu(nullptr)
 { }
 
 CKitchen::CKitchen(const CKitchen& rhs)
     : CBuildingBase(rhs),
       m_CookingCtrlCom(nullptr),
-      m_CookingMenu(nullptr),
-      m_bPlayerOverlap(false)
+      m_CookingMenu(nullptr)
 { }
 
 CKitchen::~CKitchen()

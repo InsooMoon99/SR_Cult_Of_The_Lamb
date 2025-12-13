@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CNPCState.h"
 
+/// @brief NPC가 건물을 짓거나 작업하는 상태
 class CNPCState_Build : public CNPCState
 {
 public:

@@ -24,13 +24,12 @@ void CNPCState_WalkPast::Enter()
 
     if (m_OwnerAnimator && m_Controller)
     {
-        // "Walk" -> "WalkPast"
         wstring key = m_Controller->Get_AnimKeyPrefix() + L"WalkPast";
         m_OwnerAnimator->Play_Animation(key, ANIMSTATE::ONCE);
     }
 
-    if (m_OwnerRigidbody)
-        m_OwnerRigidbody->Set_Friction(0.1f); 
+    //if (m_OwnerRigidbody)
+    //    m_OwnerRigidbody->Set_Friction(0.1f); 
 }
 
 _int CNPCState_WalkPast::Update_State(const _float& timeDelta)
@@ -44,7 +43,9 @@ _int CNPCState_WalkPast::Update_State(const _float& timeDelta)
     // 이동 로직
     if (m_Controller && m_OwnerTransform && m_OwnerRigidbody)
     {
-        const _vec3  targetPos    = m_Controller->Get_TargetPos();
+        _vec3 targetPos = m_Controller->Get_TargetPos();
+        targetPos.y     = 1.f;
+
         const _vec3  myPos        = m_OwnerTransform->Get_Pos();
         _vec3        vecToTarget  = targetPos - myPos;
         const _float distToTarget = D3DXVec3Length(&vecToTarget);
@@ -73,17 +74,17 @@ _int CNPCState_WalkPast::Update_State(const _float& timeDelta)
             }
         }
 
-        // Speed: 50% of Run
-        _float speed = 3.0f;
+        _float speed = 0.0f;
+
         if (m_Controller)
         {
             auto stat = m_Controller->Get_OwnerCombatStat();
             if (stat) speed = stat->Get_Speed();
+            speed *= 0.7f;
         }
 
-        speed *= 0.5f; // Slower
-
-        m_OwnerRigidbody->Add_Force(vecToTarget * speed * 5.f);
+        //m_OwnerRigidbody->Add_Force(vecToTarget * speed * 5.f);
+        m_OwnerTransform->Move_Pos(vecToTarget, timeDelta, speed);
     }
 
     return static_cast<_int>(CNPCStateMachine::NPC_STATE::WALKPAST);
@@ -93,8 +94,8 @@ void CNPCState_WalkPast::Exit()
 {
     CNPCState::Exit();
 
-    if (m_OwnerRigidbody)
-        m_OwnerRigidbody->Set_Friction(0.3f);
+    //if (m_OwnerRigidbody)
+    //    m_OwnerRigidbody->Set_Friction(0.3f);
 }
 
 HRESULT CNPCState_WalkPast::Ready_State()

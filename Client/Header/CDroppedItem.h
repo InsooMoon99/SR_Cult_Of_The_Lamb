@@ -39,6 +39,9 @@ public:
 
     static void Reset_WeaponExplainUI() { m_WeaponExplainUI = nullptr; }
 
+    // 추가 : NPC가 음식 오브젝트를 인식하기 위해 필요한 ItemInstance 반환
+    const ItemInstance& Get_ItemInst() const { return m_itemInst; }
+
 
 
 private:

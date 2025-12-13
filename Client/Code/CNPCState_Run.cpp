@@ -10,6 +10,8 @@
 #include "CRigidbody.h"
 #include "CState.h"
 #include "CTransform.h"
+#include "CDroppedItem.h"
+#include "CConstructCircle.h"
 
 CNPCState_Run::CNPCState_Run(CNPCBase* owner, CNPCStateMachine* stateMachine)
     : CNPCState(owner, stateMachine)
@@ -28,8 +30,8 @@ void CNPCState_Run::Enter()
         m_OwnerAnimator->Play_Animation(key, ANIMSTATE::LOOP);
     }
 
-    if (m_OwnerRigidbody)
-        m_OwnerRigidbody->Set_Friction(0.05f); // 낮은 마찰 (미끄러지듯 이동)
+    //if (m_OwnerRigidbody)
+    //    m_OwnerRigidbody->Set_Friction(0.05f); // 낮은 마찰 (미끄러지듯 이동)
 }
 
 _int CNPCState_Run::Update_State(const _float& timeDelta)
@@ -59,17 +61,34 @@ _int CNPCState_Run::Update_State(const _float& timeDelta)
     // 이동 로직
     if (m_Controller && m_OwnerTransform && m_OwnerRigidbody)
     {
-        const _vec3  targetPos    = m_Controller->Get_TargetPos();
+        _vec3 targetPos = m_Controller->Get_TargetPos();
+        targetPos.y     = 1.f;
+        
         const _vec3  myPos        = m_OwnerTransform->Get_Pos();
         _vec3        vecToTarget  = targetPos - myPos;
-        const _float distToTarget = D3DXVec3Length(&vecToTarget);
+        _vec3 valToTargetXZ = vecToTarget;
+        valToTargetXZ.y = 0.f;
+        const _float distToTarget = D3DXVec3Length(&valToTargetXZ);
 
-        // 건축
         if (distToTarget < 0.2f)
         {
             CGameObject* targetObj = m_Controller->Get_TargetObject();
             if (targetObj && !targetObj->Is_PendingDestroy())
-                return static_cast<_int>(CNPCStateMachine::NPC_STATE::BUILD);
+            {
+                switch(m_Controller->Get_TargetType())
+                {
+                case CNPCController::NPC_TARGET_TYPE::CONSTRUCTION:
+                    return static_cast<_int>(CNPCStateMachine::NPC_STATE::BUILD);
+                case CNPCController::NPC_TARGET_TYPE::FOOD:
+                    return static_cast<_int>(CNPCStateMachine::NPC_STATE::EAT);
+                //case CNPCController::NPC_TARGET_TYPE::TREE:
+                //    return static_cast<_int>(CNPCStateMachine::NPC_STATE::CHOPWOOD);
+                //case CNPCController::NPC_TARGET_TYPE::ROCK:
+                //    return static_cast<_int>(CNPCStateMachine::NPC_STATE::MINING);
+                default:
+                    return static_cast<_int>(CNPCStateMachine::NPC_STATE::IDLE);
+                }
+            }
             else
                 return static_cast<_int>(CNPCStateMachine::NPC_STATE::IDLE);
         }
@@ -96,7 +115,8 @@ _int CNPCState_Run::Update_State(const _float& timeDelta)
             if (stat) speed = stat->Get_Speed();
         }
 
-        m_OwnerRigidbody->Add_Force(vecToTarget * speed * 5.f);
+        //m_OwnerRigidbody->Add_Force(vecToTarget * speed * 5.f);
+        m_OwnerTransform->Move_Pos(vecToTarget, timeDelta, speed);
     }
 
     return static_cast<_int>(CNPCStateMachine::NPC_STATE::RUN);
@@ -106,8 +126,8 @@ void CNPCState_Run::Exit()
 {
     CNPCState::Exit();
 
-    if (m_OwnerRigidbody)
-        m_OwnerRigidbody->Set_Friction(0.3f); // 기본 마찰 복구 (정지 상태는 마찰이 높아야 함)
+    //if (m_OwnerRigidbody)
+    //    m_OwnerRigidbody->Set_Friction(0.3f); // 기본 마찰 복구 (정지 상태는 마찰이 높아야 함)
 }
 
 HRESULT CNPCState_Run::Ready_State()

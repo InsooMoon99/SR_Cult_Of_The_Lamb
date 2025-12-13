@@ -1,12 +1,16 @@
 ﻿#include "pch.h"
 #include "CNPCStateMachine.h"
 #include "CBaseState.h"
+#include "Client_Struct.h"
 
+#include "CNPCBase.h"
+#include "CNPCState_Build.h"
+#include "CNPCState_Eat.h"
 #include "CNPCState_Idle.h"
 #include "CNPCState_Run.h"
-#include "CNPCState_WalkPast.h"
-#include "CNPCState_Build.h"
 #include "CNPCState_Spawn.h"
+#include "CNPCState_WalkPast.h"
+#include "CVillageStateMgr.h"
 
 CNPCStateMachine::CNPCStateMachine()
 { }
@@ -30,9 +34,41 @@ HRESULT CNPCStateMachine::Ready_StateMachine()
     if (FAILED(RegisterState<CNPCState_Build>(NPC_STATE::BUILD, m_Owner)))
         return E_FAIL;
 
+    if (FAILED(RegisterState<CNPCState_Build>(NPC_STATE::CHOPWOOD, m_Owner)))
+        return E_FAIL;
+
+    if (FAILED(RegisterState<CNPCState_Build>(NPC_STATE::MINING, m_Owner)))
+        return E_FAIL;
+
+    if (FAILED(RegisterState<CNPCState_Eat>(NPC_STATE::EAT, m_Owner)))
+        return E_FAIL;
+
+    if (FAILED(RegisterState<CNPCState_Build>(NPC_STATE::PRAY, m_Owner)))
+        return E_FAIL;
+
+    if (FAILED(RegisterState<CNPCState_Build>(NPC_STATE::PRAY_PEEK, m_Owner)))
+        return E_FAIL;
+
+    if (FAILED(RegisterState<CNPCState_Spawn>(NPC_STATE::SPAWN, m_Owner)))
+        return E_FAIL;
+
     // 초기 상태
-    m_CurState     = m_vecState[static_cast<_uint>(NPC_STATE::IDLE)];
-    m_CurStateKey = static_cast<_uint>(NPC_STATE::IDLE);
+    NPC_STATE startState = NPC_STATE::SPAWN;
+
+    // 저장된 상태 확인
+    if (m_Owner)
+    {
+        SavedNpc* pState = CVillageStateMgr::GetInstance()->Get_NPCState(m_Owner->Get_Name());
+        if (pState && pState->firstSpawnAnimPlayed)
+            startState = NPC_STATE::IDLE;
+    }
+
+    // 만약 SPAWN 상태가 등록되지 않았다면 IDLE로 (안전장치)
+    if (m_vecState[static_cast<_uint>(startState)] == nullptr)
+        startState = NPC_STATE::IDLE;
+
+    m_CurState    = m_vecState[static_cast<_uint>(startState)];
+    m_CurStateKey = static_cast<_uint>(startState);
     m_CurState->Enter();
 
     return S_OK;

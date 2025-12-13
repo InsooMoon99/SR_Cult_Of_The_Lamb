@@ -4,7 +4,7 @@
 #include "CLightMgr.h"
 
 CScene::CScene(DEVICE graphicDev)
-    : m_GraphicDev(graphicDev), m_MainCam(nullptr)
+    : m_GraphicDev(graphicDev)//, m_MainCam(nullptr)
 {
     m_GraphicDev->AddRef();
 }
@@ -45,9 +45,9 @@ HRESULT CScene::Ready_Light()
 
     lightInfo.Type = D3DLIGHT_DIRECTIONAL;  // 방향성 조명
 
-    lightInfo.Diffuse = COLOR(1.f, 1.f, 1.f, 1.f);
+    lightInfo.Diffuse  = COLOR(1.f, 1.f, 1.f, 1.f);
     lightInfo.Specular = COLOR(1.f, 1.f, 1.f, 1.f);
-    lightInfo.Ambient = COLOR(1.f, 1.f, 1.f, 1.f);
+    lightInfo.Ambient  = COLOR(1.f, 1.f, 1.f, 1.f);
 
     lightInfo.Direction = { 1.f, -1.f, 1.f };
 
@@ -63,9 +63,7 @@ void CScene::AddObjectOnLayer(LAYERTYPE layerType, CGameObject* obj, OBJTYPE obj
 
     auto it = m_Layers.find(layerType);
     if (it != m_Layers.end())
-    {
         layer = it->second;
-    }
 
     if (layer == nullptr)
         MSG_BOX("layerType wrong");
@@ -75,7 +73,6 @@ void CScene::AddObjectOnLayer(LAYERTYPE layerType, CGameObject* obj, OBJTYPE obj
         MSG_BOX("Add_GameObject failed");
         return;
     }
-
 }
 
 CLayer* CScene::Get_Layer(LAYERTYPE type)

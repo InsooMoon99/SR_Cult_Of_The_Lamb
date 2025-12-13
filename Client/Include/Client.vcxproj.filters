@@ -854,6 +854,24 @@
     <ClInclude Include="..\Header\CNPCState_Build.h">
       <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\04. Build</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CVillageStateMgr.h">
+      <Filter>01. Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CNPCState_ChopWood.h">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\05. ChopWood</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CNPCState_Eat.h">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\07. Eat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CNPCState_Mining.h">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\06. Mining</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CNPCState_Pray.h">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\08. Pray</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CNPCState_PrayPeek.h">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\09. Pray Peek</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1323,6 +1341,24 @@
     </ClCompile>
     <ClCompile Include="..\Code\CNPCState_Build.cpp">
       <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\04. Build</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CVillageStateMgr.cpp">
+      <Filter>01. Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CNPCState_ChopWood.cpp">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\05. ChopWood</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CNPCState_Eat.cpp">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\07. Eat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CNPCState_Mining.cpp">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\06. Mining</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CNPCState_Pray.cpp">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\08. Pray</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CNPCState_PrayPeek.cpp">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\09. Pray Peek</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

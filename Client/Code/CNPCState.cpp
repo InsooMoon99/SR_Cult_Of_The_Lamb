@@ -1,16 +1,13 @@
 ﻿#include "pch.h"
 #include "CNPCState.h"
 
-#include "CAnimator.h"
 #include "CLayer.h"
 #include "CManagement.h"
 #include "CNPCBase.h"
 #include "CNPCController.h"
 #include "CNPCStateMachine.h"
 #include "CPlayer.h"
-#include "CRigidbody.h"
 #include "CScene.h"
-#include "CTransform.h"
 
 CNPCState::CNPCState(CNPCBase* owner, CNPCStateMachine* stateMachine)
     : m_Owner(owner),
@@ -53,7 +50,7 @@ void CNPCState::Find_Player()
         return;
 
     CGameObject* object = nullptr;
-    
+
     CScene* scene = CManagement::GetInstance()->Get_Scene();
     if (scene)
     {

@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "CMainApp.h"
+
 #include "CCollisionManager.h"
 #include "CConstructionMgr.h"
 #include "CDialogueDB.h"
@@ -23,6 +24,7 @@
 #include "CSoundMgr.h"
 #include "CTexture.h"
 #include "CTimerMgr.h"
+#include "CVillageStateMgr.h"
 
 CMainApp::CMainApp()
     : m_ManagementClass(CManagement::GetInstance()),
@@ -157,9 +159,9 @@ HRESULT CMainApp::Ready_DefaultSetting(DEVICE* graphicDev)
         *graphicDev, L"NanumSquare_Heavy", L"나눔스퀘어 네오 Heavy", 33, 35, FW_HEAVY)))
         return E_FAIL;
 
-	if (FAILED(CFontMgr::GetInstance()->Ready_Font(
-		*graphicDev, L"NanumSquare_Big", L"나눔스퀘어 네오 Regular", 30, 33, FW_MEDIUM)))
-		return E_FAIL;
+    if (FAILED(CFontMgr::GetInstance()->Ready_Font(
+        *graphicDev, L"NanumSquare_Big", L"나눔스퀘어 네오 Regular", 30, 33, FW_MEDIUM)))
+        return E_FAIL;
 
     if (FAILED(CFontMgr::GetInstance()->Ready_Font(
         *graphicDev, L"NanumSquare_Large", L"나눔스퀘어 네오 Regular", 25, 27, FW_MEDIUM)))
@@ -228,13 +230,13 @@ CMainApp* CMainApp::Create()
 
 void CMainApp::Free()
 {
-    
     { // 순서 중요
         CSceneMgr::DestroyInstance();
         CManagement::DestroyInstance();
         CRenderer::DestroyInstance();
     }
 
+    CVillageStateMgr::DestroyInstance();
     CDialogueDB::DestroyInstance();
     CConstructionMgr::DestroyInstance();
     CDropSystem::DestroyInstance();
@@ -245,23 +247,22 @@ void CMainApp::Free()
     CRandomMgr::DestroyInstance();
     CItemDB::DestroyInstance();
     CRecipeDB::DestroyInstance();
-    
+
     CMainEditorMgr::DestroyInstance();
     CImGuiManager::DestroyInstance();
 
     CProtoMgr::DestroyInstance();
-    
+
     CResourceMgr::DestroyInstance();
     CFrameMgr::DestroyInstance();
     CTimerMgr::DestroyInstance();
-    
+
     CTexture::CleanupTextureSystem();
-    
+
     CFontMgr::DestroyInstance();
-    
+
     CGraphicDev::DestroyInstance();
 
     Safe_Release(m_DeviceClass);
     Safe_Release(m_GraphicDev);
-
 }

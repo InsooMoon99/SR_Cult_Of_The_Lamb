@@ -6,7 +6,11 @@
 #include "CManagement.h"
 #include "CScene.h"
 #include "CTransform.h"
+#include "CTransform.h"
 #include "CWorldInteractive.h"
+#include "CDropSystem.h"
+#include "CDroppedItem.h"
+#include "CItemDB.h"
 
 CInteractionChecker::CInteractionChecker(DEVICE graphicDev)
     : CComponent(graphicDev)
@@ -191,4 +195,39 @@ CComponent* CInteractionChecker::Clone()
 void CInteractionChecker::Free()
 {
     CComponent::Free();
+}
+
+CDroppedItem* CInteractionChecker::Get_NearestFood(const _vec3& srcPos)
+{
+    auto& droppedItems = CDropSystem::GetInstance()->Get_DroppedItems();
+    CDroppedItem* pNearestFood = nullptr;
+    _float fMinDist = 9999.f;
+
+    for (auto& pItem : droppedItems)
+    {
+        if (!pItem || pItem->Is_PendingDestroy())
+            continue;
+
+        const ItemInstance& itemInst = pItem->Get_ItemInst();
+        Item* pItemData = CItemDB::GetInstance()->GetItemById(itemInst.itemId);
+        if (!pItemData) continue;
+
+        if (pItemData->type == ItemType::Food)
+        {
+            auto targetTransform = dynamic_cast<CTransform*>(pItem->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+            if (!targetTransform) continue;
+
+            _vec3 itemPos = targetTransform->Get_Pos();
+            _vec3 toItem = itemPos - srcPos;
+            _float dist = D3DXVec3Length(&toItem);
+
+            if (dist < fMinDist)
+            {
+                fMinDist = dist;
+                pNearestFood = pItem;
+            }
+        }
+    }
+
+    return pNearestFood;
 }
