@@ -1001,7 +1001,7 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     // ETC
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_ETC, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/MapObject/ETC/ETC%d.png", 40))))
+            L"../Bin/Resource/Texture/MapObject/ETC/ETC%d.png", 56))))
         return E_FAIL;
 
     // 라즈베리 풀
