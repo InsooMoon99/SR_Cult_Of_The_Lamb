@@ -65,11 +65,13 @@ void CUICookingMenu::Initialize_GameObject()
             cookingCell->Set_OnActive([this, recipeId]() { return m_CookingController->CanCook(recipeId, m_Inventory); });
             cookingCell->Set_GetCount([this, IngredientId]() {return m_Inventory->GetItemCount(IngredientId); });
             cookingCell->Set_RecipeId(recipeId);
+            cookingCell->Get_Transform()->Set_Pos(m_ClosedX, 0.f, 0.f);
         }
         else
         {
        
             cookingCell->Set_RecipeId(-1);
+            cookingCell->Get_Transform()->Set_Pos(m_ClosedX, 0.f, 0.f);
         }
 
         m_CookingCells.push_back(cookingCell);
@@ -79,7 +81,7 @@ void CUICookingMenu::Initialize_GameObject()
     for (int i = 0; i < 12; i++)
     {
         auto* cookedFoodCell = CUICookedFoodCell::Create(m_GraphicDev);
-
+        cookedFoodCell->Get_Transform()->Set_Pos(m_ClosedX, 0.f, 0.f);
         m_CookedFoodCells.push_back(cookedFoodCell);
     }
 
@@ -89,15 +91,13 @@ void CUICookingMenu::Initialize_GameObject()
     m_StartButton->Set_Text(L"요리하기");
     m_StartButton->SetCloneTexAspectScale({ 0.17f, 0.22f, 0.f });
     m_StartButton->SetOnClick([this]() { PlayCloseAnimation();  m_CookingController->Set_Start(true); });
-    //m_StartButton->Set_Selected(true);
+    m_StartButton->Set_Selected(true);
 
     m_CancelButton = CUIButton::Create(m_GraphicDev, 3, 2);
     m_CancelButton->Set_HasText();
     m_CancelButton->Set_Text(L"취소");
     m_CancelButton->SetCloneTexAspectScale({ 0.17f, 0.22f, 0.f });
     m_CancelButton->SetOnClick([this]() { PlayCloseAnimation(); m_CookingController->Quit(); });
-    // m_CancelButton->Set_Selected(true);
-
 
 }
 

@@ -73,9 +73,10 @@ HRESULT CUICookingCell::Ready_GameObject()
     //필요 재료 표시용 객체 생성
     m_IngredientIcon = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_ITEM);
     m_IngredientIcon->SetRegister(false);
-    _vec2 itemOffset2 = { -100.f,-200.f };
     m_IngredientIcon->SetCloneTexAspectScale({ .12f, .12f, 1 });
-    //m_IngredientIcon->Get_Transform()->Set_Pos(cardPos.x + itemOffset2.x, cardPos.y + itemOffset2.y, 0.f);
+    _vec2 ingredientOffset = { 35.f,170.f };
+    m_IngredientIcon->Get_Transform()->Set_Pos(cardPos.x - ingredientOffset.x, cardPos.y - ingredientOffset.y, cardPos.z);
+
     //TODO 유림 업데이트 쪽에 폰트 위치 기준으로 옮기기
 
     //외곽선 표시용 객체 생성
@@ -173,7 +174,7 @@ void CUICookingCell::Render_GameObject()
         // 회색 계열 (RGB 동일하게)
         m_GraphicDev->SetRenderState(
             D3DRS_TEXTUREFACTOR,
-            D3DCOLOR_ARGB(0, 80, 80, 80));
+            D3DCOLOR_ARGB(0, 0, 0, 0));
         m_ItemIcon->Render_GameObject();
 
         // 텍스처 그대로 사용
@@ -280,8 +281,8 @@ void CUICookingCell::Render_GameObject()
 
             }
 
-            _vec2 ingredientOffset = { 35.f,170.f };
-            m_IngredientIcon->Get_Transform()->Set_Pos(pos.x - ingredientOffset.x, pos.y - ingredientOffset.y, pos.z);
+            //_vec2 ingredientOffset = { 35.f,170.f };
+            //m_IngredientIcon->Get_Transform()->Set_Pos(pos.x - ingredientOffset.x, pos.y - ingredientOffset.y, pos.z);
 
             int IngredientTextureIndex = CItemDB::GetInstance()->GetIndexById((CRecipeDB::GetInstance()->GetRecipeById(m_RecipeId))->ingredients.begin()->first);
             m_IngredientIcon->Set_TextureIndex(IngredientTextureIndex);
