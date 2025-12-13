@@ -17,7 +17,7 @@
 #include "CInteractionChecker.h"
 #include "CInventory.h"
 #include "CItemDB.h"
-#include "CMonsterSpawner.h"
+#include "CObjectSpawner.h"
 #include "CNPCController.h"
 #include "CPlayerAttack.h"
 #include "CPlayerConstruction.h"
@@ -921,8 +921,8 @@ HRESULT CResourceMgr::Ready_Terrain(DEVICE graphicDev)
         return E_FAIL;
 
     // Monster Spawner
-    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::MONSTER_SPAWNER,
-        CMonsterSpawner::Create(graphicDev))))
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::OBJECT_SPAWNER,
+        CObjectSpawner::Create(graphicDev))))
         return E_FAIL;
 
     // Terrain_284

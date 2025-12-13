@@ -782,7 +782,7 @@
     <ClInclude Include="..\Header\CMapObjectBase.h">
       <Filter>03. GameObject\09. MapObject\01. Editor</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CMonsterSpawner.h">
+    <ClInclude Include="..\Header\CObjectSpawner.h">
       <Filter>03. GameObject\09. MapObject\01. Editor</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CWall.h">
@@ -1252,7 +1252,7 @@
     <ClCompile Include="..\Code\CMapObjectBase.cpp">
       <Filter>03. GameObject\09. MapObject\01. Editor</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CMonsterSpawner.cpp">
+    <ClCompile Include="..\Code\CObjectSpawner.cpp">
       <Filter>03. GameObject\09. MapObject\01. Editor</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CWall.cpp">

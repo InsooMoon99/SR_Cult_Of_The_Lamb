@@ -1,7 +1,7 @@
 ﻿#include "pch.h"
 #include "CTerrainRenderer.h"
 #include "CLayer.h"
-#include "CMonsterSpawner.h"
+#include "CObjectSpawner.h"
 #include "CTransform.h"
 #include "CTexture.h"
 #include "CDInputMgr.h"
@@ -544,12 +544,12 @@ HRESULT CTerrainRenderer::SaveMap(const char* filePath)
             CTerrain* owner = dynamic_cast<CTerrain*>(m_TransformCom->Get_Owner());
             if (owner)
             {
-                CMonsterSpawner* monsterSpawner = dynamic_cast<CMonsterSpawner*>(
-                    owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::MONSTER_SPAWNER));
+                CObjectSpawner* monsterSpawner = dynamic_cast<CObjectSpawner*>(
+                    owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::OBJECT_SPAWNER));
 
                 if (monsterSpawner)
                 {
-                    monsterSpawner->Save_Monsters(ofs);
+                    monsterSpawner->Save_Objects(ofs);
                 }
             }
         }
@@ -644,18 +644,18 @@ HRESULT CTerrainRenderer::LoadMap(const char* filePath)
         // 맵 오브젝트 소환
         CMapObjectMgr::GetInstance()->Load_FromStream(ifs, terrainPos);
 
-        // 몬스터 소환
+        // 오브젝트 소환
         if (m_TransformCom && m_TransformCom->Get_Owner())
         {
             CTerrain* owner = dynamic_cast<CTerrain*>(m_TransformCom->Get_Owner());
             if (owner)
             {
-                CMonsterSpawner* monsterSpawner = dynamic_cast<CMonsterSpawner*>(
-                    owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::MONSTER_SPAWNER));
+                CObjectSpawner* monsterSpawner = dynamic_cast<CObjectSpawner*>(
+                    owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::OBJECT_SPAWNER));
 
                 if (monsterSpawner)
                 {
-                    monsterSpawner->Load_Monsters(ifs);
+                    monsterSpawner->Load_Objects(ifs);
                 }
             }
         }

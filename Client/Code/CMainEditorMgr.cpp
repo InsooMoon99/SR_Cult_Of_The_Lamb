@@ -255,8 +255,8 @@ void CMainEditorMgr::Render_MapToolTab()
 
         if (terrain)
         {
-            CMonsterSpawner* spawner = dynamic_cast<CMonsterSpawner*>(
-                terrain->Get_Component(ID_DYNAMIC, COMPONENTTYPE::MONSTER_SPAWNER));
+            CObjectSpawner* spawner = dynamic_cast<CObjectSpawner*>(
+                terrain->Get_Component(ID_DYNAMIC, COMPONENTTYPE::OBJECT_SPAWNER));
 
             if (spawner)
             {
@@ -668,9 +668,9 @@ void CMainEditorMgr::Render_SelectComponent()
         }
         break;
 
-        case COMPONENTTYPE::MONSTER_SPAWNER:
+        case COMPONENTTYPE::OBJECT_SPAWNER:
         {
-            auto spawner = dynamic_cast<CMonsterSpawner*>(selectComponent);
+            auto spawner = dynamic_cast<CObjectSpawner*>(selectComponent);
             MonsterSpawner_Inspector(spawner);
         }
         break;

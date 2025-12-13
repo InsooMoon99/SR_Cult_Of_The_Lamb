@@ -225,7 +225,7 @@ static const char* ToString(COMPONENTTYPE type)
 
     
 
-    case COMPONENTTYPE::MONSTER_SPAWNER:     return "MonsterSpawner";
+    case COMPONENTTYPE::OBJECT_SPAWNER:     return "MonsterSpawner";
     case COMPONENTTYPE::GATHERING:           return "Gathering";
     case COMPONENTTYPE::CONSTRUCTION:        return "Construction";
     case COMPONENTTYPE::PL_SKILL:            return "PlayerSkill";
