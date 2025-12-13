@@ -216,28 +216,32 @@ bool CInventory::RemoveItem(int itemID, int count)
     {
         if (itemID == slot.itemInst.itemId)
         {
+
             if (slot.count <= remainCount)
             {
                 remainCount -= slot.count;
                 slot.count = 0;
                 slot.itemInst.itemId = -1;
+                RemoveItemOnMap(itemID, count);
+
 
                 if (remainCount == 0)
-                    //  return true;
-                    break;
+                      return true;
+                    //break;
             }
             else //if (slot.count > count)
             {
                 slot.count -= remainCount;
                 remainCount = 0;
-              //  return true;
-                break;
+                RemoveItemOnMap(itemID, count);
+
+                return true;
+                //break;
             }
         }
     }
 
-    RemoveItemOnMap(itemID);
-
+    
     return false;
 }
 
@@ -262,7 +266,7 @@ bool CInventory::RemoveItemBySlot(int slotNum, int count)
     }
 
 
-    RemoveItemOnMap(slot.itemInst.itemId);
+    RemoveItemOnMap(slot.itemInst.itemId,count);
 
     return true;
 }
@@ -279,19 +283,25 @@ void CInventory::AddItemOnMap(int itemID)
     }
 }
 
-void CInventory::RemoveItemOnMap(int itemID)
+bool CInventory::RemoveItemOnMap(int itemID,int Num)
 {
     auto iterator = m_CountingItem.find(itemID);
 
     if (iterator != m_CountingItem.end())
     {
-       iterator->second--;
+        if (iterator->second >= Num)
+        {
+            iterator->second -= Num;
+        }
+        else
+            return false;
 
         if (iterator->second <=0)
         {
             m_CountingItem.erase(itemID);
         }
     }
+    return true;
 }
 
 int CInventory::GetItemCount(int itemID)
