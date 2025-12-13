@@ -33,6 +33,7 @@
 #include "CRigidbody.h"
 #include "CSphereCollider.h"
 #include "CSpriteEff.h"
+#include "CTrailEff.h"
 #include "CState.h"
 #include "CTerrain.h"
 #include "CTerrainRenderer.h"
@@ -162,6 +163,11 @@ HRESULT CResourceMgr::Ready_Common(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::SPRITEEFFECT, CSpriteEff::Create(graphicDev))))
         return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TRAILEFFECT, CTrailEff::Create(graphicDev))))
+        return E_FAIL;
+
 
     // Construction
     if (FAILED(protoMgr->Ready_Prototype(

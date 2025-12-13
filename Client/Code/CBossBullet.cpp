@@ -8,8 +8,9 @@
 #include "CTransform.h"
 #include "CAttackBuilder.h"
 #include "CProjectile.h"
+#include "CTrailEff.h"
 
-int CBossBullet::imsdfjlkdsf = 0;
+
 
 CBossBullet::CBossBullet(DEVICE graphicDev, CGameObject* owner, CGameObject* Target, PROJ_TYPE type)
     : CGameObject(graphicDev),
@@ -164,6 +165,8 @@ void CBossBullet::Render_Core()
 
     m_BufferCom->Render_Buffer();
 
+    m_TrailEff-> Render_Effect(m_TextureCom, 2); // 이거 맞나 모르겠네ㅔㅔ
+
     m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
     m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
@@ -259,6 +262,12 @@ HRESULT CBossBullet::Add_Component()
     m_ProjectileCom = CreateProtoComponent<CProjectile>(this, COMPONENTTYPE::PROJECTILE);
     NULL_CHECK_RETURN(m_ProjectileCom, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::PROJECTILE, m_ProjectileCom });
+
+    // Eff
+    m_TrailEff = CreateProtoComponent<CTrailEff>(this, COMPONENTTYPE::TRAILEFFECT);
+    NULL_CHECK_RETURN(m_TrailEff, E_FAIL);
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRAILEFFECT, m_TrailEff });
+
 
     // // BoxCollider
     // m_BoxColCom = CreateProtoComponent<CBoxCollider>(this, COMPONENTTYPE::BOX_COLL);
