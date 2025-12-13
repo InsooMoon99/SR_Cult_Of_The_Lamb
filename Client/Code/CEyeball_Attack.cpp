@@ -457,14 +457,30 @@ void CEyeball_Attack::Random_Movement(const _float& timeDelta)
     // 일정 시간마다 새로운 방향 랜덤
     if (m_Direction_Timer >= m_Direction_ChangeTimer)
     {
-        _float randomAngle = static_cast<_float>(CRandomMgr::GetInstance()->Get_Int_Random(0, 360));
-        _float radian = D3DXToRadian(randomAngle);
-        m_Current_Direction = _vec3(cosf(radian), 0.f, sinf(radian));
+        _vec3 currentPos = transform->Get_Pos();
+
+        // 최대 5번 시도 (벽 없는 방향 찾기)
+        for (int attempt = 0; attempt < 5; ++attempt)
+        {
+            _float randomAngle = static_cast<_float>(CRandomMgr::GetInstance()->Get_Int_Random(0, 360));
+            _float radian = D3DXToRadian(randomAngle);
+            _vec3 newDir = _vec3(cosf(radian), 0.f, sinf(radian));
+
+            // 벽 체크 (5유닛 앞)
+            auto eyeball = static_cast<CEyeball*>(m_Owner);
+            if (!eyeball->Trace_HitWall(currentPos, newDir, 5.f))
+            {
+                m_Current_Direction = newDir;
+                break;
+            }
+        }
 
         m_Direction_Timer = 0.f;
     }
 
-    m_Current_Direction = _vec3(m_Current_Direction.x + (m_Target_Direction.x - m_Current_Direction.x) * m_LerpSpeed,
+    // Lerp으로 자연스럽게 방향 전환시켜보기
+    m_Current_Direction = _vec3(
+        m_Current_Direction.x + (m_Target_Direction.x - m_Current_Direction.x) * m_LerpSpeed,
         0.f,
         m_Current_Direction.z + (m_Target_Direction.z - m_Current_Direction.z) * m_LerpSpeed);
 

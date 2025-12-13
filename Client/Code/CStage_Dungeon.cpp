@@ -72,23 +72,23 @@ void CStage_Dungeon::Initialize_Scene()
 
     m_RoomData[static_cast<_int>(Room::MONSTER1)] =
     {
-        {60.f, 1.f, 10.f},
+        {55.f, 1.f, 25.f},
         "../Bin/Resource/Data/Terrain/Terrain_TarotMap.map",
         {50.f, 0.f, 0.f}
     };
 
     m_RoomData[static_cast<_int>(Room::MONSTER2)] =
     {
-        {110.f, 1.f, 10.f},
+        {140.f, 1.f, 10.f},
         "../Bin/Resource/Data/Terrain/Terrain_Mon2Test.map",
-        {100.f, 0.f, 0.f}
+        {150.f, 0.f, 0.f}
     };
 
     m_RoomData[static_cast<_int>(Room::TARO)] =
     {
         {160.f, 1.f, 10.f},
         "../Bin/Resource/Data/Terrain/Terrain_TaroTest.map",
-        {150.f, 0.f, 0.f}
+        {250.f, 0.f, 0.f}
     };
 
     m_RoomData[static_cast<_int>(Room::BOSS)] =
@@ -125,7 +125,7 @@ void CStage_Dungeon::Initialize_Scene()
     Spawn_Weapon();
 
     // Init에서 RoomData 세팅 이후 위치 세팅해줘야 함
-    _vec3 startPos = m_RoomData[static_cast<_int>(Room::START)].spawnPos;
+    _vec3 startPos = m_RoomData[static_cast<_int>(Room::START)].playerSpawnPos;
     m_PlayerTransform->Set_Pos(_vec3(startPos.x, startPos.y, startPos.z));
 }
 
@@ -181,7 +181,7 @@ void CStage_Dungeon::Spawn_Weapon()
 
         ItemInstance inst = { id, -1, 0 };
 
-        _vec3 roomPos = m_RoomData[static_cast<_int>(Room::START)].spawnPos;
+        _vec3 roomPos = m_RoomData[static_cast<_int>(Room::START)].playerSpawnPos;
 
         auto drop = CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev,
             inst,
@@ -536,7 +536,7 @@ void CStage_Dungeon::Fade_Check(const _float timeDelta)
 
         // TODO : 플레이어 소환 Offset 조절하기
         if (m_PlayerTransform)
-            m_PlayerTransform->Set_Pos(m_RoomData[static_cast<_int>(m_NextRoom)].spawnPos);
+            m_PlayerTransform->Set_Pos(m_RoomData[static_cast<_int>(m_NextRoom)].playerSpawnPos);
 
         m_UI_Fade->StartFadeIn(0.5f);
         m_IsFading = false;
