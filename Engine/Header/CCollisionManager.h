@@ -25,7 +25,10 @@ public:
 
     _bool Can_Collide(COLLISION_LAYERTYPE layer1, COLLISION_LAYERTYPE layer2);
 
-    void Render_Debug(bool& flag);
+    void  Render_Debug(bool& flag);
+
+    // 특정 위치에서 레이어와 충돌하는지 체크
+    _bool Check_PointOverlap(const _vec3& pos, COLLISION_LAYERTYPE layer, _float radius = 1.f);
 
 private:
     void Free() override;

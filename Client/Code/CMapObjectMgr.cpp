@@ -646,8 +646,14 @@ HRESULT CMapObjectMgr::Load_FromStream(ifstream& ifs, _vec3 terrainOffset)
 
                 transform->Set_Pos(worldPos);
 
-                transform->Set_Scale(data.scale);  
-                transform->Set_Rotation(data.rotation);
+                transform->Set_Scale(data.scale);
+
+                _vec3 loadedRotation = data.rotation;
+                loadedRotation.x = -loadedRotation.x;
+                //loadedRotation.y = -loadedRotation.y;
+                loadedRotation.z = -loadedRotation.z;
+
+                transform->Set_Rotation(loadedRotation);
             }
 
             layer->Add_GameObject(OBJTYPE::PLACEMENT, newObj);

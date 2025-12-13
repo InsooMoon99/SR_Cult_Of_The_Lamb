@@ -8,14 +8,16 @@
 #include "CEyeball_StateMachine.h"
 #include "CMonsterController.h"
 #include "CTransform.h"
+#include "CRigidbody.h"
+#include "CCollisionManager.h"
 
 CEyeball::CEyeball(DEVICE graphicDev, CMonsterBase* boss)
-    : CMonsterBase(graphicDev), m_EyeballController(nullptr), m_Boss(boss)
+    : CMonsterBase(graphicDev), m_RigidbodyCom(nullptr), m_EyeballController(nullptr), m_Boss(boss)
 {
 }
 
 CEyeball::CEyeball(const CEyeball& rhs, CMonsterBase* boss)
-    : CMonsterBase(rhs), m_EyeballController(nullptr), m_Boss(rhs.m_Boss)
+    : CMonsterBase(rhs), m_RigidbodyCom(nullptr), m_EyeballController(nullptr), m_Boss(rhs.m_Boss)
 {
 }
 
@@ -168,6 +170,15 @@ void CEyeball::Trigger_OnReachedTarget()
 
 }
 
+_bool CEyeball::Trace_HitWall(const _vec3& pos, const _vec3& dir, _float distance)
+{
+    _vec3 targetPos = pos + dir * distance;
+
+    auto* collisionMgr = CCollisionManager::GetInstance();
+
+    return collisionMgr->Check_PointOverlap(targetPos, COLLISION_LAYERTYPE::WALL);
+}
+
 void CEyeball::Animation_Setting()
 {
     m_AnimatorCom->Create_Animation(L"Eyeball_Start", 59, 0.04f, _vec2(0.8f, 1.f));
@@ -199,6 +210,12 @@ HRESULT CEyeball::Add_Component()
     m_EyeballController = CreateProtoComponent<CEyeballController>(this, type);
     NULL_CHECK_RETURN(m_EyeballController, E_FAIL);
     m_Components[ID_DYNAMIC].insert({ type, m_EyeballController });
+
+    // Rigidbody
+    type = COMPONENTTYPE::RIGIDBODY;
+    m_RigidbodyCom = CreateProtoComponent<CRigidbody>(this, type);
+    NULL_CHECK_RETURN(m_RigidbodyCom, E_FAIL);
+    m_Components[ID_DYNAMIC].insert({ type, m_RigidbodyCom });
 
     return S_OK;
 }
