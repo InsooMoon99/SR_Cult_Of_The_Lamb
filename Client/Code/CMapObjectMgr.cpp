@@ -405,7 +405,7 @@ void CMapObjectMgr::Render_ETC()
 
         if (etc)
         {
-            const _int TOTAL_ETC = 40;
+            const _int TOTAL_ETC = 56;
             const _int COLS = 5;
             const ImVec2 buttonSize(50.f, 50.f);
 

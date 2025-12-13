@@ -833,6 +833,9 @@
     <ClInclude Include="..\Header\CFogMgr.h">
       <Filter>03. GameObject\09. MapObject\03. Fog</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CChest.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1302,6 +1305,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CFogMgr.cpp">
       <Filter>03. GameObject\09. MapObject\03. Fog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CChest.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

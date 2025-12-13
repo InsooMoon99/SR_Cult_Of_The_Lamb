@@ -57,3 +57,6 @@ struct Dialogue
 
     vector<DialogueLine> lines;      // 대사 라인들
 };
+
+
+enum FOODQUALITY { GOOD, BAD, NO_FOOD };

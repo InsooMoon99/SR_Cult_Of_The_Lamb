@@ -100,18 +100,14 @@ bool CInventory::AddItem(ItemInstance itemInst)
     {
         if (slot.itemInst.itemId == itemInst.itemId && itemData->stackable == true)
         {
-            //int oldCount = slot.count;
             slot.count++;
-            //int newCount = slot.count - oldCount;
-            AddItemOnMap(slot.itemInst.itemId);
-
 
             // 플레이어 일떄만 UI addItem 이밴트 호출
             if (dynamic_cast<CPlayer*>(m_Owner) != nullptr)
             {
                 m_UIItemAdded(&slot.itemInst);
-
             }
+                AddItemOnMap(slot.itemInst.itemId);
 
             return true;
         }
@@ -130,9 +126,7 @@ bool CInventory::AddItem(ItemInstance itemInst)
             else
             {
                 m_vecInven[slot].itemInst = itemInst;
-                //int oldCount = m_vecInven[slot].count;
                 m_vecInven[slot].count++;
-                //int newCount = m_vecInven[slot].count - oldCount;
 
                 AddItemOnMap(m_vecInven[slot].itemInst.itemId);
 
@@ -153,10 +147,8 @@ bool CInventory::AddItem(ItemInstance itemInst)
             else
             {
                 m_vecInven[slot].itemInst = itemInst;
-
-                // int oldCount = m_vecInven[slot].count;
                 m_vecInven[slot].count++;
-                // int newCount =  m_vecInven[slot].count - oldCount;
+
 
                 AddItemOnMap(m_vecInven[slot].itemInst.itemId);
 
@@ -216,26 +208,32 @@ bool CInventory::RemoveItem(int itemID, int count)
     {
         if (itemID == slot.itemInst.itemId)
         {
+
             if (slot.count <= remainCount)
             {
                 remainCount -= slot.count;
                 slot.count = 0;
                 slot.itemInst.itemId = -1;
+                RemoveItemOnMap(itemID, count);
+
 
                 if (remainCount == 0)
-                    return true;
+                      return true;
+                    //break;
             }
-            else //if (slot.count > count)
+            else
             {
                 slot.count -= remainCount;
                 remainCount = 0;
+                RemoveItemOnMap(itemID, count);
+
                 return true;
+                //break;
             }
         }
     }
 
-    RemoveItemOnMap(itemID);
-
+    
     return false;
 }
 
@@ -260,7 +258,7 @@ bool CInventory::RemoveItemBySlot(int slotNum, int count)
     }
 
 
-    RemoveItemOnMap(slot.itemInst.itemId);
+    RemoveItemOnMap(slot.itemInst.itemId,count);
 
     return true;
 }
@@ -277,19 +275,33 @@ void CInventory::AddItemOnMap(int itemID)
     }
 }
 
-void CInventory::RemoveItemOnMap(int itemID)
+bool CInventory::RemoveItemOnMap(int itemID,int Num)
 {
     auto iterator = m_CountingItem.find(itemID);
 
     if (iterator != m_CountingItem.end())
     {
-       iterator->second--;
+        if (iterator->second >= Num)
+        {
+            iterator->second -= Num;
+        }
+        else
+            return false;
 
         if (iterator->second <=0)
         {
             m_CountingItem.erase(itemID);
         }
     }
+    return true;
+}
+
+int CInventory::GetItemCount(int itemID)
+{
+    auto it = m_CountingItem.find(itemID);
+
+    return  (it != m_CountingItem.end()) ? it->second : 0;
+
 }
 
 CInventory* CInventory::Create(DEVICE graphicDev)

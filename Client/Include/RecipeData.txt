@@ -9,7 +9,7 @@
       "ingredients": [
         {
           "id": 1003,
-          "count": 5
+          "count": 2
         }
       ],
     "result": 2001,
@@ -26,8 +26,8 @@
       "quality": 2,
       "ingredients": [
         {
-          "id": 1008,
-          "count": 6
+          "id": 1002,
+          "count": 2
         }
       ],
     "result": 2003,
@@ -45,7 +45,7 @@
       "ingredients": [
         {
           "id": 1004,
-          "count": 3
+          "count": 2
         }
       ],
     "result": 2002,
