@@ -130,6 +130,12 @@ HRESULT CCharacterBase::Add_Component()
     return S_OK;
 }
 
+void CCharacterBase::Render_Setting()
+{
+    CRenderObject::Render_Setting();
+
+}
+
 void CCharacterBase::Free()
 {
     CRenderObject::Free();

@@ -32,7 +32,7 @@ public:
     void    Change_State(_uint dwStateKey) override;
 
 public:
-    static CNPCStateMachine* Create();
+    static CNPCStateMachine* Create(CNPCBase* owner);
 
 protected:
     void Free() override;

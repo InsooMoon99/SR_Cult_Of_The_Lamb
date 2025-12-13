@@ -35,9 +35,9 @@ public:
 
 public:
     void    OnBeginOverlap(CCollider* self, CCollider* other) override;
-        void    OnEndOverlap(CCollider* self, CCollider* other) override;
+    void    OnEndOverlap(CCollider* self, CCollider* other) override;
 
-    DEVICE  Get_GraphicDev() { return m_GraphicDev; } // 이게  괜찬나..?? 안괜찮을듯
+    DEVICE  Get_GraphicDev() { return m_GraphicDev; }
 
 private:
     HRESULT Add_Component() override;
@@ -57,17 +57,29 @@ public:
     CBossStateMachine* Get_StateMachine() { return m_StateMachine; }
 
 private:
-    _vec3 StartPos = { 48.2f ,3.8f, 57.f };
-    _vec3 BaseCenter;
-    int BaseLength = 25;
-    float interval = 1.f;
-
-    //
-
-    bool m_bHurt = false;
-    float m_fAlpha = 0.8f;
-    float m_bHurtTime = 0;
+    void Free() override;
 
 private:
-    void Free() override;
+    _vec3   StartPos = { 48.2f ,3.8f, 57.f };
+    _vec3   BaseCenter;
+    int     BaseLength = 25;
+    float   interval = 1.f;
+
+    bool    m_bHurt = false;
+    float   m_fAlpha = 0.8f;
+    float   m_bHurtTime = 0;
+
+public:
+    // 보스 죽기 전에 대화 시작
+    using   OnDeadTalkStartCallback = function<void()>;
+    void    Set_OnDeadTalkStart(OnDeadTalkStartCallback callback);
+
+    // 보스 죽었을 때
+    using   OnBossDeadCallback = function<void()>;
+    void    Set_OnBossDeadCallback(OnBossDeadCallback callback) { m_OnBossDead = callback; }
+
+private:
+    OnDeadTalkStartCallback m_OnDeadTalkStart = nullptr;
+    OnBossDeadCallback m_OnBossDead = nullptr;
+
 };

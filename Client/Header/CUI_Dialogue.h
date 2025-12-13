@@ -26,8 +26,8 @@ public:
 public:
     // 대화
     void    Start_Dialogue(const string& dialogueId,
-                            const _vec2 boxPos = {0.f, -200.f},
-                            const _vec2& boxSize = {300.f, 150.f});
+                            const _vec2 boxPos = {0.f, 200.f},
+                            const _vec2& boxSize = {300.f, 80.f});
     void    End_Dialogue();
 
     void    Next_Line();
@@ -84,5 +84,14 @@ private:
 
     // 대화 종료
     OnDialougeEnd   m_OnDialogueEnd;
+
+    // 타이밍 효과 추가해보기
+    _float  m_TypeTimer;        // 글자 출력 타이머
+    _float  m_TypeSpeed;        // 글자당 출력 속도
+    _int    m_CurrentCharIndex; // 현재까지 보여줄 글자 수
+    _bool   m_IsTypingComplete;
+
+    _float  m_TextAlpha;
+    _float  m_FadeSpeed;
     
 };

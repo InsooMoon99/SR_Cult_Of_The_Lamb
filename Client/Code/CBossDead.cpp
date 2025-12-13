@@ -5,6 +5,7 @@
 #include "CBossStateMachine.h"
 #include "CTransform.h"
 #include "CAnimator.h"
+#include "CSceneMgr.h"
 #include "CSpriteAnimation.h"
 
 
@@ -21,7 +22,9 @@ CBossDead::~CBossDead()
 void CBossDead::Enter()
 {
     CMonsterState::Enter();
+
     m_pOwnerAnimatorCom->Play_Animation(L"BossGroggy_start", ANIMSTATE::ONCE);
+
     m_ePhase = PHASE::DOWN;
 }
 
@@ -52,24 +55,33 @@ _int CBossDead::Update_State(const _float& timeDelta)
     case PHASE::DOWN:
 
         if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
+        {
             m_ePhase = PHASE::TALK;
+
+            if (m_OnTalkStart)
+                m_OnTalkStart();
+        }
+            
         break;
 
     case PHASE::TALK:
- 
-        m_pOwnerAnimatorCom->Play_Animation(L"BossDead", ANIMSTATE::ONCE);
-        if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
+        m_pOwnerAnimatorCom->Play_Animation(L"BossDead", ANIMSTATE::LOOP);
+
+        if (m_DialogueFinished)
         {
             m_ePhase = PHASE::DISAPPEAR;
         }
         break;
 
     case PHASE::DISAPPEAR:
-
         m_pOwnerAnimatorCom->Play_Animation(L"BossMove_Down", ANIMSTATE::ONCE);
-        if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
-            return CBossPhase1::BOSSPHASE1::BOSS_END;// 보스 끝남 
-        break;
+
+        if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 25)
+        {
+            CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_BOSS_STAGE2);
+
+            return CBossPhase1::BOSSPHASE1::BOSS_END;   // 보스 끝남 
+        }
     }
 
     return CBossPhase1::BOSSPHASE1::BOSSDEAD;
@@ -77,10 +89,7 @@ _int CBossDead::Update_State(const _float& timeDelta)
 
 void CBossDead::LateUpdate_State(const _float& timeDelta)
 {
-}
 
-inline void CBossDead::Render_State()
-{
 }
 
 CBossDead* CBossDead::Create(CBossPhase1* pOwner, CBossStateMachine* pStateMachine)

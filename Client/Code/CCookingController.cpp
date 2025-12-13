@@ -250,10 +250,19 @@ void CCookingController::DropDish(int ResultItemID, bool quality)
     _vec3 tmpvec = { cos(D3DXToRadian(RandOffSet)),1,sin(D3DXToRadian(RandOffSet)) };
     D3DXVec3Normalize(&tmpvec, &tmpvec);
 
-    SpriteBounceDesc b;
-    b.pos = m_Owner->Get_Transform()->Get_Pos();
+    float horizontal = 20.f;
+    float vertical = 40.f;
 
-    b.velocity = tmpvec * 30;
+
+    _vec3 Startpos = { m_Owner->Get_Transform()->Get_Pos().x, 0.5f, m_Owner->Get_Transform()->Get_Pos().z };
+    SpriteBounceDesc b;
+    b.pos = Startpos;
+
+
+    b.velocity.x = tmpvec.x * horizontal;
+    b.velocity.z = tmpvec.z * horizontal;
+    b.velocity.y = vertical;
+
     b.groundY = .5f;
     // 중력
     b.gravity = -300.f;
@@ -263,7 +272,7 @@ void CCookingController::DropDish(int ResultItemID, bool quality)
 
 
     // 인자 - DEVICE pGraphicDev, const ItemInstance& item, const _vec3& worldPos,std::optional<_vec3> scale, std::optional<SpriteBounceDesc> bounceDesc
-   CDroppedItem* tmpItem =  CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, m_Owner->Get_Transform()->Get_Pos(), _vec3(0.5f, 0.5f, 0.5f), b);
+   CDroppedItem* tmpItem =  CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, Startpos, _vec3(0.5f, 0.5f, 0.5f), b);
 
    if (quality == true)
        tmpItem->SetFoodQuality(CDroppedItem::FOODQUALITY::GOOD);

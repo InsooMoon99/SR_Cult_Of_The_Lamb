@@ -9,30 +9,41 @@
 #include "CDInputMgr.h"
 #include "CCreateHelper.h"
 
+const _float SPEAKER_OFFSET = 16.9f;
+const _float DIALOGUE_OFFSET = 15.f;
+
 CUI_Dialogue::CUI_Dialogue(DEVICE graphicDev)
     : CUI(graphicDev),
-    m_BufferCom(nullptr),
-    m_TransformCom(nullptr),
-    m_TextureCom(nullptr),
-    m_CurrentDialogue(nullptr),
-    m_CurrentLineIndex(0),
-    m_IsActive(false),
-    m_IsShowingChoices(false),
-    m_SelectedLeft(true),
-    m_ChoiceSpacing(0)
+      m_BufferCom(nullptr),
+      m_TransformCom(nullptr),
+      m_TextureCom(nullptr),
+      m_CurrentDialogue(nullptr),
+      m_CurrentLineIndex(0),
+      m_IsActive(false),
+      m_IsShowingChoices(false),
+      m_SelectedLeft(true),
+      m_ChoiceSpacing(0),
+      m_TypeTimer(0),
+      m_TypeSpeed(0),
+      m_CurrentCharIndex(0),
+      m_IsTypingComplete(false), m_TextAlpha(0), m_FadeSpeed(0)
 {
 }
 
 CUI_Dialogue::CUI_Dialogue(const CUI_Dialogue& rhs)
     : CUI(rhs), m_BufferCom(nullptr),
-    m_TransformCom(nullptr),
-    m_TextureCom(nullptr),
-    m_CurrentDialogue(nullptr),
-    m_CurrentLineIndex(0),
-    m_IsActive(false),
-    m_IsShowingChoices(false),
-    m_SelectedLeft(rhs.m_SelectedLeft),
-    m_ChoiceSpacing(0)
+      m_TransformCom(nullptr),
+      m_TextureCom(nullptr),
+      m_CurrentDialogue(nullptr),
+      m_CurrentLineIndex(0),
+      m_IsActive(false),
+      m_IsShowingChoices(false),
+      m_SelectedLeft(rhs.m_SelectedLeft),
+      m_ChoiceSpacing(0),
+      m_TypeTimer(0),
+      m_TypeSpeed(0),
+      m_CurrentCharIndex(0),
+      m_IsTypingComplete(false), m_TextAlpha(0), m_FadeSpeed(0)
 {
 }
 
@@ -56,6 +67,14 @@ HRESULT CUI_Dialogue::Ready_GameObject()
 
     m_IsActive = false;
 
+	m_TypeTimer = 0.f;
+	m_TypeSpeed = 0.03f;  
+	m_CurrentCharIndex = 0;
+	m_IsTypingComplete = false;
+
+	m_TextAlpha = 0.f;
+	m_FadeSpeed = 4.f;
+
     return S_OK;
 }
 
@@ -73,6 +92,32 @@ _int CUI_Dialogue::Update_GameObject(const _float& timeDelta)
         return exit;
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+
+    if (!m_IsTypingComplete && m_CurrentDialogue)
+    {
+		m_TypeTimer += timeDelta;
+
+        if (m_TypeTimer >= m_TypeSpeed)
+        {
+			m_TypeTimer = 0.f;
+			m_CurrentCharIndex++;
+        }
+
+		// 현재 라인의 전체 길이 확인
+		const DialogueLine& line = m_CurrentDialogue->lines[m_CurrentLineIndex];
+		wstring fullText = CDialogueDB::GetInstance()->Utf8ToWstring(line.text);
+
+		if (m_CurrentCharIndex >= (_int)fullText.length())
+			m_IsTypingComplete = true;
+    }
+
+	if (m_TextAlpha < 1.f)
+	{
+		m_TextAlpha += timeDelta * m_FadeSpeed;
+
+		if (m_TextAlpha > 1.f)
+			m_TextAlpha = 1.f;
+	}
 
     Handle_Input();
 
@@ -123,6 +168,11 @@ void CUI_Dialogue::Start_Dialogue(const string& dialogueId, const _vec2 boxPos, 
     m_IsShowingChoices = false; // 선택지 보일지
     m_SelectedLeft = true;
 
+	m_TextAlpha = 0.f;
+	m_CurrentCharIndex = 0;
+    m_IsTypingComplete = false;
+    m_TextAlpha = 0.f;
+
     // 첫 라인이 선택지인지 확인
     if (!m_CurrentDialogue->lines.empty() &&
         m_CurrentDialogue->lines[0].hasChoices)
@@ -150,7 +200,18 @@ void CUI_Dialogue::Next_Line()
 {
     NULL_CHECK(m_CurrentDialogue);
 
-    m_CurrentLineIndex++;
+	if (!m_IsTypingComplete)
+    {
+        m_IsTypingComplete = true;
+
+        const DialogueLine& line = m_CurrentDialogue->lines[m_CurrentLineIndex];
+        wstring fullText = CDialogueDB::GetInstance()->Utf8ToWstring(line.text);
+        m_CurrentCharIndex = (_int)fullText.length();
+
+        return;  
+    }
+
+	m_CurrentLineIndex++;
 
     // 대화 끝 체크
     if (m_CurrentLineIndex >= (_int)m_CurrentDialogue->lines.size())
@@ -158,6 +219,12 @@ void CUI_Dialogue::Next_Line()
         End_Dialogue();
         return;
     }
+
+	m_TypeTimer = 0.f;              
+	m_CurrentCharIndex = 0;         
+	m_IsTypingComplete = false;
+
+	m_TextAlpha = 0.f;
 
     // 다음 대화가 선택지인지?
     const DialogueLine& nextLine = m_CurrentDialogue->lines[m_CurrentLineIndex];
@@ -220,7 +287,7 @@ void CUI_Dialogue::Render_DialogueBox()
     m_TransformCom->Set_Scale(m_BoxSize.x, m_BoxSize.y, 1.f);
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
-    // 반투명 블렌딩 -> 안쓸듯? 테스트해보고 지우기
+    // 반투명 블렌딩 -> 안쓸듯? 그냥 TextBox 출력
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
     m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
     m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
@@ -244,13 +311,13 @@ void CUI_Dialogue::Render_SpeakerName()
         return;
 
     const DialogueLine& line = m_CurrentDialogue->lines[m_CurrentLineIndex];
-    if (line.speaker.empty())
+    if (line.speaker.empty()) 
         return;
 
     _vec2 screenPos =
     {
         m_BoxPos.x + WINCX * 0.5f,
-        WINCY * 0.5f - m_BoxPos.y + m_SpeakerOffset.y
+        WINCY * 0.5f - m_BoxPos.y + m_SpeakerOffset.y - SPEAKER_OFFSET
     };
 
     wstring speakerName = CDialogueDB::GetInstance()->Utf8ToWstring(line.speaker);
@@ -270,20 +337,29 @@ void CUI_Dialogue::Render_DialogueText()
 
     const DialogueLine& line = m_CurrentDialogue->lines[m_CurrentLineIndex];
 
-    _vec2 screenPos =
-    {
-        m_BoxPos.x + WINCX * 0.5f,
-        WINCY * 0.5f - m_BoxPos.y + m_TextOffset.y
-    };
+    static _float padding = -95.f; // 좌우 여백
+    static _float offset1 = 43.f;
+
+	wstring fullText = CDialogueDB::GetInstance()->Utf8ToWstring(line.text);
+	wstring displayText = fullText.substr(0, m_CurrentCharIndex);
+
+    // 중심 좌표 계산
+    _float centerX = m_BoxPos.x + WINCX * 0.5f;
+    _float centerY = WINCY * 0.5f - m_BoxPos.y;
+
+    RECT boxRect;
+    boxRect.left = static_cast<LONG>(centerX - m_BoxSize.x * 0.5f + padding);
+    boxRect.right = static_cast<LONG>(centerX + m_BoxSize.x * 0.5f - padding);
+    boxRect.top = static_cast<LONG>(centerY + m_TextOffset.y - offset1);
+    boxRect.bottom = static_cast<LONG>(centerY + m_BoxSize.y * 0.5f);
 
     wstring dialogueText = CDialogueDB::GetInstance()->Utf8ToWstring(line.text);
 
-    CFontMgr::GetInstance()->Render_Font(
+    CFontMgr::GetInstance()->Render_FontWrapped(
         L"NanumSquare_Regular",
-        dialogueText,
-        &screenPos,
-        D3DXCOLOR(1.f, 1.f, 1.f, 1.f)
-    );
+		displayText,
+        boxRect,
+        D3DXCOLOR(1.f, 1.f, 1.f, m_TextAlpha));
 }
 
 void CUI_Dialogue::Render_Choices()

@@ -1,6 +1,7 @@
 ﻿#include "CScene.h"
 
 #include "CLayer.h"
+#include "CLightMgr.h"
 
 CScene::CScene(DEVICE graphicDev)
     : m_GraphicDev(graphicDev), m_MainCam(nullptr)
@@ -35,6 +36,25 @@ void CScene::Initialize_Scene()
     {
         pLayer.second->Initialize_Layer();
     }
+}
+
+HRESULT CScene::Ready_Light()
+{
+    D3DLIGHT9 lightInfo;
+    ZeroMemory(&lightInfo, sizeof(D3DLIGHT9));
+
+    lightInfo.Type = D3DLIGHT_DIRECTIONAL;  // 방향성 조명
+
+    lightInfo.Diffuse = COLOR(1.f, 1.f, 1.f, 1.f);
+    lightInfo.Specular = COLOR(1.f, 1.f, 1.f, 1.f);
+    lightInfo.Ambient = COLOR(1.f, 1.f, 1.f, 1.f);
+
+    lightInfo.Direction = { 1.f, -1.f, 1.f };
+
+    if (FAILED(CLightMgr::GetInstance()->Ready_Light(m_GraphicDev, &lightInfo, 0)))
+        return E_FAIL;
+
+    return S_OK;
 }
 
 void CScene::AddObjectOnLayer(LAYERTYPE layerType, CGameObject* obj, OBJTYPE objType)

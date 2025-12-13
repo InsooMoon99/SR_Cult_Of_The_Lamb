@@ -27,7 +27,7 @@ public:
     // 무기 공격 정보 구조체
     struct AttackInfo
     {
-        ACTORSTATE state;           // 해당 공격의 애니메이션 상태
+        ACTORSTATE  state;           // 해당 공격의 애니메이션 상태
 
         _float      duration;            // 공격 지속 시간
         _float      hitboxStartTime;     // 히트박스가 켜지는 시간
@@ -40,6 +40,8 @@ public:
         _vec3       hitboxScale;         // 공격 오브젝트 크기 (예: 1, 1, 1)
 
         PARTICLEDATA particle;
+        _float      hitStopDuration = 0.f;
+        _float      hitStopScale = 0.f;
     };
 
     // [AttackInfo 관리용] 무기 종류 enum
