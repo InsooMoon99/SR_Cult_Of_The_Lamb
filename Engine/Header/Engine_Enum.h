@@ -105,6 +105,7 @@ enum class OBJTYPE
     TERRAIN,
     PLACEMENT,
     WALL,
+    FOG,
 
     OBJ_END
 };

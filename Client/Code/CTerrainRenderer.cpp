@@ -5,6 +5,7 @@
 #include "CTransform.h"
 #include "CTexture.h"
 #include "CDInputMgr.h"
+#include "CFogMgr.h"
 #include "CGameObject.h"
 #include "CMapObjectMgr.h"
 #include "CTerrainTex.h"
@@ -552,6 +553,9 @@ HRESULT CTerrainRenderer::SaveMap(const char* filePath)
                 }
             }
         }
+
+        // 안개 저장
+        CFogMgr::GetInstance()->Save_ToStream(ofs);
     }
 
     ofs.close();
@@ -637,6 +641,7 @@ HRESULT CTerrainRenderer::LoadMap(const char* filePath)
         if (m_TransformCom)
             terrainPos = m_TransformCom->Get_Pos();
 
+        // 맵 오브젝트 소환
         CMapObjectMgr::GetInstance()->Load_FromStream(ifs, terrainPos);
 
         // 몬스터 소환
@@ -654,6 +659,9 @@ HRESULT CTerrainRenderer::LoadMap(const char* filePath)
                 }
             }
         }
+
+        // 안개 소환
+        CFogMgr::GetInstance()->Load_FromStream(ifs, terrainPos);
     }
 
 

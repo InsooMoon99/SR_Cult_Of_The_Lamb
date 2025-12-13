@@ -23,6 +23,7 @@ class CMainEditorMgr : public CBase
         MAP_OBJECT,
         WALL,
         MONSTER_SPAWNER,
+        FOG_RENDERER,
 
         MAPTOOL_END
     };

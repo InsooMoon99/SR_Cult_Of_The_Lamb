@@ -299,6 +299,7 @@ static const char* ToString(OBJTYPE type)
     case OBJTYPE::BUILDING:          return "Building";
     case OBJTYPE::BULLET:            return "Bullet";
     case OBJTYPE::CONSTRUCTION_SITE: return "ConstructionSite";
+    case OBJTYPE::FOG:               return "Fog";
 
     case OBJTYPE::OBJ_END:           return "ObjectEnd";
     default:                         return "UnknownObjectType";

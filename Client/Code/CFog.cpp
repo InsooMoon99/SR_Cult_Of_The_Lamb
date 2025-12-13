@@ -27,6 +27,7 @@ HRESULT CFog::Ready_GameObject()
 
     // 일단 크게 설정해보기
     m_TransformCom->Set_Scale(_vec3(15.f, 10.f, 1.f));
+    m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(25.f));
 
     return S_OK;
 }
@@ -122,6 +123,11 @@ void CFog::Render_Reset()
     m_GraphicDev->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
     m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+
+	m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, 0xFFFFFFFF); 
+	m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+	m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+	m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
 }
 
 CFog* CFog::Create(DEVICE graphicDev)

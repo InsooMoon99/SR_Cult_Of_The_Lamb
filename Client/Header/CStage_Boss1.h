@@ -35,6 +35,7 @@ public:
 public:
     using   OnTriggerCallback = function<void()>;
     void    Create_Trigger(_vec3 pos, _vec3 size, OnTriggerCallback callback, _bool autoDestroy = true);;
+    void    Update_Fog();
 
 private:
     HRESULT Ready_Environment_Layer(LAYERTYPE layerType);

@@ -26,10 +26,16 @@ public:
     void    Set_SwayAmount(_float amount) { m_SwayAmount = amount; }
     void    Set_Alpha(_float alpha) { m_Alpha = alpha; }
 
+    _float  Get_SwaySpeed() const { return m_SwaySpeed; }
+    _float  Get_SwayAmount() const { return m_SwayAmount; }
+    _float  Get_Alpha() const { return m_Alpha; }
+
+    CTransform* Get_Transform() { return m_TransformCom; }
+
 private:
-    HRESULT Add_Component();
-    void    Render_Setting();
-    void    Render_Reset();
+    HRESULT Add_Component() override;
+    void    Render_Setting() override;
+    void    Render_Reset() override;
 
 public:
     static CFog* Create(DEVICE graphicDev);

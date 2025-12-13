@@ -29,10 +29,6 @@ CEdit::~CEdit()
 
 HRESULT CEdit::Ready_Scene()
 {
-    // 로딩 스레드로 역할 이동
-    //if (FAILED(Ready_Prototype()))
-    //    return E_FAIL;
-
     if (FAILED(Ready_Environment_Layer(LAYERTYPE::ENVIRONMENT)))
         return E_FAIL;
 
@@ -145,9 +141,9 @@ HRESULT CEdit::Ready_GameLogic_Layer(LAYERTYPE layerType)
         //   그럴 때는 필요한 것만 사용해 .Apply() 하면 된다.
         CCamSetupBuilder(camController)
             .SetTarget(playerTransform)
-            //.PivotOffset({ 0.f, 0.f, 0.f })
-            //.Distance(12.f)
-            //.RotX(45.f)
+            .PivotOffset({ 0.f, 4.7f, -5.3f })
+            .Distance(12.f)
+            .RotX(45.f)
             //.RotY(0.f)
             //.LagSpeed(10.f)
             //.ZoomSpeed(5.f)
@@ -167,31 +163,6 @@ HRESULT CEdit::Ready_GameLogic_Layer(LAYERTYPE layerType)
             CMainEditorMgr::GetInstance()->Set_MainCamera(camController); // 에디터에 카메라 설정
     }
 
-    // -----------------------------
-    // Monster
-    // -----------------------------
-
-    // monster
-    //gameObject = CMonster::Create(m_GraphicDev);
-    //
-    //if (nullptr == gameObject)
-    //    return E_FAIL;
-    //
-    //if (FAILED(layer->Add_GameObject(OBJTYPE::MONSTER, gameObject)))
-    //    return E_FAIL;
-
-    //  //testMonster
-    /*gameObject = CTestMonster::Create(m_GraphicDev);
-
-    NULL_CHECK_RETURN_MSG(
-        gameObject,
-        E_FAIL,
-        L"CStage::Ready_GameLogic_Layer() failed: CMonster::Create() returned null");
-
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::BOSS2, gameObject),
-        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(BOSS2) failed");*/
-
     m_Layers.insert({ layerType, layer });
 
     return S_OK;
@@ -207,13 +178,6 @@ HRESULT CEdit::Ready_UI_Layer(LAYERTYPE layerType)
     Engine::CGameObject* pGameObject = nullptr;
 
     m_Layers.insert({ layerType, layer });
-
-    return S_OK;
-}
-
-HRESULT CEdit::Ready_Prototype()
-{
-    // Move Loading Scene
 
     return S_OK;
 }

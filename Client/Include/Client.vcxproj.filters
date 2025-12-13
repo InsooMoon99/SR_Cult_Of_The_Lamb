@@ -828,7 +828,10 @@
       <Filter>03. GameObject\11. NPC\00. Follower Cow</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CFog.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>03. GameObject\09. MapObject\03. Fog</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CFogMgr.h">
+      <Filter>03. GameObject\09. MapObject\03. Fog</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1295,7 +1298,10 @@
       <Filter>03. GameObject\11. NPC\00. Follower Cow</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CFog.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>03. GameObject\09. MapObject\03. Fog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CFogMgr.cpp">
+      <Filter>03. GameObject\09. MapObject\03. Fog</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

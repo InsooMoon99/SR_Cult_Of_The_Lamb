@@ -19,8 +19,6 @@ private:
     HRESULT Ready_GameLogic_Layer(LAYERTYPE layerType);
     HRESULT Ready_UI_Layer(LAYERTYPE layerType);
 
-    HRESULT Ready_Prototype();
-
 public:
     static CEdit* Create(DEVICE graphicDev);
 
