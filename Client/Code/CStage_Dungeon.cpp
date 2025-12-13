@@ -73,7 +73,7 @@ void CStage_Dungeon::Initialize_Scene()
     m_RoomData[static_cast<_int>(Room::MONSTER1)] =
     {
         {60.f, 1.f, 10.f},
-        "../Bin/Resource/Data/Terrain/Terrain_Mon1Test.map",
+        "../Bin/Resource/Data/Terrain/Terrain_TarotMap.map",
         {50.f, 0.f, 0.f}
     };
 
