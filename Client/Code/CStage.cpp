@@ -11,6 +11,7 @@
 #include "CDropSystem.h"
 #include "CFloaterMonster.h"
 #include "CFollowerCow.h"
+#include "CParticleHelper.h"
 #include "CHarvestableHerb.h"
 #include "CHumanMonster.h"
 #include "CInventory.h"
@@ -124,7 +125,7 @@ void CStage::Initialize_Scene()
     m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Village2.map");
 
     // 던전 이동 트리거 만들기
-    //Create_Trigger();
+    Create_Trigger();
 }
 
 _int CStage::Update_Scene(const _float& timeDelta)
@@ -194,8 +195,8 @@ void CStage::LateUpdate_Scene(const _float& timeDelta)
 
 void CStage::Render_Scene()
 {
-    // debug 용
     CConstructionMgr::GetInstance()->Render_ConstructionMgr();
+
 }
 
 HRESULT CStage::Ready_Environment_Layer(LAYERTYPE layerType)
@@ -566,9 +567,8 @@ HRESULT CStage::Ready_Prototype()
 
 HRESULT CStage::Ready_Light()
 {
-    return CScene::Ready_Light();
-
-
+    //return CScene::Ready_Light();
+    return S_OK;
 }
 
 void CStage::Create_Trigger()

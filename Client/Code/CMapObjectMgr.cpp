@@ -558,17 +558,14 @@ HRESULT CMapObjectMgr::LoadMapObject(const char* filePath)
         if (newObj)
         {
             newObj->Set_WorldPos(data.pos);
-            // TODO : 데이터에서 scale값 가져와서 세팅 추가 예정
 
             layer->Add_GameObject(OBJTYPE::PLACEMENT, newObj);
+
+            Add_Placement(newObj);
+            m_PlacedObjects.push_back(newObj);
         }
     }
-
-    for (auto& obj : m_PlacedObjects)
-    {
-        Add_Placement(obj);
-    }
-
+  
     return S_OK;
 }
 

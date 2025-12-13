@@ -15,6 +15,7 @@ public:
     _int    Update_Scene(const _float& timeDelta) override;
     void    LateUpdate_Scene(const _float& timeDelta) override;
     void    Render_Scene() override;
+    HRESULT Ready_Light() override;
 
     void RenderFont(const wstring& font, const wstring& text, CUIButton* btt);
 

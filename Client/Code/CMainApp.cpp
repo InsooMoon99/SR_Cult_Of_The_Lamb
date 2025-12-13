@@ -74,11 +74,9 @@ HRESULT CMainApp::Ready_MainApp()
 int CMainApp::Update_MainApp(const float& timeDelta)
 {
     m_ManagementClass->Commit_ChangeScene();
-
-    CDInputMgr::GetInstance()->Update_InputDev();
-
     m_ManagementClass->Update_Scene(timeDelta);
 
+    CDInputMgr::GetInstance()->Update_InputDev();
     CCollisionManager::GetInstance()->Update();
     CSoundMgr::GetInstance()->Update(timeDelta);
     CSceneMgr::GetInstance()->Update_SceneMgr(timeDelta);

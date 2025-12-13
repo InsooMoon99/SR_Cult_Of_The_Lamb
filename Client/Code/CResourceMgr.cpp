@@ -17,7 +17,7 @@
 #include "CInteractionChecker.h"
 #include "CInventory.h"
 #include "CItemDB.h"
-#include "CMonsterSpawner.h"
+#include "CObjectSpawner.h"
 #include "CNPCController.h"
 #include "CPlayerAttack.h"
 #include "CPlayerConstruction.h"
@@ -945,8 +945,8 @@ HRESULT CResourceMgr::Ready_Terrain(DEVICE graphicDev)
         return E_FAIL;
 
     // Monster Spawner
-    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::MONSTER_SPAWNER,
-        CMonsterSpawner::Create(graphicDev))))
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::OBJECT_SPAWNER,
+        CObjectSpawner::Create(graphicDev))))
         return E_FAIL;
 
     // Terrain_284
@@ -1063,6 +1063,16 @@ HRESULT CResourceMgr::Ready_Particle(DEVICE graphicDev)
         L"../Bin/Resource/Texture/Effect/HitEffect_Star/HitEffect_Star%d.png", 14)))
         return E_FAIL;
 
+    // Blood
+    if (FAILED(particleTex->Add_Texture(L"HitEffect_Blood", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Effect/HitEffect_Blood/HitEffect_Blood%d.png", 12)))
+        return E_FAIL;
+
+    // Disappear
+    if (FAILED(particleTex->Add_Texture(L"Effect_Disappear", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Effect/Disappear/Disappear%d.png", 5)))
+        return E_FAIL;
+
     // 추가 예정
 
     if (FAILED(particleTex->Add_Texture(L"Pickup_Item", TEX_NORMAL,
@@ -1070,6 +1080,11 @@ HRESULT CResourceMgr::Ready_Particle(DEVICE graphicDev)
         return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PARTICLE, particleTex)))
+        return E_FAIL;
+
+    // FOG
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_FOG,
+        CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Effect/Fog/fog.png", 1))))
         return E_FAIL;
 
     return S_OK;

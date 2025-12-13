@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "CStage_Boss2.h"
 #include "CBossPhase1.h"
+#include "CParticleHelper.h"
 #include "CBossPhase2.h"
 #include "CLayer.h"
 #include "CMainCamera.h"
@@ -71,7 +72,8 @@ void CStage_Boss2::LateUpdate_Scene(const _float& timeDelta)
 
 void CStage_Boss2::Render_Scene()
 {
-    // debug 용
+
+    
 }
 
 HRESULT CStage_Boss2::Ready_Environment_Layer(LAYERTYPE layerType)
@@ -94,7 +96,7 @@ HRESULT CStage_Boss2::Ready_Environment_Layer(LAYERTYPE layerType)
 
     layer->Add_GameObject(OBJTYPE::TERRAIN, m_Terrain);
 
-    m_Layers.insert({ layerType, layer });          // scene -> map
+    m_Layers.insert({ layerType, layer });          
 
     return S_OK;
 }
@@ -110,17 +112,13 @@ HRESULT CStage_Boss2::Ready_GameLogic_Layer(LAYERTYPE layerType)
 
     Engine::CGameObject* gameObject = nullptr;
 
-    // -----------------------------
-    // Player
-    // -----------------------------
-
     // 플레이어 생성
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CPlayer>(
             OBJTYPE::PLAYER, L"Player", m_GraphicDev, layer, &gameObject), L"Persistent object setup failed");
 
     const auto playerTransform = dynamic_cast<CTransform*>(gameObject->Get_Component(ID_DYNAMIC,COMPONENTTYPE::TRANSFORM));
-    playerTransform->Set_Pos(_vec3(67.f, 1.f, 32.3f));
+    playerTransform->Set_Pos(_vec3(48.f, 1.f, 38.3f));
 
     // 카메라 생성
     FAILED_CHECK_MSG(
@@ -135,9 +133,6 @@ HRESULT CStage_Boss2::Ready_GameLogic_Layer(LAYERTYPE layerType)
     // 카메라 설정값 초기화
     if (camController != nullptr)
     {
-        // 씬에서 카메라 생성 시 값 초기화
-        // : CCameraSetup을 카메라 설정을 중도에 바꿀 때 사용 가능하고,
-        //   그럴 때는 필요한 것만 사용해 .Apply() 하면 된다.
         CCamSetupBuilder(camController)
             .SetTarget(playerTransform)
             //.PivotOffset({ 0.f, 0.f, 0.f })
@@ -202,14 +197,23 @@ HRESULT CStage_Boss2::Ready_Light()
     D3DLIGHT9 lightInfo;
     ZeroMemory(&lightInfo, sizeof(D3DLIGHT9));
 
-    lightInfo.Type = D3DLIGHT_DIRECTIONAL;  // 방향성 조명
+    //lightInfo.Type = D3DLIGHT_DIRECTIONAL;  // 방향성 조명
+    lightInfo.Type = D3DLIGHT_POINT;          // Point Light
 
-    // 일단 조금 빨간 톤으로 만들어보기
-    lightInfo.Diffuse = COLOR(1.f, 0.3f, 0.3f, 1.f);
-    lightInfo.Specular = COLOR(1.f, 0.5f, 0.5f, 1.f);
-    lightInfo.Ambient = COLOR(0.4f, 0.1f, 0.1f, 1.f);
+    lightInfo.Diffuse = m_LightDiffuse;
+    lightInfo.Ambient = m_LightAmbient;   // 그림자 영역
+    lightInfo.Specular = m_LightSpecular;
 
-    lightInfo.Direction = { 1.f, -1.f, 1.f };
+    // 빛의 위치 (보스맵 가운데, 위쪽으로 설정)
+    lightInfo.Position = m_LightPos;
+
+    // 빛의 범위 (설정한 범위 밖이면 완전히 어둡게?)
+    lightInfo.Range = m_LightRange;
+
+    // 감쇠 (거리에 따라 어두워지도록 해보기)
+    lightInfo.Attenuation0 = m_Attenuation0;       // 상수 (0 = 기본 밝기 100%)
+    lightInfo.Attenuation1 = m_Attenuation1;       // 거리 비례 (클수록 빨리 어두워진다)
+    lightInfo.Attenuation2 = m_Attenuation2;       // 거리^2 비례
 
     if (FAILED(CLightMgr::GetInstance()->Ready_Light(m_GraphicDev, &lightInfo, 0)))
         return E_FAIL;

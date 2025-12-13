@@ -12,7 +12,8 @@ CParticle::CParticle(DEVICE graphicDev)
       m_AutoDestroy(true),
       m_LifeTime(-1.f),
       m_ElapsedTime(0.f),
-      m_TextureType(COMPONENTTYPE::COMPONENT_END), m_FrameCount(0), m_FrameInterval(0)
+      m_TextureType(COMPONENTTYPE::COMPONENT_END), m_FrameCount(0), m_FrameInterval(0), m_Gravity(0), m_Friction(0
+      )
 
 {
 }
@@ -24,7 +25,8 @@ CParticle::CParticle(const CParticle& rhs)
       m_LifeTime(rhs.m_LifeTime),
       m_ElapsedTime(0.f),
       m_TextureType(rhs.m_TextureType),
-      m_AnimKey(rhs.m_AnimKey), m_FrameCount(rhs.m_FrameCount), m_FrameInterval(rhs.m_FrameInterval)
+      m_AnimKey(rhs.m_AnimKey), m_FrameCount(rhs.m_FrameCount), m_FrameInterval(rhs.m_FrameInterval), m_Gravity(0),
+      m_Friction(0)
 {
 }
 
@@ -65,6 +67,19 @@ _int CParticle::Update_GameObject(const _float& timeDelta)
             return exit;
         }
     }
+
+    // 위치 이동
+    if (m_TransformCom && D3DXVec3LengthSq(&m_Velocity) > 0.0001f)
+    {
+        _vec3 pos = m_TransformCom->Get_Pos();
+    
+        pos += m_Velocity * timeDelta;
+        m_TransformCom->Set_Pos(pos);
+    
+        m_Velocity.y -= m_Gravity * timeDelta;
+        m_Velocity *= (1.f - m_Friction * timeDelta);
+    }
+
     // 애니메이션 재생 끝 체크
     if (m_AutoDestroy && m_AnimatorCom)
     {

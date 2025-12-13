@@ -98,11 +98,6 @@ void CUI_Fade::Render_GameObject()
 
     m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, color);
 
-    // 기존 행렬 저장
-    //D3DXMATRIX matOldView, matOldProj;
-    //m_GraphicDev->GetTransform(D3DTS_VIEW, &matOldView);
-    //m_GraphicDev->GetTransform(D3DTS_PROJECTION, &matOldProj);
-
     // 알파 블렌딩
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
     m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
@@ -124,10 +119,6 @@ void CUI_Fade::Render_GameObject()
     m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
 
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-
-    // 행렬 복구
-    //m_GraphicDev->SetTransform(D3DTS_VIEW, &matOldView);
-    //m_GraphicDev->SetTransform(D3DTS_PROJECTION, &matOldProj);
 }
 
 void CUI_Fade::StartFadeIn(_float speed)

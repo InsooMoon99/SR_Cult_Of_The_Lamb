@@ -73,7 +73,7 @@ void CStage_Dungeon::Initialize_Scene()
     m_RoomData[static_cast<_int>(Room::MONSTER1)] =
     {
         {60.f, 1.f, 10.f},
-        "../Bin/Resource/Data/Terrain/Terrain_Mon1Test.map",
+        "../Bin/Resource/Data/Terrain/Terrain_TarotMap.map",
         {50.f, 0.f, 0.f}
     };
 
@@ -198,8 +198,8 @@ void CStage_Dungeon::Create_RoomTriggers()
     Create_Trigger_Between(
         Room::START,
         Room::MONSTER1,
-        _vec3(9.3f, 1.f, 20.f),     
-        _vec3(5.f, 5.f, 4.5f));
+        _vec3(9.3f, 1.f, 20.f), // 트리거 위치 오프셋 (방 위치 기준으로 소환돼서 적당히)
+        _vec3(5.f, 5.f, 4.5f)); // 트리거 크기
 
     // MONSTER1 -> MONSTER2
     //Create_Trigger_Between(

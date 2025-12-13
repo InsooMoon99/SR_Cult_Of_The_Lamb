@@ -1,39 +1,39 @@
 ﻿#include "pch.h"
-#include "CMonsterSpawner.h"
+#include "CObjectSpawner.h"
 #include "CCreateHelper.h"
 #include "CTerrain.h"
 
-CMonsterSpawner::CMonsterSpawner(DEVICE graphicDev)
+CObjectSpawner::CObjectSpawner(DEVICE graphicDev)
     : CComponent(graphicDev)
     , m_GridSizeX(0)
     , m_GridSizeZ(0)
     , m_CellSize(1.f)
     , m_EditMode(false)
-    , m_SelectedType(MONSTER_TYPE::HUMAN_MONSTER)
+    , m_SelectedType(SPAWN_OBJ_TYPE::HUMAN_MONSTER)
 {
 }
 
-CMonsterSpawner::CMonsterSpawner(const CMonsterSpawner& rhs)
+CObjectSpawner::CObjectSpawner(const CObjectSpawner& rhs)
     : CComponent(rhs)
     , m_SpawnPoints(rhs.m_SpawnPoints)
     , m_GridSizeX(rhs.m_GridSizeX)
     , m_GridSizeZ(rhs.m_GridSizeZ)
     , m_CellSize(rhs.m_CellSize)
     , m_EditMode(false)
-    , m_SelectedType(MONSTER_TYPE::HUMAN_MONSTER)
+    , m_SelectedType(SPAWN_OBJ_TYPE::HUMAN_MONSTER)
 {
 }
 
-CMonsterSpawner::~CMonsterSpawner()
+CObjectSpawner::~CObjectSpawner()
 {
 }
 
-HRESULT CMonsterSpawner::Ready_MonsterSpawner(DEVICE graphicDev)
+HRESULT CObjectSpawner::Ready_MonsterSpawner(DEVICE graphicDev)
 {
     return S_OK;
 }
 
-_int CMonsterSpawner::Update_Component(const _float& timeDelta)
+_int CObjectSpawner::Update_Component(const _float& timeDelta)
 {
     _int exit = CComponent::Update_Component(timeDelta);
 
@@ -42,12 +42,12 @@ _int CMonsterSpawner::Update_Component(const _float& timeDelta)
     return exit;
 }
 
-void CMonsterSpawner::LateUpdate_Component()
+void CObjectSpawner::LateUpdate_Component()
 {
     CComponent::LateUpdate_Component();
 }
 
-void CMonsterSpawner::Render_Editor()
+void CObjectSpawner::Render_Editor()
 {
     CComponent::Render_Editor();
 
@@ -60,21 +60,27 @@ void CMonsterSpawner::Render_Editor()
         if (m_EditMode)
         {
             // 몬스터 타입 선택
-            const char* items[] = { "Human Monster", "Floater Monster" };
-            int currentIdx = static_cast<int>(m_SelectedType);
+            const char* items[] = {
+                "Human Monster",
+                "Floater Monster",
+                "NPC - Taro",
+                "NPC - Slave"};
 
-            if (ImGui::Combo("Monster Type", &currentIdx, items, 2))
+            _int itemCount = static_cast<int>(SPAWN_OBJ_TYPE::SPAWN_TYPE_END);
+            _int currentIdx = static_cast<int>(m_SelectedType);
+
+            if (ImGui::Combo("Object Type", &currentIdx, items, itemCount))
             {
-                m_SelectedType = static_cast<MONSTER_TYPE>(currentIdx);
+                m_SelectedType = static_cast<SPAWN_OBJ_TYPE>(currentIdx);
             }
             ImGui::TextColored(ImVec4(1, 1, 0, 1), "LMB: Place | RMB: Remove");
         }
 
         ImGui::Separator();
 
-        _int monsterCount = Get_MonsterCount();
+        _int objectCount = Get_ObjectCount();
 
-        ImGui::Text("Total Monsters : %d", monsterCount);
+        ImGui::Text("Total Objectss : %d", objectCount);
         if (ImGui::Button("Remove All"))
         {
             Clear_All();
@@ -89,9 +95,29 @@ void CMonsterSpawner::Render_Editor()
                 {
                     _vec3 spawnPos = terrain->Get_CellCenterWorld(spawn.cellX, spawn.cellZ);
 
-                    DWORD color = (spawn.monsterType == MONSTER_TYPE::HUMAN_MONSTER)
-                        ? D3DCOLOR_ARGB(255, 255, 0, 0)    // 빨강
-                        : D3DCOLOR_ARGB(255, 0, 255, 255); // cyan
+                    DWORD color;
+                    switch (spawn.objectType)
+                    {
+                    case SPAWN_OBJ_TYPE::HUMAN_MONSTER:
+                        color = D3DCOLOR_ARGB(255, 255, 0, 0);    // 빨강
+                        break;
+
+                    case SPAWN_OBJ_TYPE::FLOATER_MONSTER:
+                        color = D3DCOLOR_ARGB(255, 0, 255, 255);  // 시안
+                        break;
+
+                    case SPAWN_OBJ_TYPE::NPC_TARO:
+                        color = D3DCOLOR_ARGB(255, 0, 255, 0);    // 초록
+                        break;
+
+                    case SPAWN_OBJ_TYPE::NPC_SLAVE:
+                        color = D3DCOLOR_ARGB(200, 122, 122, 0);    
+                        break;
+
+                    default:
+                        color = D3DCOLOR_ARGB(255, 255, 255, 255); // 흰색
+                        break;
+                    }
 
                     Engine::DrawDebugSphere(m_GraphicDev, spawnPos, 0.5f, color);
                 }
@@ -101,7 +127,7 @@ void CMonsterSpawner::Render_Editor()
     ImGui::PopID();
 }
 
-void CMonsterSpawner::Initialize(_int sizeX, _int sizeZ, _float cellSize)
+void CObjectSpawner::Initialize(_int sizeX, _int sizeZ, _float cellSize)
 {
     m_GridSizeX = sizeX;
     m_GridSizeZ = sizeZ;
@@ -110,7 +136,7 @@ void CMonsterSpawner::Initialize(_int sizeX, _int sizeZ, _float cellSize)
     m_SpawnPoints.clear();
 }
 
-void CMonsterSpawner::Add_SpawnPoint(_int x, _int z, MONSTER_TYPE type)
+void CObjectSpawner::Add_SpawnPoint(_int x, _int z, SPAWN_OBJ_TYPE type)
 {
     const _int cellCntX = m_GridSizeX - 1;
     const _int cellCntZ = m_GridSizeZ - 1;
@@ -124,21 +150,21 @@ void CMonsterSpawner::Add_SpawnPoint(_int x, _int z, MONSTER_TYPE type)
         if (spawn.cellX == x && spawn.cellZ == z)
         {
             // 같은 위치면 타입만 교체
-            spawn.monsterType = type;
+            spawn.objectType = type;
             return;
         }
     }
 
     // 새로 추가
-    MonsterSpawnData data;
+    SpawnData data;
     data.cellX = x;
     data.cellZ = z;
-    data.monsterType = type;
+    data.objectType = type;
 
     m_SpawnPoints.push_back(data);
 }
 
-void CMonsterSpawner::Remove_SpawnPoint(_int x, _int z)
+void CObjectSpawner::Remove_SpawnPoint(_int x, _int z)
 {
     for (auto it = m_SpawnPoints.begin(); it != m_SpawnPoints.end(); ++it)
     {
@@ -150,12 +176,12 @@ void CMonsterSpawner::Remove_SpawnPoint(_int x, _int z)
     }
 }
 
-void CMonsterSpawner::Clear_All()
+void CObjectSpawner::Clear_All()
 {
     m_SpawnPoints.clear();
 }
 
-_bool CMonsterSpawner::Has_Monster(_int x, _int z)
+_bool CObjectSpawner::Has_ObjPoint(_int x, _int z)
 {
     for (const auto& spawn : m_SpawnPoints)
     {
@@ -166,7 +192,7 @@ _bool CMonsterSpawner::Has_Monster(_int x, _int z)
     return false;
 }
 
-HRESULT CMonsterSpawner::Save_Monsters(ofstream& ofs) const
+HRESULT CObjectSpawner::Save_Objects(ofstream& ofs) const
 {
     if (!ofs.is_open())
         return E_FAIL;
@@ -179,12 +205,12 @@ HRESULT CMonsterSpawner::Save_Monsters(ofstream& ofs) const
     {
         ofs.write(reinterpret_cast<const char*>(&spawn.cellX), sizeof(_int));
         ofs.write(reinterpret_cast<const char*>(&spawn.cellZ), sizeof(_int));
-        ofs.write(reinterpret_cast<const char*>(&spawn.monsterType), sizeof(MONSTER_TYPE));
+        ofs.write(reinterpret_cast<const char*>(&spawn.objectType), sizeof(SPAWN_OBJ_TYPE));
     }
     return S_OK;
 }
 
-HRESULT CMonsterSpawner::Load_Monsters(ifstream& ifs)
+HRESULT CObjectSpawner::Load_Objects(ifstream& ifs)
 {
     if (!ifs.is_open())
         return E_FAIL;
@@ -195,10 +221,10 @@ HRESULT CMonsterSpawner::Load_Monsters(ifstream& ifs)
 
     for (uint32_t i = 0; i < count; ++i)
     {
-        MonsterSpawnData spawn;
+        SpawnData spawn;
         ifs.read(reinterpret_cast<char*>(&spawn.cellX), sizeof(_int));
         ifs.read(reinterpret_cast<char*>(&spawn.cellZ), sizeof(_int));
-        ifs.read(reinterpret_cast<char*>(&spawn.monsterType), sizeof(MONSTER_TYPE));
+        ifs.read(reinterpret_cast<char*>(&spawn.objectType), sizeof(SPAWN_OBJ_TYPE));
 
         m_SpawnPoints.push_back(spawn);
     }
@@ -206,9 +232,9 @@ HRESULT CMonsterSpawner::Load_Monsters(ifstream& ifs)
     return S_OK;
 }
 
-CMonsterSpawner* CMonsterSpawner::Create(DEVICE graphicDev)
+CObjectSpawner* CObjectSpawner::Create(DEVICE graphicDev)
 {
-    CMonsterSpawner* spawner = new CMonsterSpawner(graphicDev);
+    CObjectSpawner* spawner = new CObjectSpawner(graphicDev);
 
     if (FAILED(spawner->Ready_MonsterSpawner(graphicDev)))
     {
@@ -220,12 +246,12 @@ CMonsterSpawner* CMonsterSpawner::Create(DEVICE graphicDev)
     return spawner;
 }
 
-CComponent* CMonsterSpawner::Clone()
+CComponent* CObjectSpawner::Clone()
 {
-    return new CMonsterSpawner(*this);
+    return new CObjectSpawner(*this);
 }
 
-void CMonsterSpawner::Free()
+void CObjectSpawner::Free()
 {
     CComponent::Free();
 }
