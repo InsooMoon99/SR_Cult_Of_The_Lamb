@@ -58,7 +58,7 @@ void CEyeball::Initialize_GameObject()
                 if (bossCombat)
                 {
                     HITDATA hitData;
-                    hitData.damage = 100.f;
+                    hitData.damage = 100.f; // TODO : 보스 체력 값 제대로 설정하면 바꿔야함
                     hitData.dir = { 0.f, 0.f, 0.f };
 
                     bossCombat->Apply_Damage(hitData);
@@ -213,7 +213,7 @@ const char* CEyeball::Get_StateName(_int stateNum)
     case EYEBALL_IDLE:              return "EYEBALL_IDLE";
     case EYEBALL_EXIT:              return "EYEBALL_EXIT";
     case EYEBALL_ENTER:             return "EYEBALL_ENTER";
-    case EYEBALL_START_GROUND:            return "EYEBALL_GROUND";
+    case EYEBALL_START_GROUND:      return "EYEBALL_GROUND";
     case EYEBALL_MOVE:              return "EYEBALL_MOVE";
     case EYEBALL_ATTACK:            return "EYEBALL_ATTACK";
     case EYEBALL_DEAD:              return "EYEBALL_DEAD";

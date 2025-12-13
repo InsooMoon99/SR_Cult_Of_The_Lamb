@@ -15,7 +15,7 @@ END
 
 struct RoomData
 {
-    _vec3   spawnPos{};         
+    _vec3   playerSpawnPos{};         
     string  terrainFilePath;    
     _vec3   terrainOffset{};    
 

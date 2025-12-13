@@ -86,6 +86,7 @@ void CMapObjectMgr::Render_MapObjectWindow()
     ImGui::Text(u8"  X (Pitch): %.2f°", D3DXToDegree(m_MapPlacer->Get_PreviewRotation().x));
     ImGui::SameLine();
     ImGui::Text(u8"  Y (Yaw):   %.2f°", D3DXToDegree(m_MapPlacer->Get_PreviewRotation().y));
+    ImGui::Text(u8"  Z (Roll):   %.2f°", D3DXToDegree(m_MapPlacer->Get_PreviewRotation().z));
 
     ImGui::NewLine();
     ImGui::Text(u8"되돌리기 "); ImGui::SameLine();
@@ -594,7 +595,7 @@ HRESULT CMapObjectMgr::Save_ToStream(ofstream& ofs)
                 {
                     data.pos = objTransform->Get_Pos();
                     data.scale = objTransform->Get_Scale();        
-                    data.rotation = objTransform->Get_Rotation();  
+                    data.rotation = objTransform->Get_Euler();  
 
                     objects.push_back(data);
                 }
@@ -646,13 +647,7 @@ HRESULT CMapObjectMgr::Load_FromStream(ifstream& ifs, _vec3 terrainOffset)
                 transform->Set_Pos(worldPos);
 
                 transform->Set_Scale(data.scale);  
-
-                _vec3 loadedRotation = data.rotation;
-                loadedRotation.x = -loadedRotation.x;
-                loadedRotation.y = -loadedRotation.y;
-                loadedRotation.z = -loadedRotation.z;
-
-                transform->Set_Rotation(loadedRotation);
+                transform->Set_Rotation(data.rotation);
             }
 
             layer->Add_GameObject(OBJTYPE::PLACEMENT, newObj);

@@ -6,6 +6,7 @@ class CMonsterController;
 
 BEGIN(Engine)
 class CTexture;
+class CRigidbody;
 END
 
 class CEyeball : public CMonsterBase
@@ -80,6 +81,7 @@ protected:
     void Free() override;
 
 private:
+    CRigidbody*         m_RigidbodyCom;
     CMonsterController* m_EyeballController;
 	CMonsterBase*		m_Boss;
 
