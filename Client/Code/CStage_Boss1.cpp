@@ -660,7 +660,7 @@ void CStage_Boss1::Move_BossUI(const _float timeDelta)
 
     if (ratio >= 1.f)
         m_IsBossUIMoving = false;
-
+   
 }
 
 CStage_Boss1* CStage_Boss1::Create(DEVICE graphicDev)

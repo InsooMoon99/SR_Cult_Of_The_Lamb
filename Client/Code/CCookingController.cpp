@@ -108,7 +108,7 @@ _int CCookingController::Update_Component(const _float& timeDelta)
             m_bStart = false;
             m_bDone = false;
 
-           
+
 
         }
 
@@ -138,13 +138,13 @@ bool CCookingController::CanCook(int recipeID, CInventory* playerInven)
     Recipe* recipe = CRecipeDB::GetInstance()->GetRecipeById(recipeID);
 
     //기존 버전
-    
+
     for (auto& [ID, Num] : recipe->ingredients)
     {
         auto Playeriter = playerInven->GetCountMap().find(ID);
         if (Playeriter == playerInven->GetCountMap().end())
             return false;
-    
+
         if (playerInven->GetCountMap().at(ID) < Num)
             return false;
     }
@@ -191,22 +191,21 @@ bool CCookingController::RemoveAllRecipe(CInventory* playerInven)
     for (auto i = m_vecTmpRecipeID.begin(); i < m_vecTmpRecipeID.end();i++)
     {
 
-            //픟레이어 인벤에서 삭제 대기열은 무조건 하나니까 한개만 지우면 됨
-            Recipe* recipe = CRecipeDB::GetInstance()->GetRecipeById((*i));
-            for (auto& [ItemID, Num] : recipe->ingredients)
+        //픟레이어 인벤에서 삭제 대기열은 무조건 하나니까 한개만 지우면 됨
+        Recipe* recipe = CRecipeDB::GetInstance()->GetRecipeById((*i));
+        for (auto& [ItemID, Num] : recipe->ingredients)
+        {
+            ItemInstance itemInst{ ItemID ,-1,0 };
+            for (int i = 0; i < Num; i++)
             {
-                ItemInstance itemInst{ ItemID ,-1,0 };
-                for (int i = 0; i < Num; i++)
-                {
                 playerInven->AddItem(itemInst);
 
-                }
             }
-
-
+        }
 
 
     }
+    return true;
 }
 
 bool CCookingController::ReloadForMiniGame()
@@ -250,7 +249,7 @@ void CCookingController::DropDish(int ResultItemID, FOODQUALITY quality)
     ItemInstance inst{ ResultItemID,-1,0 };
 
 
-    int RandOffSet = CRandomMgr::GetInstance()->Get_Int_Random(0,360); // y 축 회전
+    int RandOffSet = CRandomMgr::GetInstance()->Get_Int_Random(0, 360); // y 축 회전
     _vec3 tmpvec = { cos(D3DXToRadian(RandOffSet)),1,sin(D3DXToRadian(RandOffSet)) };
     D3DXVec3Normalize(&tmpvec, &tmpvec);
 
@@ -276,12 +275,12 @@ void CCookingController::DropDish(int ResultItemID, FOODQUALITY quality)
 
 
     // 인자 - DEVICE pGraphicDev, const ItemInstance& item, const _vec3& worldPos,std::optional<_vec3> scale, std::optional<SpriteBounceDesc> bounceDesc
-   CDroppedItem* tmpItem =  CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, Startpos, _vec3(0.5f, 0.5f, 0.5f), b);
-   tmpItem->SetFoodQuality(quality);
- /*  if (quality == true)
-       tmpItem->SetFoodQuality(CDroppedItem::FOODQUALITY::GOOD);
-   else if(quality == false)
-       tmpItem->SetFoodQuality(CDroppedItem::FOODQUALITY::BAD);*/
+    CDroppedItem* tmpItem = CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, Startpos, _vec3(0.5f, 0.5f, 0.5f), b);
+    tmpItem->SetFoodQuality(quality);
+    /*  if (quality == true)
+          tmpItem->SetFoodQuality(CDroppedItem::FOODQUALITY::GOOD);
+      else if(quality == false)
+          tmpItem->SetFoodQuality(CDroppedItem::FOODQUALITY::BAD);*/
 
 
 }

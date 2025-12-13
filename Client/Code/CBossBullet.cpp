@@ -37,7 +37,7 @@ HRESULT CBossBullet::Ready_GameObject()
 
     SetTexAspectInit(m_TextureCom, m_TransformCom, 0);
 
-    SetAspectScale(m_TransformCom, { .1f, .1f, .1f });
+    SetAspectScale(m_TransformCom, { .25f, .25f, .25f });
 
     const auto ownerTransform =
         dynamic_cast<CTransform*>(m_pOwner->Get_Component(
@@ -45,7 +45,7 @@ HRESULT CBossBullet::Ready_GameObject()
             COMPONENTTYPE::TRANSFORM));
 
     //TODO:: 나중에 땅의 위치를 알게 되면 수정 
-    m_TransformCom->Set_Pos({ ownerTransform->Get_Pos().x, /*-ownerTransform->Get_Scale().y * .5f*/1.f, ownerTransform->Get_Pos().z });
+    m_TransformCom->Set_Pos({ ownerTransform->Get_Pos().x, /*-ownerTransform->Get_Scale().y * .5f*/2.f, ownerTransform->Get_Pos().z });
 
     //m_TransformCom->Set_Rotation({ D3DXToRadian(90), 0, 0 });
 
@@ -55,15 +55,26 @@ HRESULT CBossBullet::Ready_GameObject()
     return S_OK;
 }
 
+void CBossBullet::Initialize_GameObject()
+{
+// 여가 안들어옴ㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ
+    int i = 0;
+}
+
 _int CBossBullet::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CGameObject::Update_GameObject(timeDelta);
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 
+    m_TrailEff->Update_Component(timeDelta);
+
     // 업데이트 입장시
     if (m_flag == false)
     {
+       
+        m_TrailEff->Initialize_Component();
+
         // 생성시의 위치 값 저장
         m_StartPos = m_TransformCom->Get_Pos();
 
@@ -142,6 +153,10 @@ void CBossBullet::Render_GameObject()
 
 void CBossBullet::Render_Core()
 {
+    m_TrailEff-> Render_Effect(m_TextureCom, 0); // 이거 맞나 모르겠네ㅔㅔ
+
+
+    //
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
     m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
@@ -157,15 +172,9 @@ void CBossBullet::Render_Core()
 
     m_TextureCom->Set_Texture(2);
 
-    // m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB((int)(m_fAlpha * 255), 255, 255, 255));
-    //
-    //m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-    //m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-    //m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR); // ← texturefactor.alpha 사용
 
     m_BufferCom->Render_Buffer();
 
-    m_TrailEff-> Render_Effect(m_TextureCom, 2); // 이거 맞나 모르겠네ㅔㅔ
 
     m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
@@ -174,50 +183,57 @@ void CBossBullet::Render_Core()
     m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 
-    
+    ///////////////////////////////////////////////
+    m_GraphicDev->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS); // 알파 함수 기본값
+    m_GraphicDev->SetRenderState(D3DRS_ALPHAREF, 0); // 알파 레퍼런스 기본값
+
+    // D3D 기본 FVF 파이프라인 상태 복구
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+
     //m_GraphicDev->SetRenderState(
     //    D3DRS_TEXTUREFACTOR,
     //    D3DCOLOR_ARGB(255, 255, 255, 255)); // 알파 1.0, 색 그대로
 }
 
-void CBossBullet::Render_Trail()
-{
-    // 불랫용 포즈 계산
-    // _vec3 TrailPos = 
-
-    m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-    //
-
-    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-    m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-    m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-
-    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-    m_GraphicDev->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-    m_GraphicDev->SetRenderState(D3DRS_ALPHAREF, 0);
-    //
-
-    m_TextureCom->Set_Texture(1);
-
-    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(static_cast<int>(m_fAlpha * 255), 255, 255, 255));
-    //
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR); // ← texturefactor.alpha 사용
-
-    m_BufferCom->Render_Buffer();
-    //
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
-    //
-    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-    //
-    m_GraphicDev->SetRenderState(
-        D3DRS_TEXTUREFACTOR,
-        D3DCOLOR_ARGB(255, 255, 255, 255)); // 알파 1.0, 색 그대로
-}
+//void CBossBullet::Render_Trail()
+//{
+//    // 불랫용 포즈 계산
+//    // _vec3 TrailPos = 
+//
+//    m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
+//    //
+//
+//    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+//    m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+//    m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+//
+//    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+//    m_GraphicDev->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+//    m_GraphicDev->SetRenderState(D3DRS_ALPHAREF, 0);
+//    //
+//
+//    m_TextureCom->Set_Texture(1);
+//
+//    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(static_cast<int>(m_fAlpha * 255), 255, 255, 255));
+//    //
+//    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+//    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+//    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR); // ← texturefactor.alpha 사용
+//
+//    m_BufferCom->Render_Buffer();
+//    //
+//    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+//    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+//    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
+//    //
+//    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+//    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+//    //
+//    m_GraphicDev->SetRenderState(
+//        D3DRS_TEXTUREFACTOR,
+//        D3DCOLOR_ARGB(255, 255, 255, 255)); // 알파 1.0, 색 그대로
+//}
 
 void CBossBullet::OnBeginOverlap(CCollider* self, CCollider* other)
 {
@@ -266,8 +282,9 @@ HRESULT CBossBullet::Add_Component()
     // Eff
     m_TrailEff = CreateProtoComponent<CTrailEff>(this, COMPONENTTYPE::TRAILEFFECT);
     NULL_CHECK_RETURN(m_TrailEff, E_FAIL);
-    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRAILEFFECT, m_TrailEff });
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TRAILEFFECT, m_TrailEff });
 
+    
 
     // // BoxCollider
     // m_BoxColCom = CreateProtoComponent<CBoxCollider>(this, COMPONENTTYPE::BOX_COLL);
