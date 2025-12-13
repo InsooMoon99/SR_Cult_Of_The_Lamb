@@ -132,26 +132,43 @@ void CCookingController::SetUIRecipeSlot(/*Slot* slot,*/ int id, CUIButton* quit
     //startCook->SetCookCallBack
 }
 
-bool CCookingController::CanCooK(int recipeID, CInventory* playerInven)
+bool CCookingController::CanCook(int recipeID, CInventory* playerInven)
 {
 
     Recipe* recipe = CRecipeDB::GetInstance()->GetRecipeById(recipeID);
+
+    //기존 버전
+    
     for (auto& [ID, Num] : recipe->ingredients)
     {
         auto Playeriter = playerInven->GetCountMap().find(ID);
         if (Playeriter == playerInven->GetCountMap().end())
             return false;
-
+    
         if (playerInven->GetCountMap().at(ID) < Num)
             return false;
     }
-    //playerInven->Get_Cnt
+
+    //CountMap 복사 문제 있을 수 있다고 해서 고쳐본 버전
+    //const auto& CountMap = playerInven->GetCountMap();
+    //for(const auto& [ID, Num] : recipe->ingredients)
+    //{
+    //    auto it = CountMap.find(ID);
+    //    if (it == CountMap.end())                                                                                                                                       
+    //        return false;
+   //
+    //    if (it->second < Num)
+    //        return false;
+    //}
+
+
+    //
     return true;
 }
 
 bool CCookingController::AddRecipe(int id, CInventory* playerInven)
 {
-    if (m_vecTmpRecipeID.size() < invenSlotNum)
+    if (m_vecTmpRecipeID.size() < invenSlotNum) //? 이건 왜 invenSlotNum이랑 비교하는거지?
     {
         // 대기열 등록
         m_vecTmpRecipeID.push_back(id);
@@ -169,10 +186,26 @@ bool CCookingController::AddRecipe(int id, CInventory* playerInven)
     return false;
 }
 
-bool CCookingController::RemoveRecipe(int slotNum, CInventory* playerInven)
+bool CCookingController::RemoveAllRecipe(CInventory* playerInven)
 {
-    for (auto i = m_vecTmpRecipeID.begin(); i < m_vecTmpRecipeID.end();)
+    for (auto i = m_vecTmpRecipeID.begin(); i < m_vecTmpRecipeID.end();i++)
     {
+
+            //픟레이어 인벤에서 삭제 대기열은 무조건 하나니까 한개만 지우면 됨
+            Recipe* recipe = CRecipeDB::GetInstance()->GetRecipeById((*i));
+            for (auto& [ItemID, Num] : recipe->ingredients)
+            {
+                ItemInstance itemInst{ ItemID ,-1,0 };
+                for (int i = 0; i < Num; i++)
+                {
+                playerInven->AddItem(itemInst);
+
+                }
+            }
+
+
+
+
     }
 }
 

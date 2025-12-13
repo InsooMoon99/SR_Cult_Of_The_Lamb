@@ -7,11 +7,7 @@
 class CUIButton;
 class CInventory;
 
-
-
-
-class CCookingController :
-    public CComponent
+class CCookingController : public CComponent
 {
 private:
     explicit CCookingController(DEVICE graphicDev);
@@ -26,13 +22,13 @@ public:
     void    LateUpdate_Component() override;
 
     //UI
-    void SetUIRecipeSlot(/*Slot* slot, */int id, CUIButton* quit, CUIButton* startCook); //데이터 설정(itemId) + 콜백 연결(onClick)만 해주는 초기화 함수
-    void Set_Start(bool start) { m_bStart = start; }
+    void    SetUIRecipeSlot(/*Slot* slot, */int id, CUIButton* quit, CUIButton* startCook); //데이터 설정(itemId) + 콜백 연결(onClick)만 해주는 초기화 함수
+    void    Set_Start(bool start) { m_bStart = start; }
 
-    bool CanCooK(int recipeID, CInventory* playerInven);// 이게 맞나..///
-    bool AddRecipe(int id, CInventory* playerInven);
+    bool    CanCook(int recipeID, CInventory* playerInven);// 이게 맞나..///
+    bool    AddRecipe(int id, CInventory* playerInven);
 
-    bool RemoveRecipe(int slotNum, CInventory* playerInven);
+    bool RemoveAllRecipe(CInventory* playerInven);
 
     //bool RemoveRecipe(int slotNum);// 이건 해야할까 말아야 할까
     vector<int> Get_Vector() { return m_vecTmpRecipeID; }

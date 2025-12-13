@@ -30,15 +30,16 @@ public:
     void    Set_TextureIndex(int textureIndex) { m_TextureIndex = textureIndex; }
     void    Set_OnClick(function<void()> onclick) { m_OnClick = onclick; }
     void    Set_OnActive(function<bool()> active) { m_IsActive = active; }
+    void    Set_GetCount(function<int()> getCount) { m_GetCount = getCount; }
     void    Set_CookingMenu(CUICookingMenu* cookingmenu) { m_CookingMenu = cookingmenu; }
 
-    void Free() override;;
+    void Free() override;
 
 private:
     CUICookingMenu* m_CookingMenu;
     CUIIcon*        m_ItemIcon;
     CUIIcon*        m_CardIcon;
-    //CUIIcon*        m_IngredientIcon;
+    CUIIcon*        m_IngredientIcon;
     CUIIcon*        m_CardItemIcon;
     CUIIcon*        m_Highlight;
 
@@ -55,6 +56,7 @@ private:
 
     function<void()> m_OnClick;
     function<bool()> m_IsActive;
+    function<int()> m_GetCount;
 };
 
 

@@ -1,7 +1,8 @@
 ﻿#pragma once
 #include "CUI.h"
+#include "CCookingController.h"
+
 class CInventory;
-class CCookingController;
 class CUICookedFoodCell;
 struct Recipe;
 class CUIButton;
@@ -20,15 +21,14 @@ public:
     _int    Update_GameObject(const _float& timeDelta) override;
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
-    void PlayOpenAnimation();
-    void PlayCloseAnimation();
-    bool Get_IsOpen() { return m_IsOpen; }
+    void    PlayOpenAnimation();
+    void    PlayCloseAnimation();
+    bool    Get_IsOpen() { return m_IsOpen; }
     void    Check_Hovered();
     HRESULT Add_Component();
     static CUICookingMenu* Create(DEVICE graphicDev);
-
-    void SetOnDeactivate(function<void()> deactivate) { m_Deactivate = deactivate; }
-    void Free() override;
+    void    SetOnDeactivate(function<void()> deactivate) { m_Deactivate = deactivate; }
+    void    Free() override;
 private:
     vector<CUICookingCell*> m_CookingCells;
     vector<CUICookedFoodCell*> m_CookedFoodCells;
@@ -37,7 +37,7 @@ private:
     CUIButton*              m_CancelButton{};
 
     CInventory*             m_Inventory;
-    CCookingController* m_CookingController;
+   CCookingController *     m_CookingController;
     float                   m_TargetX{};
     float                   m_ClosedX{};
     float                   m_Speed{};

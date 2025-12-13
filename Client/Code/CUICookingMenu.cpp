@@ -1,7 +1,6 @@
 ﻿
 #include "pch.h"
 #include "CUICookingMenu.h"
-
 #include "CCookingController.h"
 #include "CTexture.h"
 #include "CRcTex.h"
@@ -19,6 +18,7 @@
 
 CUICookingMenu::CUICookingMenu(DEVICE graphicDev)
     : CUI(graphicDev),
+      m_CookingController(nullptr),
       m_Cols(6),
       m_CellWidth(100.f),
       m_CellHeight(100.f)
@@ -36,7 +36,8 @@ HRESULT CUICookingMenu::Ready_GameObject()
     m_Speed = 900.f;
 
     m_TransformCom->Set_Scale(450.f, 400.f, 1.f);
-    m_TransformCom->Set_Pos(m_ClosedX, 0.f, 0.f);
+    m_TransformCom->Set_Pos(m_ClosedX, 0.f, 1.f);
+	m_Active = false;
 
     return S_OK;
 }
@@ -47,10 +48,8 @@ void CUICookingMenu::Initialize_GameObject()
     
    // m_RecipeIds.resize(6);
     m_CookingController = dynamic_cast<CCookingController*>(CManagement::GetInstance()->Get_Component(ID_DYNAMIC, LAYERTYPE::GAMELOGIC, OBJTYPE::BUILDING, COMPONENTTYPE::COOKCTRL));
-
     vector<Recipe> recipes = CRecipeDB::GetInstance()->GetVector();
 
-    //TEX_ITEM 중 8~10이 요리 텍스처
     for (int i = 0; i < 6; i++)
     {
         auto* cookingCell = CUICookingCell::Create(m_GraphicDev);
@@ -60,16 +59,21 @@ void CUICookingMenu::Initialize_GameObject()
         if (i < 3)
         {
             int recipeId = recipes[i].id;
-           // texindex = i + 8;
-            cookingCell->Set_OnClick([this, recipeId]() {m_CookingController->AddRecipe(recipeId, m_Inventory); });
+            int IngredientId = CRecipeDB::GetInstance()->GetRecipeById(recipeId)->ingredients.begin()->first;
+
+            cookingCell->Set_OnClick([this, recipeId]() {if (m_CookingController->CanCook(recipeId, m_Inventory)) m_CookingController->AddRecipe(recipeId, m_Inventory); });
+            cookingCell->Set_OnActive([this, recipeId]() { return m_CookingController->CanCook(recipeId, m_Inventory); });
+            cookingCell->Set_GetCount([this, IngredientId]() {return m_Inventory->GetItemCount(IngredientId); });
             cookingCell->Set_RecipeId(recipeId);
+            cookingCell->Get_Transform()->Set_Pos(m_ClosedX, 0.f, 0.f);
         }
         else
         {
-            //texindex = -1;
+       
             cookingCell->Set_RecipeId(-1);
+            cookingCell->Get_Transform()->Set_Pos(m_ClosedX, 0.f, 0.f);
         }
-       // cookingCell->Set_TextureIndex(texindex);
+
         m_CookingCells.push_back(cookingCell);
     }
 
@@ -77,7 +81,7 @@ void CUICookingMenu::Initialize_GameObject()
     for (int i = 0; i < 12; i++)
     {
         auto* cookedFoodCell = CUICookedFoodCell::Create(m_GraphicDev);
-
+        cookedFoodCell->Get_Transform()->Set_Pos(m_ClosedX, 0.f, 0.f);
         m_CookedFoodCells.push_back(cookedFoodCell);
     }
 
@@ -93,9 +97,8 @@ void CUICookingMenu::Initialize_GameObject()
     m_CancelButton->Set_HasText();
     m_CancelButton->Set_Text(L"취소");
     m_CancelButton->SetCloneTexAspectScale({ 0.17f, 0.22f, 0.f });
-    m_CancelButton->SetOnClick([this]() { PlayCloseAnimation(); m_CookingController->Quit(); });
-    // m_CancelButton->Set_Selected(true);
-
+    m_CancelButton->SetOnClick([this]() { PlayCloseAnimation(); m_CookingController->RemoveAllRecipe(m_Inventory); m_CookingController->Quit();
+});
 
 }
 
@@ -308,6 +311,7 @@ CUICookingMenu* CUICookingMenu::Create(DEVICE graphicDev)
 
 void CUICookingMenu::Free()
 {
+    CUI::Free();
     for (auto cell : m_CookingCells)
     {
         Safe_Release(cell);

@@ -197,7 +197,7 @@ ACTORSTATE      CPlayerSkill::Update_Charging(const float& timeDelta)
     D3DXVec3Normalize(&vMouseDir, &vMouseDir);
     float baseAngle = atan2f(vMouseDir.z, vMouseDir.x);
 
-    float offset = D3DXToRadian(15.f);
+    float offset = D3DXToRadian(30.f);
     float leftAngle = baseAngle - offset;
     float RightAngle = baseAngle + offset;
 
