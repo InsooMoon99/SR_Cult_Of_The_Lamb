@@ -8,9 +8,12 @@ class CRigidbody;
 class CCollider;
 END
 
+class CPlayerSkill;
 class CPlayerInput;
 class CPlayerMovement;
 class CPlayerAttack;
+class CPlayerGathering;
+class CPlayerConstruction;
 
 /// @brief 플레이어의 전체적인 행동과 상태를 관리하는 중앙 제어 컴포넌트
 /// @details 
@@ -26,12 +29,22 @@ class CPlayerAttack;
 class CPlayerController : public CComponent
 {
 private:
+    // 플레이어 컨트롤러 내 사용하는 타이머용 열거체
+    enum PLCON_TIMER
+    {
+        TIMER_RUNSOUND,  // 달리기 효과음 재생용
+
+        TIMER_END
+    };
+
+private:
     explicit CPlayerController(DEVICE graphicDev);
     explicit CPlayerController(const CPlayerController& rhs);
     ~CPlayerController() override;
 
 public:
     HRESULT Ready_PlayerController();
+    void    Initialize_Component() override;
     _int    Update_Component(const _float& timeDelta) override;
     void    LateUpdate_Component() override;
 
@@ -40,36 +53,57 @@ public:
     HRESULT Init_OwnerComponent();
 
 public: // --- Getters for Inspector ---
-    CPlayerInput*    Get_InputCom() const { return m_OwnerInputCom; }
+    CPlayerInput* Get_InputCom() const { return m_OwnerInputCom; }
     CPlayerMovement* Get_MovementCom() const { return m_OwnerMovementCom; }
-    CPlayerAttack*   Get_AttackCom() const { return m_OwnerAttackCom; }
+    CPlayerAttack* Get_AttackCom() const { return m_OwnerAttackCom; }
+
+    using   OnRefuseEndCallback = function<void()>;
+    void    Set_OnRefuseEnd(OnRefuseEndCallback callback) { m_OnRefuseEnd = callback; }
 
 private:
     // --- [핵심 로직 파이프라인] ---
-    void CheckStateTransition();                // 상태 전환이 가능한지 판단
+    void CheckStateTransition();                 // 상태 전환이 가능한지 판단
     void Update_State(const _float& timeDelta); // 상태에 따른 행동 실행
 
     // --- [세부 행동 메서드] ---
-    void Action_Idle(const _float& timeDelta);      // IDLE 상태
-    void Action_Run(const _float& timeDelta);       // RUN 상태
-    void Action_Roll(const _float& timeDelta);      // PLAYER_ROLL 상태
-    void Action_Sword(const _float& timeDelta);     // PLAYER_SWORD_ ~ 상태
+    void Action_Idle(const _float& timeDelta);              // IDLE 상태
+    void Action_Run(const _float& timeDelta);               // RUN 상태
+    void Action_Roll(const _float& timeDelta);              // PLAYER_ROLL 상태
+    void Action_NormalAttack(const _float& timeDelta);      // PLAYER_SWORD_ ~ 상태
+    void Action_Charging(const _float& timeDelta);
+    void Action_SingleSkill(const _float& timeDelta);
+    void Action_TripleSkill(const _float& timeDelta);
+    void Action_Construction(const _float& timeDelta);
+    void Action_Hit(const _float& timeDetla);
+
+    void Action_Decide(const _float& timeDetla);
+    void Action_Refuse(const _float& timeDetla);
+
+    // --- [기타 기능 함수] ---
+    _bool Living_Interaction(); // 채집, 건축 등의 상황, CheckStateTransition 내에서 사용
 
 private:
 #pragma region Caching owner components
-    Engine::CState*      m_OwnerStateCom;
+    Engine::CState* m_OwnerStateCom;
     Engine::CCombatStat* m_OwnerCombatStatCom;
-    Engine::CRigidbody*  m_OwnerRigidbodyCom;
-    Engine::CCollider*   m_OwnerColliderCom;
+    Engine::CRigidbody* m_OwnerRigidbodyCom;
+    Engine::CCollider* m_OwnerColliderCom;
 
-    CPlayerInput*    m_OwnerInputCom;
+    CPlayerInput* m_OwnerInputCom;
     CPlayerMovement* m_OwnerMovementCom;
-    CPlayerAttack*   m_OwnerAttackCom;
+    CPlayerAttack* m_OwnerAttackCom;
+    CPlayerSkill* m_OwnerSkillCom;
+    CPlayerGathering* m_OwnerGatherCom;
+    CPlayerConstruction* m_OwnerConstructionCom;
 #pragma endregion
+
+    _float m_Timers[TIMER_END]; // enum값을 통해 사용하는 타이머
+
+    OnRefuseEndCallback m_OnRefuseEnd = nullptr;
 
 public:
     static CPlayerController* Create(DEVICE graphicDev);
-    CComponent*               Clone() override;
+    CComponent* Clone() override;
 
 private:
     void Free() override;

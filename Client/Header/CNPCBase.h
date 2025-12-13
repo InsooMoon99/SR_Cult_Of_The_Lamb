@@ -1,21 +1,43 @@
 ﻿#pragma once
-
 #include "CCharacterBase.h"
 
-// 모든 NPC들의 기본 베이스 (NPC 춘식이, 춘봉이 등 노예 추가 예정)
+BEGIN(Engine)
+class CRigidbody;
+END
+
+class CInteractionChecker;
+class CNPCController;
+
+// 모든 추종자 NPC들의 기본 베이스
 class CNPCBase : public CCharacterBase
 {
 protected:
     explicit CNPCBase(DEVICE graphicDev);
     explicit CNPCBase(const CNPCBase& rhs);
-    virtual ~CNPCBase();
+    ~CNPCBase() override;
 
 public:
     HRESULT Ready_GameObject() override;
+    void    Initialize_GameObject() override;
     _int    Update_GameObject(const _float& timeDelta) override;
     void    LateUpdate_GameObject(const _float& timeDelta) override;
+    void    Render_GameObject() override;
+
+public:
+    void OnBeginOverlap(CCollider* self, CCollider* other) override;
+    void OnStayOverlap(CCollider* self, CCollider* other) override;
+    void OnEndOverlap(CCollider* self, CCollider* other) override;
 
 protected:
-    void Free() override;
+    HRESULT Add_Component() override;
+    void    Free() override;
 
+public:
+    CInteractionChecker* Get_InteractionChecker() { return m_Checker; }
+    CRigidbody*          Get_Rigidbody() { return m_Rigidbody; }
+
+protected:
+    CInteractionChecker* m_Checker       = nullptr;
+    CNPCController*      m_NPCController = nullptr;
+    CRigidbody*          m_Rigidbody     = nullptr;
 };

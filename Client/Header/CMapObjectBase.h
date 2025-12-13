@@ -1,5 +1,7 @@
 ﻿#pragma once
+
 #include "CGameObject.h"
+#include "CRenderObject.h"
 
 class CTerrain;
 
@@ -25,7 +27,7 @@ typedef struct tagMapData
 
 } MapObjectData;
 
-class CMapObjectBase : public CGameObject
+class CMapObjectBase : public CRenderObject
 {
 protected:
     explicit CMapObjectBase(DEVICE graphicDev);
@@ -34,11 +36,14 @@ protected:
 
 public:
     HRESULT Ready_GameObject() override;
+    void    Initialize_GameObject() override;
     _int    Update_GameObject(const _float& timeDelta) override;
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
 
     virtual MAPOBJTYPE Get_Type() abstract;
+
+    void Set_Material() override;
 
 public:
     // 에디터 배치용 함수들
@@ -51,22 +56,21 @@ public:
         m_CellZ = z;
     }
 
-    void Set_Terrain(CTerrain* terrain) { m_Terrain = terrain; }
+    void    Set_Terrain(CTerrain* terrain) { m_Terrain = terrain; }
 
-    void Set_TextureIndex(_int index) { m_TextureIndex = index; }
-    _int Get_TextureIndex() const { return m_TextureIndex; }
+    void    Set_TextureIndex(_int index) { m_TextureIndex = index; }
+    _int    Get_TextureIndex() const { return m_TextureIndex; }
 
-    void Set_Preview(_bool isPreivew) { m_IsPreview = isPreivew; }
+    void    Set_Preview(_bool isPreivew) { m_IsPreview = isPreivew; }
 
 protected:
     HRESULT Add_BaseComponent(COMPONENTTYPE InType);
+    void    Render_Setting() override;
 
 protected:
     void Free() override;
 
 protected:
-    CRcTex*     m_BufferCom;
-    CTransform* m_TransformCom;
     CTexture*   m_TextureCom;
 
     _bool m_AttachTerrain;

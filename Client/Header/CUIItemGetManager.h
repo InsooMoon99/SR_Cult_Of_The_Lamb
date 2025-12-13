@@ -27,7 +27,8 @@ protected:
 private:
     list<CUIItemGet*> m_UIItemGets;
     CInventory* m_Inventory;
-    bool    m_IsShifting;
+    bool    m_IsAnyShifting;
+    bool   m_NeedsReindex;
 
 };
 

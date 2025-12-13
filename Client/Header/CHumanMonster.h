@@ -2,6 +2,8 @@
 
 #include "CMonsterBase.h"
 
+class CUI_MonsterHp;
+
 BEGIN(Engine)
 class CTexture;
 class CRigidbody;
@@ -22,10 +24,23 @@ public:
     void    Render_GameObject() override;
 
 public:
-    void OnBeginOverlap(CCollider* self, CCollider* other) override;
-    void OnEndOverlap(CCollider* self, CCollider* other) override;
+    // 공통 체크 (넉백, 사망)
+    _bool   Check_CommonTransitions();
 
-    void Chase_Target(const float& timeDelta, _float speed) override;
+    // 상태 변환
+    void    Update_State_Idle(const _float timeDelta);
+    void    Update_State_Run(const _float timeDelta);
+    void    Update_State_Attack(const _float timeDelta);
+    void    Update_State_Hit(const _float timeDelta);
+    void    Update_State_Dead(const _float timeDelta);
+
+    void    Update_Direction();
+
+public:
+    void    OnBeginOverlap(CCollider* self, CCollider* other) override;
+    void    OnEndOverlap(CCollider* self, CCollider* other) override;
+
+    void    Chase_Target(const float& timeDelta, _float speed) override;
 
 private:
     void     Animation_Setting() override;
@@ -38,6 +53,9 @@ protected:
     void Free() override;
 
 private:
-    Engine::CRigidbody* m_RigidbodyCom;
+    CRigidbody*     m_RigidbodyCom;
+    _bool           m_AttackSpawned;
+
+    CUI_MonsterHp*  m_HpBar;
 
 };

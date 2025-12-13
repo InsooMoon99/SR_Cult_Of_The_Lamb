@@ -1,12 +1,9 @@
 ﻿#pragma once
-
 #include "CBase.h"
-#include "Engine_Macro.h"
 
 BEGIN(Engine)
 class CTexture;
 END
-
 
 class CResourceMgr : public CBase
 {
@@ -14,40 +11,31 @@ class CResourceMgr : public CBase
 
 private:
     explicit CResourceMgr();
-    virtual  ~CResourceMgr();
+    ~CResourceMgr() override;
 
 public:
     HRESULT Ready_Resource(DEVICE graphicDev);
     HRESULT Ready_BossResource(DEVICE graphicDev);
     HRESULT Ready_BossResource2(DEVICE graphicDev);
-
-public:
     HRESULT Ready_Buffer(DEVICE graphicDev);
     HRESULT Ready_Player(DEVICE graphicDev);
     HRESULT Ready_Monster(DEVICE graphicDev);
     HRESULT Ready_UI(DEVICE graphicDev);
     HRESULT Ready_Item(DEVICE graphicDev);
     HRESULT Ready_Common(DEVICE graphicDev);
-
     HRESULT Ready_Terrain(DEVICE graphicDev);
     HRESULT Ready_Decoration(DEVICE graphicDev);
-
-public:
+    HRESULT Ready_Particle(DEVICE graphicDev);
+    HRESULT Ready_Building(DEVICE graphicDev);
     HRESULT Ready_BossP1(DEVICE graphicDev);
-
-    HRESULT Ready_BossP1_Idle_Awake(DEVICE graphicDev, CTexture* bossTex);
-    HRESULT Ready_BossP1_Attack_Dead(DEVICE graphicDev, CTexture* bossTex);
-    HRESULT Ready_BossP1_Movement(DEVICE graphicDev, CTexture* bossTex);
-    HRESULT Ready_BossP1_Groggy(DEVICE graphicDev, CTexture* bossTex);
-    HRESULT Ready_BossP1_Effects(DEVICE graphicDev, CTexture* bossTex);
-    HRESULT Ready_BossP1_Extra(DEVICE graphicDev);
+    HRESULT Ready_BossPlayer(DEVICE graphicDev);
 
 public:
     HRESULT Ready_BossP2(DEVICE graphicDev);
+    HRESULT Ready_BossP2_Eyeball(DEVICE graphicDev);
+   // HRESULT Ready_Follower(DEVICE graphicDev);
+
 
 public:
     void Free() override;
-
-
 };
-

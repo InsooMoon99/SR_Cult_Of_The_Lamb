@@ -15,7 +15,7 @@ CCombatStat::CCombatStat(DEVICE graphicDev)
       m_Mp(0),
       m_MaxMp(10),
       m_Speed(20),
-      m_IsDead(false), m_IsInvincible(false), m_KnockbackTimer(0)
+      m_IsDead(false), m_CanHitState(true), m_IsInvincible(false), m_KnockbackTimer(0)
 {
 }
 
@@ -28,7 +28,7 @@ CCombatStat::CCombatStat(const CCombatStat& rhs)
       m_Mp(0),
       m_MaxMp(rhs.m_MaxMp),
       m_Speed(rhs.m_Speed),
-      m_IsDead(false), m_IsInvincible(false), m_KnockbackTimer(0)
+      m_IsDead(false), m_CanHitState(true), m_IsInvincible(false), m_KnockbackTimer(0)
 {
     m_Hp = m_MaxHp;
     m_Mp = m_MaxMp;
@@ -81,7 +81,7 @@ void CCombatStat::LateUpdate_Component()
 
 void CCombatStat::Take_Damage(const HITDATA& hitData)
 {
-    if (m_IsInvincible) // 무적 체크
+    if (m_IsInvincible) // 무적 체크 -> AttackBase에서 하도록 변경하긴 했음
         return;
 
     if (m_IsDead)
@@ -95,6 +95,16 @@ void CCombatStat::Take_Damage(const HITDATA& hitData)
 
     // 넉백
     Apply_Knockback(hitData);
+
+    // Hit 상태로 전환. 보스는 false로 설정
+    if (m_CanHitState && m_Owner)
+    {
+        CState* state = dynamic_cast<CState*>(
+            m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
+
+        if (state)
+            state->Change_State(ACTORSTATE::HIT);
+    }
 }
 
 void CCombatStat::Apply_Damage(const HITDATA& hitData)
@@ -102,6 +112,11 @@ void CCombatStat::Apply_Damage(const HITDATA& hitData)
     m_Hp -= hitData.damage;
     if (m_Hp < 0.f)
         m_Hp = 0.f;
+
+    m_DirForItem = hitData.dir;
+
+    if (OnDamaged)
+        OnDamaged();
 
     if (m_Hp <= 0.f && !m_IsDead)
         On_Dead();
@@ -130,7 +145,7 @@ void CCombatStat::On_Dead()
         if (state)
             state->Change_State(ACTORSTATE::DEAD);
 
-        // 여기서 Owner->Mark_As_PendingKill 호출하면 삭제됨
+        // 각자 클래스에서 애니메이션 끝났을 때 판단해서 추가로 처리하기
 
     }
 }

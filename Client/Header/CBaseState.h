@@ -2,7 +2,6 @@
 #include "CBase.h"
 #include "Engine_Define.h"
 
-
 class CBaseState abstract :
     public CBase 
 {

@@ -7,13 +7,14 @@ BEGIN(Engine)
 
 class ENGINE_DLL CAttackSphere : public CAttackBase
 {
-private:
+protected:
     explicit CAttackSphere(DEVICE graphicDev);
     explicit CAttackSphere(const CAttackSphere& rhs);
     virtual ~CAttackSphere();
 
 public:
     HRESULT Ready_GameObject() override;
+    void Initialize_GameObject() override;
     _int Update_GameObject(const _float& timeDelta) override;
     void LateUpdate_GameObject(const _float& timeDelta) override;
     void Render_GameObject() override;
@@ -27,11 +28,13 @@ public:
 protected:
     virtual CCollider* Get_Collider() override { return m_SphereColCom; }
 
-private:
-    HRESULT Add_Component();
+protected:
+    virtual HRESULT Add_Component();
+
+protected:
     void Free() override;
 
-private:
+protected:
     CSphereCollider* m_SphereColCom;
   
 

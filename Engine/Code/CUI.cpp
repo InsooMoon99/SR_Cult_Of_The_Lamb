@@ -5,7 +5,7 @@ CUI::CUI(DEVICE graphicDev)
     : CGameObject(graphicDev),
       m_TransformCom(nullptr),
       m_TextureCom(nullptr),
-      m_BufferCom(nullptr),
+      m_BufferCom(nullptr), m_Invisible(false),
       m_ID(0)
 { }
 
@@ -13,7 +13,7 @@ CUI::CUI(const CUI& rhs)
     : CGameObject(rhs),
       m_TransformCom(nullptr),
       m_TextureCom(nullptr),
-      m_BufferCom(nullptr),
+      m_BufferCom(nullptr), m_Invisible(false),
       m_ID(0)
 { }
 
@@ -29,6 +29,7 @@ HRESULT CUI::Ready_GameObject()
 
 _int CUI::Update_GameObject(const _float& timeDelta)
 {
+
     CGameObject::Update_GameObject(timeDelta);
 
     return S_OK;

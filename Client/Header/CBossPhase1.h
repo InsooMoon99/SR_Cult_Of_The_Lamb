@@ -14,12 +14,13 @@ class CState;
 class CCombatStat;
 END
 
+class CUI_BossHp;
 class CBossStateMachine;
 
 class CBossPhase1 : public CMonsterBase
 {
 public:
-enum  BOSSPHASE1 { BOSSAWAKE=0, BULLETATTACK, CHAINATTACK, BOSSDEAD, BOSSIDLE, BOSSMOVE, BOSSGROGGRY, BOSS_END };
+    enum  BOSSPHASE1 { BOSSAWAKE = 0, BULLETATTACK, CHAINATTACK, BOSSDEAD, BOSSIDLE, BOSSMOVE, BOSSGROGGRY, TALK, BOSS_END };
 private:
     explicit CBossPhase1(DEVICE graphicDev);
     explicit CBossPhase1(const CBossPhase1& rhs);
@@ -33,10 +34,10 @@ public:
     void    Initialize_GameObject() override; // Ready보다 한 단계 아래 생명주기
 
 public:
-    void    OnBeginOverlap(CCollider* self, CCollider* other) override {}
-    void    OnEndOverlap(CCollider* self, CCollider* other) override {}
+    void    OnBeginOverlap(CCollider* self, CCollider* other) override;
+    void    OnEndOverlap(CCollider* self, CCollider* other) override;
 
-    DEVICE  Get_GraphicDev() { return m_GraphicDev; } // 이게  괜찬나..?? 안괜찮을듯
+    DEVICE  Get_GraphicDev() { return m_GraphicDev; }
 
 private:
     HRESULT Add_Component() override;
@@ -52,11 +53,33 @@ public:
 
     _vec3 Get_Center() { return BaseCenter; }
     float Get_Length() { return BaseLength; }
-private:
-    _vec3 StartPos = { 20 ,0, 30 };
-    _vec3 BaseCenter = { 20 ,0, 20 };
-    int BaseLength = 30;
-    float interval = 1.f;
+
+    CBossStateMachine* Get_StateMachine() { return m_StateMachine; }
+
 private:
     void Free() override;
+
+private:
+    _vec3   StartPos = { 48.2f ,3.8f, 57.f };
+    _vec3   BaseCenter;
+    int     BaseLength = 25;
+    float   interval = 1.f;
+
+    bool    m_bHurt = false;
+    float   m_fAlpha = 0.8f;
+    float   m_bHurtTime = 0;
+
+public:
+    // 보스 죽기 전에 대화 시작
+    using   OnDeadTalkStartCallback = function<void()>;
+    void    Set_OnDeadTalkStart(OnDeadTalkStartCallback callback);
+
+    // 보스 죽었을 때
+    using   OnBossDeadCallback = function<void()>;
+    void    Set_OnBossDeadCallback(OnBossDeadCallback callback) { m_OnBossDead = callback; }
+
+private:
+    OnDeadTalkStartCallback m_OnDeadTalkStart = nullptr;
+    OnBossDeadCallback m_OnBossDead = nullptr;
+
 };

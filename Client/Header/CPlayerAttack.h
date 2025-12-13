@@ -1,14 +1,16 @@
 ﻿#pragma once
 #include "CComponent.h"
-
-class CPlayerInput;
-class CWeaponEquip;
+#include "Engine_Struct.h"
 
 BEGIN(Engine)
 class CAttackBase;
 class CCombatStat;
 class CState;
 END
+
+class CPlayerMovement;
+class CPlayerInput;
+class CWeaponEquip;
 
 /// @brief 플레이어의 전투 및 공격 로직을 담당하는 컴포넌트
 /// @details
@@ -25,17 +27,21 @@ public:
     // 무기 공격 정보 구조체
     struct AttackInfo
     {
-        ACTORSTATE state;           // 해당 공격의 애니메이션 상태
+        ACTORSTATE  state;           // 해당 공격의 애니메이션 상태
 
-        _float duration;            // 공격 지속 시간
-        _float hitboxStartTime;     // 히트박스가 켜지는 시간
-        _float hitboxEndTime;       // 히트박스가 꺼지는 시간
-        _float comboInputTime;      // 다음 콤보 선입력 허용 시작 시간
-        _float damageMultiplier;    //TODO 공격력 배율. 나중에 아이템 정보와 연동하기
-        _float knockbackPower;      // 넉백 힘
-        _float knockbackTimer;      // 넉백 밀려나는 시간
-        _float spawnOffset;         // 생성 거리 오프셋 (얼마나 앞에 생성되는지)
-        _vec3  hitboxScale;         // 공격 오브젝트 크기 (예: 1, 1, 1)
+        _float      duration;            // 공격 지속 시간
+        _float      hitboxStartTime;     // 히트박스가 켜지는 시간
+        _float      hitboxEndTime;       // 히트박스가 꺼지는 시간
+        _float      comboInputTime;      // 다음 콤보 선입력 허용 시작 시간
+        _float      damageMultiplier;    //TODO 공격력 배율. 나중에 아이템 정보와 연동하기
+        _float      knockbackPower;      // 넉백 힘
+        _float      knockbackTimer;      // 넉백 밀려나는 시간
+        _float      spawnOffset;         // 생성 거리 오프셋 (얼마나 앞에 생성되는지)
+        _vec3       hitboxScale;         // 공격 오브젝트 크기 (예: 1, 1, 1)
+
+        PARTICLEDATA particle;
+        _float      hitStopDuration = 0.f;
+        _float      hitStopScale = 0.f;
     };
 
     // [AttackInfo 관리용] 무기 종류 enum
@@ -43,6 +49,8 @@ public:
     {
         WEAPON_SWORD,       // 무기 : 검
         WEAPON_GAUNTLET,    // 무기 : 건틀릿
+
+        WEPON_CRAFTING,      // 곡괭이, 도끼 , 체집시 사용할 공격
 
         WEAPON_MAX
     };
@@ -54,7 +62,6 @@ public:
         ATTACK_COMBO1,      // 일반 1타
         ATTACK_COMBO2,      // 일반 2타
         ATTACK_COMBO3,      // 일반 3타
-        ATTACK_COMBO4,      // 일반 4타
 
         ATTACK_MAX
     };
@@ -96,8 +103,8 @@ public:  // --- 동작 명령 함수 (Controller가 호출) ---
     void       Try_NextCombo();                              // 일반공격 콤보 예약 (일반공격 중 클릭시 호출)
     _bool      Update_NormalAttack(const _float& timeDelta); // 일반공격 중 매 프레임 호출. false면 종료
 
-    void  Start_HeavyAttack();                          // 강공격 시작
-    _bool Update_HeavyAttack(const _float& timeDelta);  // 강공격 중 매 프레임 호출. false면 종료
+    void    Start_HeavyAttack();                          // 강공격 시작
+    _bool   Update_HeavyAttack(const _float& timeDelta);  // 강공격 중 매 프레임 호출. false면 종료
 
     void Cancel_Attack(); // 공격이 강제 취소될 때 직접 호출
 
@@ -115,6 +122,7 @@ private: // --- Owner Component 캐싱 ---
     Engine::CCombatStat* m_OwnerCombatStatCom;
     CWeaponEquip*        m_OwnerWeaponCom;
     CPlayerInput*        m_OwnerInputCom;
+    CPlayerMovement*     m_OwnerMovementCom;
 
 private: // --- 다른 오브젝트 캐싱 ---
     Engine::CAttackBase* m_CurrentAttackObj; // 현재 활성화된 공격 오브젝트

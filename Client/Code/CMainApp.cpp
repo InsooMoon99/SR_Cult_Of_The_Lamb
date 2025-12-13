@@ -1,7 +1,8 @@
 ﻿#include "pch.h"
 #include "CMainApp.h"
-
 #include "CCollisionManager.h"
+#include "CConstructionMgr.h"
+#include "CDialogueDB.h"
 #include "CDInputMgr.h"
 #include "CDropSystem.h"
 #include "CEditContext.h"
@@ -15,12 +16,13 @@
 #include "CManagement.h"
 #include "CProtoMgr.h"
 #include "CRandomMgr.h"
+#include "CRecipeDB.h"
 #include "CRenderer.h"
 #include "CResourceMgr.h"
 #include "CSceneMgr.h"
 #include "CSoundMgr.h"
-#include "CTimerMgr.h"
 #include "CTexture.h"
+#include "CTimerMgr.h"
 
 CMainApp::CMainApp()
     : m_ManagementClass(CManagement::GetInstance()),
@@ -41,6 +43,12 @@ HRESULT CMainApp::Ready_MainApp()
     if (FAILED(CItemDB::GetInstance()->LoadFromJson("ItemData.txt")))
         return E_FAIL;
 
+    if (FAILED(CRecipeDB::GetInstance()->LoadFromJson("RecipeData.txt")))
+        return E_FAIL;
+
+    if (FAILED(CDialogueDB::GetInstance()->LoadFromJson("Dialogue.json")))
+        return E_FAIL;
+
 #pragma endregion
 
     if (FAILED(Ready_Scene(m_GraphicDev)))
@@ -57,19 +65,21 @@ HRESULT CMainApp::Ready_MainApp()
     // SoundMgr Init
     CSoundMgr::GetInstance()->Ready_SoundMgr();
 
+    // ConstructionMgr Init
+    CConstructionMgr::GetInstance()->Ready_ConstructionMgr(m_GraphicDev);
+
     return S_OK;
 }
 
 int CMainApp::Update_MainApp(const float& timeDelta)
 {
     m_ManagementClass->Commit_ChangeScene();
-
-    CDInputMgr::GetInstance()->Update_InputDev();
-
     m_ManagementClass->Update_Scene(timeDelta);
 
+    CDInputMgr::GetInstance()->Update_InputDev();
     CCollisionManager::GetInstance()->Update();
     CSoundMgr::GetInstance()->Update(timeDelta);
+    CSceneMgr::GetInstance()->Update_SceneMgr(timeDelta);
 
     // Imgui
     {
@@ -91,8 +101,8 @@ void CMainApp::Render_MainApp()
     m_DeviceClass->Render_Begin(D3DXCOLOR(0.f, 0.f, 0.f, 1.f));
 
     m_ManagementClass->Render_Scene(m_GraphicDev);
-
     CMainEditorMgr::GetInstance()->Render_MainEditor();
+    CSceneMgr::GetInstance()->Render_SceneMgr();
 
     // ImGui
     {
@@ -145,6 +155,14 @@ HRESULT CMainApp::Ready_DefaultSetting(DEVICE* graphicDev)
         *graphicDev, L"NanumSquare_Heavy", L"나눔스퀘어 네오 Heavy", 33, 35, FW_HEAVY)))
         return E_FAIL;
 
+	if (FAILED(CFontMgr::GetInstance()->Ready_Font(
+		*graphicDev, L"NanumSquare_Big", L"나눔스퀘어 네오 Regular", 30, 33, FW_MEDIUM)))
+		return E_FAIL;
+
+    if (FAILED(CFontMgr::GetInstance()->Ready_Font(
+        *graphicDev, L"NanumSquare_Large", L"나눔스퀘어 네오 Regular", 25, 27, FW_MEDIUM)))
+
+        return E_FAIL;
     //아이템 숫자 출력용 폰트
     if (FAILED(CFontMgr::GetInstance()->Ready_Font(
         *graphicDev, L"NanumSquare_Number", L"나눔스퀘어 네오 Heavy", 18, 20, FW_HEAVY)))
@@ -159,7 +177,6 @@ HRESULT CMainApp::Ready_DefaultSetting(DEVICE* graphicDev)
     if (FAILED(CFontMgr::GetInstance()->Ready_Font(
         *graphicDev, L"NanumSquare_Regular", L"나눔스퀘어 네오 Regular", 18, 21, FW_MEDIUM)))
         return E_FAIL;
-
 
     //작은 크기 폰트
     if (FAILED(CFontMgr::GetInstance()->Ready_Font(
@@ -209,31 +226,40 @@ CMainApp* CMainApp::Create()
 
 void CMainApp::Free()
 {
-    Safe_Release(m_GraphicDev);
-    Safe_Release(m_DeviceClass);
+    
+    { // 순서 중요
+        CSceneMgr::DestroyInstance();
+        CManagement::DestroyInstance();
+        CRenderer::DestroyInstance();
+    }
 
-    CTexture::CleanupTextureSystem();
+    CDialogueDB::DestroyInstance();
+    CConstructionMgr::DestroyInstance();
+    CDropSystem::DestroyInstance();
     CSoundMgr::DestroyInstance();
     CCollisionManager::DestroyInstance();
     CLightMgr::DestroyInstance();
     CDInputMgr::DestroyInstance();
-    CFontMgr::DestroyInstance();
-    CRenderer::DestroyInstance();
+    CRandomMgr::DestroyInstance();
+    CItemDB::DestroyInstance();
+    CRecipeDB::DestroyInstance();
+    
+    CMainEditorMgr::DestroyInstance();
+    CImGuiManager::DestroyInstance();
+
     CProtoMgr::DestroyInstance();
+    
     CResourceMgr::DestroyInstance();
     CFrameMgr::DestroyInstance();
     CTimerMgr::DestroyInstance();
-    CMainEditorMgr::DestroyInstance();
-    CImGuiManager::DestroyInstance();
-    CManagement::DestroyInstance();
+    
+    CTexture::CleanupTextureSystem();
+    
+    CFontMgr::DestroyInstance();
+    
     CGraphicDev::DestroyInstance();
-    CSceneMgr::DestroyInstance();
-    CRandomMgr::DestroyInstance();
 
-#pragma region 데이터 파싱 테스트
+    Safe_Release(m_DeviceClass);
+    Safe_Release(m_GraphicDev);
 
-    CItemDB::DestroyInstance();
-    CDropSystem::DestroyInstance();
-
-#pragma endregion
 }

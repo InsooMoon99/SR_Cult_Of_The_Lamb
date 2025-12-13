@@ -3,7 +3,9 @@
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
 #include "CCreateHelper.h"
+#include "CParticleHelper.h"
 #include "CRenderer.h"
+#include "CTimerMgr.h"
 #include "CTransform.h"
 
 CAttackBase::CAttackBase(DEVICE graphicDev)
@@ -54,15 +56,11 @@ void CAttackBase::Render_GameObject()
     CGameObject::Render_GameObject();
 
     if (m_TransformCom)
-    {
         m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-    }
 
     CCollider* collider = Get_Collider();
     if (collider)
-    {
         collider->Render();
-    }
 }
 
 void CAttackBase::OnBeginOverlap(CCollider* self, CCollider* other)
@@ -81,6 +79,10 @@ void CAttackBase::OnBeginOverlap(CCollider* self, CCollider* other)
         hitter->Get_Component(ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
 
     if (!combat)
+        return;
+
+    // 무적처리
+    if (combat->Is_Invincible())
         return;
 
     // 방향 보정
@@ -103,24 +105,45 @@ void CAttackBase::OnBeginOverlap(CCollider* self, CCollider* other)
 
     // 파싱된 데이터값으로 세팅?
     HITDATA hit(m_AttackData);
-    hit.dir = dir;             
+    hit.dir      = dir;
     hit.attacker = m_Instigator;
-    hit.hitter = hitter;
+    hit.hitter   = hitter;
 
     combat->Take_Damage(hit);
 
+    // HitStop
+    if (m_AttackData.hitStopDuration > 0.f)
+    {
+        CTimerMgr::GetInstance()->Start_HitStop(
+            m_AttackData.hitStopDuration,
+            m_AttackData.hitStopScale
+        );
+    }
+
+    // 파티클 있는지 확인
+    if (m_AttackData.hitParticle.IsValid())
+    {
+        const auto& particle = m_AttackData.hitParticle;
+
+        // Pos나 Offset에서 랜덤값 줘야 좀 괜찮을듯
+        CParticleHelper::Spawn_Particle(
+            hitterPos,
+            particle.key,
+            particle.frames,
+            particle.interval,
+            particle.scale,
+            particle.offset
+        );
+    }
+
     // 데미지를 줬으면, 삭제 요청 -> AttackBuilder에서 세팅
     if (m_DestroyOnHit)
-    {
         Mark_As_PendingKill();
-    }
 }
 
 void CAttackBase::OnEndOverlap(CCollider* self, CCollider* other)
 {
     CGameObject::OnEndOverlap(self, other);
-
-    
 }
 
 void CAttackBase::Set_Instigator(CGameObject* instigator)
@@ -129,9 +152,7 @@ void CAttackBase::Set_Instigator(CGameObject* instigator)
 
     CCollider* collider = Get_Collider();
     if (collider)
-    {
         collider->Set_Instigator(instigator);
-    }
 }
 
 void CAttackBase::Free()

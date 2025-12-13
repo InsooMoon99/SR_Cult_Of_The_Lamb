@@ -33,6 +33,7 @@ public:
 
     UIItem  Get_UIItem() { return m_UIItem; }
     bool    Get_IsDead() { return m_IsDead; }
+    bool    Get_IsShifting() { return m_IsShifting; }
     static CUIItemGet* Create(DEVICE graphicDev);
     void               Render_Editor() override;
 
@@ -40,7 +41,7 @@ private:
     CUIIcon* m_UIItemIcon;
     UIItem   m_UIItem;
     bool     m_IsOpen;
-    bool     m_IsAnimating;
+    bool     m_IsShifting;
     bool     m_CloseAnimation;
     bool     m_OpenAnimaiton;
     bool     m_IsDead;

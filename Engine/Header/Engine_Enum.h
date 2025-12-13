@@ -71,6 +71,12 @@ enum class COLLISION_LAYERTYPE
     BOSSPROJECTILE,
     ITEM,
     ATTACK,
+    TRIGGER,
+    INTERACTIVEOBJ,
+
+    WORKBENCH,          // COLLISION : 제작대
+    KITCHEN,            // COLLISION : 요리
+    CONSTRUCTION_SITE,  // COLLISION : 건축 부지
 
     COL_LAYER_END
 };
@@ -88,12 +94,18 @@ enum class OBJTYPE
     HUMANMONSTER,
     BOSS1,
     BOSS2,
+    INTERACTIVE,
+    BUILDING,           // 오브젝트 : 건물
+    CONSTRUCTION_SITE,  // 오브젝트 : 건축 부지
 
     ATTACK_COL,
-
+    PARTICLE,
+    TRIGGER,
+    BULLET,
     TERRAIN,
     PLACEMENT,
     WALL,
+    FOG,
 
     OBJ_END
 };
@@ -116,19 +128,30 @@ enum class COMPONENTTYPE
     RIGIDBODY,
     TERRAIN_RENDER,
     WALL_RENDERER,
+    OBJECT_SPAWNER,
     PROJECTILE,
+    SPRITEEFFECT,
+    TRAILEFFECT,
+    GATHERING,
+    CONSTRUCTION,
+    COOKCTRL,
 
-    WEAPON_EQUIP,           // 플레이어 무기
-    PL_CONTROLLER,          // 플레이어 FSM 컨트롤러
-    PL_INPUT,               // 플레이어 방향 입력
-    PL_MOVEMENT,            // 플레이어 움직임
-    PL_ATTACK,              // 플레이어 공격
+    WEAPON_EQUIP,            // 플레이어 무기
+    PL_INPUT,                // 플레이어 방향 입력
+    PL_CONTROLLER,           // 플레이어 FSM 컨트롤러
+    PL_MOVEMENT,             // 플레이어 움직임
+    PL_ATTACK,               // 플레이어 공격
+    PL_SKILL,                // 플레이어 스킬
+
+    NPC_INTERACTION_CHECKER, // NPC 상호작용 오브젝트 감지기
+    NPC_CONTROLLER,          // NPC 제어
 
     TEXTURE,
     TEX_PLAYER,
     TEX_MAINBG,
     TEX_MONSTER,
     TEX_HUMAN_MONSTER,
+    TEX_FLOATER_MONSTER,
     TEX_UI_CIRCLE,
     TEX_UI_CELL,
     TEX_UI_COLOR,
@@ -141,29 +164,60 @@ enum class COMPONENTTYPE
     TEX_UI_HEARTCARD,
     TEX_UI_EXPLAIN,
     TEX_UI_TAROT,
+    TEX_UI_MONSTERHP,
     TEX_ITEM,
     TEX_MENU_CHAR,
     TEX_UI_ICON,
+    TEX_UI_DECO,
     TEX_UI_BUTTON,
+    TEX_UI_BUILD,
+    TEX_UI_INTERACTION,
     TEX_BOSSPHASE1,
     TEX_BULLET,
+    TEX_WORKBENCH,
+    TEX_DOTTEDCIRCLE,
+    TEX_TEMPLE,
+    TEX_KITCHEN,
     TEX_OUT,
+    TEX_BERRY,
+    TEX_ROCK,
+    TEX_TREE,
+    TEX_SKILL,
+    TEX_DIALOGUE,
+    TEX_UI_COOK,
+    TEX_CHEST,
 
     ANIMATOR,
-    CAMERA,
+
+    CAM_CONTROLLER,
+    CAM_MOVEMENT,
+    CAM_CALC,
 
     RECT_COLL,
     CIRCLE_COLL,
     BOX_COLL,
     SPHERE_COLL,
 
+    ////////////////
+    //  Follower  //
+    ////////////////
+    TEX_COW,
+    TEX_ELEPHANT,
+    TEX_PIG,
 
     ////////////////
     //   Boss 2   //
     ////////////////
     TEX_SLAVE_TEST,
     TEX_BOSS2_PHASE2,
+    TEX_BOSS2_EYEBALL,
+
     BOSS2_CONTROLLER,
+    EYEBALL_CONTROLLER,
+    TEX_WARNING_CHAIN,
+    TEX_CHAIN,
+
+    TEX_FOG,
 
     ////////////////
     //  MapObject //
@@ -179,6 +233,10 @@ enum class COMPONENTTYPE
     TEX_DUNGEON_DECO,
     TEX_ETC,
 
+    ////////////////
+    //  Particle  //
+    ////////////////
+    TEX_PARTICLE,
 
     COMPONENT_END
 };
@@ -198,10 +256,24 @@ enum class ACTORSTATE
     PLAYER_GAUNTLET_COMBO1,     // 건틀릿 일반공격 콤보 1
     PLAYER_GAUNTLET_COMBO2,     // 건틀릿 일반공격 콤보 2
     PLAYER_GAUNTLET_COMBO3,     // 건틀릿 일반공격 콤보 3
-    PLAYER_GAUNTLET_COMBO4,     // 건틀릿 일반공격 콤보 4
     PLAYER_GAUNTLET_HEAVY,      // 건틀릿 강공격
-
+    PLAYER_SKILL_CHARGING,
+    PLAYER_SKILL_SINGLE,
+    PLAYER_SKILL_TRIPLE,
     HIT,
+
+    PLAYER_ACTION,
+    PLAYER_WOOD,
+    PLAYER_STONE,
+    PLAYER_BERRY,
+    PLAYER_WEAPONGET,
+    PLAYER_HAMMER,              // 플레이어 건축
+    //GATHERING,
+
+    // 보스 1페
+    PLAYER_DECIDE,
+    PLAYER_REFUSE,
+
     DEAD,
 
     STATE_END
@@ -228,7 +300,7 @@ enum class SCENETYPE
     SC_LOGO_BOSS2,
     SC_MAINMENU,
     SC_STAGE,
-    SC_STAGE1,
+    SC_DUNGEON,
     SC_TAROT_TEST,
     SC_BOSS_STAGE1,
     SC_BOSS_STAGE2,
@@ -240,10 +312,46 @@ enum class SCENETYPE
 
 enum SOUNDTYPE
 {
-	SOUND_BGM,
-	SOUND_EFFECT,
+    SOUND_BGM,
+    SOUND_EFFECT,
 
-	SOUND_END
+    SOUND_END
+};
+
+// 카메라 컨트롤 모드
+enum CAM_MODE
+{
+    CAM_FREE,               // 자유 카메라
+    CAM_TARGET,             // 타겟 고정 카메라
+
+    CAM_END
+};
+
+// 카메라 시점 타입
+enum VIEW_TYPE
+{
+    VIEW_FPS,               // 1인칭
+    VIEW_TPS,               // 3인칭
+
+    VIEW_END
+};
+
+// 카메라 투영 타입
+enum PROJECTION_TYPE
+{
+    PROJ_PERSPECTIVE,       // 원근 투영
+    PROJ_ORTHOGRAPHIC,      // 직교 투영
+
+    PROJ_END
+};
+
+// 건축물 종류
+enum BUILDING_TYPE
+{
+    TEMPLE,                 // 사원
+    KITCHEN,                // 요리용 화덕
+
+    BUILDING_END
 };
 }
 #endif // Engine_Enum_h__

@@ -1,5 +1,8 @@
 ﻿#pragma once
+
 #include "CBase.h"
+
+class CUI_Fade;
 
 class CSceneMgr : public CBase
 {
@@ -10,17 +13,27 @@ private:
     ~CSceneMgr() override;
 
 public:
-    virtual HRESULT Ready_SceneMgr(LPDIRECT3DDEVICE9 pGraphicDev);
-    virtual void    Render_SceneMgr();
+    virtual HRESULT Ready_SceneMgr(DEVICE pGraphicDev);
     virtual void    Change_SceneMgr(SCENETYPE typeInput);
 
-    SCENETYPE Get_SceneType() { return m_SceneType; }
+    void            Update_SceneMgr(const _float& timeDelta);
+    void            Render_SceneMgr();
+
+    // Fade 중인지 확인
+    _bool           Is_Changing() const { return m_IsChanging; }
+
+    SCENETYPE       Get_SceneType() { return m_SceneType; }
 
 private:
-    LPDIRECT3DDEVICE9 m_pGraphicDev;
-
-    SCENETYPE m_SceneType;
+    void        Free() override;
 
 private:
-    void Free() override;
+    DEVICE      m_GraphicDev;
+    SCENETYPE   m_SceneType;
+
+    CUI_Fade*   m_FadeUI;
+    SCENETYPE   m_PendingScene;
+    _float      m_FadeSpeed;
+    _bool       m_IsChanging;      
+    _bool       m_FadeOutComplete; 
 };

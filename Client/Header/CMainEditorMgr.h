@@ -1,16 +1,17 @@
 ﻿#pragma once
 #include "CBase.h"
 
+class CCameraController;
 class CMapEditorPlacer;
 class CMapObjectBase;
 class CMapObjectGrass;
 class CTerrainRenderer;
 class CWallRenderer;
+class CTerrain;
 
 BEGIN(Engine)
 class CEditContext;
 class CGameObject;
-class CCameraCom;
 END
 
 class CMainEditorMgr : public CBase
@@ -21,6 +22,8 @@ class CMainEditorMgr : public CBase
         TERRAIN,
         MAP_OBJECT,
         WALL,
+        MONSTER_SPAWNER,
+        FOG_RENDERER,
 
         MAPTOOL_END
     };
@@ -38,9 +41,13 @@ public:
     void Update_MainEditor(const _float& timeDelta);
     void Render_MainEditor();
 
-    void Set_MainCamera(CCameraCom* cam) { m_MainCamera = cam; }
+    void Set_MainCamera(CCameraController* cam) { m_MainCameraController = cam; }
 
     _bool IsPlaying() const { return m_IsPlaying; }
+
+    _float Get_TimeScale() const { return m_TimeScale; }
+    void   Set_TimeScale(_float timeScale) { m_TimeScale = timeScale; }
+
 
     _bool IsGuiVisible() const { return m_ShowImGui; }
     void  Toggle_ImGui() { m_ShowImGui = !m_ShowImGui; }
@@ -65,19 +72,22 @@ private:
 
     CTerrainRenderer* Find_TerrainRenderer();
     CWallRenderer*    Find_WallRenderer();
+    CTerrain*         Find_Terrain();
 
 protected:
     virtual void Free() override;
 
 private:
-    DEVICE              m_GraphicDev = nullptr;
-    CEditContext*       m_Context = nullptr;
-    CCameraCom*         m_MainCamera = nullptr;
+    DEVICE             m_GraphicDev = nullptr;
+    CEditContext*      m_Context    = nullptr;
+    CCameraController* m_MainCameraController = nullptr;
 
-    _bool               m_IsPlaying = true;
-    _bool               m_ShowImGui = true;
+    _bool              m_IsPlaying = true;
+    _bool              m_ShowImGui = true;
 
-    MAPTOOL_VIEW        m_MapToolView = MAPTOOL_VIEW::TERRAIN;
+    MAPTOOL_VIEW m_MapToolView = MAPTOOL_VIEW::TERRAIN;
+
+    _float             m_TimeScale = 1.f;
 
 };
 

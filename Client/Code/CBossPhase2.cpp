@@ -6,6 +6,9 @@
 #include "CTransform.h"
 #include "CBossController.h"
 #include "CBoss2_StateMachine.h"
+#include "CCombatStat.h"
+#include "CBoxCollider.h"
+#include "CUI_BossHp.h"
 
 CBossPhase2::CBossPhase2(DEVICE graphicDev)
     : CMonsterBase(graphicDev), m_BossController(nullptr)
@@ -13,7 +16,7 @@ CBossPhase2::CBossPhase2(DEVICE graphicDev)
 }
 
 CBossPhase2::CBossPhase2(const CBossPhase2& rhs)
-    : CMonsterBase(rhs), m_BossController(nullptr)
+    : CMonsterBase(rhs), m_BossController(rhs.m_BossController)
 {
 }
 
@@ -26,7 +29,13 @@ HRESULT CBossPhase2::Ready_GameObject()
     if (FAILED(CMonsterBase::Ready_GameObject()))
         return E_FAIL;
 
-    
+    m_CombatStatCom->Set_MaxHp(1000.f);
+    m_CombatStatCom->Set_HitState(false); // Hit State로 변경할건지
+
+    m_TransformCom->Set_Scale(_vec3(13.7f, 6.3f, 3.f));
+
+    m_BoxColCom->Set_Size(_vec3(1.2f, 1.6f, 1.f));
+    m_BoxColCom->Set_Offset(_vec3(0.f, -2.1f, 0.f));
 
     return S_OK;
 }
@@ -35,13 +44,35 @@ void CBossPhase2::Initialize_GameObject()
 {
     CMonsterBase::Initialize_GameObject();
 
-    m_TransformCom->Set_Scale(_vec3(8.f, 4.9f, 3.f));
+    // State Machine
+    auto stateMachine = CBoss2_StateMachine::Create(this);
+    m_BossController->Set_StateMachine(stateMachine); 
+    Safe_Release(stateMachine);
+
+    
 }
 
 _int CBossPhase2::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CMonsterBase::Update_GameObject(timeDelta);
 
+    // 사망
+    if (m_CombatStatCom && m_CombatStatCom->Is_Dead())
+    {
+        if (m_BossController)
+        {
+            auto stateMachine = m_BossController->Get_StateMachine();
+            if (stateMachine)
+            {
+                _int curState = stateMachine->Get_CurStateNum();
+
+                if (curState != PATTERN::PHASE2_DEAD)
+                {
+                    stateMachine->Change_State(PATTERN::PHASE2_DEAD);
+                }
+            }
+        }
+    }
 
     return exit;
 }
@@ -56,23 +87,6 @@ void CBossPhase2::Render_GameObject()
 {
     CMonsterBase::Render_GameObject();
 
-}
-
-void CBossPhase2::OnBeginOverlap(CCollider* self, CCollider* other)
-{
-    CMonsterBase::OnBeginOverlap(self, other);
-
-}
-
-void CBossPhase2::OnStayOverlap(CCollider* self, CCollider* other)
-{
-    CMonsterBase::OnStayOverlap(self, other);
-
-}
-
-void CBossPhase2::OnEndOverlap(CCollider* self, CCollider* other)
-{
-    CMonsterBase::OnEndOverlap(self, other);
 
 }
 
@@ -107,7 +121,9 @@ const char* CBossPhase2::Get_Boss2_StateName(_int stateNum)
     // 상태 추가될때마다 추가하기
     switch (stateNum)
     {
-    case PHASE2_IDLE:       return "PHASE2_IDLE";
+    case PHASE2_START:      return "PHASE2_Start";
+    case PHASE2_IDLE:       return "PHASE2_Idle";
+    case PHASE2_ROAR:       return "PHASE2_Roar";
     case PHASE2_EYEBALL:    return "PHASE2_EYEBALL";
     case PHASE2_CHAIN:      return "PHASE2_CHAIN";
     case PHASE2_BULLET:     return "PHASE2_BULLET";
@@ -133,11 +149,15 @@ CBossPhase2* CBossPhase2::Create(DEVICE graphicDev)
 
 void CBossPhase2::Animation_Setting()
 {
+    m_AnimatorCom->Create_Animation(L"Boss2_Start", 68, 0.04f);
     m_AnimatorCom->Create_Animation(L"Boss2_Idle", 68, 0.04f);
     m_AnimatorCom->Create_Animation(L"Boss2_Roar", 69, 0.04f);
 
+    m_AnimatorCom->Create_Animation(L"Boss2_HandSlam", 68, 0.04f);
+    m_AnimatorCom->Create_Animation(L"Boss2_Dead", 56, 0.04f);
+
     // 스프라이트 재생은 상태머신으로
-    //m_AnimatorCom->Play_Animation(L"Boss_Idle", ANIMSTATE::LOOP); 
+    //m_AnimatorCom->Play_Animation(L"Boss2_Idle", ANIMSTATE::LOOP); 
 }
 
 HRESULT CBossPhase2::Add_Component()
@@ -160,10 +180,6 @@ HRESULT CBossPhase2::Add_Component()
     NULL_CHECK_RETURN(m_BossController, E_FAIL);
     m_Components[ID_DYNAMIC].insert({ type, m_BossController });
 
-    // State Machine
-    auto stateMachine = CBoss2_StateMachine::Create(this);
-    m_BossController->Set_StateMachine(stateMachine);
-    Safe_Release(stateMachine);
 
     return S_OK;
 }

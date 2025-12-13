@@ -8,7 +8,7 @@ class CAnimator;
 /// @brief 캐릭터의 현재 상태(State)를 결정하고 관리하는 "감독" 컴포넌트
 class ENGINE_DLL CState : public CComponent
 {
-private:
+protected:
     explicit CState(DEVICE graphicDev);
     explicit CState(const CState& rhs);
     ~CState() override;

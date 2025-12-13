@@ -162,7 +162,7 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
                 _vec3 TR = OwnerPos + AddPos;
                 ChainTransform->Set_Pos({ TR.x, m_GroundY, TR.z });
                 
-                SpawnAttackObject(WarningChain);
+                SpawnObjectOnLayer(WarningChain);
 
             }
 
@@ -282,7 +282,7 @@ bool CBossChainAttack::PlayerLineUpdate(const _float& timeDelta, _int  MaxCount,
         _vec3 TR = OwnerPos + AddPos;
         ChainTransform->Set_Pos({ TR.x, m_GroundY, TR.z });
      
-        SpawnAttackObject(WarningChain);
+        SpawnObjectOnLayer(WarningChain);
 
         m_fElapsedTime = 0;
 
@@ -338,11 +338,11 @@ void CBossChainAttack::RandomChain(const _float& timeDelta, _vec3 BaseCenter, in
 
             ChainTransform->Set_Pos(LT.x + xPos, m_GroundY, LT.z - zPos);
 
-            SpawnAttackObject(WarningChain);
+            SpawnObjectOnLayer(WarningChain);
   
         }
             count++;
-            cout << count << endl;
+            //cout << count << endl;
         m_RandChainTime = 0;
     }
 
@@ -379,7 +379,7 @@ bool CBossChainAttack::CircleChain(const _float& timeDelta, int num, int length,
         _vec3 TR = { ownerPos + circle };
         ChainTransform->Set_Pos({ TR.x, m_GroundY,TR.z });
 
-        SpawnAttackObject(WarningChain);
+        SpawnObjectOnLayer(WarningChain);
 
         
         m_Count++;

@@ -26,8 +26,6 @@ HRESULT CRenderObject::Ready_GameObject()
     if (FAILED(Add_Component()))
         return E_FAIL;
 
-
-
     return S_OK;
 }
 
@@ -88,6 +86,10 @@ void CRenderObject::Render_Setting()
     m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
     m_GraphicDev->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
     m_GraphicDev->SetRenderState(D3DRS_ALPHAREF, 0);
+
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE); // 일단 FALSE, 조명 먹을 애들만 TRUE
+
+    Set_Material();
 }
 
 void CRenderObject::Render_Reset()
@@ -95,6 +97,24 @@ void CRenderObject::Render_Reset()
     m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
     m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
+}
+
+void CRenderObject::Set_Material()
+{
+    D3DMATERIAL9 material;
+
+    ZeroMemory(&material, sizeof(D3DMATERIAL9));
+
+    material.Diffuse = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
+    material.Ambient = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);  
+    material.Specular = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
+    material.Emissive = D3DXCOLOR(0.f, 0.f, 0.f, 1.f);
+    material.Power = 0.f;
+
+    m_GraphicDev->SetMaterial(&material);
+
 }
 
 void CRenderObject::Free()

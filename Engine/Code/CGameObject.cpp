@@ -45,7 +45,6 @@ void CGameObject::Initialize_GameObject()
             component.second->Initialize_Component();
         }
     }
-
 }
 
 _int CGameObject::Update_GameObject(const _float& timeDelta)
@@ -140,7 +139,7 @@ CComponent* CGameObject::Find_Component(COMPONENTID componentID, COMPONENTTYPE c
 
 void CGameObject::Free()
 {
-    for (_uint i = 0; i < ID_END; ++i)
+   for (_uint i = 0; i < ID_END; ++i)
     {
         for_each(m_Components[i].begin(), m_Components[i].end(), CDeleteMap());
         m_Components[i].clear();

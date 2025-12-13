@@ -1,13 +1,14 @@
 ﻿#include "pch.h"
 #include "CMapObjectMgr.h"
+
+#include "CLayer.h"
+#include "CManagement.h"
+#include "CMapEditorPlacer.h"
 #include "CMapObject_Helper.h"
 #include "CProtoMgr.h"
-#include "CTexture.h"
-#include "CMapEditorPlacer.h"
-#include "CTransform.h"
-#include "CLayer.h"
 #include "CScene.h"
-#include "CManagement.h"
+#include "CTexture.h"
+#include "CTransform.h"
 
 IMPLEMENT_SINGLETON(CMapObjectMgr)
 
@@ -18,12 +19,13 @@ CMapObjectMgr::CMapObjectMgr()
 
 CMapObjectMgr::~CMapObjectMgr()
 {
-    Free();
+    CMapObjectMgr::Free();
 }
 
 void CMapObjectMgr::Ready_MapObjectMgr(DEVICE graphicDev)
 {
     m_GraphicDev = graphicDev;
+    m_GraphicDev->AddRef();
 
     m_MapPlacer = CMapEditorPlacer::Create(graphicDev);
 
@@ -70,13 +72,13 @@ void CMapObjectMgr::Render_MapObjectWindow()
     {
         ImGui::Text("[ Preview Scale ]");
 
-        float scaleX = m_MapPlacer->Get_PreviewScaleX();
-        float scaleY = m_MapPlacer->Get_PreviewScaleY();
+        _float scaleX = m_MapPlacer->Get_PreviewScaleX();
+        _float scaleY = m_MapPlacer->Get_PreviewScaleY();
 
-        if (ImGui::SliderFloat("Scale X", &scaleX, 0.1f, 5.f))
+        if (ImGui::SliderFloat("Scale X", &scaleX, 0.1f, 30.f))
             m_MapPlacer->Set_PreviewScaleX(scaleX);
 
-        if (ImGui::SliderFloat("Scale Y", &scaleY, 0.1f, 5.f))
+        if (ImGui::SliderFloat("Scale Y", &scaleY, 0.1f, 30.f))
             m_MapPlacer->Set_PreviewScaleY(scaleY);
     }
 
@@ -84,6 +86,7 @@ void CMapObjectMgr::Render_MapObjectWindow()
     ImGui::Text(u8"  X (Pitch): %.2f°", D3DXToDegree(m_MapPlacer->Get_PreviewRotation().x));
     ImGui::SameLine();
     ImGui::Text(u8"  Y (Yaw):   %.2f°", D3DXToDegree(m_MapPlacer->Get_PreviewRotation().y));
+    ImGui::Text(u8"  Z (Roll):   %.2f°", D3DXToDegree(m_MapPlacer->Get_PreviewRotation().z));
 
     ImGui::NewLine();
     ImGui::Text(u8"되돌리기 "); ImGui::SameLine();
@@ -142,8 +145,6 @@ void CMapObjectMgr::Render_MapObjectWindow()
     //    }
     //}
 #pragma endregion
-    
-
 
 }
 
@@ -159,7 +160,7 @@ void CMapObjectMgr::Render_GrassWindow()
 
         if (grassTexture)
         {
-            const _int TOTAL_GRASS = 20;
+            const _int TOTAL_GRASS = 56;
             const _int COLS = 5;
             const ImVec2 buttonSize(50.f, 50.f);
 
@@ -222,7 +223,7 @@ void CMapObjectMgr::Render_RubbleWindow()
         if (rubbleTexture)
         {
 
-            const _int TOTAL_RUBBLE = 46;
+            const _int TOTAL_RUBBLE = 50;
             const _int COLS = 4;
             const ImVec2 buttonSize(50.f, 50.f);
 
@@ -283,7 +284,7 @@ void CMapObjectMgr::Render_DecoWindow()
 
         if (decoTexture)
         {
-            const _int TOTAL_DECO = 76; 
+            const _int TOTAL_DECO = 83; 
             const _int COLS = 5;
             const ImVec2 buttonSize(50.f, 50.f);
 
@@ -405,7 +406,7 @@ void CMapObjectMgr::Render_ETC()
 
         if (etc)
         {
-            const _int TOTAL_ETC = 40;
+            const _int TOTAL_ETC = 56;
             const _int COLS = 5;
             const ImVec2 buttonSize(50.f, 50.f);
 
@@ -558,17 +559,14 @@ HRESULT CMapObjectMgr::LoadMapObject(const char* filePath)
         if (newObj)
         {
             newObj->Set_WorldPos(data.pos);
-            // TODO : 데이터에서 scale값 가져와서 세팅 추가 예정
 
             layer->Add_GameObject(OBJTYPE::PLACEMENT, newObj);
+
+            Add_Placement(newObj);
+            m_PlacedObjects.push_back(newObj);
         }
     }
-
-    for (auto& obj : m_PlacedObjects)
-    {
-        Add_Placement(obj);
-    }
-
+  
     return S_OK;
 }
 
@@ -597,7 +595,7 @@ HRESULT CMapObjectMgr::Save_ToStream(ofstream& ofs)
                 {
                     data.pos = objTransform->Get_Pos();
                     data.scale = objTransform->Get_Scale();        
-                    data.rotation = objTransform->Get_Rotation();  
+                    data.rotation = objTransform->Get_Euler();  
 
                     objects.push_back(data);
                 }
@@ -617,7 +615,7 @@ HRESULT CMapObjectMgr::Save_ToStream(ofstream& ofs)
     return S_OK;
 }
 
-HRESULT CMapObjectMgr::Load_FromStream(ifstream& ifs)
+HRESULT CMapObjectMgr::Load_FromStream(ifstream& ifs, _vec3 terrainOffset)
 {
     uint32_t count = 0;
     ifs.read((char*)&count, sizeof(count));
@@ -644,14 +642,12 @@ HRESULT CMapObjectMgr::Load_FromStream(ifstream& ifs)
 
             if (transform)
             {
-                transform->Set_Pos(data.pos);
+                _vec3 worldPos = data.pos + terrainOffset;
+
+                transform->Set_Pos(worldPos);
+
                 transform->Set_Scale(data.scale);  
-
-                _vec3 loadedRotation = data.rotation;
-                loadedRotation.x = -loadedRotation.x;
-                loadedRotation.y = -loadedRotation.y;
-
-                transform->Set_Rotation(loadedRotation);
+                transform->Set_Rotation(data.rotation);
             }
 
             layer->Add_GameObject(OBJTYPE::PLACEMENT, newObj);

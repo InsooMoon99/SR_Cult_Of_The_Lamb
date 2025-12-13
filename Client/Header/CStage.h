@@ -1,9 +1,13 @@
 ﻿#pragma once
 #include "CScene.h"
 
+class CKitchen;
+class CWorkBench;
 class CInventory;
 class CWeaponEquip;
 class CTerrain;
+class CPlayerSkill;
+
 
 BEGIN(Engine)
 class CCombatStat;
@@ -31,6 +35,12 @@ private:
 
     HRESULT Ready_Prototype();
 
+    HRESULT Ready_Light() override;
+
+private:
+    // 마을 -> 던전 씬 전환용 트리거
+    void Create_Trigger();
+
 public:
     static CStage* Create(DEVICE graphicDev);
 
@@ -47,6 +57,9 @@ private:
     CCombatStat*  m_PlayerCombatStatCom;
     CInventory*   m_PlayerInventoryCom;
     CWeaponEquip* m_WeaponEquipCom;
-
+    CWorkBench*   m_WorkBench;
+    CPlayerSkill* m_PlayerSkillCom;
     CTerrain*     m_Terrain;
+    CKitchen*     m_Kitchen;
+
 };

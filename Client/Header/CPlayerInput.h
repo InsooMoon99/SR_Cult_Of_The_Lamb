@@ -31,7 +31,7 @@ private:    // --- 멤버 변수 ---
 
 public:
     static CPlayerInput* Create(DEVICE graphicDev);
-    CComponent*          Clone() override;
+    CComponent* Clone() override;
 
 private:
     void Free() override;

@@ -1,23 +1,17 @@
 ﻿#include "pch.h"
 #include "CTerrainRenderer.h"
-
-#include <CLayer.h>
-
-#include "CManagement.h"
+#include "CLayer.h"
+#include "CObjectSpawner.h"
 #include "CTransform.h"
 #include "CTexture.h"
 #include "CDInputMgr.h"
+#include "CFogMgr.h"
 #include "CGameObject.h"
-#include "CMapObjectBase.h"
 #include "CMapObjectMgr.h"
-#include "CMapObject_Deco.h"
-#include "CMapObject_Grass.h"
-#include "CMapObject_Rubble.h"
 #include "CTerrainTex.h"
 #include "CPickingHelper.h"
 #include "CTerrain.h"
 #include "CWallRenderer.h"
-#include "../../Engine/Header/CScene.h"
 
 CTerrainRenderer::CTerrainRenderer(DEVICE graphicDev)
     : CComponent(graphicDev),
@@ -151,7 +145,6 @@ void CTerrainRenderer::Render_TerrainRenderer()
     if (m_BufferCom == nullptr || m_TextureCom284 == nullptr || m_TransformCom == nullptr)
         return;
 
-
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
     m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
@@ -160,6 +153,8 @@ void CTerrainRenderer::Render_TerrainRenderer()
     m_GraphicDev->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_NONE);
     m_GraphicDev->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
     m_GraphicDev->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
+
+    Set_Material();
 
     // 알파블렌딩 안켜주면 투명타일 검은색으로 나옴
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
@@ -217,6 +212,7 @@ void CTerrainRenderer::Render_TerrainRenderer()
 
 
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
 }
 
 void CTerrainRenderer::Render_Editor()
@@ -529,6 +525,7 @@ HRESULT CTerrainRenderer::SaveMap(const char* filePath)
         CTerrain* owner = dynamic_cast<CTerrain*>(m_TransformCom->Get_Owner());
         if (owner)
         {
+            // 벽 위치 저장
             CWallRenderer* wallRenderer = owner->Get_WallRenderer();
             if (wallRenderer)
             {
@@ -540,6 +537,25 @@ HRESULT CTerrainRenderer::SaveMap(const char* filePath)
     if (version >= 8)
     {
         CMapObjectMgr::GetInstance()->Save_ToStream(ofs);
+
+        // 몬스터 위치 저장
+        if (m_TransformCom && m_TransformCom->Get_Owner())
+        {
+            CTerrain* owner = dynamic_cast<CTerrain*>(m_TransformCom->Get_Owner());
+            if (owner)
+            {
+                CObjectSpawner* monsterSpawner = dynamic_cast<CObjectSpawner*>(
+                    owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::OBJECT_SPAWNER));
+
+                if (monsterSpawner)
+                {
+                    monsterSpawner->Save_Objects(ofs);
+                }
+            }
+        }
+
+        // 안개 저장
+        CFogMgr::GetInstance()->Save_ToStream(ofs);
     }
 
     ofs.close();
@@ -605,6 +621,7 @@ HRESULT CTerrainRenderer::LoadMap(const char* filePath)
             CTerrain* owner = dynamic_cast<CTerrain*>(m_TransformCom->Get_Owner());
             if (owner)
             {
+                // 벽 소환
                 CWallRenderer* wallRenderer = owner->Get_WallRenderer();
                 if (wallRenderer)
                 {
@@ -612,13 +629,39 @@ HRESULT CTerrainRenderer::LoadMap(const char* filePath)
 
                     wallRenderer->Load_Walls(ifs);
                 }
+
             }
         }
     }
 
     if (version >= 8)
     {
-        CMapObjectMgr::GetInstance()->Load_FromStream(ifs);
+        _vec3 terrainPos(0.f, 0.f, 0.f);
+
+        if (m_TransformCom)
+            terrainPos = m_TransformCom->Get_Pos();
+
+        // 맵 오브젝트 소환
+        CMapObjectMgr::GetInstance()->Load_FromStream(ifs, terrainPos);
+
+        // 오브젝트 소환
+        if (m_TransformCom && m_TransformCom->Get_Owner())
+        {
+            CTerrain* owner = dynamic_cast<CTerrain*>(m_TransformCom->Get_Owner());
+            if (owner)
+            {
+                CObjectSpawner* monsterSpawner = dynamic_cast<CObjectSpawner*>(
+                    owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::OBJECT_SPAWNER));
+
+                if (monsterSpawner)
+                {
+                    monsterSpawner->Load_Objects(ifs);
+                }
+            }
+        }
+
+        // 안개 소환
+        CFogMgr::GetInstance()->Load_FromStream(ifs, terrainPos);
     }
 
 
@@ -632,7 +675,7 @@ _vec3 CTerrainRenderer::GetCellCenterWorld(_uint cellX, _uint cellZ) const
 
     _vec3 localPos(
         cellX * vtxItv + vtxItv * 0.5f,
-        0.f,
+        1.f,
         cellZ * vtxItv + vtxItv * 0.5f);
 
     if (m_TransformCom)
@@ -739,8 +782,6 @@ void CTerrainRenderer::Resize_Terrain(_int sizeX, _int sizeZ, _float cellSize)
     m_TileIndices284.assign(cellCount, 0);     
     m_TileIndices1024.assign(cellCount, -1);   
     m_TileIndicesOutline.assign(cellCount, -1);
-
-
 }
 
 CTerrainRenderer* CTerrainRenderer::Create(DEVICE graphicDev)
@@ -770,4 +811,18 @@ void CTerrainRenderer::Free()
     Safe_Release(m_BufferCom);
 
     CComponent::Free();
+}
+
+void CTerrainRenderer::Set_Material()
+{
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
+
+    D3DMATERIAL9 material;
+    ZeroMemory(&material, sizeof(D3DMATERIAL9));
+
+    material.Diffuse = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
+    material.Ambient = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
+    material.Specular = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
+
+    m_GraphicDev->SetMaterial(&material);
 }

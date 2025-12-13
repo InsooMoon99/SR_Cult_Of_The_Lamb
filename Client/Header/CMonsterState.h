@@ -1,6 +1,4 @@
 ﻿#pragma once
-#include "CBase.h"
-#include "Engine_Define.h"
 #include "CBaseState.h"
 
 BEGIN(Engine)
@@ -10,6 +8,7 @@ class CAnimator;
 class CGameObject;
 END
 
+class CMonsterController;
 class CPlayer;
 
 class CMonsterState : public CBaseState
@@ -42,6 +41,8 @@ protected:
     _bool       m_bMinStateTimePassed;
 
     _bool       DoneAnim = false;
+
+    CMonsterController* m_Controller;
 
 private:
     // CBase을(를) 통해 상속됨

@@ -7,9 +7,7 @@
 #include "CRenderer.h"
 #include "CTexture.h"
 #include "CTransform.h"
-#include "CAttackBox.h"
 #include "CAttackBuilder.h"
-#include "CBossPhase1.h"
 
 CBossChain::CBossChain(DEVICE graphicDev, CGameObject* owner)
     : CGameObject(graphicDev), m_pOwner(owner)
@@ -35,23 +33,13 @@ HRESULT CBossChain::Ready_GameObject()
 
     // 비율 맞춰주는거 생성할때 외부에서 SetAspectScale로 스케일 조정 
     SetTexAspectInit(m_TextureCom, m_TransformCom, 0 , &key);
+    SetAspectScale(m_TransformCom, {0.4f,0.4f,1.f });
 
-    SetAspectScale(m_TransformCom, {.2f,.2f,0.f });
-    
+    m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(10.f));
+
     Animation_Setting();
 
     m_AnimatorCom->Play_Animation(L"BossChainEff", ANIMSTATE::ONCE);
-
-    const auto ownerTransform =
-        dynamic_cast<CTransform*>(m_pOwner->Get_Component(
-            ID_DYNAMIC,
-            COMPONENTTYPE::TRANSFORM));
-
-    //TODO:: 나중에 땅의 위치를 알게 되면 수정 
-    //m_TransformCom->Set_Pos({ ownerTransform->Get_Pos().x, -ownerTransform->Get_Scale().y * .5f,ownerTransform->Get_Pos().z });
-    //m_TransformCom->Set_Pos
-  //  if (m_BoxColCom)
-  //      m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::BOSSPROJECTILE);
 
     return S_OK;
 }
@@ -130,8 +118,16 @@ void CBossChain::LateUpdate_GameObject(const _float& timeDelta)
 
 void CBossChain::Render_GameObject()
 {
-    m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-    //
+    static _vec3 renderOffset = { 0.f, -0.6f, 0.15f };
+
+    _matrix matWorld = m_TransformCom->Get_World();
+
+    // 오프셋 적용
+    matWorld._41 += renderOffset.x;
+    matWorld._42 += renderOffset.y;
+    matWorld._43 += renderOffset.z;
+
+    m_GraphicDev->SetTransform(D3DTS_WORLD, &matWorld);
 
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
     m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
@@ -186,7 +182,7 @@ CBossChain* CBossChain::Create(DEVICE graphicDev, CGameObject* owner)
 void CBossChain::Animation_Setting()
 {
 
-    m_AnimatorCom->Create_Animation(L"BossChainEff", 16, 0.02f);
+    m_AnimatorCom->Create_Animation(L"BossChainEff", 34, 0.02f);
     //m_AnimatorCom->Create_Animation(L"ChainGroundEff", 1, 0.02f);
 
 }

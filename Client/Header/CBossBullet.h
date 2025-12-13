@@ -14,7 +14,7 @@ END
 
 class CProjectile;
 class CBossBulletAttack;
-
+class CTrailEff;
 
 class CBossBullet :
     public CGameObject
@@ -49,7 +49,7 @@ public:
     void Start_Shoot() { m_StartShoot = true; }
     void Set_TargetDir(_vec3 dir) { m_TargetDir = dir; }
 
-    static int imsdfjlkdsf; 
+
 
 protected:
 
@@ -62,11 +62,11 @@ protected:
 
     CGameObject* m_pOwner;
     CGameObject* m_pTarget;
-   //CAttackBox* ATBox = nullptr;
+    //CAttackBox* ATBox = nullptr;
     CTransform* m_ATKBoxTransformCom;
     CProjectile* m_ProjectileCom;
 
-
+    CTrailEff* m_TrailEff;
 
     PROJ_TYPE m_type;
 
@@ -77,7 +77,6 @@ protected:
     bool m_StartShoot = false;
     bool m_TargetFlag = false;
     _vec3 m_MoveLength ;
-
 
 	float DieCountForSafe;
     float m_fAlpha = 0;

@@ -1,8 +1,12 @@
 ﻿#include "pch.h"
 #include "CMainEditorMgr.h"
-#include "CCollisionManager.h"
+#include "CFogMgr.h"
+#include "CAnimator.h"
 #include "CBoxCollider.h"
-#include "CCameraCom.h"
+#include "CCameraCalc.h"
+#include "CTerrain.h"
+#include "CCameraController.h"
+#include "CCollisionManager.h"
 #include "CCombatStat.h"
 #include "CComInspectors.h"
 #include "CComponent.h"
@@ -15,6 +19,7 @@
 #include "CManagement.h"
 #include "CMapEditorPlacer.h"
 #include "CMapObjectMgr.h"
+#include "CPickingHelper.h"
 #include "CPlayerController.h"
 #include "CRigidbody.h"
 #include "CScene.h"
@@ -25,7 +30,6 @@
 #include "CTransform.h"
 #include "CWallRenderer.h"
 #include "CWeaponEquip.h"
-#include "CAnimator.h"
 
 IMPLEMENT_SINGLETON(CMainEditorMgr)
 
@@ -37,9 +41,11 @@ CMainEditorMgr::~CMainEditorMgr()
 void CMainEditorMgr::Ready_MainEditor(DEVICE graphicDev, CEditContext* ctx)
 {
     m_GraphicDev = graphicDev;
+    m_GraphicDev->AddRef();
 
     Set_EditContext(ctx);
     CMapObjectMgr::GetInstance()->Ready_MapObjectMgr(graphicDev);
+    CFogMgr::GetInstance()->Ready_FogMgr(graphicDev);
 
     ImGuiStyle& style = ImGui::GetStyle();
     style.Alpha = 0.95f;
@@ -57,19 +63,20 @@ void CMainEditorMgr::Update_MainEditor(const _float& timeDelta)
         Toggle_ImGui();
     }
 
-    if (m_MainCamera) 
+    if (m_MainCameraController) 
     {
         if (!m_IsPlaying) // Pause 상태에서도 카메라는 움직일 수 있도록 Delta값 세팅
         {
             _float timeDelta = CTimerMgr::GetInstance()->Get_TimeDelta();
 
-            CGameObject* camera = m_MainCamera->Get_Owner();
+            CGameObject* camera = m_MainCameraController->Get_Owner();
             if (camera)
                 camera->Update_GameObject(timeDelta);
         }
     }
 
     CMapObjectMgr::GetInstance()->Update_MapObjectMgr(timeDelta);
+    CFogMgr::GetInstance()->Update_FogMgr(timeDelta);
 }
 
 void CMainEditorMgr::Set_EditContext(CEditContext* ctx)
@@ -94,10 +101,13 @@ void CMainEditorMgr::Render_MainEditor()
     else
         MSG_BOX("Scene Is Where ? ");
 
-    // 프리뷰 오브젝트 렌더
-    if (CMapObjectMgr::GetInstance()->Get_MapPlacer())
+    // 프리뷰 렌더
     {
-        CMapObjectMgr::GetInstance()->Get_MapPlacer()->Render_Privew();
+        if (CMapObjectMgr::GetInstance()->Get_MapPlacer())
+            CMapObjectMgr::GetInstance()->Get_MapPlacer()->Render_Privew();
+
+        if (CFogMgr::GetInstance()->IsPlacing())
+            CFogMgr::GetInstance()->Render_FogWindow();
     }
 
     ImGui::Begin("MainEditor [ Toggle F1 ] [ Toggle F8 -> Free Mode]");
@@ -173,9 +183,12 @@ void CMainEditorMgr::Render_MapToolTab()
     ImGui::Text("Map Tools");
     ImGui::Separator(); 
 
-    bool selTerrain   = (m_MapToolView == MAPTOOL_VIEW::TERRAIN);
-    bool selMapObject = (m_MapToolView == MAPTOOL_VIEW::MAP_OBJECT);
-    bool selWall      = (m_MapToolView == MAPTOOL_VIEW::WALL);
+    _bool selTerrain   = (m_MapToolView == MAPTOOL_VIEW::TERRAIN);
+    _bool selMapObject = (m_MapToolView == MAPTOOL_VIEW::MAP_OBJECT);
+    _bool selWall      = (m_MapToolView == MAPTOOL_VIEW::WALL);
+    _bool selMonster   = (m_MapToolView == MAPTOOL_VIEW::MONSTER_SPAWNER);
+    _bool selFog = (m_MapToolView == MAPTOOL_VIEW::FOG_RENDERER);
+
 
     if (ImGui::Selectable("Terrain Renderer", selTerrain))
         m_MapToolView = MAPTOOL_VIEW::TERRAIN;
@@ -185,6 +198,12 @@ void CMainEditorMgr::Render_MapToolTab()
 
     if (ImGui::Selectable("Wall", selWall))
         m_MapToolView = MAPTOOL_VIEW::WALL;
+
+    if (ImGui::Selectable("Monster Spawner", selMonster))
+        m_MapToolView = MAPTOOL_VIEW::MONSTER_SPAWNER;
+
+    if (ImGui::Selectable("Fog", selFog))
+        m_MapToolView = MAPTOOL_VIEW::FOG_RENDERER;
 
     ImGui::EndChild();
 
@@ -219,6 +238,7 @@ void CMainEditorMgr::Render_MapToolTab()
     }
 
     case MAPTOOL_VIEW::WALL:
+    {
         CWallRenderer* wallRenderer = Find_WallRenderer();
 
         if (wallRenderer)
@@ -227,7 +247,37 @@ void CMainEditorMgr::Render_MapToolTab()
         }
 
         break;
-   
+    }
+
+    case MAPTOOL_VIEW::MONSTER_SPAWNER:
+    {
+        CTerrain* terrain = Find_Terrain();
+
+        if (terrain)
+        {
+            CObjectSpawner* spawner = dynamic_cast<CObjectSpawner*>(
+                terrain->Get_Component(ID_DYNAMIC, COMPONENTTYPE::OBJECT_SPAWNER));
+
+            if (spawner)
+            {
+                ImGui::Text("Monster Spawner");
+                ImGui::Separator();
+
+                MonsterSpawner_Inspector(spawner);
+            }
+            else
+                ImGui::Text(u8"MonsterSpawner이 없어요");
+        }
+
+        break;
+    }
+
+    case MAPTOOL_VIEW::FOG_RENDERER:
+    {
+        CFogMgr::GetInstance()->Render_FogWindow();
+        break;
+    }
+
     }
 
     ImGui::EndChild();
@@ -237,7 +287,7 @@ void CMainEditorMgr::Render_SceneChangeTab()
 {
     ImGui::PushID("Scene_ChangeTab");
     {
-        const char* sceneChange[] = { "Main", "Stage", "Edit", "Stage_Boss1", "Stage_Boss2", "Stage_TaroTest" };
+        const char* sceneChange[] = { "Main", "Stage", "Edit", "Stage_Boss1", "Stage_Boss2", "Stage_TaroTest", "Stage_Dungeon"};
 
         SCENETYPE sceneType = CSceneMgr::GetInstance()->Get_SceneType();
 
@@ -252,12 +302,13 @@ void CMainEditorMgr::Render_SceneChangeTab()
 
             switch (currentSceneIndex)
             {
-            case 0: newSceneType = SCENETYPE::SC_MAINMENU;    break;
-            case 1: newSceneType = SCENETYPE::SC_STAGE;       break;
-            case 2: newSceneType = SCENETYPE::SC_EDIT;        break;
+            case 0: newSceneType = SCENETYPE::SC_MAINMENU;     break;
+            case 1: newSceneType = SCENETYPE::SC_STAGE;        break;
+            case 2: newSceneType = SCENETYPE::SC_EDIT;         break;
             case 3: newSceneType = SCENETYPE::SC_BOSS_STAGE1;  break;
             case 4: newSceneType = SCENETYPE::SC_BOSS_STAGE2;  break;
             case 5: newSceneType = SCENETYPE::SC_TAROT_TEST;   break;
+            case 6: newSceneType = SCENETYPE::SC_DUNGEON;      break;
 
             default: break;
             }
@@ -304,13 +355,32 @@ void CMainEditorMgr::Render_ToolBar()
     // =======
     {
         ImGui::AlignTextToFramePadding();
-        ImGui::Text("Camera");
-        ImGui::SameLine();
 
-        Menu_CameraInspector(m_MainCamera);
+        Menu_CameraInspector(m_MainCameraController);
     }
 
-    //ImGui::NextColumn();
+    ImGui::SameLine();
+
+    // =======
+    // TimeScale
+    // =======
+    {
+        ImGui::AlignTextToFramePadding();
+        ImGui::Text("| Speed:");
+        ImGui::SameLine();
+
+        if (ImGui::Button("-", ImVec2(20.f, 0.f)))
+            m_TimeScale = max(0.5f, m_TimeScale - 0.5f);  
+        ImGui::SameLine();
+
+        ImGui::Text("%.1fx", m_TimeScale);
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("+", ImVec2(20.f, 0.f)))
+            m_TimeScale = min(3.0f, m_TimeScale + 0.5f);  
+        
+    }
 
     // ============
     // Debug Check
@@ -321,6 +391,23 @@ void CMainEditorMgr::Render_ToolBar()
         ImGui::Checkbox("Debugging Mode", &debugCheck);
 
         CCollisionManager::GetInstance()->Render_Debug(debugCheck);
+    }
+
+    ImGui::SameLine();
+
+    // ============
+    //  Mouse Pos
+    // ============
+
+    POINT screenPos, clientPos;
+    GetCursorPos(&screenPos);
+    clientPos = screenPos;
+    ScreenToClient(g_hWnd, &clientPos);
+
+    _vec3 worldMousePos;
+    if (Engine::PickPlaneY(m_GraphicDev, g_hWnd, 0.f, worldMousePos))
+    {
+        ImGui::Text("| Mouse Pos : (%.2f, %.2f, %.2f)", worldMousePos.x, worldMousePos.y, worldMousePos.z);
     }
 
     //ImGui::Columns(1);
@@ -524,13 +611,6 @@ void CMainEditorMgr::Render_SelectComponent()
             break;
         }
 
-        case COMPONENTTYPE::CAMERA:
-        {
-            auto camera = dynamic_cast<CCameraCom*>(selectComponent);
-            Camera_Inspector(camera);
-            break;
-        }
-
         case COMPONENTTYPE::TERRAIN_RENDER:
         {
             auto terrain = dynamic_cast<CTerrainRenderer*>(selectComponent);
@@ -578,6 +658,20 @@ void CMainEditorMgr::Render_SelectComponent()
         {
             auto animator = dynamic_cast<CAnimator*>(selectComponent);
             Animator_Inspector(animator);
+        }
+        break;
+
+        case COMPONENTTYPE::CAM_CONTROLLER:
+        {
+            auto controller = dynamic_cast<CCameraController*>(selectComponent);
+            CamController_Inspector(controller);
+        }
+        break;
+
+        case COMPONENTTYPE::OBJECT_SPAWNER:
+        {
+            auto spawner = dynamic_cast<CObjectSpawner*>(selectComponent);
+            MonsterSpawner_Inspector(spawner);
         }
         break;
 
@@ -645,9 +739,19 @@ CWallRenderer* CMainEditorMgr::Find_WallRenderer()
     return wallCom;
 }
 
+CTerrain* CMainEditorMgr::Find_Terrain()
+{
+    auto terrainRenderer = Find_TerrainRenderer();
+    if (!terrainRenderer)
+        return nullptr;
+
+    return dynamic_cast<CTerrain*>(terrainRenderer->Get_Owner());
+}
+
 void CMainEditorMgr::Free()
 {
     CMapObjectMgr::DestroyInstance();
+    CFogMgr::DestroyInstance();
 
     Safe_Release(m_Context);
     Safe_Release(m_GraphicDev);

@@ -29,6 +29,7 @@
 #include <process.h>
 #include <filesystem>
 #include <iostream>
+#include <cstdlib>
 
 #include "Engine_Enum.h"
 #include "Engine_Macro.h"
@@ -36,6 +37,7 @@
 #include "Engine_Global.h"
 #include "Engine_Struct.h"
 #include "Engine_Function.h"
+#include "Engine_Math.h"
 
 #ifdef _DEBUG
 

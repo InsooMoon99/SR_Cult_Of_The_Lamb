@@ -9,9 +9,7 @@
 #include "CTransform.h"
 
 CMapObjectBase::CMapObjectBase(DEVICE graphicDev)
-    : CGameObject(graphicDev),
-      m_BufferCom(nullptr),
-      m_TransformCom(nullptr),
+    : CRenderObject(graphicDev),
       m_TextureCom(nullptr),
       m_AttachTerrain(false), m_IsPreview(false),
       m_Terrain(nullptr)
@@ -19,9 +17,7 @@ CMapObjectBase::CMapObjectBase(DEVICE graphicDev)
 }
 
 CMapObjectBase::CMapObjectBase(const CMapObjectBase& rhs)
-    : CGameObject(rhs),
-      m_BufferCom(nullptr),
-      m_TransformCom(nullptr),
+    : CRenderObject(rhs),
       m_TextureCom(nullptr),
       m_AttachTerrain(rhs.m_AttachTerrain), m_IsPreview(false),
       m_CellX(rhs.m_CellX),
@@ -35,46 +31,63 @@ CMapObjectBase::~CMapObjectBase()
 
 HRESULT CMapObjectBase::Ready_GameObject()
 {
+    // 여기에 Light?
     return S_OK;
+}
+
+void CMapObjectBase::Initialize_GameObject()
+{
+    CRenderObject::Initialize_GameObject();
+
 }
 
 _int CMapObjectBase::Update_GameObject(const _float& timeDelta)
 {
-    _int exit = CGameObject::Update_GameObject(timeDelta);
+    _int exit = CRenderObject::Update_GameObject(timeDelta);
 
-    if (!m_IsPreview)
-        CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_PRIORITY_ALPHA, this);
 
     return exit;
 }
 
 void CMapObjectBase::LateUpdate_GameObject(const _float& timeDelta)
 {
-    CGameObject::LateUpdate_GameObject(timeDelta);
+    CRenderObject::LateUpdate_GameObject(timeDelta);
+
+    if (!m_IsPreview)
+        CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_PRIORITY_ALPHA, this);
 }
 
 void CMapObjectBase::Render_GameObject()
 {
-    if (m_TransformCom == nullptr || m_BufferCom == nullptr)
+    if (!m_TransformCom || !m_BufferCom || !m_TextureCom)
         return;
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-    m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
-    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-    m_GraphicDev->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-    m_GraphicDev->SetRenderState(D3DRS_ALPHAREF, 50);  
+    Render_Setting();
 
-    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-    m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-    m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-
-    m_TextureCom->Set_Texture(m_TextureIndex);
+    m_TextureCom->Set_Texture(m_TextureIndex); 
     m_BufferCom->Render_Buffer();
 
-    // 원상복구
-    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+    Render_Reset();
+
+}
+
+void CMapObjectBase::Set_Material()
+{
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
+
+    D3DMATERIAL9 material;
+
+    ZeroMemory(&material, sizeof(D3DMATERIAL9));
+
+    material.Diffuse  = COLOR(1.f, 1.f, 1.f, 1.f);
+    material.Ambient  = COLOR(1.f, 1.f, 1.f, 1.f);
+    material.Specular = COLOR(1.f, 1.f, 1.f, 1.f);
+    material.Emissive = COLOR(0.f, 0.f, 0.f, 1.f);
+    material.Power = 0.f;
+
+    m_GraphicDev->SetMaterial(&material);
 }
 
 void CMapObjectBase::Set_WorldPos(const _vec3& pos)
@@ -93,17 +106,8 @@ void CMapObjectBase::Set_WorldPos(const _vec3& pos)
 
 HRESULT CMapObjectBase::Add_BaseComponent(COMPONENTTYPE InType)
 {
-    // RcTex
-    m_BufferCom = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
-    NULL_CHECK_RETURN(m_BufferCom, E_FAIL);
-
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::RC_TEX, m_BufferCom });
-
-    // Transform
-    m_TransformCom = CreateProtoComponent<CTransform>(this, COMPONENTTYPE::TRANSFORM);
-    NULL_CHECK_RETURN(m_TransformCom, E_FAIL);
-
-    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
+    if (FAILED(CRenderObject::Add_Component()))
+        return E_FAIL;
 
     // 자식에서 Add_BaseComponent에 타입 넣어주기
     m_TextureCom = CreateProtoComponent<CTexture>(this, InType);
@@ -114,7 +118,14 @@ HRESULT CMapObjectBase::Add_BaseComponent(COMPONENTTYPE InType)
     return S_OK;
 }
 
+void CMapObjectBase::Render_Setting()
+{
+    CRenderObject::Render_Setting();
+
+    
+}
+
 void CMapObjectBase::Free()
 {
-    CGameObject::Free();
+    CRenderObject::Free();
 }

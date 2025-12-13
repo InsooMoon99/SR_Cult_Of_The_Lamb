@@ -1,8 +1,8 @@
 ﻿#include "CState.h"
 #include "CAnimator.h"
 #include "CGameObject.h"
-#include "CTransform.h"
 #include "CRcTex.h"
+#include "CTransform.h"
 
 CState::CState(DEVICE graphicDev)
     : CComponent(graphicDev),
@@ -108,11 +108,10 @@ void CState::Update_Animation()
 #pragma endregion
 
             CComponent* bufferCom = m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::RC_TEX);
-            CRcTex* rcTex = dynamic_cast<CRcTex*>(bufferCom);
+            CRcTex*     rcTex     = dynamic_cast<CRcTex*>(bufferCom);
 
             if (rcTex)
                 rcTex->Set_FlipX(dirInfo.second);
-            
         }
 
         m_PrevState = m_State;
@@ -208,14 +207,16 @@ pair<wstring, bool> CState::Get_AnimDirInfo(ACTORSTATE state, ACTORDIR dir)
         switch (dir)
         {
         case ACTORDIR::UP:
+        case ACTORDIR::R_UP:
+        case ACTORDIR::L_UP:
             suffix = L"_UP";
             break;
         case ACTORDIR::DOWN:
+        case ACTORDIR::R_DOWN:
+        case ACTORDIR::L_DOWN:
             suffix = L"_DOWN";
             break;
         case ACTORDIR::RIGHT:
-        case ACTORDIR::R_UP:
-        case ACTORDIR::R_DOWN:
             suffix = L"_LEFT";
             bFlip = true;
             break;

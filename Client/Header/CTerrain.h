@@ -12,6 +12,7 @@ END
 
 class CTerrainRenderer;
 class CWallRenderer;
+class CObjectSpawner;
 
 enum class EDIT_MODE
 {
@@ -27,6 +28,7 @@ private:
 
 public:
     HRESULT Ready_GameObject() override;
+    void    Initialize_GameObject() override;
     _int    Update_GameObject(const _float& timeDelta) override;
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
@@ -42,8 +44,14 @@ public:
     _vec3            Get_CellCenterWorld(_int cellX, _int cellZ);
     _float           Get_CellSize();
 
+public:
+    // 오브젝트 소환
+    void    Spawn_Objects(CLayer* layer);
+
 private:
-    HRESULT Add_Component();
+    HRESULT Add_Component() override;
+    void    Set_Material() override;
+    void    Render_Setting() override;
 
 public:
     static CTerrain* Create(DEVICE GraphicDev);
@@ -60,6 +68,9 @@ private:
 
     CTerrainRenderer*           m_TerrainRendererCom;
     CWallRenderer*              m_WallRendererCom;
+    CObjectSpawner*             m_ObjectSpawnerCom;
 
+    _bool                       m_IsWallSpawn;
+    _bool                       m_IsObjectSpawn;
 };
 

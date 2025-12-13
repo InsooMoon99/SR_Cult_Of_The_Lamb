@@ -5,8 +5,8 @@
 #include "CBossPhase2.h"
 #include "CAnimator.h"
 
-CBoss2_Idle::CBoss2_Idle(CMonsterBase* owner)
-    : m_Controller(nullptr), m_Owner(nullptr), m_Pattern_Cooldown(0)
+CBoss2_Idle::CBoss2_Idle(CGameObject* owner)
+    : m_Owner(owner), m_Pattern_Cooldown(0)
 {
 }
 
@@ -25,7 +25,7 @@ void CBoss2_Idle::Enter()
     {
         auto animator = m_Controller->Get_OwnerAnimator();
         if (animator)
-            animator->Play_Animation(L"Boss_Idle", ANIMSTATE::LOOP);
+            animator->Play_Animation(L"Boss2_Idle", ANIMSTATE::LOOP);
     }
 
     m_fCurStateElapsedTime = 0.f;
@@ -35,10 +35,9 @@ _int CBoss2_Idle::Update_State(const _float& timeDelta)
 {
     m_fCurStateElapsedTime += timeDelta;
 
-    // 2초 후 EyeBall 공격으로 전환
     if (m_fCurStateElapsedTime >= m_Pattern_Cooldown)
     {
-        return CBossPhase2::PATTERN::PHASE2_EYEBALL;
+        return CBossPhase2::PATTERN::PHASE2_START;
     }
 
     return CBossPhase2::PATTERN::PHASE2_IDLE;
@@ -54,11 +53,12 @@ void CBoss2_Idle::Exit()
 HRESULT CBoss2_Idle::Ready_State()
 {
     m_fMinStateTime = 0.5f;
+    m_Pattern_Cooldown = 30.f;
 
     return S_OK;
 }
 
-CBoss2_Idle* CBoss2_Idle::Create(CMonsterBase* owner)
+CBoss2_Idle* CBoss2_Idle::Create(CGameObject* owner)
 {
     auto state = new CBoss2_Idle(owner);
 

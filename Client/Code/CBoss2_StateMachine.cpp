@@ -1,9 +1,12 @@
 ﻿#include "pch.h"
 #include "CBoss2_StateMachine.h"
+
+#include "CBoss2_Idle.h"
 #include "CBossPhase2.h"
 #include "CMonsterState.h"
-#include "CBoss2_Idle.h"
-#include "CBoss2_Eyeball.h"
+#include "CBoss2_Start.h"
+#include "CBoss2_ChainAttack.h"
+#include "CBoss2_Die.h"
 
 CBoss2_StateMachine::CBoss2_StateMachine(CMonsterBase* owner)
     : m_Owner(owner)
@@ -12,7 +15,7 @@ CBoss2_StateMachine::CBoss2_StateMachine(CMonsterBase* owner)
 
 CBoss2_StateMachine::~CBoss2_StateMachine()
 {
-    Free();
+    CBoss2_StateMachine::Free();
        
 }
 
@@ -26,32 +29,40 @@ HRESULT CBoss2_StateMachine::Ready_StateMachine()
 
 #pragma region 상태 등록
     {
+        // Start
+        if (FAILED(RegisterState<CBoss2_Start>(CBossPhase2::PATTERN::PHASE2_START, m_Owner)))
+            return E_FAIL;
+
         // Idle
         if (FAILED(RegisterState<CBoss2_Idle>(CBossPhase2::PATTERN::PHASE2_IDLE, m_Owner)))
             return E_FAIL;
 
-        // Eyeball
-        if (FAILED(RegisterState<CBoss2_Eyeball>(CBossPhase2::PATTERN::PHASE2_EYEBALL, m_Owner)))
+        // Roar
+        if (FAILED(RegisterState<CBoss2_ChainAttack>(CBossPhase2::PATTERN::PHASE2_ROAR, m_Owner)))
+            return E_FAIL;
+
+        // Die
+        if (FAILED(RegisterState<CBoss2_Die>(CBossPhase2::PATTERN::PHASE2_DEAD, m_Owner)))
             return E_FAIL;
     }
 #pragma endregion
     
 
     // 초기 상태 설정
-    m_pCurState = m_vecState[CBossPhase2::PATTERN::PHASE2_IDLE];
-    m_dwCurStateKey = CBossPhase2::PATTERN::PHASE2_IDLE;
-    m_pCurState->Enter();
+    m_CurState = m_vecState[CBossPhase2::PATTERN::PHASE2_START];
+    m_CurStateKey = CBossPhase2::PATTERN::PHASE2_START;
+    m_CurState->Enter();
 
     return S_OK;
 }
 
 _int CBoss2_StateMachine::Update_StateMachine(const _float& timeDelta)
 {
-    if (m_pCurState)
+    if (m_CurState)
     {
-        _uint nextState = m_pCurState->Update_State(timeDelta);
+        _uint nextState = m_CurState->Update_State(timeDelta);
 
-        if (nextState < CBossPhase2::PATTERN::PHASE2_END && nextState != m_dwCurStateKey)
+        if (nextState < CBossPhase2::PATTERN::PHASE2_END && nextState != m_CurStateKey)
         {
             Change_State(nextState);
         }
@@ -62,21 +73,21 @@ _int CBoss2_StateMachine::Update_StateMachine(const _float& timeDelta)
 
 void CBoss2_StateMachine::Change_State(_uint dwStateKey)
 {
-    if (m_dwCurStateKey == dwStateKey)
+    if (m_CurStateKey == dwStateKey)
         return;
 
     if (m_vecState[dwStateKey] == nullptr || dwStateKey >= CBossPhase2::PATTERN::PHASE2_END)
         return;
 
     // 기존 상태 정리
-    if (m_pCurState)
-        m_pCurState->Exit();
+    if (m_CurState)
+        m_CurState->Exit();
 
-    m_dwPrevStateKey = m_dwCurStateKey;
-    m_dwCurStateKey = dwStateKey;
+    m_PrevStateKey = m_CurStateKey;
+    m_CurStateKey = dwStateKey;
 
-    m_pCurState = m_vecState[dwStateKey];
-    m_pCurState->Enter();
+    m_CurState = m_vecState[dwStateKey];
+    m_CurState->Enter();
 }
 
 CBoss2_StateMachine* CBoss2_StateMachine::Create(CMonsterBase* owner)

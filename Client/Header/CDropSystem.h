@@ -1,5 +1,7 @@
 ﻿#pragma once
 #include "CBase.h"
+#include "Client_Struct.h"
+#include <optional>
 
 struct ItemInstance;
 
@@ -8,6 +10,7 @@ class CScene;
 END
 
 class CInventory;
+class CDroppedItem;
 
 class CDropSystem : public CBase
 {
@@ -17,13 +20,24 @@ private:
     ~CDropSystem() override;
 
 public:
-    void SpawnDrop(DEVICE pGraphicDev, const ItemInstance& item, const _vec3& worldPos);
-    void SpawnAllFromInven(DEVICE pGraphicDev, CInventory& Inven);
+
+    CDroppedItem* SpawnDrop(DEVICE pGraphicDev, const ItemInstance& item, const _vec3& worldPos,
+        std::optional<_vec3> scale = _vec3(0.5f, 0.5f, 0.5f),
+        std::optional<SpriteBounceDesc> bounceDesc = std::nullopt);
+
+    void SpawnAllFromInven(DEVICE pGraphicDev, CInventory* Inven, _vec3 dropDir = { 0,0,0 }, int offset = 0);
+
+    void Clear_Item();
 
     void SetCurrentScene(CScene* nowScene) { m_nowScene = nowScene; } // 이거 무조건 씬 셋팅 시 해줘야함
+    
+    void Remove_Item(CDroppedItem* item);
 
 private:
     CScene* m_nowScene = nullptr;
+    bool isBouncing = false;
+
+    list<CDroppedItem*> tmpItem;
 
 private:
     void Free() override;

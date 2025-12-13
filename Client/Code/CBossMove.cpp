@@ -97,7 +97,7 @@ void CBossMove::RandomMove(const _float& timeDelta, _vec3 BaseCenter, int BaseLe
     _vec3 LT = { BaseCenter.x - BaseLenght * 0.5f, 0.f, BaseCenter.z + BaseLenght * 0.5f };
     _vec3 RB = { BaseCenter.x + BaseLenght * 0.5f,0.f,BaseCenter.z - BaseLenght * 0.5f };
 
-    int offset = 5;// TOOD:: 나중에 맴버 변수로 오프셋 조정 (사슬과 사슬 사이의 거리)
+    int offset = 5;// TOOD:: 나중에 맴버 변수로 오프셋 조정 (사이의 거리)
 
     int xCell = BaseLenght / offset;
     int zCell = BaseLenght / offset;
@@ -106,8 +106,8 @@ void CBossMove::RandomMove(const _float& timeDelta, _vec3 BaseCenter, int BaseLe
     int tmpx = CRandomMgr::GetInstance()->Get_Int_Random(0, xCell); // x 몇번쨰 칸인지는 랜덤
     int tmpz = CRandomMgr::GetInstance()->Get_Int_Random(0, zCell); // x 몇번쨰 칸인지는 랜덤
 
-    float xPos = tmpx * (xCell * .5f);
-    float zPos = tmpz * (zCell * .5f);
+    float xPos = tmpx * (offset);
+    float zPos = tmpz * (offset);
 
     m_pOwnerTransformCom->Set_Pos(LT.x + xPos, m_pOwnerTransformCom->Get_Pos().y, LT.z - zPos);
 

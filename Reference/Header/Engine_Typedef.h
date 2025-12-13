@@ -32,6 +32,8 @@ typedef D3DXQUATERNION          _quat;
 
 typedef LPDIRECT3DDEVICE9       DEVICE;
 
+typedef D3DXCOLOR               COLOR;
+
 /* 예시
 typedef	 struct tagMyVec3 : public D3DXVECTOR3
 {

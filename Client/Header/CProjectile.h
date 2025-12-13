@@ -38,10 +38,12 @@ public:
     void SetMoveDesc(BulletDesc& d)
     {
         m_ProjectileOwner = d.ProjectileOwner;
-        if(m_Owner)
+
+        if(m_ProjectileOwner)
         {
             m_ProjectileOwner->AddRef();
         }
+
         m_MoveType = d.moveType;
         m_Speed = d.Speed;
         m_Direction =d.Direction;

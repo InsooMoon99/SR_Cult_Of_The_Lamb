@@ -46,33 +46,35 @@ HRESULT CTexture::Ready_Texture(TEXTUREID texType, const wstring& filePath, cons
 {
     m_Textures.reserve(count);
 
-    IDirect3DBaseTexture9* texture = nullptr;
-
     for (_uint i = 0; i < count; ++i)
     {
         wchar_t fileName[MAX_PATH] = L"";
-
         swprintf_s(fileName, MAX_PATH, filePath.c_str(), i + 1);
+
+        IDirect3DBaseTexture9* texture = nullptr;
+        HRESULT hr = S_OK;
+
+        EnterCriticalSection(&s_D3DLock);
 
         switch (texType)
         {
         case TEX_NORMAL:
-        {
-            if (FAILED(D3DXCreateTextureFromFile(
-                m_GraphicDev, fileName, (LPDIRECT3DTEXTURE9*)&texture)))
-                return E_FAIL;
-        }
-        break;
+            hr = D3DXCreateTextureFromFile(m_GraphicDev, fileName, (LPDIRECT3DTEXTURE9*)&texture);
+            break;
+
         case TEX_CUBE:
-        {
-            if (FAILED(D3DXCreateCubeTextureFromFile(
-                m_GraphicDev, fileName, (LPDIRECT3DCUBETEXTURE9*)&texture)))
-                return E_FAIL;
-        }
-        break;
+            hr = D3DXCreateCubeTextureFromFile(m_GraphicDev, fileName, (LPDIRECT3DCUBETEXTURE9*)&texture);
+            break;
+
         default:
-            return E_FAIL;
+            hr = E_FAIL;
+            break;
         }
+
+        LeaveCriticalSection(&s_D3DLock);
+
+        if (FAILED(hr) || texture == nullptr)
+            return E_FAIL;
 
         m_Textures.push_back(texture);
     }
@@ -307,19 +309,39 @@ CComponent* CTexture::Clone()
 
 void CTexture::Free()
 {
+    if (s_LockInitialized)
+    {
+        EnterCriticalSection(&s_D3DLock);
+    }
+    else
+    {
+        OutputDebugString(L"[WARNING] CTexture::Free called but s_D3DLock not initialized!\n");
+    }
+
     for_each(m_Textures.begin(), m_Textures.end(), CDeleteObj());
     m_Textures.clear();
 
     for_each(m_AnimTextures.begin(),
-             m_AnimTextures.end(),
-             [](auto& keyValue)
-             {
-                 for (auto*& tex : keyValue.second)
-                 {
-                     Safe_Release(tex);
-                 }
-             });
+        m_AnimTextures.end(),
+        [](auto& keyValue)
+        {
+            const auto& key = keyValue.first;
+            auto& vec = keyValue.second;
+
+            for (auto*& tex : vec)
+            {
+                if (tex == nullptr)
+                    continue;
+
+                Safe_Release(tex);
+            }
+        });
+
     m_AnimTextures.clear();
+    if (s_LockInitialized)
+    {
+        LeaveCriticalSection(&s_D3DLock);
+    }
 }
 
 void CTexture::InitTextureSystem()
@@ -328,12 +350,6 @@ void CTexture::InitTextureSystem()
 	{
 		InitializeCriticalSection(&s_D3DLock);
 		s_LockInitialized = true;
-
-		OutputDebugString(L"[CTexture] InitTextureSystem() called!\n");
-	}
-	else
-	{
-		OutputDebugString(L"[CTexture] Already initialized!\n");
 	}
 }
 

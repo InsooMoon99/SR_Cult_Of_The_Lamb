@@ -17,8 +17,8 @@ CCollisionManager::~CCollisionManager()
 
 void CCollisionManager::Update()
 {
-    auto& colliders = m_Colliders;
-    const _uint count = static_cast<_uint>(colliders.size());
+    auto&       colliders = m_Colliders;
+    const _uint count     = static_cast<_uint>(colliders.size());
 
     for (_uint i = 0; i < count; i++)
     {
@@ -164,29 +164,40 @@ void CCollisionManager::Render_Debug(bool& flag)
 void CCollisionManager::Initialize_CollisionMatrix()
 {
     // 일단 모든 레이어 충돌 가능하게 설정
-    for (_int i = 0; i < static_cast<_int>(COLLISION_LAYERTYPE::COL_LAYER_END); i++)
+    _int colLayerEnd = static_cast<_int>(COLLISION_LAYERTYPE::COL_LAYER_END);
+
+    for (_int i = 0; i < colLayerEnd; i++)
     {
-        for (_int j = 0; j < static_cast<_int>(COLLISION_LAYERTYPE::COL_LAYER_END); j++)
+        for (_int j = 0; j < colLayerEnd; j++)
         {
             m_CollisionMatrix[i][j] = true;
         }
     }
 
+    _int player_Index           = static_cast<_int>(COLLISION_LAYERTYPE::PLAYER);
+    _int enemy_Index            = static_cast<_int>(COLLISION_LAYERTYPE::ENEMY);
+    _int wall_Index             = static_cast<_int>(COLLISION_LAYERTYPE::WALL);
+    _int playerprojectile_Index = static_cast<_int>(COLLISION_LAYERTYPE::PLAYERPROJECTILE);
+    _int projectile_Index       = static_cast<_int>(COLLISION_LAYERTYPE::BOSSPROJECTILE);
+    _int item_Index             = static_cast<_int>(COLLISION_LAYERTYPE::ITEM);
+    _int attack_Index           = static_cast<_int>(COLLISION_LAYERTYPE::ATTACK);
+    _int trigger_Index          = static_cast<_int>(COLLISION_LAYERTYPE::TRIGGER);
+    _int interactive_Index      = static_cast<_int>(COLLISION_LAYERTYPE::INTERACTIVEOBJ);
+    _int workbench_Index        = static_cast<_int>(COLLISION_LAYERTYPE::WORKBENCH);
+    _int kitchen_Index          = static_cast<_int>(COLLISION_LAYERTYPE::KITCHEN);
+    _int site_Index             = static_cast<_int>(COLLISION_LAYERTYPE::CONSTRUCTION_SITE);
+
     // 벽끼리는 충돌하지 않도록 설정
-    _int wall_Index = static_cast<_int>(COLLISION_LAYERTYPE::WALL);
     m_CollisionMatrix[wall_Index][wall_Index] = false;
 
     // 적끼리도 충돌 X
-    _int enemy_Index = static_cast<_int>(COLLISION_LAYERTYPE::ENEMY);
     m_CollisionMatrix[enemy_Index][enemy_Index] = false;
 
     // 아이템과 벽은 충돌 ㄴㄴ
-    _int item_Index = static_cast<_int>(COLLISION_LAYERTYPE::ITEM);
     m_CollisionMatrix[wall_Index][item_Index] = false;
     m_CollisionMatrix[item_Index][wall_Index] = false;
 
     // 공격이랑 아이템 충돌 ㄴㄴ
-    _int attack_Index = static_cast<_int>(COLLISION_LAYERTYPE::ATTACK);
     m_CollisionMatrix[attack_Index][item_Index] = false;
     m_CollisionMatrix[item_Index][attack_Index] = false;
 
@@ -195,21 +206,57 @@ void CCollisionManager::Initialize_CollisionMatrix()
     m_CollisionMatrix[enemy_Index][item_Index] = false;
 
     // TODO : 다른 충돌 상태 판정 추가하기
-    
-   // 투사체끼리도 충돌 X, 투사체랑 보스랑도 충돌X
 
-    _int projectile_Index = static_cast<_int>(COLLISION_LAYERTYPE::BOSSPROJECTILE);
+    // 투사체끼리도 충돌 X, 투사체랑 보스랑도 충돌X
     m_CollisionMatrix[projectile_Index][projectile_Index] = false;
-    m_CollisionMatrix[projectile_Index][enemy_Index] = false;
-    m_CollisionMatrix[enemy_Index][projectile_Index] = false;
+    m_CollisionMatrix[projectile_Index][enemy_Index]      = false;
+    m_CollisionMatrix[enemy_Index][projectile_Index]      = false;
 
-    // 플레이어와 몬스터 몸 충돌x 혹시 모르니까 마지막에 추가 테스트를 위해 일단 끔
-    //_int player_Index = static_cast<_int>(COLLISION_LAYERTYPE::PLAYER);
-    //m_CollisionMatrix[enemy_Index][player_Index] = false;
+    //플레이어 투사체와 아이템 충돌 X, 플레이어 투사체와 플레이어 충돌 X
+    m_CollisionMatrix[playerprojectile_Index][playerprojectile_Index] = false;
+    m_CollisionMatrix[playerprojectile_Index][item_Index]             = false;
+    m_CollisionMatrix[item_Index][playerprojectile_Index]             = false;
+    //m_CollisionMatrix[playerprojectile_Index][player_Index] = false;
+    //m_CollisionMatrix[player_Index][playerprojectile_Index] = false;
+
+    // 플레이어, 몬스터 몸박 ㄴㄴ
+    m_CollisionMatrix[enemy_Index][player_Index] = false;
+    m_CollisionMatrix[player_Index][enemy_Index] = false;
+
+    // 트리거는 플레이어와만 충돌 가능
+    m_CollisionMatrix[trigger_Index][trigger_Index] = false;
+
+    for (_int i = 0; i < colLayerEnd; i++)
+    {
+        if (i != player_Index && i != trigger_Index)
+        {
+            m_CollisionMatrix[trigger_Index][i] = false;
+            m_CollisionMatrix[i][trigger_Index] = false;
+        }
+    }
+
+    // 제작대는 플레이어와만 충돌 가능
+    for (_int i = 0; i < colLayerEnd; i++)
+    {
+        if (i != player_Index && i != workbench_Index)
+        {
+            m_CollisionMatrix[workbench_Index][i] = false;
+            m_CollisionMatrix[i][workbench_Index] = false;
+        }
+    }
+
+    // 주방은 플레이어와만 충돌 가능
+    for (_int i = 0; i < colLayerEnd; i++)
+    {
+        if (i != player_Index && i != kitchen_Index)
+        {
+            m_CollisionMatrix[kitchen_Index][i] = false;
+            m_CollisionMatrix[i][kitchen_Index] = false;
+        }
+    }
 }
 
 void CCollisionManager::Free()
 {
     m_Colliders.clear();
-
 }

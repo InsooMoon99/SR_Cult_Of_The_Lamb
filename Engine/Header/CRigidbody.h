@@ -43,7 +43,7 @@ public: // Setter
     void Set_IsGround(_bool isGround)       { m_OnGround = isGround; }
 
     // 힘을 누적하는 함수 (이동, 점프, 넉백 등에 사용)
-    void Add_Force(const _vec3& vForce)     { m_Force += vForce; }
+    void Add_Force(const _vec3& force)     { m_Force += force; }
 
     void Set_Mass(_float mass)              { m_Mass = mass; }
     void Set_Friction(_float friction)      { m_Friction = friction; }

@@ -50,6 +50,14 @@ void CFontMgr::Render_FontOutlined(const wstring& fontTag, const wstring& text, 
     font->Render_FontOutlined(text, pos, textColor, outlineColor, thickness);
 }
 
+void CFontMgr::Render_FontWrapped(const wstring& fontTag, const wstring& text, const RECT& boxRect, D3DXCOLOR color)
+{
+    CFont* font = Find_Font(fontTag);
+
+    if (font)
+        font->Render_FontWrapped(text, boxRect, color);
+}
+
 CFont* CFontMgr::Find_Font(const wstring& fontTag)
 {
     auto iter = find_if(m_Fonts.begin(), m_Fonts.end(), CTag_Finder(move(fontTag)));

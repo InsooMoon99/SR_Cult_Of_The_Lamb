@@ -33,7 +33,6 @@ HRESULT CLayer::Add_GameObject(OBJTYPE objType, CGameObject* gameObject)
 
     Object_NameSetting(objType, gameObject);
 
-
     m_Objects[objType].push_back(gameObject);
 
     return S_OK;

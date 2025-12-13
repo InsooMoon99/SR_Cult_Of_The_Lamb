@@ -1,5 +1,4 @@
 ﻿#pragma once
-
 #include "CRenderObject.h"
 
 BEGIN(Engine)
@@ -36,6 +35,7 @@ protected:
     virtual void Animation_Setting() PURE;
 
     HRESULT Add_Component() override;
+    virtual void Render_Setting() override;
 
 protected:
     void Free() override;
