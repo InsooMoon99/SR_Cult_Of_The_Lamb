@@ -5,6 +5,10 @@
 
 #include "CNPCBase.h"
 #include "CNPCState_Build.h"
+#include "CNPCState_ChopWood.h"
+#include "CNPCState_Mining.h"
+#include "CNPCState_Pray.h"
+#include "CNPCState_PrayPeek.h"
 #include "CNPCState_Eat.h"
 #include "CNPCState_Idle.h"
 #include "CNPCState_Run.h"
@@ -34,19 +38,19 @@ HRESULT CNPCStateMachine::Ready_StateMachine()
     if (FAILED(RegisterState<CNPCState_Build>(NPC_STATE::BUILD, m_Owner)))
         return E_FAIL;
 
-    if (FAILED(RegisterState<CNPCState_Build>(NPC_STATE::CHOPWOOD, m_Owner)))
+    if (FAILED(RegisterState<CNPCState_ChopWood>(NPC_STATE::CHOPWOOD, m_Owner)))
         return E_FAIL;
 
-    if (FAILED(RegisterState<CNPCState_Build>(NPC_STATE::MINING, m_Owner)))
+    if (FAILED(RegisterState<CNPCState_Mining>(NPC_STATE::MINING, m_Owner)))
         return E_FAIL;
 
     if (FAILED(RegisterState<CNPCState_Eat>(NPC_STATE::EAT, m_Owner)))
         return E_FAIL;
 
-    if (FAILED(RegisterState<CNPCState_Build>(NPC_STATE::PRAY, m_Owner)))
+    if (FAILED(RegisterState<CNPCState_Pray>(NPC_STATE::PRAY, m_Owner)))
         return E_FAIL;
 
-    if (FAILED(RegisterState<CNPCState_Build>(NPC_STATE::PRAY_PEEK, m_Owner)))
+    if (FAILED(RegisterState<CNPCState_PrayPeek>(NPC_STATE::PRAY_PEEK, m_Owner)))
         return E_FAIL;
 
     if (FAILED(RegisterState<CNPCState_Spawn>(NPC_STATE::SPAWN, m_Owner)))

@@ -1,7 +1,8 @@
 ﻿#pragma once
 #include "CNPCState.h"
 
-/// @brief NPC의 기도 중 딴짓(PrayPeek) 상태
+/// @brief NPC가 기도 중 실눈 뜨고 쳐다보는 상태
+/// - Pray 상태 중간에 한 번 재생됨 (Once)
 class CNPCState_PrayPeek : public CNPCState
 {
 private:

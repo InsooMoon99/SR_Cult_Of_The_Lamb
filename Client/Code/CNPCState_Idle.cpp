@@ -3,18 +3,20 @@
 
 #include "CAnimator.h"
 #include "CConstructCircle.h"
+#include "CDroppedItem.h"
+#include "CDropSystem.h"
 #include "CInteractionChecker.h"
+#include "CItemDB.h"
 #include "CNPCBase.h"
 #include "CNPCController.h"
 #include "CNPCStateMachine.h"
 #include "CRigidbody.h"
 #include "CTransform.h"
-#include "CDropSystem.h"
-#include "CDroppedItem.h"
-#include "CItemDB.h"
+#include "CWorldInteractive.h"
 
 CNPCState_Idle::CNPCState_Idle(CNPCBase* owner, CNPCStateMachine* stateMachine)
-    : CNPCState(owner, stateMachine)
+    : CNPCState(owner, stateMachine),
+      m_PrayTimer(0.f)
 { }
 
 CNPCState_Idle::~CNPCState_Idle()
@@ -38,63 +40,109 @@ _int CNPCState_Idle::Update_State(const _float& timeDelta)
 {
     CNPCState::Update_State(timeDelta);
 
+    m_PrayTimer += timeDelta;
+
     if (m_Owner)
     {
         // 상호작용 검사 작동
-        CInteractionChecker* checker = m_Owner->Get_InteractionChecker();
 
-        // 건축 부지 탐색
-        if (checker)
+        if (CInteractionChecker* checker = m_Owner->Get_InteractionChecker())
         {
-            _vec3             pos        = m_OwnerTransform->Get_Pos();
-            CConstructCircle* nearCircle = checker->Get_NearestConstruction(pos);
+            CConstructCircle* nearestCircle = checker->Get_NearestConstruction(m_OwnerTransform->Get_Pos());
 
-            if (nearCircle)
+            // 건축 부지 탐색
+            if (nearestCircle)
             {
-                // 건축 부지 탐색
                 if (m_Controller)
                 {
-                    _vec3 vTargetPos = nearCircle->Get_Transform()->Get_Pos();
-                    m_Controller->Set_TargetPos(vTargetPos);
-                    m_Controller->Set_TargetObject(nearCircle); // Set Target Object
+                    _vec3 targetPos = nearestCircle->Get_Transform()->Get_Pos();
+                    m_Controller->Set_TargetPos(targetPos);
+                    m_Controller->Set_TargetObject(nearestCircle); // Set Target Object
                     m_Controller->Set_TargetType(CNPCController::NPC_TARGET_TYPE::CONSTRUCTION);
 
-                    _vec3 toTarget = vTargetPos - pos;
-
-                    _float dist = D3DXVec3Length(&toTarget);
-
-                    if (dist < 0.2f) 
-                        return static_cast<_int>(CNPCStateMachine::NPC_STATE::BUILD);
-                    else
-                        return static_cast<_int>(CNPCStateMachine::NPC_STATE::RUN);
-                }
-            }
-
-            // Food Search
-            CDroppedItem* pNearestFood = checker->Get_NearestFood(m_OwnerTransform->Get_Pos());
-
-            if (pNearestFood)
-            {
-                if (m_Controller)
-                {
-                    _vec3 itemPos = pNearestFood->Get_Transform()->Get_Pos();
-                    m_Controller->Set_TargetPos(itemPos);
-                    m_Controller->Set_TargetObject(pNearestFood);
-                    m_Controller->Set_TargetType(CNPCController::NPC_TARGET_TYPE::FOOD);
                     return static_cast<_int>(CNPCStateMachine::NPC_STATE::RUN);
                 }
             }
 
-            //TODO 직업에 따라 벌목 또는 채광 진행
-            /*
-            JOB eJob = m_pController->Get_Work();
-            switch (eJob) {
-                case JOB::LUMBERJACK:
-                   // Find Tree -> Set Target -> Run or Chop
-                   break;
-                // ...
+            // 음식 탐색
+            if (m_Controller->Is_FoodSearchAvailable())
+            {
+                CDroppedItem* nearestFood = checker->Get_NearestFood(m_OwnerTransform->Get_Pos());
+
+                if (nearestFood)
+                {
+                    _vec3 itemPos = nearestFood->Get_Transform()->Get_Pos();
+                    m_Controller->Set_TargetPos(itemPos);
+                    m_Controller->Set_TargetObject(nearestFood);
+                    m_Controller->Set_TargetType(CNPCController::NPC_TARGET_TYPE::FOOD);
+
+                    m_Controller->Reset_FoodSearchCooldown(); // 15초 쿨다운 설정
+
+                    return static_cast<_int>(CNPCStateMachine::NPC_STATE::RUN);
+                }
             }
-            */
+
+            // 작업 탐색
+            CWorldInteractive* nearestInteractive = nullptr;
+
+            switch (m_Controller->Get_Work())
+            {
+            case CNPCController::NPC_WORK::CHOPWOOD:
+            {
+                nearestInteractive = checker->Get_NearestTree(m_OwnerTransform->Get_Pos());
+
+                if (nearestInteractive)
+                {
+                    _vec3 targetPos = nearestInteractive->Get_Transform()->Get_Pos();
+                    m_Controller->Set_TargetPos(targetPos);
+                    m_Controller->Set_TargetObject(nearestInteractive);
+                    m_Controller->Set_TargetType(CNPCController::NPC_TARGET_TYPE::TREE);
+
+                    return static_cast<_int>(CNPCStateMachine::NPC_STATE::RUN);
+                }
+            }
+
+            case CNPCController::NPC_WORK::MINING:
+            {
+                nearestInteractive = checker->Get_NearestRock(m_OwnerTransform->Get_Pos());
+
+                if (nearestInteractive)
+                {
+                    _vec3 targetPos = nearestInteractive->Get_Transform()->Get_Pos();
+                    m_Controller->Set_TargetPos(targetPos);
+                    m_Controller->Set_TargetObject(nearestInteractive);
+                    m_Controller->Set_TargetType(CNPCController::NPC_TARGET_TYPE::ROCK);
+
+                    return static_cast<_int>(CNPCStateMachine::NPC_STATE::RUN);
+                }
+            }
+
+            case CNPCController::NPC_WORK::PRAY:
+            {
+                // 지정된 위치로 이동
+                _vec3 targetPos = m_Controller->Get_PrayTargetPos();
+                m_Controller->Set_TargetPos(targetPos);
+                m_Controller->Set_TargetObject(nullptr); // 특정 오브젝트가 아님
+                m_Controller->Set_TargetType(CNPCController::NPC_TARGET_TYPE::PRAY_SITE);
+
+                return static_cast<_int>(CNPCStateMachine::NPC_STATE::RUN);
+            }
+
+            default: break;
+            }
+
+            // 5초 이상 Idle 상태라면 자동으로 기도로 전환
+            if (m_PrayTimer >= 5.f)
+            {
+                m_PrayTimer = 0.f; // 리셋
+
+                _vec3 targetPos = m_Controller->Get_PrayTargetPos();
+                m_Controller->Set_TargetPos(targetPos);
+                m_Controller->Set_TargetObject(nullptr);
+                m_Controller->Set_TargetType(CNPCController::NPC_TARGET_TYPE::PRAY_SITE);
+
+                return static_cast<_int>(CNPCStateMachine::NPC_STATE::RUN);
+            }
         }
     }
 

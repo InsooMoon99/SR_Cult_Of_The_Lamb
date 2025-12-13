@@ -2,11 +2,11 @@
 #include "CNPCState_Eat.h"
 
 #include "CAnimator.h"
+#include "CDroppedItem.h"
 #include "CNPCBase.h"
 #include "CNPCController.h"
 #include "CNPCStateMachine.h"
 #include "CRigidbody.h"
-#include "CDroppedItem.h"
 
 CNPCState_Eat::CNPCState_Eat(CNPCBase* owner, CNPCStateMachine* stateMachine)
     : CNPCState(owner, stateMachine)
@@ -23,6 +23,15 @@ void CNPCState_Eat::Enter()
     {
         wstring key = m_Controller->Get_AnimKeyPrefix() + L"Eat_Half";
         m_OwnerAnimator->Play_Animation(key, ANIMSTATE::ONCE);
+
+        // Enter 시점에 바로 음식 삭제 처리
+        CGameObject* target = m_Controller->Get_TargetObject();
+        auto         item   = dynamic_cast<CDroppedItem*>(target);
+
+        if (item && !item->Is_PendingDestroy())
+            item->Mark_As_PendingKill();
+
+        m_Controller->Set_TargetObject(nullptr);
     }
 
     if (m_OwnerRigidbody)
@@ -37,17 +46,6 @@ _int CNPCState_Eat::Update_State(const _float& timeDelta)
     {
         if (m_OwnerAnimator->Is_AnimationFinished())
         {
-            // Consume Item
-            if (m_Controller)
-            {
-                CGameObject* target = m_Controller->Get_TargetObject();
-                auto         item   = dynamic_cast<CDroppedItem*>(target);
-
-                if (item && !item->Is_PendingDestroy())
-                    item->Mark_As_PendingKill();
-
-                m_Controller->Set_TargetObject(nullptr);
-            }
             return static_cast<_int>(CNPCStateMachine::NPC_STATE::IDLE);
         }
     }

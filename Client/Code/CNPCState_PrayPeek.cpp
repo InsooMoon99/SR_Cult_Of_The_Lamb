@@ -5,7 +5,6 @@
 #include "CNPCBase.h"
 #include "CNPCController.h"
 #include "CNPCStateMachine.h"
-#include "CRigidbody.h"
 
 CNPCState_PrayPeek::CNPCState_PrayPeek(CNPCBase* owner, CNPCStateMachine* stateMachine)
     : CNPCState(owner, stateMachine)
@@ -21,18 +20,22 @@ void CNPCState_PrayPeek::Enter()
     if (m_OwnerAnimator && m_Controller)
     {
         wstring key = m_Controller->Get_AnimKeyPrefix() + L"PrayPeek_Half";
-        m_OwnerAnimator->Play_Animation(key, ANIMSTATE::LOOP);
+        m_OwnerAnimator->Play_Animation(key, ANIMSTATE::ONCE);
     }
-
-    if (m_OwnerRigidbody)
-        m_OwnerRigidbody->Set_Friction(0.3f);
 }
 
 _int CNPCState_PrayPeek::Update_State(const _float& timeDelta)
 {
     CNPCState::Update_State(timeDelta);
 
-    return static_cast<_int>(CNPCStateMachine::NPC_STATE::CHOPWOOD);
+    // 애니메이션 종료 체크
+    if (m_OwnerAnimator && m_OwnerAnimator->Is_AnimationFinished())
+    {
+        // 다시 Pray 상태로 돌아감 (Pray의 m_bSecondPhase는 true인 상태여야 함)
+        return static_cast<_int>(CNPCStateMachine::NPC_STATE::PRAY);
+    }
+
+    return static_cast<_int>(CNPCStateMachine::NPC_STATE::PRAY_PEEK);
 }
 
 void CNPCState_PrayPeek::Exit()

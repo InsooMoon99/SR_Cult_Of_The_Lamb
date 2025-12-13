@@ -50,20 +50,43 @@ _int CNPCState_WalkPast::Update_State(const _float& timeDelta)
         _vec3        vecToTarget  = targetPos - myPos;
         const _float distToTarget = D3DXVec3Length(&vecToTarget);
 
-        // Arrival Check
+        // 도착
         if (distToTarget < 0.2f)
         {
-            // If we have a valid target object (construction), go to BUILD
-            CGameObject* targetObj = m_Controller->Get_TargetObject();
-            if (targetObj && !targetObj->Is_PendingDestroy())
-                return static_cast<_int>(CNPCStateMachine::NPC_STATE::BUILD);
-            else
-                return static_cast<_int>(CNPCStateMachine::NPC_STATE::IDLE);
+            CGameObject* target = m_Controller->Get_TargetObject();
+
+            // 타겟 오브젝트가 유효하거나, 혹은 특정 타겟 타입(PRAY_SITE 등)인 경우
+            if ((target && !target->Is_PendingDestroy()) ||
+                m_Controller->Get_TargetType() == CNPCController::NPC_TARGET_TYPE::PRAY_SITE)
+            {
+                switch (m_Controller->Get_TargetType())
+                {
+                case CNPCController::NPC_TARGET_TYPE::CONSTRUCTION:
+                    return static_cast<_int>(CNPCStateMachine::NPC_STATE::BUILD);
+
+                case CNPCController::NPC_TARGET_TYPE::FOOD:
+                    return static_cast<_int>(CNPCStateMachine::NPC_STATE::EAT);
+
+                case CNPCController::NPC_TARGET_TYPE::TREE:
+                    return static_cast<_int>(CNPCStateMachine::NPC_STATE::CHOPWOOD);
+
+                case CNPCController::NPC_TARGET_TYPE::ROCK:
+                    return static_cast<_int>(CNPCStateMachine::NPC_STATE::MINING);
+
+                case CNPCController::NPC_TARGET_TYPE::PRAY_SITE:
+                    return static_cast<_int>(CNPCStateMachine::NPC_STATE::PRAY);
+
+                default:
+                    return static_cast<_int>(CNPCStateMachine::NPC_STATE::IDLE);
+                }
+            }
+
+            return static_cast<_int>(CNPCStateMachine::NPC_STATE::IDLE);
         }
 
         D3DXVec3Normalize(&vecToTarget, &vecToTarget);
 
-        // Direction
+        // 애니메이션 방향
         if (m_Owner)
         {
             auto state = dynamic_cast<CState*>(m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));

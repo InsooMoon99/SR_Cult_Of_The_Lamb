@@ -2,10 +2,13 @@
 #include "CNPCState_Mining.h"
 
 #include "CAnimator.h"
+#include "CCombatStat.h"
 #include "CNPCBase.h"
 #include "CNPCController.h"
 #include "CNPCStateMachine.h"
 #include "CRigidbody.h"
+#include "CTransform.h"
+#include "CWorldInteractive.h"
 
 CNPCState_Mining::CNPCState_Mining(CNPCBase* owner, CNPCStateMachine* stateMachine)
     : CNPCState(owner, stateMachine)
@@ -31,6 +34,49 @@ void CNPCState_Mining::Enter()
 _int CNPCState_Mining::Update_State(const _float& timeDelta)
 {
     CNPCState::Update_State(timeDelta);
+
+    if (m_OwnerAnimator && m_Controller)
+    {
+        CGameObject* target = m_Controller->Get_TargetObject();
+
+        auto combatStat = dynamic_cast<CCombatStat*>(
+            target->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
+
+        if (combatStat && combatStat->Get_Hp() <= 0)
+        {
+            m_Controller->Set_TargetObject(nullptr);
+            return static_cast<_int>(CNPCStateMachine::NPC_STATE::IDLE);
+        }
+
+        auto interactive = dynamic_cast<CWorldInteractive*>(target);
+        if (interactive)
+        {
+            if (m_OwnerAnimator->Get_CurFrame() == 0)
+                m_bAttackFlag = false;
+
+            if (m_OwnerAnimator->Get_CurFrame() == 23 && !m_bAttackFlag)
+            {
+                auto combat = dynamic_cast<CCombatStat*>(target->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
+                if (combat)
+                {
+                    HITDATA h;
+                    ZeroMemory(&h, sizeof(h));
+                    h.attacker = m_Owner;
+                    h.damage   = 1.f;
+                    h.hitter   = target;
+
+                    if (m_OwnerTransform && interactive->Get_Transform())
+                    {
+                        _vec3 dir = interactive->Get_Transform()->Get_Pos() - m_OwnerTransform->Get_Pos();
+                        D3DXVec3Normalize(&h.dir, &dir);
+                    }
+
+                    combat->Apply_Damage(h);
+                    m_bAttackFlag = true;
+                }
+            }
+        }
+    }
 
     return static_cast<_int>(CNPCStateMachine::NPC_STATE::MINING);
 }

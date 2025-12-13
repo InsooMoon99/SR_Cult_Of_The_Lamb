@@ -23,14 +23,14 @@ public:
     void    LateUpdate_Component() override;
 
 public:
-    // 기준 위치(srcPos)에서 가장 가까운 바위(Rock)를 반환한다.
-    CWorldInteractive* Get_NearestRock(const _vec3& srcPos);
+    // 기준 위치(srcPos)에서 가장 가까운 건설/건축물(Construction)을 반환한다.
+    CConstructCircle* Get_NearestConstruction(const _vec3& srcPos);
 
     // 기준 위치(srcPos)에서 가장 가까운 나무(Tree)를 반환한다.
     CWorldInteractive* Get_NearestTree(const _vec3& srcPos);
 
-    // 기준 위치(srcPos)에서 가장 가까운 건설/건축물(Construction)을 반환한다.
-    CConstructCircle* Get_NearestConstruction(const _vec3& srcPos);
+    // 기준 위치(srcPos)에서 가장 가까운 바위(Rock)를 반환한다.
+    CWorldInteractive* Get_NearestRock(const _vec3& srcPos);
 
     // 기준 위치(srcPos)에서 가장 가까운 음식(Food)을 반환한다.
     CDroppedItem* Get_NearestFood(const _vec3& srcPos);

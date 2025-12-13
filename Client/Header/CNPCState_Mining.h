@@ -20,4 +20,7 @@ public:
 
 private:
     void Free() override;
+
+private:
+    bool m_bAttackFlag = false;
 };

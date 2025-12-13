@@ -48,7 +48,8 @@ public:
         CONSTRUCTION,   // 건축
         FOOD,           // 음식
         TREE,           // 나무
-        ROCK            // 돌
+        ROCK,           // 돌
+        PRAY_SITE       // 기도 장소
     };
 
 private:
@@ -67,20 +68,34 @@ public:  // --- Owner 컴포넌트 Getter ---
     CCombatStat* Get_OwnerCombatStat();
 
 public:  // --- Getter / Setter ---
-    CStateMachine*              Get_StateMachine() { return m_StateMachine; }
+    CStateMachine* Get_StateMachine() { return m_StateMachine; }
+
+    // MPC용 FSM의 상태 반환
     CNPCStateMachine::NPC_STATE Get_CurNPCState();
-    NPC_WORK                    Get_Work() const { return m_Work; }
-    NPC_TARGET_TYPE             Get_TargetType() const { return m_eTargetType; }
-    const _vec3&                Get_TargetPos() const { return m_TargetPos; }
-    const wstring&              Get_AnimKeyPrefix() const { return m_AnimKeyPrefix; }
-    CGameObject*                Get_TargetObject() { return m_TargetObject; }
+
+    NPC_WORK        Get_Work() const { return m_Work; }                     // NPC_WORK 중 할 작업 반환
+    NPC_TARGET_TYPE Get_TargetType() const { return m_TargetType; }         // 다가갈 타겟 종류 반환
+
+    const wstring& Get_AnimKeyPrefix() const { return m_AnimKeyPrefix; }
+
+    CGameObject* Get_TargetObject() { return m_TargetObject; }              // 타겟 오브젝트 반환
+    const _vec3& Get_TargetPos() const { return m_TargetPos; }              // 타겟 위치 반환
+    const _vec3& Get_PrayTargetPos() const { return m_PrayTargetPos; }      // 기도 위치 반환
 
     void Set_StateMachine(CStateMachine* stateMachine);
-    void Set_Work(NPC_WORK work) { m_Work = work; }
-    void Set_TargetType(NPC_TARGET_TYPE type) { m_eTargetType = type; }
-    void Set_TargetPos(const _vec3& pos) { m_TargetPos = pos; }
+
+    void Set_Work(NPC_WORK work) { m_Work = work; }                         // NPC_WORK 중 할 작업 지정
+    void Set_TargetType(NPC_TARGET_TYPE type) { m_TargetType = type; }      // 다가갈 타겟 설정
+
     void Set_AnimKeyPrefix(const wstring& prefix) { m_AnimKeyPrefix = prefix; }
-    void Set_TargetObject(CGameObject* obj) { m_TargetObject = obj; }
+
+    void Set_TargetObject(CGameObject* obj) { m_TargetObject = obj; }       // 타겟 오브젝트 설정
+    void Set_TargetPos(const _vec3& pos) { m_TargetPos = pos; }             // 타겟 위치 설정
+    void Set_PrayTargetPos(const _vec3& pos) { m_PrayTargetPos = pos; }     // 기도 위치 설정
+
+    // 음식 탐색 쿨다운 관리
+    _bool Is_FoodSearchAvailable() const { return m_FoodSearchCooldown <= 0.f; }
+    void  Reset_FoodSearchCooldown() { m_FoodSearchCooldown = 15.f; }
 
 private:
     void  Cache_Components();
@@ -102,13 +117,17 @@ private: // --- Owner 컴포넌트 캐싱 ---
 
 private: // --- 멤버 변수 ---
     NPC_WORK        m_Work;
-    NPC_TARGET_TYPE m_eTargetType = NPC_TARGET_TYPE::NONE;
+    NPC_TARGET_TYPE m_TargetType;
 
     wstring m_AnimKeyPrefix;
 
     _bool m_ComponentsCached;
 
 private: // --- 갈 곳의 위치, 오브젝트가 타겟인 경우 오브젝트 저장---
-    _vec3        m_TargetPos;
     CGameObject* m_TargetObject;
+
+    _vec3 m_TargetPos;
+    _vec3 m_PrayTargetPos;
+    
+    _float m_FoodSearchCooldown;
 };

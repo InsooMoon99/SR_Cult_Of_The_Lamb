@@ -20,4 +20,7 @@ public:
 
 private:
     void Free() override;
+
+private:
+    _float m_PrayTimer;             // 자동 Pray 상태 진입 타이머
 };

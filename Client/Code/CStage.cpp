@@ -82,34 +82,54 @@ HRESULT CStage::Ready_Scene()
         return E_FAIL;
 
     // 안은수 test
+    // 이젠 테스트 끝내야죠
     CDropSystem::GetInstance()->SetCurrentScene(this);
 
-    for (int i = 0; i < CItemDB::GetInstance()->GetVector().size(); i++)
+    struct SpawnInfo
     {
-        int          id   = CItemDB::GetInstance()->GetVector()[i].id;
-        ItemInstance inst = { id, -1, 0 };
-        CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 5.f, 1.f, 10.f + (i * 3.f) });
+        int   id;
+        _vec3 pos;
+    };
+
+    vector<SpawnInfo> spawnList = {
+        { 1001, { 5.f, 1.f, 10.f } },   // 동전
+        { 3001, { 10.f, 1.f, 10.f } },  // 검
+        { 2001, { 15.f, 1.f, 10.f } },  // 풀죽
+        { 2003, { 20.f, 1.f, 10.f } }   // 베리 그릇
+    };
+
+    for (const auto& info : spawnList)
+    {
+        ItemInstance inst = { info.id, -1, 0 };
+        CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, info.pos);
     }
 
-    int size = CItemDB::GetInstance()->GetVector().size();
-    for (int i = 0; i < size; i++)
-    {
-        int reverseIndex = size - 1 - i;
-        int id           = CItemDB::GetInstance()->GetVector()[reverseIndex].id;
-
-        ItemInstance inst = { id, -1, 0 };
-        CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 10.f, 1.f, 10.f + (i * 3.f) });
-    }
-
-    size = CItemDB::GetInstance()->GetVector().size();
-    for (int i = 0; i < size; i++)
-    {
-        int reverseIndex = size - 1 - i;
-        int id           = CItemDB::GetInstance()->GetVector()[reverseIndex].id;
-
-        ItemInstance inst = { id, -1, 0 };
-        CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 15.f, 1.f, 10.f + (i * 3.f) });
-    }
+    //for (int i = 0; i < CItemDB::GetInstance()->GetVector().size(); i++)
+    //{
+    //    int          id   = CItemDB::GetInstance()->GetVector()[i].id;
+    //    ItemInstance inst = { id, -1, 0 };
+    //    CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 5.f, 1.f, 10.f + (i * 3.f) });
+    //}
+    //
+    //int size = CItemDB::GetInstance()->GetVector().size();
+    //for (int i = 0; i < size; i++)
+    //{
+    //    int reverseIndex = size - 1 - i;
+    //    int id           = CItemDB::GetInstance()->GetVector()[reverseIndex].id;
+    //
+    //    ItemInstance inst = { id, -1, 0 };
+    //    CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 10.f, 1.f, 10.f + (i * 3.f) });
+    //}
+    //
+    //size = CItemDB::GetInstance()->GetVector().size();
+    //for (int i = 0; i < size; i++)
+    //{
+    //    int reverseIndex = size - 1 - i;
+    //    int id           = CItemDB::GetInstance()->GetVector()[reverseIndex].id;
+    //
+    //    ItemInstance inst = { id, -1, 0 };
+    //    CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, { 15.f, 1.f, 10.f + (i * 3.f) });
+    //}
 
     // Construction Manager 의 Placer초기화
     CConstructionMgr::GetInstance()->Create_Placer(m_GraphicDev);
@@ -266,20 +286,20 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     // Monster
     // -----------------------------
 
-    // HumanMonster
-    gameObject = CHumanMonster::Create(m_GraphicDev);
-    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CHumanMonster::Create() returned null")
-
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::HUMANMONSTER, gameObject),
-        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
-
-    gameObject = CFloaterMonster::Create(m_GraphicDev);
-    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CHumanMonster::Create() returned null")
-
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::HUMANMONSTER, gameObject),
-        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
+    //// HumanMonster
+    //gameObject = CHumanMonster::Create(m_GraphicDev);
+    //NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CHumanMonster::Create() returned null")
+    //
+    //FAILED_CHECK_MSG(
+    //    layer->Add_GameObject(OBJTYPE::HUMANMONSTER, gameObject),
+    //    L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
+    //
+    //gameObject = CFloaterMonster::Create(m_GraphicDev);
+    //NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CHumanMonster::Create() returned null")
+    //
+    //FAILED_CHECK_MSG(
+    //    layer->Add_GameObject(OBJTYPE::HUMANMONSTER, gameObject),
+    //    L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
 
     // -----------------------------
     // Boss
@@ -325,9 +345,10 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
         // 에디터에 카메라 설정
         CMainEditorMgr::GetInstance()->Set_MainCamera(camController);
     }
-    ///////////////////////////////////////////
-    // 인터렉티브 오브젝트
-    //////////////////////////////////////////
+
+    // -----------------------------
+    // 상호작용 오브젝트
+    // -----------------------------
 
     CHarvestableHerb* tmpHerb;
     tmpHerb = CHarvestableHerb::Create(m_GraphicDev, CHarvestableHerb::BERRY::BIGBERRY);
@@ -340,13 +361,13 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
 
     ///////////////////////////////////////////////////////////////////
 
-    tmpHerb = CHarvestableHerb::Create(m_GraphicDev, CHarvestableHerb::BERRY::SMALLBERRY);
-    NULL_CHECK_RETURN_MSG(tmpHerb, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::INTERACTIVE, tmpHerb),
-        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
-    tmpHerb->Get_Transform()->Set_Pos(20.f, 0.6f, 20.f);
-    tmpHerb->Check_WorldState();
+    //tmpHerb = CHarvestableHerb::Create(m_GraphicDev, CHarvestableHerb::BERRY::SMALLBERRY);
+    //NULL_CHECK_RETURN_MSG(tmpHerb, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
+    //FAILED_CHECK_MSG(
+    //    layer->Add_GameObject(OBJTYPE::INTERACTIVE, tmpHerb),
+    //    L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
+    //tmpHerb->Get_Transform()->Set_Pos(20.f, 0.6f, 20.f);
+    //tmpHerb->Check_WorldState();
 
     ///////////////////////////////////////////////////////////////////
 
@@ -361,23 +382,23 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
 
     ///////////////////////////////////////////////////////////////////
 
-    tmpRock = CRock::Create(m_GraphicDev, CRock::ROCK::BIGROCK);
-    NULL_CHECK_RETURN_MSG(tmpRock, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::INTERACTIVE, tmpRock),
-        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
-    tmpRock->Get_Transform()->Set_Pos(25.f, 1.f, 20.f);
-    tmpRock->Check_WorldState();
+    //tmpRock = CRock::Create(m_GraphicDev, CRock::ROCK::BIGROCK);
+    //NULL_CHECK_RETURN_MSG(tmpRock, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
+    //FAILED_CHECK_MSG(
+    //    layer->Add_GameObject(OBJTYPE::INTERACTIVE, tmpRock),
+    //    L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
+    //tmpRock->Get_Transform()->Set_Pos(25.f, 1.f, 20.f);
+    //tmpRock->Check_WorldState();
 
     ///////////////////////////////////////////////////////////////////
 
-    tmpRock = CRock::Create(m_GraphicDev, CRock::ROCK::MIDDLEROCK);
-    NULL_CHECK_RETURN_MSG(tmpRock, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::INTERACTIVE, tmpRock),
-        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
-    tmpRock->Get_Transform()->Set_Pos(25.f, 1.f, 30.f);
-    tmpRock->Check_WorldState();
+    //tmpRock = CRock::Create(m_GraphicDev, CRock::ROCK::MIDDLEROCK);
+    //NULL_CHECK_RETURN_MSG(tmpRock, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
+    //FAILED_CHECK_MSG(
+    //    layer->Add_GameObject(OBJTYPE::INTERACTIVE, tmpRock),
+    //    L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
+    //tmpRock->Get_Transform()->Set_Pos(25.f, 1.f, 30.f);
+    //tmpRock->Check_WorldState();
 
     ///////////////////////////////////////////////////////////////////
 
@@ -393,44 +414,44 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
 
     ///////////////////////////////////////////////////////////////////
 
-    tmpTree = CTree::Create(m_GraphicDev, CTree::CTree::RUBBLE2);
-    NULL_CHECK_RETURN_MSG(tmpTree, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::INTERACTIVE, tmpTree),
-        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
-    tmpTree->Get_Transform()->Set_Pos(10.f, 1.f, 25.f);
-    tmpTree->Check_WorldState();
+    //tmpTree = CTree::Create(m_GraphicDev, CTree::CTree::RUBBLE2);
+    //NULL_CHECK_RETURN_MSG(tmpTree, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
+    //FAILED_CHECK_MSG(
+    //    layer->Add_GameObject(OBJTYPE::INTERACTIVE, tmpTree),
+    //    L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
+    //tmpTree->Get_Transform()->Set_Pos(10.f, 1.f, 25.f);
+    //tmpTree->Check_WorldState();
 
     ///////////////////////////////////////////////////////////////////
 
-    tmpTree = CTree::Create(m_GraphicDev, CTree::CTree::RUBBLE3);
-    NULL_CHECK_RETURN_MSG(tmpTree, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::INTERACTIVE, tmpTree),
-        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
-    tmpTree->Get_Transform()->Set_Pos(10.f, 1.f, 20.f);
-    tmpTree->Check_WorldState();
+    //tmpTree = CTree::Create(m_GraphicDev, CTree::CTree::RUBBLE3);
+    //NULL_CHECK_RETURN_MSG(tmpTree, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
+    //FAILED_CHECK_MSG(
+    //    layer->Add_GameObject(OBJTYPE::INTERACTIVE, tmpTree),
+    //    L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
+    //tmpTree->Get_Transform()->Set_Pos(10.f, 1.f, 20.f);
+    //tmpTree->Check_WorldState();
 
     ///////////////////////////////////////////////////////////////////
 
-    tmpTree = CTree::Create(m_GraphicDev, CTree::CTree::RUBBLE4);
-    NULL_CHECK_RETURN_MSG(tmpTree, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::INTERACTIVE, tmpTree),
-        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
-    tmpTree->Get_Transform()->Set_Pos(10.f, 1.f, 15.f);
-    tmpTree->Check_WorldState();
+    //tmpTree = CTree::Create(m_GraphicDev, CTree::CTree::RUBBLE4);
+    //NULL_CHECK_RETURN_MSG(tmpTree, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
+    //FAILED_CHECK_MSG(
+    //    layer->Add_GameObject(OBJTYPE::INTERACTIVE, tmpTree),
+    //    L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
+    //tmpTree->Get_Transform()->Set_Pos(10.f, 1.f, 15.f);
+    //tmpTree->Check_WorldState();
 
     ///////////////////////////////////////////////////////////////////
 
-    tmpTree = CTree::Create(m_GraphicDev, CTree::CTree::REALSMALLTREE);
-    NULL_CHECK_RETURN_MSG(tmpTree, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
-
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::INTERACTIVE, tmpTree),
-        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
-    tmpTree->Get_Transform()->Set_Pos(15.f, 2.f, 30.f);
-    tmpTree->Check_WorldState();
+    //tmpTree = CTree::Create(m_GraphicDev, CTree::CTree::REALSMALLTREE);
+    //NULL_CHECK_RETURN_MSG(tmpTree, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
+    //
+    //FAILED_CHECK_MSG(
+    //    layer->Add_GameObject(OBJTYPE::INTERACTIVE, tmpTree),
+    //    L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
+    //tmpTree->Get_Transform()->Set_Pos(15.f, 2.f, 30.f);
+    //tmpTree->Check_WorldState();
 
     ///////////////////////////////////////////////////////////////////
 
@@ -445,13 +466,17 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
 
     ///////////////////////////////////////////////////////////////////
 
+    // -----------------------------
+    // 건물 오브젝트
+    // -----------------------------
+
     auto workBench = CWorkBench::Create(m_GraphicDev);
     m_WorkBench    = workBench;
 
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::BUILDING, workBench),
         L"Add_GameObject(CWorkBench) failed");
-    //
+
     auto kitchen = CKitchen::Create(m_GraphicDev);
     m_Kitchen    = kitchen;
     FAILED_CHECK_MSG(

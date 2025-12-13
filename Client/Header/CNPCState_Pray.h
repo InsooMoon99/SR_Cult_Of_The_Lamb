@@ -1,7 +1,8 @@
 ﻿#pragma once
 #include "CNPCState.h"
 
-/// @brief NPC의 기도(Pray) 상태
+/// @brief NPC가 기도하는 상태
+/// - 5초 기도 -> PrayPeek -> 5초 기도 -> Idle
 class CNPCState_Pray : public CNPCState
 {
 private:
@@ -20,4 +21,7 @@ public:
 
 private:
     void Free() override;
+
+private:
+    _float m_Timer;                 // 자동 상태 넘기기 타이머
 };
