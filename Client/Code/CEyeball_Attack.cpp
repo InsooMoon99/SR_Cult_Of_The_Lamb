@@ -53,6 +53,8 @@ void CEyeball_Attack::Enter()
 
     m_EyeballAnim = Eyeball_Anim::ATTACK_ANTI;
     m_TotalAttackCount = 0;
+    m_MaxAttackCount = CRandomMgr::GetInstance()->Get_Int_Random(2, 3); // 2 ~ 3회 눈알별로 각자 랜덤
+    m_IsFinished = false;
 
     Find_Player(); // 플레이어 찾기
     m_GraphicDev = m_Owner->Get_GraphicDev();
@@ -69,7 +71,7 @@ _int CEyeball_Attack::Update_State(const _float& timeDelta)
 
     // 끝나면 Idle로
     if (m_IsFinished)
-        return CEyeball::PATTERN::EYEBALL_IDLE;
+        return CEyeball::PATTERN::EYEBALL_GROUND_MOVE;
 
     // 모든 공격 애니메이션에서 랜덤 이동
     Random_Movement(timeDelta);
@@ -226,7 +228,7 @@ void CEyeball_Attack::Play_End()
     m_Spawn_BulletCount = 0;
 
     m_TotalAttackCount++;
-    if (m_TotalAttackCount >= 3)
+    if (m_TotalAttackCount >= m_MaxAttackCount)
     {
         m_IsFinished = true;
     }
@@ -466,11 +468,11 @@ void CEyeball_Attack::Random_Movement(const _float& timeDelta)
             _float radian = D3DXToRadian(randomAngle);
             _vec3 newDir = _vec3(cosf(radian), 0.f, sinf(radian));
 
-            // 벽 체크 (5유닛 앞)
+            // 벽 체크
             auto eyeball = static_cast<CEyeball*>(m_Owner);
             if (!eyeball->Trace_HitWall(currentPos, newDir, 5.f))
             {
-                m_Current_Direction = newDir;
+                m_Target_Direction = newDir;
                 break;
             }
         }

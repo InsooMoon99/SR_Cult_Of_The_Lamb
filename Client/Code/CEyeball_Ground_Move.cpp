@@ -5,6 +5,8 @@
 #include "CEyeball.h"
 #include "CRandomMgr.h"
 #include "CTransform.h"
+#include "CCollisionManager.h"
+#include "CParticleHelper.h"
 
 CEyeball_Ground_Move::CEyeball_Ground_Move(CMonsterBase* owner)
     : m_Owner(owner), m_Pattern_Cooldown(0), m_LerpSpeed(0), m_MaxMoveDistance(0)
@@ -28,7 +30,7 @@ void CEyeball_Ground_Move::Enter()
     {
         auto animator = m_Controller->Get_OwnerAnimator();
         if (animator)
-            animator->Play_Animation(L"Eyeball_Start", ANIMSTATE::LOOP);
+            animator->Play_Animation(L"Eyeball_Exit", ANIMSTATE::ONCE);
     }
 
     // 플레이어 위치 찾기
@@ -40,51 +42,91 @@ void CEyeball_Ground_Move::Enter()
     {
         m_StartPos = transform->Get_Pos();
 
-        _vec3 playerPos = m_pPlayerTransformCom->Get_Pos();
-        _vec3 eyeballPos = transform->Get_Pos();
+        _float randomAngle = static_cast<_float>(CRandomMgr::GetInstance()->Get_Int_Random(0, 360));
+        _float radian = D3DXToRadian(randomAngle);
 
-        m_TargetDir = playerPos - eyeballPos;
-
-        m_TargetDir.y = 0.f;
-
-        D3DXVec3Normalize(&m_TargetDir, &m_TargetDir);
-
-        m_TargetPos = _vec3(playerPos.x, 0.001f, playerPos.z);
+        m_TargetDir = _vec3(cosf(radian), 0.f, sinf(radian));
     }
 
     m_fCurStateElapsedTime = 0.f;
+    m_Direction_Timer = 0.f;
+    m_ParticleTimer = 0.f;
+
+    m_IsUnderground = false;
 }
 
 _int CEyeball_Ground_Move::Update_State(const _float& timeDelta)
 {
     m_fCurStateElapsedTime += timeDelta;
 
-	// 이동
 	CTransform* transform = m_Controller->Get_OwnerTransform();
+    auto animator = m_Controller->Get_OwnerAnimator();
 
-    if (m_fCurStateElapsedTime >= m_Pattern_Cooldown)
+    if (!m_IsUnderground && animator && animator->Is_AnimationFinished())
     {
-        return CEyeball::PATTERN::EYEBALL_ENTER;
+        animator->Play_Animation(L"Eyeball_Idle", ANIMSTATE::LOOP);
+        m_IsUnderground = true;
+        m_fCurStateElapsedTime = 0.f; // 땅 속에서 이동 시간 리셋
     }
 
-    if (transform && m_pPlayerTransformCom)
+    // 땅에서 이동 중
+    if (m_IsUnderground)
     {
-        _vec3 playerPos = m_pPlayerTransformCom->Get_Pos();
-        _vec3 eyeballPos = transform->Get_Pos();
-
-        _vec3 moveOffset = eyeballPos - m_StartPos;
-        float moveDistance = D3DXVec3Length(&moveOffset);
-
-        if (moveDistance >= m_MaxMoveDistance)
+        m_ParticleTimer += timeDelta;
+        if (m_ParticleTimer >= 0.2f)
         {
-            return CEyeball::PATTERN::EYEBALL_START_GROUND;
+            _vec3 particlePos = transform->Get_Pos();
+            particlePos.y -= 0.5f;
+
+            CParticleHelper::Spawn_BurstParticle(
+                particlePos,
+                L"HitEffect_Blood",
+                12,
+                6,
+                3.f,
+                3.f,
+                15.f,
+                2.f,
+                0.05f);
+
+            m_ParticleTimer = 0.f;
         }
 
-        const _float moveSpeed = 8.f;
+        // 시간이 끝난다면, Enter로 위로 나와서 Attack으로 공격
+        if (m_fCurStateElapsedTime >= m_Pattern_Cooldown)
+        {
+            return CEyeball::PATTERN::EYEBALL_ENTER;
+        }
+
+        // 랜덤 이동
+        m_Direction_Timer += timeDelta;
+        if (m_Direction_Timer >= 1.f)
+        {
+            _vec3 currentPos = transform->Get_Pos();
+            auto eyeball = static_cast<CEyeball*>(m_Owner);
+
+            for (_int i = 0; i < 5; ++i)
+            {
+                _float randomAngle = static_cast<_float>(CRandomMgr::GetInstance()->Get_Int_Random(0, 360));
+                _float radian = D3DXToRadian(randomAngle);
+                _vec3 newDir = _vec3(cosf(radian), 0.f, sinf(radian));
+
+                // 벽 충돌 판정
+                if (!eyeball->Trace_HitWall(currentPos, newDir, 5.f))
+                {
+                    m_TargetDir = newDir;
+                    break;
+                }
+            }
+            m_Direction_Timer = 0.f;
+
+        }
+
+        const _float moveSpeed = 4.f;
         transform->Move_Pos(m_TargetDir, timeDelta, moveSpeed);
     }
 
-    return CEyeball::PATTERN::EYEBALL_START_GROUND;
+    return CEyeball::PATTERN::EYEBALL_GROUND_MOVE;
 }
 
 void CEyeball_Ground_Move::Exit()
@@ -97,7 +139,9 @@ void CEyeball_Ground_Move::Exit()
 HRESULT CEyeball_Ground_Move::Ready_State()
 {
     m_fMinStateTime = 0.5f;
-    m_Pattern_Cooldown = 2.5f;
+    m_Pattern_Cooldown = 3.f + static_cast<_float>(
+        CRandomMgr::GetInstance()->Get_Int_Random(0, 200)) / 100.f;
+
     m_fCurStateElapsedTime = 0.f;
 
     m_StartPos = _vec3(0.f, 0.f, 0.f);

@@ -5,6 +5,7 @@
 class CUI_BossHp;
 class CMonsterController;
 class CBoss2_StateMachine;
+class CEyeball;
 
 class CBossPhase2 : public CMonsterBase
 {
@@ -16,7 +17,9 @@ public:
         PHASE2_ROAR,
         PHASE2_EYEBALL,
         PHASE2_CHAIN,
-        PHASE2_BULLET,
+        PHASE2_BULLET1,
+        PHASE2_BULLET2,
+        PHASE2_GROGGY,
         PHASE2_DEAD,
 
         PHASE2_END
@@ -41,7 +44,18 @@ public:
     CMonsterController* Get_Controller() { return m_BossController; }
     const char*         Get_Boss2_StateName(_int stateNum);
     DEVICE              Get_GraphicDev() { return m_GraphicDev; }
-        
+
+    void				Set_DeathCount(_int count) { m_Eyeball_DeathCount = count; }
+    _int				Get_DeathCount() { return m_Eyeball_DeathCount; }
+
+    void				Increase_DeathCount(_int value = 1) { m_Eyeball_DeathCount += value; }
+
+public:
+	void Add_Eyeball(CEyeball* eyeball);
+	void Remove_Eyeball(CEyeball* eyeball);
+	void Command_Ground(); // Eyeball 땅으로 들어가도록 명령
+
+
 public:
     static CBossPhase2* Create(DEVICE graphicDev);
 
@@ -54,6 +68,9 @@ protected:
 
 private:
     CMonsterController*     m_BossController;
+    _int                    m_Eyeball_DeathCount = 0;
+
+	vector<CEyeball*>		m_Eyeballs;
 
 };
 

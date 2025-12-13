@@ -36,11 +36,13 @@ void CFogMgr::Update_FogMgr(const _float& timeDelta)
     if (PickPlaneY(m_GraphicDev, g_hWnd, 0.f, worldPos))
     {
         worldPos.y += m_YOffset;
+
         m_PreviewFog->Set_OriginalPos(worldPos);
         m_PreviewFog->Get_Transform()->Set_Scale(m_FogScale);
         m_PreviewFog->Set_SwaySpeed(m_SwaySpeed);
         m_PreviewFog->Set_SwayAmount(m_SwayAmount);
         m_PreviewFog->Set_Alpha(m_Alpha);
+        m_PreviewFog->Set_Color(m_FogColor[0], m_FogColor[1], m_FogColor[2]);
         m_PreviewFog->Get_Transform()->Set_Rotation(m_FogRotation);
     }
 
@@ -106,6 +108,8 @@ void CFogMgr::Render_FogWindow()
         ImGui::DragFloat("Sway Amount", &m_SwayAmount, 0.1f, 0.f, 10.f
         );
         ImGui::SliderFloat("Alpha", &m_Alpha, 0.f, 1.f);
+        ImGui::ColorEdit3("Fog Color", m_FogColor);
+
         ImGui::SeparatorText("Actions");
 
         ImGui::Text("Placed Fogs: %d", (_int)m_PlacedFogs.size());
@@ -118,7 +122,11 @@ void CFogMgr::Render_FogWindow()
         if (ImGui::Button("Clear All"))
             Clear_AllFog();
     }
-    
+
+}
+
+void CFogMgr::Render_Preview()
+{
     if (m_IsPlacing && m_PreviewFog)
     {
         m_PreviewFog->Render_GameObject();
@@ -154,11 +162,15 @@ void CFogMgr::Place_Fog()
     _vec3 pos = m_PreviewFog->Get_Transform()->Get_Pos();
 
     newFog->Set_OriginalPos(pos);
+
     newFog->Get_Transform()->Set_Scale(m_FogScale);
     newFog->Get_Transform()->Set_Rotation(m_FogRotation);
+
     newFog->Set_SwaySpeed(m_SwaySpeed);
     newFog->Set_SwayAmount(m_SwayAmount);
+
     newFog->Set_Alpha(m_Alpha);
+    newFog->Set_Color(m_FogColor[0], m_FogColor[1], m_FogColor[2]);
 
     auto scene = CManagement::GetInstance()->Get_Scene();
     auto layer = scene->Get_Layer(LAYERTYPE::ENVIRONMENT);
@@ -202,6 +214,8 @@ HRESULT CFogMgr::Save_ToStream(std::ofstream& ofs)
         _float amount = fog->Get_SwayAmount();
         _float alpha = fog->Get_Alpha();
 
+        COLOR color = fog->Get_Color();
+
         ofs.write((char*)&pos, sizeof(_vec3));
         ofs.write((char*)&scale, sizeof(_vec3));
         ofs.write((char*)&rotation, sizeof(_vec3));
@@ -209,6 +223,7 @@ HRESULT CFogMgr::Save_ToStream(std::ofstream& ofs)
         ofs.write((char*)&speed, sizeof(_float));
         ofs.write((char*)&amount, sizeof(_float));
         ofs.write((char*)&alpha, sizeof(_float));
+        ofs.write((char*)&color, sizeof(COLOR));
     }
 
     return S_OK;
@@ -227,6 +242,7 @@ HRESULT CFogMgr::Load_FromStream(std::ifstream& ifs, _vec3 offset)
     {
         _vec3 pos, scale, rotation;
         _float speed, amount, alpha;
+        COLOR color;
 
         ifs.read((char*)&pos, sizeof(_vec3));
         ifs.read((char*)&scale, sizeof(_vec3));
@@ -235,16 +251,19 @@ HRESULT CFogMgr::Load_FromStream(std::ifstream& ifs, _vec3 offset)
         ifs.read((char*)&speed, sizeof(_float));
         ifs.read((char*)&amount, sizeof(_float));
         ifs.read((char*)&alpha, sizeof(_float));
+        ifs.read((char*)&color, sizeof(COLOR));
 
         CFog* fog = CFog::Create(m_GraphicDev);
 
         fog->Set_OriginalPos(pos + offset);
         fog->Get_Transform()->Set_Scale(scale);
-        fog->Get_Transform()->Set_Rotation(rotation);
+
+        fog->Get_Transform()->Set_Rotation(_vec3(-rotation.x, rotation.y, -rotation.z));
 
         fog->Set_SwaySpeed(speed);
         fog->Set_SwayAmount(amount);
         fog->Set_Alpha(alpha);
+        fog->Set_Color(color);
 
         layer->Add_GameObject(OBJTYPE::FOG, fog);
         m_PlacedFogs.push_back(fog);

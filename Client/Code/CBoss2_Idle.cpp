@@ -35,10 +35,10 @@ _int CBoss2_Idle::Update_State(const _float& timeDelta)
 {
     m_fCurStateElapsedTime += timeDelta;
 
-    if (m_fCurStateElapsedTime >= m_Pattern_Cooldown)
-    {
-        return CBossPhase2::PATTERN::PHASE2_START;
-    }
+    //if (m_fCurStateElapsedTime >= m_Pattern_Cooldown)
+    //{
+    //    return CBossPhase2::PATTERN::PHASE2_START;
+    //}
 
     return CBossPhase2::PATTERN::PHASE2_IDLE;
 }

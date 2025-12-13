@@ -75,6 +75,8 @@ _int CBoss2_Bullet::Update_GameObject(const _float& timeDelta)
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 
+    m_SpawnTimer += timeDelta;
+
     if (m_StartShoot && m_ProjectileCom && m_ProjectileCom->Get_isSetDesc())
     {
         m_ProjectileCom->Update_Component(timeDelta);
@@ -152,7 +154,7 @@ void CBoss2_Bullet::OnBeginOverlap(CCollider* self, CCollider* other)
     {
         auto wall = dynamic_cast<CWall*>(other->Get_Owner());
 
-        if (wall)
+        if (wall && m_SpawnTimer >= m_Wall_ImmunityTime)
         {
             Mark_As_PendingKill();
         }

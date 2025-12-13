@@ -36,6 +36,11 @@ HRESULT CEyeball::Ready_GameObject()
     m_TransformCom->Set_Scale(_vec3(1.1f, 1.4f, 1.f));
     m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(20.f));
 
+    m_RigidbodyCom->Set_UseAccel(true);
+    m_RigidbodyCom->Set_UseFriction(true);
+    m_RigidbodyCom->Set_UseGravity(false);
+    m_RigidbodyCom->Set_Mass(100.f);
+
     return S_OK;
 }
 
@@ -60,7 +65,7 @@ void CEyeball::Initialize_GameObject()
                 if (bossCombat)
                 {
                     HITDATA hitData;
-                    hitData.damage = 100.f; // TODO : 보스 체력 값 제대로 설정하면 바꿔야함
+                    hitData.damage = 50.f; // TODO : 보스 체력 값 제대로 설정하면 바꿔야함
                     hitData.dir = { 0.f, 0.f, 0.f };
 
                     bossCombat->Apply_Damage(hitData);

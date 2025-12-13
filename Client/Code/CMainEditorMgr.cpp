@@ -107,7 +107,7 @@ void CMainEditorMgr::Render_MainEditor()
             CMapObjectMgr::GetInstance()->Get_MapPlacer()->Render_Privew();
 
         if (CFogMgr::GetInstance()->IsPlacing())
-            CFogMgr::GetInstance()->Render_FogWindow();
+            CFogMgr::GetInstance()->Render_Preview();
     }
 
     ImGui::Begin("MainEditor [ Toggle F1 ] [ Toggle F8 -> Free Mode]");

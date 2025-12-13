@@ -68,6 +68,8 @@ private:
 
     _float       m_Speed = 15.f;
 
+    _float       m_SpawnTimer = 0.f;
+    _float       m_Wall_ImmunityTime = 0.7f; // 0.7초동안 벽과 충돌 ㄴ
 
 };
 
