@@ -33,15 +33,20 @@ private:
     CMonsterBase*       m_Owner;
     _float              m_Pattern_Cooldown;
 
-    _vec3               m_StartPos;
-    _vec3               m_StartTargetPos;
+    _vec3               m_StartPos = _vec3(0.f, 0.f, 0.f);
+    _vec3               m_StartTargetPos = _vec3(0.f, 0.f, 0.f);
     _float              m_LerpSpeed;
     _bool               m_IsReachedTarget;
     _bool               m_IsAnimFinished;
     _bool               m_IsFinalPosSet;
 
-    const _vec3         FLOOR_POS1 = _vec3(0.f, 0.7f, 0.f);
-    const _vec3         FLOOR_POS2 = _vec3(0.f, 0.001f, 0.f);
+    const _vec3         FLOOR_POS1 = _vec3(0.f, -1.f, 0.f);
+    const _vec3         FLOOR_POS2 = _vec3(0.f, -1.f, 0.f);
+
+    _bool               m_DescendStarted = false;
+    _float              m_DescendTime = 0.f;
+    _float              m_DescendDuration = 0.3f;
+    _vec3               m_DescendStartPos = _vec3(0.f, 0.f, 0.f);
 
 };
 

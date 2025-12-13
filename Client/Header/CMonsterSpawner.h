@@ -7,6 +7,8 @@ enum class MONSTER_TYPE : _int
     HUMAN_MONSTER = 0,
     FLOATER_MONSTER,
 
+    // 몬스터 종류가 추가된다면 여기에도 추가해주기
+
     MONSTER_TYPE_END
 };
 

@@ -7,6 +7,7 @@
 #include "CEyeballController.h"
 #include "CEyeball_StateMachine.h"
 #include "CMonsterController.h"
+#include "CTransform.h"
 
 CEyeball::CEyeball(DEVICE graphicDev, CMonsterBase* boss)
     : CMonsterBase(graphicDev), m_EyeballController(nullptr), m_Boss(boss)
@@ -29,6 +30,9 @@ HRESULT CEyeball::Ready_GameObject()
         return E_FAIL;
 
     m_CombatStatCom->Set_MaxHp(200.f);
+
+    m_TransformCom->Set_Scale(_vec3(1.1f, 1.4f, 1.f));
+    m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(20.f));
 
     return S_OK;
 }

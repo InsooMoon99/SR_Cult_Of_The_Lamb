@@ -11,6 +11,7 @@
 #include "CDropSystem.h"
 #include "CFloaterMonster.h"
 #include "CFollowerCow.h"
+#include "CParticleHelper.h"
 #include "CHarvestableHerb.h"
 #include "CHumanMonster.h"
 #include "CInventory.h"
@@ -190,8 +191,8 @@ void CStage::LateUpdate_Scene(const _float& timeDelta)
 
 void CStage::Render_Scene()
 {
-    // debug 용
     CConstructionMgr::GetInstance()->Render_ConstructionMgr();
+
 }
 
 HRESULT CStage::Ready_Environment_Layer(LAYERTYPE layerType)

@@ -33,21 +33,16 @@ void CEyeball_StartGround::Enter()
     Find_Player();
 
 	CTransform* transform = m_Controller->Get_OwnerTransform();
-
     if (transform)
     {
         m_StartPos = transform->Get_Pos();
 
-        _vec3 playerPos = m_pPlayerTransformCom->Get_Pos();
-        _vec3 eyeballPos = transform->Get_Pos();
+        _vec3 originalDir = eyeball->Get_MoveDirection();
 
-        m_TargetDir = playerPos - eyeballPos;
-
-        m_TargetDir.y = 0.f;
-
+        m_TargetDir = _vec3(-originalDir.x * 1.4f, -0.5f, originalDir.z);
         D3DXVec3Normalize(&m_TargetDir, &m_TargetDir);
 
-        m_TargetPos = _vec3(playerPos.x, 0.001f, playerPos.z);
+        m_TargetPos = m_StartPos + m_TargetDir * m_MaxMoveDistance;
     }
 
     m_fCurStateElapsedTime = 0.f;
@@ -98,11 +93,11 @@ HRESULT CEyeball_StartGround::Ready_State()
     m_Pattern_Cooldown = 2.5f;
     m_fCurStateElapsedTime = 0.f;
 
-    m_StartPos = _vec3(0.f, 0.f, 0.f);
+    m_StartPos = _vec3(0.f, -0.5f, 0.f);
     m_TargetDir = _vec3(0.f, 0.f, 0.f);
     m_TargetPos = _vec3(0.f, 0.f, 0.f);
 
-    _int random = CRandomMgr::GetInstance()->Get_Int_Random(-4, 8);
+    _int random = CRandomMgr::GetInstance()->Get_Int_Random(-2, 2);
 
     m_MaxMoveDistance = 10.f + static_cast<_float>(random);
 

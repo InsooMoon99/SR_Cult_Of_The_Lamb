@@ -1039,8 +1039,19 @@ HRESULT CResourceMgr::Ready_Particle(DEVICE graphicDev)
         L"../Bin/Resource/Texture/Effect/HitEffect_Star/HitEffect_Star%d.png", 14)))
         return E_FAIL;
 
+    // Blood
+    if (FAILED(particleTex->Add_Texture(L"HitEffect_Blood", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Effect/HitEffect_Blood/HitEffect_Blood%d.png", 12)))
+        return E_FAIL;
+
+    // Disappear
+    if (FAILED(particleTex->Add_Texture(L"Effect_Disappear", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Effect/Disappear/Disappear%d.png", 5)))
+        return E_FAIL;
+
     // 추가 예정
 
+        
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PARTICLE, particleTex)))
         return E_FAIL;
 

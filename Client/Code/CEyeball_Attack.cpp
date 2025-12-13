@@ -47,12 +47,17 @@ void CEyeball_Attack::Enter()
 
     m_fCurStateElapsedTime = 0.f;
 
+    // 공격 랜덤
+    _int randomType = CRandomMgr::GetInstance()->Get_Int_Random(0, 2);
+    m_Bullet_AttackType = static_cast<Attack_Type>(randomType);
+
     m_EyeballAnim = Eyeball_Anim::ATTACK_ANTI;
-    m_Bullet_AttackType = Attack_Type::DISPERSION;
+    m_TotalAttackCount = 0;
 
     Find_Player(); // 플레이어 찾기
     m_GraphicDev = m_Owner->Get_GraphicDev();
     m_CircleBullets.reserve(8);
+
 }
 
 _int CEyeball_Attack::Update_State(const _float& timeDelta)
@@ -201,7 +206,6 @@ void CEyeball_Attack::Play_Loop()
     }
 
     }
-
     
 }
 
@@ -213,39 +217,19 @@ void CEyeball_Attack::Play_End()
     if (!animator || !animator->Is_AnimationFinished())
         return;
 
-    // 다음 패턴으로 전환
-    switch (m_Bullet_AttackType)
+    _int randomType = CRandomMgr::GetInstance()->Get_Int_Random(0, 2);
+    m_Bullet_AttackType = static_cast<Attack_Type>(randomType);
+
+    m_EyeballAnim = Eyeball_Anim::ATTACK_ANTI;
+    animator->Play_Animation(L"Eyeball_Anti", ANIMSTATE::ONCE);
+    m_AttackCount = 0;
+    m_Spawn_BulletCount = 0;
+
+    m_TotalAttackCount++;
+    if (m_TotalAttackCount >= 3)
     {
-    case Attack_Type::DISPERSION:
-
-        m_Bullet_AttackType = Attack_Type::CIRCLE;
-        m_EyeballAnim = Eyeball_Anim::ATTACK_ANTI;
-
-        animator->Play_Animation(L"Eyeball_Anti", ANIMSTATE::ONCE);
-        m_AttackCount = 0;
-
-        break;
-
-    case Attack_Type::CIRCLE:
-        m_Bullet_AttackType = Attack_Type::BURST;
-        m_EyeballAnim = Eyeball_Anim::ATTACK_ANTI;
-
-        animator->Play_Animation(L"Eyeball_Anti", ANIMSTATE::ONCE);
-
-        break;
-
-    case Attack_Type::BURST:
-        m_IsFinished = true; // 아직 구현 안함
-        break;
+        m_IsFinished = true;
     }
-
-    // 플레이어 반대 방향으로 움직이기
-    _vec3 dir = (m_Owner->Get_Transform()->Get_Pos() - m_pPlayerTransformCom->Get_Pos());
-    dir.y = 0;
-    D3DXVec3Normalize(&dir, &dir);
-
-    _float delta = CTimerMgr::GetInstance()->Get_TimeDelta();
-    m_Owner->Get_Transform()->Move_Pos(dir, delta, 1.f);
 
 }
 

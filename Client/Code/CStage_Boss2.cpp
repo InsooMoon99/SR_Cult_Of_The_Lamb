@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "CStage_Boss2.h"
 #include "CBossPhase1.h"
+#include "CParticleHelper.h"
 #include "CBossPhase2.h"
 #include "CLayer.h"
 #include "CMainCamera.h"
@@ -71,6 +72,7 @@ void CStage_Boss2::LateUpdate_Scene(const _float& timeDelta)
 
 void CStage_Boss2::Render_Scene()
 {
+
     
 }
 
@@ -94,7 +96,7 @@ HRESULT CStage_Boss2::Ready_Environment_Layer(LAYERTYPE layerType)
 
     layer->Add_GameObject(OBJTYPE::TERRAIN, m_Terrain);
 
-    m_Layers.insert({ layerType, layer });          // scene -> map
+    m_Layers.insert({ layerType, layer });          
 
     return S_OK;
 }
@@ -110,17 +112,13 @@ HRESULT CStage_Boss2::Ready_GameLogic_Layer(LAYERTYPE layerType)
 
     Engine::CGameObject* gameObject = nullptr;
 
-    // -----------------------------
-    // Player
-    // -----------------------------
-
     // 플레이어 생성
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CPlayer>(
             OBJTYPE::PLAYER, L"Player", m_GraphicDev, layer, &gameObject), L"Persistent object setup failed");
 
     const auto playerTransform = dynamic_cast<CTransform*>(gameObject->Get_Component(ID_DYNAMIC,COMPONENTTYPE::TRANSFORM));
-    playerTransform->Set_Pos(_vec3(67.f, 1.f, 32.3f));
+    playerTransform->Set_Pos(_vec3(48.f, 1.f, 38.3f));
 
     // 카메라 생성
     FAILED_CHECK_MSG(
@@ -135,9 +133,6 @@ HRESULT CStage_Boss2::Ready_GameLogic_Layer(LAYERTYPE layerType)
     // 카메라 설정값 초기화
     if (camController != nullptr)
     {
-        // 씬에서 카메라 생성 시 값 초기화
-        // : CCameraSetup을 카메라 설정을 중도에 바꿀 때 사용 가능하고,
-        //   그럴 때는 필요한 것만 사용해 .Apply() 하면 된다.
         CCamSetupBuilder(camController)
             .SetTarget(playerTransform)
             //.PivotOffset({ 0.f, 0.f, 0.f })

@@ -68,8 +68,12 @@ private:
 
 public:
     CMonsterController* Get_Controller() { return m_EyeballController; }
-    const char* Get_StateName(_int stateNum);
+    const char*         Get_StateName(_int stateNum);
 
+    _vec3               Get_MoveDirection() const { return m_MoveDirection; }
+    void                Set_MoveDirection(const _vec3& dir) { m_MoveDirection = dir; }
+
+public:
     static CEyeball* Create(DEVICE graphicDev, CMonsterBase* boss);
 
 protected:
@@ -78,5 +82,7 @@ protected:
 private:
     CMonsterController* m_EyeballController;
 	CMonsterBase*		m_Boss;
+
+    _vec3   m_MoveDirection = _vec3(0.f, 0.f, -4.f);
 };
 
