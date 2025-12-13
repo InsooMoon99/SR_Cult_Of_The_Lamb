@@ -28,12 +28,14 @@ public:
     bool    CanCook(int recipeID, CInventory* playerInven);// 이게 맞나..///
     bool    AddRecipe(int id, CInventory* playerInven);
 
-    bool    RemoveRecipe(int slotNum);// 이건 해야할까 말아야 할까
+    bool RemoveRecipe(int slotNum, CInventory* playerInven);
+
+    //bool RemoveRecipe(int slotNum);// 이건 해야할까 말아야 할까
     vector<int> Get_Vector() { return m_vecTmpRecipeID; }
 
     //미니 게임
     bool ReloadForMiniGame();
-    void DropDish(int dishID, bool quality);
+    void DropDish(int dishID, FOODQUALITY quality);
     void Quit();
 
     bool m_EnterFlag = false;

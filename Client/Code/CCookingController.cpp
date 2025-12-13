@@ -78,7 +78,7 @@ _int CCookingController::Update_Component(const _float& timeDelta)
             CInventory* inven = dynamic_cast<CInventory*>(m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::INVENTORY));
 
             miniGame->SetDoneEvent([this]() {m_bDone = true; });
-            miniGame->SetResultItemDrop([this](int _dishID, bool _quality) {DropDish(_dishID, _quality); });
+            miniGame->SetResultItemDrop([this](int _dishID, FOODQUALITY _quality) {DropDish(_dishID, _quality); });
         }
         m_queRecipeInst.front().StockNum--;
 
@@ -186,13 +186,26 @@ bool CCookingController::AddRecipe(int id, CInventory* playerInven)
     return false;
 }
 
-bool CCookingController::RemoveRecipe(int slotNum)
+bool CCookingController::RemoveRecipe(int slotNum, CInventory* playerInven)
 {
     for (auto i = m_vecTmpRecipeID.begin(); i < m_vecTmpRecipeID.end();)
     {
         if ((*i) == slotNum)
         {
-            (*i) = 999;
+            
+
+            (*i) = 999; // 이거뭐냘
+
+            //픟레이어 인벤에서 삭제 대기열은 무조건 하나니까 한개만 지우면 됨
+            Recipe* recipe = CRecipeDB::GetInstance()->GetRecipeById((*i));
+            for (auto& [ItemID, Num] : recipe->ingredients)
+            {
+                ItemInstance itemInst{ ItemID ,-1,0 };
+                for (int i = 0; i < Num; i++)
+                {
+                playerInven->AddItem(itemInst);
+                }
+            }
 
             i = m_vecTmpRecipeID.erase(i);
             return true;// 슬롯의 위치를 받아 지우는 거라 바로 나가도 ㄱㅊ(겹치는 거 없음)
@@ -201,6 +214,9 @@ bool CCookingController::RemoveRecipe(int slotNum)
         {
             i++;
         }
+
+
+
     }
     return false;
 }
@@ -238,7 +254,7 @@ bool CCookingController::ReloadForMiniGame()
     return true;
 }
 
-void CCookingController::DropDish(int ResultItemID, bool quality)
+void CCookingController::DropDish(int ResultItemID, FOODQUALITY quality)
 {
 
     if (CItemDB::GetInstance()->GetIndexById(ResultItemID)); // 유효성 검사 함수 내부에 assert
@@ -251,7 +267,7 @@ void CCookingController::DropDish(int ResultItemID, bool quality)
     D3DXVec3Normalize(&tmpvec, &tmpvec);
 
     float horizontal = 20.f;
-    float vertical = 40.f;
+    float vertical = 35.f;
 
 
     _vec3 Startpos = { m_Owner->Get_Transform()->Get_Pos().x, 0.5f, m_Owner->Get_Transform()->Get_Pos().z };
@@ -273,11 +289,11 @@ void CCookingController::DropDish(int ResultItemID, bool quality)
 
     // 인자 - DEVICE pGraphicDev, const ItemInstance& item, const _vec3& worldPos,std::optional<_vec3> scale, std::optional<SpriteBounceDesc> bounceDesc
    CDroppedItem* tmpItem =  CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, Startpos, _vec3(0.5f, 0.5f, 0.5f), b);
-
-   if (quality == true)
+   tmpItem->SetFoodQuality(quality);
+ /*  if (quality == true)
        tmpItem->SetFoodQuality(CDroppedItem::FOODQUALITY::GOOD);
    else if(quality == false)
-       tmpItem->SetFoodQuality(CDroppedItem::FOODQUALITY::BAD);
+       tmpItem->SetFoodQuality(CDroppedItem::FOODQUALITY::BAD);*/
 
 
 }
