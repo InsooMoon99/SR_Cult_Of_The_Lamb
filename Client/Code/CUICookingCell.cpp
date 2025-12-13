@@ -235,7 +235,7 @@ void CUICookingCell::Render_GameObject()
           //      text.c_str(),
           //      &screen3,
           //      D3DXCOLOR{ 1.f, 1.f, 1.f, 1.f });
-            if(m_GetCount&&(m_GetCount() == recipe->ingredients.begin()->second)) //필요 재료 & 현재 보유 재료
+            if(m_GetCount&&(m_GetCount() >= recipe->ingredients.begin()->second)) //필요 재료 & 현재 보유 재료
             {
                 std::wstring text2 =
                     L"필요한 재료\n\n" +

@@ -106,8 +106,8 @@ bool CInventory::AddItem(ItemInstance itemInst)
             if (dynamic_cast<CPlayer*>(m_Owner) != nullptr)
             {
                 m_UIItemAdded(&slot.itemInst);
-
             }
+                AddItemOnMap(slot.itemInst.itemId);
 
             return true;
         }
