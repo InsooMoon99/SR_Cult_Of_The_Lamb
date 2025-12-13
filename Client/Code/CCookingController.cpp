@@ -137,33 +137,38 @@ bool CCookingController::CanCook(int recipeID, CInventory* playerInven)
 
     Recipe* recipe = CRecipeDB::GetInstance()->GetRecipeById(recipeID);
 
-    //
-    //
-    //for (auto& [ID, Num] : recipe->ingredients)
-    //{
-    //    auto Playeriter = playerInven->GetCountMap().find(ID);
-    //    if (Playeriter == playerInven->GetCountMap().end())
-    //        return false;
-    //
-    //    if (playerInven->GetCountMap().at(ID) < Num)
-    //        return false;
-    //}
-    const auto& CountMap = playerInven->GetCountMap();
-    for(const auto& [ID, Num] : recipe->ingredients)
+    //기존 버전
+    
+    for (auto& [ID, Num] : recipe->ingredients)
     {
-        auto it = CountMap.find(ID);
-        if (it == CountMap.end())                                                                                                                                       
+        auto Playeriter = playerInven->GetCountMap().find(ID);
+        if (Playeriter == playerInven->GetCountMap().end())
             return false;
-
-        if (it->second < Num)
+    
+        if (playerInven->GetCountMap().at(ID) < Num)
             return false;
     }
+
+    //CountMap 복사 문제 있을 수 있다고 해서 고쳐본 버전
+    //const auto& CountMap = playerInven->GetCountMap();
+    //for(const auto& [ID, Num] : recipe->ingredients)
+    //{
+    //    auto it = CountMap.find(ID);
+    //    if (it == CountMap.end())                                                                                                                                       
+    //        return false;
+   //
+    //    if (it->second < Num)
+    //        return false;
+    //}
+
+
+    //
     return true;
 }
 
 bool CCookingController::AddRecipe(int id, CInventory* playerInven)
 {
-    if (m_vecTmpRecipeID.size() < invenSlotNum)
+    if (m_vecTmpRecipeID.size() < invenSlotNum) //? 이건 왜 invenSlotNum이랑 비교하는거지?
     {
         // 대기열 등록
         m_vecTmpRecipeID.push_back(id);

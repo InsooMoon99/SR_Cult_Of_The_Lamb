@@ -223,13 +223,15 @@ bool CInventory::RemoveItem(int itemID, int count)
                 slot.itemInst.itemId = -1;
 
                 if (remainCount == 0)
-                    return true;
+                    //  return true;
+                    break;
             }
             else //if (slot.count > count)
             {
                 slot.count -= remainCount;
                 remainCount = 0;
-                return true;
+              //  return true;
+                break;
             }
         }
     }

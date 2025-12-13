@@ -75,7 +75,7 @@ HRESULT CUICookingCell::Ready_GameObject()
     m_IngredientIcon->SetRegister(false);
     _vec2 itemOffset2 = { -100.f,-200.f };
     m_IngredientIcon->SetCloneTexAspectScale({ .12f, .12f, 1 });
-    m_IngredientIcon->Get_Transform()->Set_Pos(cardPos.x + itemOffset2.x, cardPos.y + itemOffset2.y, 0.f);
+    //m_IngredientIcon->Get_Transform()->Set_Pos(cardPos.x + itemOffset2.x, cardPos.y + itemOffset2.y, 0.f);
     //TODO 유림 업데이트 쪽에 폰트 위치 기준으로 옮기기
 
     //외곽선 표시용 객체 생성
