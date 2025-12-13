@@ -169,13 +169,26 @@ bool CCookingController::AddRecipe(int id, CInventory* playerInven)
     return false;
 }
 
-bool CCookingController::RemoveRecipe(int slotNum)
+bool CCookingController::RemoveRecipe(int slotNum, CInventory* playerInven)
 {
     for (auto i = m_vecTmpRecipeID.begin(); i < m_vecTmpRecipeID.end();)
     {
         if ((*i) == slotNum)
         {
-            (*i) = 999;
+            
+
+            (*i) = 999; // 이거뭐냘
+
+            //픟레이어 인벤에서 삭제 대기열은 무조건 하나니까 한개만 지우면 됨
+            Recipe* recipe = CRecipeDB::GetInstance()->GetRecipeById((*i));
+            for (auto& [ItemID, Num] : recipe->ingredients)
+            {
+                ItemInstance itemInst{ ItemID ,-1,0 };
+                for (int i = 0; i < Num; i++)
+                {
+                playerInven->AddItem(itemInst);
+                }
+            }
 
             i = m_vecTmpRecipeID.erase(i);
             return true;// 슬롯의 위치를 받아 지우는 거라 바로 나가도 ㄱㅊ(겹치는 거 없음)
@@ -184,6 +197,9 @@ bool CCookingController::RemoveRecipe(int slotNum)
         {
             i++;
         }
+
+
+
     }
     return false;
 }

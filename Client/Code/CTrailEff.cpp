@@ -125,7 +125,7 @@ void CTrailEff::Render_Effect(CTexture* textureCom, int Num)
     for (int i = 0;i < m_Node.size() - 1; i++)
     {
         TrailNode& A = m_Node[i];
-        TrailNode& B = m_Node[i - 1];
+        TrailNode& B = m_Node[i + 1];
 
         _vec3 A_Left = A.pos - A.side * (A.width * 0.5f);
         _vec3 A_Right = A.pos - A.side * (A.width * 0.5f);

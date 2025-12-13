@@ -147,13 +147,13 @@ void CDroppedItem::Render_GameObject()
 
         if (m_foodQuality == FOODQUALITY::BAD)
         {
-            m_TextureComCook->Set_Texture(6);  // 레드
+            m_TextureComCook->Set_Texture(7);  // 레드
 
         }
         else if (m_foodQuality == FOODQUALITY::GOOD)
         {
 
-            m_TextureComCook->Set_Texture(7);  // 레드
+            m_TextureComCook->Set_Texture(6);  // 파랑
         }
         m_Buffer_Cook->Render_Buffer();
     }

@@ -174,7 +174,7 @@ void CBossBullet::Render_Core()
     m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 
-    //
+    
     //m_GraphicDev->SetRenderState(
     //    D3DRS_TEXTUREFACTOR,
     //    D3DCOLOR_ARGB(255, 255, 255, 255)); // 알파 1.0, 색 그대로
