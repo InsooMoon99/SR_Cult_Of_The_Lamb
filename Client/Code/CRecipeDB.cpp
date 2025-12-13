@@ -92,6 +92,8 @@ HRESULT CRecipeDB::LoadFromJson(const string& fileName)
         recipe.quality = node.value("quality", 0);
         recipe.hunger = node.value("hunger", 0);
         recipe.result = node.value("result", 0);
+        recipe.good = node.value("good", 0);
+        recipe.bad = node.value("bad", 0);
 
         //만들기 재료 종류,개수
         for (auto& ingNode : node["ingredients"])

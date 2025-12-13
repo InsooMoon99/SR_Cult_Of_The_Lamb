@@ -14,6 +14,9 @@ struct Recipe
     string desc;
     string UIFileName;
     string UIPath;
+    string good;
+    string bad;
+
     int  quality;
     int  hunger;
     int result;

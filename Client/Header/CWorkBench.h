@@ -36,7 +36,7 @@ private:
 
 public:
     static CWorkBench* Create(DEVICE graphicDev);
-   
+    
 private:
     void Free() override;
 
