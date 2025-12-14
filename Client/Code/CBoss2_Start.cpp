@@ -7,6 +7,7 @@
 #include "CCreateHelper.h"
 #include "CEyeball.h"
 #include "CStateMachine.h"
+#include "CParticleHelper.h"
 
 CBoss2_Start::CBoss2_Start(CMonsterBase* owner)
     : m_Owner(owner), m_Eyeball_SpawnCount(0), m_Pattern_Cooldown(0), m_Eyeball_ReachedCount(0)
@@ -174,18 +175,21 @@ void CBoss2_Start::Spawn_Eyeball(_int index)
     {
         spawnPos.x += -2.f;
         spawnPos.y += 0.f;
-        spawnPos.z -= 3.f;
+        spawnPos.z -= 0.5f;
+        eyeball->Set_MoveDirection(_vec3(-2.5f, -0.3f, -4.f));  // 왼쪽 아래로
     }
     else if (index == 2)
     {
         spawnPos.y += 1.5f;
         spawnPos.z -= 3.f;
+        eyeball->Set_MoveDirection(_vec3(0.f, 0.9f, -4.f));     // 위로 조금
     }
     else if (index == 3)
     {
         spawnPos.x += 2.f;
         spawnPos.y += 0.f;
-        spawnPos.z -= 3.f;
+        spawnPos.z -= 0.5f;
+        eyeball->Set_MoveDirection(_vec3(2.5f, -0.3f, -4.f));   // 오른쪽 아래로
     }
 
     eyeball->Get_Transform()->Set_Pos(spawnPos);

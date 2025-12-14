@@ -8,20 +8,18 @@
 #include "CRandomMgr.h"
 
 CTrailEff::CTrailEff()
-{
-}
+{}
 
-CTrailEff::CTrailEff(DEVICE graphicDev) : CEffectBaseCom(graphicDev)
-{
-}
+CTrailEff::CTrailEff(DEVICE graphicDev)
+    : CEffectBaseCom(graphicDev)
+{}
 
-CTrailEff::CTrailEff(const CTrailEff& rhs) : CEffectBaseCom(rhs)
-{
-}
+CTrailEff::CTrailEff(const CTrailEff& rhs)
+    : CEffectBaseCom(rhs)
+{}
 
 CTrailEff::~CTrailEff()
-{
-}
+{}
 
 HRESULT CTrailEff::Ready_Effect()
 {
@@ -42,15 +40,14 @@ _int CTrailEff::Update_Component(const _float& timeDelta)
 
     _vec3 curPos = m_TransformCom->Get_Pos();
 
-    _vec3 tmp = curPos - m_LastPos;
+    _vec3 tmp  = curPos - m_LastPos;
     float dist = D3DXVec3Length(&tmp);
-
 
     if (m_Node.empty() || dist >= m_NodeIntervalDist)
     {
         TrailNode node;
-        node.pos = curPos;
-        node.life = 0.f;
+        node.pos     = curPos;
+        node.life    = 0.f;
         node.maxLife = m_Time;
         node.width = m_TrailWidth;
         node.alpha = 1.f;// 이건 임시 밑에서 실제값넣을거임
@@ -78,18 +75,12 @@ _int CTrailEff::Update_Component(const _float& timeDelta)
         it->alpha = (.7f - (it->life/ it->maxLife * .7f));
 
         if (it->life >= it->maxLife)
-        {
             it = m_Node.erase(it);
-        }
         else
-        {
-            it++;
-        }
+            ++it;
 
         
     }
-
-
 
     return 0;
 }
@@ -100,8 +91,8 @@ void CTrailEff::Bill()
 }
 
 void CTrailEff::LateUpdate_Component()
-{
-}
+{}
+
 void CTrailEff::Render_Effect(CTexture* textureCom, int Num)
 {
 
@@ -138,7 +129,7 @@ void CTrailEff::Render_Effect(CTexture* textureCom, int Num)
     m_GraphicDev->SetFVF(D3DFVF_XYZ | D3DFVF_TEX1);
     textureCom->Set_Texture(Num);
 
-    for (int i = 0;i < m_Node.size() - 1; i++)
+    for (int i = 0; i < m_Node.size() - 1; i++)
     {
         {
             //알파
@@ -212,6 +203,7 @@ void CTrailEff::Render_Effect(CTexture* textureCom, int Num)
 
 
 }
+
 CTrailEff* CTrailEff::Create(DEVICE graphicDev)
 {
     auto TrailEff = new CTrailEff(graphicDev);
@@ -224,7 +216,6 @@ CTrailEff* CTrailEff::Create(DEVICE graphicDev)
     }
 
     return TrailEff;
-
 }
 
 void CTrailEff::RessetRenderSate(DEVICE graphicDev)

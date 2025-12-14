@@ -86,6 +86,7 @@ void CMapObjectMgr::Render_MapObjectWindow()
     ImGui::Text(u8"  X (Pitch): %.2f°", D3DXToDegree(m_MapPlacer->Get_PreviewRotation().x));
     ImGui::SameLine();
     ImGui::Text(u8"  Y (Yaw):   %.2f°", D3DXToDegree(m_MapPlacer->Get_PreviewRotation().y));
+    ImGui::Text(u8"  Z (Roll):   %.2f°", D3DXToDegree(m_MapPlacer->Get_PreviewRotation().z));
 
     ImGui::NewLine();
     ImGui::Text(u8"되돌리기 "); ImGui::SameLine();
@@ -405,7 +406,7 @@ void CMapObjectMgr::Render_ETC()
 
         if (etc)
         {
-            const _int TOTAL_ETC = 40;
+            const _int TOTAL_ETC = 56;
             const _int COLS = 5;
             const ImVec2 buttonSize(50.f, 50.f);
 
@@ -558,17 +559,14 @@ HRESULT CMapObjectMgr::LoadMapObject(const char* filePath)
         if (newObj)
         {
             newObj->Set_WorldPos(data.pos);
-            // TODO : 데이터에서 scale값 가져와서 세팅 추가 예정
 
             layer->Add_GameObject(OBJTYPE::PLACEMENT, newObj);
+
+            Add_Placement(newObj);
+            m_PlacedObjects.push_back(newObj);
         }
     }
-
-    for (auto& obj : m_PlacedObjects)
-    {
-        Add_Placement(obj);
-    }
-
+  
     return S_OK;
 }
 
@@ -597,7 +595,7 @@ HRESULT CMapObjectMgr::Save_ToStream(ofstream& ofs)
                 {
                     data.pos = objTransform->Get_Pos();
                     data.scale = objTransform->Get_Scale();        
-                    data.rotation = objTransform->Get_Rotation();  
+                    data.rotation = objTransform->Get_Euler();  
 
                     objects.push_back(data);
                 }
@@ -648,11 +646,11 @@ HRESULT CMapObjectMgr::Load_FromStream(ifstream& ifs, _vec3 terrainOffset)
 
                 transform->Set_Pos(worldPos);
 
-                transform->Set_Scale(data.scale);  
+                transform->Set_Scale(data.scale);
 
                 _vec3 loadedRotation = data.rotation;
                 loadedRotation.x = -loadedRotation.x;
-                loadedRotation.y = -loadedRotation.y;
+                //loadedRotation.y = -loadedRotation.y;
                 loadedRotation.z = -loadedRotation.z;
 
                 transform->Set_Rotation(loadedRotation);

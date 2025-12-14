@@ -225,7 +225,7 @@ static const char* ToString(COMPONENTTYPE type)
 
     
 
-    case COMPONENTTYPE::MONSTER_SPAWNER:     return "MonsterSpawner";
+    case COMPONENTTYPE::OBJECT_SPAWNER:     return "MonsterSpawner";
     case COMPONENTTYPE::GATHERING:           return "Gathering";
     case COMPONENTTYPE::CONSTRUCTION:        return "Construction";
     case COMPONENTTYPE::PL_SKILL:            return "PlayerSkill";
@@ -299,6 +299,7 @@ static const char* ToString(OBJTYPE type)
     case OBJTYPE::BUILDING:          return "Building";
     case OBJTYPE::BULLET:            return "Bullet";
     case OBJTYPE::CONSTRUCTION_SITE: return "ConstructionSite";
+    case OBJTYPE::FOG:               return "Fog";
 
     case OBJTYPE::OBJ_END:           return "ObjectEnd";
     default:                         return "UnknownObjectType";

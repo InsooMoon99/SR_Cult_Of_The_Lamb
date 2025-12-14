@@ -108,6 +108,7 @@ enum class OBJTYPE
     TERRAIN,
     PLACEMENT,
     WALL,
+    FOG,
 
     OBJ_END
 };
@@ -130,7 +131,7 @@ enum class COMPONENTTYPE
     RIGIDBODY,
     TERRAIN_RENDER,
     WALL_RENDERER,
-    MONSTER_SPAWNER,
+    OBJECT_SPAWNER,
     PROJECTILE,
     SPRITEEFFECT,
     TRAILEFFECT,
@@ -219,6 +220,8 @@ enum class COMPONENTTYPE
     EYEBALL_CONTROLLER,
     TEX_WARNING_CHAIN,
     TEX_CHAIN,
+
+    TEX_FOG,
 
     ////////////////
     //  MapObject //

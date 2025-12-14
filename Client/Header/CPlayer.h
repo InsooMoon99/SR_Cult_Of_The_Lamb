@@ -32,11 +32,11 @@ public:
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
 
-    void OnBeginOverlap(CCollider* self, CCollider* other) override;
-    void OnStayOverlap(CCollider* self, CCollider* other) override;
-    void OnEndOverlap(CCollider* self, CCollider* other) override;
+    void    OnBeginOverlap(CCollider* self, CCollider* other) override;
+    void    OnStayOverlap(CCollider* self, CCollider* other) override;
+    void    OnEndOverlap(CCollider* self, CCollider* other) override;
 
-    void Render_Editor() override;
+    void    Render_Editor() override;
 
 private:
     HRESULT Add_Component() override;

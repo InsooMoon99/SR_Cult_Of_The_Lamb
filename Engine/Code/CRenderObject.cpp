@@ -54,8 +54,6 @@ void CRenderObject::Render_GameObject()
     // 렌더 설정
     Render_Setting();
 
-    Set_Material();
-
     // 버퍼 렌더링
     if (m_BufferCom)
         m_BufferCom->Render_Buffer();
@@ -89,7 +87,9 @@ void CRenderObject::Render_Setting()
     m_GraphicDev->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
     m_GraphicDev->SetRenderState(D3DRS_ALPHAREF, 0);
 
-    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE); // 일단 FALSE, 조명 먹을 애들만 TRUE
+
+    Set_Material();
 }
 
 void CRenderObject::Render_Reset()
@@ -114,6 +114,7 @@ void CRenderObject::Set_Material()
     material.Power = 0.f;
 
     m_GraphicDev->SetMaterial(&material);
+
 }
 
 void CRenderObject::Free()

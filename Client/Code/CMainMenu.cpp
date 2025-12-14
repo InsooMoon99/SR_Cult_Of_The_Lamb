@@ -35,12 +35,15 @@ CMainMenu::~CMainMenu()
 HRESULT CMainMenu::Ready_Scene()
 {
     if (FAILED(Ready_Environment_Layer(LAYERTYPE::ENVIRONMENT)))
-        return E_FAIL;
+        return E_FAIL; 
 
     if (FAILED(Ready_GameLogic_Layer(LAYERTYPE::GAMELOGIC)))
         return E_FAIL;
 
     if (FAILED(Ready_UI_Layer(LAYERTYPE::UI)))
+        return E_FAIL;
+
+    if (FAILED(Ready_Light()))
         return E_FAIL;
 
     // 메인 화면 BGM
@@ -73,6 +76,11 @@ void CMainMenu::Render_Scene()
     // RenderFont(L"견명조", L"설정", bt);
     RenderFont(L"NanumSquare_Regular", L"제작진", bt2);
     RenderFont(L"NanumSquare_Regular", L"종료", bt3);
+}
+
+HRESULT CMainMenu::Ready_Light()
+{
+    return CScene::Ready_Light();
 }
 
 void CMainMenu::RenderFont(const wstring& font, const wstring& text, CUIButton* btt)
@@ -145,6 +153,8 @@ HRESULT CMainMenu::Ready_GameLogic_Layer(LAYERTYPE layerType)
     //charTransform->Set_Scale({ 2.2f,1.2f,0.f });
     gameObject->SetAspectScale(charTransform, { 1.1f, 1.2f, 1.f });
 
+
+    charTransform->Set_Scale(_vec3(1.4f, 2.f, 1.f));
 
     // 카메라 생성
     FAILED_CHECK_MSG(

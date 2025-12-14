@@ -1,15 +1,18 @@
 ﻿#pragma once
 #include "CWorldInteractive.h"
-class CTree :
-    public CWorldInteractive
+
+class CTree : public CWorldInteractive
 {
 public:
-    enum TREE { RUBBLE1, RUBBLE2, RUBBLE3, RUBBLE4 ,REALSMALLTREE, REALBIGTREE, END_TREE };
-protected:
+    enum TREE { RUBBLE1, RUBBLE2, RUBBLE3, RUBBLE4, REALSMALLTREE, REALBIGTREE, END_TREE };
 
+protected:
     explicit CTree(DEVICE graphicDev, TREE tree);
     explicit CTree(const CTree& rhs);
-    virtual ~CTree();
+    ~CTree() override;
+
+public:
+    void OnInteractiveDamaged() override;
 
 public:
     HRESULT Ready_GameObject() override;
@@ -20,11 +23,10 @@ public:
 
     void KnockBackEff(const _float& timeDelta);
 protected:
-    virtual HRESULT Add_Component();
+    HRESULT Add_Component() override;
 
-    void    OnBeginOverlap(CCollider* self, CCollider* other) override;
-    void    OnEndOverlap(CCollider* self, CCollider* other) override;
-
+    void OnBeginOverlap(CCollider* self, CCollider* other) override;
+    void OnEndOverlap(CCollider* self, CCollider* other) override;
 
 protected:
     TREE m_tree;
@@ -38,18 +40,17 @@ protected:
     _int m_ItemNum;
 
     // 넉백
-    bool m_OnDamage = false;
+    bool  m_OnDamage = false;
     _vec3 m_OrignPos;
     float m_KockBackTimer = 0;
-    bool m_KockDone = false;
-    bool m_ReturnDone = false;
+    bool  m_KockDone      = false;
+    bool  m_ReturnDone    = false;
     _vec3 m_MovedPos{ 0.f, 0.f, 0.f };
     float LerpTime = 0;
+
 public:
     static CTree* Create(DEVICE graphicDev, TREE rock);
 
 protected:
-
     void Free() override;
 };
-

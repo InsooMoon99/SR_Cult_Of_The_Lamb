@@ -57,6 +57,9 @@ public:  // --- 동작 명령 함수 (Controller가 호출) ---
     /// @return true(구르기 중), false(구르기 종료)
     _bool Update_Roll(const _float& timeDelta);
 
+    // PLAYER_ROLL 강제 종료 (캔슬 시 사용)
+    void End_Roll();
+
     void ImpulseMove(const _vec3 dir, _float force);
 
     void  ChangeActorDir(const _vec3& dir);  // 주어진 벡터값에 따라 플레이어 ACTORDIR 갱신

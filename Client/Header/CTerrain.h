@@ -12,7 +12,7 @@ END
 
 class CTerrainRenderer;
 class CWallRenderer;
-class CMonsterSpawner;
+class CObjectSpawner;
 
 enum class EDIT_MODE
 {
@@ -45,8 +45,8 @@ public:
     _float           Get_CellSize();
 
 public:
-    // 몬스터 소환
-    void Spawn_Monsters(CLayer* layer);
+    // 오브젝트 소환
+    void    Spawn_Objects(CLayer* layer);
 
 private:
     HRESULT Add_Component() override;
@@ -68,9 +68,9 @@ private:
 
     CTerrainRenderer*           m_TerrainRendererCom;
     CWallRenderer*              m_WallRendererCom;
-    CMonsterSpawner*            m_MonsterSpawnerCom;
+    CObjectSpawner*             m_ObjectSpawnerCom;
 
-    _bool                       m_WallSpawn;
-    _bool                       m_MonsterSpawn;
+    _bool                       m_IsWallSpawn;
+    _bool                       m_IsObjectSpawn;
 };
 
