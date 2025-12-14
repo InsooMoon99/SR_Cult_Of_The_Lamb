@@ -1,29 +1,28 @@
 ﻿#include "pch.h"
 #include "CKitchen.h"
-#include "CDInputMgr.h"
+
 #include "CBoxCollider.h"
+#include "CCookingController.h"
 #include "CCreateHelper.h"
+#include "CDInputMgr.h"
+#include "CPlayer.h"
 #include "CRcTex.h"
 #include "CRigidbody.h"
+#include "CSpriteEff.h"
 #include "CTexture.h"
 #include "CTransform.h"
-#include "CCookingController.h"
-#include "CPlayer.h"
-#include "CSpriteEff.h"
 #include "CUICookingMenu.h"
 
 CKitchen::CKitchen(DEVICE graphicDev)
     : CBuildingBase(graphicDev),
       m_CookingCtrlCom(nullptr),
-      m_CookingMenu(nullptr),
-      m_bPlayerOverlap(false)
+      m_CookingMenu(nullptr)
 { }
 
 CKitchen::CKitchen(const CKitchen& rhs)
     : CBuildingBase(rhs),
       m_CookingCtrlCom(nullptr),
-      m_CookingMenu(nullptr),
-      m_bPlayerOverlap(false)
+      m_CookingMenu(nullptr)
 { }
 
 CKitchen::~CKitchen()
@@ -48,7 +47,6 @@ void CKitchen::Initialize_GameObject()
 
     m_BoxCollCom->Set_RawSize(_vec3(5.f, 5.f, 5.f));
     m_BoxCollCom->Set_CollisionLayer(COLLISION_LAYERTYPE::KITCHEN);
-
 }
 
 _int CKitchen::Update_GameObject(const _float& timeDelta)
@@ -57,7 +55,6 @@ _int CKitchen::Update_GameObject(const _float& timeDelta)
 
     if (m_bPlayerOverlap == true && m_bHovering == true)
     {
-
         if (CDInputMgr::GetInstance()->MouseDown(DIM_LB))
         {
             m_CookingMenu->Set_IsActive(true);
@@ -65,7 +62,6 @@ _int CKitchen::Update_GameObject(const _float& timeDelta)
 
             m_Active = true;
         }
-
     }
 
     return exit;
@@ -91,7 +87,7 @@ void CKitchen::Render_GameObject()
     {
         Render_Setting();
         if (m_bHovering == true && m_bPlayerOverlap == true)
-            m_SpritEff->OutLineEffMTRX(matWorld, m_BufferCom);
+            m_SpriteEff->OutLineEffMTRX(matWorld, m_BufferCom);
     }
 
     if (m_BufferCom)
@@ -107,7 +103,7 @@ void CKitchen::Render_GameObject()
     D3DXMatrixScaling(&matScale, 1.f, 1.f, 1.f);
     D3DXMatrixTranslation(&matTrans, -1.3f, 0.f, -0.3f);
 
-    matOffset = matTrans*matScale;
+    matOffset = matTrans * matScale;
     matWorld  = matOffset * matWorld;
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &matWorld);
@@ -117,7 +113,7 @@ void CKitchen::Render_GameObject()
     {
         Render_Setting();
         if (m_bHovering == true && m_bPlayerOverlap == true)
-            m_SpritEff->OutLineEffMTRX(matWorld,m_BufferCom);
+            m_SpriteEff->OutLineEffMTRX(matWorld, m_BufferCom);
     }
 
     if (m_BufferCom)
@@ -142,10 +138,10 @@ void CKitchen::Render_GameObject()
     {
         Render_Setting();
         if (m_bHovering == true && m_bPlayerOverlap == true)
-            m_SpritEff->OutLineEffMTRX(matWorld, m_BufferCom);
+            m_SpriteEff->OutLineEffMTRX(matWorld, m_BufferCom);
     }
 
-   // CBuildingBase::Render_GameObject();
+    // CBuildingBase::Render_GameObject();
 
     if (m_BufferCom)
         m_BufferCom->Render_Buffer();
@@ -169,7 +165,7 @@ void CKitchen::Render_GameObject()
     {
         Render_Setting();
         if (m_bHovering == true && m_bPlayerOverlap == true)
-            m_SpritEff->OutLineEffMTRX(matWorld, m_BufferCom);
+            m_SpriteEff->OutLineEffMTRX(matWorld, m_BufferCom);
     }
 
     if (m_BufferCom)
@@ -178,10 +174,8 @@ void CKitchen::Render_GameObject()
     if (!m_IsPreview)
         Render_Reset();
 
-
     if (m_BoxCollCom)
         m_BoxCollCom->Render();
-
 }
 
 void CKitchen::Render_Editor()
@@ -203,7 +197,6 @@ void CKitchen::OnBeginOverlap(CCollider* self, CCollider* other)
 void CKitchen::OnStayOverlap(CCollider* self, CCollider* other)
 {
     CBuildingBase::OnStayOverlap(self, other);
-
 }
 
 void CKitchen::OnEndOverlap(CCollider* self, CCollider* other)
@@ -226,11 +219,9 @@ HRESULT CKitchen::Add_Component()
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_KITCHEN, m_TextureCom });
 
-
     m_CookingCtrlCom = CreateProtoComponent<CCookingController>(this, COMPONENTTYPE::COOKCTRL);
     NULL_CHECK_RETURN(m_CookingCtrlCom, E_FAIL);
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::COOKCTRL, m_CookingCtrlCom });
-
 
     return S_OK;
 }

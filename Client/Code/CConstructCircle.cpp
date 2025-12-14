@@ -7,6 +7,9 @@
 #include "CDInputMgr.h"
 #include "CKitchen.h"
 #include "CManagement.h"
+#include "CNPCBase.h"
+#include "CNPCController.h"
+#include "CNPCStateMachine.h"
 #include "CPlayer.h"
 #include "CRcTex.h"
 #include "CScene.h"
@@ -15,6 +18,7 @@
 #include "CTexture.h"
 #include "CTimerMgr.h"
 #include "CTransform.h"
+#include "CVillageStateMgr.h"
 
 CConstructCircle::CConstructCircle(DEVICE graphicDev)
     : CBuildingBase(graphicDev)
@@ -43,6 +47,8 @@ void CConstructCircle::Initialize_GameObject()
 
     m_BoxCollCom->Set_RawSize(_vec3(1.5f, 1.f, 3.f));
     m_BoxCollCom->Set_CollisionLayer(COLLISION_LAYERTYPE::CONSTRUCTION_SITE);
+
+    m_OutlineEnabled = false;
 }
 
 _int CConstructCircle::Update_GameObject(const _float& timeDelta)
@@ -92,56 +98,70 @@ void CConstructCircle::OnStayOverlap(CCollider* self, CCollider* other)
     CGameObject* playerObj = other->Get_Owner();
     NULL_CHECK(playerObj);
 
-    auto playerState = dynamic_cast<CState*>(
-        playerObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
-    NULL_CHECK(playerState);
-
-    if (playerState->Get_State() == ACTORSTATE::PLAYER_HAMMER)
+    // 플레이어 체크
+    if (auto player = dynamic_cast<CPlayer*>(playerObj))
     {
-        if (dynamic_cast<CPlayer*>(playerObj))
+        auto playerState = dynamic_cast<CState*>(
+            playerObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
+
+        if (playerState && playerState->Get_State() == ACTORSTATE::PLAYER_HAMMER)
         {
             m_Progress += 10.f * CTimerMgr::GetInstance()->Get_TimeDelta();
+            // Logic continues...
+        }
+    }
+    // NPC 체크
+    else if (auto npc = dynamic_cast<CNPCBase*>(playerObj))
+    {
+        auto controller = dynamic_cast<CNPCController*>(
+            npc->Get_Component(ID_DYNAMIC, COMPONENTTYPE::NPC_CONTROLLER));
 
-            if (m_Progress >= 100.f)
+        if (controller && controller->Get_CurNPCState() == CNPCStateMachine::NPC_STATE::BUILD)
+            m_Progress += 5.f * CTimerMgr::GetInstance()->Get_TimeDelta();
+    }
+
+    // 건축 완료 로직
+    if (m_Progress >= 100.f)
+    {
+        CGameObject* newObj = nullptr;
+        switch (m_TargetBuildingType)
+        {
+        case BUILDING_TYPE::TEMPLE:
+            newObj = CTemple::Create(m_GraphicDev);
+            break;
+        case BUILDING_TYPE::KITCHEN:
+            newObj = CKitchen::Create(m_GraphicDev);
+            break;
+        default: break;
+        }
+
+        if (newObj)
+        {
+            newObj->Initialize_GameObject();
+
+            auto* transform = dynamic_cast<CTransform*>(
+                newObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+            if (transform)
             {
-                // Create Building
-                CGameObject* newObj = nullptr;
-                switch (m_TargetBuildingType)
-                {
-                case BUILDING_TYPE::TEMPLE:
-                    newObj = CTemple::Create(m_GraphicDev);
-                    break;
-                case BUILDING_TYPE::KITCHEN:
-                    newObj = CKitchen::Create(m_GraphicDev);
-                    break;
-                default: break;
-                }
+                _vec3 myPos = m_TransformCom->Get_Pos();
 
-                if (newObj)
-                {
-                    newObj->Initialize_GameObject();
+                if (m_TargetBuildingType == BUILDING_TYPE::TEMPLE)
+                    myPos.y += 2.f;
+                else if (m_TargetBuildingType == BUILDING_TYPE::KITCHEN)
+                    myPos.y += 0.6f;
 
-                    auto* transform = dynamic_cast<CTransform*>(
-                        newObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-
-                    if (transform)
-                    {
-                        _vec3 myPos = m_TransformCom->Get_Pos();
-
-                        if (m_TargetBuildingType == BUILDING_TYPE::TEMPLE)
-                            myPos.y += 2.f;
-                        else if (m_TargetBuildingType == BUILDING_TYPE::KITCHEN)
-                            myPos.y += 0.6f;
-
-                        transform->Set_Pos(myPos);
-                    }
-
-                    if (CScene* curScene = CManagement::GetInstance()->Get_Scene())
-                        curScene->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, newObj, OBJTYPE::BUILDING);
-
-                    this->Mark_As_PendingKill();
-                }
+                transform->Set_Pos(myPos);
             }
+
+            if (CScene* curScene = CManagement::GetInstance()->Get_Scene())
+                curScene->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, newObj, OBJTYPE::BUILDING);
+
+            // 월드 상태 업데이트 (건설 완료)
+            _vec3 myPos = m_TransformCom->Get_Pos();
+            CVillageStateMgr::GetInstance()->Update_Building(myPos, true);
+
+            this->Mark_As_PendingKill();
         }
     }
 }
