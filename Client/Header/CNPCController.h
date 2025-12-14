@@ -128,6 +128,6 @@ private: // --- 갈 곳의 위치, 오브젝트가 타겟인 경우 오브젝트
 
     _vec3 m_TargetPos;
     _vec3 m_PrayTargetPos;
-    
+
     _float m_FoodSearchCooldown;
 };

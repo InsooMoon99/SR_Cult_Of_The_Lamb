@@ -1,11 +1,11 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "CNPCState_Build.h"
 
 #include "CAnimator.h"
+#include "CGameObject.h"
 #include "CNPCBase.h"
 #include "CNPCController.h"
 #include "CNPCStateMachine.h"
-#include "CGameObject.h"
 
 CNPCState_Build::CNPCState_Build(CNPCBase* owner, CNPCStateMachine* stateMachine)
     : CNPCState(owner, stateMachine)
@@ -35,7 +35,6 @@ _int CNPCState_Build::Update_State(const _float& timeDelta)
         CGameObject* target = m_Controller->Get_TargetObject();
         if (!target || target->Is_PendingDestroy())
         {
-            // Building finished or cancelled
             m_Controller->Set_TargetObject(nullptr);
             return static_cast<_int>(CNPCStateMachine::NPC_STATE::IDLE);
         }
@@ -44,8 +43,6 @@ _int CNPCState_Build::Update_State(const _float& timeDelta)
     {
         return static_cast<_int>(CNPCStateMachine::NPC_STATE::IDLE);
     }
-
-    // Actual progress logic is handled by CConstructCircle::OnStayOverlap checking this state
 
     return static_cast<_int>(CNPCStateMachine::NPC_STATE::BUILD);
 }
