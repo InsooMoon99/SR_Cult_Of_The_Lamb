@@ -328,6 +328,9 @@
     <Filter Include="05. UI\01. UI\03. UIWeapon&amp;Skill">
       <UniqueIdentifier>{aebde5dc-3c0e-447e-85ea-05deb7023a1c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. UI\01. UI\12. UI_FollowerCommand">
+      <UniqueIdentifier>{97a31b16-2edb-43dc-a742-c1e3e0c52d78}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -848,6 +851,9 @@
     <ClInclude Include="..\Header\CUI_SkillPanel.h">
       <Filter>05. UI\01. UI\03. UIWeapon&amp;Skill</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CUI_FollowerCommand.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1329,6 +1335,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CUI_SkillPanel.cpp">
       <Filter>05. UI\01. UI\03. UIWeapon&amp;Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_FollowerCommand.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -38,7 +38,7 @@ HRESULT CTarotNPC::Ready_GameObject()
     if (FAILED(CCharacterBase::Ready_GameObject()))
         return E_FAIL;
 
-    m_TransformCom->Set_Pos(81.f, 1.f, 31.5f);
+    m_TransformCom->Set_Pos(81.f, 2.f, 21.5f);
     m_TransformCom->Set_Scale(3.f, 3.f, 3.f);
     m_BoxColCom->Set_RawSize(_vec3(2.f, 2.f,2.f));
     m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(40.f));
@@ -85,6 +85,8 @@ void CTarotNPC::Render_GameObject()
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
+    Render_Setting();
+
     if (m_TextureCom && m_AnimatorCom)
     {
         _int           frame = m_AnimatorCom->Get_CurFrame();
@@ -93,7 +95,7 @@ void CTarotNPC::Render_GameObject()
 
     m_BufferCom->Render_Buffer();
 
-
+    Render_Reset();
 }
 
 bool CTarotNPC::Is_Hovering()

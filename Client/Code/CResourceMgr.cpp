@@ -799,7 +799,13 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     pathVec2.push_back(L"../Bin/Resource/Texture/UI/Inventory/ButtonTab1.png");
     pathVec2.push_back(L"../Bin/Resource/Texture/UI/Tarot/ExplainBox/HeartExplain.png");
 	pathVec2.push_back(L"../Bin/Resource/Texture/UI/Tarot/ExplainBox/SkillExplain.png");
-
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/Tarot/ExplainBox/SkillExplain.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/FollowerCommand/Pray_Icon0.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/FollowerCommand/Pray_Icon1.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/FollowerCommand/Axe_Icon0.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/FollowerCommand/Axe_Icon1.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/FollowerCommand/Mining_Icon0.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/FollowerCommand/Mining_Icon1.png");
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_BUTTON, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec2))))
         return E_FAIL;
@@ -924,6 +930,16 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InterAction_E.png");
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_INTERACTION, CTexture::Create(graphicDev, TEX_NORMAL, interactionTex))))
+        return E_FAIL;
+
+
+    //Follower Command
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_COMMAND,
+        Engine::CTexture::Create(
+            graphicDev,
+            TEX_NORMAL,
+            L"../Bin/Resource/Texture/UI/FollowerCommand/BackGround0.png",
+            1))))
         return E_FAIL;
 
     return S_OK;

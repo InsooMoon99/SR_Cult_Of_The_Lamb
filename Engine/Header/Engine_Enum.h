@@ -188,6 +188,7 @@ enum class COMPONENTTYPE
     TEX_UI_COOK,
     TEX_CHEST,
     TEX_UI_SKILL,
+    TEX_UI_COMMAND,
 
     ANIMATOR,
 

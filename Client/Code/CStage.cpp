@@ -52,6 +52,7 @@
 #include "CUICookingMenu.h"
 #include "CChest.h"
 #include "CUI_Skill.h"
+#include "CUI_FollowerCommand.h"
 
 class CUIBuildMenu;
 
@@ -566,6 +567,13 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiCookingMenu),
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UI_CookingMenu) failed");
     m_Kitchen->Set_CookingMenu(uiCookingMenu);
+
+
+    CUI_FollowerCommand* followerCommand = CUI_FollowerCommand::Create(m_GraphicDev);
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, followerCommand),
+        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUI_FollowerCommand) failed");
+
+
     m_Layers.insert({ layerType, layer });
 
     return S_OK;
