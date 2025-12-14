@@ -42,7 +42,7 @@ HRESULT CHarvestableHerb::Ready_GameObject()
 
         m_ItemNum = 3;
 
-        m_CombatStatCom->Set_MaxHp(5.f);
+        m_CombatStatCom->Set_MaxHp(10.f);
         m_TransformCom->Set_Scale(_vec3(0.8f, 0.8f, 0.8f));
         break;
     case BIGBERRY:
@@ -52,7 +52,7 @@ HRESULT CHarvestableHerb::Ready_GameObject()
 
         m_ItemNum = 5;
 
-        m_CombatStatCom->Set_MaxHp(8.f);
+        m_CombatStatCom->Set_MaxHp(16.f);
         m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
         break;
     case END_BERRY:

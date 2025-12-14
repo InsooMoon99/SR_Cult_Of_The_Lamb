@@ -203,6 +203,7 @@
     <ClInclude Include="..\Header\CCharacterBase.h" />
     <ClInclude Include="..\Header\CChest.h" />
     <ClInclude Include="..\Header\CCookingController.h" />
+    <ClInclude Include="..\Header\CMenuExtra.h" />
     <ClInclude Include="..\Header\CNPCState_Build.h" />
     <ClInclude Include="..\Header\CNPCState_ChopWood.h" />
     <ClInclude Include="..\Header\CNPCState_Eat.h" />
@@ -383,6 +384,7 @@
     <ClCompile Include="..\Code\CChest.cpp" />
     <ClCompile Include="..\Code\CConstructionPlacer.cpp" />
     <ClCompile Include="..\Code\CCookingController.cpp" />
+    <ClCompile Include="..\Code\CMenuExtra.cpp" />
     <ClCompile Include="..\Code\CNPCState_Build.cpp" />
     <ClCompile Include="..\Code\CNPCState_ChopWood.cpp" />
     <ClCompile Include="..\Code\CNPCState_Eat.cpp" />

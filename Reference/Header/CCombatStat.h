@@ -98,7 +98,7 @@ public:
 
     void    Set_Attack(_float attack) { m_Attack = attack; }
     void    Set_AttackSpeed(_float attackSpeed) { m_AttackSpeed = attackSpeed; }
-    void    Set_Hp(_float hp) { m_Hp = hp; }
+	void    Set_Hp(_float hp) { if (hp > m_MaxHp)m_Hp = m_MaxHp; else m_Hp = hp; }
     void    Set_MaxHp(_float maxHp) { m_MaxHp = maxHp; Set_Hp(maxHp); }
     void    Set_Mp(_float mp) { m_Mp = mp; }
     void    Set_MaxMp(_float maxMp) { m_MaxMp = maxMp; Set_Mp(maxMp); }

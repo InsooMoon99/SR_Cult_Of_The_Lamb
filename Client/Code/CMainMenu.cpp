@@ -121,10 +121,10 @@ HRESULT CMainMenu::Ready_Environment_Layer(LAYERTYPE layerType)
         dynamic_cast<CTransform*>(pGameObject->Get_Component(
             ID_DYNAMIC,
             COMPONENTTYPE::TRANSFORM));
-    bgTransform->Set_Pos({ 0, 0, -3 });
+    bgTransform->Set_Pos({ 0, 0, 1 });
     //playerTransform->Set_Scale({ 2.2f,1.2f,0.f });
-    pGameObject->SetAspectScale(bgTransform, { 1.1f, 1.2f, 1.f });
-    if (FAILED(layer->Add_GameObject(OBJTYPE::PLAYER, pGameObject)))
+    pGameObject->SetAspectScale(bgTransform, { 600.f, 600.f, 1.f });
+    if (FAILED(layer->Add_GameObject(OBJTYPE::UI, pGameObject)))
         return E_FAIL;
 
     m_Layers.insert({ layerType, layer });          // scene -> map
@@ -138,10 +138,10 @@ HRESULT CMainMenu::Ready_GameLogic_Layer(LAYERTYPE layerType)
 
     Engine::CGameObject* gameObject = nullptr;
 
+    // TODO ↓ 임시로 구성한, 메인 화면 애니메이션 재생용 더미 플레이어. 나중에 수정할 것
     gameObject = CMenuChar::Create(m_GraphicDev);
     NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CMainMenu::Ready_GameLogic_Layer() failed: CMenuChar::Create() returned null")
 
-    // TODO ↓ 임시로 구성한, 메인 화면 애니메이션 재생용 더미 플레이어. 나중에 수정할 것
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::UI, gameObject),
         L"CMainMenu::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CMenuChar) failed");
@@ -150,6 +150,9 @@ HRESULT CMainMenu::Ready_GameLogic_Layer(LAYERTYPE layerType)
         dynamic_cast<CTransform*>(gameObject->Get_Component(
             ID_DYNAMIC,
             COMPONENTTYPE::TRANSFORM));
+    //charTransform->Set_Scale({ 2.2f,1.2f,0.f });
+    gameObject->SetAspectScale(charTransform, { 1.1f, 1.2f, 1.f });
+
 
     charTransform->Set_Scale(_vec3(1.4f, 2.f, 1.f));
 

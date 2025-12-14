@@ -893,6 +893,9 @@
     <ClInclude Include="..\Header\CBoss2_Groggy.h">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CMenuExtra.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1398,6 +1401,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CBoss2_Groggy.cpp">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMenuExtra.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

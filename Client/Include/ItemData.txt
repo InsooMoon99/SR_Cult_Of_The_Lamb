@@ -213,6 +213,22 @@
       "stats": {
         "attack1": 5
       }
+}
+,
+    {
+      "id": 4001,
+      "type": "Comsumable",
+      "name": "하트",
+      "desc": "설명이 필요 있을까",
+      "UIFileName": "Red Heart Pick Up",
+      "UIPath": "../Bin/Resource/ItemUI/Red Heart Pick Up.png",
+      "additionalDesc": "뭐 먹으면 attack1 만큼 회복함",
+      "stackable": false,
+      "price": 10,
+
+      "stats": {
+        "attack1": 5
+      }
     }
   ]
 }

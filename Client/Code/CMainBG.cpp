@@ -28,6 +28,7 @@ HRESULT CMainBG::Ready_GameObject()
     if (false == SetTexAspectInit(m_TextureCom, m_TransformCom, 0))
         return E_FAIL;
 
+
     return S_OK;
 }
 
@@ -35,7 +36,8 @@ _int CMainBG::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CGameObject::Update_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_PRIORITY, this);
+    //m_TransformCom->Set_Scale(800.f, 600.f, 1.f);
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_PRIORITY_UI, this);
 
     return exit;
 }
