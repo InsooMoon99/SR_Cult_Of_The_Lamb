@@ -7,6 +7,7 @@ enum ItemType
     Material,
     Food,
     Weapon,
+    CONSUMABLE,
     None
 };
 

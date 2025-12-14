@@ -5,6 +5,7 @@
 #include "CPlayer.h"
 #include "CUIItemGetManager.h"
 #include "ItemData.h"
+#include "CCombatStat.h"
 
 CInventory::CInventory(DEVICE graphicDev)
     : CComponent(graphicDev),
@@ -159,6 +160,15 @@ bool CInventory::AddItem(ItemInstance itemInst)
         case ItemType::Weapon:
             // 이건 플레이어에서 바로 처리하자 바로 장착이니까
             return false;
+            break;
+
+        case ItemType::CONSUMABLE:
+            // 이건 플레이어에서 바로 처리하자 인벤에 들어오지 않음 근데 그냥 여기서 하자...
+            CCombatStat* stat = dynamic_cast <CCombatStat*>(m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
+            string str = "attack1";
+            float AddHp = CItemDB::GetInstance()->GetStat(str, itemInst.itemId);
+            stat->Set_Hp(stat->Get_Hp() + AddHp);
+            return true;// 일단 트루
             break;
         }
     }

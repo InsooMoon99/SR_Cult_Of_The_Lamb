@@ -16,6 +16,7 @@ public:
     int GetIndexById(int id);
 
     Item*    GetItemById(int id);
+    int GetStat(string& key, int defaultValue);
     ItemType StringToItemType(string s);
     wstring  ToWString(const string& str);
     wstring Utf8ToWstring(const string& str);
