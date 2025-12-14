@@ -63,7 +63,6 @@ _int CNPCBase::Update_GameObject(const _float& timeDelta)
 
     m_bHovering = Is_Hovering();
 
-
     return exit;
 }
 
@@ -74,7 +73,6 @@ void CNPCBase::LateUpdate_GameObject(const _float& timeDelta)
 
 void CNPCBase::Render_GameObject()
 {
-
     if (m_TransformCom)
         m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
@@ -127,7 +125,6 @@ void CNPCBase::OnEndOverlap(CCollider* self, CCollider* other)
 
     if (m_bPlayerOverlap == true && ply != nullptr)
         m_bPlayerOverlap = false;
-
 }
 
 bool CNPCBase::Is_Hovering()
@@ -180,7 +177,6 @@ bool CNPCBase::Is_Hovering()
 
     _vec3 Min = m_BoxColCom->Get_Transform()->Get_Pos() - m_BoxColCom->Get_Size() * .5f;
     _vec3 Max = m_BoxColCom->Get_Transform()->Get_Pos() + m_BoxColCom->Get_Size() * .5f;
-
 
     float timeMin = (Min.x - vRayPos.x) / vRayDir.x;
     float timeMax = (Max.x - vRayPos.x) / vRayDir.x;
@@ -249,5 +245,7 @@ HRESULT CNPCBase::Add_Component()
 
 void CNPCBase::Free()
 {
+    m_FollowerCommandUI = nullptr;
+
     CCharacterBase::Free();
 }

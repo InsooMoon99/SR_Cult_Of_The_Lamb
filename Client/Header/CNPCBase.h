@@ -7,6 +7,7 @@ END
 
 class CInteractionChecker;
 class CNPCController;
+class CUI_FollowerCommand;
 
 // 모든 추종자 NPC들의 기본 베이스
 class CNPCBase : public CCharacterBase
@@ -28,20 +29,27 @@ public:
     void OnStayOverlap(CCollider* self, CCollider* other) override;
     void OnEndOverlap(CCollider* self, CCollider* other) override;
 
-
-    bool Is_Hovering();
-protected:
-    HRESULT Add_Component() override;
-    void    Free() override;
-
 public:
     CInteractionChecker* Get_InteractionChecker() { return m_Checker; }
     CRigidbody*          Get_Rigidbody() { return m_Rigidbody; }
 
+public:
+    virtual void Set_FollowerCommandUI(CUI_FollowerCommand* ui) { m_FollowerCommandUI = ui; }
+    //TODO 콜백 함수로 CUI_FollowerCommand의 기능을 온오프 할 수 있도록
+
+private:
+    bool Is_Hovering();
+
 protected:
-    CInteractionChecker* m_Checker       = nullptr;
-    CNPCController*      m_NPCController = nullptr;
-    CRigidbody*          m_Rigidbody     = nullptr;
-    _bool                m_bHovering     = false;
+    HRESULT Add_Component() override;
+    void    Free() override;
+
+protected:
+    CInteractionChecker* m_Checker        = nullptr;
+    CNPCController*      m_NPCController  = nullptr;
+    CRigidbody*          m_Rigidbody      = nullptr;
+    _bool                m_bHovering      = false;
     _bool                m_bPlayerOverlap = false;
+
+    CUI_FollowerCommand* m_FollowerCommandUI = nullptr;
 };
