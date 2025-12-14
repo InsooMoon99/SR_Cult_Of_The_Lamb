@@ -1,6 +1,5 @@
 ﻿#include "pch.h"
 #include "CTarotNPC.h"
-
 #include <CRcTex.h>
 #include "CTexture.h"
 #include "CCreateHelper.h"
@@ -13,9 +12,20 @@
 #include "CDInputMgr.h"
 #include "CBoxCollider.h"
 #include "CTarotStageController.h"
+#include "CRenderer.h"
 
-CTarotNPC::CTarotNPC(DEVICE graphicDev): CCharacterBase(graphicDev) {}
-CTarotNPC::CTarotNPC(const CTarotNPC& rhs): CCharacterBase(rhs) {}
+CTarotNPC::CTarotNPC(DEVICE graphicDev)
+    : CCharacterBase(graphicDev),
+      m_bPlayerOverlap(false),
+      m_bHovering(false),
+      m_TarotStageController(nullptr) {}
+
+CTarotNPC::CTarotNPC(const CTarotNPC& rhs)
+    : CCharacterBase(rhs),
+      m_bPlayerOverlap(false),
+      m_bHovering(false),
+      m_TarotStageController(nullptr) {}
+
 CTarotNPC::~CTarotNPC() {}
 
 void CTarotNPC::Render_Reset()
@@ -25,10 +35,13 @@ void CTarotNPC::Render_Reset()
 
 HRESULT CTarotNPC::Ready_GameObject()
 {
-    if (FAILED(CTarotNPC::Add_Component()))
+    if (FAILED(CCharacterBase::Ready_GameObject()))
         return E_FAIL;
 
-    Animation_Setting();
+    m_TransformCom->Set_Pos(81.f, 1.f, 31.5f);
+    m_TransformCom->Set_Scale(3.f, 3.f, 3.f);
+    m_BoxColCom->Set_RawSize(_vec3(2.f, 2.f,2.f));
+    m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(40.f));
 
     return S_OK;
 }
@@ -36,20 +49,13 @@ HRESULT CTarotNPC::Ready_GameObject()
 void CTarotNPC::Initialize_GameObject()
 {
     CCharacterBase::Initialize_GameObject();
-
-    m_TransformCom->Set_Pos(81.f, 1.f, 31.5f);
-    m_TransformCom->Set_Scale(3.f, 3.f, 3.f);
-    m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(40.f));
-    m_BoxColCom->Set_RawSize(_vec3(2.f, 2.f,2.f));
-
-    m_AnimatorCom->Play_Animation(L"TarotNpcIdle", ANIMSTATE::LOOP, true);
 }
 
 _int CTarotNPC::Update_GameObject(const _float& timeDelta)
 {
     int exit = CCharacterBase::Update_GameObject(timeDelta);
 
-    m_AnimatorCom->Play_Animation(L"TarotNpcIdle", ANIMSTATE::LOOP, true);
+    CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_ALPHA, this);
 
     m_bHovering = Is_Hovering();
 
@@ -65,7 +71,6 @@ _int CTarotNPC::Update_GameObject(const _float& timeDelta)
 
     }
 
-
     return exit;
 }
 
@@ -79,7 +84,7 @@ void CTarotNPC::Render_GameObject()
     CCharacterBase::Render_GameObject();
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-    Render_Setting();
+
     if (m_TextureCom && m_AnimatorCom)
     {
         _int           frame = m_AnimatorCom->Get_CurFrame();
@@ -87,7 +92,7 @@ void CTarotNPC::Render_GameObject()
     }
 
     m_BufferCom->Render_Buffer();
-    Render_Reset();
+
 
 }
 
@@ -215,14 +220,16 @@ CTarotNPC* CTarotNPC::Create(DEVICE graphicDev)
 void CTarotNPC::Animation_Setting()
 {
     m_AnimatorCom->Create_Animation(L"TarotNpcIdle", 86, 0.02f);
-
+    m_AnimatorCom->Play_Animation(L"TarotNpcIdle", ANIMSTATE::LOOP, true);
   //  m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"TarotNpcIdle", ANIMSTATE::LOOP);
 
 }
 
 HRESULT CTarotNPC::Add_Component()
 {
-    CCharacterBase::Add_Component();
+    if(FAILED(CCharacterBase::Add_Component()))
+        return E_FAIL;
+
     //Animator,State,BoxCollider은 CharacterBase에 있음
     // Texture
     m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_TAROTNPC);

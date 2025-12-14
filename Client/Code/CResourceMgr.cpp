@@ -441,17 +441,15 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
 
     //TarotNPC
     //플레이어는 아니긴 한데 마땅한 자리가 없어서 좀 빌리겠습니다ㅎㅎ;
-    if (FAILED(
-        protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_TAROTNPC, Engine::CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/NPC/TarotSeller/TarotSeller0.png", 1))))
-        return E_FAIL;
 
     CTexture* TarotNpcTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(TarotNpcTex, E_FAIL);
 
-
     if (FAILED(TarotNpcTex->Add_Texture(L"TarotNpcIdle", TEX_NORMAL,
-        L"../Bin/Resource/Texture/NPC/TarotSeller/TarotSeller%d.png", 86)))
+        L"../Bin/Resource/Texture/NPC/TarotSeller/TarotSeller%d.png", 87)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_TAROTNPC, TarotNpcTex)))
         return E_FAIL;
 
 }
