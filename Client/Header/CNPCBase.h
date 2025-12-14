@@ -28,6 +28,8 @@ public:
     void OnStayOverlap(CCollider* self, CCollider* other) override;
     void OnEndOverlap(CCollider* self, CCollider* other) override;
 
+
+    bool Is_Hovering();
 protected:
     HRESULT Add_Component() override;
     void    Free() override;
@@ -40,4 +42,6 @@ protected:
     CInteractionChecker* m_Checker       = nullptr;
     CNPCController*      m_NPCController = nullptr;
     CRigidbody*          m_Rigidbody     = nullptr;
+    _bool                m_bHovering     = false;
+    _bool                m_bPlayerOverlap = false;
 };

@@ -1,13 +1,14 @@
 ﻿#pragma once
 #include "CScene.h"
 
+class CFollowerCow;
 class CKitchen;
 class CWorkBench;
 class CInventory;
 class CWeaponEquip;
 class CTerrain;
 class CPlayerSkill;
-
+class CUI_FollowerCommand;
 
 BEGIN(Engine)
 class CCombatStat;
@@ -36,6 +37,7 @@ private:
     HRESULT Ready_Prototype();
 
     HRESULT Ready_Light() override;
+    
 
 private:
     // 마을 -> 던전 씬 전환용 트리거
@@ -61,5 +63,5 @@ private:
     CPlayerSkill* m_PlayerSkillCom;
     CTerrain*     m_Terrain;
     CKitchen*     m_Kitchen;
-
+    CFollowerCow* m_FollowerCow;
 };

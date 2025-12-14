@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "CUI.h"
+#include "CGameObject.h"
 
 class CUITarotDescCard;
 class CUIButton;
@@ -14,7 +14,7 @@ enum class STAGESTATE
     THE_END
 };
 
-class CTarotStageController : public CUI
+class CTarotStageController : public CGameObject
 {
 private:
     explicit CTarotStageController(DEVICE graphicDev);
@@ -27,6 +27,8 @@ public:
     _int    Update_GameObject(const _float& timeDelta) override;
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
+    void    Set_Active(bool isActive) { m_Active = isActive; }
+
     static CTarotStageController* Create(DEVICE graphicDev);
     void Create_Cards();
 

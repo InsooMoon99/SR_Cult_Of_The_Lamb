@@ -15,9 +15,11 @@ int CUIButton::m_NextID = 0;
 
 CUIButton::CUIButton(DEVICE graphicDev, int texOn, int texOff)
     : CUI(graphicDev),
+      m_Rect(),
       m_TextureOn(texOn),
       m_TextureOff(texOff),
-      m_HasText(false)
+      m_HasText(false),
+      m_TextureIndex(texOff)
 {
     m_ID = ++m_NextID;
 
@@ -27,9 +29,11 @@ CUIButton::CUIButton(DEVICE graphicDev, int texOn, int texOff)
 
 CUIButton::CUIButton(const CUIButton& rhs, int texOn, int texOff)
     : CUI(rhs),
+      m_Rect(),
       m_TextureOn(texOn),
       m_TextureOff(texOff),
-      m_HasText(false)
+      m_HasText(false),
+      m_TextureIndex(texOff)
 {
     m_ID = ++m_NextID;
 
