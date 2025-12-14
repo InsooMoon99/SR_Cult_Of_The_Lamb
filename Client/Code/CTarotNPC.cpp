@@ -79,16 +79,16 @@ void CTarotNPC::Render_GameObject()
     CCharacterBase::Render_GameObject();
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-
+    Render_Setting();
     if (m_TextureCom && m_AnimatorCom)
     {
-        const wstring& key = m_AnimatorCom->Get_CurKey();
         _int           frame = m_AnimatorCom->Get_CurFrame();
-
-        m_TextureCom->Set_Texture(key, frame);
+        m_TextureCom->Set_Texture(L"TarotNpcIdle", frame);
     }
 
     m_BufferCom->Render_Buffer();
+    Render_Reset();
+
 }
 
 bool CTarotNPC::Is_Hovering()
