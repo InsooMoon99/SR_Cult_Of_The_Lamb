@@ -28,6 +28,7 @@
 #include "CBossDead.h"
 #include "CBossStateMachine.h"
 #include "CBossTalk.h"
+#include "CFog.h"
 #include "CPlayerController.h"
 #include "CWeaponEquip.h"
 
@@ -68,7 +69,7 @@ void CStage_Boss1::Initialize_Scene()
 {
     CScene::Initialize_Scene();
 
-    m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Boss1.map");
+    m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Boss1_Fog.map");
 
     Setup_TriggerCallbacks();
     Setup_DialogueCallbacks();
@@ -86,6 +87,8 @@ _int CStage_Boss1::Update_Scene(const _float& timeDelta)
 
     Move_PlayerUI(timeDelta);
     Move_BossUI(timeDelta);
+
+    Update_Fog();
 
     if (m_WaitingForDialogue)
     {
@@ -110,7 +113,7 @@ void CStage_Boss1::LateUpdate_Scene(const _float& timeDelta)
 
 void CStage_Boss1::Render_Scene()
 {
-    // debug 용
+    
 }
 
 HRESULT CStage_Boss1::Ready_Light()
@@ -140,6 +143,18 @@ void CStage_Boss1::Create_Trigger(_vec3 pos, _vec3 size, OnTriggerCallback callb
     gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
 }
 
+void CStage_Boss1::Update_Fog()
+{
+    if (m_Fog)
+    {
+        m_Fog->Set_OriginalPos(m_FogPos);
+        m_Fog->Set_SwaySpeed(m_FogSwaySpeed);
+        m_Fog->Set_SwayAmount(m_FogSwayAmount);
+        m_Fog->Set_Alpha(m_FogAlpha);
+        m_Fog->Get_Transform()->Set_Scale(m_FogScale);
+    }
+}
+
 HRESULT CStage_Boss1::Ready_Environment_Layer(LAYERTYPE layerType)
 {
     Engine::CLayer* layer = Engine::CLayer::Create();
@@ -165,8 +180,26 @@ HRESULT CStage_Boss1::Ready_Environment_Layer(LAYERTYPE layerType)
     // Wall
     CWall* wall = CWall::Create(m_GraphicDev);
     NULL_CHECK_RETURN(wall, E_FAIL);
-
     layer->Add_GameObject(OBJTYPE::WALL, wall);
+
+    // Fog
+    m_Fog = CFog::Create(m_GraphicDev);
+    NULL_CHECK_RETURN(m_Fog, E_FAIL);
+
+    m_Fog->Set_OriginalPos(m_FogPos);
+    m_Fog->Set_SwaySpeed(m_FogSwaySpeed);
+    m_Fog->Set_SwayAmount(m_FogSwayAmount);
+    m_Fog->Set_Alpha(m_FogAlpha);
+    layer->Add_GameObject(OBJTYPE::FOG, m_Fog);
+
+    for (_int i = 0; i < 10; i++)
+    {
+        CFog* fog2 = CFog::Create(m_GraphicDev);
+        fog2->Set_OriginalPos(_vec3(48.5f, 8.f, 11.f));
+        fog2->Set_SwaySpeed(0.7f);  // 약간 다른 속도
+        layer->Add_GameObject(OBJTYPE::FOG, fog2);
+    }
+
 
     m_Layers.insert({ layerType, layer });          // scene -> map
 

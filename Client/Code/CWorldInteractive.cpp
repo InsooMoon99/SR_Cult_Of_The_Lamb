@@ -1,6 +1,5 @@
 ﻿#include "pch.h"
 #include "CWorldInteractive.h"
-
 #include "CAnimator.h"
 #include "CBoxCollider.h"
 #include "CCombatStat.h"

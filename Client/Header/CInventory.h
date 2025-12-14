@@ -34,8 +34,9 @@ public:
     bool RemoveItemBySlot(int slotNum, int count);
 
     void AddItemOnMap(int itemID);
-    void RemoveItemOnMap(int itemID);
-
+    bool RemoveItemOnMap(int itemID, int Num);
+    
+    int  GetItemCount(int itemID);
     //void DropItemFromCount(int DropItemNum, _vec3 DropPos, CScene* nowScene);
     // void DropItem(int DropItemNum); // 오너가 죽엇을떄 이거 호출하면 드롭 아이템으로 -1 이면 전부
     //int Get_AddedCount() { return m_AddedCount; }

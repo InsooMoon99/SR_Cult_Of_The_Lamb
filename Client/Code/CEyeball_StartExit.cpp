@@ -4,6 +4,7 @@
 #include "CAnimator.h"
 #include "CEyeball.h"
 #include "CTransform.h"
+#include "CParticleHelper.h"
 
 CEyeball_StartExit::CEyeball_StartExit(CMonsterBase* owner)
     : m_Owner(owner), m_Pattern_Cooldown(0), m_LerpSpeed(0), m_IsReachedTarget(false), m_IsAnimFinished(false),
@@ -20,6 +21,7 @@ void CEyeball_StartExit::Enter()
     CMonsterState::Enter();
 
     auto eyeball = static_cast<CEyeball*>(m_Owner);
+
     m_Controller = eyeball->Get_Controller();
 
     if (m_Controller)
@@ -41,6 +43,9 @@ void CEyeball_StartExit::Enter()
 
     m_fCurStateElapsedTime = 0.f;
 
+	m_DescendStarted = false;
+	m_DescendTime = 0.f;
+
     m_IsReachedTarget = false;
     m_IsAnimFinished = false;
     m_IsFinalPosSet = false;
@@ -48,60 +53,64 @@ void CEyeball_StartExit::Enter()
 
 _int CEyeball_StartExit::Update_State(const _float& timeDelta)
 {
-
     m_fCurStateElapsedTime += timeDelta;
 
-	// 이동
 	CTransform* transform = m_Controller->Get_OwnerTransform();
+	CAnimator* animator = m_Controller->Get_OwnerAnimator();
 
-    if (transform)
-    {
-        if (!m_IsReachedTarget)
+	if (!transform || !animator)
+		return CEyeball::PATTERN::EYEBALL_START_EXIT;
+
+	_int curFrame = animator->Get_CurFrame();
+
+	// 13프레임쯤 하강 시작
+	if (!m_DescendStarted && curFrame >= 13)
+	{
+		m_DescendStarted = true;
+		m_DescendStartPos = transform->Get_Pos();
+		m_DescendTime = 0.f;
+	}
+
+	// 하강 중이고, 아직 목표지점에 도달하지 않았을 때
+	if (m_DescendStarted && !m_IsReachedTarget)
+	{
+		m_DescendTime += timeDelta;
+
+		_float time = m_DescendTime / m_DescendDuration;
+
+		if (time >= 1.f)
+		{
+			transform->Set_Pos(m_StartTargetPos);
+			m_IsReachedTarget = true;
+
+            // Particle Spawn
+		}
+        else
         {
-			_vec3 currentPos = transform->Get_Pos();
+			_vec3 pos = Lerp_EaseIn(m_DescendStartPos, m_StartTargetPos, time, 3.f);
 
-			_vec3 downMovePos;
-			D3DXVec3Lerp(&downMovePos, &currentPos, &m_StartTargetPos, m_LerpSpeed);
-
-			transform->Set_Pos(downMovePos);
-
-			// 목표 거리 도달
-			_vec3 dir = m_StartTargetPos - downMovePos;
-			float length = D3DXVec3Length(&dir);
-			if (length < 0.1f)
-			{
-				transform->Set_Pos(m_StartTargetPos);
-				m_IsReachedTarget = true;
-			}
+			transform->Set_Pos(pos);
         }
-        else if (m_IsReachedTarget && ! m_IsAnimFinished)
-        {
-            CAnimator* animator = m_Controller->Get_OwnerAnimator();
-            if (animator)
-            {
-                bool isAnimFinished = animator->Is_AnimationFinished();
+	}
 
-                if (isAnimFinished)
-                {
-                    _vec3 finalPos = _vec3(
-                        transform->Get_Pos().x,
-                        FLOOR_POS2.y,
-                        transform->Get_Pos().z
-                    );
 
-                    transform->Set_Pos(finalPos);
+	// 목표 도달 후 애니메이션 끝나면
+	if (m_IsReachedTarget && !m_IsFinalPosSet)
+	{
+	    if (animator->Is_AnimationFinished())
+	    {
+			_vec3 finalPos = _vec3(transform->Get_Pos().x, FLOOR_POS2.y, transform->Get_Pos().z);
+			transform->Set_Pos(finalPos);
 
-                    m_IsFinalPosSet = true;
-                }
-            }
-        }
-    }
+			m_IsFinalPosSet = true;
+	    }
+	}
 
-	// 목표 도달 후 일정 시간 대기 후 GROUND으로 전환 후 이동
-    if (m_IsFinalPosSet && m_fCurStateElapsedTime >= m_Pattern_Cooldown)
-    {
-        return CEyeball::PATTERN::EYEBALL_START_GROUND;
-    }
+	if (m_IsFinalPosSet && m_fCurStateElapsedTime >= m_Pattern_Cooldown)
+	{
+		return CEyeball::PATTERN::EYEBALL_START_GROUND;
+	}
+
 
     return CEyeball::PATTERN::EYEBALL_START_EXIT;  
 }

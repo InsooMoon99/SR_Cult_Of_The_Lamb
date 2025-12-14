@@ -17,7 +17,7 @@
 #include "CInteractionChecker.h"
 #include "CInventory.h"
 #include "CItemDB.h"
-#include "CMonsterSpawner.h"
+#include "CObjectSpawner.h"
 #include "CNPCController.h"
 #include "CPlayerAttack.h"
 #include "CPlayerConstruction.h"
@@ -33,6 +33,7 @@
 #include "CRigidbody.h"
 #include "CSphereCollider.h"
 #include "CSpriteEff.h"
+#include "CTrailEff.h"
 #include "CState.h"
 #include "CTerrain.h"
 #include "CTerrainRenderer.h"
@@ -59,15 +60,15 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
 {
     if (FAILED(Ready_Buffer(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Player(graphicDev))) return E_FAIL;
-    if (FAILED(Ready_Monster(graphicDev))) return E_FAIL;
+    //if (FAILED(Ready_Monster(graphicDev))) return E_FAIL;
     if (FAILED(Ready_UI(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Item(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Common(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Terrain(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Decoration(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Building(graphicDev))) return E_FAIL;
+    //if (FAILED(Ready_Follower(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Particle(graphicDev))) return E_FAIL;
-    if (FAILED(Ready_Follower(graphicDev))) return E_FAIL;
 
     return S_OK;
 }
@@ -161,6 +162,11 @@ HRESULT CResourceMgr::Ready_Common(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::SPRITEEFFECT, CSpriteEff::Create(graphicDev))))
         return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TRAILEFFECT, CTrailEff::Create(graphicDev))))
+        return E_FAIL;
+
 
     // Construction
     if (FAILED(protoMgr->Ready_Prototype(
@@ -483,6 +489,24 @@ HRESULT CResourceMgr::Ready_Monster(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_FLOATER_MONSTER, floaterTex)))
         return E_FAIL;
+
+    // 보물상자....
+    CTexture* chest = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(floaterTex, E_FAIL);
+
+    if (FAILED(chest->Add_Texture(L"Chest-reveal", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Chest/Chest-reveal/Chest-reveal%d.png", 57)))
+        return E_FAIL;
+
+    if (FAILED(chest->Add_Texture(L"Chest-open", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Chest/Chest-open/Chest-open%d.png", 50)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_CHEST, chest)))
+        return E_FAIL;
+
+
 
     return S_OK;
 }
@@ -921,8 +945,8 @@ HRESULT CResourceMgr::Ready_Terrain(DEVICE graphicDev)
         return E_FAIL;
 
     // Monster Spawner
-    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::MONSTER_SPAWNER,
-        CMonsterSpawner::Create(graphicDev))))
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::OBJECT_SPAWNER,
+        CObjectSpawner::Create(graphicDev))))
         return E_FAIL;
 
     // Terrain_284
@@ -977,7 +1001,7 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     // ETC
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_ETC, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/MapObject/ETC/ETC%d.png", 40))))
+            L"../Bin/Resource/Texture/MapObject/ETC/ETC%d.png", 56))))
         return E_FAIL;
 
     // 라즈베리 풀
@@ -1039,9 +1063,28 @@ HRESULT CResourceMgr::Ready_Particle(DEVICE graphicDev)
         L"../Bin/Resource/Texture/Effect/HitEffect_Star/HitEffect_Star%d.png", 14)))
         return E_FAIL;
 
+    // Blood
+    if (FAILED(particleTex->Add_Texture(L"HitEffect_Blood", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Effect/HitEffect_Blood/HitEffect_Blood%d.png", 12)))
+        return E_FAIL;
+
+    // Disappear
+    if (FAILED(particleTex->Add_Texture(L"Effect_Disappear", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Effect/Disappear/Disappear%d.png", 5)))
+        return E_FAIL;
+
     // 추가 예정
 
+    if (FAILED(particleTex->Add_Texture(L"Pickup_Item", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Effect/Pickup_Item/Pickup_Item%d.png", 5)))
+        return E_FAIL;
+
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PARTICLE, particleTex)))
+        return E_FAIL;
+
+    // FOG
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_FOG,
+        CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Effect/Fog/fog.png", 1))))
         return E_FAIL;
 
     return S_OK;

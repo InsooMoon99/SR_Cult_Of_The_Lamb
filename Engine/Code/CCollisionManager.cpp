@@ -1,7 +1,8 @@
 ﻿#include "CCollisionManager.h"
-
+#include "CTransform.h"
 #include "CCollider.h"
 #include "CGameObject.h"
+#include "CBoxCollider.h"
 
 IMPLEMENT_SINGLETON(CCollisionManager)
 
@@ -159,6 +160,50 @@ void CCollisionManager::Render_Debug(bool& flag)
     {
         collider->Set_ShowDebug(flag);
     }
+}
+
+_bool CCollisionManager::Check_PointOverlap(const _vec3& pos, COLLISION_LAYERTYPE layer, _float radius)
+{
+    for (CCollider* col : m_Colliders)
+    {
+        if (!col)
+            continue;
+
+        // 원하는 레이어만 체크
+        if (col->Get_CollisionLayer() != layer)
+            continue;
+
+        CGameObject* owner = col->Get_Owner();
+        if (!owner)
+            continue;
+
+        CTransform* transform = dynamic_cast<CTransform*>(
+            owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+        if (!transform)
+            continue;
+
+        _vec3 colPos = transform->Get_Pos();
+
+        _float dx = pos.x - colPos.x;
+        _float dz = pos.z - colPos.z;
+        _float dist = sqrtf(dx * dx + dz * dz);
+
+        // 충돌 반경 체크
+        CBoxCollider* boxCol = dynamic_cast<CBoxCollider*>(col);
+        _float colRadius = 1.f; 
+
+        if (boxCol)
+        {
+            _vec3 size = boxCol->Get_Size();
+            colRadius = (size.x + size.z) * 0.25f;  
+        }
+
+        if (dist < radius + colRadius)
+            return true;
+    }
+
+    return false;
 }
 
 void CCollisionManager::Initialize_CollisionMatrix()

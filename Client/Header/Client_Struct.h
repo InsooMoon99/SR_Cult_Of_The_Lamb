@@ -81,3 +81,5 @@ struct SavedSceneState
     vector<SavedInteractive> savedInteractives;
     map<wstring, SavedNpc>   savedNPCs;
 };
+
+enum FOODQUALITY { GOOD, BAD, NO_FOOD };

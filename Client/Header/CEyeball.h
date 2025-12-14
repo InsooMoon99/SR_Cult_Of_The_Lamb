@@ -6,6 +6,7 @@ class CMonsterController;
 
 BEGIN(Engine)
 class CTexture;
+class CRigidbody;
 END
 
 class CEyeball : public CMonsterBase
@@ -56,6 +57,8 @@ public:
     void Set_OnReachedCallback(OnReachedTargetCallback callback);
     void Trigger_OnReachedTarget();
 
+    // 움직일 경로에 벽 있는지 판단
+    _bool Trace_HitWall(const _vec3& pos, const _vec3& dir, _float distance);
 
 private:
     OnEyeDeadCallback       m_OnEyeDeadCallback = nullptr;
@@ -68,15 +71,22 @@ private:
 
 public:
     CMonsterController* Get_Controller() { return m_EyeballController; }
-    const char* Get_StateName(_int stateNum);
+    const char*         Get_StateName(_int stateNum);
 
+    _vec3               Get_MoveDirection() const { return m_MoveDirection; }
+    void                Set_MoveDirection(const _vec3& dir) { m_MoveDirection = dir; }
+
+public:
     static CEyeball* Create(DEVICE graphicDev, CMonsterBase* boss);
 
 protected:
     void Free() override;
 
 private:
+    CRigidbody*         m_RigidbodyCom;
     CMonsterController* m_EyeballController;
 	CMonsterBase*		m_Boss;
+
+    _vec3   m_MoveDirection = _vec3(0.f, 0.f, -4.f);
 };
 

@@ -7,7 +7,7 @@
 #include "CDInputMgr.h"
 #include "CEnumHelper.h"
 #include "CInventory.h"
-#include "CMonsterSpawner.h"
+#include "CObjectSpawner.h"
 #include "CPlayerAttack.h"
 #include "CPlayerController.h"
 #include "CPlayerInput.h"
@@ -909,7 +909,7 @@ static void Menu_CameraInspector(CCameraController* camController)
     ImGui::PopID();
 }
 
-static void MonsterSpawner_Inspector(CMonsterSpawner* spawner)
+static void MonsterSpawner_Inspector(CObjectSpawner* spawner)
 {
     NULL_CHECK(spawner);
 

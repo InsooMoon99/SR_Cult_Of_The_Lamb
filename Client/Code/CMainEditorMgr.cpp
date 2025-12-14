@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include "CMainEditorMgr.h"
-
+#include "CFogMgr.h"
 #include "CAnimator.h"
 #include "CBoxCollider.h"
 #include "CCameraCalc.h"
@@ -45,6 +45,7 @@ void CMainEditorMgr::Ready_MainEditor(DEVICE graphicDev, CEditContext* ctx)
 
     Set_EditContext(ctx);
     CMapObjectMgr::GetInstance()->Ready_MapObjectMgr(graphicDev);
+    CFogMgr::GetInstance()->Ready_FogMgr(graphicDev);
 
     ImGuiStyle& style = ImGui::GetStyle();
     style.Alpha = 0.95f;
@@ -75,6 +76,7 @@ void CMainEditorMgr::Update_MainEditor(const _float& timeDelta)
     }
 
     CMapObjectMgr::GetInstance()->Update_MapObjectMgr(timeDelta);
+    CFogMgr::GetInstance()->Update_FogMgr(timeDelta);
 }
 
 void CMainEditorMgr::Set_EditContext(CEditContext* ctx)
@@ -99,10 +101,13 @@ void CMainEditorMgr::Render_MainEditor()
     else
         MSG_BOX("Scene Is Where ? ");
 
-    // 프리뷰 오브젝트 렌더
-    if (CMapObjectMgr::GetInstance()->Get_MapPlacer())
+    // 프리뷰 렌더
     {
-        CMapObjectMgr::GetInstance()->Get_MapPlacer()->Render_Privew();
+        if (CMapObjectMgr::GetInstance()->Get_MapPlacer())
+            CMapObjectMgr::GetInstance()->Get_MapPlacer()->Render_Privew();
+
+        if (CFogMgr::GetInstance()->IsPlacing())
+            CFogMgr::GetInstance()->Render_FogWindow();
     }
 
     ImGui::Begin("MainEditor [ Toggle F1 ] [ Toggle F8 -> Free Mode]");
@@ -178,10 +183,12 @@ void CMainEditorMgr::Render_MapToolTab()
     ImGui::Text("Map Tools");
     ImGui::Separator(); 
 
-    bool selTerrain   = (m_MapToolView == MAPTOOL_VIEW::TERRAIN);
-    bool selMapObject = (m_MapToolView == MAPTOOL_VIEW::MAP_OBJECT);
-    bool selWall      = (m_MapToolView == MAPTOOL_VIEW::WALL);
-    bool selMonster   = (m_MapToolView == MAPTOOL_VIEW::MONSTER_SPAWNER);
+    _bool selTerrain   = (m_MapToolView == MAPTOOL_VIEW::TERRAIN);
+    _bool selMapObject = (m_MapToolView == MAPTOOL_VIEW::MAP_OBJECT);
+    _bool selWall      = (m_MapToolView == MAPTOOL_VIEW::WALL);
+    _bool selMonster   = (m_MapToolView == MAPTOOL_VIEW::MONSTER_SPAWNER);
+    _bool selFog = (m_MapToolView == MAPTOOL_VIEW::FOG_RENDERER);
+
 
     if (ImGui::Selectable("Terrain Renderer", selTerrain))
         m_MapToolView = MAPTOOL_VIEW::TERRAIN;
@@ -194,6 +201,9 @@ void CMainEditorMgr::Render_MapToolTab()
 
     if (ImGui::Selectable("Monster Spawner", selMonster))
         m_MapToolView = MAPTOOL_VIEW::MONSTER_SPAWNER;
+
+    if (ImGui::Selectable("Fog", selFog))
+        m_MapToolView = MAPTOOL_VIEW::FOG_RENDERER;
 
     ImGui::EndChild();
 
@@ -245,8 +255,8 @@ void CMainEditorMgr::Render_MapToolTab()
 
         if (terrain)
         {
-            CMonsterSpawner* spawner = dynamic_cast<CMonsterSpawner*>(
-                terrain->Get_Component(ID_DYNAMIC, COMPONENTTYPE::MONSTER_SPAWNER));
+            CObjectSpawner* spawner = dynamic_cast<CObjectSpawner*>(
+                terrain->Get_Component(ID_DYNAMIC, COMPONENTTYPE::OBJECT_SPAWNER));
 
             if (spawner)
             {
@@ -259,6 +269,12 @@ void CMainEditorMgr::Render_MapToolTab()
                 ImGui::Text(u8"MonsterSpawner이 없어요");
         }
 
+        break;
+    }
+
+    case MAPTOOL_VIEW::FOG_RENDERER:
+    {
+        CFogMgr::GetInstance()->Render_FogWindow();
         break;
     }
 
@@ -652,9 +668,9 @@ void CMainEditorMgr::Render_SelectComponent()
         }
         break;
 
-        case COMPONENTTYPE::MONSTER_SPAWNER:
+        case COMPONENTTYPE::OBJECT_SPAWNER:
         {
-            auto spawner = dynamic_cast<CMonsterSpawner*>(selectComponent);
+            auto spawner = dynamic_cast<CObjectSpawner*>(selectComponent);
             MonsterSpawner_Inspector(spawner);
         }
         break;
@@ -735,6 +751,7 @@ CTerrain* CMainEditorMgr::Find_Terrain()
 void CMainEditorMgr::Free()
 {
     CMapObjectMgr::DestroyInstance();
+    CFogMgr::DestroyInstance();
 
     Safe_Release(m_Context);
     Safe_Release(m_GraphicDev);

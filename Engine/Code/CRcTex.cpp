@@ -135,18 +135,22 @@ void CRcTex::Apply_VertexSize()
 
     // 좌상단
     vtxtex[0].position = { -hw + dx,  hh + dy, 0.f };
+    vtxtex[0].normal = { 0.f, 0.f, -1.f };
     vtxtex[0].texUV = { u0, 0.f };
 
     // 우상단
     vtxtex[1].position = { hw + dx,  hh + dy, 0.f };
+    vtxtex[1].normal = { 0.f, 0.f, -1.f };
     vtxtex[1].texUV = { u1, 0.f };
 
     // 우하단
     vtxtex[2].position = { hw + dx, -hh + dy, 0.f };
+    vtxtex[2].normal = { 0.f, 0.f, -1.f };
     vtxtex[2].texUV = { u1, 1.f };
 
     // 좌하단
     vtxtex[3].position = { -hw + dx, -hh + dy, 0.f };
+    vtxtex[3].normal = { 0.f, 0.f, -1.f };
     vtxtex[3].texUV = { u0, 1.f };
 
     m_VB->Unlock();

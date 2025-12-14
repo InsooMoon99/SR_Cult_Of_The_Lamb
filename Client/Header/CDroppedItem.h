@@ -17,7 +17,7 @@ struct SpriteBounceDesc;
 class CDroppedItem : public CGameObject
 {
 public:
-    enum FOODQUALITY {GOOD,BAD,NO_FOOD};
+
 private:
     explicit CDroppedItem(DEVICE graphicDev, ItemInstance itemInst);
     explicit CDroppedItem(const CDroppedItem& rhs);
@@ -35,13 +35,14 @@ public:
     void OnStayOverlap(CCollider* self, CCollider* other) override;
     void OnEndOverlap(CCollider* self, CCollider* other) override;
 
-    void SetFoodQuality(FOODQUALITY quality) { m_foodQuality = quality; }
+    void DisappearEff();
 
+
+    void SetFoodQuality(FOODQUALITY quality) { m_foodQuality = quality; }
     static void Reset_WeaponExplainUI() { m_WeaponExplainUI = nullptr; }
 
     // 추가 : NPC가 음식 오브젝트를 인식하기 위해 필요한 ItemInstance 반환
     const ItemInstance& Get_ItemInst() const { return m_itemInst; }
-
 
 
 private:
@@ -51,7 +52,8 @@ private:
     Engine::CRcTex*             m_BufferCom;
     Engine::CTransform*         m_TransformCom;
     Engine::CTexture*           m_TextureCom;
-    Engine::CBoxCollider*       m_BoxColCom;
+    Engine::CBoxCollider* m_BoxColCom;
+    //Engine::CAnimator*       m_AnimationCom;
     static CUIWeaponExplain*    m_WeaponExplainUI;
 
     CSpriteEff* m_SpriteEff;
@@ -69,9 +71,11 @@ private:
     ItemInstance m_itemInst;
     int          m_index = 0;
 
-    FOODQUALITY m_foodQuality = FOODQUALITY::BAD;
+    FOODQUALITY m_foodQuality = FOODQUALITY::NO_FOOD;
 
     float m_ignoreTime = 0;
+
+
 private:
     void Free() override;
 };

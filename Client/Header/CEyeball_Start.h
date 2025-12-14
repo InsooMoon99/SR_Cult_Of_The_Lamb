@@ -30,14 +30,17 @@ private:
     void Free() override;
 
 private:
-    CMonsterBase*       m_Owner;
-    _float              m_Pattern_Cooldown;
+    CMonsterBase*   m_Owner;
+    _float          m_Pattern_Cooldown;
 
-    _vec3               m_StartPos;
-    _vec3               m_StartTargetPos;
-    _float              m_LerpSpeed;
-    _bool               m_IsReachedTarget;
+    _vec3           m_StartPos;
+    _vec3           m_StartTargetPos;
+    _float          m_LerpSpeed;
+    _bool           m_IsReachedTarget;
 
+    _float          m_MoveTime = 0.f;
+    _float          m_MoveDuration = 1.f;
 
+    
 };
 

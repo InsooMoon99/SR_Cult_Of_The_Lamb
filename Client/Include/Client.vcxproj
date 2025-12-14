@@ -198,6 +198,7 @@
     <ClInclude Include="..\Header\CCamSetupBuilder.h" />
     <ClInclude Include="..\Header\CBoss_Slave_Test.h" />
     <ClInclude Include="..\Header\CCharacterBase.h" />
+    <ClInclude Include="..\Header\CChest.h" />
     <ClInclude Include="..\Header\CCookingController.h" />
     <ClInclude Include="..\Header\CNPCState_Build.h" />
     <ClInclude Include="..\Header\CNPCState_ChopWood.h" />
@@ -206,6 +207,8 @@
     <ClInclude Include="..\Header\CNPCState_Pray.h" />
     <ClInclude Include="..\Header\CNPCState_PrayPeek.h" />
     <ClInclude Include="..\Header\CNPCState_WalkPast.h" />
+    <ClInclude Include="..\Header\CFog.h" />
+    <ClInclude Include="..\Header\CFogMgr.h" />
     <ClInclude Include="..\Header\CUICookedFoodCell.h" />
     <ClInclude Include="..\Header\CUICookingCell.h" />
     <ClInclude Include="..\Header\CFollowerCow.h" />
@@ -270,7 +273,7 @@
     <ClInclude Include="..\Header\CMonster.h" />
     <ClInclude Include="..\Header\CMonsterBase.h" />
     <ClInclude Include="..\Header\CMonsterController.h" />
-    <ClInclude Include="..\Header\CMonsterSpawner.h" />
+    <ClInclude Include="..\Header\CObjectSpawner.h" />
     <ClInclude Include="..\Header\CMonsterState.h" />
     <ClInclude Include="..\Header\CNPCBase.h" />
     <ClInclude Include="..\Header\CPlayerAttack.h" />
@@ -371,6 +374,7 @@
     <ClCompile Include="..\Code\CCameraMovement.cpp" />
     <ClCompile Include="..\Code\CBoss_Slave_Test.cpp" />
     <ClCompile Include="..\Code\CCharacterBase.cpp" />
+    <ClCompile Include="..\Code\CChest.cpp" />
     <ClCompile Include="..\Code\CConstructionPlacer.cpp" />
     <ClCompile Include="..\Code\CCookingController.cpp" />
     <ClCompile Include="..\Code\CNPCState_Build.cpp" />
@@ -380,6 +384,8 @@
     <ClCompile Include="..\Code\CNPCState_Pray.cpp" />
     <ClCompile Include="..\Code\CNPCState_PrayPeek.cpp" />
     <ClCompile Include="..\Code\CNPCState_WalkPast.cpp" />
+    <ClCompile Include="..\Code\CFog.cpp" />
+    <ClCompile Include="..\Code\CFogMgr.cpp" />
     <ClCompile Include="..\Code\CUICookedFoodCell.cpp" />
     <ClCompile Include="..\Code\CUICookingCell.cpp" />
     <ClCompile Include="..\Code\CFollowerCow.cpp" />
@@ -440,7 +446,7 @@
     <ClCompile Include="..\Code\CMonster.cpp" />
     <ClCompile Include="..\Code\CMonsterBase.cpp" />
     <ClCompile Include="..\Code\CMonsterController.cpp" />
-    <ClCompile Include="..\Code\CMonsterSpawner.cpp" />
+    <ClCompile Include="..\Code\CObjectSpawner.cpp" />
     <ClCompile Include="..\Code\CMonsterState.cpp" />
     <ClCompile Include="..\Code\CNPCBase.cpp" />
     <ClCompile Include="..\Code\CPlayerAttack.cpp" />

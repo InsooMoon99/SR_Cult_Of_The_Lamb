@@ -51,5 +51,42 @@ public:
 
         return particle;
     }
+
+    // 파티클 여러개 퍼지는 효과
+    static void Spawn_BurstParticle(
+        const _vec3& position,             
+        const wstring& animKey,            
+        _uint frameCount,
+        _int count = 8,                     // 파티클 개수
+        _float size = 5.f,                  // 크기
+        _float speed = 3.f,                 // 튀는 속도
+        _float gravity = 15.f,              // 중력
+        _float friction = 2.f,              // 마찰
+        _float frameInterval = 0.04f        // 프레임 간격
+    )
+    {
+        for (int i = 0; i < count; ++i)
+        {
+            _float angle = D3DXToRadian((_float)(rand() % 360));
+            _float randSpeed = speed + (rand() % 30) / 10.f;
+
+            _vec3 velocity = {
+                cosf(angle) * randSpeed,
+                sinf(angle) * randSpeed + speed,
+                0.f
+            };
+
+            auto* particle = Spawn_Particle(
+                position, animKey, frameCount, frameInterval,
+                _vec3(size, size, 1.f));
+
+            if (particle)
+            {
+                particle->Set_Velocity(velocity);
+                particle->Set_Gravity(gravity);
+                particle->Set_Friction(friction);
+            }
+        }
+    }
 };
 

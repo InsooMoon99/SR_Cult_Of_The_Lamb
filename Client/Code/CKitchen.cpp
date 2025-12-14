@@ -53,7 +53,7 @@ _int CKitchen::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CBuildingBase::Update_GameObject(timeDelta);
 
-    if (m_bPlayerOverlap == true)
+    if (m_bPlayerOverlap == true && m_bHovering == true)
     {
         if (CDInputMgr::GetInstance()->MouseDown(DIM_LB))
         {
@@ -167,8 +167,6 @@ void CKitchen::Render_GameObject()
         if (m_bHovering == true && m_bPlayerOverlap == true)
             m_SpriteEff->OutLineEffMTRX(matWorld, m_BufferCom);
     }
-
-    // CBuildingBase::Render_GameObject();
 
     if (m_BufferCom)
         m_BufferCom->Render_Buffer();

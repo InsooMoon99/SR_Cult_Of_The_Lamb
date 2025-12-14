@@ -35,21 +35,31 @@ public:
                                 COMPONENTTYPE textureType,
                                 const wstring& animKey);
 
+    void Set_Velocity(const _vec3& velocity) { m_Velocity = velocity; }
+    void Set_Gravity(_float gravity) { m_Gravity = gravity; }
+    void Set_Friction(_float frction) { m_Friction = frction; }
+
 protected:
     void Free() override;
 
 private:
     CAnimator*      m_AnimatorCom;
 
-    bool            m_AutoDestroy;   // 재생이 끝나면 삭제되게 할지?
-    float           m_LifeTime;      // 생명 시간 (-1이면 무한)
-    float           m_ElapsedTime;   // 경과 시간
+    _bool            m_AutoDestroy;   // 재생이 끝나면 삭제되게 할지?
+    _float           m_LifeTime;      // 생명 시간 (-1이면 무한)
+    _float           m_ElapsedTime;   // 경과 시간
 
     COMPONENTTYPE   m_TextureType;
     wstring         m_AnimKey;
 
     _uint           m_FrameCount;
     _float          m_FrameInterval;
+
+    _vec3           m_Velocity = _vec3(0.f, 0.f, 0.f);
+    _float          m_Gravity = 0.f;     
+    _float          m_Friction = 0.f;    
+
+
 };
 
 END

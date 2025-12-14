@@ -47,12 +47,17 @@ void CEyeball_Attack::Enter()
 
     m_fCurStateElapsedTime = 0.f;
 
+    // 공격 랜덤
+    _int randomType = CRandomMgr::GetInstance()->Get_Int_Random(0, 2);
+    m_Bullet_AttackType = static_cast<Attack_Type>(randomType);
+
     m_EyeballAnim = Eyeball_Anim::ATTACK_ANTI;
-    m_Bullet_AttackType = Attack_Type::DISPERSION;
+    m_TotalAttackCount = 0;
 
     Find_Player(); // 플레이어 찾기
     m_GraphicDev = m_Owner->Get_GraphicDev();
     m_CircleBullets.reserve(8);
+
 }
 
 _int CEyeball_Attack::Update_State(const _float& timeDelta)
@@ -201,7 +206,6 @@ void CEyeball_Attack::Play_Loop()
     }
 
     }
-
     
 }
 
@@ -213,39 +217,19 @@ void CEyeball_Attack::Play_End()
     if (!animator || !animator->Is_AnimationFinished())
         return;
 
-    // 다음 패턴으로 전환
-    switch (m_Bullet_AttackType)
+    _int randomType = CRandomMgr::GetInstance()->Get_Int_Random(0, 2);
+    m_Bullet_AttackType = static_cast<Attack_Type>(randomType);
+
+    m_EyeballAnim = Eyeball_Anim::ATTACK_ANTI;
+    animator->Play_Animation(L"Eyeball_Anti", ANIMSTATE::ONCE);
+    m_AttackCount = 0;
+    m_Spawn_BulletCount = 0;
+
+    m_TotalAttackCount++;
+    if (m_TotalAttackCount >= 3)
     {
-    case Attack_Type::DISPERSION:
-
-        m_Bullet_AttackType = Attack_Type::CIRCLE;
-        m_EyeballAnim = Eyeball_Anim::ATTACK_ANTI;
-
-        animator->Play_Animation(L"Eyeball_Anti", ANIMSTATE::ONCE);
-        m_AttackCount = 0;
-
-        break;
-
-    case Attack_Type::CIRCLE:
-        m_Bullet_AttackType = Attack_Type::BURST;
-        m_EyeballAnim = Eyeball_Anim::ATTACK_ANTI;
-
-        animator->Play_Animation(L"Eyeball_Anti", ANIMSTATE::ONCE);
-
-        break;
-
-    case Attack_Type::BURST:
-        m_IsFinished = true; // 아직 구현 안함
-        break;
+        m_IsFinished = true;
     }
-
-    // 플레이어 반대 방향으로 움직이기
-    _vec3 dir = (m_Owner->Get_Transform()->Get_Pos() - m_pPlayerTransformCom->Get_Pos());
-    dir.y = 0;
-    D3DXVec3Normalize(&dir, &dir);
-
-    _float delta = CTimerMgr::GetInstance()->Get_TimeDelta();
-    m_Owner->Get_Transform()->Move_Pos(dir, delta, 1.f);
 
 }
 
@@ -473,14 +457,30 @@ void CEyeball_Attack::Random_Movement(const _float& timeDelta)
     // 일정 시간마다 새로운 방향 랜덤
     if (m_Direction_Timer >= m_Direction_ChangeTimer)
     {
-        _float randomAngle = static_cast<_float>(CRandomMgr::GetInstance()->Get_Int_Random(0, 360));
-        _float radian = D3DXToRadian(randomAngle);
-        m_Current_Direction = _vec3(cosf(radian), 0.f, sinf(radian));
+        _vec3 currentPos = transform->Get_Pos();
+
+        // 최대 5번 시도 (벽 없는 방향 찾기)
+        for (int attempt = 0; attempt < 5; ++attempt)
+        {
+            _float randomAngle = static_cast<_float>(CRandomMgr::GetInstance()->Get_Int_Random(0, 360));
+            _float radian = D3DXToRadian(randomAngle);
+            _vec3 newDir = _vec3(cosf(radian), 0.f, sinf(radian));
+
+            // 벽 체크 (5유닛 앞)
+            auto eyeball = static_cast<CEyeball*>(m_Owner);
+            if (!eyeball->Trace_HitWall(currentPos, newDir, 5.f))
+            {
+                m_Current_Direction = newDir;
+                break;
+            }
+        }
 
         m_Direction_Timer = 0.f;
     }
 
-    m_Current_Direction = _vec3(m_Current_Direction.x + (m_Target_Direction.x - m_Current_Direction.x) * m_LerpSpeed,
+    // Lerp으로 자연스럽게 방향 전환시켜보기
+    m_Current_Direction = _vec3(
+        m_Current_Direction.x + (m_Target_Direction.x - m_Current_Direction.x) * m_LerpSpeed,
         0.f,
         m_Current_Direction.z + (m_Target_Direction.z - m_Current_Direction.z) * m_LerpSpeed);
 

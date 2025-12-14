@@ -83,5 +83,6 @@ private:
     _float                  m_MoveSpeed;            
     _float                  m_LerpSpeed;        
 
+    _int                    m_TotalAttackCount = 0;
 };
 
