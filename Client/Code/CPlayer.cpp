@@ -240,7 +240,7 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"PlayerRoll_UP",
                                     16,
                                     0.02f * 19 / 16,
-                                    _vec2(0.6f, 0.7f),
+                                    _vec2(0.7f, 0.7f),
                                     _vec2(0.f, 0.f));
 
     m_AnimatorCom->Create_Animation(L"PlayerRoll_DOWN",
@@ -378,8 +378,8 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"PlayerWood",
                                     39,
                                     0.02f,
-                                    _vec2(1.5f, 1.5f),
-                                    _vec2(0.f, -.5f));
+                                    _vec2(1.6f, 1.5f),
+                                    _vec2(0.f, -0.45f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_WOOD,
                              L"PlayerWood",
@@ -388,8 +388,8 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"PlayerStone",
                                     45,
                                     0.02f,
-                                    _vec2(1.2f, 1.2f),
-                                    _vec2(0.f, 0.3f));
+                                    _vec2(1.3f, 1.2f),
+                                    _vec2(0.f, 0.2f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_STONE,
                              L"PlayerStone",

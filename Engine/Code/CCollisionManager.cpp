@@ -299,6 +299,10 @@ void CCollisionManager::Initialize_CollisionMatrix()
             m_CollisionMatrix[i][kitchen_Index] = false;
         }
     }
+
+    // 채집 오브젝트와 건축 부지 사이 충돌 off
+    m_CollisionMatrix[interactive_Index][site_Index] = false;
+    m_CollisionMatrix[site_Index][interactive_Index] = false;
 }
 
 void CCollisionManager::Free()

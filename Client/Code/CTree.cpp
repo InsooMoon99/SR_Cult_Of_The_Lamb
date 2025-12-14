@@ -122,16 +122,18 @@ void CTree::Initialize_GameObject()
     m_KockBackTimer = 0.1f;
 
     m_OrignPos = m_TransformCom->Get_Pos();
+}
 
-    m_CombatStatCom->Set_OnDamagedEvent([this]()
-    {
-        this->m_OnDamage = true;
+void CTree::OnInteractiveDamaged()
+{
+    CWorldInteractive::OnInteractiveDamaged();
 
-        // HitEffect_Star
-        CParticleHelper::Spawn_Particle({ m_TransformCom->Get_Pos().x, m_TransformCom->Get_Pos().y + 0.5f, m_TransformCom->Get_Pos().z },
-                                        L"HitEffect_Star",
-                                        14);
-    });
+    this->m_OnDamage = true;
+
+    // HitEffect_Star
+    CParticleHelper::Spawn_Particle({ m_TransformCom->Get_Pos().x, m_TransformCom->Get_Pos().y + 0.5f, m_TransformCom->Get_Pos().z },
+                                    L"HitEffect_Star",
+                                    14);
 }
 
 _int CTree::Update_GameObject(const _float& timeDelta)

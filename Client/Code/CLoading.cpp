@@ -1,7 +1,8 @@
 ﻿#include "pch.h"
 #include "CLoading.h"
-#include <future>
+
 #include <chrono>
+#include <future>
 #include "CAnimator.h"
 #include "CBoxCol.h"
 #include "CProtoMgr.h"
@@ -171,9 +172,9 @@ _uint CLoading::Loading_ForState_Parallel()
     futures.push_back(async(launch::async, [&]() {
         return resourceMgr->Ready_Building(m_GraphicDev);
         }));
-    //futures.push_back(async(launch::async, [&]() {
-    //    return resourceMgr->Ready_Follower(m_GraphicDev);
-    //    }));
+    futures.push_back(async(launch::async, [&]() {
+        return resourceMgr->Ready_Follower(m_GraphicDev);
+        }));
 
     // 병렬 태스크 완료 대기
     for (auto& future : futures)

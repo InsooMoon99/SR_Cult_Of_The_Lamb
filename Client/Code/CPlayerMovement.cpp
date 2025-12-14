@@ -155,6 +155,13 @@ _bool CPlayerMovement::Update_Roll(const _float& timeDelta)
     return true; // 구르기 지속
 }
 
+void CPlayerMovement::End_Roll()
+{
+    m_OwnerRigidbodyCom->Set_UseAccel(true);
+    m_OwnerRigidbodyCom->Set_Friction(0.2f);
+    m_Timer = 0.f;
+}
+
 void CPlayerMovement::ImpulseMove(const _vec3 dir, _float force)
 {
     m_OwnerRigidbodyCom->Set_Friction(0.1f);

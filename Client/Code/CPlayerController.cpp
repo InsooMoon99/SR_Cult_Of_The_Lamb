@@ -224,6 +224,13 @@ void CPlayerController::CheckStateTransition()
             curState == ACTORSTATE::IDLE ||
             curState == ACTORSTATE::RUN)
         {
+            // 구르기 중이었다면 구르기 상태 정리
+            if (curState == ACTORSTATE::PLAYER_ROLL)
+            {
+                m_OwnerMovementCom->End_Roll();
+                m_OwnerCombatStatCom->Set_Invincible(false);
+            }
+
             ACTORSTATE nextState = m_OwnerAttackCom->Start_NormalAttack();
             if (nextState != ACTORSTATE::STATE_END)
                 m_OwnerStateCom->Change_State(nextState);

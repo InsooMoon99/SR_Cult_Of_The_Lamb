@@ -15,6 +15,7 @@
 #include "CTexture.h"
 #include "CTransform.h"
 #include "ItemInstance.h"
+#include "CVillageStateMgr.h"
 
 CWorldInteractive::CWorldInteractive(DEVICE graphicDev)
     : CRenderObject(graphicDev),
@@ -254,6 +255,11 @@ HRESULT CWorldInteractive::Add_Component()
     NULL_CHECK_RETURN(m_CombatStatCom, E_FAIL);
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::COMBATSTAT, m_CombatStatCom });
 
+    m_CombatStatCom->Set_OnDamagedEvent([this]()
+    {
+        this->OnInteractiveDamaged();
+    });
+
     // BoxCollider
     m_BoxColCom = CreateProtoComponent<CBoxCollider>(this, COMPONENTTYPE::BOX_COLL);
     NULL_CHECK_RETURN(m_BoxColCom, E_FAIL);
@@ -275,4 +281,32 @@ HRESULT CWorldInteractive::Add_Component()
 void CWorldInteractive::Free()
 {
     CRenderObject::Free();
+}
+
+void CWorldInteractive::Check_WorldState()
+{
+    _vec3 myPos = m_TransformCom->Get_Pos();
+    if (auto state = CVillageStateMgr::GetInstance()->Get_InteractiveState(myPos))
+    {
+        if (m_CombatStatCom)
+        {
+            m_CombatStatCom->Set_Hp(state->hp);
+            if (state->isDead)
+            {
+                m_CombatStatCom->Set_Hp(0.f); 
+                m_CombatStatCom->On_Dead();
+                m_bInvenDropped = true;
+            }
+        }
+    }
+}
+
+void CWorldInteractive::OnInteractiveDamaged()
+{
+    SavedInteractive data;
+    data.pos = m_TransformCom->Get_Pos();
+    data.hp = m_CombatStatCom->Get_Hp();
+    data.isDead = (data.hp <= 0.f);
+
+    CVillageStateMgr::GetInstance()->Save_Interactive(data);
 }

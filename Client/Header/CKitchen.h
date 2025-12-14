@@ -41,5 +41,4 @@ public:
 
 private:
     void Free() override;
-    bool  m_bPlayerOverlap;
 };
