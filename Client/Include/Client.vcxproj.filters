@@ -827,6 +827,9 @@
     <ClInclude Include="..\Header\CChest.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CMenuExtra.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1292,6 +1295,9 @@
       <Filter>03. GameObject\11. NPC\00. Follower Cow</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CChest.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CMenuExtra.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

@@ -66,6 +66,7 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
     _int exit = CGameObject::Update_GameObject(timeDelta);
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_TRAIL, this);
 
     m_TrailEff->Update_Component(timeDelta);
 
@@ -140,6 +141,11 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
     return exit;
 }
 
+void CBossBullet::Render_Trail()
+{
+    m_TrailEff->Render_Effect(m_TextureCom, 0); // 이거 맞나 모르겠네ㅔㅔ
+}
+
 void CBossBullet::LateUpdate_GameObject(const _float& timeDelta)
 {
     CGameObject::LateUpdate_GameObject(timeDelta);
@@ -148,12 +154,12 @@ void CBossBullet::LateUpdate_GameObject(const _float& timeDelta)
 void CBossBullet::Render_GameObject()
 {
     Render_Core();
-    // Render_Trail();
+
 }
 
 void CBossBullet::Render_Core()
 {
-    m_TrailEff-> Render_Effect(m_TextureCom, 0); // 이거 맞나 모르겠네ㅔㅔ
+    
 
 
     //
@@ -196,48 +202,11 @@ void CBossBullet::Render_Core()
     //    D3DCOLOR_ARGB(255, 255, 255, 255)); // 알파 1.0, 색 그대로
 }
 
-//void CBossBullet::Render_Trail()
-//{
-//    // 불랫용 포즈 계산
-//    // _vec3 TrailPos = 
-//
-//    m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-//    //
-//
-//    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-//    m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-//    m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-//
-//    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-//    m_GraphicDev->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-//    m_GraphicDev->SetRenderState(D3DRS_ALPHAREF, 0);
-//    //
-//
-//    m_TextureCom->Set_Texture(1);
-//
-//    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(static_cast<int>(m_fAlpha * 255), 255, 255, 255));
-//    //
-//    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-//    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-//    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR); // ← texturefactor.alpha 사용
-//
-//    m_BufferCom->Render_Buffer();
-//    //
-//    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-//    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-//    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
-//    //
-//    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-//    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-//    //
-//    m_GraphicDev->SetRenderState(
-//        D3DRS_TEXTUREFACTOR,
-//        D3DCOLOR_ARGB(255, 255, 255, 255)); // 알파 1.0, 색 그대로
-//}
 
 void CBossBullet::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CGameObject::OnBeginOverlap(self, other);
+
 
     //ATBox->Mark_As_PendingKill();
 
@@ -310,6 +279,8 @@ CBossBullet* CBossBullet::Create(DEVICE graphicDev, CGameObject* owner, CGameObj
 
 void CBossBullet::Free()
 {
+    //Safe_Release(m_TrailEff);
+
     Safe_Release(m_pOwner);
     Safe_Release(m_pTarget);
 

@@ -907,6 +907,24 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
         COMPONENTTYPE::TEX_UI_INTERACTION, CTexture::Create(graphicDev, TEX_NORMAL, interactionTex))))
         return E_FAIL;
 
+
+    // Texture : MainMenu Extra
+    // UI_Cooking
+    vector<wstring> extra;
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideFront0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Back_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Front_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Side_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideBack_0.png");
+
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_MAINMENU, CTexture::Create(graphicDev, TEX_NORMAL, extra))))
+        return E_FAIL;
+
+   
+
     return S_OK;
 }
 
@@ -926,6 +944,9 @@ HRESULT CResourceMgr::Ready_Item(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_ITEM, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec))))
         return E_FAIL;
+
+
+
 
     return S_OK;
 }

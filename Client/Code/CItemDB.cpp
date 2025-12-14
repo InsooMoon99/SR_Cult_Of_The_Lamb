@@ -136,12 +136,21 @@ Item* CItemDB::GetItemById(int id)
     return &m_vecItems[it->second];
 }
 
+int CItemDB::GetStat(string& key, int itemID) 
+{
+    Item* i = GetItemById(itemID);
+    auto it = i->stats.find(key);
+    if (it != i->stats.end())
+        return it->second;
+    return 999;
+}
 ItemType CItemDB::StringToItemType(string s)
 {
     if (s == "FoodMaterial") return ItemType::FoodMaterial;
     if (s == "Material") return ItemType::Material;
     if (s == "Food") return ItemType::Food;
     if (s == "Weapon") return ItemType::Weapon;
+    if (s == "Comsumable") return ItemType::CONSUMABLE;
     return ItemType::None;
 }
 

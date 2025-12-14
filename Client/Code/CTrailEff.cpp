@@ -53,10 +53,10 @@ _int CTrailEff::Update_Component(const _float& timeDelta)
         node.life = 0.f;
         node.maxLife = m_Time;
         node.width = m_TrailWidth;
-
+        node.alpha = 1.f;// 이건 임시 밑에서 실제값넣을거임
 
         float tmpOffset = (CRandomMgr::GetInstance()->
-            Get_Int_Random(int(-(node.width * 0.15f * 100)), int(node.width * 0.25f * 100))) / 100.f;
+            Get_Int_Random(int(-(node.width * 0.09f * 100)), int(node.width * 0.09f * 100))) / 100.f;
 
         node.offset = tmpOffset;
    
@@ -74,8 +74,8 @@ _int CTrailEff::Update_Component(const _float& timeDelta)
     {
         it->life += timeDelta;
 
-        it->width = m_TrailWidth * (1.0f - it->life / it->maxLife);
-        it->alpha = (1.0f - it->life / it->maxLife);
+        it->width = m_TrailWidth * (1.0f - it->life / (it->maxLife *2.f));
+        it->alpha = (.7f - (it->life/ it->maxLife * .7f));
 
         if (it->life >= it->maxLife)
         {
@@ -113,12 +113,13 @@ void CTrailEff::Render_Effect(CTexture* textureCom, int Num)
         return;
     }
 
-    IDirect3DStateBlock9* pStateBlock = nullptr;
-    if (SUCCEEDED(m_GraphicDev->CreateStateBlock(D3DSBT_ALL, &pStateBlock)))
-        pStateBlock->Capture();
+    //렌더러에서 해줌
+    //IDirect3DStateBlock9* pStateBlock = nullptr;
+    //if (SUCCEEDED(m_GraphicDev->CreateStateBlock(D3DSBT_ALL, &pStateBlock)) && pStateBlock)
+    //    pStateBlock->Capture();
 
-    DWORD prevFVF;
-    m_GraphicDev->GetFVF(&prevFVF);
+    //DWORD prevFVF;
+    //m_GraphicDev->GetFVF(&prevFVF);
 
 
 
@@ -127,11 +128,11 @@ void CTrailEff::Render_Effect(CTexture* textureCom, int Num)
     D3DXMatrixIdentity(&matWorld);
     m_GraphicDev->SetTransform(D3DTS_WORLD, &matWorld);
 
-
-    m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-    m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-    m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+    // 렌더러에서 해줌
+    //m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+    //m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    //m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+    //m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
 
     m_GraphicDev->SetFVF(D3DFVF_XYZ | D3DFVF_TEX1);
@@ -202,12 +203,12 @@ void CTrailEff::Render_Effect(CTexture* textureCom, int Num)
 
 
 
-
-    if (pStateBlock)
+    ///렌더러에서 해줌
+  /*  if (pStateBlock)
     {
         pStateBlock->Apply();
         pStateBlock->Release();
-    }
+    }*/
 
 
 }

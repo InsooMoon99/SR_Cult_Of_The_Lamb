@@ -59,7 +59,7 @@ public:
     float m_Time = 0.23f; //노드 유지시간
     float m_TrailWidth = .9f; // 노드 두께
 
-    _vec3 m_LastPos; // 마지막으로 찍힌 노드의 위치ㅏㅒ
+    _vec3 m_LastPos{0.f,0.f,0.f}; // 마지막으로 찍힌 노드의 위치ㅏㅒ
 
     //오너 프레스폼은 있음
 

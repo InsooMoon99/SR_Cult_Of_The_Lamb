@@ -31,6 +31,7 @@ public:
     virtual _int    Update_GameObject(const _float& timeDelta) override;
     virtual void    LateUpdate_GameObject(const _float& timeDelta) override;
     virtual void    Render_GameObject() override;
+    void Render_Trail();
 
     void Render_Core();
 
@@ -64,7 +65,7 @@ protected:
     CGameObject* m_pOwner;
     CGameObject* m_pTarget;
     //CAttackBox* ATBox = nullptr;
-    CTransform* m_ATKBoxTransformCom;
+    CTransform* m_ATKBoxTransformCom = nullptr;
     CProjectile* m_ProjectileCom;
 
     CTrailEff* m_TrailEff;

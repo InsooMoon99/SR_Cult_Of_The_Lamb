@@ -57,7 +57,7 @@ HRESULT CTree::Ready_GameObject()
 
         m_ItemNum = 1;
 
-        m_CombatStatCom->Set_MaxHp(3.f);
+        m_CombatStatCom->Set_MaxHp(7.f);
         m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
         break;
     case REALSMALLTREE:
@@ -68,7 +68,7 @@ HRESULT CTree::Ready_GameObject()
 
         m_ItemNum = 4;
 
-        m_CombatStatCom->Set_MaxHp(6.f);
+        m_CombatStatCom->Set_MaxHp(12.f);
         m_TransformCom->Set_Scale(_vec3(3.f, 3.f, 3.f));
         m_BoxColCom->Set_Size({ 1.5f, 1.5f, 1.5f });
 
@@ -82,7 +82,7 @@ HRESULT CTree::Ready_GameObject()
 
         m_ItemNum = 7;
 
-        m_CombatStatCom->Set_MaxHp(10.f);
+        m_CombatStatCom->Set_MaxHp(20.f);
         m_TransformCom->Set_Scale(_vec3(3.f, 3.f, 3.f));
         m_BoxColCom->Set_Size({ 1.5f, 2.5f, 1.5f });
         m_SpriteEffCom->InitOutLine(D3DCOLOR_ARGB(255, 255, 255, 255), 0.025f);

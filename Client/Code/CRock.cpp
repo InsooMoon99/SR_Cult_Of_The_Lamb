@@ -46,7 +46,7 @@ HRESULT CRock::Ready_GameObject()
 
         m_ItemNum = 3;
 
-        m_CombatStatCom->Set_MaxHp(5.f);
+        m_CombatStatCom->Set_MaxHp(10.f);
         m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
         break;
     case MIDDLEROCK:
@@ -56,7 +56,7 @@ HRESULT CRock::Ready_GameObject()
 
         m_ItemNum = 4;
 
-        m_CombatStatCom->Set_MaxHp(8.f);
+        m_CombatStatCom->Set_MaxHp(16.f);
         m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
         break;
     case BIGROCK:
@@ -66,7 +66,7 @@ HRESULT CRock::Ready_GameObject()
 
         m_ItemNum = 6;
 
-        m_CombatStatCom->Set_MaxHp(10.f);
+        m_CombatStatCom->Set_MaxHp(20.f);
         m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
         break;
     case END_ROCK:
