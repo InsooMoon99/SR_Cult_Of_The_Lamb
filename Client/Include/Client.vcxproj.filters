@@ -355,6 +355,9 @@
     <Filter Include="05. UI\01. UI\12. UI_FollowerCommand">
       <UniqueIdentifier>{97a31b16-2edb-43dc-a742-c1e3e0c52d78}</UniqueIdentifier>
     </Filter>
+    <Filter Include="91. RunLootLog">
+      <UniqueIdentifier>{9f4546c0-9cd4-470c-bfe4-7f9d5f1a3a16}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -830,9 +833,6 @@
     <ClInclude Include="..\Header\CUICookingCell.h">
       <Filter>05. UI\01. UI\11. UICooking</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CUICookedFoodCell.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\CInteractionChecker.h">
       <Filter>03. GameObject\11. NPC\98. Components\00. Interaction Checker</Filter>
     </ClInclude>
@@ -890,9 +890,6 @@
     <ClInclude Include="..\Header\CChest.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CTarotNPC.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\CUI_Skill.h">
       <Filter>05. UI\01. UI\03. UIWeapon&amp;Skill</Filter>
     </ClInclude>
@@ -901,6 +898,15 @@
     </ClInclude>
     <ClInclude Include="..\Header\CUI_FollowerCommand.h">
       <Filter>05. UI\01. UI\12. UI_FollowerCommand</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUICookedFoodCell.h">
+      <Filter>05. UI\01. UI\11. UICooking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CTarotNPC.h">
+      <Filter>03. GameObject\11. NPC\97. Tarot NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CRunLootLog.h">
+      <Filter>91. RunLootLog</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1339,9 +1345,6 @@
     <ClCompile Include="..\Code\CUICookingCell.cpp">
       <Filter>05. UI\01. UI\11. UICooking</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CUICookedFoodCell.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\CInteractionChecker.cpp">
       <Filter>03. GameObject\11. NPC\98. Components\00. Interaction Checker</Filter>
     </ClCompile>
@@ -1399,9 +1402,6 @@
     <ClCompile Include="..\Code\CChest.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CTarotNPC.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\CUI_Skill.cpp">
       <Filter>05. UI\01. UI\03. UIWeapon&amp;Skill</Filter>
     </ClCompile>
@@ -1410,6 +1410,15 @@
     </ClCompile>
     <ClCompile Include="..\Code\CUI_FollowerCommand.cpp">
       <Filter>05. UI\01. UI\12. UI_FollowerCommand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUICookedFoodCell.cpp">
+      <Filter>05. UI\01. UI\11. UICooking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CTarotNPC.cpp">
+      <Filter>03. GameObject\11. NPC\97. Tarot NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CRunLootLog.cpp">
+      <Filter>91. RunLootLog</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
