@@ -3,6 +3,11 @@
 #include "CStateMachine.h"
 
 class CNPCBase;
+/// @brief NPC의 상태 전이를 관리하고 제어하는 상태 머신 클래스
+/// @details
+/// - NPC의 다양한 상태(Idle, Run, Work 등)를 등록하고 관리한다.
+/// - RegisterState를 통해 상태를 등록하고, Change_State로 상태를 전환한다.
+/// - Owner(NPC) 포인터를 보유하여 상태 간 데이터 공유를 돕는다.
 class CNPCStateMachine : public CStateMachine
 {
 public:

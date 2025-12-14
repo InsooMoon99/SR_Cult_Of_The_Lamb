@@ -36,7 +36,7 @@ void CPlayerGathering::Initialize_Component()
     m_OwnerStateCom     = dynamic_cast<CState*>(m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
     m_OwnerAnimationCom = dynamic_cast<CAnimator*>(m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
     h.attacker          = m_Owner;
-    h.damage            = 1;
+    h.damage            = 2;
     h.dir               = { 0, 0, 0 };
     h.hitter            = nullptr;
     h.knockback         = 0;;
