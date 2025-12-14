@@ -19,10 +19,9 @@ void CNPCState_Spawn::Enter()
 {
     CNPCState::Enter();
 
-    // 생성 애니메이션 (Prefix + Spawn_Half)
     if (m_OwnerAnimator && m_Controller)
     {
-        wstring key = m_Controller->Get_AnimKeyPrefix() + L"Spawn_Half";
+        wstring key = m_Controller->Get_AnimKeyPrefix() + L"Spawn";
         m_OwnerAnimator->Play_Animation(key, ANIMSTATE::ONCE);
     }
 }
@@ -37,9 +36,8 @@ _int CNPCState_Spawn::Update_State(const _float& timeDelta)
         if (m_OwnerAnimator->Is_AnimationFinished())
         {
             if (m_Owner)
-            {
                 CVillageStateMgr::GetInstance()->Save_NPC(m_Owner->Get_Name(), true);
-            }
+
             return static_cast<_int>(CNPCStateMachine::NPC_STATE::IDLE);
         }
     }

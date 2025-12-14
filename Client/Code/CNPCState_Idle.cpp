@@ -6,7 +6,6 @@
 #include "CDroppedItem.h"
 #include "CDropSystem.h"
 #include "CInteractionChecker.h"
-#include "CItemDB.h"
 #include "CNPCBase.h"
 #include "CNPCController.h"
 #include "CNPCStateMachine.h"
@@ -16,7 +15,7 @@
 
 CNPCState_Idle::CNPCState_Idle(CNPCBase* owner, CNPCStateMachine* stateMachine)
     : CNPCState(owner, stateMachine),
-      m_PrayTimer(0.f)
+      m_IdleEndTimer(0.f)
 { }
 
 CNPCState_Idle::~CNPCState_Idle()
@@ -40,7 +39,7 @@ _int CNPCState_Idle::Update_State(const _float& timeDelta)
 {
     CNPCState::Update_State(timeDelta);
 
-    m_PrayTimer += timeDelta;
+    m_IdleEndTimer += timeDelta;
 
     if (m_Owner)
     {
@@ -133,11 +132,42 @@ _int CNPCState_Idle::Update_State(const _float& timeDelta)
             default: break;
             }
 
-            // 5초 이상 Idle 상태라면 자동으로 기도로 전환
-            if (m_PrayTimer >= 5.f)
+            // 5초 이상 Idle 상태라면 자동으로 주어진 일이 아닌 다른 일을 하러 감
+            if (m_IdleEndTimer >= 5.f)
             {
-                m_PrayTimer = 0.f; // 리셋
+                m_IdleEndTimer = 0.f; // 리셋
 
+                // 자신의 본래 작업이 아닌 다른 작업이 있는지 먼저 확인
+                CWorldInteractive*       altInteractive = nullptr;
+                CNPCController::NPC_WORK myWork         = m_Controller->Get_Work();
+
+                // CHOPWOOD가 원래 작업이면 MINING 확인, 그 반대도 마찬가지
+                if (myWork == CNPCController::NPC_WORK::CHOPWOOD)
+                {
+                    altInteractive = checker->Get_NearestRock(m_OwnerTransform->Get_Pos());
+                    if (altInteractive)
+                    {
+                        // 돌 채광으로 이동
+                        m_Controller->Set_TargetPos(altInteractive->Get_Transform()->Get_Pos());
+                        m_Controller->Set_TargetObject(altInteractive);
+                        m_Controller->Set_TargetType(CNPCController::NPC_TARGET_TYPE::ROCK);
+                        return static_cast<_int>(CNPCStateMachine::NPC_STATE::RUN);
+                    }
+                }
+                else if (myWork == CNPCController::NPC_WORK::MINING)
+                {
+                    altInteractive = checker->Get_NearestTree(m_OwnerTransform->Get_Pos());
+                    if (altInteractive)
+                    {
+                        // 나무 벌목으로 이동
+                        m_Controller->Set_TargetPos(altInteractive->Get_Transform()->Get_Pos());
+                        m_Controller->Set_TargetObject(altInteractive);
+                        m_Controller->Set_TargetType(CNPCController::NPC_TARGET_TYPE::TREE);
+                        return static_cast<_int>(CNPCStateMachine::NPC_STATE::RUN);
+                    }
+                }
+
+                // 다른 작업도 없으면 기도로 이동
                 _vec3 targetPos = m_Controller->Get_PrayTargetPos();
                 m_Controller->Set_TargetPos(targetPos);
                 m_Controller->Set_TargetObject(nullptr);

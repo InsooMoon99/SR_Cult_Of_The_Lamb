@@ -26,10 +26,10 @@ void CNPCState_Pray::Enter()
 
     if (m_OwnerAnimator && m_Controller)
     {
-        wstring key = m_Controller->Get_AnimKeyPrefix() + L"Pray_Half";
+        wstring key = m_Controller->Get_AnimKeyPrefix() + L"Pray";
         m_OwnerAnimator->Play_Animation(key, ANIMSTATE::LOOP);
     }
-    
+
     m_Timer = 0.f;
 }
 

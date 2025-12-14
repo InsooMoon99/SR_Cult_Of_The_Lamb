@@ -110,25 +110,25 @@ void CFollowerCow::Animation_Setting()
                                     _vec2(1.1f, 1.1f),
                                     _vec2(0.f, -0.13f));
 
-    m_AnimatorCom->Create_Animation(L"CowPray_Half",
+    m_AnimatorCom->Create_Animation(L"CowPray",
                                     62,
                                     0.04f,
                                     _vec2(0.75f, 0.67f),
                                     _vec2(0.f, -0.13f));
 
-    m_AnimatorCom->Create_Animation(L"CowPrayPeek_Half",
+    m_AnimatorCom->Create_Animation(L"CowPrayPeek",
                                     62,
                                     0.04f,
                                     _vec2(0.75f, 0.67f),
                                     _vec2(0.f, -0.13f));
 
-    m_AnimatorCom->Create_Animation(L"CowEat_Half",
+    m_AnimatorCom->Create_Animation(L"CowEat",
                                     50,
                                     0.05f,
-                                    _vec2(0.75f, 0.67f),
-                                    _vec2(0.f, -0.13f));
+                                    _vec2(0.72f, 0.65f),
+                                    _vec2(0.f, -0.12f));
 
-    m_AnimatorCom->Create_Animation(L"CowSpawn_Half",
+    m_AnimatorCom->Create_Animation(L"CowSpawn",
                                     172,
                                     0.04f,
                                     _vec2(1.5f, 1.5f),

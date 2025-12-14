@@ -19,7 +19,7 @@ void CNPCState_PrayPeek::Enter()
 
     if (m_OwnerAnimator && m_Controller)
     {
-        wstring key = m_Controller->Get_AnimKeyPrefix() + L"PrayPeek_Half";
+        wstring key = m_Controller->Get_AnimKeyPrefix() + L"PrayPeek";
         m_OwnerAnimator->Play_Animation(key, ANIMSTATE::ONCE);
     }
 }

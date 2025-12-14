@@ -21,7 +21,7 @@ void CNPCState_Eat::Enter()
 
     if (m_OwnerAnimator && m_Controller)
     {
-        wstring key = m_Controller->Get_AnimKeyPrefix() + L"Eat_Half";
+        wstring key = m_Controller->Get_AnimKeyPrefix() + L"Eat";
         m_OwnerAnimator->Play_Animation(key, ANIMSTATE::ONCE);
 
         // Enter 시점에 바로 음식 삭제 처리
@@ -45,9 +45,7 @@ _int CNPCState_Eat::Update_State(const _float& timeDelta)
     if (m_OwnerAnimator)
     {
         if (m_OwnerAnimator->Is_AnimationFinished())
-        {
             return static_cast<_int>(CNPCStateMachine::NPC_STATE::IDLE);
-        }
     }
 
     return static_cast<_int>(CNPCStateMachine::NPC_STATE::EAT);
