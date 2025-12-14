@@ -7,6 +7,7 @@
 #include "CTexture.h"
 #include "CRenderer.h"
 #include "CUIButton.h"
+#include "CBoxCollider.h"
 
 CUI_FollowerCommand::CUI_FollowerCommand(DEVICE graphicDev)
     : CUI(graphicDev),
@@ -45,6 +46,9 @@ void CUI_FollowerCommand::Initialize_GameObject()
     m_PrayButton->Get_Transform()->Set_Pos(_vec3(pos.x, pos.y + offset1.y, 0.f));
     m_AxeButton->Get_Transform()->Set_Pos(_vec3(pos.x - offset2.x, pos.y - offset2.y, 0.f));
     m_MiningButton->Get_Transform()->Set_Pos(_vec3(pos.x + offset3.x, pos.y - offset3.y, 0.f));
+
+    m_Active = false;
+
 }
 
 void CUI_FollowerCommand::OnBeginOverlap(CCollider* self, CCollider* other)
@@ -77,6 +81,9 @@ HRESULT CUI_FollowerCommand::Ready_GameObject()
 
 _int CUI_FollowerCommand::Update_GameObject(const _float& timeDelta)
 {
+    if (!m_Active)
+        return 0;
+
     _int exit = CUI::Update_GameObject(timeDelta);
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
@@ -97,6 +104,9 @@ void CUI_FollowerCommand::LateUpdate_GameObject(const _float& timeDelta)
 
 void CUI_FollowerCommand::Render_GameObject()
 {
+    if (!m_Active)
+        return ;
+
     CUI::Render_GameObject();
 
     const _matrix& world = m_TransformCom->Get_World();
@@ -135,9 +145,6 @@ HRESULT CUI_FollowerCommand::Add_Component()
     m_TransformCom = CreateProtoComponent<CTransform>(this, COMPONENTTYPE::TRANSFORM);
     NULL_CHECK_RETURN(m_TransformCom, E_FAIL);
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
-
-    m_BufferCom = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
-    NULL_CHECK_RETURN(m_BufferCom, E_FAIL);
 
     return S_OK;
 }

@@ -3,6 +3,7 @@
 
 namespace Engine
 {
+class CBoxCollider;
 class CAnimator;
 }
 
@@ -25,7 +26,7 @@ public:
     _int    Update_GameObject(const _float& timeDelta) override;
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
-
+    _bool   Get_Active() { return m_Active; }
     static CUI_FollowerCommand* Create(DEVICE graphicDev);
 
     HRESULT Add_Component();

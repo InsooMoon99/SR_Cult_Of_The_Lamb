@@ -900,7 +900,7 @@
       <Filter>05. UI\01. UI\03. UIWeapon&amp;Skill</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CUI_FollowerCommand.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>05. UI\01. UI\12. UI_FollowerCommand</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1409,7 +1409,7 @@
       <Filter>05. UI\01. UI\03. UIWeapon&amp;Skill</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CUI_FollowerCommand.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>05. UI\01. UI\12. UI_FollowerCommand</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

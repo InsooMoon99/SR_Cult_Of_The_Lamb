@@ -510,6 +510,8 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
         layer->Add_GameObject(OBJTYPE::NPC, gameObject),
         L"Add NPC object on layer has failed");
 
+    m_FollowerCow = dynamic_cast<CFollowerCow*>(gameObject); //UI 생성시점이 Follower 생성 시점보다 늦어서 나중에 포인터 주입하기 위해 멤버변수로 저장해둠
+    
     // -----------------------------
     // 저장된 건물 불러오기 기능
     // -----------------------------
@@ -685,6 +687,7 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, followerCommand),
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUI_FollowerCommand) failed");
 
+    m_FollowerCow->Set_FollowerCommandUI(followerCommand); // 여기서 뒤늦게 포인터 주입
 
     m_Layers.insert({ layerType, layer });
 
