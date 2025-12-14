@@ -54,9 +54,9 @@ void CCharacterBase::Initialize_GameObject()
 
 _int CCharacterBase::Update_GameObject(const _float& timeDelta)
 {
-    _int exit = CRenderObject::Update_GameObject(timeDelta);
-
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
+
+    _int exit = CRenderObject::Update_GameObject(timeDelta);
 
     return exit;
 }

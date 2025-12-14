@@ -172,6 +172,7 @@ enum class COMPONENTTYPE
     TEX_UI_BUTTON,
     TEX_UI_BUILD,
     TEX_UI_INTERACTION,
+    TEX_TAROTNPC,
     TEX_BOSSPHASE1,
     TEX_BULLET,
     TEX_WORKBENCH,
@@ -186,6 +187,7 @@ enum class COMPONENTTYPE
     TEX_DIALOGUE,
     TEX_UI_COOK,
     TEX_CHEST,
+    TEX_UI_SKILL,
 
     ANIMATOR,
 
@@ -273,6 +275,8 @@ enum class ACTORSTATE
     // 보스 1페
     PLAYER_DECIDE,
     PLAYER_REFUSE,
+
+    NPC_IDLE,
 
     DEAD,
 

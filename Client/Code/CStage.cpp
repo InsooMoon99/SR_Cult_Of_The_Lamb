@@ -51,6 +51,7 @@
 #include "CCreateHelper.h"
 #include "CUICookingMenu.h"
 #include "CChest.h"
+#include "CUI_Skill.h"
 
 class CUIBuildMenu;
 
@@ -512,6 +513,16 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
             layer,
             &gameObject),
         L"Persistent object setup failed: UI_Weapon");
+
+    FAILED_CHECK_MSG(
+        Engine::AcquirePersistentObject<CUI_Skill>(
+            OBJTYPE::UI,
+            L"UI_Skill",
+            m_GraphicDev,
+            layer,
+            &gameObject),
+        L"Persistent object setup failed: UI_Skill");
+
 
     //왼쪽 상단 스킬 아이콘 UI
     CUIIcon* pgameObject = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_ICON);

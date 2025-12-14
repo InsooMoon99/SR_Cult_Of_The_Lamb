@@ -202,6 +202,7 @@
     <ClInclude Include="..\Header\CCookingController.h" />
     <ClInclude Include="..\Header\CFog.h" />
     <ClInclude Include="..\Header\CFogMgr.h" />
+    <ClInclude Include="..\Header\CTarotNPC.h" />
     <ClInclude Include="..\Header\CUICookedFoodCell.h" />
     <ClInclude Include="..\Header\CUICookingCell.h" />
     <ClInclude Include="..\Header\CFollowerCow.h" />
@@ -320,6 +321,8 @@
     <ClInclude Include="..\Header\CUI_Dialogue.h" />
     <ClInclude Include="..\Header\CUI_Fade.h" />
     <ClInclude Include="..\Header\CUI_MonsterHp.h" />
+    <ClInclude Include="..\Header\CUI_Skill.h" />
+    <ClInclude Include="..\Header\CUI_SkillPanel.h" />
     <ClInclude Include="..\Header\CWarningChain.h" />
     <ClInclude Include="..\Header\CWall.h" />
     <ClInclude Include="..\Header\CWallRenderer.h" />
@@ -371,6 +374,7 @@
     <ClCompile Include="..\Code\CCookingController.cpp" />
     <ClCompile Include="..\Code\CFog.cpp" />
     <ClCompile Include="..\Code\CFogMgr.cpp" />
+    <ClCompile Include="..\Code\CTarotNPC.cpp" />
     <ClCompile Include="..\Code\CUICookedFoodCell.cpp" />
     <ClCompile Include="..\Code\CUICookingCell.cpp" />
     <ClCompile Include="..\Code\CFollowerCow.cpp" />
@@ -485,6 +489,8 @@
     <ClCompile Include="..\Code\CUI_Dialogue.cpp" />
     <ClCompile Include="..\Code\CUI_Fade.cpp" />
     <ClCompile Include="..\Code\CUI_MonsterHp.cpp" />
+    <ClCompile Include="..\Code\CUI_Skill.cpp" />
+    <ClCompile Include="..\Code\CUI_SkillPanel.cpp" />
     <ClCompile Include="..\Code\CWarningChain.cpp" />
     <ClCompile Include="..\Code\CWall.cpp" />
     <ClCompile Include="..\Code\CWallRenderer.cpp" />

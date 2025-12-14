@@ -14,6 +14,8 @@
 #include "CPersistentObjectHelper.h"
 #include "CPlayer.h"
 #include "CSceneMgr.h"
+#include "CTarotNPC.h"
+#include "CTarotStageController.h"
 #include "CTerrain.h"
 #include "CTransform.h"
 #include "CUICircle.h"
@@ -26,6 +28,7 @@
 #include "ItemInstance.h"
 #include "CTrigger_Dungeon.h"
 #include "CUI_Fade.h"
+#include "CUI_Skill.h"
 
 CStage_Dungeon::CStage_Dungeon(DEVICE graphicDev)
     : CScene(graphicDev),
@@ -65,30 +68,30 @@ void CStage_Dungeon::Initialize_Scene()
 
     m_RoomData[static_cast<_int>(Room::START)] =
     {
-        {10.f, 1.f, 10.f},                          
-        "../Bin/Resource/Data/Terrain/Terrain_DungeonStart.map",     
-        {0.f, 0.f, 0.f}                                   
+        {10.f, 1.f, 10.f},
+        "../Bin/Resource/Data/Terrain/Terrain_DungeonStart.map",
+        {0.f, 0.f, 0.f}
     };
 
     m_RoomData[static_cast<_int>(Room::MONSTER1)] =
     {
-        {60.f, 1.f, 10.f},
+        {55.f, 1.f, 25.f},
         "../Bin/Resource/Data/Terrain/Terrain_TarotMap.map",
         {50.f, 0.f, 0.f}
     };
 
     m_RoomData[static_cast<_int>(Room::MONSTER2)] =
     {
-        {110.f, 1.f, 10.f},
+        {140.f, 1.f, 10.f},
         "../Bin/Resource/Data/Terrain/Terrain_Mon2Test.map",
-        {100.f, 0.f, 0.f}
+        {150.f, 0.f, 0.f}
     };
 
     m_RoomData[static_cast<_int>(Room::TARO)] =
     {
         {160.f, 1.f, 10.f},
         "../Bin/Resource/Data/Terrain/Terrain_TaroTest.map",
-        {150.f, 0.f, 0.f}
+        {250.f, 0.f, 0.f}
     };
 
     m_RoomData[static_cast<_int>(Room::BOSS)] =
@@ -128,7 +131,6 @@ void CStage_Dungeon::Initialize_Scene()
     _vec3 startPos = m_RoomData[static_cast<_int>(Room::START)].spawnPos;
     m_PlayerTransform->Set_Pos(_vec3(startPos.x, startPos.y, startPos.z));
 }
-
 _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
 {
     if (m_RequestChangeScene)
@@ -394,7 +396,23 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
         // 에디터에 카메라 설정
         CMainEditorMgr::GetInstance()->Set_MainCamera(camController);
     }
+    CGameObject* tarotController = CTarotStageController::Create(m_GraphicDev);
 
+    NULL_CHECK_RETURN_MSG(
+        tarotController,
+        E_FAIL,
+        L"CStage_TarotTest::Ready_GameLogic_Layer() failed: CTarotStageController::Create() returned null");
+
+    FAILED_CHECK_MSG(
+        layer->Add_GameObject(OBJTYPE::LOGIC, tarotController),
+        L"CStage_TarotTest::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CTarotStageController) failed");
+
+
+    gameObject = CTarotNPC::Create(m_GraphicDev);
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::NPC, gameObject),
+        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(TarotNPC) failed");
+    dynamic_cast<CTarotNPC*>(gameObject)->Set_TarotController(dynamic_cast<CTarotStageController*>(tarotController));
+    
     m_Layers.insert({ layerType, layer });
 
     return S_OK;
@@ -452,6 +470,16 @@ HRESULT CStage_Dungeon::Ready_UI_Layer(LAYERTYPE layerType)
             layer,
             &gameObject),
         L"Persistent object setup failed: UI_Weapon");
+
+    FAILED_CHECK_MSG(
+        Engine::AcquirePersistentObject<CUI_Skill>(
+            OBJTYPE::UI,
+            L"UI_Skill",
+            m_GraphicDev,
+            layer,
+            &gameObject),
+        L"Persistent object setup failed: UI_Skill");
+
 
     //왼쪽 상단 스킬 아이콘 UI
     CUIIcon* pgameObject = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_ICON);

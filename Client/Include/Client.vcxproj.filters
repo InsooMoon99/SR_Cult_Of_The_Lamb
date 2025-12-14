@@ -37,9 +37,6 @@
     <Filter Include="05. UI\01. UI\02. UIMp">
       <UniqueIdentifier>{917c168c-0eae-404b-ae40-3ea31e9a924a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05. UI\01. UI\03. UIWeapon">
-      <UniqueIdentifier>{aebde5dc-3c0e-447e-85ea-05deb7023a1c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="99. ImGui_Editor">
       <UniqueIdentifier>{ae297ee4-6c1d-49d1-9257-6fa1219b5fc7}</UniqueIdentifier>
     </Filter>
@@ -325,6 +322,12 @@
     <Filter Include="03. GameObject\09. MapObject\03. Fog">
       <UniqueIdentifier>{2f846c5f-7436-4050-b8a3-cfae036bed3d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\11. NPC\97. Tarot NPC">
+      <UniqueIdentifier>{bb97d628-8790-4bf6-be84-4f7a0753ccc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. UI\01. UI\03. UIWeapon&amp;Skill">
+      <UniqueIdentifier>{aebde5dc-3c0e-447e-85ea-05deb7023a1c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -406,7 +409,7 @@
       <Filter>05. UI\01. UI\01. UICircle</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CUIWeapon.h">
-      <Filter>05. UI\01. UI\03. UIWeapon</Filter>
+      <Filter>05. UI\01. UI\03. UIWeapon&amp;Skill</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CMainMenu.h">
       <Filter>02. Scene\03. MainMenu</Filter>
@@ -836,6 +839,15 @@
     <ClInclude Include="..\Header\CChest.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CTarotNPC.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUI_Skill.h">
+      <Filter>05. UI\01. UI\03. UIWeapon&amp;Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUI_SkillPanel.h">
+      <Filter>05. UI\01. UI\03. UIWeapon&amp;Skill</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -902,7 +914,7 @@
       <Filter>05. UI\01. UI\01. UICircle</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CUIWeapon.cpp">
-      <Filter>05. UI\01. UI\03. UIWeapon</Filter>
+      <Filter>05. UI\01. UI\03. UIWeapon&amp;Skill</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CMainMenu.cpp">
       <Filter>02. Scene\03. MainMenu</Filter>
@@ -1308,6 +1320,15 @@
     </ClCompile>
     <ClCompile Include="..\Code\CChest.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CTarotNPC.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_Skill.cpp">
+      <Filter>05. UI\01. UI\03. UIWeapon&amp;Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_SkillPanel.cpp">
+      <Filter>05. UI\01. UI\03. UIWeapon&amp;Skill</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
