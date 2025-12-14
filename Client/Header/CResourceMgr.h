@@ -35,6 +35,8 @@ public:
     HRESULT Ready_BossP2_Eyeball(DEVICE graphicDev);
     HRESULT Ready_Follower(DEVICE graphicDev);
 
+    HRESULT Ready_MiniBoss(DEVICE graphicDev);
+
 
 public:
     void Free() override;

@@ -19,6 +19,8 @@ public:
 
     void RenderFont(const wstring& font, const wstring& text, CUIButton* btt);
 
+    void Set_ShowUI(bool show) { m_ShowUI = show; }
+
 private:
     HRESULT Ready_Environment_Layer(LAYERTYPE layerType);
     HRESULT Ready_GameLogic_Layer(LAYERTYPE layerType);
@@ -32,6 +34,8 @@ private:
     CUIButton* bt2;
     CUIButton* bt3;
 
+
+    bool m_ShowUI=true;
 public:
     static CMainMenu* Create(DEVICE graphicDev);
 

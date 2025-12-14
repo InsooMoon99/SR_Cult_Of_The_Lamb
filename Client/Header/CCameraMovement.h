@@ -207,6 +207,13 @@ private:
 
 #pragma endregion
 
-    
+    bool m_UsePresetEase = false;
+    float m_EaseTime=0;
+    float m_EaseDuration=1;
+
+    CameraPreset m_StartPreset;
+    CameraPreset m_CurPreset;
+
+    function<float(float)> m_easeFunc;
 };
 

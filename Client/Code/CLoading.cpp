@@ -172,9 +172,12 @@ _uint CLoading::Loading_ForState_Parallel()
     futures.push_back(async(launch::async, [&]() {
         return resourceMgr->Ready_Building(m_GraphicDev);
         }));
-    futures.push_back(async(launch::async, [&]() {
-        return resourceMgr->Ready_Follower(m_GraphicDev);
-        }));
+    //futures.push_back(async(launch::async, [&]() {
+    //    return resourceMgr->Ready_Follower(m_GraphicDev);
+    //    }));
+    //futures.push_back(async(launch::async, [&]() {
+    //    return resourceMgr->Ready_MiniBoss(m_GraphicDev);
+    //    }));
 
     // 병렬 태스크 완료 대기
     for (auto& future : futures)

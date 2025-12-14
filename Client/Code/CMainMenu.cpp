@@ -19,23 +19,27 @@
 #include "CUIButton.h"
 #include "CUIIcon.h"
 #include "CMainEditorMgr.h"
+#include "CMenuExtra.h"
+#include "CRenderer.h"
 
 CMainMenu::CMainMenu(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
 
-      bt(nullptr),
-      bt1(nullptr),
-      bt2(nullptr),
-      bt3(nullptr)
-{ }
+    bt(nullptr),
+    bt1(nullptr),
+    bt2(nullptr),
+    bt3(nullptr)
+{
+}
 
 CMainMenu::~CMainMenu()
-{ }
+{
+}
 
 HRESULT CMainMenu::Ready_Scene()
 {
     if (FAILED(Ready_Environment_Layer(LAYERTYPE::ENVIRONMENT)))
-        return E_FAIL; 
+        return E_FAIL;
 
     if (FAILED(Ready_GameLogic_Layer(LAYERTYPE::GAMELOGIC)))
         return E_FAIL;
@@ -48,6 +52,7 @@ HRESULT CMainMenu::Ready_Scene()
 
     // 메인 화면 BGM
     CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Intro.wav", 0.3f);
+    CRenderer::GetInstance()->SetFog(true);
 
     return S_OK;
 }
@@ -92,16 +97,16 @@ void CMainMenu::RenderFont(const wstring& font, const wstring& text, CUIButton* 
     if (btt->Get_Hovered() == true)
     {
         CFontMgr::GetInstance()->Render_Font(font,
-                                             text,
-                                             &screen,
-                                             D3DXCOLOR(1.f, 1.f, 1.f, 1.f));
+            text,
+            &screen,
+            D3DXCOLOR(1.f, 1.f, 1.f, 1.f));
     }
     else
     {
         CFontMgr::GetInstance()->Render_Font(font,
-                                             text,
-                                             &screen,
-                                             D3DXCOLOR(0.f, 0.f, 0.f, 1.f));
+            text,
+            &screen,
+            D3DXCOLOR(0.f, 0.f, 0.f, 1.f));
     }
 }
 
@@ -117,7 +122,7 @@ HRESULT CMainMenu::Ready_Environment_Layer(LAYERTYPE layerType)
     pGameObject = CMainBG::Create(m_GraphicDev);
     NULL_CHECK_RETURN(m_GraphicDev, E_FAIL)
 
-    const auto bgTransform =
+        const auto bgTransform =
         dynamic_cast<CTransform*>(pGameObject->Get_Component(
             ID_DYNAMIC,
             COMPONENTTYPE::TRANSFORM));
@@ -142,9 +147,9 @@ HRESULT CMainMenu::Ready_GameLogic_Layer(LAYERTYPE layerType)
     gameObject = CMenuChar::Create(m_GraphicDev);
     NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CMainMenu::Ready_GameLogic_Layer() failed: CMenuChar::Create() returned null")
 
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::UI, gameObject),
-        L"CMainMenu::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CMenuChar) failed");
+        FAILED_CHECK_MSG(
+            layer->Add_GameObject(OBJTYPE::UI, gameObject),
+            L"CMainMenu::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CMenuChar) failed");
 
     const auto charTransform =
         dynamic_cast<CTransform*>(gameObject->Get_Component(
@@ -174,8 +179,8 @@ HRESULT CMainMenu::Ready_GameLogic_Layer(LAYERTYPE layerType)
         //   그럴 때는 필요한 것만 사용해 .Apply() 하면 된다.
         CCamSetupBuilder(camController)
             .SetTarget(charTransform)
-            .PivotOffset({ 0.f, 0.f, 0.f })
-            .Distance(6.f)
+            .PivotOffset({ 0.f, 0.7f, 0.f })
+            .Distance(39.f)
             .RotX(0.f)
             .RotY(0.f)
             .LagSpeed(15.f)
@@ -189,6 +194,56 @@ HRESULT CMainMenu::Ready_GameLogic_Layer(LAYERTYPE layerType)
     if (nullptr == layer)
         return E_FAIL;
 
+    /////////////////////////////////////////////////////////////////////
+    //엑스트라 소환
+    //////////////////////////////////////////////////////////////////////
+
+    int index = 0;
+    bool flag = false;
+    for (int j = 1; j <= 4;j++)
+    {
+    int radius = 6.5*j;
+    int num = 26*(j*1.1f);
+
+
+        for (int i = 0; i < num;i++)
+        {
+            float angle = 360.f / (num); // 갯수 나누기 360 각도 구함
+
+            float addangle = angle * i; // 몇번재 인지 정함
+
+            int index = (int)(addangle / (360.f / 16.f));
+
+
+            CMenuExtra* MenuExtra = CMenuExtra::Create(m_GraphicDev, index);
+
+            CTransform* MenuExtraTransform =
+                dynamic_cast<CTransform*>(MenuExtra->Get_Component(
+                    ID_DYNAMIC,
+                    COMPONENTTYPE::TRANSFORM));
+
+            _vec3 ownerPos = charTransform->Get_Pos();
+
+
+            _vec3 circle = { sin(D3DXToRadian(addangle)) * radius, 0, cos(D3DXToRadian(addangle)) * radius }; // 반지름 적용
+            _vec3 TR = ownerPos + circle;
+            MenuExtraTransform->Set_Pos({ TR.x, 0,TR.z });
+
+
+            if (i > num * .5f)
+            {
+                _vec3 originScale = MenuExtraTransform->Get_Scale();
+                MenuExtraTransform->Set_Scale({ originScale.x * -1,originScale.y,originScale.z });
+            }
+
+
+            FAILED_CHECK_MSG(
+                layer->Add_GameObject(OBJTYPE::EXTRA, MenuExtra),
+                L"CMainMenu::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CMenuChar) failed");
+
+
+        }
+    }
     m_Layers.insert({ layerType, layer });          // scene -> map
 
     return S_OK;
@@ -281,6 +336,8 @@ CMainMenu* CMainMenu::Create(DEVICE graphicDev)
 
 void CMainMenu::Free()
 {
+    CRenderer::GetInstance()->SetFog(false);
+
     CSoundMgr::GetInstance()->Stop_SoundChannel(SOUND_BGM);
 
     Engine::CScene::Free();

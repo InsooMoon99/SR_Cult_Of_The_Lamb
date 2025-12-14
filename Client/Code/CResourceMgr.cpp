@@ -69,6 +69,7 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
     if (FAILED(Ready_Building(graphicDev))) return E_FAIL;
     //if (FAILED(Ready_Follower(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Particle(graphicDev))) return E_FAIL;
+    if (FAILED(Ready_MiniBoss(graphicDev))) return E_FAIL;
 
     return S_OK;
 }
@@ -786,13 +787,24 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
         return E_FAIL;
 
     //// Texture : MainMenu BackGround
-    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_MAINBG,
-        Engine::CTexture::Create(
-            graphicDev,
-            TEX_NORMAL,
-            L"../Bin/Resource/Texture/BackGround/MainMenu/MenuMask1.png",
-            1))))
+
+        //UIButton 텍스쳐
+    vector<wstring> BG;
+    BG.push_back(L"../Bin/Resource/Texture/BackGround/MainMenu/MenuMask1.png");
+    BG.push_back(L"../Bin/Resource/Texture/MainMenu/RitualStone_Activated.png");
+  
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_MAINBG, Engine::CTexture::Create(graphicDev, TEX_NORMAL, BG))))
         return E_FAIL;
+
+
+    //if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_MAINBG,
+    //    Engine::CTexture::Create(
+    //        graphicDev,
+    //        TEX_NORMAL,
+    //        L"../Bin/Resource/Texture/BackGround/MainMenu/MenuMask1.png",
+    //        1))))
+    //    return E_FAIL;
 
     // Texture : Inventory BackGround
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_INVEN,
@@ -909,14 +921,26 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
 
 
     // Texture : MainMenu Extra
-    // UI_Cooking
+    //
     vector<wstring> extra;
-    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideFront0.png");
-    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_0.png");
-    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Back_0.png");
     extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Front_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideFront0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideFront0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Side_0.png");
     extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Side_0.png");
     extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideBack_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideBack_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Back_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Back_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideBack_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideBack_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Side_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Side_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideFront0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideFront0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Front_0.png");
+
+    //extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_0.png");
 
 
     if (FAILED(protoMgr->Ready_Prototype(
@@ -1357,6 +1381,49 @@ HRESULT CResourceMgr::Ready_Follower(DEVICE graphicDev)
 
     return S_OK;
 }
+
+HRESULT CResourceMgr::Ready_MiniBoss(DEVICE graphicDev)
+{
+    auto protoMgr = CProtoMgr::GetInstance();
+
+    CTexture* MiniBossTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(MiniBossTex, E_FAIL);
+
+
+    if (FAILED(MiniBossTex->Add_Texture(L"Eligos_roar", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Eligos_roar/Eligos_roar%d.png", 140)))
+        return E_FAIL;
+
+    if (FAILED(MiniBossTex->Add_Texture(L"Eligos_fly", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Eligos_fly/Eligos_fly%d.png", 42)))
+        return E_FAIL;
+
+    if (FAILED(MiniBossTex->Add_Texture(L"Eligos_burpcharge", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Eligos_burpcharge/Eligos_burpcharge%d.png", 50)))
+        return E_FAIL;
+
+    if (FAILED(MiniBossTex->Add_Texture(L"Eligos_burp", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Eligos_burp/Eligos_burp%d.png", 42)))
+        return E_FAIL;
+
+    if (FAILED(MiniBossTex->Add_Texture(L"Eligos_attackcharge", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Eligos_attackcharge/Eligos_attackcharge%d.png", 59)))
+        return E_FAIL;
+
+    if (FAILED(MiniBossTex->Add_Texture(L"Eligos_attack", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Eligos_attack/Eligos_attack%d.png", 32)))
+        return E_FAIL;
+
+    if (FAILED(MiniBossTex->Add_Texture(L"Mortar_fly", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Mortar_fly/Mortar_fly%d.png", 27)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_MINIBOSS, MiniBossTex)))
+        return E_FAIL;
+
+    return S_OK;
+}
+
 
 void CResourceMgr::Free()
 { }
