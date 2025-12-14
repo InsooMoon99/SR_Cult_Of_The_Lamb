@@ -1193,6 +1193,18 @@ HRESULT CResourceMgr::Ready_Follower(DEVICE graphicDev)
         L"../Bin/Resource/Texture/NPC/Follower/Cow3/Spawn/Follower-spawn-in-base%d.png", 172)))
         return E_FAIL;
 
+    if (FAILED(cowTex->Add_Texture(L"CowTransform1", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Transform1/Follower-transform1-%d.png", 94)))
+        return E_FAIL;
+
+    if (FAILED(cowTex->Add_Texture(L"CowTransform2", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Transform2/Follower-transform2-%d.png", 26)))
+        return E_FAIL;
+
+    if (FAILED(cowTex->Add_Texture(L"CowTransform3", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Transform3/Follower-transform3-%d.png", 89)))
+        return E_FAIL;
+
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_COW, cowTex)))
         return E_FAIL;
 
@@ -1243,6 +1255,18 @@ HRESULT CResourceMgr::Ready_Follower(DEVICE graphicDev)
         L"../Bin/Resource/Texture/NPC/Follower/Elephant/Spawn/Follower-spawn-in-base%d.png", 172)))
         return E_FAIL;
 
+    if (FAILED(elephantTex->Add_Texture(L"ElephantTransform1", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Transform1/Follower-transform1-%d.png", 94)))
+        return E_FAIL;
+
+    if (FAILED(elephantTex->Add_Texture(L"ElephantTransform2", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Transform2/Follower-transform2-%d.png", 26)))
+        return E_FAIL;
+
+    if (FAILED(elephantTex->Add_Texture(L"ElephantTransform3", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Transform3/Follower-transform3-%d.png", 89)))
+        return E_FAIL;
+
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_ELEPHANT, elephantTex)))
         return E_FAIL;
 
@@ -1291,6 +1315,18 @@ HRESULT CResourceMgr::Ready_Follower(DEVICE graphicDev)
 
     if (FAILED(pigTex->Add_Texture(L"PigSpawn", TEX_NORMAL,
         L"../Bin/Resource/Texture/NPC/Follower/Pig2/Spawn/Follower-spawn-in-base%d.png", 172)))
+        return E_FAIL;
+
+    if (FAILED(pigTex->Add_Texture(L"PigTransform1", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Transform1/Follower-transform1-%d.png", 94)))
+        return E_FAIL;
+
+    if (FAILED(pigTex->Add_Texture(L"PigTransform2", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Transform2/Follower-transform2-%d.png", 26)))
+        return E_FAIL;
+
+    if (FAILED(pigTex->Add_Texture(L"PigTransform3", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Transform3/Follower-transform3-%d.png", 89)))
         return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PIG, pigTex)))
