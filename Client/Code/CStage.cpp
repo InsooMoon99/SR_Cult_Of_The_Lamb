@@ -3,6 +3,7 @@
 
 #include "CCameraController.h"
 #include "CCamSetupBuilder.h"
+#include "CChest.h"
 #include "CCombatStat.h"
 #include "CConstructCircle.h"
 #include "CConstructionMgr.h"
@@ -13,7 +14,6 @@
 #include "CDropSystem.h"
 #include "CFloaterMonster.h"
 #include "CFollowerCow.h"
-#include "CParticleHelper.h"
 #include "CHarvestableHerb.h"
 #include "CHumanMonster.h"
 #include "CInventory.h"
@@ -22,6 +22,7 @@
 #include "CLayer.h"
 #include "CMainCamera.h"
 #include "CMainEditorMgr.h"
+#include "CParticleHelper.h"
 #include "CPersistentObjectHelper.h"
 #include "CPlayer.h"
 #include "CPlayerSkill.h"
@@ -46,7 +47,6 @@
 #include "CVillageStateMgr.h"
 #include "CWorkBench.h"
 #include "ItemInstance.h"
-#include "CChest.h"
 
 class CUIBuildMenu;
 
@@ -55,8 +55,10 @@ CStage::CStage(DEVICE graphicDev)
       m_PlayerCombatStatCom(nullptr),
       m_PlayerInventoryCom(nullptr),
       m_WeaponEquipCom(nullptr),
+      m_WorkBench(nullptr),
       m_PlayerSkillCom(nullptr),
-      m_Terrain(nullptr)
+      m_Terrain(nullptr),
+      m_Kitchen(nullptr)
 {}
 
 CStage::~CStage()

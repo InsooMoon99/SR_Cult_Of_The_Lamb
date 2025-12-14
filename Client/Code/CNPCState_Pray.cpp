@@ -84,9 +84,11 @@ _int CNPCState_Pray::Update_State(const _float& timeDelta)
                     m_Controller->Set_TargetPos(targetPos);
                     m_Controller->Set_TargetObject(nearestInteractive);
                     m_Controller->Set_TargetType(CNPCController::NPC_TARGET_TYPE::TREE);
+
                     return static_cast<_int>(CNPCStateMachine::NPC_STATE::RUN);
                 }
                 break;
+
             case CNPCController::NPC_WORK::MINING:
                 nearestInteractive = checker->Get_NearestRock(m_OwnerTransform->Get_Pos());
                 if (nearestInteractive)
@@ -95,9 +97,11 @@ _int CNPCState_Pray::Update_State(const _float& timeDelta)
                     m_Controller->Set_TargetPos(targetPos);
                     m_Controller->Set_TargetObject(nearestInteractive);
                     m_Controller->Set_TargetType(CNPCController::NPC_TARGET_TYPE::ROCK);
+
                     return static_cast<_int>(CNPCStateMachine::NPC_STATE::RUN);
                 }
                 break;
+
             default: break;
             }
         }

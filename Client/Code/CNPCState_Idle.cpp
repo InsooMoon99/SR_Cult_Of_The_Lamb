@@ -101,6 +101,7 @@ _int CNPCState_Idle::Update_State(const _float& timeDelta)
                     return static_cast<_int>(CNPCStateMachine::NPC_STATE::RUN);
                 }
             }
+            break;
 
             case CNPCController::NPC_WORK::MINING:
             {
@@ -116,6 +117,7 @@ _int CNPCState_Idle::Update_State(const _float& timeDelta)
                     return static_cast<_int>(CNPCStateMachine::NPC_STATE::RUN);
                 }
             }
+            break;
 
             case CNPCController::NPC_WORK::PRAY:
             {

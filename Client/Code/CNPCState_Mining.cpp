@@ -62,7 +62,7 @@ _int CNPCState_Mining::Update_State(const _float& timeDelta)
                     HITDATA h;
                     ZeroMemory(&h, sizeof(h));
                     h.attacker = m_Owner;
-                    h.damage   = 1.f;
+                    h.damage   = 1.f;       // 돌 때리는 데미지 1
                     h.hitter   = target;
 
                     if (m_OwnerTransform && interactive->Get_Transform())

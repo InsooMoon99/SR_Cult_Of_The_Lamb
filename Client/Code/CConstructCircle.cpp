@@ -117,7 +117,7 @@ void CConstructCircle::OnStayOverlap(CCollider* self, CCollider* other)
             npc->Get_Component(ID_DYNAMIC, COMPONENTTYPE::NPC_CONTROLLER));
 
         if (controller && controller->Get_CurNPCState() == CNPCStateMachine::NPC_STATE::BUILD)
-            m_Progress += 10.f * CTimerMgr::GetInstance()->Get_TimeDelta();
+            m_Progress += 5.f * CTimerMgr::GetInstance()->Get_TimeDelta();
     }
 
     // 건축 완료 로직

@@ -1,7 +1,8 @@
 ﻿#include "pch.h"
 #include "CLoading.h"
-#include <future>
+
 #include <chrono>
+#include <future>
 #include "CAnimator.h"
 #include "CBoxCol.h"
 #include "CProtoMgr.h"
