@@ -50,9 +50,6 @@ protected:
 
     _int                    m_KillCount = 0;
 
-
-    //CMainCamera*            m_MainCam;
-
 protected:
     void Free() override;
 };
