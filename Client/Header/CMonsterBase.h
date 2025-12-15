@@ -54,6 +54,14 @@ public:
     virtual void    AlphaRenderEnd();
     void            Set_Hurt(bool hurt) { m_bHurt = hurt; }
 
+public:
+    using   OnDeathCallback = function<void()>;
+    void    Set_OnDeath(OnDeathCallback callback) { m_OnDeath = callback; }
+    void    Trigger_OnDeath();
+
+private:
+    OnDeathCallback m_OnDeath = nullptr;
+
 protected:
     void            Free() override;
 

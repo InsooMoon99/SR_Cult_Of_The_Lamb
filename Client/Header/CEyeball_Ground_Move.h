@@ -39,5 +39,10 @@ private:
 
     _float              m_LerpSpeed;
     _float              m_MaxMoveDistance;
+
+    _float              m_Direction_Timer = 0.f;
+    _bool               m_IsUnderground = false;
+
+    _float              m_ParticleTimer = 0.f;
 };
 

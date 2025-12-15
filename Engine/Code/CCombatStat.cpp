@@ -126,9 +126,14 @@ void CCombatStat::Apply_Knockback(const HITDATA& hitData)
 {
     if (hitData.knockback > 0.f && m_OwnerRigidbody)
     {
-        _vec3 knockbackVel = hitData.dir * hitData.knockback;
-        m_OwnerRigidbody->Set_Velocity(knockbackVel);
+        _vec3 knockbackDir = hitData.dir;
+        knockbackDir.y = 0.f;  
+        D3DXVec3Normalize(&knockbackDir, &knockbackDir);  
 
+        _float mass = m_OwnerRigidbody->Get_Mass();
+        _vec3 knockbackVel = knockbackDir * (hitData.knockback / mass);
+
+        m_OwnerRigidbody->Set_Velocity(knockbackVel);
         m_KnockbackTimer = hitData.knockbackTimer;
     }
 }

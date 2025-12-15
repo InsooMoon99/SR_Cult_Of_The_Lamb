@@ -8,6 +8,7 @@
 #include "CBoss2_StateMachine.h"
 #include "CCombatStat.h"
 #include "CBoxCollider.h"
+#include "CEyeball.h"
 #include "CUI_BossHp.h"
 
 CBossPhase2::CBossPhase2(DEVICE graphicDev)
@@ -33,6 +34,7 @@ HRESULT CBossPhase2::Ready_GameObject()
     m_CombatStatCom->Set_HitState(false); // Hit State로 변경할건지
 
     m_TransformCom->Set_Scale(_vec3(13.7f, 6.3f, 3.f));
+    m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(25.f));
 
     m_BoxColCom->Set_Size(_vec3(1.2f, 1.6f, 1.f));
     m_BoxColCom->Set_Offset(_vec3(0.f, -2.1f, 0.f));
@@ -66,7 +68,7 @@ _int CBossPhase2::Update_GameObject(const _float& timeDelta)
             {
                 _int curState = stateMachine->Get_CurStateNum();
 
-                if (curState != PATTERN::PHASE2_DEAD)
+                if (curState != PATTERN::PHASE2_DEAD && curState != PATTERN::PHASE2_FOLLOWER)
                 {
                     stateMachine->Change_State(PATTERN::PHASE2_DEAD);
                 }
@@ -126,11 +128,74 @@ const char* CBossPhase2::Get_Boss2_StateName(_int stateNum)
     case PHASE2_ROAR:       return "PHASE2_Roar";
     case PHASE2_EYEBALL:    return "PHASE2_EYEBALL";
     case PHASE2_CHAIN:      return "PHASE2_CHAIN";
-    case PHASE2_BULLET:     return "PHASE2_BULLET";
+    case PHASE2_BULLET1:    return "PHASE2_BULLET";
+    case PHASE2_BULLET2:    return "PHASE_BULLET2";
+    case PHASE2_GROGGY:     return "PHASE_GROGGY";
     case PHASE2_DEAD:       return "PHASE2_DEAD";
+    case PHASE2_FOLLOWER:   return "PHASE2_FOLLOWER";
     case PHASE2_END:        return "PHASE2_END";
     }
     return "UNKNOWN";
+}
+
+void CBossPhase2::Add_Eyeball(CEyeball* eyeball)
+{
+    if (eyeball)
+        m_Eyeballs.emplace_back(eyeball);
+}
+
+void CBossPhase2::Remove_Eyeball(CEyeball* eyeball)
+{
+    auto iter = find(m_Eyeballs.begin(), m_Eyeballs.end(), eyeball);
+
+    if (iter != m_Eyeballs.end())
+    {
+        m_Eyeballs.erase(iter);
+    }
+}
+
+void CBossPhase2::Command_Ground()
+{
+    for (auto eyeball : m_Eyeballs)
+    {
+        if (!eyeball) continue;
+
+        // 이미 죽었거나, 펜딩킬 예정이면 스킵
+        if (eyeball->Is_PendingDestroy())
+            continue;
+
+        auto controller = eyeball->Get_Controller();
+        if (controller)
+        {
+            auto stateMachine = controller->Get_StateMachine();
+            if (stateMachine)
+            {
+                _int curState = stateMachine->Get_CurStateNum();
+
+                // 공격 진행중이면 스킵 Eyeball Attack End 에서 알아서 처리
+                if (curState == CEyeball::PATTERN::EYEBALL_ATTACK)
+                    continue;
+
+                stateMachine->Change_State(CEyeball::PATTERN::EYEBALL_GROUND_MOVE);
+            }
+        }
+    }
+}
+
+_bool CBossPhase2::Is_InSpecialPattern()
+{
+    if (!m_BossController)
+        return false;
+
+    auto stateMachine = m_BossController->Get_StateMachine();
+    if (!stateMachine)
+        return false;
+
+    _int curState = stateMachine->Get_CurStateNum();
+
+    return (curState == PATTERN::PHASE2_BULLET1 ||
+                curState == PATTERN::PHASE2_BULLET2 ||
+                curState == PATTERN::PHASE2_GROGGY);
 }
 
 CBossPhase2* CBossPhase2::Create(DEVICE graphicDev)
@@ -149,15 +214,22 @@ CBossPhase2* CBossPhase2::Create(DEVICE graphicDev)
 
 void CBossPhase2::Animation_Setting()
 {
-    m_AnimatorCom->Create_Animation(L"Boss2_Start", 68, 0.04f);
-    m_AnimatorCom->Create_Animation(L"Boss2_Idle", 68, 0.04f);
-    m_AnimatorCom->Create_Animation(L"Boss2_Roar", 69, 0.04f);
+    m_AnimatorCom->Create_Animation(L"Boss2_Start", 85, 0.05f, _vec2(1.f, 1.f), _vec2(0.f, 0.05f));
+    m_AnimatorCom->Create_Animation(L"Boss2_Idle", 68, 0.05f, _vec2(1.f, 1.f), _vec2(0.005f, 0.05f));
 
-    m_AnimatorCom->Create_Animation(L"Boss2_HandSlam", 68, 0.04f);
-    m_AnimatorCom->Create_Animation(L"Boss2_Dead", 56, 0.04f);
+    m_AnimatorCom->Create_Animation(L"Boss2_Summon", 134, 0.05f);
 
-    // 스프라이트 재생은 상태머신으로
-    //m_AnimatorCom->Play_Animation(L"Boss2_Idle", ANIMSTATE::LOOP); 
+    m_AnimatorCom->Create_Animation(L"Boss2_Roar", 69, 0.04f, _vec2(1.f, 1.f), _vec2(0.f, -0.08f));
+
+    m_AnimatorCom->Create_Animation(L"Boss2_HandSlam", 68, 0.04f, _vec2(1.f, 1.12f), _vec2(0.f, -0.19f));
+    m_AnimatorCom->Create_Animation(L"Boss2_Dead", 56, 0.06f, _vec2(1.09, 1.25), _vec2(0.f, -0.33f));
+
+    m_AnimatorCom->Create_Animation(L"Boss2_DownStart", 64, 0.04f, _vec2(1.09f, 1.1f), _vec2(0.f, -0.1f));
+    m_AnimatorCom->Create_Animation(L"Boss2_DownIdle", 67, 0.04f, _vec2(0.93f, 0.79f), _vec2(0.f, -0.14f));
+
+    m_AnimatorCom->Create_Animation(L"Boss2_Sweep", 82, 0.04f, _vec2(1.16f, 1.25f), _vec2(0.f, -0.18f));
+    m_AnimatorCom->Create_Animation(L"Boss2_Follower_Transform", 62, 0.04f, _vec2(0.115f, 0.5f), _vec2(0.f, -0.52f));
+    m_AnimatorCom->Create_Animation(L"Boss2_Follower_UnConverted", 50, 0.05f, _vec2(0.046f, 0.14f), _vec2(0.f, -0.75f));
 }
 
 HRESULT CBossPhase2::Add_Component()

@@ -100,6 +100,10 @@ void CUI_BossHp::Render_GameObject()
     if (!m_Owner || !m_TextureCom)
         return;
 
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+
     _float ratio         = clamp(m_HpRatio, 0.f, 1.f);
     _float delayRatio    = clamp(m_HpDelayRatio, 0.f, 1.f);
 
@@ -166,6 +170,11 @@ void CUI_BossHp::Render_GameObject()
             1);
 
     }
+
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_CURRENT);
 }
 
 HRESULT CUI_BossHp::Add_Component()

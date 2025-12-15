@@ -1,12 +1,16 @@
 ﻿#include "pch.h"
 #include "CBoss2_StateMachine.h"
 
+#include "CBoss2_BulletAttack1.h"
+#include "CBoss2_BulletAttack2.h"
 #include "CBoss2_Idle.h"
 #include "CBossPhase2.h"
 #include "CMonsterState.h"
 #include "CBoss2_Start.h"
 #include "CBoss2_ChainAttack.h"
 #include "CBoss2_Die.h"
+#include "CBoss2_Follower.h"
+#include "CBoss2_Groggy.h"
 
 CBoss2_StateMachine::CBoss2_StateMachine(CMonsterBase* owner)
     : m_Owner(owner)
@@ -37,13 +41,30 @@ HRESULT CBoss2_StateMachine::Ready_StateMachine()
         if (FAILED(RegisterState<CBoss2_Idle>(CBossPhase2::PATTERN::PHASE2_IDLE, m_Owner)))
             return E_FAIL;
 
-        // Roar
-        if (FAILED(RegisterState<CBoss2_ChainAttack>(CBossPhase2::PATTERN::PHASE2_ROAR, m_Owner)))
+        // ChainAttack
+        if (FAILED(RegisterState<CBoss2_ChainAttack>(CBossPhase2::PATTERN::PHASE2_CHAIN, m_Owner)))
+            return E_FAIL;
+
+        // Bullet1
+        if (FAILED(RegisterState<CBoss2_BulletAttack1>(CBossPhase2::PATTERN::PHASE2_BULLET1, m_Owner)))
+            return E_FAIL;
+
+        // Bullet2
+        if (FAILED(RegisterState<CBoss2_BulletAttack2>(CBossPhase2::PATTERN::PHASE2_BULLET2, m_Owner)))
+            return E_FAIL;
+
+        // Groggy
+        if (FAILED(RegisterState<CBoss2_Groggy>(CBossPhase2::PATTERN::PHASE2_GROGGY, m_Owner)))
             return E_FAIL;
 
         // Die
         if (FAILED(RegisterState<CBoss2_Die>(CBossPhase2::PATTERN::PHASE2_DEAD, m_Owner)))
             return E_FAIL;
+
+        // Follower
+        if (FAILED(RegisterState<CBoss2_Follower>(CBossPhase2::PATTERN::PHASE2_FOLLOWER, m_Owner)))
+            return E_FAIL;
+
     }
 #pragma endregion
     

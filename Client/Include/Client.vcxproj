@@ -172,8 +172,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Header\CBoss2_Bullet.h" />
+    <ClInclude Include="..\Header\CBoss2_BulletAttack1.h" />
+    <ClInclude Include="..\Header\CBoss2_BulletAttack2.h" />
     <ClInclude Include="..\Header\CBoss2_Chain.h" />
     <ClInclude Include="..\Header\CBoss2_Die.h" />
+    <ClInclude Include="..\Header\CBoss2_Follower.h" />
+    <ClInclude Include="..\Header\CBoss2_Groggy.h" />
     <ClInclude Include="..\Header\CBoss2_Idle.h" />
     <ClInclude Include="..\Header\CBoss2_ChainAttack.h" />
     <ClInclude Include="..\Header\CBoss2_Start.h" />
@@ -200,6 +204,7 @@
     <ClInclude Include="..\Header\CCharacterBase.h" />
     <ClInclude Include="..\Header\CChest.h" />
     <ClInclude Include="..\Header\CCookingController.h" />
+    <ClInclude Include="..\Header\CEyeball_CenterAttack.h" />
     <ClInclude Include="..\Header\CMenuExtra.h" />
     <ClInclude Include="..\Header\CNPCState_Build.h" />
     <ClInclude Include="..\Header\CNPCState_ChopWood.h" />
@@ -350,8 +355,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\CBoss2_Bullet.cpp" />
+    <ClCompile Include="..\Code\CBoss2_BulletAttack1.cpp" />
+    <ClCompile Include="..\Code\CBoss2_BulletAttack2.cpp" />
     <ClCompile Include="..\Code\CBoss2_Chain.cpp" />
     <ClCompile Include="..\Code\CBoss2_Die.cpp" />
+    <ClCompile Include="..\Code\CBoss2_Follower.cpp" />
+    <ClCompile Include="..\Code\CBoss2_Groggy.cpp" />
     <ClCompile Include="..\Code\CBoss2_Idle.cpp" />
     <ClCompile Include="..\Code\CBoss2_ChainAttack.cpp" />
     <ClCompile Include="..\Code\CBoss2_Start.cpp" />
@@ -378,6 +387,7 @@
     <ClCompile Include="..\Code\CChest.cpp" />
     <ClCompile Include="..\Code\CConstructionPlacer.cpp" />
     <ClCompile Include="..\Code\CCookingController.cpp" />
+    <ClCompile Include="..\Code\CEyeball_CenterAttack.cpp" />
     <ClCompile Include="..\Code\CMenuExtra.cpp" />
     <ClCompile Include="..\Code\CNPCState_Build.cpp" />
     <ClCompile Include="..\Code\CNPCState_ChopWood.cpp" />
