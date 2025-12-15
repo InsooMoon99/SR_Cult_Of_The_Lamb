@@ -73,7 +73,7 @@ HRESULT CBossBulletAttack::Ready_State()
     m_Interval = 0.1;
     m_CrossSpreadInterval = 1;
     m_SpreadInterval = 0.4;
-    m_GroundY = 0.002f;
+    m_GroundY = 1.f;
     m_CircleSpeed = 20;
     return S_OK;
 }

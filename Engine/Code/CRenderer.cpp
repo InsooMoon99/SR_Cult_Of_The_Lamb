@@ -2,10 +2,13 @@
 
 #include "CGameObject.h"
 
+
+
 IMPLEMENT_SINGLETON(CRenderer)
 
 CRenderer::CRenderer()
-{ }
+{
+}
 
 CRenderer::~CRenderer()
 {
@@ -23,9 +26,11 @@ void CRenderer::Add_RenderGroup(RENDERID type, CGameObject* gameObject)
 
 void CRenderer::Render_GameObject(DEVICE& graphicDev)
 {
+    Render_Priority_UI(graphicDev);
     Render_Priority(graphicDev);
     Render_Priority_Alpha(graphicDev);
     Render_NonAlpha(graphicDev);
+    Render_Trail(graphicDev);
     Render_Alpha(graphicDev);
     Render_UI(graphicDev);
 
@@ -36,6 +41,7 @@ void CRenderer::Clear_RenderGroup()
 {
     for (size_t i = 0; i < RENDER_END; ++i)
     {
+
         for_each(m_RenderGroup[i].begin(), m_RenderGroup[i].end(), CDeleteObj());
         m_RenderGroup[i].clear();
     }
@@ -53,8 +59,8 @@ void CRenderer::Render_Priority_Alpha(DEVICE& graphicDev)
 {
     // 알파 블렌딩 켜기
     graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-    graphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);      
-    graphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);  
+    graphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+    graphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
     for (auto& obj : m_RenderGroup[RENDER_PRIORITY_ALPHA])
     {
@@ -134,6 +140,87 @@ void CRenderer::Render_UI(DEVICE& graphicDev)
     graphicDev->SetRenderState(D3DRS_ZENABLE, TRUE);
 }
 
+void CRenderer::Render_Priority_UI(DEVICE& graphicDev)
+{
+    if (m_RenderGroup[RENDER_PRIORITY_UI].empty())
+        return;
+
+    _matrix prevView;
+    _matrix prevProj;
+
+    graphicDev->GetTransform(D3DTS_VIEW, &prevView);        // 쓰던 뷰 행렬 임시 저장
+    graphicDev->GetTransform(D3DTS_PROJECTION, &prevProj);  // 쓰던 투영 행렬 임시 저장
+
+    _matrix uiView;
+    _matrix uiProj;
+
+    D3DXMatrixIdentity(&uiView);    // UI용 뷰 행렬은 항등 행렬로 설정
+
+    // UI 투영 행렬은 직교 투영으로 설정
+    D3DXMatrixOrthoLH(
+        &uiProj,
+        static_cast<_float>(WINCX),
+        static_cast<_float>(WINCY),
+        0.f,
+        1.f);
+
+    graphicDev->SetTransform(D3DTS_VIEW, &uiView);          // UI 뷰 행렬 사용
+    graphicDev->SetTransform(D3DTS_PROJECTION, &uiProj);    // UI 투영 행렬 사용
+
+    // 깊이 끄기
+    graphicDev->SetRenderState(D3DRS_ZENABLE, FALSE);
+
+    // 알파 블렌딩
+    graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    graphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+    graphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
+    for (auto& obj : m_RenderGroup[RENDER_PRIORITY_UI])
+    {
+        obj->Render_GameObject();
+    }
+
+    // 상태 복구
+    graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+    graphicDev->SetRenderState(D3DRS_ZENABLE, TRUE);
+
+    graphicDev->SetTransform(D3DTS_VIEW, &prevView);
+    graphicDev->SetTransform(D3DTS_PROJECTION, &prevProj);
+    graphicDev->SetRenderState(D3DRS_ZENABLE, TRUE);
+}
+
+void CRenderer::Render_Trail(DEVICE& graphicDev)
+{
+    if (m_RenderGroup[RENDER_TRAIL].empty())
+        return;
+
+    //기존 상태저장
+    IDirect3DStateBlock9* pStateBlock = nullptr;
+    if (SUCCEEDED(graphicDev->CreateStateBlock(D3DSBT_ALL, &pStateBlock)) && pStateBlock)
+        pStateBlock->Capture();
+
+    DWORD prevFVF;
+    graphicDev->GetFVF(&prevFVF);
+    //
+    // 트레일용 렌더 셋팅
+    graphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+    graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    graphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+    graphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+    //
+
+    for (auto& obj : m_RenderGroup[RENDER_TRAIL])
+    {
+        obj->Render_Trail();
+    }
+
+    // 렌더 상태 원복
+    if (pStateBlock)
+    {
+        pStateBlock->Apply();
+        pStateBlock->Release();
+    }
+}
 void CRenderer::Free()
 {
     Clear_RenderGroup();

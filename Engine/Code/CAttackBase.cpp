@@ -66,6 +66,8 @@ void CAttackBase::Render_GameObject()
 void CAttackBase::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CGameObject::OnBeginOverlap(self, other);
+   
+   // cout << "AttackBase hit -> PendingKill\n" << endl;
 
     if (!m_Instigator || !other)
         return;
@@ -157,6 +159,7 @@ void CAttackBase::Set_Instigator(CGameObject* instigator)
 
 void CAttackBase::Free()
 {
+   // cout << "AttackBase Free\n" << endl;
     // 오브젝트가 해제되기 직전, 등록된 콜백이 있다면 실행
     if (m_OnDestroyCallback)
         m_OnDestroyCallback();

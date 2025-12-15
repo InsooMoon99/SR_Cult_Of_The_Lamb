@@ -46,7 +46,7 @@ HRESULT CRock::Ready_GameObject()
 
         m_ItemNum = 3;
 
-        m_CombatStatCom->Set_MaxHp(5.f);
+        m_CombatStatCom->Set_MaxHp(10.f);
         m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
         break;
     case MIDDLEROCK:
@@ -56,7 +56,7 @@ HRESULT CRock::Ready_GameObject()
 
         m_ItemNum = 4;
 
-        m_CombatStatCom->Set_MaxHp(8.f);
+        m_CombatStatCom->Set_MaxHp(16.f);
         m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
         break;
     case BIGROCK:
@@ -66,7 +66,7 @@ HRESULT CRock::Ready_GameObject()
 
         m_ItemNum = 6;
 
-        m_CombatStatCom->Set_MaxHp(10.f);
+        m_CombatStatCom->Set_MaxHp(20.f);
         m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
         break;
     case END_ROCK:
@@ -109,16 +109,16 @@ void CRock::Initialize_GameObject()
     m_KockBackTimer = 0.1f;
 
     m_OrignPos = m_TransformCom->Get_Pos();
+}
 
-    m_CombatStatCom->Set_OnDamagedEvent([this]()
-    {
-        this->m_OnDamage = true;
+void CRock::OnInteractiveDamaged()
+{
+    CWorldInteractive::OnInteractiveDamaged();
 
-        // HitEffect_Star
-        CParticleHelper::Spawn_Particle({ m_TransformCom->Get_Pos().x, m_TransformCom->Get_Pos().y + 0.3f, m_TransformCom->Get_Pos().z },
-                                        L"HitEffect_Star",
-                                        14);
-    });
+    this->m_OnDamage = true;
+    CParticleHelper::Spawn_Particle({ m_TransformCom->Get_Pos().x, m_TransformCom->Get_Pos().y + 0.3f, m_TransformCom->Get_Pos().z },
+                                    L"HitEffect_Star",
+                                    14);
 }
 
 void CRock::KnockBackEff(const _float& timeDelta)

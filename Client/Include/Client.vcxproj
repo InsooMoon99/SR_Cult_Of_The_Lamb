@@ -204,6 +204,14 @@
     <ClInclude Include="..\Header\CChest.h" />
     <ClInclude Include="..\Header\CCookingController.h" />
     <ClInclude Include="..\Header\CEyeball_CenterAttack.h" />
+    <ClInclude Include="..\Header\CMenuExtra.h" />
+    <ClInclude Include="..\Header\CNPCState_Build.h" />
+    <ClInclude Include="..\Header\CNPCState_ChopWood.h" />
+    <ClInclude Include="..\Header\CNPCState_Eat.h" />
+    <ClInclude Include="..\Header\CNPCState_Mining.h" />
+    <ClInclude Include="..\Header\CNPCState_Pray.h" />
+    <ClInclude Include="..\Header\CNPCState_PrayPeek.h" />
+    <ClInclude Include="..\Header\CNPCState_WalkPast.h" />
     <ClInclude Include="..\Header\CFog.h" />
     <ClInclude Include="..\Header\CFogMgr.h" />
     <ClInclude Include="..\Header\CUICookedFoodCell.h" />
@@ -324,6 +332,7 @@
     <ClInclude Include="..\Header\CUI_Dialogue.h" />
     <ClInclude Include="..\Header\CUI_Fade.h" />
     <ClInclude Include="..\Header\CUI_MonsterHp.h" />
+    <ClInclude Include="..\Header\CVillageStateMgr.h" />
     <ClInclude Include="..\Header\CWarningChain.h" />
     <ClInclude Include="..\Header\CWall.h" />
     <ClInclude Include="..\Header\CWallRenderer.h" />
@@ -377,6 +386,14 @@
     <ClCompile Include="..\Code\CConstructionPlacer.cpp" />
     <ClCompile Include="..\Code\CCookingController.cpp" />
     <ClCompile Include="..\Code\CEyeball_CenterAttack.cpp" />
+    <ClCompile Include="..\Code\CMenuExtra.cpp" />
+    <ClCompile Include="..\Code\CNPCState_Build.cpp" />
+    <ClCompile Include="..\Code\CNPCState_ChopWood.cpp" />
+    <ClCompile Include="..\Code\CNPCState_Eat.cpp" />
+    <ClCompile Include="..\Code\CNPCState_Mining.cpp" />
+    <ClCompile Include="..\Code\CNPCState_Pray.cpp" />
+    <ClCompile Include="..\Code\CNPCState_PrayPeek.cpp" />
+    <ClCompile Include="..\Code\CNPCState_WalkPast.cpp" />
     <ClCompile Include="..\Code\CFog.cpp" />
     <ClCompile Include="..\Code\CFogMgr.cpp" />
     <ClCompile Include="..\Code\CUICookedFoodCell.cpp" />
@@ -493,6 +510,7 @@
     <ClCompile Include="..\Code\CUI_Dialogue.cpp" />
     <ClCompile Include="..\Code\CUI_Fade.cpp" />
     <ClCompile Include="..\Code\CUI_MonsterHp.cpp" />
+    <ClCompile Include="..\Code\CVillageStateMgr.cpp" />
     <ClCompile Include="..\Code\CWarningChain.cpp" />
     <ClCompile Include="..\Code\CWall.cpp" />
     <ClCompile Include="..\Code\CWallRenderer.cpp" />
