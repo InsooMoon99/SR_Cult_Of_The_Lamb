@@ -21,6 +21,7 @@ public:
         PHASE2_BULLET2,
         PHASE2_GROGGY,
         PHASE2_DEAD,
+        PHASE2_FOLLOWER,
 
         PHASE2_END
 
@@ -51,6 +52,10 @@ public:
     void				Increase_DeathCount(_int value = 1) { m_Eyeball_DeathCount += value; }
 
     const vector<CEyeball*>& Get_Eyeballs() { return m_Eyeballs; }
+public:
+	void Add_Eyeball(CEyeball* eyeball);
+	void Remove_Eyeball(CEyeball* eyeball);
+	void Command_Ground(); // Eyeball 땅으로 들어가도록 명령
 
 public:
 	void                Add_Eyeball(CEyeball* eyeball);
@@ -79,6 +84,14 @@ protected:
 
 protected:
     void    Free() override;
+
+public:
+    using OnFollowerStartCallback = function<void()>;
+
+    void  Set_OnFollowerStart(OnFollowerStartCallback callback) { m_OnFollowerStart = callback; }
+    void  Trigger_OnFollowerStart() { if (m_OnFollowerStart) m_OnFollowerStart(); }
+private:
+    OnFollowerStartCallback m_OnFollowerStart = nullptr;
 
 private:
     CMonsterController*     m_BossController;

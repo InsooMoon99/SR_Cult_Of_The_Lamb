@@ -39,6 +39,11 @@ public:
 private:
     void SpawnBullets_Horizontal(DEVICE graphicDev);
     void SpawnBullets_Vertical(DEVICE graphicDev);
+
+    void SpawnBullets_Vertical_BottomToTop(DEVICE graphicDev); 
+    void SpawnBullets_Vertical_TopToBottom(DEVICE graphicDev); 
+
+
     void Spawn_SingleBullet(
         DEVICE graphicDev, const _vec3& pos, const _vec3 dir, _float speed);
 

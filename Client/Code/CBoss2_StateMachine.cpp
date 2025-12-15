@@ -9,6 +9,7 @@
 #include "CBoss2_Start.h"
 #include "CBoss2_ChainAttack.h"
 #include "CBoss2_Die.h"
+#include "CBoss2_Follower.h"
 #include "CBoss2_Groggy.h"
 
 CBoss2_StateMachine::CBoss2_StateMachine(CMonsterBase* owner)
@@ -59,6 +60,11 @@ HRESULT CBoss2_StateMachine::Ready_StateMachine()
         // Die
         if (FAILED(RegisterState<CBoss2_Die>(CBossPhase2::PATTERN::PHASE2_DEAD, m_Owner)))
             return E_FAIL;
+
+        // Follower
+        if (FAILED(RegisterState<CBoss2_Follower>(CBossPhase2::PATTERN::PHASE2_FOLLOWER, m_Owner)))
+            return E_FAIL;
+
     }
 #pragma endregion
     

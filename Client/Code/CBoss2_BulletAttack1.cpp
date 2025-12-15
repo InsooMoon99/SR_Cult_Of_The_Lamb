@@ -118,14 +118,19 @@ void CBoss2_BulletAttack1::Play_HandSlam()
 
         if (m_SlamCount == 0)
         {
-            // 첫 번째는 좌우
             SpawnBullets_Horizontal(device);
         }
-
         else if (m_SlamCount == 1)
         {
-            // 두 번째는 상하
-            SpawnBullets_Vertical(device);
+            SpawnBullets_Vertical_BottomToTop(device);
+        }
+        else if (m_SlamCount == 2)
+        {
+            SpawnBullets_Horizontal(device);
+        }
+        else if (m_SlamCount == 3)
+        {
+            SpawnBullets_Vertical_TopToBottom(device);
         }
     }
 
@@ -134,7 +139,7 @@ void CBoss2_BulletAttack1::Play_HandSlam()
         m_SlamCount++;
         m_HasFiredBullet = false;
 
-        if (m_SlamCount >= 2)
+        if (m_SlamCount >= 4)
             m_IsFinished = true;
     }
 }
@@ -193,6 +198,53 @@ void CBoss2_BulletAttack1::SpawnBullets_Vertical(DEVICE graphicDev)
         _vec3 upDir = _vec3(0.f, 0.f, -1.f);
 
         Spawn_SingleBullet(graphicDev, bottomPos, upDir, speed);
+    }
+}
+
+void CBoss2_BulletAttack1::SpawnBullets_Vertical_BottomToTop(DEVICE graphicDev)
+{
+    const _int bulletCount = 14;
+    const _float spacing = 2.f;
+    const _float speed = 15.f;
+    const _float offsetZ = 12.f;
+
+    _vec3 bossPos = m_Controller->Get_OwnerTransform()->Get_Pos();
+    _vec3 centerPos = bossPos;
+
+    centerPos.z -= 15.f;
+
+    for (_int i = 0; i < bulletCount; ++i)
+    {
+        _float xPos = centerPos.x - spacing * (bulletCount / 2) + i * spacing;
+
+        // 아래에서 위로만
+        _vec3 bottomPos = _vec3(xPos, 1.f, centerPos.z + offsetZ);
+        _vec3 upDir = _vec3(0.f, 0.f, -1.f);
+
+        Spawn_SingleBullet(graphicDev, bottomPos, upDir, speed);
+    }
+}
+
+void CBoss2_BulletAttack1::SpawnBullets_Vertical_TopToBottom(DEVICE graphicDev)
+{
+    const _int bulletCount = 14;
+    const _float spacing = 2.f;
+    const _float speed = 15.f;
+    const _float offsetZ = 12.f;
+
+    _vec3 bossPos = m_Controller->Get_OwnerTransform()->Get_Pos();
+    _vec3 centerPos = bossPos;
+
+    centerPos.z -= 15.f;
+
+    for (_int i = 0; i < bulletCount; ++i)
+    {
+        _float xPos = centerPos.x - spacing * (bulletCount / 2) + i * spacing;
+
+        // 위에서 아래로만
+        _vec3 topPos = _vec3(xPos, 1.f, centerPos.z - offsetZ);
+        _vec3 downDir = _vec3(0.f, 0.f, 1.f);
+        Spawn_SingleBullet(graphicDev, topPos, downDir, speed);
     }
 }
 

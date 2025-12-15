@@ -77,6 +77,48 @@
           "hasChoices": false
         }
       ]
+    },
+    {
+      "dialogueId": "Boss2_Dead",
+      "speaker": "기다리는 자",
+      "lines": [
+        {
+          "lineIndex": 0,
+          "speaker": "기다리는 자",
+          "text": "네가 나를 대체하는구나. 넌 더이상 그릇이 아니야. 신격을 품은 왕관이로구나. 저주받을 양이야!",
+          "hasChoices": false
+        },
+        {
+          "lineIndex": 1,
+          "speaker": "기다리는 자",
+          "text": "난 이제 네 자비 아래에 놓인다. 넌 복수를 외치는 거짓된 우상이 되려는가, 이제 네 사악한 행동으로 나를 비난할 순 없으리라.",
+          "hasChoices": false
+        },
+        {
+          "lineIndex": 2,
+          "speaker": "어떻게 하시겠습니까?",
+          "text": "",
+          "hasChoices": true,
+          "choice": {
+            "leftText": "살해",
+            "rightText": "살해",
+            "leftNextId": "Boss2_Ending",
+            "rightNextId": "Boss2_Ending"
+          }
+        }
+      ]
+    },
+    {
+      "dialogueId": "Boss2_Ending",
+      "speaker": "",
+      "lines": [
+        {
+          "lineIndex": 0,
+          "speaker": "",
+          "text": "SR 끝났다 수고요",
+          "hasChoices": false
+        }
+      ]
     }
   ]
 }

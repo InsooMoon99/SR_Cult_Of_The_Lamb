@@ -13,6 +13,10 @@ class CInventory;
 BEGIN(Engine)
 class CUI;
 class CCombatStat;
+class CUI_Dialogue;     
+class CCameraController;
+
+BEGIN(Engine)
 class CTransform;
 END
 
@@ -41,6 +45,12 @@ private:
     void    Setup_BossCallbacks();
 
 public:
+    void    Setup_BossCallbacks();
+    void    Setup_DialogueCallbacks();
+    void    OnDialogueEnd(const string& id);
+    void    OnBoss2DeadEnd();
+
+public:
     static CStage_Boss2* Create(DEVICE graphicDev);
 
 private:
@@ -63,5 +73,10 @@ private:
     _float  m_Attenuation0 = 0.f;
     _float  m_Attenuation1 = 0.01f;
     _float  m_Attenuation2 = 0.f;
+
+private:
+    CUI_Dialogue*       m_Dialogue = nullptr;
+    CCameraController*  m_CamController = nullptr;
+    CTransform*         m_PlayerTransform = nullptr;
 
 };
