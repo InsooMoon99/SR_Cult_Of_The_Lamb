@@ -113,6 +113,7 @@ void CEligos_Attack_Fly::LateUpdate_State(const _float& timeDelta)
 }
 void CEligos_Attack_Fly::SpawnFlies(int fliesNum, float noiseAngle, float noiseDist, float baseDist)
 {
+    Find_Player();
     for (int i = 0; i < fliesNum; i++)
     {
     int angle = (360/fliesNum)*i;
@@ -121,8 +122,8 @@ void CEligos_Attack_Fly::SpawnFlies(int fliesNum, float noiseAngle, float noiseD
         dist += (CRandomMgr::GetInstance()->Get_Int_Random(int( - noiseDist * 1000), + int (noiseDist * 1000))) / 1000.f;
     
 
-        CEligos_Flies* fly = CEligos_Flies::Create(m_pOwner->Get_GraphicDev());
-
+        CEligos_Flies* fly = CEligos_Flies::Create(m_pOwner->Get_GraphicDev(),m_pOwner, (CGameObject*)m_pPlayer);
+        fly->Initialize_GameObject();
         _vec3 pos = { cos(D3DXToRadian(angle) * dist), 0.f, sin(D3DXToRadian(angle) * dist) };
 
         fly->Get_Transform()->Set_Pos(m_pOwnerTransformCom->Get_Pos() + pos);

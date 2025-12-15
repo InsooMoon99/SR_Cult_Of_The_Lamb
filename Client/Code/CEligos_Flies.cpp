@@ -15,7 +15,8 @@
 #include "CUI_MonsterHp.h"
 #include "CProjectile.h"
 
-CEligos_Flies::CEligos_Flies(DEVICE graphicDev) : CMonsterBase(graphicDev)
+CEligos_Flies::CEligos_Flies(DEVICE graphicDev, CGameObject* owner, CGameObject* Target)
+    : CMonsterBase(graphicDev), m_pOwner(owner), m_pTarget(Target)
 {
 }
 
@@ -58,13 +59,25 @@ void CEligos_Flies::Initialize_GameObject()
     if (m_TargetTransform)
         m_Target = m_TargetTransform->Get_Owner();
 
+    BulletDesc d;
+    d.Radius = 0;
+    d.OrbitCenter = { 0,1,0 };
+    d.StartAngle = 0;
+    d.Speed = 10;
+    d.moveType = PROJ_TYPE::HOMING;
+    d.ProjectileOwner = m_pOwner;
+    d.Target = m_pTarget;
+    d.TurnSpeed = 3;
 
-
+    m_ProjectileCom->SetMoveDesc(d);
 }
 
 _int CEligos_Flies::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CMonsterBase::Update_GameObject(timeDelta);
+
+
+    m_ProjectileCom->Update_Component(timeDelta);
 
     if (m_CombatStatCom->Is_Dead() == true)
     {
@@ -174,13 +187,13 @@ HRESULT CEligos_Flies::Add_Component()
     m_ProjectileCom = CreateProtoComponent<CProjectile>(this, COMPONENTTYPE::PROJECTILE);
     NULL_CHECK_RETURN(m_ProjectileCom, E_FAIL);
     
-    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::PROJECTILE, m_ProjectileCom });
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::PROJECTILE, m_ProjectileCom });
     return S_OK;
 }
 
-CEligos_Flies* CEligos_Flies::Create(DEVICE graphicDev)
+CEligos_Flies* CEligos_Flies::Create(DEVICE graphicDev, CGameObject* owner, CGameObject* Target)
 {
-    auto Eligos_Flies = new CEligos_Flies(graphicDev);
+    auto Eligos_Flies = new CEligos_Flies(graphicDev, owner, Target);
 
     if (FAILED(Eligos_Flies->Ready_GameObject()))
     {

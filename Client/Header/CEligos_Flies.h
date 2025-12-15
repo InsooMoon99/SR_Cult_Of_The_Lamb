@@ -7,7 +7,7 @@ class CEligos_Flies :
     public CMonsterBase
 {
 private:
-    explicit CEligos_Flies(DEVICE graphicDev);
+    explicit CEligos_Flies(DEVICE graphicDev, CGameObject* owner, CGameObject* Target);
     explicit CEligos_Flies(const CEligos_Flies& rhs);
     ~CEligos_Flies() override;
 
@@ -37,7 +37,7 @@ private:
     CProjectile* m_ProjectileCom;
     bool m_flag = false;
 public:
-    static CEligos_Flies* Create(DEVICE graphicDev);
+    static CEligos_Flies* Create(DEVICE graphicDev, CGameObject* owner, CGameObject* Target);
 
 protected:
     void Free() override;
@@ -46,7 +46,8 @@ private:
 
     _bool           m_AttackSpawned;
 
-
+    CGameObject* m_pOwner;
+    CGameObject* m_pTarget;
     
 };
 
