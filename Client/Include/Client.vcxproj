@@ -176,6 +176,7 @@
     <ClInclude Include="..\Header\CBoss2_BulletAttack2.h" />
     <ClInclude Include="..\Header\CBoss2_Chain.h" />
     <ClInclude Include="..\Header\CBoss2_Die.h" />
+    <ClInclude Include="..\Header\CBoss2_Follower.h" />
     <ClInclude Include="..\Header\CBoss2_Groggy.h" />
     <ClInclude Include="..\Header\CBoss2_Idle.h" />
     <ClInclude Include="..\Header\CBoss2_ChainAttack.h" />
@@ -357,6 +358,7 @@
     <ClCompile Include="..\Code\CBoss2_BulletAttack2.cpp" />
     <ClCompile Include="..\Code\CBoss2_Chain.cpp" />
     <ClCompile Include="..\Code\CBoss2_Die.cpp" />
+    <ClCompile Include="..\Code\CBoss2_Follower.cpp" />
     <ClCompile Include="..\Code\CBoss2_Groggy.cpp" />
     <ClCompile Include="..\Code\CBoss2_Idle.cpp" />
     <ClCompile Include="..\Code\CBoss2_ChainAttack.cpp" />

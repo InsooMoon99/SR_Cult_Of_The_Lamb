@@ -20,6 +20,7 @@
 #include "CCamSetupBuilder.h"
 #include "CUI_BossHp.h"
 #include "CLightMgr.h"
+#include "CUI_Dialogue.h"
 
 CStage_Boss2::CStage_Boss2(DEVICE graphicDev)
     : Engine::CScene(graphicDev), m_Terrain(nullptr), m_Boss(nullptr)
@@ -56,6 +57,8 @@ void CStage_Boss2::Initialize_Scene()
     if (m_Terrain)
         m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Boss2.map");
 
+    Setup_BossCallbacks();
+    Setup_DialogueCallbacks();
 }   
 
 _int CStage_Boss2::Update_Scene(const _float& timeDelta)
@@ -127,13 +130,13 @@ HRESULT CStage_Boss2::Ready_GameLogic_Layer(LAYERTYPE layerType)
         L"Persistent object setup failed"
     );
 
-    auto camController = dynamic_cast<CCameraController*>(
+    m_CamController = dynamic_cast<CCameraController*>(
         gameObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAM_CONTROLLER));
 
     // 카메라 설정값 초기화
-    if (camController != nullptr)
+    if (m_CamController != nullptr)
     {
-        CCamSetupBuilder(camController)
+        CCamSetupBuilder(m_CamController)
             .SetTarget(playerTransform)
             //.PivotOffset({ 0.f, 0.f, 0.f })
             .Distance(22.f)
@@ -145,7 +148,7 @@ HRESULT CStage_Boss2::Ready_GameLogic_Layer(LAYERTYPE layerType)
             .Apply();
 
         // 에디터에 카메라 설정
-        CMainEditorMgr::GetInstance()->Set_MainCamera(camController);
+        CMainEditorMgr::GetInstance()->Set_MainCamera(m_CamController);
     }
 
     // 춘식이 등장
@@ -187,6 +190,9 @@ HRESULT CStage_Boss2::Ready_UI_Layer(LAYERTYPE layerType)
     gameObject = CUI_BossHp::Create(m_GraphicDev, combat);
     layer->Add_GameObject(OBJTYPE::UI, gameObject);
 
+    m_Dialogue = CUI_Dialogue::Create(m_GraphicDev);
+    layer->Add_GameObject(OBJTYPE::UI, m_Dialogue);
+
     m_Layers.insert({ layerType, layer });
 
     return S_OK;
@@ -219,6 +225,44 @@ HRESULT CStage_Boss2::Ready_Light()
         return E_FAIL;
 
     return S_OK;
+}
+
+void CStage_Boss2::Setup_BossCallbacks()
+{
+    auto boss = dynamic_cast<CBossPhase2*>(m_Boss);
+    NULL_CHECK(boss);
+
+    boss->Set_OnFollowerStart([this]()
+        {
+            m_Dialogue->Start_Dialogue("Boss2_Dead", _vec2(0.f, 200.f), _vec2(300.f, 80.f));
+        });
+}
+
+void CStage_Boss2::Setup_DialogueCallbacks()
+{
+    NULL_CHECK(m_Dialogue);
+
+    m_Dialogue->Set_OnDialogueEnd([this](const string& id)
+        {
+            OnDialogueEnd(id);
+        });
+}
+
+void CStage_Boss2::OnDialogueEnd(const string& id)
+{
+    if (id == "Boss2_Dead")
+    {
+        OnBoss2DeadEnd();
+    }
+    else if (id == "Boss2_Ending")
+    {
+        
+    }
+}
+
+void CStage_Boss2::OnBoss2DeadEnd()
+{
+    // 메인메뉴 or 엔딩 씬 있으면 추가 ㄱㄱ
 }
 
 CStage_Boss2* CStage_Boss2::Create(DEVICE graphicDev)

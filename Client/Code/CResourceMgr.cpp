@@ -602,6 +602,11 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
     CTexture* bossPhase2 = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(bossPhase2, E_FAIL);
 
+    // Summon Follower
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Summon", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Summon/TOWW_Summon%d.png", 134)))
+        return E_FAIL;
+
     // Start
     if (FAILED(bossPhase2->Add_Texture(L"Boss2_Start", TEX_NORMAL,
         L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Start_Eye/TOWW_Start_Eye%d.png", 68)))
@@ -645,6 +650,15 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
     // Down Idle
     if (FAILED(bossPhase2->Add_Texture(L"Boss2_DownIdle", TEX_NORMAL,
         L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_DownIdle/TOWW_DownIdle%d.png", 67)))
+        return E_FAIL;
+
+    // Follower
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Follower_Transform", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Slave/DeathCat/Transform/Boss_Transform%d.png", 62)))
+        return E_FAIL;
+
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Follower_UnConverted", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Slave/DeathCat/UnConverted/UnConverted%d.png", 50)))
         return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_BOSS2_PHASE2, bossPhase2)))
