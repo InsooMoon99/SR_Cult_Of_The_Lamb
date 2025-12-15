@@ -845,6 +845,9 @@
     <ClInclude Include="..\Header\CBoss2_Groggy.h">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CEyeball_CenterAttack.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1326,6 +1329,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CBoss2_Groggy.cpp">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEyeball_CenterAttack.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

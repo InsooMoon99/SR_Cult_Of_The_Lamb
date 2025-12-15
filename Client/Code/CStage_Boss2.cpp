@@ -22,7 +22,12 @@
 #include "CLightMgr.h"
 
 CStage_Boss2::CStage_Boss2(DEVICE graphicDev)
-    : Engine::CScene(graphicDev), m_Terrain(nullptr), m_Boss(nullptr)
+    : Engine::CScene(graphicDev),
+    m_Terrain(nullptr),
+    m_Boss(nullptr),
+    m_Player(nullptr),
+    m_CamController(nullptr),
+    m_PlayerTransformCom(nullptr)
 {
 }
 
@@ -56,6 +61,14 @@ void CStage_Boss2::Initialize_Scene()
     if (m_Terrain)
         m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Boss2.map");
 
+    if (m_CamController)
+    {
+        auto camMovement = m_CamController->Get_OwnerCamMovement();
+        camMovement->Disable_DynamicDistance();
+    }
+
+    // TODO : 일단은 바로 시작 -> 대사끝나면 시작하도록 변경 예정
+    Setup_DynamicCam();
 }   
 
 _int CStage_Boss2::Update_Scene(const _float& timeDelta)
@@ -115,26 +128,28 @@ HRESULT CStage_Boss2::Ready_GameLogic_Layer(LAYERTYPE layerType)
     // 플레이어 생성
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CPlayer>(
-            OBJTYPE::PLAYER, L"Player", m_GraphicDev, layer, &gameObject), L"Persistent object setup failed");
+            OBJTYPE::PLAYER, L"Player", m_GraphicDev, layer, &m_Player), L"Persistent object setup failed");
 
-    const auto playerTransform = dynamic_cast<CTransform*>(gameObject->Get_Component(ID_DYNAMIC,COMPONENTTYPE::TRANSFORM));
-    playerTransform->Set_Pos(_vec3(48.f, 1.f, 38.3f));
+    m_PlayerTransformCom = m_Player->Get_Transform();
+    m_PlayerTransformCom->Set_Pos(_vec3(48.f, 1.f, 38.3f));
 
     // 카메라 생성
+    Engine::CGameObject* cameraObject = nullptr;
+
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CMainCamera>(
-            OBJTYPE::CAMERA, L"MainCamera", m_GraphicDev, layer, &gameObject),
+            OBJTYPE::CAMERA, L"MainCamera", m_GraphicDev, layer, &cameraObject),
         L"Persistent object setup failed"
     );
 
-    auto camController = dynamic_cast<CCameraController*>(
-        gameObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAM_CONTROLLER));
+    m_CamController = dynamic_cast<CCameraController*>(
+        cameraObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAM_CONTROLLER));
 
     // 카메라 설정값 초기화
-    if (camController != nullptr)
+    if (m_CamController != nullptr)
     {
-        CCamSetupBuilder(camController)
-            .SetTarget(playerTransform)
+        CCamSetupBuilder(m_CamController)
+            .SetTarget(m_PlayerTransformCom)
             //.PivotOffset({ 0.f, 0.f, 0.f })
             .Distance(22.f)
             .RotX(44.f)
@@ -145,7 +160,7 @@ HRESULT CStage_Boss2::Ready_GameLogic_Layer(LAYERTYPE layerType)
             .Apply();
 
         // 에디터에 카메라 설정
-        CMainEditorMgr::GetInstance()->Set_MainCamera(camController);
+        CMainEditorMgr::GetInstance()->Set_MainCamera(m_CamController);
     }
 
     // 춘식이 등장
@@ -190,6 +205,36 @@ HRESULT CStage_Boss2::Ready_UI_Layer(LAYERTYPE layerType)
     m_Layers.insert({ layerType, layer });
 
     return S_OK;
+}
+
+void CStage_Boss2::Setup_DynamicCam()
+{
+    if (!m_CamController || !m_Boss)
+        return;
+
+    auto camMovement = m_CamController->Get_OwnerCamMovement();
+    camMovement->Set_SecondTarget(m_Boss->Get_Transform());
+
+    // 이거 수치 조절해야함
+    camMovement->Set_DynamicDistanceParams(16.f, 23.f, 7.f, 15.f);
+    camMovement->Enable_DynamicDistance(true);
+}
+
+void CStage_Boss2::Setup_BossCallbacks()
+{
+    auto boss = dynamic_cast<CBossPhase2*>(m_Boss);
+    if (!boss) return;
+
+    // 전투 시작하면 Dynamic Cam 세팅, 이후 죽으면 Disable
+    boss->Set_OnBattleStart([this]()
+        {
+            Setup_DynamicCam();
+        });
+
+    boss->Set_OnDead([this]()
+        {
+            m_CamController->Get_OwnerCamMovement()->Disable_DynamicDistance();
+        });
 }
 
 HRESULT CStage_Boss2::Ready_Light()

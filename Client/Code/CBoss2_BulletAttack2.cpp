@@ -3,10 +3,9 @@
 #include "CBossController.h"
 #include "CBossPhase2.h"
 #include "CAnimator.h"
-#include "CWarningChain.h"
-#include "CTransform.h"
-#include "CCreateHelper.h"
 #include "CTimerMgr.h"
+#include "CEyeball.h"
+#include "CStateMachine.h"
 
 CBoss2_BulletAttack2::CBoss2_BulletAttack2(CGameObject* owner)
     : m_Owner(owner), m_Pattern_Cooldown(0)
@@ -34,16 +33,23 @@ void CBoss2_BulletAttack2::Enter()
             animator->Play_Animation(L"Boss2_Roar", ANIMSTATE::ONCE);
     }
 
+    auto& eyeballs = boss->Get_Eyeballs();
+
+    for (auto eyeball : eyeballs)
+    {
+        auto controller = eyeball->Get_Controller();
+        if (controller && controller->Get_StateMachine())
+        {
+            controller->Get_StateMachine()->Change_State(
+                CEyeball::PATTERN::EYEBALL_CENTER_ATTACK);
+        }
+    }
+
     m_fCurStateElapsedTime = 0.f;
     m_SlamCount = 0;
-
-    Find_Player();
-
     m_ChainAnim = ROAR;
 
-    m_ChainSpawnTimer = 0.f;
-    m_ChainCount = 0;
-    m_HasSpawnedWarning = false;
+    Find_Player();
 }
 
 _int CBoss2_BulletAttack2::Update_State(const _float& timeDelta)
@@ -67,12 +73,7 @@ _int CBoss2_BulletAttack2::Update_State(const _float& timeDelta)
         break;
     }
 
-    /*if (m_fCurStateElapsedTime >= m_Pattern_Cooldown)
-    {
-        return CBossPhase2::PATTERN::PHASE2_START;
-    }*/
-
-    return CBossPhase2::PATTERN::PHASE2_EYEBALL;
+    return CBossPhase2::PATTERN::PHASE2_BULLET2;
 }
 
 void CBoss2_BulletAttack2::Exit()
@@ -109,59 +110,16 @@ void CBoss2_BulletAttack2::PlayHandSlam()
 {
     auto animator = m_Controller->Get_OwnerAnimator();
 
-    if (animator->Get_CurFrame() >= 20 && m_ChainCount < m_MaxChainCount)
-    {
-        if (!m_HasSpawnedWarning)
-        {
-            _vec3 playerPos = m_pPlayerTransformCom->Get_Pos();
-            m_ChainStartPos = playerPos;
-
-            _vec3 bossPos = m_Controller->Get_OwnerTransform()->Get_Pos();
-            _vec3 direction = playerPos - bossPos;
-            direction.y = 0.f;
-            D3DXVec3Normalize(&m_ChainDirection, &direction);
-
-            m_HasSpawnedWarning = true;
-        }
-
-        m_ChainSpawnTimer += CTimerMgr::GetInstance()->Get_TimeDelta();
-
-        if (m_ChainSpawnTimer >= 0.1f)
-        {
-            auto boss2 = dynamic_cast<CBossPhase2*>(m_Owner);
-            if (boss2)
-            {
-                CWarningChain* warning = CWarningChain::Create(boss2->Get_GraphicDev(), m_Owner);
-
-                CTransform* warningTrans = dynamic_cast<CTransform*>(
-                    warning->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-
-                if (warningTrans)
-                {
-                    _vec3 warningPos = m_ChainStartPos + (m_ChainDirection * m_ChainSpacing * m_ChainCount);
-                    warningPos.y = 0.f;
-
-                    warningTrans->Set_Pos(warningPos);
-                }
-
-                SpawnObjectOnLayer(warning);
-            }
-
-            m_ChainCount++;
-            m_ChainSpawnTimer = 0.f;
-        }
-    }
-
-    if (animator->Get_CurFrame() >= 50 && m_HasSpawnedWarning)
-    {
-        m_HasSpawnedWarning = true;
-        m_SlamCount++;
-    }
-
-    if (m_SlamCount >= 2)
+    if (m_fCurStateElapsedTime >= 8.f)
     {
         m_IsFinished = true;
     }
+
+}
+
+void CBoss2_BulletAttack2::Spawn_BounceBullets()
+{
+
 }
 
 CBoss2_BulletAttack2* CBoss2_BulletAttack2::Create(CGameObject* owner)

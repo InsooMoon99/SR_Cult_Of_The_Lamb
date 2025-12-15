@@ -69,7 +69,7 @@ void CStage_Boss1::Initialize_Scene()
 {
     CScene::Initialize_Scene();
 
-    m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Boss1_Fog.map");
+    m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Boss1.map");
 
     Setup_TriggerCallbacks();
     Setup_DialogueCallbacks();
@@ -87,8 +87,6 @@ _int CStage_Boss1::Update_Scene(const _float& timeDelta)
 
     Move_PlayerUI(timeDelta);
     Move_BossUI(timeDelta);
-
-    Update_Fog();
 
     if (m_WaitingForDialogue)
     {
@@ -141,18 +139,6 @@ void CStage_Boss1::Create_Trigger(_vec3 pos, _vec3 size, OnTriggerCallback callb
         });
 
     gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
-}
-
-void CStage_Boss1::Update_Fog()
-{
-    if (m_Fog)
-    {
-        m_Fog->Set_OriginalPos(m_FogPos);
-        m_Fog->Set_SwaySpeed(m_FogSwaySpeed);
-        m_Fog->Set_SwayAmount(m_FogSwayAmount);
-        m_Fog->Set_Alpha(m_FogAlpha);
-        m_Fog->Get_Transform()->Set_Scale(m_FogScale);
-    }
 }
 
 HRESULT CStage_Boss1::Ready_Environment_Layer(LAYERTYPE layerType)
@@ -476,11 +462,6 @@ void CStage_Boss1::OnRefusedEnd()
         .LagSpeed(3.f)
         .ZoomSpeed(3.f)
         .Apply();
-
-}
-
-void CStage_Boss1::End_CutScene()
-{
 
 }
 

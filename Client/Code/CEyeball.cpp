@@ -154,24 +154,24 @@ void CEyeball::OnEndOverlap(CCollider* self, CCollider* other)
 
 void CEyeball::Set_OnDeathCallback(OnEyeDeadCallback callback)
 {
-    m_OnEyeDeadCallback = callback;
+    m_OnEyeDead = callback;
 }
 
 void CEyeball::Trigger_OnDeath()
 {
-    if (m_OnEyeDeadCallback)
-        m_OnEyeDeadCallback();
+    if (m_OnEyeDead)
+        m_OnEyeDead();
 }
 
 void CEyeball::Set_OnReachedCallback(OnReachedTargetCallback callback)
 {
-    m_OnReachedTarget_Callback = callback;
+    m_OnReachedTarget = callback;
 }
 
 void CEyeball::Trigger_OnReachedTarget()
 {
-    if (m_OnReachedTarget_Callback)
-        m_OnReachedTarget_Callback();
+    if (m_OnReachedTarget)
+        m_OnReachedTarget();
 
 }
 

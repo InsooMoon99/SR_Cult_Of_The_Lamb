@@ -2,6 +2,7 @@
 #include "CEyeball_Ground_Move.h"
 #include "CBossController.h"
 #include "CAnimator.h"
+#include "CBossPhase2.h"
 #include "CEyeball.h"
 #include "CRandomMgr.h"
 #include "CTransform.h"
@@ -95,6 +96,16 @@ _int CEyeball_Ground_Move::Update_State(const _float& timeDelta)
         // 시간이 끝난다면, Enter로 위로 나와서 Attack으로 공격
         if (m_fCurStateElapsedTime >= m_Pattern_Cooldown)
         {
+            // 보스가 특정 패턴 중이면 Enter로 이동 ㄴㄴ
+            auto eyeball = static_cast<CEyeball*>(m_Owner);
+            auto boss = dynamic_cast<CBossPhase2*>(eyeball->Get_Boss());
+
+            if (boss && boss->Is_InSpecialPattern())
+            {
+                m_fCurStateElapsedTime = 0.f;
+                return CEyeball::PATTERN::EYEBALL_GROUND_MOVE;
+            }
+
             return CEyeball::PATTERN::EYEBALL_ENTER;
         }
 

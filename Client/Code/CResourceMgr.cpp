@@ -604,7 +604,7 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
 
     // Start
     if (FAILED(bossPhase2->Add_Texture(L"Boss2_Start", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Start_Eye/TOWW_Start_Eye%d.png", 68)))
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Start_Eye/TOWW_Start_Eye%d.png", 85)))
         return E_FAIL;
 
     // Idle
@@ -630,6 +630,11 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
     // Warning Chain
     if (FAILED(bossPhase2->Add_Texture(L"Boss2_Warning", TEX_NORMAL,
         L"../Bin/Resource/Texture/BossPhase1/ChainAttackGround.png", 1)))
+        return E_FAIL;
+
+    // Sweep
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Sweep", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Sweep/TOWW_Sweep%d.png", 82)))
         return E_FAIL;
 
     // Chain

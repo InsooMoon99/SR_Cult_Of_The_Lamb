@@ -434,7 +434,6 @@ void CUI_Dialogue::Render_Choices()
 
 void CUI_Dialogue::Handle_Input()
 {
-    // 일단 키보드로 입력처리 테스트 해보기
     if (m_IsShowingChoices)
     {
         // Left

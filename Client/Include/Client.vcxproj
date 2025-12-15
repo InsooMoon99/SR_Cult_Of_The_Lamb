@@ -203,6 +203,7 @@
     <ClInclude Include="..\Header\CCharacterBase.h" />
     <ClInclude Include="..\Header\CChest.h" />
     <ClInclude Include="..\Header\CCookingController.h" />
+    <ClInclude Include="..\Header\CEyeball_CenterAttack.h" />
     <ClInclude Include="..\Header\CFog.h" />
     <ClInclude Include="..\Header\CFogMgr.h" />
     <ClInclude Include="..\Header\CUICookedFoodCell.h" />
@@ -375,6 +376,7 @@
     <ClCompile Include="..\Code\CChest.cpp" />
     <ClCompile Include="..\Code\CConstructionPlacer.cpp" />
     <ClCompile Include="..\Code\CCookingController.cpp" />
+    <ClCompile Include="..\Code\CEyeball_CenterAttack.cpp" />
     <ClCompile Include="..\Code\CFog.cpp" />
     <ClCompile Include="..\Code\CFogMgr.cpp" />
     <ClCompile Include="..\Code\CUICookedFoodCell.cpp" />

@@ -36,7 +36,7 @@ public:
     void PlayRoar();
     void PlayHandSlam();
 
-    void SpawnChain();
+    void Spawn_BounceBullets();
 
 public:
     static CBoss2_BulletAttack2* Create(CGameObject* owner);
@@ -54,13 +54,10 @@ private:
     _bool            m_IsFinished = false;
 
 private:
-    _float           m_ChainSpawnTimer = 0.f;
-    _int             m_ChainCount = 0;
-    _int             m_MaxChainCount = 20;
-    _vec3            m_ChainStartPos  {};       
-    _vec3            m_ChainDirection {};      
-    _float           m_ChainSpacing = 1.5f; 
-    _bool            m_HasSpawnedWarning = false;
+    _float           m_FireTimer = 0.f;
+    _float           m_FireInterval = 0.3f;
+    _int             m_FireCount = 0;
+    _int             m_MaxFireCount = 5;
 
 };
 

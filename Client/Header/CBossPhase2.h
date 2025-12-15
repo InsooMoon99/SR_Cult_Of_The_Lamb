@@ -50,14 +50,28 @@ public:
 
     void				Increase_DeathCount(_int value = 1) { m_Eyeball_DeathCount += value; }
 
-public:
-	void Add_Eyeball(CEyeball* eyeball);
-	void Remove_Eyeball(CEyeball* eyeball);
-	void Command_Ground(); // Eyeball 땅으로 들어가도록 명령
-
+    const vector<CEyeball*>& Get_Eyeballs() { return m_Eyeballs; }
 
 public:
-    static CBossPhase2* Create(DEVICE graphicDev);
+	void                Add_Eyeball(CEyeball* eyeball);
+	void                Remove_Eyeball(CEyeball* eyeball);
+	void                Command_Ground(); // Eyeball 땅으로 들어가도록 명령
+
+    _bool               Is_InSpecialPattern();
+
+public:
+    using               OnBattleStartCallback = function<void()>;
+    void                Set_OnBattleStart(OnBattleStartCallback callback) { m_OnBattleStart = callback; };
+
+    using               OnDeadCallback = function<void()>;
+    void                Set_OnDead(OnDeadCallback callback) { m_OnDead = callback; };
+
+private:
+    OnBattleStartCallback   m_OnBattleStart;
+    OnDeadCallback          m_OnDead;
+
+public:
+    static CBossPhase2*     Create(DEVICE graphicDev);
 
 protected:
     void    Animation_Setting() override;

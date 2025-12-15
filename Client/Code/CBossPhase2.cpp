@@ -34,6 +34,7 @@ HRESULT CBossPhase2::Ready_GameObject()
     m_CombatStatCom->Set_HitState(false); // Hit State로 변경할건지
 
     m_TransformCom->Set_Scale(_vec3(13.7f, 6.3f, 3.f));
+    m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(25.f));
 
     m_BoxColCom->Set_Size(_vec3(1.2f, 1.6f, 1.f));
     m_BoxColCom->Set_Offset(_vec3(0.f, -2.1f, 0.f));
@@ -168,10 +169,32 @@ void CBossPhase2::Command_Ground()
             auto stateMachine = controller->Get_StateMachine();
             if (stateMachine)
             {
+                _int curState = stateMachine->Get_CurStateNum();
+
+                // 공격 진행중이면 스킵 Eyeball Attack End 에서 알아서 처리
+                if (curState == CEyeball::PATTERN::EYEBALL_ATTACK)
+                    continue;
+
                 stateMachine->Change_State(CEyeball::PATTERN::EYEBALL_GROUND_MOVE);
             }
         }
     }
+}
+
+_bool CBossPhase2::Is_InSpecialPattern()
+{
+    if (!m_BossController)
+        return false;
+
+    auto stateMachine = m_BossController->Get_StateMachine();
+    if (!stateMachine)
+        return false;
+
+    _int curState = stateMachine->Get_CurStateNum();
+
+    return (curState == PATTERN::PHASE2_BULLET1 ||
+                curState == PATTERN::PHASE2_BULLET2 ||
+                curState == PATTERN::PHASE2_GROGGY);
 }
 
 CBossPhase2* CBossPhase2::Create(DEVICE graphicDev)
@@ -190,8 +213,8 @@ CBossPhase2* CBossPhase2::Create(DEVICE graphicDev)
 
 void CBossPhase2::Animation_Setting()
 {
-    m_AnimatorCom->Create_Animation(L"Boss2_Start", 68, 0.04f);
-    m_AnimatorCom->Create_Animation(L"Boss2_Idle", 68, 0.04f);
+    m_AnimatorCom->Create_Animation(L"Boss2_Start", 85, 0.05f, _vec2(1.f, 1.f), _vec2(0.f, 0.05f));
+    m_AnimatorCom->Create_Animation(L"Boss2_Idle", 68, 0.05f, _vec2(1.f, 1.f), _vec2(0.005f, 0.05f));
     m_AnimatorCom->Create_Animation(L"Boss2_Roar", 69, 0.04f, _vec2(1.f, 1.f), _vec2(0.f, -0.08f));
 
     m_AnimatorCom->Create_Animation(L"Boss2_HandSlam", 68, 0.04f, _vec2(1.f, 1.12f), _vec2(0.f, -0.19f));
@@ -199,6 +222,8 @@ void CBossPhase2::Animation_Setting()
 
     m_AnimatorCom->Create_Animation(L"Boss2_DownStart", 64, 0.04f, _vec2(1.09f, 1.1f), _vec2(0.f, -0.1f));
     m_AnimatorCom->Create_Animation(L"Boss2_DownIdle", 67, 0.04f, _vec2(0.93f, 0.79f), _vec2(0.f, -0.14f));
+
+    m_AnimatorCom->Create_Animation(L"Boss2_Sweep", 82, 0.04f, _vec2(1.16f, 1.25f), _vec2(0.f, -0.18f));
 }
 
 HRESULT CBossPhase2::Add_Component()

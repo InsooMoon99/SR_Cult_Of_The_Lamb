@@ -2,6 +2,7 @@
 #include "CEyeball_StateMachine.h"
 #include "CEyeball.h"
 #include "CEyeball_Attack.h"
+#include "CEyeball_CenterAttack.h"
 #include "CEyeball_Die.h"
 #include "CEyeball_Enter.h"
 #include "CEyeball_Exit.h"
@@ -67,6 +68,10 @@ HRESULT CEyeball_StateMachine::Ready_StateMachine()
 
         // Attack
         if (FAILED(RegisterState<CEyeball_Attack>(CEyeball::PATTERN::EYEBALL_ATTACK, m_Owner)))
+            return E_FAIL;
+
+        // Center Attack
+        if (FAILED(RegisterState<CEyeball_CenterAttack>(CEyeball::PATTERN::EYEBALL_CENTER_ATTACK, m_Owner)))
             return E_FAIL;
 
         // Dead
