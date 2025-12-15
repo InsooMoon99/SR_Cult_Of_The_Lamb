@@ -349,6 +349,12 @@
     <Filter Include="03. GameObject\09. MapObject\03. Fog">
       <UniqueIdentifier>{2f846c5f-7436-4050-b8a3-cfae036bed3d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\04. Boss\03.MiniBoss">
+      <UniqueIdentifier>{b8e27f44-5ee8-4e47-aa08-3d9d38c59df5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\04. Boss\03.MiniBoss\00.State">
+      <UniqueIdentifier>{976fd86d-08ad-4220-bb29-ae776502cc0d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -887,6 +893,36 @@
     <ClInclude Include="..\Header\CMenuExtra.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CEligos.h">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEligos_StateMachine.h">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEligos_Attack_Bullet.h">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEligos_Attack_Fly.h">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEligos_Attack_Melee.h">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEligos_Dead.h">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEligos_Idle.h">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEligos_Move.h">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEligos_Reveal.h">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEligos_Flies.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1385,6 +1421,36 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CMenuExtra.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEligos.cpp">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEligos_StateMachine.cpp">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEligos_Attack_Bullet.cpp">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEligos_Attack_Melee.cpp">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEligos_Dead.cpp">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEligos_Idle.cpp">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEligos_Move.cpp">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEligos_Reveal.cpp">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEligos_Attack_Fly.cpp">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEligos_Flies.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

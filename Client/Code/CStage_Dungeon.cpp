@@ -26,6 +26,7 @@
 #include "ItemInstance.h"
 #include "CTrigger_Dungeon.h"
 #include "CUI_Fade.h"
+#include "CEligos.h"
 
 CStage_Dungeon::CStage_Dungeon(DEVICE graphicDev)
     : CScene(graphicDev),
@@ -394,6 +395,19 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
         // 에디터에 카메라 설정
         CMainEditorMgr::GetInstance()->Set_MainCamera(camController);
     }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    //보스
+    ///////////////////////////////////////////////////////////////////////////////
+
+    // 보스 생성
+   CGameObject* m_Boss = CEligos::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(m_Boss, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase2::Create() returned null")
+
+        FAILED_CHECK_MSG(
+            layer->Add_GameObject(OBJTYPE::BOSS1, m_Boss),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Boss) failed");
+
 
     m_Layers.insert({ layerType, layer });
 

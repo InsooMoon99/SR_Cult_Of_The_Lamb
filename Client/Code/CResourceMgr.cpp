@@ -1414,12 +1414,29 @@ HRESULT CResourceMgr::Ready_MiniBoss(DEVICE graphicDev)
         L"../Bin/Resource/Texture/MiniBoss/Eligos_attack/Eligos_attack%d.png", 32)))
         return E_FAIL;
 
-    if (FAILED(MiniBossTex->Add_Texture(L"Mortar_fly", TEX_NORMAL,
-        L"../Bin/Resource/Texture/MiniBoss/Mortar_fly/Mortar_fly%d.png", 27)))
+    if (FAILED(MiniBossTex->Add_Texture(L"Eligos_attackcharge_bullet", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Eligos_attackcharge/Eligos_attackcharge%d.png", 59)))
+        return E_FAIL;
+
+    if (FAILED(MiniBossTex->Add_Texture(L"Eligos_attack_bullet", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Eligos_attack/Eligos_attack%d.png", 32)))
         return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_MINIBOSS, MiniBossTex)))
         return E_FAIL;
+
+
+
+    CTexture* flyTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(flyTex, E_FAIL);
+
+    if (FAILED(flyTex->Add_Texture(L"Mortar_fly", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Mortar_fly/Mortar_fly%d.png", 27)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_FLY, flyTex)))
+        return E_FAIL;
+
 
     return S_OK;
 }

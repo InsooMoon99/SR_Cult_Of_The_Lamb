@@ -73,7 +73,7 @@ protected:
     _float          m_AttackTimer;       // 현재 공격 타이머
     _bool           m_CanAttack;         // Timer >= Cooldown 공격이 가능한지 ?
 
-private:
+protected:
     bool    m_bHurt = false;
     float   HurtTime = 0;
     float   flashTime = 0.1f;

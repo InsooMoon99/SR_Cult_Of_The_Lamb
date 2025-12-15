@@ -66,6 +66,39 @@ _int CProjectile::Update_Component(const _float& timeDelta)
         break;
     case PROJ_TYPE::HOMING:
         // 일단 없음
+        if (m_Target == nullptr)
+            break;
+
+        CTransform* targetTransform =
+            dynamic_cast<CTransform*>(m_Target->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+        if (targetTransform == nullptr)
+            break;
+
+        _vec3 myPos = m_TransformCom->Get_Pos();
+        _vec3 targetPos = targetTransform->Get_Pos();
+
+        // 1️ 목표 방향
+        _vec3 targetDir = targetPos - myPos;
+        D3DXVec3Normalize(&targetDir, &targetDir);
+
+        // 2️ 현재 방향
+        _vec3 curDir = m_Direction;
+        D3DXVec3Normalize(&curDir, &curDir);
+
+        // 3️ 방향 보간 (회전)
+        float turnRatio = m_TurnSpeed * timeDelta;
+        turnRatio = min(turnRatio, 1.f);
+
+        _vec3 newDir = curDir + (targetDir - curDir) * turnRatio;
+        D3DXVec3Normalize(&newDir, &newDir);
+
+        m_Direction = newDir;
+
+        // 4️ 전진
+        _vec3 move = m_Direction * m_Speed * timeDelta;
+        m_TransformCom->Set_Pos(myPos + move);
+    
         break;
     }
 

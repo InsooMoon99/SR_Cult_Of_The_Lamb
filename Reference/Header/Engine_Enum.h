@@ -192,6 +192,7 @@ enum class COMPONENTTYPE
     TEX_CHEST,
     TEX_MAINMENU,
     TEX_MINIBOSS,
+    TEX_FLY,
 
     ANIMATOR,
 
