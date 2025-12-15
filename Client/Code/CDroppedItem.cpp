@@ -21,6 +21,7 @@
 #include "CDInputMgr.h"
 #include "CAnimator.h"
 #include "CParticleHelper.h"
+#include "CStage_Dungeon.h"
 
 CUIWeaponExplain* CDroppedItem::m_WeaponExplainUI = nullptr;
 
@@ -244,9 +245,20 @@ void CDroppedItem::OnStayOverlap(CCollider* self, CCollider* other)
             CComponent* com = ply->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::INVENTORY);
             if (dynamic_cast<CInventory*>(com)->AddItem(m_itemInst) == true)
             {
+
                 DisappearEff();
                 //*** 아이템 지우기 ***
                 Mark_As_PendingKill();
+
+                //던전 획득 아이템 로그용
+                CScene* scene = CManagement::GetInstance()->Get_Scene();
+                CStage_Dungeon* dungeonStage = dynamic_cast<CStage_Dungeon*>(scene);
+
+                if (dungeonStage)
+                {
+                        dungeonStage->Get_RunLootLog().Add(m_itemInst);
+                }
+
             }
         }
     }

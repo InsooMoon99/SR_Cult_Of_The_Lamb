@@ -1,25 +1,28 @@
 ﻿#pragma once
-using namespace std;
+
 #include "ItemInstance.h"
 #include <vector>
 
 class CRunLootLog
 {
+public:
     struct Slot
     {
         ItemInstance itemInst;
         int          count;
     };
-public:
+
     CRunLootLog();
     ~CRunLootLog();
 
-public:
     void Clear();
     void Add(const ItemInstance& itemInst,int count =1 );
+    
+    vector<CRunLootLog::Slot>& Get_Vector() { return m_ItemSlot; }
 
 private:
-    vector<Slot> m_ItemSlot;
+    std::vector<Slot> m_ItemSlot;
 
 };
+
 

@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "CRunLootLog.h"
 #include "CScene.h"
 
 class CInventory;
@@ -60,9 +61,16 @@ public:
 
     void    Create_Trigger_Between(Room fromRoom,
         _vec3 offsetFromRoom, _vec3 size, function<void()> callback);
-
+    void    EnterDungeon();
     void    Change_Room(Room room);
+    CRunLootLog& Get_RunLootLog() { return m_RunLootLog; }
+    void    Add_KillCount() { m_KillCount++; }
+    _int    Get_KillCounts() { return m_KillCount; }
+    _float  Get_Timer() { return m_Timer; }
+    void    Set_TimerRunning(bool timerRunning) { m_TimerRunning = timerRunning; }
 
+private:
+    const CRunLootLog& Get_RunLootLog() const { return m_RunLootLog; }
 private:
     HRESULT Ready_Environment_Layer(LAYERTYPE layerType);
     HRESULT Ready_GameLogic_Layer(LAYERTYPE layerType);
@@ -104,6 +112,12 @@ private:
 
     // 카메라 무브먼트
     CCameraMovement* m_CamMovement;
+    
+    CRunLootLog     m_RunLootLog;
+    _int            m_KillCount;
+
+    _float          m_Timer;
+    _bool           m_TimerRunning;
 };
 
 

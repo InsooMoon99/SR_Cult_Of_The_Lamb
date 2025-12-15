@@ -358,6 +358,9 @@
     <Filter Include="91. RunLootLog">
       <UniqueIdentifier>{9f4546c0-9cd4-470c-bfe4-7f9d5f1a3a16}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. UI\01. UI\13. UI_DungeonLootPanel">
+      <UniqueIdentifier>{efba4223-937b-4295-bccd-d3e92a26a09b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -908,6 +911,9 @@
     <ClInclude Include="..\Header\CRunLootLog.h">
       <Filter>91. RunLootLog</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CUI_DungeonLootPanel.h">
+      <Filter>05. UI\01. UI\13. UI_DungeonLootPanel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1419,6 +1425,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CRunLootLog.cpp">
       <Filter>91. RunLootLog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_DungeonLootPanel.cpp">
+      <Filter>05. UI\01. UI\13. UI_DungeonLootPanel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

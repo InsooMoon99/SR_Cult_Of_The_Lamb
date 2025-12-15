@@ -54,6 +54,9 @@ public:
     virtual void    AlphaRenderEnd();
     void            Set_Hurt(bool hurt) { m_bHurt = hurt; }
 
+public:
+    void            Check_Kill();
+
 protected:
     void            Free() override;
 
@@ -73,11 +76,14 @@ protected:
     _float          m_AttackTimer;       // 현재 공격 타이머
     _bool           m_CanAttack;         // Timer >= Cooldown 공격이 가능한지 ?
 
+protected:
+    bool    m_OnDead = false;
+
 private:
     bool    m_bHurt = false;
     float   HurtTime = 0;
     float   flashTime = 0.1f;
-
+    bool    m_CountKillDone = false;
 
 };
 

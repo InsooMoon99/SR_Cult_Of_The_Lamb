@@ -910,6 +910,8 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     vector<wstring> decoTex;
     decoTex.emplace_back(L"../Bin/Resource/Texture/UI/Inventory/Title_Bracket_Left.png");
     decoTex.emplace_back(L"../Bin/Resource/Texture/UI/Inventory/Title_Bracket_Right.png");
+    decoTex.emplace_back(L"../Bin/Resource/Texture/UI/Deco/Skeleton.png");
+    decoTex.emplace_back(L"../Bin/Resource/Texture/UI/Deco/Timer.png");
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_DECO, CTexture::Create(graphicDev, TEX_NORMAL, decoTex))))
         return E_FAIL;
@@ -941,6 +943,16 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
             L"../Bin/Resource/Texture/UI/FollowerCommand/BackGround0.png",
             1))))
         return E_FAIL;
+
+    //// Texture : Clear BackGround
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_CLEAR,
+        Engine::CTexture::Create(
+            graphicDev,
+            TEX_NORMAL,
+            L"../Bin/Resource/Texture/UI/BG/ClearBG.png",
+            1))))
+        return E_FAIL;
+
 
     return S_OK;
 }

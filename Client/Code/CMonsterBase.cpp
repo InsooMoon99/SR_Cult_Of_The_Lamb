@@ -1,12 +1,19 @@
 ﻿#include "pch.h"
 #include "CMonsterBase.h"
 
+#include <CManagement.h>
 #include "CAnimator.h"
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
 #include "CRcTex.h"
 #include "CTexture.h"
 #include "CTransform.h"
+#include "CStage_Dungeon.h";
+
+namespace Engine
+{
+class CScene;
+}
 
 CMonsterBase::CMonsterBase(DEVICE graphicDev)
     : CCharacterBase(graphicDev),
@@ -55,8 +62,9 @@ void CMonsterBase::Initialize_GameObject()
 
 _int CMonsterBase::Update_GameObject(const _float& timeDelta)
 {
-    _int exit = CCharacterBase::Update_GameObject(timeDelta);
 
+    _int exit = CCharacterBase::Update_GameObject(timeDelta);
+ 
     if (m_Target) // 타겟의 방향 설정
     {
         _vec3 pos       = m_TransformCom->Get_Pos();
@@ -232,6 +240,21 @@ void CMonsterBase::AlphaRenderEnd()
     m_GraphicDev->SetRenderState(
         D3DRS_TEXTUREFACTOR,
         D3DCOLOR_ARGB(255, 255, 255, 255)); // 알파 1.0, 색 그대로
+}
+
+void CMonsterBase::Check_Kill()
+{
+    if (m_OnDead && !m_CountKillDone)
+    {
+        CScene* scene = CManagement::GetInstance()->Get_Scene();
+        CStage_Dungeon* dungeonStage = dynamic_cast<CStage_Dungeon*>(scene);
+
+        if (dungeonStage)
+        {
+            dungeonStage->Add_KillCount();
+        }
+        m_CountKillDone = true;
+    }
 }
 
 void CMonsterBase::Free()

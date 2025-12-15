@@ -189,6 +189,7 @@ enum class COMPONENTTYPE
     TEX_CHEST,
     TEX_UI_SKILL,
     TEX_UI_COMMAND,
+    TEX_UI_CLEAR,
 
     ANIMATOR,
 

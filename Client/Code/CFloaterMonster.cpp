@@ -213,7 +213,9 @@ void CFloaterMonster::Update_State_Hit(const _float timeDelta)
 void CFloaterMonster::Update_State_Dead(const _float timeDelta)
 {
     // CombatStat에서 Dead 상태처리 진행중 Dead 애니메이션이 없다. 밀려나면서, 뼛가루 소환?
-    if (m_StateCom->Get_State() == ACTORSTATE::DEAD)
+	if (m_StateCom->Get_State() == ACTORSTATE::DEAD)
+		m_OnDead = true;
+       Check_Kill();
         Mark_As_PendingKill();
 }
 

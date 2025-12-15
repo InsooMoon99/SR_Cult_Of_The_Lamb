@@ -327,6 +327,7 @@
     <ClInclude Include="..\Header\CUIWeapon.h" />
     <ClInclude Include="..\Header\CUI_BossHp.h" />
     <ClInclude Include="..\Header\CUI_Dialogue.h" />
+    <ClInclude Include="..\Header\CUI_DungeonLootPanel.h" />
     <ClInclude Include="..\Header\CUI_Fade.h" />
     <ClInclude Include="..\Header\CUI_FollowerCommand.h" />
     <ClInclude Include="..\Header\CUI_MonsterHp.h" />
@@ -505,6 +506,7 @@
     <ClCompile Include="..\Code\CUIWeapon.cpp" />
     <ClCompile Include="..\Code\CUI_BossHp.cpp" />
     <ClCompile Include="..\Code\CUI_Dialogue.cpp" />
+    <ClCompile Include="..\Code\CUI_DungeonLootPanel.cpp" />
     <ClCompile Include="..\Code\CUI_Fade.cpp" />
     <ClCompile Include="..\Code\CUI_FollowerCommand.cpp" />
     <ClCompile Include="..\Code\CUI_MonsterHp.cpp" />
