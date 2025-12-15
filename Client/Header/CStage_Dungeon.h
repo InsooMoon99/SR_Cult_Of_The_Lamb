@@ -69,6 +69,9 @@ public:
     _float  Get_Timer() { return m_Timer; }
     void    Set_TimerRunning(bool timerRunning) { m_TimerRunning = timerRunning; }
 
+    // 몬스터 죽었을 때 호출
+    void    OnMonsterDeath(CGameObject* obj) override;
+
 private:
     const CRunLootLog& Get_RunLootLog() const { return m_RunLootLog; }
 private:
@@ -114,7 +117,6 @@ private:
     CCameraMovement* m_CamMovement;
     
     CRunLootLog     m_RunLootLog;
-    _int            m_KillCount;
 
     _float          m_Timer;
     _bool           m_TimerRunning;

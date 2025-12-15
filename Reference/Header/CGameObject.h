@@ -31,6 +31,8 @@ public:
     virtual _int    Update_GameObject(const _float& timeDelta);
     virtual void    LateUpdate_GameObject(const _float& timeDelta);
     virtual void    Render_GameObject() PURE;
+    //
+    virtual void    Render_Trail() {};
 
 public:
     virtual void OnBeginOverlap(CCollider* self, CCollider* other) {}

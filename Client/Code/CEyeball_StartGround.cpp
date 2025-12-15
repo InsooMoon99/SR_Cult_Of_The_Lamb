@@ -5,6 +5,7 @@
 #include "CEyeball.h"
 #include "CRandomMgr.h"
 #include "CTransform.h"
+#include "CParticleHelper.h"
 
 CEyeball_StartGround::CEyeball_StartGround(CMonsterBase* owner)
     : m_Owner(owner), m_Pattern_Cooldown(0), m_LerpSpeed(0), m_MaxMoveDistance(0)
@@ -46,6 +47,7 @@ void CEyeball_StartGround::Enter()
     }
 
     m_fCurStateElapsedTime = 0.f;
+    m_ParticleTimer = 0.f;
 }
 
 _int CEyeball_StartGround::Update_State(const _float& timeDelta)
@@ -62,6 +64,26 @@ _int CEyeball_StartGround::Update_State(const _float& timeDelta)
 
     if (transform && m_pPlayerTransformCom)
     {
+        m_ParticleTimer += timeDelta;
+        if (m_ParticleTimer >= 0.2f)
+        {
+            _vec3 particlePos = transform->Get_Pos();
+            particlePos.y += 1.7f;
+
+            CParticleHelper::Spawn_BurstParticle(
+                particlePos,
+                L"HitEffect_Blood",
+                12,
+                6,
+                3.f,
+                3.f,
+                15.f,
+                2.f,
+                0.05f);
+
+            m_ParticleTimer = 0.f;
+        }
+
         _vec3 playerPos = m_pPlayerTransformCom->Get_Pos();
         _vec3 eyeballPos = transform->Get_Pos();
 

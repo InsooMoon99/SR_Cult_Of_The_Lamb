@@ -297,37 +297,7 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     NULL_CHECK_RETURN(m_PlayerCombatStatCom, E_FAIL);
 
     m_PlayerSkillCom = dynamic_cast<CPlayerSkill*>(gameObject->Get_Component(ID_STATIC, COMPONENTTYPE::PL_SKILL));
-
     NULL_CHECK_RETURN(m_PlayerSkillCom, E_FAIL);
-
-    // -----------------------------
-    // Monster
-    // -----------------------------
-
-    //// HumanMonster
-    //gameObject = CHumanMonster::Create(m_GraphicDev);
-    //NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CHumanMonster::Create() returned null")
-    //
-    //FAILED_CHECK_MSG(
-    //    layer->Add_GameObject(OBJTYPE::HUMANMONSTER, gameObject),
-    //    L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
-    //
-    //gameObject = CFloaterMonster::Create(m_GraphicDev);
-    //NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CHumanMonster::Create() returned null")
-    //
-    //FAILED_CHECK_MSG(
-    //    layer->Add_GameObject(OBJTYPE::HUMANMONSTER, gameObject),
-    //    L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
-    
-    // -----------------------------
-    // Boss
-    // -----------------------------
-    /*gameObject = CBossPhase1::Create(m_GraphicDev);
-    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase1::Create() returned null")
-    
-        FAILED_CHECK_MSG(
-            layer->Add_GameObject(OBJTYPE::BOSS1, gameObject),
-            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");*/
 
     // -----------------------------
     // Camera
@@ -504,11 +474,11 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     // -----------------------------
     // Follower
     // -----------------------------
-    gameObject = CFollowerCow::Create(m_GraphicDev);
-    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"Create NPC object has failed");
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::NPC, gameObject),
-        L"Add NPC object on layer has failed");
+    //gameObject = CFollowerCow::Create(m_GraphicDev);
+    //NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"Create NPC object has failed");
+    //FAILED_CHECK_MSG(
+    //    layer->Add_GameObject(OBJTYPE::NPC, gameObject),
+    //    L"Add NPC object on layer has failed");
 
     m_FollowerCow = dynamic_cast<CFollowerCow*>(gameObject); //UI 생성시점이 Follower 생성 시점보다 늦어서 나중에 포인터 주입하기 위해 멤버변수로 저장해둠
     

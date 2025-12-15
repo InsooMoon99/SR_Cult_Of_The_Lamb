@@ -26,7 +26,9 @@ public:
 
 public:
     // 하강
-    void Trigger_Eyeball_Descend(_int index);
+    void    Trigger_Eyeball_Descend(_int index);
+
+    void    Setup_EyebalDeath();
 
 private:
     void Spawn_Eyeball(_int index);

@@ -1,7 +1,7 @@
 ﻿#include "pch.h"
 #include "CMonsterBase.h"
-
-#include <CManagement.h>
+#include "CScene.h"
+#include "CManagement.h"
 #include "CAnimator.h"
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
@@ -242,19 +242,14 @@ void CMonsterBase::AlphaRenderEnd()
         D3DCOLOR_ARGB(255, 255, 255, 255)); // 알파 1.0, 색 그대로
 }
 
-void CMonsterBase::Check_Kill()
+void CMonsterBase::Trigger_OnDeath()
 {
-    if (m_OnDead && !m_CountKillDone)
-    {
-        CScene* scene = CManagement::GetInstance()->Get_Scene();
-        CStage_Dungeon* dungeonStage = dynamic_cast<CStage_Dungeon*>(scene);
+    if (m_OnDeath)
+        m_OnDeath();
 
-        if (dungeonStage)
-        {
-            dungeonStage->Add_KillCount();
-        }
-        m_CountKillDone = true;
-    }
+    auto scene = CManagement::GetInstance()->Get_Scene();
+    if (scene)
+        scene->OnMonsterDeath(this);
 }
 
 void CMonsterBase::Free()

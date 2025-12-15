@@ -55,7 +55,12 @@ public:
     void            Set_Hurt(bool hurt) { m_bHurt = hurt; }
 
 public:
-    void            Check_Kill();
+    using   OnDeathCallback = function<void()>;
+    void    Set_OnDeath(OnDeathCallback callback) { m_OnDeath = callback; }
+    void    Trigger_OnDeath();
+
+private:
+    OnDeathCallback m_OnDeath = nullptr;
 
 protected:
     void            Free() override;

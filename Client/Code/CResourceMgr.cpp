@@ -518,7 +518,16 @@ HRESULT CResourceMgr::Ready_Monster(DEVICE graphicDev)
         COMPONENTTYPE::TEX_CHEST, chest)))
         return E_FAIL;
 
+    // 춘식이
+    CTexture* slaveTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(slaveTex, E_FAIL);
 
+    if (FAILED(slaveTex->Add_Texture(L"Boss_Slave_Appear", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Slave/ChunSik/Follower-finab-loss-appear%d.png", 42)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_SLAVE_TEST, slaveTex)))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -601,24 +610,18 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
         CBossController::Create(graphicDev))))
         return E_FAIL;
 
-    // 춘식이
-    CTexture* slaveTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
-    NULL_CHECK_RETURN(slaveTex, E_FAIL);
-
-    if (FAILED(slaveTex->Add_Texture(L"Boss_Slave_Appear", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase2/Slave/ChunSik/Follower-finab-loss-appear%d.png", 42)))
-        return E_FAIL;
-
-    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_SLAVE_TEST, slaveTex)))
-        return E_FAIL;
-
     // Boss Phase 2
     CTexture* bossPhase2 = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(bossPhase2, E_FAIL);
 
+    // Summon Follower
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Summon", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Summon/TOWW_Summon%d.png", 134)))
+        return E_FAIL;
+
     // Start
     if (FAILED(bossPhase2->Add_Texture(L"Boss2_Start", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Start_Eye/TOWW_Start_Eye%d.png", 68)))
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Start_Eye/TOWW_Start_Eye%d.png", 85)))
         return E_FAIL;
 
     // Idle
@@ -646,9 +649,33 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
         L"../Bin/Resource/Texture/BossPhase1/ChainAttackGround.png", 1)))
         return E_FAIL;
 
+    // Sweep
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Sweep", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Sweep/TOWW_Sweep%d.png", 82)))
+        return E_FAIL;
+
     // Chain
     if (FAILED(bossPhase2->Add_Texture(L"Boss2_Chain", TEX_NORMAL,
         L"../Bin/Resource/Texture/BossPhase1/ChainAttack/Summon_Chain%d.png", 34)))
+        return E_FAIL;
+
+    // Down Start
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_DownStart", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_DownStart/TOWW_DownStart%d.png", 64)))
+        return E_FAIL;
+
+    // Down Idle
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_DownIdle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_DownIdle/TOWW_DownIdle%d.png", 67)))
+        return E_FAIL;
+
+    // Follower
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Follower_Transform", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Slave/DeathCat/Transform/Boss_Transform%d.png", 62)))
+        return E_FAIL;
+
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Follower_UnConverted", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Slave/DeathCat/UnConverted/UnConverted%d.png", 50)))
         return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_BOSS2_PHASE2, bossPhase2)))
@@ -953,6 +980,22 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
             1))))
         return E_FAIL;
 
+    // Texture : MainMenu Extra
+    // UI_Cooking
+    vector<wstring> extra;
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideFront0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Back_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Front_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Side_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideBack_0.png");
+
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_MAINMENU, CTexture::Create(graphicDev, TEX_NORMAL, extra))))
+        return E_FAIL;
+
+   
 
     return S_OK;
 }
@@ -973,6 +1016,9 @@ HRESULT CResourceMgr::Ready_Item(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_ITEM, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec))))
         return E_FAIL;
+
+
+
 
     return S_OK;
 }
@@ -1240,6 +1286,18 @@ HRESULT CResourceMgr::Ready_Follower(DEVICE graphicDev)
         L"../Bin/Resource/Texture/NPC/Follower/Cow3/Spawn/Follower-spawn-in-base%d.png", 172)))
         return E_FAIL;
 
+    if (FAILED(cowTex->Add_Texture(L"CowTransform1", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Transform1/Follower-transform1-%d.png", 94)))
+        return E_FAIL;
+
+    if (FAILED(cowTex->Add_Texture(L"CowTransform2", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Transform2/Follower-transform2-%d.png", 26)))
+        return E_FAIL;
+
+    if (FAILED(cowTex->Add_Texture(L"CowTransform3", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Transform3/Follower-transform3-%d.png", 89)))
+        return E_FAIL;
+
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_COW, cowTex)))
         return E_FAIL;
 
@@ -1290,6 +1348,18 @@ HRESULT CResourceMgr::Ready_Follower(DEVICE graphicDev)
         L"../Bin/Resource/Texture/NPC/Follower/Elephant/Spawn/Follower-spawn-in-base%d.png", 172)))
         return E_FAIL;
 
+    if (FAILED(elephantTex->Add_Texture(L"ElephantTransform1", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Transform1/Follower-transform1-%d.png", 94)))
+        return E_FAIL;
+
+    if (FAILED(elephantTex->Add_Texture(L"ElephantTransform2", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Transform2/Follower-transform2-%d.png", 26)))
+        return E_FAIL;
+
+    if (FAILED(elephantTex->Add_Texture(L"ElephantTransform3", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Transform3/Follower-transform3-%d.png", 89)))
+        return E_FAIL;
+
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_ELEPHANT, elephantTex)))
         return E_FAIL;
 
@@ -1338,6 +1408,18 @@ HRESULT CResourceMgr::Ready_Follower(DEVICE graphicDev)
 
     if (FAILED(pigTex->Add_Texture(L"PigSpawn", TEX_NORMAL,
         L"../Bin/Resource/Texture/NPC/Follower/Pig2/Spawn/Follower-spawn-in-base%d.png", 172)))
+        return E_FAIL;
+
+    if (FAILED(pigTex->Add_Texture(L"PigTransform1", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Transform1/Follower-transform1-%d.png", 94)))
+        return E_FAIL;
+
+    if (FAILED(pigTex->Add_Texture(L"PigTransform2", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Transform2/Follower-transform2-%d.png", 26)))
+        return E_FAIL;
+
+    if (FAILED(pigTex->Add_Texture(L"PigTransform3", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Transform3/Follower-transform3-%d.png", 89)))
         return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PIG, pigTex)))

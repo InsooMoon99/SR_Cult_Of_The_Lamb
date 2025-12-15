@@ -70,7 +70,8 @@ public:
             _float angle = D3DXToRadian((_float)(rand() % 360));
             _float randSpeed = speed + (rand() % 30) / 10.f;
 
-            _vec3 velocity = {
+            _vec3 velocity =
+            {
                 cosf(angle) * randSpeed,
                 sinf(angle) * randSpeed + speed,
                 0.f

@@ -84,5 +84,6 @@ private:
     _float                  m_LerpSpeed;        
 
     _int                    m_TotalAttackCount = 0;
+    _int                    m_MaxAttackCount = 0;
 };
 
