@@ -241,6 +241,11 @@ void CStage_Boss2::Setup_BossCallbacks()
         {
             m_CamController->Get_OwnerCamMovement()->Disable_DynamicDistance();
         });
+
+    boss->Set_OnFollowerStart([this]()
+        {
+            m_Dialogue->Start_Dialogue("Boss2_Dead", _vec2(0.f, 200.f), _vec2(300.f, 80.f));
+        });
 }
 
 HRESULT CStage_Boss2::Ready_Light()
@@ -270,17 +275,6 @@ HRESULT CStage_Boss2::Ready_Light()
         return E_FAIL;
 
     return S_OK;
-}
-
-void CStage_Boss2::Setup_BossCallbacks()
-{
-    auto boss = dynamic_cast<CBossPhase2*>(m_Boss);
-    NULL_CHECK(boss);
-
-    boss->Set_OnFollowerStart([this]()
-        {
-            m_Dialogue->Start_Dialogue("Boss2_Dead", _vec2(0.f, 200.f), _vec2(300.f, 80.f));
-        });
 }
 
 void CStage_Boss2::Setup_DialogueCallbacks()

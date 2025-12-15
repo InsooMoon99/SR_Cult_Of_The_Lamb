@@ -52,10 +52,6 @@ public:
     void				Increase_DeathCount(_int value = 1) { m_Eyeball_DeathCount += value; }
 
     const vector<CEyeball*>& Get_Eyeballs() { return m_Eyeballs; }
-public:
-	void Add_Eyeball(CEyeball* eyeball);
-	void Remove_Eyeball(CEyeball* eyeball);
-	void Command_Ground(); // Eyeball 땅으로 들어가도록 명령
 
 public:
 	void                Add_Eyeball(CEyeball* eyeball);
