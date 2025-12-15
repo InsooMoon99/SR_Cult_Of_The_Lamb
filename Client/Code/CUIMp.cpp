@@ -52,6 +52,9 @@ void CUIMp::LateUpdate_GameObject(const _float& timeDelta)
 
 void CUIMp::Render_GameObject()
 {
+    // 조명안받게
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
+
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
     m_TextureCom->Set_Texture(0);
 
@@ -86,6 +89,8 @@ void CUIMp::Render_GameObject()
     m_BufferCom->Render_Buffer();
 
     m_GraphicDev->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
+
 }
 
 HRESULT CUIMp::Add_Component()

@@ -45,7 +45,7 @@ void CUI_LoadingCircle::Initialize_GameObject()
     m_AnimatorCom->Set_TextureType(COMPONENTTYPE::TEX_LOADING_CIRCLE);
 
     m_AnimatorCom->Create_Animation(L"Loading_Circle",
-        65,
+        58,
         0.05f,
         _vec2(1.65f, 1.f),
         _vec2(-0.5f, 0.8f));

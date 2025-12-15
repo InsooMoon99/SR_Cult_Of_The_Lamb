@@ -18,7 +18,7 @@
 #include "CUI_MonsterHp.h"
 #include "CWall.h"
 #include "CWallRenderer.h"
-#include "CBoss_Slave_Test.h"
+#include "CBoss_SlaveCow.h"
 
 CTerrain::CTerrain(DEVICE GraphicDev)
     : CRenderObject(GraphicDev), m_BufferCom(nullptr), m_TextureCom284(nullptr),
@@ -338,7 +338,7 @@ void CTerrain::Spawn_Objects(CLayer* layer)
             break;
 
         case SPAWN_OBJ_TYPE::NPC_SLAVE:
-            object = CBoss_SlaveTest::Create(m_GraphicDev);
+            object = CBoss_SlaveCow::Create(m_GraphicDev);
             objType = OBJTYPE::NPC;
             break;
 

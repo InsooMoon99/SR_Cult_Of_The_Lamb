@@ -64,6 +64,7 @@ void CMenuChar::LateUpdate_GameObject(const _float& timeDelta)
 
 void CMenuChar::Render_GameObject()
 {
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
     Render_Setting();
@@ -79,6 +80,7 @@ void CMenuChar::Render_GameObject()
     m_BufferCom->Render_Buffer();
 
     Render_Reset();
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
 void CMenuChar::Animation_Setting()

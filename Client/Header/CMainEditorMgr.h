@@ -42,6 +42,7 @@ public:
     void Render_MainEditor();
 
     void Set_MainCamera(CCameraController* cam) { m_MainCameraController = cam; }
+    CCameraController* Get_MainCameraControl() { return m_MainCameraController; }
 
     _bool IsPlaying() const { return m_IsPlaying; }
 

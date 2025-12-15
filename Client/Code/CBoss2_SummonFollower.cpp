@@ -3,9 +3,13 @@
 #include "CBossController.h"
 #include "CBossPhase2.h"
 #include "CAnimator.h"
+#include "CBoss_SlaveCow.h"
+#include "CBoss_SlaveElephant.h"
+#include "CBoss_SlavePig.h"
 #include "CCreateHelper.h"
 #include "CEyeball.h"
-#include "CUI_Dialogue.h"
+#include "CCreateHelper.h"
+#include "CTransform.h"
 
 CBoss2_SummonFollower::CBoss2_SummonFollower(CMonsterBase* owner)
     : m_Owner(owner), m_Pattern_Cooldown(0)
@@ -38,7 +42,7 @@ void CBoss2_SummonFollower::Enter()
 
         if (animator)
         {
-            animator->Play_Animation(L"Boss2_Roar", ANIMSTATE::ONCE);
+            animator->Play_Animation(L"Boss2_Roar_Alive", ANIMSTATE::ONCE);
         }
     }
 
@@ -48,6 +52,8 @@ void CBoss2_SummonFollower::Enter()
     m_fCurStateElapsedTime = 0.f;
 
     m_DialogueFinished = false;
+    m_IsSummon = false;
+
     m_Phase = SummonPhase::ROAR;
 }
 
@@ -75,14 +81,19 @@ _int CBoss2_SummonFollower::Update_State(const _float& timeDelta)
 
             if (animator)
                 animator->Play_Animation(L"Boss2_Summon", ANIMSTATE::ONCE);
-
         }
         break;
 
     case SummonPhase::SUMMON:
 
-        // 처음 진입
-        boss->Trigger_OnSummonAnimStart();
+        if (!m_IsSummon && animator && animator->Get_CurFrame() >= 22)
+        {
+            m_IsSummon = true;
+
+            boss->Trigger_OnSummonAnimStart();
+
+            Summon_Follower();
+        }
 
         // Summon 끝나면 Start로 전환
         if (animator && animator->Is_AnimationFinished())
@@ -103,6 +114,40 @@ void CBoss2_SummonFollower::Exit()
 {
     CMonsterState::Exit();
 
+}
+
+void CBoss2_SummonFollower::Summon_Follower()
+{
+    // 왼쪽
+    {
+        auto cow = CBoss_SlaveCow::Create(m_Owner->Get_GraphicDev());
+        cow->Get_Transform()->Set_Pos(_vec3(34.1f, 3.5f, 43.7f));
+        SpawnObjectOnLayer(cow, OBJTYPE::NPC);
+
+        auto elephant = CBoss_SlaveElephant::Create(m_Owner->Get_GraphicDev());
+        elephant->Get_Transform()->Set_Pos(_vec3(36.8f, 3.7f, 46.6f));
+        SpawnObjectOnLayer(elephant, OBJTYPE::NPC);
+
+        auto pig = CBoss_SlavePig::Create(m_Owner->Get_GraphicDev());
+        pig->Get_Transform()->Set_Pos(_vec3(36.7f, 3.4f, 42.f));
+        SpawnObjectOnLayer(pig, OBJTYPE::NPC);
+    }
+
+    // 오른쪽
+    {
+        auto cow = CBoss_SlaveCow::Create(m_Owner->Get_GraphicDev());
+        cow->Get_Transform()->Set_Pos(_vec3(64.3f, 3.5f, 42.1f));
+        SpawnObjectOnLayer(cow, OBJTYPE::NPC);
+
+        auto elephant = CBoss_SlaveElephant::Create(m_Owner->Get_GraphicDev());
+        elephant->Get_Transform()->Set_Pos(_vec3(62.4f, 3.7f, 40.0f));
+        SpawnObjectOnLayer(elephant, OBJTYPE::NPC);
+
+        auto pig = CBoss_SlavePig::Create(m_Owner->Get_GraphicDev());
+        pig->Get_Transform()->Set_Pos(_vec3(62.5f, 3.4f, 45.5f));
+        SpawnObjectOnLayer(pig, OBJTYPE::NPC);
+    }
+    
 }
 
 CBoss2_SummonFollower* CBoss2_SummonFollower::Create(CMonsterBase* owner)

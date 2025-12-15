@@ -66,6 +66,9 @@ void CUIIcon::LateUpdate_GameObject(const _float& timeDelta)
 
 void CUIIcon::Render_Setting()
 {
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
+
+
     //m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
     //
     //m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
@@ -80,17 +83,22 @@ void CUIIcon::Render_Reset()
     //m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
     //m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
     //m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
+
 }
 
 void CUIIcon::Render_GameObject()
 {
     CUI::Render_GameObject();
 
+
     Render_Setting();
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
     m_TextureCom->Set_Texture(m_textureIndex);
     m_BufferCom->Render_Buffer();
     Render_Reset();
+
 }
 
 HRESULT CUIIcon::Add_Component(COMPONENTTYPE texProtoTag)

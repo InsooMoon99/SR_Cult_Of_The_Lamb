@@ -24,6 +24,8 @@ private:
         START_BOSS_ZOOM, // 줌인 하면서 카메라 쉐이킹
         SUMMON_ZOOM_OUT,
         EYEBALL_ZOOM,
+        BOSS_DEAD,
+        TRANSFORM_FOLLOWER,
 
         CAM_MOVE_END
     };
@@ -58,6 +60,11 @@ public:
     void    OnDialogueEnd(const string& id);
     void    OnBoss2DeadEnd();
 
+private:
+    void    Move_PlayerUI(const _float timeDelta);
+    void    Move_BossUI(const _float timeDelta);
+    void    Start_UIAnimation(); 
+
 public:
     static CStage_Boss2* Create(DEVICE graphicDev);
 
@@ -83,8 +90,18 @@ private:
     _float                  m_Attenuation2 = 0.f;
 
 private:
-    CUI_Dialogue*       m_Dialogue = nullptr;
+    CUI_Dialogue*           m_Dialogue = nullptr;
+    CAM_MOVE_TYPE           m_CamMove = CAM_MOVE_TYPE::START_BOSS_ZOOM;
 
-    CAM_MOVE_TYPE m_CamMove = CAM_MOVE_TYPE::START_BOSS_ZOOM;
+    vector<CUI*>            m_Player_UI;
+    CUI_BossHp*             m_BossHpbar = nullptr;
 
+    CCombatStat*            m_PlayerCombatStatCom = nullptr;
+    vector<_vec3>           m_OriginalUIPositions;
+    vector<_vec3>           m_TargetUIPositions;
+
+    _bool                   m_IsUIMoving = false;
+    _bool                   m_IsBossUIMoving = false;
+    _float                  m_UIAnimTime = 0.f;
+    _float                  m_UIAnimDuration = 0.5f;
 };

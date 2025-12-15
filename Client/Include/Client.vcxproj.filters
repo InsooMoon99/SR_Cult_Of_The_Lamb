@@ -609,7 +609,7 @@
     <ClInclude Include="..\Header\CLogo_Boss2.h">
       <Filter>02. Scene\00. Logo</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CBoss_Slave_Test.h">
+    <ClInclude Include="..\Header\CBoss_SlaveCow.h">
       <Filter>03. GameObject\04. Boss\02. Boss2\02. Slave</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Client_Struct.h">
@@ -911,6 +911,12 @@
     <ClInclude Include="..\Header\CUI_LoadingCircle.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CBoss_SlaveElephant.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\02. Slave</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBoss_SlavePig.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\02. Slave</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1141,7 +1147,7 @@
     <ClCompile Include="..\Code\CLogo_Boss2.cpp">
       <Filter>02. Scene\00. Logo</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CBoss_Slave_Test.cpp">
+    <ClCompile Include="..\Code\CBoss_SlaveCow.cpp">
       <Filter>03. GameObject\04. Boss\02. Boss2\02. Slave</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CBossPhase2.cpp">
@@ -1431,6 +1437,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\CUI_LoadingCircle.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoss_SlaveElephant.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\02. Slave</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoss_SlavePig.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\02. Slave</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

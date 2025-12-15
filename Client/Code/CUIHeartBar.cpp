@@ -75,6 +75,9 @@ void CUIHeartBar::LateUpdate_GameObject(const _float& timeDelta)
 
 void CUIHeartBar::Render_GameObject()
 {
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
+
+
     // 월드 행렬 세팅
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
@@ -96,8 +99,7 @@ void CUIHeartBar::Render_GameObject()
 
     m_BufferCom->Render_Buffer();
 
-
-
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
 HRESULT CUIHeartBar::Add_Component()

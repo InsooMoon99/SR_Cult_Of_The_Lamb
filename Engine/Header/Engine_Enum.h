@@ -205,6 +205,13 @@ enum class COMPONENTTYPE
     TEX_LOADING_CIRCLE,
 
     ////////////////
+    //  Particle  //
+    ////////////////
+    TEX_ROCK_PARTICLE,
+    TEX_GRASS_PARTICLE,
+    TEX_TREE_PARTICLE,
+
+    ////////////////
     //  Follower  //
     ////////////////
     TEX_COW,

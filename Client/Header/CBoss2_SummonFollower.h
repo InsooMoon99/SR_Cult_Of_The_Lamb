@@ -31,6 +31,9 @@ public:
 
     void    Resume_Summon() { m_DialogueFinished = true; }
 
+private:
+    void Summon_Follower();
+
 public:
     static CBoss2_SummonFollower* Create(CMonsterBase* owner);
 
@@ -41,9 +44,12 @@ private:
     CMonsterBase*   m_Owner;
     _float          m_Pattern_Cooldown;
 
-    SummonPhase m_Phase = SummonPhase::ROAR;
+    SummonPhase     m_Phase = SummonPhase::ROAR;
 
-    _bool   m_DialogueFinished = false;
+    _bool           m_DialogueFinished = false;
+    _bool           m_IsSummon = false;
 
 };
+
+
 

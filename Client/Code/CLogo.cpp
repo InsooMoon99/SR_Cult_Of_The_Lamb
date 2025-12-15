@@ -125,7 +125,7 @@ HRESULT CLogo::Ready_Prototype()
     NULL_CHECK_RETURN(loadingCircle, E_FAIL);
 
     if (FAILED(loadingCircle->Add_Texture(L"Loading_Circle", TEX_NORMAL,
-        L"../Bin/Resource/Texture/Logo/Loading/Loading%d.png", 65)))
+        L"../Bin/Resource/Texture/Logo/Loading/Loading%d.png", 58)))
         return E_FAIL;
 
     if (FAILED(CProtoMgr::GetInstance()->Ready_Prototype(COMPONENTTYPE::TEX_LOADING_CIRCLE, loadingCircle)))

@@ -71,6 +71,7 @@ public:
     // 보스 죽었을 때 -> Follower로 스프라이트 교체
     using               OnDeadCallback = function<void()>;
     void                Set_OnDead(OnDeadCallback callback) { m_OnDead = callback; };
+    void                Trigger_OnDead() { if (m_OnDead) m_OnDead(); }
 
     // Roar 이후 대사 -> Summon 스프라이트 재생
     using               OnSummonRoarEndCallback = function<void()>;
