@@ -191,6 +191,7 @@ public:
     void        Enable_DynamicDistance(_bool enable) { m_UseDynamicDistance = enable; }
     void        Disable_DynamicDistance();
 
+
 private:
     // 거리 비교해서 카메라 Distance 조절
     CTransform* m_SecondTargetTransform = nullptr;
@@ -206,13 +207,19 @@ private:
 
 
 #pragma endregion
+    public:
+    void Ease_ToPreset(CameraPreset& camPreset, float duration, function<float(float)>);
 
+    void Update_Ease(const _float& timeDelta);
+
+
+    private:
     bool m_UsePresetEase = false;
     float m_EaseTime=0;
     float m_EaseDuration=1;
 
-    CameraPreset m_StartPreset;
-    CameraPreset m_CurPreset;
+    CameraPreset m_EaseStartPreset;
+    CameraPreset m_EaseEndPreset;
 
     function<float(float)> m_easeFunc;
 };

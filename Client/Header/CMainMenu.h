@@ -2,7 +2,7 @@
 #include "CScene.h"
 
 class CUIButton;
-
+class CCameraController;
 class CMainMenu : public CScene
 {
 private:
@@ -36,9 +36,11 @@ private:
 
 
     bool m_ShowUI=true;
+    bool m_flag = false;
 public:
     static CMainMenu* Create(DEVICE graphicDev);
 
 private:
     void Free() override;
+    CCameraController* m_CamController=nullptr;
 };

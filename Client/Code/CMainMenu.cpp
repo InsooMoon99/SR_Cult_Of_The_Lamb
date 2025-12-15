@@ -66,12 +66,32 @@ _int CMainMenu::Update_Scene(const _float& timeDelta)
 {
     _int exit = Engine::CScene::Update_Scene(timeDelta);
 
+    if (CDInputMgr::GetInstance()->KeyDown(DIK_SPACE))
+    {
+        CAM_PRESET preset;
+        preset.pivotOffset = { 0.f, 0.7f, 0.f };
+        preset.dist = 8.6f;
+        preset.pitch = 0.f;
+        preset.yaw = 0.f;
+        preset.lagSpeed = 15.f;
+
+        m_CamController->Get_OwnerCamMovement()->Ease_ToPreset(preset, 2.5f, [](float x) {
+
+            float c1 = 1.70158;
+
+            float c3 = c1 + 1;
+
+            return 1 + c3 * pow(x - 1, 3) + c1 * pow(x - 1, 2);});
+    }
+
+
     return exit;
 }
 
 void CMainMenu::LateUpdate_Scene(const _float& timeDelta)
 {
     Engine::CScene::LateUpdate_Scene(timeDelta);
+
 }
 
 void CMainMenu::Render_Scene()
@@ -156,10 +176,10 @@ HRESULT CMainMenu::Ready_GameLogic_Layer(LAYERTYPE layerType)
             ID_DYNAMIC,
             COMPONENTTYPE::TRANSFORM));
     //charTransform->Set_Scale({ 2.2f,1.2f,0.f });
-    gameObject->SetAspectScale(charTransform, { 1.1f, 1.2f, 1.f });
+   //gameObject->SetAspectScale(charTransform, { 3.0f, 3.0f, 1.f });
 
 
-    charTransform->Set_Scale(_vec3(1.4f, 2.f, 1.f));
+    charTransform->Set_Scale(_vec3(2.f, 2.9f, 1.f));
 
     // 카메라 생성
     FAILED_CHECK_MSG(
@@ -168,19 +188,19 @@ HRESULT CMainMenu::Ready_GameLogic_Layer(LAYERTYPE layerType)
         L"Persistent object setup failed"
     );
 
-    auto camController = dynamic_cast<CCameraController*>(
+    m_CamController = dynamic_cast<CCameraController*>(
         gameObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAM_CONTROLLER));
 
     // 카메라 설정값 초기화
-    if (camController != nullptr)
+    if (m_CamController != nullptr)
     {
         // 씬에서 카메라 생성 시 값 초기화
         // : CCameraSetup을 카메라 설정을 중도에 바꿀 때 사용 가능하고,
         //   그럴 때는 필요한 것만 사용해 .Apply() 하면 된다.
-        CCamSetupBuilder(camController)
+        CCamSetupBuilder(m_CamController)
             .SetTarget(charTransform)
             .PivotOffset({ 0.f, 0.7f, 0.f })
-            .Distance(39.f)
+            .Distance(31.f)
             .RotX(0.f)
             .RotY(0.f)
             .LagSpeed(15.f)
@@ -189,8 +209,10 @@ HRESULT CMainMenu::Ready_GameLogic_Layer(LAYERTYPE layerType)
             .Apply();
 
         // 에디터에 카메라 설정
-        CMainEditorMgr::GetInstance()->Set_MainCamera(camController);
+        CMainEditorMgr::GetInstance()->Set_MainCamera(m_CamController);
     }
+    
+
     if (nullptr == layer)
         return E_FAIL;
 
@@ -202,8 +224,8 @@ HRESULT CMainMenu::Ready_GameLogic_Layer(LAYERTYPE layerType)
     bool flag = false;
     for (int j = 1; j <= 4;j++)
     {
-    int radius = 6.5*j;
-    int num = 26*(j*1.1f);
+    int radius = 7*j;
+    int num = 32*(j*1.0f);
 
 
         for (int i = 0; i < num;i++)

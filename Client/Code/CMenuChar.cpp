@@ -39,8 +39,8 @@ HRESULT CMenuChar::Ready_GameObject()
 
     Animation_Setting();
 
-    m_TransformCom->Set_Pos({ 0, 1, 1 });
-    m_TransformCom->Set_Scale(1.6f, 2.f, 2.f);
+    m_TransformCom->Set_Pos({ 0.f, 1.1f, 1.f });
+    m_TransformCom->Set_Scale(2.1f, 2.5f, 2.5f);
 
     wstring key = L"MenuChar";
     if (false == SetTexAspectInit(m_TextureCom, m_TransformCom, 1, &key))
@@ -65,7 +65,7 @@ _int CMenuChar::Update_GameObject(const _float& timeDelta)
     _vec3 mainPos = m_TransformCom->Get_Pos();
     _vec3 mainSize = m_TransformCom->Get_Scale();
     m_TransformComPattern->Set_Pos({ mainPos.x,mainPos.y -mainSize.y, mainPos.z+0.2f });
-    m_TransformComPattern->Set_Scale(2.f, 2.f, 2.f);
+    m_TransformComPattern->Set_Scale(2.5f, 2.5f, 2.5f);
     m_TransformComPattern->Set_Rotation({ D3DXToRadian(90),0.f,0.f });
 
 
