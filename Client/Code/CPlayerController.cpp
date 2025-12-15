@@ -450,12 +450,12 @@ void CPlayerController::Action_Idle(const _float& timeDelta)
 
 void CPlayerController::Action_Run(const _float& timeDelta)
 {
-#pragma region 플레이어 달리기 효과음
+#pragma region 플레이어 달리기 효과음. 지속적으로 재성되어야 하므로 Run() 안에 넣어도 되지만, 여기 넣도록 하겠다
     m_Timers[TIMER_RUNSOUND] += timeDelta;
 
     if (m_Timers[TIMER_RUNSOUND] >= 0.2f)
     {
-        CSoundMgr::GetInstance()->Play_Once(L"Player/Player_Walk2.wav", SOUND_EFFECT, 0.4f);
+        CSoundMgr::GetInstance()->Play_Once(L"Player/Player_Walk2.wav", SOUND_EFFECT, 0.5f);
         m_Timers[TIMER_RUNSOUND] = 0.f;
     }
 #pragma endregion

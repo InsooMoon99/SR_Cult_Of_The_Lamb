@@ -36,7 +36,7 @@ _int CNPCState_Spawn::Update_State(const _float& timeDelta)
         if (m_OwnerAnimator->Is_AnimationFinished())
         {
             if (m_Owner)
-                CVillageStateMgr::GetInstance()->Save_NPC(m_Owner->Get_Name(), true);
+                CVillageStateMgr::GetInstance()->Save_NPC(m_Owner->Get_Name(), true, true);
 
             return static_cast<_int>(CNPCStateMachine::NPC_STATE::IDLE);
         }

@@ -31,11 +31,10 @@ public:
 
 public:
     CInteractionChecker* Get_InteractionChecker() { return m_Checker; }
+    CNPCController*      Get_Controller() { return m_NPCController; }
     CRigidbody*          Get_Rigidbody() { return m_Rigidbody; }
 
-public:
-    virtual void Set_FollowerCommandUI(CUI_FollowerCommand* ui) { m_FollowerCommandUI = ui; }
-    //TODO 콜백 함수로 CUI_FollowerCommand의 기능을 온오프 할 수 있도록
+    void Set_RescuedState(_bool doRescuedState);
 
 private:
     bool Is_Hovering();
@@ -45,11 +44,10 @@ protected:
     void    Free() override;
 
 protected:
+protected:
     CInteractionChecker* m_Checker        = nullptr;
     CNPCController*      m_NPCController  = nullptr;
     CRigidbody*          m_Rigidbody      = nullptr;
     _bool                m_bHovering      = false;
     _bool                m_bPlayerOverlap = false;
-
-    CUI_FollowerCommand* m_FollowerCommandUI = nullptr;
 };

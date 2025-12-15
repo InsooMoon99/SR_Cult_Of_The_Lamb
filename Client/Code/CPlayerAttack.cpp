@@ -6,6 +6,7 @@
 #include "CGameObject.h"
 #include "CPlayerInput.h"
 #include "CPlayerMovement.h"
+#include "CSoundMgr.h"
 #include "CState.h"
 #include "CWeaponEquip.h"
 
@@ -325,6 +326,9 @@ ACTORSTATE CPlayerAttack::Start_NormalAttack()
 
     // 마우스 방향으로 도약
     m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir(), 450.f);
+
+    //CSoundMgr::GetInstance()->Play_Once(L"Player/");
+
 
     // Controller에서 상태를 변경하도록 상태값 반환
     return m_AttackInfo[weaponIdx][ATTACK_COMBO1].state;

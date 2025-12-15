@@ -127,6 +127,18 @@ void CNPCBase::OnEndOverlap(CCollider* self, CCollider* other)
         m_bPlayerOverlap = false;
 }
 
+void CNPCBase::Set_RescuedState(_bool doRescuedState)
+{
+    if (doRescuedState)
+    {
+        if (m_NPCController)
+        {
+            if (CStateMachine* stateMachine = m_NPCController->Get_StateMachine())
+                stateMachine->Change_State(static_cast<_uint>(CNPCStateMachine::NPC_STATE::RESCUED));
+        }
+    }
+}
+
 bool CNPCBase::Is_Hovering()
 {
     POINT pt;
@@ -245,7 +257,5 @@ HRESULT CNPCBase::Add_Component()
 
 void CNPCBase::Free()
 {
-    m_FollowerCommandUI = nullptr;
-
     CCharacterBase::Free();
 }

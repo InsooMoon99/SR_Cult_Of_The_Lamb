@@ -6,6 +6,7 @@
 #include "CDInputMgr.h"
 #include "CDroppedItem.h"
 #include "CDropSystem.h"
+#include "CFollowerCow.h"
 #include "CInventory.h"
 #include "CItemDB.h"
 #include "CLayer.h"
@@ -34,10 +35,14 @@ CStage_Dungeon::CStage_Dungeon(DEVICE graphicDev)
     : CScene(graphicDev),
       m_PlayerCombatStatCom(nullptr),
       m_PlayerInventoryCom(nullptr),
-      m_WeaponEquipCom(nullptr), m_UI_Fade(nullptr), m_NextRoom(Room::DUNGEON_END),
-      m_CurrentRoom(Room::DUNGEON_END), m_Player(nullptr), m_PlayerTransform(nullptr)
-{
-}
+      m_WeaponEquipCom(nullptr),
+      m_CurrentRoom(Room::DUNGEON_END),
+      m_Player(nullptr),
+      m_PlayerTransform(nullptr),
+      m_UI_Fade(nullptr),
+      m_NextRoom(Room::DUNGEON_END),
+      m_CamMovement(nullptr)
+{ }
 
 CStage_Dungeon::~CStage_Dungeon()
 { }
@@ -158,6 +163,9 @@ void CStage_Dungeon::LateUpdate_Scene(const _float& timeDelta)
 
     if (CDInputMgr::GetInstance()->KeyDown(DIK_G))
         CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS2);
+
+    if (CDInputMgr::GetInstance()->KeyDown(DIK_R))
+        Spawn_Follower();
 }
 
 void CStage_Dungeon::Render_Scene()
@@ -191,6 +199,33 @@ void CStage_Dungeon::Spawn_Weapon()
             _vec3( 0.5f, 0.5f, 0.5f));
 
         drop->Initialize_GameObject();
+    }
+}
+
+void CStage_Dungeon::Spawn_Follower()
+{
+    auto layer = m_Layers[LAYERTYPE::GAMELOGIC];
+    NULL_CHECK(layer);
+
+    CGameObject* followerCow = CFollowerCow::Create(m_GraphicDev);
+    NULL_CHECK(followerCow);
+
+    if (FAILED(layer->Add_GameObject(OBJTYPE::NPC, followerCow)))
+        return;
+
+    followerCow->Initialize_GameObject();
+
+    dynamic_cast<CNPCBase*>(followerCow)->Set_RescuedState(true);
+
+    auto cowTransform = dynamic_cast<CTransform*>(
+        followerCow->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+    if (cowTransform)
+    {
+        _vec3 spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].playerSpawnPos;
+        spawnPos.x += 2.f;
+
+        cowTransform->Set_Pos(spawnPos);
     }
 }
 
@@ -402,17 +437,16 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
         tarotController,
         E_FAIL,
         L"CStage_TarotTest::Ready_GameLogic_Layer() failed: CTarotStageController::Create() returned null");
-
+    
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::LOGIC, tarotController),
         L"CStage_TarotTest::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CTarotStageController) failed");
-
-
+    
     gameObject = CTarotNPC::Create(m_GraphicDev);
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::NPC, gameObject),
         L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(TarotNPC) failed");
     dynamic_cast<CTarotNPC*>(gameObject)->Set_TarotController(dynamic_cast<CTarotStageController*>(tarotController));
-    
+
     m_Layers.insert({ layerType, layer });
 
     return S_OK;

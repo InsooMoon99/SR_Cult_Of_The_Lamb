@@ -355,6 +355,9 @@
     <Filter Include="05. UI\01. UI\12. UI_FollowerCommand">
       <UniqueIdentifier>{97a31b16-2edb-43dc-a742-c1e3e0c52d78}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\11. NPC\99. Class for FSM\01. State\11. Rescued">
+      <UniqueIdentifier>{89d3ba52-ea7d-4479-8975-f5a363c7f7d6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -905,6 +908,9 @@
     <ClInclude Include="..\Header\CUI_FollowerCommand.h">
       <Filter>05. UI\01. UI\12. UI_FollowerCommand</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CNPCState_Rescued.h">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\11. Rescued</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1416,6 +1422,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CUI_FollowerCommand.cpp">
       <Filter>05. UI\01. UI\12. UI_FollowerCommand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CNPCState_Rescued.cpp">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\11. Rescued</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

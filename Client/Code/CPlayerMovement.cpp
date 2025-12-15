@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "CPlayerMovement.h"
 
+#include <CSoundMgr.h>
 #include "CCombatStat.h"
 #include "CGameObject.h"
 #include "CRigidbody.h"
@@ -106,7 +107,6 @@ void CPlayerMovement::Run(const _vec3& moveDir, const _float& timeDelta)
 
     _float speed = m_OwnerCombatStatCom->Get_Speed();
     m_OwnerRigidbodyCom->Add_Force(moveDir * speed * 20.f);
-    
 }
 
 void CPlayerMovement::Stop()
@@ -126,6 +126,10 @@ void CPlayerMovement::Start_Roll(const _vec3& moveDir)
 
     m_OwnerRigidbodyCom->Set_Friction(0.f);
     m_OwnerRigidbodyCom->Set_UseAccel(false);
+
+    CSoundMgr::GetInstance()->Play_Once(L"Player/Player_Roll2.wav",
+                                        SOUND_EFFECT,
+                                        0.5f);
 }
 
 _bool CPlayerMovement::Update_Roll(const _float& timeDelta)
@@ -177,19 +181,19 @@ void CPlayerMovement::ChangeActorDir(const _vec3& dir)
 
     if (dir.x > 0.1f)
     {
-        if (dir.z > 0.1f)       newActorDir = ACTORDIR::R_UP;
+        if (dir.z > 0.1f) newActorDir = ACTORDIR::R_UP;
         else if (dir.z < -0.1f) newActorDir = ACTORDIR::R_DOWN;
-        else                    newActorDir = ACTORDIR::RIGHT;
+        else newActorDir                    = ACTORDIR::RIGHT;
     }
     else if (dir.x < -0.1f)
     {
-        if (dir.z > 0.1f)       newActorDir = ACTORDIR::L_UP;
+        if (dir.z > 0.1f) newActorDir = ACTORDIR::L_UP;
         else if (dir.z < -0.1f) newActorDir = ACTORDIR::L_DOWN;
-        else                    newActorDir = ACTORDIR::LEFT;
+        else newActorDir                    = ACTORDIR::LEFT;
     }
     else
     {
-        if (dir.z > 0.1f)       newActorDir = ACTORDIR::UP;
+        if (dir.z > 0.1f) newActorDir = ACTORDIR::UP;
         else if (dir.z < -0.1f) newActorDir = ACTORDIR::DOWN;
     }
 
@@ -202,15 +206,24 @@ _vec3 CPlayerMovement::ActorDirToVec(ACTORDIR dir)
 
     switch (dir)
     {
-    case ACTORDIR::LEFT:   vDir = { -1.f, 0.f, 0.f };  break;
-    case ACTORDIR::RIGHT:  vDir = { 1.f, 0.f, 0.f };   break;
-    case ACTORDIR::UP:     vDir = { 0.f, 0.f, 1.f };   break;
-    case ACTORDIR::DOWN:   vDir = { 0.f, 0.f, -1.f };  break;
-    case ACTORDIR::L_UP:   vDir = { -1.f, 0.f, 1.f };  break;
-    case ACTORDIR::R_UP:   vDir = { 1.f, 0.f, 1.f };   break;
-    case ACTORDIR::L_DOWN: vDir = { -1.f, 0.f, -1.f }; break;
-    case ACTORDIR::R_DOWN: vDir = { 1.f, 0.f, -1.f };  break;
-    default:               vDir = { 0.f, 0.f, 1.f };   break;
+    case ACTORDIR::LEFT: vDir = { -1.f, 0.f, 0.f };
+        break;
+    case ACTORDIR::RIGHT: vDir = { 1.f, 0.f, 0.f };
+        break;
+    case ACTORDIR::UP: vDir = { 0.f, 0.f, 1.f };
+        break;
+    case ACTORDIR::DOWN: vDir = { 0.f, 0.f, -1.f };
+        break;
+    case ACTORDIR::L_UP: vDir = { -1.f, 0.f, 1.f };
+        break;
+    case ACTORDIR::R_UP: vDir = { 1.f, 0.f, 1.f };
+        break;
+    case ACTORDIR::L_DOWN: vDir = { -1.f, 0.f, -1.f };
+        break;
+    case ACTORDIR::R_DOWN: vDir = { 1.f, 0.f, -1.f };
+        break;
+    default: vDir = { 0.f, 0.f, 1.f };
+        break;
     }
 
     D3DXVec3Normalize(&vDir, &vDir);

@@ -58,20 +58,21 @@ struct SavedBuilding
 {
     _vec3         pos;
     BUILDING_TYPE type;
-    _bool         isBuilt;
+    _bool         isBuilt = false;
 };
 
 struct SavedInteractive
 {
-    _vec3  pos;
-    _float hp;
-    _bool  isDead;
+    _vec3  pos    = { 0.f, 0.f, 0.f };
+    _float hp     = 0.f;
+    _bool  isDead = false;
 };
 
 struct SavedNpc
 {
     wstring name;
-    _bool   firstSpawnAnimPlayed;
+    _bool   isActive             = false;
+    _bool   firstSpawnAnimPlayed = false;
 };
 
 struct SavedSceneState

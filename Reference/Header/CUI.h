@@ -22,8 +22,8 @@ public:
 
     virtual int Get_ID() { return m_ID; }
 
-    void    Set_Visible(_bool visible) { m_Invisible = !visible; }
-    _bool   Get_Visible() { return m_Invisible; }
+    void  Set_Visible(_bool visible) { m_Invisible = !visible; }
+    _bool Get_Visible() { return m_Invisible; }
 
 protected:
     bool m_bHovered = false;

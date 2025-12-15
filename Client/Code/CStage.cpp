@@ -60,6 +60,7 @@ CStage::CStage(DEVICE graphicDev)
       m_WorkBench(nullptr),
       m_PlayerSkillCom(nullptr),
       m_Terrain(nullptr),
+      m_CookingMenu(nullptr),
       m_FollowerCommand(nullptr)
 { }
 
@@ -489,11 +490,21 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     // -----------------------------
     // Follower
     // -----------------------------
-    gameObject = CFollowerCow::Create(m_GraphicDev);
-    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"Create NPC object has failed");
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::NPC, gameObject),
-        L"Add NPC object on layer has failed");
+    // 저장된 NPC 상태 확인
+    SavedNpc* cowState = CVillageStateMgr::GetInstance()->Get_NPCState(L"FollowerCow");
+    _bool shouldSpawnCow = true; // 기본값: 데이터 없으면 스폰 (테스트 편의상)
+
+    if (cowState != nullptr)
+        shouldSpawnCow = cowState->isActive;
+
+    if (shouldSpawnCow)
+    {
+        gameObject = CFollowerCow::Create(m_GraphicDev);
+        NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"Create NPC object has failed");
+        FAILED_CHECK_MSG(
+            layer->Add_GameObject(OBJTYPE::NPC, gameObject),
+            L"Add NPC object on layer has failed");
+    }
 
     // -----------------------------
     // 저장된 건물 불러오기 기능

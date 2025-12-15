@@ -24,7 +24,7 @@ public:
     SavedInteractive* Get_InteractiveState(const _vec3& vPos);
 
     // --- NPC ---
-    void Save_NPC(const wstring& wstrName, _bool bFirstSpawn);
+    void      Save_NPC(const wstring& name, _bool canSpawn, _bool firstSpawn);
     SavedNpc* Get_NPCState(const wstring& wstrName);
 
 private:
