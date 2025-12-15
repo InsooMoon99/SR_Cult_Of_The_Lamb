@@ -27,11 +27,15 @@ void CRenderer::Add_RenderGroup(RENDERID type, CGameObject* gameObject)
 void CRenderer::Render_GameObject(DEVICE& graphicDev)
 {
     Render_Priority_UI(graphicDev);
+
+    SetFogOn(graphicDev);
     Render_Priority(graphicDev);
     Render_Priority_Alpha(graphicDev);
     Render_NonAlpha(graphicDev);
     Render_Trail(graphicDev);
     Render_Alpha(graphicDev);
+    SetFogOff(graphicDev);
+
     Render_UI(graphicDev);
 
     Clear_RenderGroup();
@@ -221,6 +225,41 @@ void CRenderer::Render_Trail(DEVICE& graphicDev)
         pStateBlock->Release();
     }
 }
+
+void CRenderer::SetFogOn(LPDIRECT3DDEVICE9 graphicDev)
+{
+    if (m_UseFog == false)
+        return;
+    // Fog 켜기
+    graphicDev->SetRenderState(D3DRS_FOGENABLE, TRUE);
+
+    // Linear Fog (가장 직관적)
+    graphicDev->SetRenderState(D3DRS_FOGTABLEMODE, D3DFOG_LINEAR);
+    // 만약 테이블 포그 안 먹으면 아래로 교체
+    // graphicDev->SetRenderState(D3DRS_FOGVERTEXMODE, D3DFOG_LINEAR);
+
+    // 안개 색 (멀리 있는 색)
+    graphicDev->SetRenderState(
+        D3DRS_FOGCOLOR,
+        D3DCOLOR_XRGB(255, 240, 211)   // 메인 메뉴용 노랑이 색임
+    );
+
+    // 안개 시작/끝 거리
+    float fogStart = 5.f;   // 이 거리 전까진 원래색
+    float fogEnd = 25.f;   // 이 거리 이후엔 거의 안개색
+
+    graphicDev->SetRenderState(D3DRS_FOGSTART, *(DWORD*)&fogStart);
+    graphicDev->SetRenderState(D3DRS_FOGEND, *(DWORD*)&fogEnd);
+}
+
+void CRenderer::SetFogOff(LPDIRECT3DDEVICE9 graphicDev)
+{
+    if (m_UseFog == false)
+        return;
+
+    graphicDev->SetRenderState(D3DRS_FOGENABLE, FALSE);
+}
+
 void CRenderer::Free()
 {
     Clear_RenderGroup();

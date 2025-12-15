@@ -9,7 +9,7 @@
 #include "CTexture.h"
 #include "CTransform.h"
 
-CMenuExtra::CMenuExtra(DEVICE graphicDev) : CRenderObject(graphicDev)
+CMenuExtra::CMenuExtra(DEVICE graphicDev, int textureIndex) : CRenderObject(graphicDev), m_textureIndex(textureIndex)
 {
 }
 
@@ -23,12 +23,17 @@ CMenuExtra::~CMenuExtra()
 
 HRESULT CMenuExtra::Ready_GameObject()
 {
+    if (FAILED(CRenderObject::Ready_GameObject()))
+        return E_FAIL;
+
     return S_OK;
 }
 
 _int CMenuExtra::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CRenderObject::Update_GameObject(timeDelta);
+
+
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 
@@ -47,7 +52,7 @@ void CMenuExtra::Render_GameObject()
     Render_Setting();
 
 
-        m_TextureCom->Set_Texture(0);
+ m_TextureCom->Set_Texture(m_textureIndex);
  
 
     m_BufferCom->Render_Buffer();
@@ -57,8 +62,12 @@ void CMenuExtra::Render_GameObject()
 
 HRESULT CMenuExtra::Add_Component()
 {
+    if (FAILED(CRenderObject::Add_Component()))
+        return E_FAIL;
+
+
     // texture
-    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_MENU_CHAR);
+    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_MAINMENU);
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
 
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_MENU_CHAR, m_TextureCom });
@@ -77,11 +86,23 @@ HRESULT CMenuExtra::Add_Component()
     return S_OK;
 }
 
-CMenuExtra* CMenuExtra::Create(DEVICE graphicDev)
+CMenuExtra* CMenuExtra::Create(DEVICE graphicDev, int textureIndex)
 {
-    return nullptr;
+    auto MenuExtra = new CMenuExtra(graphicDev, textureIndex);
+
+    if (FAILED(MenuExtra->Ready_GameObject()))
+    {
+        MSG_BOX("MenuExtra Create Failed");
+        Safe_Release(MenuExtra);
+        return nullptr;
+    }
+
+    return MenuExtra;
 }
 
 void CMenuExtra::Free()
 {
+    Safe_Release(m_BufferComOffset1);
+    Safe_Release(m_BufferComOffset2);
+    CRenderObject::Free();
 }

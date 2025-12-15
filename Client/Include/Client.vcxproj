@@ -204,6 +204,15 @@
     <ClInclude Include="..\Header\CCharacterBase.h" />
     <ClInclude Include="..\Header\CChest.h" />
     <ClInclude Include="..\Header\CCookingController.h" />
+    <ClInclude Include="..\Header\CEligos.h" />
+    <ClInclude Include="..\Header\CEligos_Attack_Bullet.h" />
+    <ClInclude Include="..\Header\CEligos_Attack_Melee.h" />
+    <ClInclude Include="..\Header\CEligos_Dead.h" />
+    <ClInclude Include="..\Header\CEligos_Flies.h" />
+    <ClInclude Include="..\Header\CEligos_Idle.h" />
+    <ClInclude Include="..\Header\CEligos_Move.h" />
+    <ClInclude Include="..\Header\CEligos_StateMachine.h" />
+    <ClInclude Include="..\Header\CEligos_Reveal.h" />
     <ClInclude Include="..\Header\CEyeball_CenterAttack.h" />
     <ClInclude Include="..\Header\CMenuExtra.h" />
     <ClInclude Include="..\Header\CNPCState_Build.h" />
@@ -341,6 +350,7 @@
     <ClInclude Include="..\Header\CUIWeaponExplain.h" />
     <ClInclude Include="..\Header\CWorkBench.h" />
     <ClInclude Include="..\Header\CWorldInteractive.h" />
+    <ClInclude Include="..\Header\CEligos_Attack_Fly.h" />
     <ClInclude Include="..\Header\ItemData.h" />
     <ClInclude Include="..\Header\ItemInstance.h" />
     <ClInclude Include="..\Header\CUIMp.h" />
@@ -387,6 +397,15 @@
     <ClCompile Include="..\Code\CChest.cpp" />
     <ClCompile Include="..\Code\CConstructionPlacer.cpp" />
     <ClCompile Include="..\Code\CCookingController.cpp" />
+    <ClCompile Include="..\Code\CEligos.cpp" />
+    <ClCompile Include="..\Code\CEligos_Attack_Bullet.cpp" />
+    <ClCompile Include="..\Code\CEligos_Attack_Melee.cpp" />
+    <ClCompile Include="..\Code\CEligos_Dead.cpp" />
+    <ClCompile Include="..\Code\CEligos_Flies.cpp" />
+    <ClCompile Include="..\Code\CEligos_Idle.cpp" />
+    <ClCompile Include="..\Code\CEligos_Move.cpp" />
+    <ClCompile Include="..\Code\CEligos_StateMachine.cpp" />
+    <ClCompile Include="..\Code\CEligos_Reveal.cpp" />
     <ClCompile Include="..\Code\CEyeball_CenterAttack.cpp" />
     <ClCompile Include="..\Code\CMenuExtra.cpp" />
     <ClCompile Include="..\Code\CNPCState_Build.cpp" />
@@ -521,6 +540,7 @@
     <ClCompile Include="..\Code\CWorkBench.cpp" />
     <ClCompile Include="..\Code\CWorldInteractive.cpp" />
     <ClCompile Include="..\Code\CRecipeDB.cpp" />
+    <ClCompile Include="..\Code\CEligos_Attack_Fly.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
