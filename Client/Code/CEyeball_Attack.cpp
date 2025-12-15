@@ -5,6 +5,7 @@
 #include "CBoss2_Bullet.h"
 #include "CEyeball.h"
 #include "CAttackBuilder.h"
+#include "CBossPhase2.h"
 #include "CMonsterController.h"
 #include "CProjectile.h"
 #include "CRandomMgr.h"
@@ -53,6 +54,8 @@ void CEyeball_Attack::Enter()
 
     m_EyeballAnim = Eyeball_Anim::ATTACK_ANTI;
     m_TotalAttackCount = 0;
+    m_MaxAttackCount = CRandomMgr::GetInstance()->Get_Int_Random(2, 3); // 2 ~ 3회 눈알별로 각자 랜덤
+    m_IsFinished = false;
 
     Find_Player(); // 플레이어 찾기
     m_GraphicDev = m_Owner->Get_GraphicDev();
@@ -66,10 +69,9 @@ _int CEyeball_Attack::Update_State(const _float& timeDelta)
 
     CTransform* transform = m_Controller->Get_OwnerTransform();
     auto animator = m_Controller->Get_OwnerAnimator();
-
-    // 끝나면 Idle로
+    
     if (m_IsFinished)
-        return CEyeball::PATTERN::EYEBALL_IDLE;
+        return CEyeball::PATTERN::EYEBALL_GROUND_MOVE;
 
     // 모든 공격 애니메이션에서 랜덤 이동
     Random_Movement(timeDelta);
@@ -130,23 +132,10 @@ void CEyeball_Attack::Play_Anti()
 {
     auto animator = m_Controller->Get_OwnerAnimator();
 
-    if (animator)
+    if (animator && animator->Is_AnimationFinished())
     {
-        if (animator->Is_AnimationFinished())
-        {
-            m_EyeballAnim = Eyeball_Anim::ATTACK_LOOP;
-            animator->Play_Animation(L"Eyeball_Attack_Loop", ANIMSTATE::LOOP);
-        }
-        else
-        {
-            _vec3 dir = (m_Owner->Get_Transform()->Get_Pos() - m_pPlayerTransformCom->Get_Pos());
-            dir.y = 0;
-            D3DXVec3Normalize(&dir, &dir);
-
-            _float delta = CTimerMgr::GetInstance()->Get_TimeDelta();
-            m_Owner->Get_Transform()->Move_Pos(dir, delta, 2.f);
-        }
-
+        m_EyeballAnim = Eyeball_Anim::ATTACK_LOOP;
+        animator->Play_Animation(L"Eyeball_Attack_Loop", ANIMSTATE::LOOP);
     }
 }
 
@@ -193,7 +182,6 @@ void CEyeball_Attack::Play_Loop()
         break;
     }
 
-        
     case Attack_Type::BURST:
     {
         // 추가 예정
@@ -217,6 +205,16 @@ void CEyeball_Attack::Play_End()
     if (!animator || !animator->Is_AnimationFinished())
         return;
 
+    // 보스가 특수 패턴 중이면 바로 끝내기
+    auto eyeball = static_cast<CEyeball*>(m_Owner);
+    auto boss = dynamic_cast<CBossPhase2*>(eyeball->Get_Boss());
+
+    if (boss && boss->Is_InSpecialPattern())
+    {
+        m_IsFinished = true;
+        return;  
+    }
+
     _int randomType = CRandomMgr::GetInstance()->Get_Int_Random(0, 2);
     m_Bullet_AttackType = static_cast<Attack_Type>(randomType);
 
@@ -226,7 +224,7 @@ void CEyeball_Attack::Play_End()
     m_Spawn_BulletCount = 0;
 
     m_TotalAttackCount++;
-    if (m_TotalAttackCount >= 3)
+    if (m_TotalAttackCount >= m_MaxAttackCount)
     {
         m_IsFinished = true;
     }
@@ -466,11 +464,11 @@ void CEyeball_Attack::Random_Movement(const _float& timeDelta)
             _float radian = D3DXToRadian(randomAngle);
             _vec3 newDir = _vec3(cosf(radian), 0.f, sinf(radian));
 
-            // 벽 체크 (5유닛 앞)
+            // 벽 체크
             auto eyeball = static_cast<CEyeball*>(m_Owner);
             if (!eyeball->Trace_HitWall(currentPos, newDir, 5.f))
             {
-                m_Current_Direction = newDir;
+                m_Target_Direction = newDir;
                 break;
             }
         }

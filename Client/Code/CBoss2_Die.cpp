@@ -38,9 +38,9 @@ _int CBoss2_Die::Update_State(const _float& timeDelta)
 
     auto animator = m_Controller->Get_OwnerAnimator();
 
-    if (animator)
+    if (animator && animator->Is_AnimationFinished())
     {
-        // ? 상태 전환 필요없을듯
+        return CBossPhase2::PATTERN::PHASE2_FOLLOWER;
     }
 
     return CBossPhase2::PATTERN::PHASE2_DEAD;

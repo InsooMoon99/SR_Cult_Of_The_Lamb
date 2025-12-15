@@ -4,6 +4,7 @@
 #include "CBossController.h"
 #include "CBossPhase2.h"
 #include "CAnimator.h"
+#include "CRandomMgr.h"
 
 CBoss2_Idle::CBoss2_Idle(CGameObject* owner)
     : m_Owner(owner), m_Pattern_Cooldown(0)
@@ -29,6 +30,8 @@ void CBoss2_Idle::Enter()
     }
 
     m_fCurStateElapsedTime = 0.f;
+
+    m_Pattern_Cooldown = CRandomMgr::GetInstance()->Get_Int_Random(m_CooldownMin, m_CooldownMax);
 }
 
 _int CBoss2_Idle::Update_State(const _float& timeDelta)
@@ -37,7 +40,7 @@ _int CBoss2_Idle::Update_State(const _float& timeDelta)
 
     if (m_fCurStateElapsedTime >= m_Pattern_Cooldown)
     {
-        return CBossPhase2::PATTERN::PHASE2_START;
+        return CBossPhase2::PATTERN::PHASE2_CHAIN;
     }
 
     return CBossPhase2::PATTERN::PHASE2_IDLE;
@@ -53,7 +56,11 @@ void CBoss2_Idle::Exit()
 HRESULT CBoss2_Idle::Ready_State()
 {
     m_fMinStateTime = 0.5f;
-    m_Pattern_Cooldown = 30.f;
+
+    m_CooldownMin = 8;
+    m_CooldownMax = 13;
+
+    m_Pattern_Cooldown = 10.f;
 
     return S_OK;
 }

@@ -49,13 +49,7 @@ HRESULT CBoss2_Bullet::Ready_GameObject()
     if (FAILED(CAttackSphere::Ready_GameObject()))
         return E_FAIL;
 
-    CTransform* transform = dynamic_cast<CTransform*>(
-        Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-
-    if (transform)
-    {
-        //transform->Set_Rotation({ D3DXToRadian(90), 0, 0 });  
-    }
+    m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(25.f));
 
     m_BufferCom->Set_Scale(2.f, 2.f);
 
@@ -75,7 +69,37 @@ _int CBoss2_Bullet::Update_GameObject(const _float& timeDelta)
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 
-    if (m_StartShoot && m_ProjectileCom && m_ProjectileCom->Get_isSetDesc())
+    m_SpawnTimer += timeDelta;
+
+    if (!m_StartShoot)
+        return exit;
+
+    // 중력 적용
+    if (m_UseGravity)
+    {
+        m_Velocity.y -= m_Gravity * timeDelta;
+
+        _vec3 pos = m_TransformCom->Get_Pos();
+        pos += m_Velocity * timeDelta;
+
+        if (pos.y <= m_FloorY)
+        {
+            pos.y = m_FloorY;
+            m_Velocity.y *= -m_BounceFactor;
+            m_Velocity.x *= 0.9f; 
+            m_Velocity.z *= 0.9f;
+            m_BounceCount++;
+
+            if (m_BounceCount >= m_MaxBounce)
+            {
+                Mark_As_PendingKill();
+            }
+        }
+
+        m_TransformCom->Set_Pos(pos);
+    }
+
+    else if (m_ProjectileCom && m_ProjectileCom->Get_isSetDesc())
     {
         m_ProjectileCom->Update_Component(timeDelta);
     }
@@ -152,7 +176,7 @@ void CBoss2_Bullet::OnBeginOverlap(CCollider* self, CCollider* other)
     {
         auto wall = dynamic_cast<CWall*>(other->Get_Owner());
 
-        if (wall)
+        if (wall && m_SpawnTimer >= m_Wall_ImmunityTime)
         {
             Mark_As_PendingKill();
         }

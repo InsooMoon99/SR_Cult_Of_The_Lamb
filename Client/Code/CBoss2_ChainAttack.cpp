@@ -27,8 +27,9 @@ void CBoss2_ChainAttack::Enter()
     if (m_Controller)
     {
         auto animator = m_Controller->Get_OwnerAnimator();
+
         if (animator)
-            animator->Play_Animation(L"Boss2_Roar", ANIMSTATE::ONCE);
+            animator->Play_Animation(L"Boss2_Sweep", ANIMSTATE::ONCE);
     }
 
     m_fCurStateElapsedTime = 0.f;
@@ -36,7 +37,7 @@ void CBoss2_ChainAttack::Enter()
 
     Find_Player();
 
-    m_ChainAnim = ROAR;
+    m_IsFinished = false;
 
     m_ChainSpawnTimer = 0.f;
     m_ChainCount = 0;
@@ -52,24 +53,9 @@ _int CBoss2_ChainAttack::Update_State(const _float& timeDelta)
         return CBossPhase2::PATTERN::PHASE2_IDLE;
     }
 
-    auto animator = m_Controller->Get_OwnerAnimator();
+    PlaySweep();
 
-    switch (m_ChainAnim)
-    {
-    case ROAR:
-        PlayRoar();
-        break;
-    case HANDSLMA:
-        PlayHandSlam();
-        break;
-    }
-
-    /*if (m_fCurStateElapsedTime >= m_Pattern_Cooldown)
-    {
-        return CBossPhase2::PATTERN::PHASE2_START;
-    }*/
-
-    return CBossPhase2::PATTERN::PHASE2_EYEBALL;
+    return CBossPhase2::PATTERN::PHASE2_CHAIN;
 }
 
 void CBoss2_ChainAttack::Exit()
@@ -84,25 +70,14 @@ HRESULT CBoss2_ChainAttack::Ready_State()
     m_fMinStateTime = 0.5f;
     m_Pattern_Cooldown = 5.f;
 
-    m_ChainAnim = ROAR;
+    m_IsFinished = false;
+
     m_SlamCount = 0;
 
     return S_OK;
 }
 
-void CBoss2_ChainAttack::PlayRoar()
-{
-    auto animator = m_Controller->Get_OwnerAnimator();
-
-    if (animator && animator->Is_AnimationFinished())
-    {
-        m_ChainAnim = ChainAttackAnim::HANDSLMA;
-        animator->Play_Animation(L"Boss2_HandSlam", ANIMSTATE::LOOP);
-    }
-
-}
-
-void CBoss2_ChainAttack::PlayHandSlam()
+void CBoss2_ChainAttack::PlaySweep()
 {
     auto animator = m_Controller->Get_OwnerAnimator();
 
@@ -149,16 +124,15 @@ void CBoss2_ChainAttack::PlayHandSlam()
         }
     }
 
-    if (animator->Get_CurFrame() >= 50 && m_HasSpawnedWarning)
-    {
-        m_HasSpawnedWarning = true;
-        m_SlamCount++;
-    }
-
-    if (m_SlamCount >= 2)
+    if (animator->Is_AnimationFinished())
     {
         m_IsFinished = true;
     }
+}
+
+void CBoss2_ChainAttack::SpawnChain()
+{
+
 }
 
 CBoss2_ChainAttack* CBoss2_ChainAttack::Create(CGameObject* owner)

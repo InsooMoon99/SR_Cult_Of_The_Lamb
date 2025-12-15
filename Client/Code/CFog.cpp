@@ -111,7 +111,12 @@ void CFog::Render_Setting()
     m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
 
     m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR,
-        D3DCOLOR_COLORVALUE(1.f, 1.f, 1.f, m_Alpha));
+        D3DCOLOR_COLORVALUE(m_Color.r, m_Color.g, m_Color.b, m_Alpha));
+
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
+
     m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR);
 
     m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
@@ -120,9 +125,15 @@ void CFog::Render_Setting()
 
 void CFog::Render_Reset()
 {
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
+
     m_GraphicDev->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
     m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_CURRENT);
 
 	m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, 0xFFFFFFFF); 
 	m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);

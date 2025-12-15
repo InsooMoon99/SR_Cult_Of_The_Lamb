@@ -74,14 +74,14 @@ void CStage_Dungeon::Initialize_Scene()
     m_RoomData[static_cast<_int>(Room::MONSTER1)] =
     {
         {55.f, 1.f, 25.f},
-        "../Bin/Resource/Data/Terrain/Terrain_TarotMap.map",
+        "../Bin/Resource/Data/Terrain/Terrain_Mon1Test.map",
         {50.f, 0.f, 0.f}
     };
 
     m_RoomData[static_cast<_int>(Room::MONSTER2)] =
     {
         {140.f, 1.f, 10.f},
-        "../Bin/Resource/Data/Terrain/Terrain_Mon2Test.map",
+        "../Bin/Resource/Data/Terrain/Terrain_TarotMap.map",
         {150.f, 0.f, 0.f}
     };
 
@@ -145,6 +145,8 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
     // Fade
     Fade_Check(timeDelta);
 
+    cout << m_KillCount << endl;
+
     return exit;
 }
 
@@ -203,23 +205,23 @@ void CStage_Dungeon::Create_RoomTriggers()
         _vec3(5.f, 5.f, 4.5f)); // 트리거 크기
 
     // MONSTER1 -> MONSTER2
-    //Create_Trigger_Between(
-    //    Room::MONSTER1,
-    //    Room::MONSTER2,
-    //    _vec3(38.f, 1.f, 10.f),
-    //    _vec3(5.f, 5.f, 4.5f));
-
-    // MONSTER1 -> Boss
     Create_Trigger_Between(
         Room::MONSTER1,
+        Room::MONSTER2,
         _vec3(38.f, 1.f, 10.f),
-        _vec3(4.5f, 5.f, 5.f),
-        [this]()
-        {
-            m_RequestChangeScene = true;
-            m_NextSceneType = SCENETYPE::SC_LOGO_BOSS1;
-        }
-    );
+        _vec3(5.f, 5.f, 4.5f));
+
+    // MONSTER1 -> Boss
+    //Create_Trigger_Between(
+    //    Room::MONSTER1,
+    //    _vec3(38.f, 1.f, 10.f),
+    //    _vec3(4.5f, 5.f, 5.f),
+    //    [this]()
+    //    {
+    //        m_RequestChangeScene = true;
+    //        m_NextSceneType = SCENETYPE::SC_LOGO_BOSS1;
+    //    }
+    //);
 
     /*Create_Trigger_Between(
         Room::MONSTER2,
@@ -288,6 +290,13 @@ void CStage_Dungeon::Change_Room(Room room)
         m_IsFading = true;
         m_UI_Fade->StartFadeOut(3.5f);
     }
+}
+
+void CStage_Dungeon::OnMonsterDeath(CGameObject* obj)
+{
+    CScene::OnMonsterDeath(obj);
+
+    m_KillCount++;
 }
 
 HRESULT CStage_Dungeon::Ready_Environment_Layer(LAYERTYPE layerType)

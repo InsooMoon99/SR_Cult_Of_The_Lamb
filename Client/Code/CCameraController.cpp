@@ -72,7 +72,7 @@ _int CCameraController::Update_Component(const _float& timeDelta)
     default: break;
     }
 
-    m_OwnerCamMovementCom->Check_TransitionComplete(0.4f);
+    m_OwnerCamMovementCom->Check_TransitionComplete(1.f);
 
     return 0;
 }

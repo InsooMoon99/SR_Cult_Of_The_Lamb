@@ -249,14 +249,26 @@ void CCameraMovement::Free()
     CComponent::Free();
 }
 
+void CCameraMovement::Set_OnTransitionEnd(OnTransitionEnd callback)
+{
+    m_OnTransitionEnd = callback;
+    m_IsInTransition = true;
+}
+
 _bool CCameraMovement::Check_TransitionComplete(_float threshold)
 {
     if (!m_IsInTransition || !m_OnTransitionEnd)
         return false;
 
+    // 거리 체크
     _float distDiff = abs(m_CurrentDistance - m_CamPreset.dist);
 
-    if (distDiff < threshold && m_OnTransitionEnd)
+    // 위치 체크
+    _vec3 targetPos = m_TargetTransformCom->Get_Pos() + m_CamPreset.pivotOffset;
+    _vec3 posDiffVec = m_CurrentPivotPos - targetPos;
+    _float posDiff = D3DXVec3Length(&posDiffVec);
+
+    if (distDiff < threshold && posDiff < threshold && m_OnTransitionEnd)
     {
         auto callback = m_OnTransitionEnd;
 

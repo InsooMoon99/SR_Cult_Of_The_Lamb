@@ -63,6 +63,9 @@ public:
 
     void    Change_Room(Room room);
 
+    // 몬스터 죽었을 때 호출
+    void    OnMonsterDeath(CGameObject* obj) override;
+
 private:
     HRESULT Ready_Environment_Layer(LAYERTYPE layerType);
     HRESULT Ready_GameLogic_Layer(LAYERTYPE layerType);
@@ -104,6 +107,7 @@ private:
 
     // 카메라 무브먼트
     CCameraMovement* m_CamMovement;
+
 };
 
 

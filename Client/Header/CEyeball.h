@@ -23,6 +23,7 @@ public:
         EYEBALL_GROUND_MOVE, // 땅속에서 랜덤이동
         EYEBALL_MOVE,
         EYEBALL_ATTACK,
+        EYEBALL_CENTER_ATTACK,
         EYEBALL_DEAD,
 
         EYEBALL_END
@@ -61,8 +62,8 @@ public:
     _bool Trace_HitWall(const _vec3& pos, const _vec3& dir, _float distance);
 
 private:
-    OnEyeDeadCallback       m_OnEyeDeadCallback = nullptr;
-    OnReachedTargetCallback m_OnReachedTarget_Callback = nullptr;
+    OnEyeDeadCallback       m_OnEyeDead = nullptr;
+    OnReachedTargetCallback m_OnReachedTarget = nullptr;
     _bool                   m_HasTriggeredReached = false;
 
 private:
@@ -75,6 +76,8 @@ public:
 
     _vec3               Get_MoveDirection() const { return m_MoveDirection; }
     void                Set_MoveDirection(const _vec3& dir) { m_MoveDirection = dir; }
+
+    CMonsterBase*       Get_Boss() { return m_Boss; }
 
 public:
     static CEyeball* Create(DEVICE graphicDev, CMonsterBase* boss);

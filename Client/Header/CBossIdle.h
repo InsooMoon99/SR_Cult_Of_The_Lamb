@@ -27,7 +27,7 @@ public:
     virtual void    Render_State() {}
 
 private:
-    CBossPhase1* m_pOwner;
+    CBossPhase1*    m_pOwner;
     CBossStateMachine* m_pStateMachine;
     CCombatStat* m_pOwnerStateCom;
 
