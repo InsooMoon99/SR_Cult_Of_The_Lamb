@@ -170,7 +170,7 @@ private:
 
 public:
     using OnTransitionEnd = function<void()>;
-    void  Set_OnTransitionEnd(OnTransitionEnd callback) { m_OnTransitionEnd = callback; }
+    void  Set_OnTransitionEnd(OnTransitionEnd callback);
 
     _bool Check_TransitionComplete(_float threshold = 0.1f);
 

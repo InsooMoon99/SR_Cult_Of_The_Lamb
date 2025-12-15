@@ -39,12 +39,17 @@ public:
     const map<LAYERTYPE, CLayer*>& Get_Layers() const { return m_Layers; }
     CLayer*                        Get_Layer(LAYERTYPE type);
 
-    // MainCamera
-    //CMainCamera* Get_MainCamera() { return m_MainCam; }
+
+public:
+    virtual void OnMonsterDeath(CGameObject* obj) {}
+    _int         Get_KillCount() { return m_KillCount; }
 
 protected:
     map<LAYERTYPE, CLayer*> m_Layers;
     DEVICE                  m_GraphicDev;
+
+    _int                    m_KillCount = 0;
+
 
     //CMainCamera*            m_MainCam;
 

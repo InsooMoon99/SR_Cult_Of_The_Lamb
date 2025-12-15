@@ -438,13 +438,6 @@ void CStage_Boss1::OnRefusedEnd()
     // 첫 번째 연출 끝났을 때 콜백
     m_CamController->Get_OwnerCamMovement()->Set_OnTransitionEnd([this]()
         {
-            // 두 번쨰 연출 끝났을 때 콜백
-            m_CamController->Get_OwnerCamMovement()->Set_OnTransitionEnd([this]()
-                {
-                    // 대사 시작
-                    m_Dialogue->Start_Dialogue("Boss_Reject", _vec2(0.f, 200.f), _vec2(300.f, 80.f));
-                });
-
             // Refuse 카메라 연출 끝, 이제 보스한테 줌
             CCamSetupBuilder(m_CamController)
                 .SetTarget(m_Boss->Get_Transform())
@@ -452,6 +445,13 @@ void CStage_Boss1::OnRefusedEnd()
                 .LagSpeed(3.f)
                 .ZoomSpeed(3.f)
                 .Apply();
+
+            // 두 번쨰 연출 끝났을 때 콜백
+            m_CamController->Get_OwnerCamMovement()->Set_OnTransitionEnd([this]()
+                {
+                    // 대사 시작
+                    m_Dialogue->Start_Dialogue("Boss_Reject", _vec2(0.f, 210.f), _vec2(300.f, 80.f));
+                });
         });
 
 
@@ -607,13 +607,15 @@ void CStage_Boss1::Setup_BossCallbacks()
                 .SetTarget(m_Boss->Get_Transform())
                 .Distance(10.f)
                 .PivotOffset(_vec3(0.f, 0.f, -3.f))
-                .LagSpeed(3.f)
-                .ZoomSpeed(0.5f)
+                .LagSpeed(4.f)
+                .ZoomSpeed(3.5f)
                 .Apply();
 
-            m_Dialogue->Start_Dialogue("Boss1_Dead");
+            m_CamController->Get_OwnerCamMovement()->Set_OnTransitionEnd([this]()
+                {
+                    m_Dialogue->Start_Dialogue("Boss1_Dead", _vec2(0, 150));
+                });
         });
-
 }
 
 void CStage_Boss1::Setup_PlayerCallbacks()

@@ -159,6 +159,9 @@ void CUI_Dialogue::Start_Dialogue(const string& dialogueId, const _vec2 boxPos, 
     m_BoxPos = boxPos;
     m_BoxSize = boxSize;
 
+    m_TransformCom->Set_Pos(m_BoxPos.x, m_BoxPos.y, 0.f);
+    m_TransformCom->Set_Scale(m_BoxSize.x, m_BoxSize.y, 1.f);
+
     m_CurrentDialogue = CDialogueDB::GetInstance()->GetDialogueById(dialogueId);
 
     NULL_CHECK(m_CurrentDialogue);

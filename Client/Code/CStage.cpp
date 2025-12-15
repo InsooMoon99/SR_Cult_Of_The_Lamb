@@ -282,37 +282,7 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     NULL_CHECK_RETURN(m_PlayerCombatStatCom, E_FAIL);
 
     m_PlayerSkillCom = dynamic_cast<CPlayerSkill*>(gameObject->Get_Component(ID_STATIC, COMPONENTTYPE::PL_SKILL));
-
     NULL_CHECK_RETURN(m_PlayerSkillCom, E_FAIL);
-
-    // -----------------------------
-    // Monster
-    // -----------------------------
-
-    //// HumanMonster
-    //gameObject = CHumanMonster::Create(m_GraphicDev);
-    //NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CHumanMonster::Create() returned null")
-    //
-    //FAILED_CHECK_MSG(
-    //    layer->Add_GameObject(OBJTYPE::HUMANMONSTER, gameObject),
-    //    L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
-    //
-    //gameObject = CFloaterMonster::Create(m_GraphicDev);
-    //NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CHumanMonster::Create() returned null")
-    //
-    //FAILED_CHECK_MSG(
-    //    layer->Add_GameObject(OBJTYPE::HUMANMONSTER, gameObject),
-    //    L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
-    
-    // -----------------------------
-    // Boss
-    // -----------------------------
-    /*gameObject = CBossPhase1::Create(m_GraphicDev);
-    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase1::Create() returned null")
-    
-        FAILED_CHECK_MSG(
-            layer->Add_GameObject(OBJTYPE::BOSS1, gameObject),
-            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");*/
 
     // -----------------------------
     // Camera
