@@ -44,24 +44,11 @@
 #include "CUITabMenu.h"
 #include "CUIWeapon.h"
 #include "CUI_Dialogue.h"
+#include "CUI_FollowerCommand.h"
+#include "CUI_Skill.h"
 #include "CVillageStateMgr.h"
 #include "CWorkBench.h"
 #include "ItemInstance.h"
-#include "CHarvestableHerb.h"
-#include "CPlayerSkill.h"
-#include "CRock.h"
-#include "CTree.h"
-#include "CTrigger_Dungeon.h"
-#include "CUIBuildMenu.h"
-#include "CUI_Dialogue.h"
-#include "CKitchen.h"
-#include "CUICookingGame.h"
-#include "CCookingController.h"
-#include "CCreateHelper.h"
-#include "CUICookingMenu.h"
-#include "CChest.h"
-#include "CUI_Skill.h"
-#include "CUI_FollowerCommand.h"
 
 class CUIBuildMenu;
 
@@ -73,8 +60,8 @@ CStage::CStage(DEVICE graphicDev)
       m_WorkBench(nullptr),
       m_PlayerSkillCom(nullptr),
       m_Terrain(nullptr),
-      m_Kitchen(nullptr)
-{}
+      m_FollowerCommand(nullptr)
+{ }
 
 CStage::~CStage()
 { }
@@ -191,29 +178,28 @@ _int CStage::Update_Scene(const _float& timeDelta)
     }
 
     // xptmxm dksdmstn
-    if(CDInputMgr::GetInstance()->KeyDown(DIK_U))
+    if (CDInputMgr::GetInstance()->KeyDown(DIK_U))
     {
-       /*CHarvestableHerb*  tmpObject = CHarvestableHerb::Create(m_GraphicDev, CHarvestableHerb::BERRY::SMALLBERRY);
-       NULL_CHECK_RETURN_MSG(tmpObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
+        /*CHarvestableHerb*  tmpObject = CHarvestableHerb::Create(m_GraphicDev, CHarvestableHerb::BERRY::SMALLBERRY);
+        NULL_CHECK_RETURN_MSG(tmpObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
+ 
+            SpawnObjectOnLayer(tmpObject, OBJTYPE::INTERACTIVE);
+ 
+         tmpObject->Get_Transform()->Set_Pos(20.f, 0.6f, 20.f);
+ 
+ 
+         RecipeInst r{ 4001 ,3,2001 };
+ 
+         CUICookingGame* cook = CUICookingGame::Create(m_GraphicDev, tmpObject, r);
+ 
+         SpawnUIOnLayer(cook, OBJTYPE::UI);
+ 
+         cook->Initialize_GameObject();*/
 
-           SpawnObjectOnLayer(tmpObject, OBJTYPE::INTERACTIVE);
-
-        tmpObject->Get_Transform()->Set_Pos(20.f, 0.6f, 20.f);
-
-
-        RecipeInst r{ 4001 ,3,2001 };
-
-        CUICookingGame* cook = CUICookingGame::Create(m_GraphicDev, tmpObject, r);
-
-        SpawnUIOnLayer(cook, OBJTYPE::UI);
-
-        cook->Initialize_GameObject();*/
-
-        CChest* tmp = CChest::Create(m_GraphicDev, { 23,2,23 });
+        CChest* tmp = CChest::Create(m_GraphicDev, { 23, 2, 23 });
         tmp->AddItem(1002, 4);
         tmp->Initialize_GameObject();
         SpawnObjectOnLayer(tmp, OBJTYPE::INTERACTIVE);
-  
     }
 
     return exit;
@@ -227,7 +213,6 @@ void CStage::LateUpdate_Scene(const _float& timeDelta)
 void CStage::Render_Scene()
 {
     CConstructionMgr::GetInstance()->Render_ConstructionMgr();
-
 }
 
 HRESULT CStage::Ready_Environment_Layer(LAYERTYPE layerType)
@@ -318,7 +303,7 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     //FAILED_CHECK_MSG(
     //    layer->Add_GameObject(OBJTYPE::HUMANMONSTER, gameObject),
     //    L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
-    
+
     // -----------------------------
     // Boss
     // -----------------------------
@@ -495,11 +480,11 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
         layer->Add_GameObject(OBJTYPE::BUILDING, workBench),
         L"Add_GameObject(CWorkBench) failed");
 
-    auto kitchen = CKitchen::Create(m_GraphicDev);
-    m_Kitchen    = kitchen;
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::BUILDING, kitchen),
-        L"Add_GameObject(CWorkBench) failed");
+    //auto kitchen = CKitchen::Create(m_GraphicDev);
+    //m_Kitchen    = kitchen;
+    //FAILED_CHECK_MSG(
+    //    layer->Add_GameObject(OBJTYPE::BUILDING, kitchen),
+    //    L"Add_GameObject(CWorkBench) failed");
 
     // -----------------------------
     // Follower
@@ -510,8 +495,6 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
         layer->Add_GameObject(OBJTYPE::NPC, gameObject),
         L"Add NPC object on layer has failed");
 
-    m_FollowerCow = dynamic_cast<CFollowerCow*>(gameObject); //UI 생성시점이 Follower 생성 시점보다 늦어서 나중에 포인터 주입하기 위해 멤버변수로 저장해둠
-    
     // -----------------------------
     // 저장된 건물 불러오기 기능
     // -----------------------------
@@ -636,7 +619,6 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
             &gameObject),
         L"Persistent object setup failed: UI_Skill");
 
-
     //왼쪽 상단 스킬 아이콘 UI
     CUIIcon* pgameObject = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_ICON);
     pgameObject->Set_TextureIndex(1);
@@ -680,14 +662,16 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     CUICookingMenu* uiCookingMenu = CUICookingMenu::Create(m_GraphicDev);
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiCookingMenu),
                      L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UI_CookingMenu) failed");
-    m_Kitchen->Set_CookingMenu(uiCookingMenu);
 
+    if (uiCookingMenu)
+        m_CookingMenu = uiCookingMenu;
 
     CUI_FollowerCommand* followerCommand = CUI_FollowerCommand::Create(m_GraphicDev);
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, followerCommand),
-        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUI_FollowerCommand) failed");
+                     L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUI_FollowerCommand) failed");
 
-    m_FollowerCow->Set_FollowerCommandUI(followerCommand); // 여기서 뒤늦게 포인터 주입
+    if (followerCommand)
+        m_FollowerCommand = followerCommand;
 
     m_Layers.insert({ layerType, layer });
 

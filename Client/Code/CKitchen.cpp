@@ -7,7 +7,6 @@
 #include "CDInputMgr.h"
 #include "CPlayer.h"
 #include "CRcTex.h"
-#include "CRigidbody.h"
 #include "CSpriteEff.h"
 #include "CTexture.h"
 #include "CTransform.h"
