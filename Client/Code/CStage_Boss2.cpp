@@ -1,7 +1,5 @@
 ﻿#include "pch.h"
 #include "CStage_Boss2.h"
-#include "CBossPhase1.h"
-#include "CParticleHelper.h"
 #include "CBossPhase2.h"
 #include "CLayer.h"
 #include "CMainCamera.h"
@@ -52,6 +50,12 @@ HRESULT CStage_Boss2::Ready_Scene()
     // 아이템 드롭을 위한 씬 세팅 Eyeball 죽일 때마다 체력 아이템 떨구기 ?
     CDropSystem::GetInstance()->SetCurrentScene(this);
 
+    Setup_BossCallbacks();
+
+    // TODO : 일단은 바로 시작 -> 대사끝나면 시작하도록 변경 예정
+    Setup_DynamicCam();
+    Setup_DialogueCallbacks();
+
     return S_OK;
 }
 
@@ -67,11 +71,7 @@ void CStage_Boss2::Initialize_Scene()
         auto camMovement = m_CamController->Get_OwnerCamMovement();
         camMovement->Disable_DynamicDistance();
     }
-
-    // TODO : 일단은 바로 시작 -> 대사끝나면 시작하도록 변경 예정
-    Setup_DynamicCam();
-    Setup_BossCallbacks();
-    Setup_DialogueCallbacks();
+  
 }   
 
 _int CStage_Boss2::Update_Scene(const _float& timeDelta)
@@ -231,21 +231,129 @@ void CStage_Boss2::Setup_BossCallbacks()
     auto boss = dynamic_cast<CBossPhase2*>(m_Boss);
     if (!boss) return;
 
+    // 소리지르기
+    boss->Set_OnSummonRoarStart([this]()
+        {
+            Start_CameraMoving(CAM_MOVE_TYPE::START_BOSS_ZOOM);
+        });
+
+    // Roar 끝
+    boss->Set_OnSummonRoarEnd([this]()
+        {
+            m_Dialogue->Start_Dialogue("Boss2_Start", _vec2(0.f, 200.f));
+        });
+
+    boss->Set_OnSummonAnimStart([this]()
+        {
+            Start_CameraMoving(CAM_MOVE_TYPE::SUMMON_ZOOM_OUT);
+        });
+
+    boss->Set_OnSummonAnimEnd([this]()
+        {
+            Start_CameraMoving(CAM_MOVE_TYPE::EYEBALL_ZOOM);
+        });
+
     // 전투 시작하면 Dynamic Cam 세팅, 이후 죽으면 Disable
     boss->Set_OnBattleStart([this]()
         {
             Setup_DynamicCam();
         });
 
+    // 보스 죽을 때
     boss->Set_OnDead([this]()
         {
             m_CamController->Get_OwnerCamMovement()->Disable_DynamicDistance();
         });
 
+    // 보스 죽고 NPC로 변신
     boss->Set_OnFollowerStart([this]()
         {
-            m_Dialogue->Start_Dialogue("Boss2_Dead", _vec2(0.f, 200.f), _vec2(300.f, 80.f));
+
+            m_Dialogue->Start_Dialogue("Boss2_Dead", _vec2(0.f, 200.f));
         });
+    
+}
+
+void CStage_Boss2::Start_CameraMoving(CAM_MOVE_TYPE type)
+{
+    switch (type)
+    {
+    case CAM_MOVE_TYPE::START_BOSS_ZOOM:
+        CCamSetupBuilder(m_CamController)
+            .SetTarget(m_Boss->Get_Transform())
+            .Distance(20.5f)
+            .RotX(30.f)
+            .LagSpeed(3.f)
+            .ZoomSpeed(2.5f)
+            .Apply();
+        break;
+
+    case CAM_MOVE_TYPE::SUMMON_ZOOM_OUT:
+        CCamSetupBuilder(m_CamController)
+            .SetTarget(m_Boss->Get_Transform())
+            .Distance(44.f)
+            .RotX(28.f)
+            .LagSpeed(4.f)
+            .ZoomSpeed(3.5f)
+            .Apply();
+        break;
+
+    case CAM_MOVE_TYPE::EYEBALL_ZOOM:
+        // Eyeball로 줌인되고,
+        CCamSetupBuilder(m_CamController)
+            .SetTarget(m_Boss->Get_Transform())
+            .Distance(20.5f)
+            .RotX(35.f)
+            .LagSpeed(3.f)
+            .ZoomSpeed(2.5f)
+            .Apply();
+
+
+        // 줌인 끝나면 플레이어한테 카메라 세팅
+        m_CamController->Get_OwnerCamMovement()->Set_OnTransitionEnd([this]()
+            {
+                CCamSetupBuilder(m_CamController)
+                    .SetTarget(m_PlayerTransformCom)
+                    .Distance(22.f)
+                    .RotX(44.f)
+                    //.Snap()
+                    .LagSpeed(4.f)
+                    .ZoomSpeed(3.5f)
+                    .Apply();
+
+                // 이후 끝나면 Dynamic Camera 키기
+                m_CamController->Get_OwnerCamMovement()->Set_OnTransitionEnd([this]()
+                    {
+                        m_CamController->Get_OwnerCamMovement()->Enable_DynamicDistance(true);
+                    });
+            });
+        break;
+    }
+
+    // Camera Shake
+    Start_CameraShaking(type);
+}
+
+void CStage_Boss2::Start_CameraShaking(CAM_MOVE_TYPE type)
+{
+    auto camMovement = m_CamController->Get_OwnerCamMovement();
+    NULL_CHECK(camMovement);
+
+    switch (type)
+    {
+    case CAM_MOVE_TYPE::START_BOSS_ZOOM:
+        camMovement->Start_CamShake(0.36f, 0.15f, 49.1f, 25.f);
+        break;
+
+    case CAM_MOVE_TYPE::SUMMON_ZOOM_OUT:
+        // NONE
+        break;
+
+    case CAM_MOVE_TYPE::EYEBALL_ZOOM:
+        // NONE
+        break;
+
+    }
 }
 
 HRESULT CStage_Boss2::Ready_Light()
@@ -289,7 +397,13 @@ void CStage_Boss2::Setup_DialogueCallbacks()
 
 void CStage_Boss2::OnDialogueEnd(const string& id)
 {
-    if (id == "Boss2_Dead")
+    if (id == "Boss2_Start")
+    {
+        auto boss = dynamic_cast<CBossPhase2*>(m_Boss);
+        boss->Resume_Summon();
+    }
+
+    else if (id == "Boss2_Dead")
     {
         OnBoss2DeadEnd();
     }

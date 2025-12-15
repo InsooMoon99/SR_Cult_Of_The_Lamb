@@ -33,12 +33,11 @@ public:
     virtual void    Render_Scene() PURE;
     virtual HRESULT Ready_Light();
 
-    void AddObjectOnLayer(LAYERTYPE layerType, CGameObject* obj, OBJTYPE objType);
+    void            AddObjectOnLayer(LAYERTYPE layerType, CGameObject* obj, OBJTYPE objType);
 
     // Editor
     const map<LAYERTYPE, CLayer*>& Get_Layers() const { return m_Layers; }
     CLayer*                        Get_Layer(LAYERTYPE type);
-
 
 public:
     virtual void OnMonsterDeath(CGameObject* obj) {}

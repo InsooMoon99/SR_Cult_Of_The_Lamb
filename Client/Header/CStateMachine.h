@@ -14,7 +14,8 @@ public:
     virtual _int    Update_StateMachine(const _float& timeDelta) = 0;
     virtual void    Change_State(_uint dwStateKey) = 0;
 
-    _uint Get_CurStateNum() { return m_CurStateKey; }
+    _uint       Get_CurStateNum() { return m_CurStateKey; }
+    CBaseState* Get_CurState() { return m_CurState; }
 
 protected:
     vector<CBaseState*> m_vecState;

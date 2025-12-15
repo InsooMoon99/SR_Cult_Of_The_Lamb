@@ -182,6 +182,7 @@
     <ClInclude Include="..\Header\CBoss2_ChainAttack.h" />
     <ClInclude Include="..\Header\CBoss2_Start.h" />
     <ClInclude Include="..\Header\CBoss2_StateMachine.h" />
+    <ClInclude Include="..\Header\CBoss2_SummonFollower.h" />
     <ClInclude Include="..\Header\CBossAwake.h" />
     <ClInclude Include="..\Header\CBossBullet.h" />
     <ClInclude Include="..\Header\CBossBulletAttack.h" />
@@ -332,6 +333,7 @@
     <ClInclude Include="..\Header\CUI_BossHp.h" />
     <ClInclude Include="..\Header\CUI_Dialogue.h" />
     <ClInclude Include="..\Header\CUI_Fade.h" />
+    <ClInclude Include="..\Header\CUI_LoadingCircle.h" />
     <ClInclude Include="..\Header\CUI_MonsterHp.h" />
     <ClInclude Include="..\Header\CVillageStateMgr.h" />
     <ClInclude Include="..\Header\CWarningChain.h" />
@@ -365,6 +367,7 @@
     <ClCompile Include="..\Code\CBoss2_ChainAttack.cpp" />
     <ClCompile Include="..\Code\CBoss2_Start.cpp" />
     <ClCompile Include="..\Code\CBoss2_StateMachine.cpp" />
+    <ClCompile Include="..\Code\CBoss2_SummonFollower.cpp" />
     <ClCompile Include="..\Code\CBossAwake.cpp" />
     <ClCompile Include="..\Code\CBossBullet.cpp" />
     <ClCompile Include="..\Code\CBossBulletAttack.cpp" />
@@ -511,6 +514,7 @@
     <ClCompile Include="..\Code\CUI_BossHp.cpp" />
     <ClCompile Include="..\Code\CUI_Dialogue.cpp" />
     <ClCompile Include="..\Code\CUI_Fade.cpp" />
+    <ClCompile Include="..\Code\CUI_LoadingCircle.cpp" />
     <ClCompile Include="..\Code\CUI_MonsterHp.cpp" />
     <ClCompile Include="..\Code\CVillageStateMgr.cpp" />
     <ClCompile Include="..\Code\CWarningChain.cpp" />

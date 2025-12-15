@@ -1,20 +1,18 @@
 ﻿#include "pch.h"
 #include "CLogo.h"
-
 #include "CDInputMgr.h"
 #include "CEdit.h"
 #include "CFontMgr.h"
 #include "CLayer.h"
 #include "CLoading.h"
-#include "CMainBG.h"
-#include "CManagement.h"
 #include "CMonster.h"
 #include "CProtoMgr.h"
 #include "CRcTex.h"
-#include "CStage.h"
 #include "CTexture.h"
-#include "CMainMenu.h"
 #include "CSceneMgr.h"
+#include "CUI_LoadingCircle.h"
+#include "CTransform.h"
+#include "CAnimator.h"
 
 CLogo::CLogo(DEVICE graphicDev)
 	: Engine::CScene(graphicDev),
@@ -67,21 +65,20 @@ void CLogo::LateUpdate_Scene(const _float& timeDelta)
 void CLogo::Render_Scene()
 {
 	// debug 용
-	_vec2 pos{ 190.f, 120.f };
+	_vec2 pos{ 281.8f, 602.8f };
 
-	CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Heavy",
+	CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Regular",
 		m_Loading->Get_String(),
 		&pos,
-		D3DXCOLOR(1.f, 0.f, 1.f, 1.f));
+		D3DXCOLOR(1.f, 0.f, 0.f, 1.f));
 }
 
 HRESULT CLogo::Ready_Environment_Layer(LAYERTYPE layerType)
 {
 	auto layer = Engine::CLayer::Create();
-
 	NULL_CHECK_RETURN(layer, E_FAIL)
 
-		Engine::CGameObject* gameObject = nullptr;
+	Engine::CGameObject* gameObject = nullptr;
 
 	m_Layers.insert({ layerType, layer });
 
@@ -91,8 +88,12 @@ HRESULT CLogo::Ready_Environment_Layer(LAYERTYPE layerType)
 HRESULT CLogo::Ready_UI_Layer(LAYERTYPE layerType)
 {
 	auto layer = Engine::CLayer::Create();
+    NULL_CHECK_RETURN(layer, E_FAIL);
 
-	NULL_CHECK_RETURN(layer, E_FAIL)
+    CUI_LoadingCircle* loadingCircle = CUI_LoadingCircle::Create(m_GraphicDev);
+    NULL_CHECK_RETURN(loadingCircle, E_FAIL);
+
+    layer->Add_GameObject(OBJTYPE::UI, loadingCircle);
 
 	m_Layers.insert({ layerType, layer });
 
@@ -107,6 +108,28 @@ HRESULT CLogo::Ready_Prototype()
 	if (FAILED(CProtoMgr::GetInstance()
 		->Ready_Prototype(COMPONENTTYPE::RC_TEX, Engine::CRcTex::Create(m_GraphicDev))))
 		return E_FAIL;
+
+    // Transform
+    if (FAILED(CProtoMgr::GetInstance()
+        ->Ready_Prototype(
+        COMPONENTTYPE::TRANSFORM, Engine::CTransform::Create(m_GraphicDev))))
+        return E_FAIL;
+
+    // Animator
+    if (FAILED(CProtoMgr::GetInstance()
+        ->Ready_Prototype(
+        COMPONENTTYPE::ANIMATOR, CAnimator::Create(m_GraphicDev))))
+        return E_FAIL;
+
+    CTexture* loadingCircle = CTexture::Create(m_GraphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(loadingCircle, E_FAIL);
+
+    if (FAILED(loadingCircle->Add_Texture(L"Loading_Circle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Logo/Loading/Loading%d.png", 65)))
+        return E_FAIL;
+
+    if (FAILED(CProtoMgr::GetInstance()->Ready_Prototype(COMPONENTTYPE::TEX_LOADING_CIRCLE, loadingCircle)))
+        return E_FAIL;
 
 	return S_OK;
 }

@@ -202,6 +202,8 @@ enum class COMPONENTTYPE
     BOX_COLL,
     SPHERE_COLL,
 
+    TEX_LOADING_CIRCLE,
+
     ////////////////
     //  Follower  //
     ////////////////

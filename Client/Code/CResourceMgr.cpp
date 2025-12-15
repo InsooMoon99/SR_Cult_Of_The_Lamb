@@ -93,15 +93,7 @@ HRESULT CResourceMgr::Ready_Common(DEVICE graphicDev)
 {
     auto protoMgr = CProtoMgr::GetInstance();
 
-    // Transform
-    if (FAILED(protoMgr->Ready_Prototype(
-        COMPONENTTYPE::TRANSFORM, Engine::CTransform::Create(graphicDev))))
-        return E_FAIL;
-
-    // Animator
-    if (FAILED(protoMgr->Ready_Prototype(
-        COMPONENTTYPE::ANIMATOR, CAnimator::Create(graphicDev))))
-        return E_FAIL;
+    // Transform, Animator는 로고로 이동
 
     // Camera Controller
     if (FAILED(protoMgr->Ready_Prototype(
@@ -166,7 +158,6 @@ HRESULT CResourceMgr::Ready_Common(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TRAILEFFECT, CTrailEff::Create(graphicDev))))
         return E_FAIL;
-
 
     // Construction
     if (FAILED(protoMgr->Ready_Prototype(
@@ -615,6 +606,11 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
     // Idle
     if (FAILED(bossPhase2->Add_Texture(L"Boss2_Idle", TEX_NORMAL,
         L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Idle/TOWW_Idle%d.png", 68)))
+        return E_FAIL;
+
+    // Idle Eyeball Alive
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Idle_Alive", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Idle_Alive/TOWW_Idle_Alive%d.png", 68)))
         return E_FAIL;
 
     // Roar

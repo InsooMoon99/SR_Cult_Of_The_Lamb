@@ -107,25 +107,40 @@ _uint CLoading::Loading_ForBoss1()
 
 _uint CLoading::Loading_ForBoss2()
 {
+    auto start = chrono::high_resolution_clock::now();
+
     m_LoadingText = L"Boss2 Loading...";
     auto resourceMgr = CResourceMgr::GetInstance();
 
-    vector<future<HRESULT>> futures;
+    //vector<future<HRESULT>> futures;
 
-    futures.push_back(async(launch::async, [&]() {
-        return resourceMgr->Ready_BossP2(m_GraphicDev);
-        }));
+    //futures.push_back(async(launch::async, [&]() {
+    //    return resourceMgr->Ready_BossP2(m_GraphicDev);
+    //    }));
 
-    futures.push_back(async(launch::async, [&]() {
-            return resourceMgr->Ready_BossP2_Eyeball(m_GraphicDev);
-        }));
+    //futures.push_back(async(launch::async, [&]() {
+    //        return resourceMgr->Ready_BossP2_Eyeball(m_GraphicDev);
+    //    }));
 
-    // 병렬 태스크 완료 대기
-    for (auto& future : futures)
-    {
-        if (FAILED(future.get()))
-            return E_FAIL;
-    }
+    //// 병렬 태스크 완료 대기
+    //for (auto& future : futures)
+    //{
+    //    if (FAILED(future.get()))
+    //        return E_FAIL;
+    //}
+
+    if (FAILED(resourceMgr->Ready_BossP2(m_GraphicDev)))
+        return E_FAIL;
+
+    Sleep(1);
+
+    if (FAILED(resourceMgr->Ready_BossP2_Eyeball(m_GraphicDev)))
+        return E_FAIL;
+
+    // 로딩 시간 체크
+    auto end = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
+    OutputDebugString((L"Loading Time: " + to_wstring(duration.count()) + L"ms\n").c_str());
 
     m_IsFinish = true;
 
@@ -136,7 +151,7 @@ _uint CLoading::Loading_ForState_Parallel()
 {
     auto start = chrono::high_resolution_clock::now();
 
-    m_LoadingText = L"Resource Loading (Parallel)...";
+    m_LoadingText = L"텍스처 로딩 중...";
     auto resourceMgr = CResourceMgr::GetInstance();
 
     // 버퍼는 먼저 준비

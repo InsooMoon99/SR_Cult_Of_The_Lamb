@@ -349,6 +349,9 @@
     <Filter Include="03. GameObject\09. MapObject\03. Fog">
       <UniqueIdentifier>{2f846c5f-7436-4050-b8a3-cfae036bed3d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. UI\01. UI\12. UILoading">
+      <UniqueIdentifier>{ef7e3084-5c3c-4182-94f6-f1de1ae79c0d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -902,6 +905,12 @@
     <ClInclude Include="..\Header\CBoss2_Follower.h">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CBoss2_SummonFollower.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUI_LoadingCircle.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1416,6 +1425,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\CBoss2_Follower.cpp">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoss2_SummonFollower.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_LoadingCircle.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

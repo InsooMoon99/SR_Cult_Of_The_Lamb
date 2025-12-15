@@ -65,9 +65,9 @@ public:
     static CAnimator*   Create(DEVICE graphicDev);
     CComponent*         Clone() override;
 
+    CSpriteAnimation*   Find_Animation(const wstring& Key);
 private:
     HRESULT             Ready_Animator();
-    CSpriteAnimation*   Find_Animation(const wstring& Key);
 
     void                Free() override;
 

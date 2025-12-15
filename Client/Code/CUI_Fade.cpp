@@ -121,7 +121,15 @@ void CUI_Fade::Render_GameObject()
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 }
 
-void CUI_Fade::StartFadeIn(_float speed)
+void CUI_Fade::Set_Alpha(_float alpha)
+{
+    m_Alpha = alpha;
+
+    if (alpha <= 0.f)
+        m_IsActive = false;
+}
+
+void CUI_Fade::Start_FadeIn(_float speed)
 {
     m_Alpha = 1.0f;        
     m_FadeSpeed = speed;   
@@ -129,7 +137,7 @@ void CUI_Fade::StartFadeIn(_float speed)
     m_IsActive = true;     
 }
 
-void CUI_Fade::StartFadeOut(_float speed)
+void CUI_Fade::Start_FadeOut(_float speed)
 {
     m_Alpha = 0.0f;        
     m_FadeSpeed = speed;   
