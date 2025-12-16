@@ -47,17 +47,17 @@ void CMenuExtra::LateUpdate_GameObject(const _float& timeDelta)
 
 void CMenuExtra::Render_GameObject()
 {
-    m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
+    //m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
 
+    m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
     Render_Setting();
 
-
- m_TextureCom->Set_Texture(m_textureIndex);
- 
-
+    m_TextureCom->Set_Texture(m_textureIndex);
     m_BufferCom->Render_Buffer();
 
     Render_Reset();
+
+    //m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
 HRESULT CMenuExtra::Add_Component()

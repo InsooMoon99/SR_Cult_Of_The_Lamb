@@ -94,15 +94,7 @@ HRESULT CResourceMgr::Ready_Common(DEVICE graphicDev)
 {
     auto protoMgr = CProtoMgr::GetInstance();
 
-    // Transform
-    if (FAILED(protoMgr->Ready_Prototype(
-        COMPONENTTYPE::TRANSFORM, Engine::CTransform::Create(graphicDev))))
-        return E_FAIL;
-
-    // Animator
-    if (FAILED(protoMgr->Ready_Prototype(
-        COMPONENTTYPE::ANIMATOR, CAnimator::Create(graphicDev))))
-        return E_FAIL;
+    // Transform, Animator는 로고로 이동
 
     // Camera Controller
     if (FAILED(protoMgr->Ready_Prototype(
@@ -519,17 +511,6 @@ HRESULT CResourceMgr::Ready_Monster(DEVICE graphicDev)
         COMPONENTTYPE::TEX_CHEST, chest)))
         return E_FAIL;
 
-    // 춘식이
-    CTexture* slaveTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
-    NULL_CHECK_RETURN(slaveTex, E_FAIL);
-
-    if (FAILED(slaveTex->Add_Texture(L"Boss_Slave_Appear", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase2/Slave/ChunSik/Follower-finab-loss-appear%d.png", 42)))
-        return E_FAIL;
-
-    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_SLAVE_TEST, slaveTex)))
-        return E_FAIL;
-
     return S_OK;
 }
 
@@ -630,9 +611,19 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
         L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Idle/TOWW_Idle%d.png", 68)))
         return E_FAIL;
 
+    // Idle Eyeball Alive
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Idle_Alive", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Idle_Alive/TOWW_Idle_Alive%d.png", 68)))
+        return E_FAIL;
+
     // Roar
     if (FAILED(bossPhase2->Add_Texture(L"Boss2_Roar", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Roar/TOWW_Roar%d.png", 69)))
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Roar/TOWW_Roar%d.png", 70)))
+        return E_FAIL;
+
+    // Roar Alive
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Roar_Alive", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Roar_Alive/TOWW_Roar_Alive%d.png", 70)))
         return E_FAIL;
 
     // HandSlam
@@ -642,7 +633,7 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
 
     // Dead
     if (FAILED(bossPhase2->Add_Texture(L"Boss2_Dead", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Die/TOWW_Die%d.png", 56)))
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Die/TOWW_Die%d.png", 117)))
         return E_FAIL;
 
     // Warning Chain
@@ -670,7 +661,7 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
         L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_DownIdle/TOWW_DownIdle%d.png", 67)))
         return E_FAIL;
 
-    // Follower
+    // Transform Follower
     if (FAILED(bossPhase2->Add_Texture(L"Boss2_Follower_Transform", TEX_NORMAL,
         L"../Bin/Resource/Texture/BossPhase2/Slave/DeathCat/Transform/Boss_Transform%d.png", 62)))
         return E_FAIL;
@@ -736,6 +727,58 @@ HRESULT CResourceMgr::Ready_BossP2_Eyeball(DEVICE graphicDev)
         return E_FAIL;
 
     return S_OK;
+}
+
+HRESULT CResourceMgr::Ready_BossP2_Follower(DEVICE graphicDev)
+{
+    auto protoMgr = CProtoMgr::GetInstance();
+
+    // 춘식이들
+    CTexture* slaveTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(slaveTex, E_FAIL);
+
+    // Cow3
+    if (FAILED(slaveTex->Add_Texture(L"NPC_Cow3_Appear", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Finalboss_Appear/Follower-finalboss-appear%d.png", 140)))
+        return E_FAIL;
+
+    if (FAILED(slaveTex->Add_Texture(L"NPC_Cow3_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Finalboss_Idle/Follower-finalboss-idle%d.png", 50)))
+        return E_FAIL;
+
+    //if (FAILED(slaveTex->Add_Texture(L"NPC_Cow3_Freed", TEX_NORMAL,
+    //    L"../Bin/Resource/Texture/NPC/Follower/Cow3/Finalboss_Freed/Follower-finalboss-freed%d.png", 102)))
+    //    return E_FAIL;
+
+    // Elephant
+    if (FAILED(slaveTex->Add_Texture(L"NPC_Elephant_Appear", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Finalboss_Appear/Follower-finalboss-appear%d.png", 142)))
+        return E_FAIL;
+
+    if (FAILED(slaveTex->Add_Texture(L"NPC_Elephant_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Finalboss_Idle/Follower-finalboss-idle%d.png", 50)))
+        return E_FAIL;
+
+    //if (FAILED(slaveTex->Add_Texture(L"NPC_Elephant_Freed", TEX_NORMAL,
+    //    L"../Bin/Resource/Texture/NPC/Follower/Elephant/Finalboss_Freed/Follower-finalboss-freed%d.png", 102)))
+    //    return E_FAIL;
+
+    // Pig2
+    if (FAILED(slaveTex->Add_Texture(L"NPC_Pig2_Appear", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Finalboss_Appear/Follower-finalboss-appear%d.png", 142)))
+        return E_FAIL;
+
+    if (FAILED(slaveTex->Add_Texture(L"NPC_Pig2_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Finalboss_Idle/Follower-finalboss-idle%d.png", 50)))
+        return E_FAIL;
+
+    //if (FAILED(slaveTex->Add_Texture(L"NPC_Pig2_Freed", TEX_NORMAL,
+    //    L"../Bin/Resource/Texture/NPC/Follower/Pig2/Finalboss_Freed/Follower-finalboss-freed%d.png", 102)))
+    //    return E_FAIL;
+
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_SLAVE_TEST, slaveTex)))
+        return E_FAIL;
 }
 
 HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
@@ -1075,6 +1118,12 @@ HRESULT CResourceMgr::Ready_Terrain(DEVICE graphicDev)
             L"../Bin/Resource/Texture/Terrain/TileOutline%d.png", 3))))
         return E_FAIL;
 
+    // Terrain_Outline2
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_TILE_OUTLINE2, CTexture::Create(graphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/Terrain/TileOutline4.png", 1))))
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -1193,6 +1242,21 @@ HRESULT CResourceMgr::Ready_Particle(DEVICE graphicDev)
     // FOG
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_FOG,
         CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Effect/Fog/fog.png", 1))))
+        return E_FAIL;
+
+    // Rock
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_ROCK_PARTICLE,
+        CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Particle/Rock/Rock_Particle%d.png", 2))))
+        return E_FAIL;
+
+    // Grass
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_GRASS_PARTICLE,
+        CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Particle/Grass/Grass_Particle%d.png", 4))))
+        return E_FAIL;
+
+    // Tree
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_TREE_PARTICLE,
+        CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Particle/Tree/Tree_Particle%d.png", 6))))
         return E_FAIL;
 
     return S_OK;

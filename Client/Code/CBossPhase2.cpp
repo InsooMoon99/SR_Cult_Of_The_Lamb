@@ -6,6 +6,7 @@
 #include "CTransform.h"
 #include "CBossController.h"
 #include "CBoss2_StateMachine.h"
+#include "CBoss2_SummonFollower.h"
 #include "CCombatStat.h"
 #include "CBoxCollider.h"
 #include "CEyeball.h"
@@ -123,6 +124,7 @@ const char* CBossPhase2::Get_Boss2_StateName(_int stateNum)
     // 상태 추가될때마다 추가하기
     switch (stateNum)
     {
+    case PHASE2_SUMMON:      return "PHASE2_Summon";
     case PHASE2_START:      return "PHASE2_Start";
     case PHASE2_IDLE:       return "PHASE2_Idle";
     case PHASE2_ROAR:       return "PHASE2_Roar";
@@ -198,6 +200,27 @@ _bool CBossPhase2::Is_InSpecialPattern()
                 curState == PATTERN::PHASE2_GROGGY);
 }
 
+void CBossPhase2::Trigger_OnSummonRoarEnd()
+{
+    if (m_OnSummonRoarEnd)
+    {
+        m_OnSummonRoarEnd();
+    }
+}
+
+void CBossPhase2::Resume_Summon()
+{
+    auto stateMachine = m_BossController->Get_StateMachine();
+    if (stateMachine && stateMachine->Get_CurStateNum() == PHASE2_SUMMON)
+    {
+        auto summonState = dynamic_cast<CBoss2_SummonFollower*>(stateMachine->Get_CurState());
+
+        if (summonState)
+            summonState->Resume_Summon();
+    }
+
+}
+
 CBossPhase2* CBossPhase2::Create(DEVICE graphicDev)
 {
     CBossPhase2* boss = new CBossPhase2(graphicDev);
@@ -214,15 +237,17 @@ CBossPhase2* CBossPhase2::Create(DEVICE graphicDev)
 
 void CBossPhase2::Animation_Setting()
 {
-    m_AnimatorCom->Create_Animation(L"Boss2_Start", 85, 0.05f, _vec2(1.f, 1.f), _vec2(0.f, 0.05f));
+    m_AnimatorCom->Create_Animation(L"Boss2_Summon", 134, 0.05f, _vec2(1.01f, 1.05f), _vec2(-0.015f, 0.01f));
+
+    m_AnimatorCom->Create_Animation(L"Boss2_Start", 85, 0.05f, _vec2(1.f, 1.f), _vec2(0.005f, 0.05f));
     m_AnimatorCom->Create_Animation(L"Boss2_Idle", 68, 0.05f, _vec2(1.f, 1.f), _vec2(0.005f, 0.05f));
+    m_AnimatorCom->Create_Animation(L"Boss2_Idle_Alive", 68, 0.05f, _vec2(1.f, 1.f), _vec2(0.005f, 0.05f));
 
-    m_AnimatorCom->Create_Animation(L"Boss2_Summon", 134, 0.05f);
-
-    m_AnimatorCom->Create_Animation(L"Boss2_Roar", 69, 0.04f, _vec2(1.f, 1.f), _vec2(0.f, -0.08f));
+    m_AnimatorCom->Create_Animation(L"Boss2_Roar", 70, 0.04f, _vec2(1.f, 1.f), _vec2(0.f, -0.08f));
+    m_AnimatorCom->Create_Animation(L"Boss2_Roar_Alive", 70, 0.04f, _vec2(1.1f, 1.f), _vec2(-0.005f, -0.025f));
 
     m_AnimatorCom->Create_Animation(L"Boss2_HandSlam", 68, 0.04f, _vec2(1.f, 1.12f), _vec2(0.f, -0.19f));
-    m_AnimatorCom->Create_Animation(L"Boss2_Dead", 56, 0.06f, _vec2(1.09, 1.25), _vec2(0.f, -0.33f));
+    m_AnimatorCom->Create_Animation(L"Boss2_Dead", 117, 0.04f, _vec2(1.09f, 1.25), _vec2(0.f, 0.2f));
 
     m_AnimatorCom->Create_Animation(L"Boss2_DownStart", 64, 0.04f, _vec2(1.09f, 1.1f), _vec2(0.f, -0.1f));
     m_AnimatorCom->Create_Animation(L"Boss2_DownIdle", 67, 0.04f, _vec2(0.93f, 0.79f), _vec2(0.f, -0.14f));

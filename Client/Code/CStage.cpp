@@ -502,20 +502,20 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     // Follower
     // -----------------------------
     //TODO 추종자 3마리로 늘리면서, 각자 함수를 만들어 그 안에서 생성되고 Init도 그 안에서 수동으로 하도록, 또한 키 R, T, Y로 수동 생성 테스트도 만들어보자
-    SavedNpc* cowState       = CVillageStateMgr::GetInstance()->Get_NPCState(L"FollowerCow");
-    _bool     shouldSpawnCow = true; // 기본값: 데이터 없으면 스폰 (테스트 편의상)
-
-    if (cowState != nullptr)
-        shouldSpawnCow = cowState->isActive;
-
-    if (shouldSpawnCow)
-    {
-        gameObject = CFollowerCow::Create(m_GraphicDev);
-        NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"Create NPC object has failed");
-        FAILED_CHECK_MSG(
-            layer->Add_GameObject(OBJTYPE::NPC, gameObject),
-            L"Add NPC object on layer has failed");
-    }
+    //SavedNpc* cowState       = CVillageStateMgr::GetInstance()->Get_NPCState(L"FollowerCow");
+    //_bool     shouldSpawnCow = true; // 기본값: 데이터 없으면 스폰 (테스트 편의상)
+    //
+    //if (cowState != nullptr)
+    //    shouldSpawnCow = cowState->isActive;
+    //
+    //if (shouldSpawnCow)
+    //{
+    //    gameObject = CFollowerCow::Create(m_GraphicDev);
+    //    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"Create NPC object has failed");
+    //    FAILED_CHECK_MSG(
+    //        layer->Add_GameObject(OBJTYPE::NPC, gameObject),
+    //        L"Add NPC object on layer has failed");
+    //}
 
     // -----------------------------
     // 저장된 건물 불러오기 기능

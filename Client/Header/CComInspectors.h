@@ -19,8 +19,13 @@
 #include "CTransform.h"
 #include "CWallRenderer.h"
 #include "CWeaponEquip.h"
+#include "CManagement.h"
+#include "CScene.h"
+#include "CLayer.h"
 
 USING(Engine)
+
+static void Change_Target(CCameraMovement* movement);
 
 static void Transform_Inspector(CTransform* transform)
 {
@@ -831,6 +836,9 @@ static void CamMovement_Inspector(CCameraMovement* movement)
         if (ImGui::DragFloat(u8"줌 속도", &zoomSpeed, 0.1f, 0.0f, 20.0f))
             movement->Set_ZoomSpeed(zoomSpeed);
 
+        // 타겟 변경
+        Change_Target(movement);
+
         ImGui::Separator();
 
         // Shake Test
@@ -914,4 +922,87 @@ static void MonsterSpawner_Inspector(CObjectSpawner* spawner)
     NULL_CHECK(spawner);
 
     spawner->Render_Editor();
+}
+
+static void Change_Target(CCameraMovement* movement)
+{
+    // =====================================
+    // 카메라 타겟 변경
+    // =====================================
+    ImGui::Text(u8"카메라 타겟 변경");
+    
+    static vector<string> targetNames;
+    static vector<CTransform*> targetTransforms;
+    static int selectedTargetIdx = 0;
+
+    
+    if (ImGui::Button(u8"타겟 목록 새로고침"))
+    {
+        targetNames.clear();
+        targetTransforms.clear();
+        selectedTargetIdx = 0;
+
+        CScene* scene = CManagement::GetInstance()->Get_Scene();
+
+        if (scene)
+        {
+            CLayer* layer = scene->Get_Layer(LAYERTYPE::GAMELOGIC);
+            if (layer)
+            {
+                const auto& objMap = layer->Get_Objects();
+
+                for (const auto& objPair : objMap)
+                {
+                    OBJTYPE objType = objPair.first;
+                    const vector<CGameObject*>& objList = objPair.second;
+
+                    for (CGameObject* obj : objList)
+                    {
+                        if (!obj) continue;
+
+                        CTransform* transform = obj->Get_Transform();
+                        if (!transform) continue;
+
+                        wstring wName = obj->Get_Name();
+                        string name = ToString(objType);
+                        name += " - ";
+                        name += string(wName.begin(), wName.end());
+
+                        targetNames.push_back(name);
+                        targetTransforms.push_back(transform);
+                    }
+                }
+            }
+        }
+    }
+    // Combo로 선택
+    if (!targetNames.empty())
+    {
+        vector<const char*> items;
+        for (auto& name : targetNames)
+            items.push_back(name.c_str());
+
+        if (ImGui::Combo(u8"타겟 선택", &selectedTargetIdx, items.data(), (int)items.size()))
+        {
+            if (selectedTargetIdx < (int)targetTransforms.size())
+            {
+                // CamMovement의 owner인 카메라에서 CCameraController 가져오기
+                CGameObject* camOwner = movement->Get_Owner();
+                if (camOwner)
+                {
+                    auto camController = dynamic_cast<CCameraController*>(
+                        camOwner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAM_CONTROLLER));
+                    if (camController)
+                    {
+                        camController->Set_CamTarget(targetTransforms[selectedTargetIdx]);
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        ImGui::TextDisabled(u8"목록 새로고침을 눌러주세요");
+    }
+    ImGui::Separator();
 }

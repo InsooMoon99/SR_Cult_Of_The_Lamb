@@ -31,6 +31,7 @@ enum RENDERID
     RENDER_NONALPHA,
     RENDER_TRAIL,
     RENDER_ALPHA,
+    RENDER_PARTICLE,
     RENDER_UI,
 
     RENDER_END
@@ -210,6 +211,15 @@ enum class COMPONENTTYPE
     BOX_COLL,
     SPHERE_COLL,
 
+    TEX_LOADING_CIRCLE,
+
+    ////////////////
+    //  Particle  //
+    ////////////////
+    TEX_ROCK_PARTICLE,
+    TEX_GRASS_PARTICLE,
+    TEX_TREE_PARTICLE,
+
     ////////////////
     //  Follower  //
     ////////////////
@@ -238,6 +248,7 @@ enum class COMPONENTTYPE
     TEX_TILE_284,
     TEX_TILE_1024,
     TEX_TILE_OUTLINE,
+    TEX_TILE_OUTLINE2,
 
     TEX_GRASS,
     TEX_RUBBLE,

@@ -7,12 +7,18 @@ class CTexture;
 class CAnimator;
 END
 
-class CBoss_SlaveTest : public CCharacterBase
+class CBoss_SlaveCow : public CCharacterBase
 {
 private:
-    explicit CBoss_SlaveTest(DEVICE graphicDev);
-    explicit CBoss_SlaveTest(const CBoss_SlaveTest& rhs);
-    ~CBoss_SlaveTest() override;
+    enum Slave_AnimState
+    {
+        Appear, Idle, Freed, End
+    };
+
+private:
+    explicit CBoss_SlaveCow(DEVICE graphicDev);
+    explicit CBoss_SlaveCow(const CBoss_SlaveCow& rhs);
+    ~CBoss_SlaveCow() override;
 
 public:
     HRESULT Ready_GameObject() override;
@@ -25,10 +31,12 @@ private:
     HRESULT Add_Component()  override;
 
 public:
-    static CBoss_SlaveTest* Create(DEVICE graphicDev);
+    static CBoss_SlaveCow* Create(DEVICE graphicDev);
 
 private:
     void Free() override;
+
+    Slave_AnimState m_SlaveAnimState = Slave_AnimState::Appear;
 
 };
 

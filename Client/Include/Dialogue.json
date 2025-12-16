@@ -79,6 +79,18 @@
       ]
     },
     {
+      "dialogueId": "Boss2_Start",
+      "speaker": "기다리는 자",
+      "lines": [
+        {
+          "lineIndex": 0,
+          "speaker": "기다리는 자",
+          "text": "나는 타락이요, 거짓된 우상이다. 네 타락이 의심할 것 없이 크구나.",
+          "hasChoices": false
+        }
+      ]
+    },
+    {
       "dialogueId": "Boss2_Dead",
       "speaker": "기다리는 자",
       "lines": [

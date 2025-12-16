@@ -10,14 +10,14 @@ int CUIIcon::m_nextID = 0;
 
 CUIIcon::CUIIcon(DEVICE pGraphicDev)
     : CUI(pGraphicDev),
-      m_Register(true)
+    m_Register(true)
 {
     m_ID = ++m_nextID;
 }
 
 CUIIcon::CUIIcon(const CUIIcon& rhs)
     : CUI(rhs),
-      m_Register(true)
+    m_Register(true)
 {
     m_ID = ++m_nextID;
 }
@@ -40,21 +40,20 @@ bool CUIIcon::SetCloneTexAspectScale(_vec3 vec) // 텍스쳐 등록후
 {
     float x, y;
     m_TextureCom->Get_TextureSize(0, x, y);
-    if (false == SetTexAspectInit(m_TextureCom, m_TransformCom, 0, nullptr ,true, x))
+    if (false == SetTexAspectInit(m_TextureCom, m_TransformCom, 0, nullptr, true, x))
         return false;
 
-     SetAspectScale(m_TransformCom, vec);
+    SetAspectScale(m_TransformCom, vec);
 
-     return true;
+    return true;
 }
 
 _int CUIIcon::Update_GameObject(const _float& timeDelta)
 {
- 
     _int exit = CUI::Update_GameObject(timeDelta);
-    if(m_Register)
+    if (m_Register)
     {
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+        CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
     }
 
     return exit;
@@ -67,33 +66,31 @@ void CUIIcon::LateUpdate_GameObject(const _float& timeDelta)
 
 void CUIIcon::Render_Setting()
 {
-    //알파
-    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB((int)(m_Alpha * 255), 255, 255, 255));
+    //m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
     //
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR);
+    //m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    //m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+    //m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
 }
 
 
 void CUIIcon::Render_Reset()
 {
-    // 알파 리셋
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
-    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR,D3DCOLOR_ARGB(255, 255, 255, 255)); // 알파 1.0, 색 그대로
+    //m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+    //m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+    //m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 }
 
 void CUIIcon::Render_GameObject()
 {
     CUI::Render_GameObject();
 
-   //Render_Setting();
+    Render_Setting();
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
     m_TextureCom->Set_Texture(m_textureIndex);
-    m_BufferCom->Render_Buffer();       
-   //Render_Reset();
+    m_BufferCom->Render_Buffer();
+    Render_Reset();
 }
 
 HRESULT CUIIcon::Add_Component(COMPONENTTYPE texProtoTag)

@@ -3,6 +3,8 @@
 #include "CParticle.h"
 #include "CGraphicDev.h"
 #include "CCreateHelper.h"
+#include "CStaticParticle.h"
+#include "CTransform.h"
 
 /**
  * @brief  다른 헬퍼는 클래스를 제외하고 static으로 만들었지만 이렇게 클래스로 감싸면 
@@ -87,6 +89,54 @@ public:
                 particle->Set_Gravity(gravity);
                 particle->Set_Friction(friction);
             }
+        }
+    }
+
+    // 스프라이트 말고 Rock, Grass, Tree 등 단일 텍스처 파티클 재생
+    static void Spawn_StaticBurstParticle(
+        const _vec3& position,
+        COMPONENTTYPE textureType,  // Rock, Grass, Tree 타입 지정
+        _int count = 6,             // 몇개 소환할건지
+        _float minScale = 0.3f,     // 크기
+        _float maxScale = 0.8f,
+        _int maxTextureIndex = 2,
+        _float gravity = 15.f,
+        _float floorY = 0.f,        // 땅의 위치를 몇으로 할건지
+        _float lifeTime = 10.f,     // 몇초 뒤부터 사라지게 할건지
+        _float fadeTime = 2.f       // 사라지는 속도
+    )
+    {
+        Engine::CGraphicDev* graphicDev = Engine::CGraphicDev::GetInstance();
+        NULL_CHECK(graphicDev);
+        DEVICE device = graphicDev->Get_GraphicDev();
+        NULL_CHECK(device);
+
+        for (_int i = 0; i < count; ++i)
+        {
+            auto particle = CStaticParticle::Create(device, position, textureType);
+            if (!particle) continue;
+
+            // 랜덤 속도
+            _vec3 velocity;
+            velocity.x = (rand() % 30 - 10) / 10.f;
+            velocity.y = (rand() % 50 + 10) / 10.f;
+            velocity.z = (rand() % 20 + 10) / 10.f;
+
+            particle->Set_Velocity(velocity);
+            particle->Set_Gravity(gravity);
+            particle->Set_FloorY(floorY);
+
+            // 랜덤 크기
+            _float scale = minScale + (rand() % 100) / 100.f * (maxScale - minScale);
+            particle->Get_Transform()->Set_Scale(_vec3(scale, scale, 1.f));
+
+            // 랜덤 회전
+            _float rotation = D3DXToRadian((_float)(rand() % 360));
+            particle->Get_Transform()->Set_RotationAxis(ROTATION::ROT_Z, rotation);
+
+            // 랜덤 텍스처
+            particle->Set_TextureIndex(rand() % maxTextureIndex);
+            SpawnObjectOnLayer(particle, OBJTYPE::PARTICLE);
         }
     }
 };

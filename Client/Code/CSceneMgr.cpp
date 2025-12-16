@@ -114,7 +114,7 @@ void CSceneMgr::Change_SceneMgr(SCENETYPE typeInput)
     m_PendingScene = typeInput;
     m_IsChanging = true;
     m_FadeOutComplete = false;
-    m_FadeUI->StartFadeOut(2.0f);
+    m_FadeUI->Start_FadeOut(2.0f);
 }
 
 void CSceneMgr::Update_SceneMgr(const _float& timeDelta)
@@ -127,7 +127,7 @@ void CSceneMgr::Update_SceneMgr(const _float& timeDelta)
 
     if (!m_FadeOutComplete &&
         m_FadeUI->IsFadeComplete() &&
-        m_FadeUI->GetAlpha() >= 1.0f)
+        m_FadeUI->Get_Alpha() >= 1.0f)
     {
         m_FadeOutComplete = true;
         m_SceneType = m_PendingScene;
@@ -173,14 +173,23 @@ void CSceneMgr::Update_SceneMgr(const _float& timeDelta)
         default:
             break;
         }
+
         // FadeIn 시작
-        m_FadeUI->StartFadeIn(2.0f);
+        if (m_SceneType == SCENETYPE::SC_LOGO_BOSS1 ||
+            m_SceneType == SCENETYPE::SC_LOGO_BOSS2)
+        {
+            m_FadeUI->Start_FadeIn(50.0f);
+        }
+        else
+        {
+            m_FadeUI->Start_FadeIn(2.0f);
+        }
     }
 
     // FadeIn 완료 체크
     if (m_FadeOutComplete &&
         m_FadeUI->IsFadeComplete() &&
-        m_FadeUI->GetAlpha() <= 0.0f)
+        m_FadeUI->Get_Alpha() <= 0.0f)
     {
         m_IsChanging = false;
         m_FadeOutComplete = false;
@@ -192,6 +201,30 @@ void CSceneMgr::Render_SceneMgr()
     if (m_FadeUI && m_IsChanging)
     {
         m_FadeUI->Render_GameObject();
+    }
+}
+
+void CSceneMgr::StartFadeIn(_float speed)
+{
+    if (!m_FadeUI)
+        m_FadeUI = CUI_Fade::Create(m_GraphicDev);
+
+    if (m_FadeUI)
+    {
+        m_IsChanging = true;
+        m_FadeUI->Start_FadeIn(speed);
+    }
+}
+
+void CSceneMgr::StartFadeOut(_float speed)
+{
+    if (!m_FadeUI)
+        m_FadeUI = CUI_Fade::Create(m_GraphicDev);
+
+    if (m_FadeUI)
+    {
+        m_IsChanging = true;
+        m_FadeUI->Start_FadeOut(speed);
     }
 }
 

@@ -44,6 +44,8 @@ void CUI::LateUpdate_GameObject(const _float& timeDelta)
 void CUI::Render_GameObject()
 {
     CGameObject::Render_GameObject();
+
+    
 }
 
 void CUI::Free()

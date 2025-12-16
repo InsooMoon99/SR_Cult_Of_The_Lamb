@@ -190,6 +190,8 @@ void CTarotNPC::OnBeginOverlap(CCollider* self, CCollider* other)
     CPlayer* ply = dynamic_cast<CPlayer*>(other->Get_Owner());
     if (ply)
         m_bPlayerOverlap = true;
+
+
 }
 
 void CTarotNPC::OnEndOverlap(CCollider* self, CCollider* other)

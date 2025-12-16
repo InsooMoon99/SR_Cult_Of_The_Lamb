@@ -37,6 +37,7 @@ void CBoss2_Follower::Enter()
     {
         m_StartPos = transform->Get_Pos();
         m_TargetPos = m_StartPos;
+        m_TargetPos.y -= 0.3f;
         m_TargetPos.z -= 10.f;
     }
 
