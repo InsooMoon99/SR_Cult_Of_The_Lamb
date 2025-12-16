@@ -454,6 +454,7 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
         // 에디터에 카메라 설정
         CMainEditorMgr::GetInstance()->Set_MainCamera(camController);
     }
+
     CGameObject* tarotController = CTarotStageController::Create(m_GraphicDev);
 
     NULL_CHECK_RETURN_MSG(

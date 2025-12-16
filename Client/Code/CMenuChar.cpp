@@ -79,7 +79,7 @@ void CMenuChar::LateUpdate_GameObject(const _float& timeDelta)
 
 void CMenuChar::Render_GameObject()
 {
-    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
+    //_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
     Render_Setting();
@@ -96,15 +96,11 @@ void CMenuChar::Render_GameObject()
     //
 
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformComPattern->Get_World());
-
     m_TextureComPattern->Set_Texture(1);
-
-
     m_BufferComPattern->Render_Buffer();
 
-
     Render_Reset();
-    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
+    //m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
 void CMenuChar::Animation_Setting()

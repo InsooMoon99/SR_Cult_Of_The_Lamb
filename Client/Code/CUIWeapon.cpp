@@ -64,7 +64,7 @@ void CUIWeapon::LateUpdate_GameObject(const _float& timeDelta)
 
 void CUIWeapon::Render_GameObject()
 {
-    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
+    //m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
 
     if (!m_Invisible)
     {
@@ -105,7 +105,7 @@ void CUIWeapon::Render_GameObject()
      
     }
 
-    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
+    //m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
 
 }
 
