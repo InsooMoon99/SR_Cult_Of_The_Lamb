@@ -6,6 +6,7 @@
 #include "CGameObject.h"
 #include "CPlayerInput.h"
 #include "CPlayerMovement.h"
+#include "CSoundMgr.h"
 #include "CState.h"
 #include "CWeaponEquip.h"
 
@@ -64,8 +65,7 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     // =========================================================
 
     // 강공격
-    //TODO 아직 애니메이션과 FSM 조건이 안만들어짐. 추후에 완전 구현 예정
-    m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].state            = ACTORSTATE::PLAYER_SWORD_HEAVY; // 가정
+    m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].state            = ACTORSTATE::PLAYER_SWORD_HEAVY;
     m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].duration         = 0.02f * 70;
     m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].hitboxStartTime  = 0.5f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].hitboxEndTime    = 0.6f;
@@ -98,7 +98,7 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
 
     // 인수 : HitStop은 일단 각 무기 1타에만 넣어놓을게요
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitStopDuration = 0.01f;   // 0.01초 동안
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitStopScale = 0.3f;       // 30%로 슬로우
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitStopScale    = 0.3f;       // 30%로 슬로우
 
     // 2타
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].state            = ACTORSTATE::PLAYER_SWORD_COMBO2;
@@ -168,8 +168,8 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].particle.interval = 0.03f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].particle.scale    = _vec3(1.5f, 1.5f, 1.5f);
 
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].hitStopDuration = 0.01f;   
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].hitStopScale = 0.3f;       
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].hitStopDuration = 0.01f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].hitStopScale    = 0.3f;
 
     //2타
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].state            = ACTORSTATE::PLAYER_GAUNTLET_COMBO2;
@@ -304,19 +304,6 @@ ACTORSTATE CPlayerAttack::Start_NormalAttack()
     else
         m_OwnerStateCom->Change_Dir(ACTORDIR::RIGHT);
 
-    // 무기 종류에 따라 최대 콤보 허용 설정
-    //!! 최대 3타 고정
-    //switch (weaponIdx)
-    //{
-    //case WEAPON_SWORD:
-    //    m_MaxCombo = 3;     // 검 : 최대 3타
-    //    break;
-    //case WEAPON_GAUNTLET:
-    //    m_MaxCombo = 3;     // 건틀릿 : 최대 3타
-    //    break;
-    //default: return ACTORSTATE::STATE_END;
-    //}
-
     // 1타(COMBO_1) 시작
     m_ComboIndex = static_cast<_int>(ATTACK_COMBO1);
 
@@ -325,6 +312,9 @@ ACTORSTATE CPlayerAttack::Start_NormalAttack()
 
     // 마우스 방향으로 도약
     m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir(), 450.f);
+
+    // 공격 시작: 사운드 재생
+    Play_AttackSound();
 
     // Controller에서 상태를 변경하도록 상태값 반환
     return m_AttackInfo[weaponIdx][ATTACK_COMBO1].state;
@@ -406,6 +396,9 @@ _bool CPlayerAttack::Update_NormalAttack(const _float& timeDelta)
             m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir(), 450.f);
 
         m_OwnerStateCom->Change_State(m_AttackInfo[weaponIdx][m_ComboIndex].state);
+
+        Play_AttackSound();
+
         return true;
     }
 
@@ -560,6 +553,31 @@ void CPlayerAttack::Create_AttackObj(const AttackInfo& attackInfo, const _vec3& 
             if (m_CurrentAttackObj == pBox)
                 m_CurrentAttackObj = nullptr;
         });
+    }
+}
+
+void CPlayerAttack::Play_AttackSound()
+{
+    const _int weaponIdx = Get_WeaponIndex(m_OwnerWeaponCom->Get_CurrentWeaponID());
+    if (weaponIdx < 0) return;
+
+    switch (weaponIdx)
+    {
+    case WEAPON_SWORD:
+    {
+        CSoundMgr::GetInstance()->Play_Once(L"Player/Player_Attack_Normal.wav",
+                                            SOUND_EFFECT,
+                                            1.f);
+    }
+    break;
+    case WEAPON_GAUNTLET:
+    {
+        CSoundMgr::GetInstance()->Play_Once(L"Player/Player_Attack_Heavy.wav",
+                                            SOUND_EFFECT,
+                                            1.f);
+    }
+    break;
+    default: break;
     }
 }
 

@@ -58,6 +58,14 @@ _int CCookingController::Update_Component(const _float& timeDelta)
         {
             // 초기 셋팅
             ReloadForMiniGame();
+
+            if (m_queRecipeInst.empty())
+            {
+                m_bStart = false;
+                m_EnterFlag = false;
+                return exit;
+            }
+
             m_StockMax = m_queRecipeInst.front().StockNum; // 첫 슬롯의 최대 수량 저장
             m_EnterFlag = true;
         }
@@ -80,14 +88,20 @@ _int CCookingController::Update_Component(const _float& timeDelta)
             miniGame->SetDoneEvent([this]() {m_bDone = true; });
             miniGame->SetResultItemDrop([this](int _dishID, FOODQUALITY _quality) {DropDish(_dishID, _quality); });
         }
+        if (m_queRecipeInst.empty())
+        {
+             m_bStart = false;
+             return exit;
+        }
+
         m_queRecipeInst.front().StockNum--;
 
-        if (m_queRecipeInst.front().StockNum == 0)
+        if (m_queRecipeInst.front().StockNum <= 0)
         {
             m_queRecipeInst.pop();
 
             if (!m_queRecipeInst.empty())
-                m_StockMax = m_queRecipeInst.front().StockNum; // 다음 슬롯의 최대 수량 저장
+                m_StockMax = m_queRecipeInst.front().StockNum; 
         }
 
         m_bStart = false;
@@ -290,10 +304,14 @@ void CCookingController::Quit()
 
     m_vecTmpRecipeID.clear(); // int 라서 그냥 클리어 해도 되는듯
 
-    if (!m_queRecipeInst.empty())
+    while (!m_queRecipeInst.empty())
     {
-        m_queRecipeInst.pop();// 이건 안에 new 한거 아니라서 따로지우지는 않고  clear 없으니까 pop을 하나하나 지워야힘
+        m_queRecipeInst.pop();
     }
+    
+    m_bStart = false;
+    m_EnterFlag = false;
+    m_bDone = false;
 }
 
 CCookingController* CCookingController::Create(DEVICE graphicDev)

@@ -1,11 +1,11 @@
 ﻿#include "pch.h"
 #include "CNPCBase.h"
 
-#include <CDInputMgr.h>
 #include "CAnimator.h"
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
 #include "CCreateHelper.h"
+#include "CDInputMgr.h"
 #include "CInteractionChecker.h"
 #include "CNPCController.h"
 #include "CPlayer.h"
@@ -15,6 +15,8 @@
 #include "CState.h"
 #include "CTexture.h"
 #include "CTransform.h"
+#include "CUI_FollowerCommand.h"
+#include "CVillageStateMgr.h"
 
 CNPCBase::CNPCBase(DEVICE graphicDev)
     : CCharacterBase(graphicDev)
@@ -55,6 +57,30 @@ void CNPCBase::Initialize_GameObject()
         m_Rigidbody->Set_UseFriction(false);
         m_Rigidbody->Set_UseGravity(false);
     }
+
+    // 초기 상태 설정 (저장된 데이터 기반)
+    SavedNpc* savedState = CVillageStateMgr::GetInstance()->Get_NPCState(Get_Name());
+
+    // 현재 씬이 CStage(마을)인지 확인
+    auto curScene = CManagement::GetInstance()->Get_Scene();
+
+    if (dynamic_cast<CStage*>(curScene))
+    {
+        if (savedState && savedState->firstSpawnAnimPlayed == false)
+        {
+            // 데이터 업데이트: 첫 등장 애니메이션 봤음 처리
+            CVillageStateMgr::GetInstance()->Save_NPC(Get_Name(), true, true);
+        }
+    }
+    else
+    {
+        // 마을이 아니라면 (전투 씬 등) -> 기본적으로 IDLE 상태로 시작 (테스트 용도)
+        if (m_NPCController)
+        {
+            if (CStateMachine* stateMachine = m_NPCController->Get_StateMachine())
+                stateMachine->Change_State(static_cast<_uint>(CNPCStateMachine::NPC_STATE::IDLE));
+        }
+    }
 }
 
 _int CNPCBase::Update_GameObject(const _float& timeDelta)
@@ -63,6 +89,32 @@ _int CNPCBase::Update_GameObject(const _float& timeDelta)
 
     m_bHovering = Is_Hovering();
 
+    if (m_bHovering == true)
+    {
+        if (CDInputMgr::GetInstance()->MouseDown(DIM_LB))
+        {
+            // 동적 바인딩: 현재 씬(CStage)에서 UI를 가져온다.
+            auto stageScene = dynamic_cast<CStage*>(CManagement::GetInstance()->Get_Scene());
+
+            if (stageScene)
+            {
+                CUI_FollowerCommand* followerCommand = stageScene->Get_FollowerCommand();
+
+                if (followerCommand)
+                {
+                    followerCommand->Set_TargetNPC(this);
+                    followerCommand->Set_IsActive(true);
+                }
+            }
+        }
+    }
+
+    // UI 닫기 로직은 UI 자체에서 처리하거나, 여기서 처리하더라도 UI 포인터가 필요함.
+    // 하지만 일단 열기 로직에 집중. 닫기는 UI가 Active 상태일 때 우클릭으로 닫는 로직이 있었는데,
+    // 이는 UI 쪽에서 처리하는 것이 더 깔끔할 수 있으나, 기존 로직 유지를 위해 유지한다면:
+    // UI 포인터를 멤버로 들고 있지 않으므로, 닫기 로직도 Scene을 통해 접근해야 함.
+    // 혹은 CStage에서 일괄 처리. 
+    // 여기서는 간단히 활성화 로직만 변경하고, 비활성화는 UI가 스스로 하거나 외부에서 처리하도록 둠.
 
     return exit;
 }
@@ -74,7 +126,6 @@ void CNPCBase::LateUpdate_GameObject(const _float& timeDelta)
 
 void CNPCBase::Render_GameObject()
 {
-
     if (m_TransformCom)
         m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
@@ -127,7 +178,18 @@ void CNPCBase::OnEndOverlap(CCollider* self, CCollider* other)
 
     if (m_bPlayerOverlap == true && ply != nullptr)
         m_bPlayerOverlap = false;
+}
 
+void CNPCBase::Set_RescuedState(_bool doRescuedState)
+{
+    if (doRescuedState)
+    {
+        if (m_NPCController)
+        {
+            if (CStateMachine* stateMachine = m_NPCController->Get_StateMachine())
+                stateMachine->Change_State(static_cast<_uint>(CNPCStateMachine::NPC_STATE::RESCUED));
+        }
+    }
 }
 
 bool CNPCBase::Is_Hovering()
@@ -180,7 +242,6 @@ bool CNPCBase::Is_Hovering()
 
     _vec3 Min = m_BoxColCom->Get_Transform()->Get_Pos() - m_BoxColCom->Get_Size() * .5f;
     _vec3 Max = m_BoxColCom->Get_Transform()->Get_Pos() + m_BoxColCom->Get_Size() * .5f;
-
 
     float timeMin = (Min.x - vRayPos.x) / vRayDir.x;
     float timeMax = (Max.x - vRayPos.x) / vRayDir.x;

@@ -358,6 +358,9 @@
     <Filter Include="05. UI\01. UI\12. UI_FollowerCommand">
       <UniqueIdentifier>{97a31b16-2edb-43dc-a742-c1e3e0c52d78}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\11. NPC\99. Class for FSM\01. State\11. Rescued">
+      <UniqueIdentifier>{89d3ba52-ea7d-4479-8975-f5a363c7f7d6}</UniqueIdentifier>
+    </Filter>
     <Filter Include="91. RunLootLog">
       <UniqueIdentifier>{9f4546c0-9cd4-470c-bfe4-7f9d5f1a3a16}</UniqueIdentifier>
     </Filter>
@@ -366,7 +369,7 @@
     </Filter>
     <Filter Include="05. UI\01. UI\14. UI_ProgressBar">
       <UniqueIdentifier>{500a6299-4aa2-4e0c-8e0d-6551a299aa09}</UniqueIdentifier>
-         </Filter>
+    </Filter>
     <Filter Include="03. GameObject\04. Boss\03.MiniBoss">
       <UniqueIdentifier>{b8e27f44-5ee8-4e47-aa08-3d9d38c59df5}</UniqueIdentifier>
     </Filter>
@@ -939,6 +942,24 @@
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CMenuExtra.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CTarotNPC.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUI_Skill.h">
+      <Filter>05. UI\01. UI\03. UIWeapon&amp;Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUI_SkillPanel.h">
+      <Filter>05. UI\01. UI\03. UIWeapon&amp;Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUI_FollowerCommand.h">
+      <Filter>05. UI\01. UI\12. UI_FollowerCommand</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CNPCState_Rescued.h">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\11. Rescued</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Client_Global.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CEligos.h">
@@ -1518,6 +1539,21 @@
     </ClCompile>
     <ClCompile Include="..\Code\CMenuExtra.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CTarotNPC.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_Skill.cpp">
+      <Filter>05. UI\01. UI\03. UIWeapon&amp;Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_SkillPanel.cpp">
+      <Filter>05. UI\01. UI\03. UIWeapon&amp;Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_FollowerCommand.cpp">
+      <Filter>05. UI\01. UI\12. UI_FollowerCommand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CNPCState_Rescued.cpp">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\11. Rescued</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CEligos.cpp">
       <Filter>03. GameObject\04. Boss\03.MiniBoss</Filter>

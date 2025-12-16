@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "CStage.h"
 
+#include "CSoundMgr.h"
 #include "CCameraController.h"
 #include "CCamSetupBuilder.h"
 #include "CChest.h"
@@ -44,24 +45,11 @@
 #include "CUITabMenu.h"
 #include "CUIWeapon.h"
 #include "CUI_Dialogue.h"
+#include "CUI_FollowerCommand.h"
+#include "CUI_Skill.h"
 #include "CVillageStateMgr.h"
 #include "CWorkBench.h"
 #include "ItemInstance.h"
-#include "CHarvestableHerb.h"
-#include "CPlayerSkill.h"
-#include "CRock.h"
-#include "CTree.h"
-#include "CTrigger_Dungeon.h"
-#include "CUIBuildMenu.h"
-#include "CUI_Dialogue.h"
-#include "CKitchen.h"
-#include "CUICookingGame.h"
-#include "CCookingController.h"
-#include "CCreateHelper.h"
-#include "CUICookingMenu.h"
-#include "CChest.h"
-#include "CUI_Skill.h"
-#include "CUI_FollowerCommand.h"
 #include "CUI_SkillPanel.h"
 #include "CPlayerConstruction.h"
 #include "CPlayerGathering.h"
@@ -77,8 +65,9 @@ CStage::CStage(DEVICE graphicDev)
       m_WorkBench(nullptr),
       m_PlayerSkillCom(nullptr),
       m_Terrain(nullptr),
-      m_Kitchen(nullptr)
-{}
+      m_CookingMenu(nullptr),
+      m_FollowerCommand(nullptr)
+{ }
 
 CStage::~CStage()
 { }
@@ -111,10 +100,31 @@ HRESULT CStage::Ready_Scene()
     };
 
     vector<SpawnInfo> spawnList = {
-        { 1001, { 5.f, 1.f, 10.f } },   // 동전
-        { 3001, { 10.f, 1.f, 10.f } },  // 검
-        { 2001, { 15.f, 1.f, 10.f } },  // 풀죽
-        { 2003, { 20.f, 1.f, 10.f } }   // 베리 그릇
+        { 1001, { 5.f, 1.f, 10.f } },       // 동전
+        { 1001, { 5.5f, 1.f, 10.f } },
+        { 1001, { 6.f, 1.f, 10.f } },
+        { 1001, { 6.5f, 1.f, 10.f } },
+        { 1001, { 7.f, 1.f, 10.f } },
+        { 1001, { 7.5f, 1.f, 10.f } },
+        { 1001, { 8.f, 1.f, 10.f } },
+        { 1001, { 8.5f, 1.f, 10.f } },
+        { 1001, { 9.f, 1.f, 10.f } },
+        { 1001, { 9.5f, 1.f, 10.f } },
+        { 1001, { 10.f, 1.f, 10.f } },
+        { 1001, { 10.5f, 1.f, 10.f } },
+        { 1001, { 11.f, 1.f, 10.f } },
+        { 1001, { 11.5f, 1.f, 10.f } },
+        { 1001, { 12.f, 1.f, 10.f } },
+        { 1001, { 12.5f, 1.f, 10.f } },
+        { 1001, { 13.f, 1.f, 10.f } },
+        { 1001, { 13.5f, 1.f, 10.f } },
+        { 1001, { 14.f, 1.f, 10.f } },
+        { 1001, { 14.5f, 1.f, 10.f } },
+        { 3001, { 20.f, 1.f, 10.f } },      // 검
+        { 2001, { 25.f, 1.f, 10.f } },      // 풀죽
+        { 2001, { 27.f, 1.f, 10.f } },
+        { 2003, { 30.f, 1.f, 10.f } },      // 베리 그릇
+        { 2003, { 32.f, 1.f, 10.f } }
     };
 
     for (const auto& info : spawnList)
@@ -163,6 +173,8 @@ void CStage::Initialize_Scene()
     // 초기 맵 불러오기 <- 이거 Initialize에서 진행해야 맵 오브젝트가 잘 불러진다.
     m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Village2.map");
 
+    CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Village.wav", 0.3f, true, 1.f);
+
     // 던전 이동 트리거 만들기
     Create_Trigger();
 }
@@ -198,29 +210,28 @@ _int CStage::Update_Scene(const _float& timeDelta)
     }
 
     // xptmxm dksdmstn
-    if(CDInputMgr::GetInstance()->KeyDown(DIK_U))
+    if (CDInputMgr::GetInstance()->KeyDown(DIK_U))
     {
-       /*CHarvestableHerb*  tmpObject = CHarvestableHerb::Create(m_GraphicDev, CHarvestableHerb::BERRY::SMALLBERRY);
-       NULL_CHECK_RETURN_MSG(tmpObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
+        /*CHarvestableHerb*  tmpObject = CHarvestableHerb::Create(m_GraphicDev, CHarvestableHerb::BERRY::SMALLBERRY);
+        NULL_CHECK_RETURN_MSG(tmpObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
+ 
+            SpawnObjectOnLayer(tmpObject, OBJTYPE::INTERACTIVE);
+ 
+         tmpObject->Get_Transform()->Set_Pos(20.f, 0.6f, 20.f);
+ 
+ 
+         RecipeInst r{ 4001 ,3,2001 };
+ 
+         CUICookingGame* cook = CUICookingGame::Create(m_GraphicDev, tmpObject, r);
+ 
+         SpawnUIOnLayer(cook, OBJTYPE::UI);
+ 
+         cook->Initialize_GameObject();*/
 
-           SpawnObjectOnLayer(tmpObject, OBJTYPE::INTERACTIVE);
-
-        tmpObject->Get_Transform()->Set_Pos(20.f, 0.6f, 20.f);
-
-
-        RecipeInst r{ 4001 ,3,2001 };
-
-        CUICookingGame* cook = CUICookingGame::Create(m_GraphicDev, tmpObject, r);
-
-        SpawnUIOnLayer(cook, OBJTYPE::UI);
-
-        cook->Initialize_GameObject();*/
-
-        CChest* tmp = CChest::Create(m_GraphicDev, { 23,2,23 });
+        CChest* tmp = CChest::Create(m_GraphicDev, { 23, 2, 23 });
         tmp->AddItem(1002, 4);
         tmp->Initialize_GameObject();
         SpawnObjectOnLayer(tmp, OBJTYPE::INTERACTIVE);
-  
     }
 
     return exit;
@@ -234,7 +245,6 @@ void CStage::LateUpdate_Scene(const _float& timeDelta)
 void CStage::Render_Scene()
 {
     CConstructionMgr::GetInstance()->Render_ConstructionMgr();
-
 }
 
 HRESULT CStage::Ready_Environment_Layer(LAYERTYPE layerType)
@@ -482,23 +492,32 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
         layer->Add_GameObject(OBJTYPE::BUILDING, workBench),
         L"Add_GameObject(CWorkBench) failed");
 
-    auto kitchen = CKitchen::Create(m_GraphicDev);
-    m_Kitchen    = kitchen;
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::BUILDING, kitchen),
-        L"Add_GameObject(CWorkBench) failed");
+    //auto kitchen = CKitchen::Create(m_GraphicDev);
+    //m_Kitchen    = kitchen;
+    //FAILED_CHECK_MSG(
+    //    layer->Add_GameObject(OBJTYPE::BUILDING, kitchen),
+    //    L"Add_GameObject(CWorkBench) failed");
 
     // -----------------------------
     // Follower
-    //-----------------------------
-    //gameObject = CFollowerCow::Create(m_GraphicDev);
-    //NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"Create NPC object has failed");
-    //FAILED_CHECK_MSG(
-    //    layer->Add_GameObject(OBJTYPE::NPC, gameObject),
-    //    L"Add NPC object on layer has failed");
-    //
-    //m_FollowerCow = dynamic_cast<CFollowerCow*>(gameObject); //UI 생성시점이 Follower 생성 시점보다 늦어서 나중에 포인터 주입하기 위해 멤버변수로 저장해둠
-    
+    // -----------------------------
+    // 저장된 NPC 상태 확인
+    //TODO 추종자 3마리로 늘리면서, 각자 함수를 만들어 그 안에서 생성되고 Init도 그 안에서 수동으로 하도록, 또한 키 R, T, Y로 수동 생성 테스트도 만들어보자
+    SavedNpc* cowState       = CVillageStateMgr::GetInstance()->Get_NPCState(L"FollowerCow");
+    _bool     shouldSpawnCow = true; // 기본값: 데이터 없으면 스폰 (테스트 편의상)
+
+    if (cowState != nullptr)
+        shouldSpawnCow = cowState->isActive;
+
+    if (shouldSpawnCow)
+    {
+        gameObject = CFollowerCow::Create(m_GraphicDev);
+        NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"Create NPC object has failed");
+        FAILED_CHECK_MSG(
+            layer->Add_GameObject(OBJTYPE::NPC, gameObject),
+            L"Add NPC object on layer has failed");
+    }
+
     // -----------------------------
     // 저장된 건물 불러오기 기능
     // -----------------------------
@@ -649,7 +668,6 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
         COMPONENTID::ID_STATIC,
         COMPONENTTYPE::COOKCTRL));
     uiBuildMenu->Set_Inventory(m_PlayerInventoryCom);
-    uiBuildMenu->Set_CookingController(cookingController);
     /*uiBuildMenu->SetCellEvent([]()
     {
         return dynamic_cast<CCookingController*>(m_WorkBench->Get_Component(COMPONENTID::ID_STATIC,COMPONENTTYPE::COOKCTRL))->CanCooK(uiBuildMenu->,m_PlayerInventoryCom)})*/
@@ -657,14 +675,18 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     CUICookingMenu* uiCookingMenu = CUICookingMenu::Create(m_GraphicDev);
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiCookingMenu),
                      L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UI_CookingMenu) failed");
-    m_Kitchen->Set_CookingMenu(uiCookingMenu);
 
+    if (uiCookingMenu)
+        m_CookingMenu = uiCookingMenu;
 
-  //  CUI_FollowerCommand* followerCommand = CUI_FollowerCommand::Create(m_GraphicDev);
-  //  FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, followerCommand),
-  //      L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUI_FollowerCommand) failed");
-  //
-  //  m_FollowerCow->Set_FollowerCommandUI(followerCommand); // 여기서 뒤늦게 포인터 주입
+    //TODO ?? 이게 필요한가?
+    CUI_FollowerCommand* followerCommand = CUI_FollowerCommand::Create(m_GraphicDev);
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, followerCommand),
+                     L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUI_FollowerCommand) failed");
+
+    if (followerCommand)
+        m_FollowerCommand = followerCommand;
+
 
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CUI_SkillPanel>(

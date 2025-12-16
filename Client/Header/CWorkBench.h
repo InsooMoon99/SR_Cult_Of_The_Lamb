@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include "CBuildingBase.h"
 
-class CCookingController;
 class CUIBuildMenu;
 class CSpriteEff;
 
@@ -40,7 +39,6 @@ private:
     void Free() override;
 
 private:
-    CCookingController* m_CookingController;
     CSpriteEff*         m_SpriteEffCom;
     CUIBuildMenu*       m_BuildMenu;
 };

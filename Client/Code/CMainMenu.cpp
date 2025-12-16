@@ -50,7 +50,7 @@ HRESULT CMainMenu::Ready_Scene()
         return E_FAIL;
 
     // 메인 화면 BGM
-    CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Intro.wav", 0.3f);
+    CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Intro.wav", 0.4f, true, 1.f);
     CRenderer::GetInstance()->SetFog(true);
 
     return S_OK;
@@ -162,7 +162,6 @@ HRESULT CMainMenu::Ready_GameLogic_Layer(LAYERTYPE layerType)
 
     Engine::CGameObject* gameObject = nullptr;
 
-    // TODO ↓ 임시로 구성한, 메인 화면 애니메이션 재생용 더미 플레이어. 나중에 수정할 것
     gameObject = CMenuChar::Create(m_GraphicDev);
     NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CMainMenu::Ready_GameLogic_Layer() failed: CMenuChar::Create() returned null")
 

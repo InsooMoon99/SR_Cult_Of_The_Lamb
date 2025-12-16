@@ -131,11 +131,13 @@ _int CUIBuildCell::Update_GameObject(const _float& timeDelta)
     if (m_CoinIcon)
         m_CoinIcon->Update_GameObject(timeDelta);
 
-    if (m_IsHovered && m_IsActive()&&
+    if (m_IsHovered &&
         (CDInputMgr::GetInstance()->Get_DIMouseState(MOUSEKEYSTATE::DIM_LB) & 0x80))
     {
+        // cout << "CUIBuildCell::Update_GameObject: Click detected!" << endl;
         if (m_OnClick)
         {
+            // cout << "CUIBuildCell::Update_GameObject: Executing OnClick" << endl;
             m_OnClick();
         }
     }

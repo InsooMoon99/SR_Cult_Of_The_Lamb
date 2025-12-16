@@ -16,7 +16,7 @@ public:
     _int    Update_GameObject(const _float& timeDelta) override;
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
-    void    Set_FollowerCommandUI(CUI_FollowerCommand* ui) { m_FollowerCommandUI = ui; }
+    
 
 
 private:
@@ -29,6 +29,5 @@ public:
 private:
     void Free() override;
 
-    CUI_FollowerCommand* m_FollowerCommandUI;
     
 };

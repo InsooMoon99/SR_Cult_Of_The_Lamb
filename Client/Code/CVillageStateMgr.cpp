@@ -65,13 +65,14 @@ SavedInteractive* CVillageStateMgr::Get_InteractiveState(const _vec3& vPos)
     return nullptr;
 }
 
-void CVillageStateMgr::Save_NPC(const wstring& wstrName, _bool bFirstSpawn)
+void CVillageStateMgr::Save_NPC(const wstring& name, const _bool canSpawn, const _bool firstSpawn)
 {
     SavedNpc npcInfo;
-    npcInfo.name = wstrName;
-    npcInfo.firstSpawnAnimPlayed = bFirstSpawn;
+    npcInfo.name = name;
+    npcInfo.isActive = canSpawn;
+    npcInfo.firstSpawnAnimPlayed = firstSpawn;
 
-    m_VillageState.savedNPCs[wstrName] = npcInfo;
+    m_VillageState.savedNPCs[name] = npcInfo;
 }
 
 SavedNpc* CVillageStateMgr::Get_NPCState(const wstring& wstrName)

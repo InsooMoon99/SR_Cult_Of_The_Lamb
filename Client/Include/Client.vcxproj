@@ -207,6 +207,7 @@
     <ClInclude Include="..\Header\CCharacterBase.h" />
     <ClInclude Include="..\Header\CChest.h" />
     <ClInclude Include="..\Header\CCookingController.h" />
+    <ClInclude Include="..\Header\Client_Global.h" />
     <ClInclude Include="..\Header\CEligos.h" />
     <ClInclude Include="..\Header\CEligos_Attack_Bullet.h" />
     <ClInclude Include="..\Header\CEligos_Attack_Melee.h" />
@@ -224,6 +225,7 @@
     <ClInclude Include="..\Header\CNPCState_Mining.h" />
     <ClInclude Include="..\Header\CNPCState_Pray.h" />
     <ClInclude Include="..\Header\CNPCState_PrayPeek.h" />
+    <ClInclude Include="..\Header\CNPCState_Rescued.h" />
     <ClInclude Include="..\Header\CNPCState_WalkPast.h" />
     <ClInclude Include="..\Header\CFog.h" />
     <ClInclude Include="..\Header\CFogMgr.h" />
@@ -428,6 +430,7 @@
     <ClCompile Include="..\Code\CNPCState_Mining.cpp" />
     <ClCompile Include="..\Code\CNPCState_Pray.cpp" />
     <ClCompile Include="..\Code\CNPCState_PrayPeek.cpp" />
+    <ClCompile Include="..\Code\CNPCState_Rescued.cpp" />
     <ClCompile Include="..\Code\CNPCState_WalkPast.cpp" />
     <ClCompile Include="..\Code\CFog.cpp" />
     <ClCompile Include="..\Code\CFogMgr.cpp" />
