@@ -1,10 +1,19 @@
 ﻿#pragma once
 #include "CScene.h"
 
+class CFog;
+class CUI_BossHp;
 class CTerrain;
+class CUI_Dialogue;
+class CCameraController;
+class CPlayerSkill;
+class CWeaponEquip;
+class CInventory;
 
 BEGIN(Engine)
-
+class CUI;
+class CCombatStat;
+class CTransform;
 END
 
 class CStage_Boss2 : public CScene
@@ -20,11 +29,21 @@ public:
     void    LateUpdate_Scene(const _float& timeDelta) override;
     void    Render_Scene() override;
 
+    HRESULT Ready_Light() override;
+
 private:
     HRESULT Ready_Environment_Layer(LAYERTYPE layerType);
     HRESULT Ready_GameLogic_Layer(LAYERTYPE layerType);
     HRESULT Ready_UI_Layer(LAYERTYPE layerType);
-    HRESULT Ready_Light() override;
+
+private:
+    void    Setup_DynamicCam();
+    void    Setup_BossCallbacks();
+
+public:
+    void    Setup_DialogueCallbacks();
+    void    OnDialogueEnd(const string& id);
+    void    OnBoss2DeadEnd();
 
 public:
     static CStage_Boss2* Create(DEVICE graphicDev);
@@ -33,8 +52,12 @@ private:
     void Free() override;
 
 private:
-    CTerrain*       m_Terrain;
-    CGameObject*    m_Boss;
+    CTerrain*               m_Terrain;
+    CGameObject*            m_Boss;
+
+    CGameObject*            m_Player;
+    CCameraController*      m_CamController;
+    CTransform*             m_PlayerTransformCom;
 
     // Point Light 설정
     _vec3   m_LightPos = { 48.f, 15.f, 40.5f };
@@ -45,5 +68,8 @@ private:
     _float  m_Attenuation0 = 0.f;
     _float  m_Attenuation1 = 0.01f;
     _float  m_Attenuation2 = 0.f;
+
+private:
+    CUI_Dialogue*       m_Dialogue = nullptr;
 
 };

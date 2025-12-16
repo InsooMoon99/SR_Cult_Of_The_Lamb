@@ -100,6 +100,7 @@ enum class OBJTYPE
     INTERACTIVE,
     BUILDING,           // 오브젝트 : 건물
     CONSTRUCTION_SITE,  // 오브젝트 : 건축 부지
+    EXTRA,
 
     ATTACK_COL,
     PARTICLE,
@@ -193,6 +194,8 @@ enum class COMPONENTTYPE
     TEX_MAINMENU,
     TEX_UI_SKILL,
     TEX_UI_COMMAND,
+    TEX_MINIBOSS,
+    TEX_FLY,
 
     ANIMATOR,
 
@@ -223,6 +226,7 @@ enum class COMPONENTTYPE
     EYEBALL_CONTROLLER,
     TEX_WARNING_CHAIN,
     TEX_CHAIN,
+    TEX_BOSS2_FOLLOWER,
 
     TEX_FOG,
 

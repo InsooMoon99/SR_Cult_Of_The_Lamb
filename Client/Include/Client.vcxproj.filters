@@ -358,6 +358,12 @@
     <Filter Include="03. GameObject\11. NPC\99. Class for FSM\01. State\11. Rescued">
       <UniqueIdentifier>{89d3ba52-ea7d-4479-8975-f5a363c7f7d6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\04. Boss\03.MiniBoss">
+      <UniqueIdentifier>{b8e27f44-5ee8-4e47-aa08-3d9d38c59df5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\04. Boss\03.MiniBoss\00.State">
+      <UniqueIdentifier>{976fd86d-08ad-4220-bb29-ae776502cc0d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -893,6 +899,18 @@
     <ClInclude Include="..\Header\CChest.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CBoss2_BulletAttack1.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBoss2_BulletAttack2.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBoss2_Groggy.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEyeball_CenterAttack.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
+    </ClInclude>
     <ClInclude Include="..\Header\CMenuExtra.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -913,6 +931,39 @@
     </ClInclude>
     <ClInclude Include="..\Header\Client_Global.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEligos.h">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEligos_StateMachine.h">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEligos_Attack_Bullet.h">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEligos_Attack_Fly.h">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEligos_Attack_Melee.h">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEligos_Dead.h">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEligos_Idle.h">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEligos_Move.h">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEligos_Reveal.h">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEligos_Flies.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBoss2_Follower.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1411,6 +1462,18 @@
     <ClCompile Include="..\Code\CChest.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="..\Code\CBoss2_BulletAttack1.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoss2_BulletAttack2.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoss2_Groggy.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEyeball_CenterAttack.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\01. Eyeball</Filter>
+    </ClCompile>
     <ClCompile Include="..\Code\CMenuExtra.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -1428,6 +1491,39 @@
     </ClCompile>
     <ClCompile Include="..\Code\CNPCState_Rescued.cpp">
       <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\11. Rescued</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEligos.cpp">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEligos_StateMachine.cpp">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEligos_Attack_Bullet.cpp">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEligos_Attack_Melee.cpp">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEligos_Dead.cpp">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEligos_Idle.cpp">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEligos_Move.cpp">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEligos_Reveal.cpp">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEligos_Attack_Fly.cpp">
+      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEligos_Flies.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoss2_Follower.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

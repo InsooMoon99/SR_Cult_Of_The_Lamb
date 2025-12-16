@@ -2,6 +2,7 @@
 #include "CEyeball_StateMachine.h"
 #include "CEyeball.h"
 #include "CEyeball_Attack.h"
+#include "CEyeball_CenterAttack.h"
 #include "CEyeball_Die.h"
 #include "CEyeball_Enter.h"
 #include "CEyeball_Exit.h"
@@ -10,6 +11,7 @@
 #include "CEyeball_Start.h"
 #include "CEyeball_StartExit.h"
 #include "CMonsterState.h"
+#include "CEyeball_Ground_Move.h"
 
 CEyeball_StateMachine::CEyeball_StateMachine(CMonsterBase* owner)
     : m_Owner(owner)
@@ -56,12 +58,20 @@ HRESULT CEyeball_StateMachine::Ready_StateMachine()
         //if (FAILED(RegisterState<CEyeball>(CEyeball::PATTERN::EYEBALL_MOVE, m_Owner)))
         //    return E_FAIL;
 
-        // Ground
+        // Start Ground
         if (FAILED(RegisterState<CEyeball_StartGround>(CEyeball::PATTERN::EYEBALL_START_GROUND, m_Owner)))
+            return E_FAIL;
+
+        // Ground Move -> 땅속에서 랜덤으로 움직이게.
+        if (FAILED(RegisterState<CEyeball_Ground_Move>(CEyeball::PATTERN::EYEBALL_GROUND_MOVE, m_Owner)))
             return E_FAIL;
 
         // Attack
         if (FAILED(RegisterState<CEyeball_Attack>(CEyeball::PATTERN::EYEBALL_ATTACK, m_Owner)))
+            return E_FAIL;
+
+        // Center Attack
+        if (FAILED(RegisterState<CEyeball_CenterAttack>(CEyeball::PATTERN::EYEBALL_CENTER_ATTACK, m_Owner)))
             return E_FAIL;
 
         // Dead

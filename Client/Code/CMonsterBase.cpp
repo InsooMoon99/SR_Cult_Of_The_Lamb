@@ -1,6 +1,9 @@
 ﻿#include "pch.h"
 #include "CMonsterBase.h"
 
+#include <CScene.h>
+
+#include "CManagement.h"
 #include "CAnimator.h"
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
@@ -232,6 +235,16 @@ void CMonsterBase::AlphaRenderEnd()
     m_GraphicDev->SetRenderState(
         D3DRS_TEXTUREFACTOR,
         D3DCOLOR_ARGB(255, 255, 255, 255)); // 알파 1.0, 색 그대로
+}
+
+void CMonsterBase::Trigger_OnDeath()
+{
+    if (m_OnDeath)
+        m_OnDeath();
+
+    auto scene = CManagement::GetInstance()->Get_Scene();
+    if (scene)
+        scene->OnMonsterDeath(this);
 }
 
 void CMonsterBase::Free()

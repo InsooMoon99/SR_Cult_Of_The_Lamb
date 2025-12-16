@@ -82,9 +82,12 @@ HRESULT CStage::Ready_Scene()
     if (FAILED(Ready_Light()))
         return E_FAIL;
 
-    // 안은수 test
-    // 이젠 테스트 끝내야죠
+    // 이건 드롭 시스템 쓸려면 각 씬 마다 셋팅 해야함
     CDropSystem::GetInstance()->SetCurrentScene(this);
+
+
+    // 안은수 test
+    // 이젠 테스트 끝내야죠 
 
     struct SpawnInfo
     {
@@ -307,37 +310,7 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     NULL_CHECK_RETURN(m_PlayerCombatStatCom, E_FAIL);
 
     m_PlayerSkillCom = dynamic_cast<CPlayerSkill*>(gameObject->Get_Component(ID_STATIC, COMPONENTTYPE::PL_SKILL));
-
     NULL_CHECK_RETURN(m_PlayerSkillCom, E_FAIL);
-
-    // -----------------------------
-    // Monster
-    // -----------------------------
-
-    //// HumanMonster
-    //gameObject = CHumanMonster::Create(m_GraphicDev);
-    //NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CHumanMonster::Create() returned null")
-    //
-    //FAILED_CHECK_MSG(
-    //    layer->Add_GameObject(OBJTYPE::HUMANMONSTER, gameObject),
-    //    L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
-    //
-    //gameObject = CFloaterMonster::Create(m_GraphicDev);
-    //NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CHumanMonster::Create() returned null")
-    //
-    //FAILED_CHECK_MSG(
-    //    layer->Add_GameObject(OBJTYPE::HUMANMONSTER, gameObject),
-    //    L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");
-
-    // -----------------------------
-    // Boss
-    // -----------------------------
-    /*gameObject = CBossPhase1::Create(m_GraphicDev);
-    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase1::Create() returned null")
-    
-        FAILED_CHECK_MSG(
-            layer->Add_GameObject(OBJTYPE::BOSS1, gameObject),
-            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(HUMANMONSTER) failed");*/
 
     // -----------------------------
     // Camera
@@ -515,6 +488,7 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     // Follower
     // -----------------------------
     // 저장된 NPC 상태 확인
+    //TODO 추종자 3마리로 늘리면서, 각자 함수를 만들어 그 안에서 생성되고 Init도 그 안에서 수동으로 하도록, 또한 키 R, T, Y로 수동 생성 테스트도 만들어보자
     SavedNpc* cowState       = CVillageStateMgr::GetInstance()->Get_NPCState(L"FollowerCow");
     _bool     shouldSpawnCow = true; // 기본값: 데이터 없으면 스폰 (테스트 편의상)
 

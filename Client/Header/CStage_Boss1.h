@@ -35,7 +35,6 @@ public:
 public:
     using   OnTriggerCallback = function<void()>;
     void    Create_Trigger(_vec3 pos, _vec3 size, OnTriggerCallback callback, _bool autoDestroy = true);;
-    void    Update_Fog();
 
 private:
     HRESULT Ready_Environment_Layer(LAYERTYPE layerType);
@@ -53,8 +52,6 @@ private:
 
     void    Setup_UIAnimation(_float offsetY);
     void    OnRefusedEnd();
-
-    void    End_CutScene();
 
     // 대화 끝났을 때 호출
     void    On_BossStartEnd();

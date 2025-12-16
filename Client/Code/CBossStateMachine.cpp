@@ -29,7 +29,7 @@ HRESULT CBossStateMachine::Ready_StateMachine()
     m_CurState = m_vecState[CBossPhase1::BOSSPHASE1::TALK];
 
     m_CurState->Enter();
-
+    
     return S_OK;
 }
 

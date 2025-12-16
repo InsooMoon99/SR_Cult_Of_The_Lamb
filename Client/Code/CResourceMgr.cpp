@@ -69,6 +69,7 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
     if (FAILED(Ready_Building(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Follower(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Particle(graphicDev))) return E_FAIL;
+    if (FAILED(Ready_MiniBoss(graphicDev))) return E_FAIL;
 
     return S_OK;
 }
@@ -518,7 +519,16 @@ HRESULT CResourceMgr::Ready_Monster(DEVICE graphicDev)
         COMPONENTTYPE::TEX_CHEST, chest)))
         return E_FAIL;
 
+    // 춘식이
+    CTexture* slaveTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(slaveTex, E_FAIL);
 
+    if (FAILED(slaveTex->Add_Texture(L"Boss_Slave_Appear", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Slave/ChunSik/Follower-finab-loss-appear%d.png", 42)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_SLAVE_TEST, slaveTex)))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -601,24 +611,18 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
         CBossController::Create(graphicDev))))
         return E_FAIL;
 
-    // 춘식이
-    CTexture* slaveTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
-    NULL_CHECK_RETURN(slaveTex, E_FAIL);
-
-    if (FAILED(slaveTex->Add_Texture(L"Boss_Slave_Appear", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase2/Slave/ChunSik/Follower-finab-loss-appear%d.png", 42)))
-        return E_FAIL;
-
-    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_SLAVE_TEST, slaveTex)))
-        return E_FAIL;
-
     // Boss Phase 2
     CTexture* bossPhase2 = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(bossPhase2, E_FAIL);
 
+    // Summon Follower
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Summon", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Summon/TOWW_Summon%d.png", 134)))
+        return E_FAIL;
+
     // Start
     if (FAILED(bossPhase2->Add_Texture(L"Boss2_Start", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Start_Eye/TOWW_Start_Eye%d.png", 68)))
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Start_Eye/TOWW_Start_Eye%d.png", 85)))
         return E_FAIL;
 
     // Idle
@@ -646,9 +650,33 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
         L"../Bin/Resource/Texture/BossPhase1/ChainAttackGround.png", 1)))
         return E_FAIL;
 
+    // Sweep
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Sweep", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Sweep/TOWW_Sweep%d.png", 82)))
+        return E_FAIL;
+
     // Chain
     if (FAILED(bossPhase2->Add_Texture(L"Boss2_Chain", TEX_NORMAL,
         L"../Bin/Resource/Texture/BossPhase1/ChainAttack/Summon_Chain%d.png", 34)))
+        return E_FAIL;
+
+    // Down Start
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_DownStart", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_DownStart/TOWW_DownStart%d.png", 64)))
+        return E_FAIL;
+
+    // Down Idle
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_DownIdle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_DownIdle/TOWW_DownIdle%d.png", 67)))
+        return E_FAIL;
+
+    // Follower
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Follower_Transform", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Slave/DeathCat/Transform/Boss_Transform%d.png", 62)))
+        return E_FAIL;
+
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Follower_UnConverted", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Slave/DeathCat/UnConverted/UnConverted%d.png", 50)))
         return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_BOSS2_PHASE2, bossPhase2)))
@@ -811,13 +839,24 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
         return E_FAIL;
 
     //// Texture : MainMenu BackGround
-    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_MAINBG,
-        Engine::CTexture::Create(
-            graphicDev,
-            TEX_NORMAL,
-            L"../Bin/Resource/Texture/BackGround/MainMenu/MenuMask1.png",
-            1))))
+
+        //UIButton 텍스쳐
+    vector<wstring> BG;
+    BG.push_back(L"../Bin/Resource/Texture/BackGround/MainMenu/MenuMask1.png");
+    BG.push_back(L"../Bin/Resource/Texture/MainMenu/RitualStone_Activated.png");
+  
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_MAINBG, Engine::CTexture::Create(graphicDev, TEX_NORMAL, BG))))
         return E_FAIL;
+
+
+    //if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_MAINBG,
+    //    Engine::CTexture::Create(
+    //        graphicDev,
+    //        TEX_NORMAL,
+    //        L"../Bin/Resource/Texture/BackGround/MainMenu/MenuMask1.png",
+    //        1))))
+    //    return E_FAIL;
 
     // Texture : Inventory BackGround
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_INVEN,
@@ -933,14 +972,26 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
         return E_FAIL;
 
     // Texture : MainMenu Extra
-    // UI_Cooking
+    //
     vector<wstring> extra;
-    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideFront0.png");
-    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_0.png");
-    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Back_0.png");
     extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Front_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideFront0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideFront0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Side_0.png");
     extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Side_0.png");
     extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideBack_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideBack_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Back_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Back_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideBack_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideBack_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Side_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Side_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideFront0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideFront0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Front_0.png");
+
+    //extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_0.png");
 
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_MAINMENU, CTexture::Create(graphicDev, TEX_NORMAL, extra))))
@@ -1387,6 +1438,66 @@ HRESULT CResourceMgr::Ready_Follower(DEVICE graphicDev)
 
     return S_OK;
 }
+
+HRESULT CResourceMgr::Ready_MiniBoss(DEVICE graphicDev)
+{
+    auto protoMgr = CProtoMgr::GetInstance();
+
+    CTexture* MiniBossTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(MiniBossTex, E_FAIL);
+
+
+    if (FAILED(MiniBossTex->Add_Texture(L"Eligos_roar", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Eligos_roar/Eligos_roar%d.png", 140)))
+        return E_FAIL;
+
+    if (FAILED(MiniBossTex->Add_Texture(L"Eligos_fly", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Eligos_fly/Eligos_fly%d.png", 42)))
+        return E_FAIL;
+
+    if (FAILED(MiniBossTex->Add_Texture(L"Eligos_burpcharge", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Eligos_burpcharge/Eligos_burpcharge%d.png", 50)))
+        return E_FAIL;
+
+    if (FAILED(MiniBossTex->Add_Texture(L"Eligos_burp", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Eligos_burp/Eligos_burp%d.png", 42)))
+        return E_FAIL;
+
+    if (FAILED(MiniBossTex->Add_Texture(L"Eligos_attackcharge", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Eligos_attackcharge/Eligos_attackcharge%d.png", 59)))
+        return E_FAIL;
+
+    if (FAILED(MiniBossTex->Add_Texture(L"Eligos_attack", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Eligos_attack/Eligos_attack%d.png", 32)))
+        return E_FAIL;
+
+    if (FAILED(MiniBossTex->Add_Texture(L"Eligos_attackcharge_bullet", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Eligos_attackcharge/Eligos_attackcharge%d.png", 59)))
+        return E_FAIL;
+
+    if (FAILED(MiniBossTex->Add_Texture(L"Eligos_attack_bullet", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Eligos_attack/Eligos_attack%d.png", 32)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_MINIBOSS, MiniBossTex)))
+        return E_FAIL;
+
+
+
+    CTexture* flyTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(flyTex, E_FAIL);
+
+    if (FAILED(flyTex->Add_Texture(L"Mortar_fly", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Mortar_fly/Mortar_fly%d.png", 27)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_FLY, flyTex)))
+        return E_FAIL;
+
+
+    return S_OK;
+}
+
 
 void CResourceMgr::Free()
 { }

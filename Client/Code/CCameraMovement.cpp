@@ -128,6 +128,9 @@ _bool CCameraMovement::Update_TargetMode(const _float& timeDelta)
     NULL_CHECK_RETURN(m_TransformCom, false);
     NULL_CHECK_RETURN(m_TargetTransformCom, false);
 
+
+    Update_Ease(timeDelta);
+
     Update_DynamicTargetMode(timeDelta);
 
     // 피벗 위치 계산
@@ -249,14 +252,26 @@ void CCameraMovement::Free()
     CComponent::Free();
 }
 
+void CCameraMovement::Set_OnTransitionEnd(OnTransitionEnd callback)
+{
+    m_OnTransitionEnd = callback;
+    m_IsInTransition = true;
+}
+
 _bool CCameraMovement::Check_TransitionComplete(_float threshold)
 {
     if (!m_IsInTransition || !m_OnTransitionEnd)
         return false;
 
+    // 거리 체크
     _float distDiff = abs(m_CurrentDistance - m_CamPreset.dist);
 
-    if (distDiff < threshold && m_OnTransitionEnd)
+    // 위치 체크
+    _vec3 targetPos = m_TargetTransformCom->Get_Pos() + m_CamPreset.pivotOffset;
+    _vec3 posDiffVec = m_CurrentPivotPos - targetPos;
+    _float posDiff = D3DXVec3Length(&posDiffVec);
+
+    if (distDiff < threshold && posDiff < threshold && m_OnTransitionEnd)
     {
         auto callback = m_OnTransitionEnd;
 
@@ -304,4 +319,51 @@ void CCameraMovement::Disable_DynamicDistance()
 {
     m_UseDynamicDistance    = false;
     m_SecondTargetTransform = nullptr;
+}
+
+void CCameraMovement::Ease_ToPreset(CameraPreset& camTargetPreset, float duration, function<float(float)> ease)
+{
+    m_UsePresetEase = true;
+    m_EaseTime = 0;
+    m_EaseDuration = duration;
+
+    m_EaseStartPreset= m_CamPreset;
+    m_EaseEndPreset= camTargetPreset;
+
+    m_easeFunc = ease;
+
+    Start_Transition();
+}
+void CCameraMovement::Update_Ease(const _float& timeDelta)
+{
+    if (!m_UsePresetEase)
+        return;
+
+    m_EaseTime += timeDelta;
+
+    float radio = m_EaseTime / m_EaseDuration;
+
+    radio = clamp(radio, 0.f, 1.f);
+    float result =0 ;
+    if (m_easeFunc)
+        result = m_easeFunc(radio);
+
+    m_CamPreset.pivotOffset = Lerp(m_EaseStartPreset.pivotOffset, m_EaseEndPreset.pivotOffset, result);
+
+    m_CamPreset.dist = Lerp(m_EaseStartPreset.dist, m_EaseEndPreset.dist, result);
+
+    m_CamPreset.pitch = Lerp(m_EaseStartPreset.pitch, m_EaseEndPreset.pitch, result);
+
+    m_CamPreset.yaw = Lerp(m_EaseStartPreset.yaw, m_EaseEndPreset.yaw, result);
+
+    m_CamPreset.pivotOffset = Lerp(m_EaseStartPreset.pivotOffset, m_EaseEndPreset.pivotOffset, result);
+
+    if (radio >= 1.f)
+    {
+        m_UsePresetEase = false;
+        m_CamPreset = m_EaseEndPreset;
+
+        if (m_OnTransitionEnd)
+            m_OnTransitionEnd();
+    }
 }

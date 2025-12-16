@@ -11,7 +11,7 @@
 #include "CTransform.h"
 #include "CTransform.h"
 
-CMenuChar::CMenuChar(DEVICE graphicDev)
+CMenuChar::CMenuChar(DEVICE graphicDev) 
     : CGameObject(graphicDev),
       m_BufferCom(nullptr),
       m_TransformCom(nullptr),
@@ -39,12 +39,15 @@ HRESULT CMenuChar::Ready_GameObject()
 
     Animation_Setting();
 
-    m_TransformCom->Set_Pos({ 0, 0, 1 });
-    m_TransformCom->Set_Scale(1.6f, 2.f, 2.f);
+    m_TransformCom->Set_Pos({ 0.f, 1.1f, 1.f });
+    m_TransformCom->Set_Scale(2.1f, 2.5f, 2.5f);
 
     wstring key = L"MenuChar";
     if (false == SetTexAspectInit(m_TextureCom, m_TransformCom, 1, &key))
         return E_FAIL;
+
+
+
 
     return S_OK;
 }
@@ -53,6 +56,18 @@ _int CMenuChar::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CGameObject::Update_GameObject(timeDelta);
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
+
+    if (m_TransformComPattern)
+    {
+        m_TransformComPattern->Update_Component(timeDelta);
+    }
+
+    _vec3 mainPos = m_TransformCom->Get_Pos();
+    _vec3 mainSize = m_TransformCom->Get_Scale();
+    m_TransformComPattern->Set_Pos({ mainPos.x,mainPos.y -mainSize.y, mainPos.z+0.2f });
+    m_TransformComPattern->Set_Scale(2.5f, 2.5f, 2.5f);
+    m_TransformComPattern->Set_Rotation({ D3DXToRadian(90),0.f,0.f });
+
 
     return exit;
 }
@@ -77,6 +92,15 @@ void CMenuChar::Render_GameObject()
     }
 
     m_BufferCom->Render_Buffer();
+    //
+
+    m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformComPattern->Get_World());
+
+    m_TextureComPattern->Set_Texture(1);
+
+
+    m_BufferComPattern->Render_Buffer();
+
 
     Render_Reset();
 }
@@ -121,6 +145,23 @@ HRESULT CMenuChar::Add_Component()
     NULL_CHECK_RETURN(m_StateCom, E_FAIL);
 
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::STATE, m_StateCom });
+
+
+    // 바닥용 레이어에 안넣고 자신이 세이프릴리즈 할거임
+    //buffer
+    m_BufferComPattern = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
+    NULL_CHECK_RETURN(m_BufferComPattern, E_FAIL);
+   // m_Components[ID_STATIC].insert({ COMPONENTTYPE::RC_TEX, m_BufferComPattern });
+
+    //transform
+    m_TransformComPattern = CreateProtoComponent<CTransform>(this, COMPONENTTYPE::TRANSFORM);
+    NULL_CHECK_RETURN(m_TransformComPattern, E_FAIL);
+   // m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformComPattern });
+
+    m_TextureComPattern = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_MAINBG);
+    NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
+    //m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_MENU_CHAR, m_TextureCom });
+
 
     return S_OK;
 }
@@ -168,5 +209,8 @@ CMenuChar* CMenuChar::Create(DEVICE graphicDev)
 
 void CMenuChar::Free()
 {
+    Safe_Release(m_BufferComPattern);
+    Safe_Release(m_TextureComPattern);
+    Safe_Release(m_TransformComPattern);
     CGameObject::Free();
 }

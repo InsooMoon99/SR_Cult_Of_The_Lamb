@@ -43,6 +43,11 @@ private:
     CAnimator*  m_AnimatorCom;
     CState*     m_StateCom;
 
+    //바닥 문양용
+    CRcTex* m_BufferComPattern;
+    CTexture* m_TextureComPattern;
+    CTransform* m_TransformComPattern;
+
 public:
     static CMenuChar* Create(DEVICE graphicDev);
 

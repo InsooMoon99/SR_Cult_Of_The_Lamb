@@ -54,6 +54,14 @@ public:
     virtual void    AlphaRenderEnd();
     void            Set_Hurt(bool hurt) { m_bHurt = hurt; }
 
+public:
+    using   OnDeathCallback = function<void()>;
+    void    Set_OnDeath(OnDeathCallback callback) { m_OnDeath = callback; }
+    void    Trigger_OnDeath();
+
+private:
+    OnDeathCallback m_OnDeath = nullptr;
+
 protected:
     void            Free() override;
 
@@ -73,7 +81,7 @@ protected:
     _float          m_AttackTimer;       // 현재 공격 타이머
     _bool           m_CanAttack;         // Timer >= Cooldown 공격이 가능한지 ?
 
-private:
+protected:
     bool    m_bHurt = false;
     float   HurtTime = 0;
     float   flashTime = 0.1f;

@@ -595,7 +595,9 @@ HRESULT CMapObjectMgr::Save_ToStream(ofstream& ofs)
                 {
                     data.pos = objTransform->Get_Pos();
                     data.scale = objTransform->Get_Scale();        
-                    data.rotation = objTransform->Get_Euler();  
+                    data.rotation = objTransform->Get_Euler();
+                    data.rotation.x = -data.rotation.x;
+                    data.rotation.z = -data.rotation.z;
 
                     objects.push_back(data);
                 }

@@ -32,6 +32,11 @@ public:
 
     CTransform* Get_Transform() { return m_TransformCom; }
 
+    // 색상 조절
+    void    Set_Color(const COLOR& color) { m_Color = color; }
+    void    Set_Color(_float r, _float g, _float b) { m_Color = COLOR(r, g, b, 1.f); }
+    COLOR   Get_Color() const { return m_Color; }
+
 private:
     HRESULT Add_Component() override;
     void    Render_Setting() override;
@@ -48,6 +53,8 @@ private:
     _float      m_Time = 0.f;                             
     _float      m_SwaySpeed = 0.5f;                       // 자연스럽게 흔들릴 속도
     _float      m_SwayAmount = 2.f;                       // 흔들리는 폭
-    _float      m_Alpha = 0.5f;                           
+    _float      m_Alpha = 0.5f;
+
+    COLOR       m_Color = COLOR(1.f, 1.f, 1.f, 1.f);
 };
 

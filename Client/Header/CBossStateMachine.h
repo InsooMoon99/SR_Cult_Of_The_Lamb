@@ -21,7 +21,6 @@ public:
     _int GetCurStateNum();
 
     CBaseState* Get_CurState() { return m_CurState; }
-    //CBaseState* Get_PrevState() { return  m_pPrevState; }
     _uint Get_PrevStateKey() { return  m_PrevStateKey; }
 
     CMonsterState* Get_State(_uint stateKey);
