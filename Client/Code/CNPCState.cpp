@@ -42,7 +42,9 @@ _int CNPCState::Update_State(const _float& timeDelta)
 }
 
 void CNPCState::Exit()
-{ }
+{
+    m_CurStateElapsedTime = 0.f;
+}
 
 void CNPCState::Find_Player()
 {

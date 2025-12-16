@@ -34,6 +34,9 @@ HRESULT CNPCBase::Ready_GameObject()
     if (FAILED(CCharacterBase::Ready_GameObject()))
         return E_FAIL;
 
+     if (m_BoxColCom)
+        m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::NPC);
+
     return S_OK;
 }
 

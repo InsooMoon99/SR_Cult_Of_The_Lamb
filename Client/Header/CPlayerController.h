@@ -66,13 +66,15 @@ private:
     void Action_SingleSkill(const _float& timeDelta);
     void Action_TripleSkill(const _float& timeDelta);
     void Action_Construction(const _float& timeDelta);
-    void Action_Hit(const _float& timeDetla);
+    void Action_Hit(const _float& timeDelta);
 
-    void Action_Decide(const _float& timeDetla);
-    void Action_Refuse(const _float& timeDetla);
+    void Action_Decide(const _float& timeDelta);
+    void Action_Refuse(const _float& timeDelta);
 
     // --- [기타 기능 함수] ---
-    _bool Living_Interaction(); // 채집, 건축 등의 상황, CheckStateTransition 내에서 사용
+    void Check_Gathering();
+    void Check_Construction();
+    // _bool Living_Interaction(); // Deprecated
 
 private:
 #pragma region Caching owner components

@@ -159,6 +159,9 @@ _int CUIBuildMenu::Update_GameObject(const _float& timeDelta)
         {
             pos.x         = targetX;
             m_IsAnimating = false;
+
+            if (!m_IsOpen)
+                m_Active = false;
         }
         m_TransformCom->Set_Pos(pos);
     }
