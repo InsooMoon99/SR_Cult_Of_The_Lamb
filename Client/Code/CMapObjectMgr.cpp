@@ -223,7 +223,7 @@ void CMapObjectMgr::Render_RubbleWindow()
         if (rubbleTexture)
         {
 
-            const _int TOTAL_RUBBLE = 92;
+            const _int TOTAL_RUBBLE = 94;
             const _int COLS = 4;
             const ImVec2 buttonSize(50.f, 50.f);
 
