@@ -13,6 +13,7 @@
 #include "CUIIcon.h"
 #include "ItemData.h"
 
+
 CUIInventoryCell::CUIInventoryCell(DEVICE pGraphicDev)
     : CUI(pGraphicDev),
       m_ItemIcon(nullptr),
@@ -79,12 +80,6 @@ HRESULT CUIInventoryCell::Ready_GameObject()
 
 _int CUIInventoryCell::Update_GameObject(const _float& timeDelta)
 {
-    // 외곽선 잘 바뀌는지 test
-    if (m_IsHovered)
-        m_IsHovered = false;
-
-    if (CDInputMgr::GetInstance()->Get_DIKeyState(DIK_4) & 0x80)
-        m_IsHovered = true;
 
     if (m_ItemIcon)
         m_ItemIcon->Update_GameObject(timeDelta);
@@ -159,6 +154,8 @@ void CUIInventoryCell::Render_GameObject()
     //셀 선택시 외곽선 그리기
     if (m_IsHovered)
     {
+    
+
         m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
         m_HighlightTexCom->Set_Texture(1);
 

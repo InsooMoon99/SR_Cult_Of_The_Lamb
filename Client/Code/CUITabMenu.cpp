@@ -10,7 +10,7 @@
 #include "CTransform.h"
 #include "CRenderer.h"
 #include "CUIPlayerPage.h"
-
+#include "CSoundMgr.h"
 CUITabMenu::CUITabMenu(DEVICE graphicDev)
     : CUI(graphicDev),
       m_Current(UITabCategory::INVENTORY),
@@ -95,8 +95,8 @@ HRESULT CUITabMenu::Ready_GameObject()
     m_PlayerBtn->SetCloneTexAspectScale({ 0.16f, 0.16f, 0.f });
     m_GyodanBtn->SetCloneTexAspectScale({ 0.16f, 0.16f, 0.f });
     m_QuestBtn->SetCloneTexAspectScale({ 0.16f, 0.16f, 0.f });
-    m_InvenBtn->SetOnClick([this]() {ChangePage(UITabCategory::INVENTORY); });
-    m_PlayerBtn->SetOnClick([this]() { ChangePage(UITabCategory::PLAYER); });
+    m_InvenBtn->SetOnClick([this]() {ChangePage(UITabCategory::INVENTORY); CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Open_Menu",SOUNDTYPE::SOUND_UI,1.f); });
+    m_PlayerBtn->SetOnClick([this]() { ChangePage(UITabCategory::PLAYER); CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Open_Menu", SOUNDTYPE::SOUND_UI, 1.f); });
 
     return S_OK;
 } 

@@ -86,6 +86,8 @@ protected:
     CAnimator* m_AnimatorCom;
     CSpriteEff* m_SpriteEffCom;
 
+    _bool   m_FadeOut = false;
+    _float   m_FadeSpeed = 1.5f;
     _float m_Alpha = 0.8f;
 };
 

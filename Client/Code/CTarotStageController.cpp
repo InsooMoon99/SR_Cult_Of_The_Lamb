@@ -9,6 +9,7 @@
 #include "CPlayerSkill.h"
 #include "CScene.h"
 #include "CLayer.h"
+#include "CSoundMgr.h"
 
 class CPlayerSkill;
 
@@ -86,6 +87,14 @@ _int CTarotStageController::Update_GameObject(const _float& timeDelta)
 
         break;
     case STAGESTATE::CARD:
+        if (!m_SoundEnded)
+        {
+            CSoundMgr::GetInstance()->Play_Once(L"UI/UI_TarotCardPull.wav",
+                SOUND_EFFECT,
+                0.3f);
+
+            m_SoundEnded = true;
+        }
         m_ExplainCard1->Update_GameObject(timeDelta);
         m_ExplainCard2->Update_GameObject(timeDelta);
         m_TarotCard1->Update_GameObject(timeDelta);
@@ -102,6 +111,7 @@ _int CTarotStageController::Update_GameObject(const _float& timeDelta)
             m_TarotCard2->Set_IsFinished(false);
             m_ExplainCard1->Set_Slide(true);
             m_ExplainCard2->Set_Slide(true);
+            m_SoundEnded = false;
 
             
 
@@ -110,6 +120,13 @@ _int CTarotStageController::Update_GameObject(const _float& timeDelta)
 
         if (m_TarotCard1->Get_Selected() || m_TarotCard2->Get_Selected())
         {
+            if (!m_SoundEnded)
+            {
+                CSoundMgr::GetInstance()->Play_Once(L"UI_Tarot_Close.wav",
+                    SOUND_EFFECT,
+                    1.f);
+                m_SoundEnded = false;
+            }
             m_TarotCard1->Set_CurrentState(TAROTSTATE::RESULT);
             m_TarotCard1->Set_PrevState(TAROTSTATE::CHOICE);
             m_TarotCard2->Set_CurrentState(TAROTSTATE::RESULT);

@@ -11,6 +11,7 @@
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CUICookingMenu.h"
+#include "CSoundMgr.h"
 
 CKitchen::CKitchen(DEVICE graphicDev)
     : CBuildingBase(graphicDev),
@@ -58,6 +59,10 @@ _int CKitchen::Update_GameObject(const _float& timeDelta)
         {
             if (m_CookingCtrlCom && m_CookingCtrlCom->IsCooking())
                 return exit;
+
+			CSoundMgr::GetInstance()->Play_Once(L"UI_Open_Menu.wav",
+				SOUND_EFFECT,
+				1.f);
 
             m_CookingMenu->Set_IsActive(true);
             m_CookingMenu->Set_CookingController(m_CookingCtrlCom);

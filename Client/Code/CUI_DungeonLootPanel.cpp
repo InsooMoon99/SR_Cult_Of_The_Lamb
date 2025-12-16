@@ -11,6 +11,7 @@
 #include "CRenderer.h"
 #include "CStage_Dungeon.h"
 #include "CSpriteEff.h"
+#include "CSoundMgr.h"
 
 class CSpriteEff;
 class CStage_Dungeon;
@@ -107,6 +108,13 @@ _int CUI_DungeonLootPanel::Update_GameObject(const _float& timeDelta)
 
     if(dungeonStage->IsCleared()&&!m_Active)
     {
+        if (!m_BGMStarted)
+        {
+            CSoundMgr::GetInstance()->Play_BGM(L"UI/UI_DungeonClear.wav",
+                SOUND_EFFECT,
+                0.2f);
+            m_BGMStarted = false;
+        }
         m_Active = true;
         m_Alpha = 0.f;
     }

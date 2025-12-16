@@ -45,6 +45,9 @@ HRESULT CTarotNPC::Ready_GameObject()
     m_TransformCom->Set_Pos(181.f, 2.f, 30.5f);
     m_TransformCom->Set_Scale(3.f, 3.f, 3.f);
     m_BoxColCom->Set_RawSize(_vec3(2.f, 2.f,2.f));
+
+    m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::ITEM);
+
     m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(40.f));
 
     return S_OK;
@@ -191,59 +194,68 @@ void CTarotNPC::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CCharacterBase::OnBeginOverlap(self, other);
 
-    CPlayer* ply = dynamic_cast<CPlayer*>(other->Get_Owner());
-    if (ply)
-        m_bPlayerOverlap = true;
+//   auto* ply = dynamic_cast<CPlayer*>(other ? other->Get_Owner() : nullptr);
+//   if (!ply) return;
 
-    auto* layer = CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::GAMELOGIC);
-    if (layer)
-    {
-        auto* camController = dynamic_cast<CCameraController*>(layer->Get_Component(ID_DYNAMIC, OBJTYPE::CAMERA, COMPONENTTYPE::CAM_CONTROLLER));
+    m_bPlayerOverlap = true;
 
-        if (camController)
-        {
-            // 플레이어한테 줌인
-            CCamSetupBuilder(camController)
-                .SetTarget(ply->Get_Transform())
-                .PivotOffset(_vec3{0.f, 0.f, 6.7f })
-				.LagSpeed(2.f)
-				.RotX(45.f)
-				.LagSpeed(5.f)
-				.ZoomSpeed(10.f)
-                .Distance(18.5f)
-                .Apply();
-        }
-    }
+   CTransform* playerTransform = dynamic_cast<CTransform*>(CManagement::GetInstance()->Get_Component(ID_DYNAMIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::TRANSFORM));
 
+    auto* scene = CManagement::GetInstance()->Get_Scene();
+    if (!scene) return;
+
+    auto* layer = scene->Get_Layer(LAYERTYPE::GAMELOGIC);
+    if (!layer) return;
+
+    auto* camController = dynamic_cast<CCameraController*>(
+        layer->Get_Component(ID_DYNAMIC, OBJTYPE::CAMERA, COMPONENTTYPE::CAM_CONTROLLER)
+        );
+    if (!camController) return;
+
+    CCamSetupBuilder(camController)
+        .SetTarget(playerTransform)
+        .PivotOffset(_vec3{ 0.f, 0.f, 6.7f })
+        .RotX(45.f)
+        .Distance(18.5f)
+        .LagSpeed(5.f)     
+        .ZoomSpeed(10.f)
+        .Apply();
 }
 
 void CTarotNPC::OnEndOverlap(CCollider* self, CCollider* other)
 {
     CCharacterBase::OnEndOverlap(self, other);
-    CPlayer* ply = dynamic_cast<CPlayer*>(other->Get_Owner());
 
-    if (m_bPlayerOverlap == true && ply != nullptr)
+    //CPlayer* ply = dynamic_cast<CPlayer*>(other->Get_Owner());
+
+    if (m_bPlayerOverlap == true)
         m_bPlayerOverlap = false;
 
-    auto* layer = CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::GAMELOGIC);
-    if (layer)
-    {
-        auto* camController = dynamic_cast<CCameraController*>(layer->Get_Component(ID_DYNAMIC, OBJTYPE::CAMERA, COMPONENTTYPE::CAM_CONTROLLER));
+    CTransform* playerTransform = dynamic_cast<CTransform*>(CManagement::GetInstance()->Get_Component(ID_DYNAMIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::TRANSFORM));
 
-        if (camController)
-        {
-            // 플레이어한테 줌인
-            CCamSetupBuilder(camController)
-                .SetTarget(ply->Get_Transform())
-				.PivotOffset(_vec3{0.f,0.f,0.f})
-				.Distance(12.f)
-				.RotX(45.f)
-				.RotY(0.f)
-				.LagSpeed(10.f)
-				.ZoomSpeed(5.f)
-                .Apply();
-        }
-    }
+    auto* scene = CManagement::GetInstance()->Get_Scene();
+    if (!scene) return;
+
+    auto* layer = scene->Get_Layer(LAYERTYPE::GAMELOGIC);
+    if (!layer) return;
+
+    auto* camController = dynamic_cast<CCameraController*>(
+        layer->Get_Component(ID_DYNAMIC, OBJTYPE::CAMERA, COMPONENTTYPE::CAM_CONTROLLER));
+
+    if (!camController) return;
+
+           // 플레이어한테 줌인
+           CCamSetupBuilder(camController)
+               .SetTarget(playerTransform)
+			.PivotOffset(_vec3{0.f,0.f,0.f})
+			.Distance(12.f)
+			.RotX(45.f)
+			.RotY(0.f)
+			.LagSpeed(10.f)
+			.ZoomSpeed(5.f)
+               .Apply();
+        
+    
 }
 
 void CTarotNPC::OnStayOverlap(CCollider* self, CCollider* other)

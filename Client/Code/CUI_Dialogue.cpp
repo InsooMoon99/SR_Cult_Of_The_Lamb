@@ -8,6 +8,7 @@
 #include "CTexture.h"
 #include "CDInputMgr.h"
 #include "CCreateHelper.h"
+#include "CSoundMgr.h"
 
 const _float SPEAKER_OFFSET = 16.9f;
 const _float DIALOGUE_OFFSET = 15.f;
@@ -156,6 +157,10 @@ void CUI_Dialogue::Render_GameObject()
 
 void CUI_Dialogue::Start_Dialogue(const string& dialogueId, const _vec2 boxPos, const _vec2& boxSize)
 {
+    CSoundMgr::GetInstance()->Play_Once(L"Conversation_Start.wav",
+        SOUND_EFFECT,
+        1.f);
+
     m_BoxPos = boxPos;
     m_BoxSize = boxSize;
 
@@ -195,6 +200,9 @@ void CUI_Dialogue::End_Dialogue()
 
     if (m_OnDialogueEnd)
     {
+        CSoundMgr::GetInstance()->Play_Once(L"Conversation_End.wav",
+            SOUND_EFFECT,
+            1.f);
         m_OnDialogueEnd(lastId);
     }
 }
@@ -210,6 +218,10 @@ void CUI_Dialogue::Next_Line()
         const DialogueLine& line = m_CurrentDialogue->lines[m_CurrentLineIndex];
         wstring fullText = CDialogueDB::GetInstance()->Utf8ToWstring(line.text);
         m_CurrentCharIndex = (_int)fullText.length();
+
+        CSoundMgr::GetInstance()->Play_Once(L"UI_DialogueNext.wav",
+            SOUND_EFFECT,
+            1.f);
 
         return;  
     }

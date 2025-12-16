@@ -54,6 +54,7 @@
 #include "CPlayerConstruction.h"
 #include "CPlayerGathering.h"
 #include "CUI_ProgressBar.h"
+#include "CWeaponEquip.h"
 
 class CUIBuildMenu;
 
@@ -182,6 +183,20 @@ void CStage::Initialize_Scene()
 _int CStage::Update_Scene(const _float& timeDelta)
 {
     _int exit = Engine::CScene::Update_Scene(timeDelta);
+
+    auto* playerSkill = dynamic_cast<CPlayerSkill*>(
+        CManagement::GetInstance()->Get_Component(ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::PL_SKILL));
+
+    if (playerSkill)
+    {
+        playerSkill->Set_SkillUnlocked(false);
+        playerSkill->Set_CurrentCharges(0);
+
+    }
+    m_WeaponEquipCom = dynamic_cast<CWeaponEquip*>(
+        CManagement::GetInstance()->Get_Component(ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::WEAPON_EQUIP));
+    if (m_WeaponEquipCom && m_WeaponEquipCom->Get_WeaponEquipped())
+        m_WeaponEquipCom->Unequip_Weapon();
 
     CConstructionMgr::GetInstance()->Update_ConstructionMgr(timeDelta);
 
