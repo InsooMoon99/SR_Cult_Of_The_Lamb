@@ -119,7 +119,6 @@ private:
     CCameraMovement* m_CamMovement;
     CCameraController* m_CamController;
     CRunLootLog         m_RunLootLog;
-    CTarotNPC*         m_TarotNpc;
     _float          m_Timer;
 
     _bool           m_TimerRunning;

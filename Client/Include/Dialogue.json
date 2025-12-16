@@ -131,6 +131,24 @@
           "hasChoices": false
         }
       ]
+    },
+    {
+      "dialogueId": "Tarot_Start",
+      "speaker": "",
+      "lines": [
+        {
+          "lineIndex": 0,
+          "speaker": "클라우넥",
+          "text": "우리는 모두 확률의 노예일 뿐일까요?",
+          "hasChoices": false
+        },
+        {
+          "lineIndex": 1,
+          "speaker": "클라우넥",
+          "text": "이미 나온 결과를 번복할 수는 없습니다. 자연의 법칙을 거스를 수는 없는 법.",
+          "hasChoices": false
+          }
+      ]
     }
   ]
 }

@@ -1,12 +1,14 @@
 ﻿#include "pch.h"
 #include "CTarotStageController.h"
-
+#include "CUI_Dialogue.h"
 #include <CManagement.h>
 #include "CUITarotCard.h"
 #include "CRenderer.h"
 #include "CTransform.h"
 #include "CUITarotDescCard.h"
 #include "CPlayerSkill.h"
+#include "CScene.h"
+#include "CLayer.h"
 
 class CPlayerSkill;
 
@@ -32,6 +34,10 @@ HRESULT CTarotStageController::Ready_GameObject()
 
     Create_Cards();
 
+	m_Dialogue = CUI_Dialogue::Create(m_GraphicDev);
+	auto layer= CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::GAMELOGIC);
+	layer->Add_GameObject(OBJTYPE::LOGIC, m_Dialogue);
+
     m_Active = false;
 
     return S_OK;
@@ -46,10 +52,11 @@ _int CTarotStageController::Update_GameObject(const _float& timeDelta)
 
     switch(m_CurrentState)
     {
-        case STAGESTATE::NONE: m_CurrentState = STAGESTATE::CARD;
+        case STAGESTATE::NONE: m_CurrentState = STAGESTATE::DIALOGUE;
             break;
         case STAGESTATE::DIALOGUE:
-            //TODO 유림 : DialogueMgr 같은 거 나중에 추가하면 넣기
+				m_Dialogue->Start_Dialogue("Tarot_Start", _vec2(0.f, 200.f), _vec2(300.f, 80.f));
+				m_CurrentState = STAGESTATE::CARD;
             break;
         case STAGESTATE::CARD:
 

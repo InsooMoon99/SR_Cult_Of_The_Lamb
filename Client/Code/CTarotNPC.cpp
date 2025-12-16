@@ -16,6 +16,7 @@
 #include "CCameraController.h"
 #include "CManagement.h"
 #include "CCamSetupBuilder.h"
+#include "CLayer.h"
 
 CTarotNPC::CTarotNPC(DEVICE graphicDev)
     : CCharacterBase(graphicDev),
@@ -194,6 +195,26 @@ void CTarotNPC::OnBeginOverlap(CCollider* self, CCollider* other)
     if (ply)
         m_bPlayerOverlap = true;
 
+    auto* layer = CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::GAMELOGIC);
+    if (layer)
+    {
+        auto* camController = dynamic_cast<CCameraController*>(layer->Get_Component(ID_DYNAMIC, OBJTYPE::CAMERA, COMPONENTTYPE::CAM_CONTROLLER));
+
+        if (camController)
+        {
+            // 플레이어한테 줌인
+            CCamSetupBuilder(camController)
+                .SetTarget(ply->Get_Transform())
+                .PivotOffset(_vec3{0.f, 0.f, 6.7f })
+				.LagSpeed(2.f)
+				.RotX(45.f)
+				.LagSpeed(5.f)
+				.ZoomSpeed(10.f)
+                .Distance(18.5f)
+                .Apply();
+        }
+    }
+
 }
 
 void CTarotNPC::OnEndOverlap(CCollider* self, CCollider* other)
@@ -203,10 +224,26 @@ void CTarotNPC::OnEndOverlap(CCollider* self, CCollider* other)
 
     if (m_bPlayerOverlap == true && ply != nullptr)
         m_bPlayerOverlap = false;
-    auto camController = dynamic_cast<CCameraController*>(CManagement::GetInstance()->Get_Component(ID_DYNAMIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::CAM_CONTROLLER));
-    CCamSetupBuilder(camController)
-        .SetTarget(ply->Get_Transform())
-        .Apply();
+
+    auto* layer = CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::GAMELOGIC);
+    if (layer)
+    {
+        auto* camController = dynamic_cast<CCameraController*>(layer->Get_Component(ID_DYNAMIC, OBJTYPE::CAMERA, COMPONENTTYPE::CAM_CONTROLLER));
+
+        if (camController)
+        {
+            // 플레이어한테 줌인
+            CCamSetupBuilder(camController)
+                .SetTarget(ply->Get_Transform())
+				.PivotOffset(_vec3{0.f,0.f,0.f})
+				.Distance(12.f)
+				.RotX(45.f)
+				.RotY(0.f)
+				.LagSpeed(10.f)
+				.ZoomSpeed(5.f)
+                .Apply();
+        }
+    }
 }
 
 void CTarotNPC::OnStayOverlap(CCollider* self, CCollider* other)

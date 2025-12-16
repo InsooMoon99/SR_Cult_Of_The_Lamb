@@ -611,12 +611,6 @@ HRESULT CStage_Dungeon::Ready_UI_Layer(LAYERTYPE layerType)
         layer->Add_GameObject(OBJTYPE::UI, m_UI_Fade),
         L"CStage_Dungeon::Ready_UI_Layer() failed: CFade_UI Add failed");
 
-    CUI_DungeonLootPanel* dungeonLootPanel = CUI_DungeonLootPanel::Create(m_GraphicDev);
-    dungeonLootPanel->Set_RunLootLog(&m_RunLootLog);
-    dungeonLootPanel->Initialize_GameObject();
-    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, dungeonLootPanel),
-                     L"CStage_Dungeon::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUI_DungeonLootPanel) failed");
-
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CUI_SkillPanel>(
             OBJTYPE::UI,

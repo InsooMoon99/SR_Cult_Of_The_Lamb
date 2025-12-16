@@ -45,6 +45,7 @@ private:
     CUITarotDescCard*      m_ExplainCard1;
     CUITarotDescCard*      m_ExplainCard2;
     CUI_Dialogue*          m_Dialogue;
+    _float                 m_WaitingTime =5.f;
 };
 
 
