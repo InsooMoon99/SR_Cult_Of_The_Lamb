@@ -113,15 +113,15 @@ private:
     _int            m_TileTypeIndex;
 
 private:
-    const int ATLAS_COLS_284 = 6;  // 가로 6칸
-    const int ATLAS_ROWS_284 = 1;  // 세로 1칸
+    const _int ATLAS_COLS_284 = 6;  // 가로 6칸
+    const _int ATLAS_ROWS_284 = 1;  // 세로 1칸
 
-    const int ATLAS_COLS_1024 = 3;
-    const int ATLAS_ROWS_1024 = 3;
+    const _int ATLAS_COLS_1024 = 3;
+    const _int ATLAS_ROWS_1024 = 3;
 
-    const int ATLAS_COLS_OUTLINE = 5;
-    const int ATLAS_ROWS_OUTLINE = 1;
+    const _int ATLAS_COLS_OUTLINE = 5;
+    const _int ATLAS_ROWS_OUTLINE = 1;
 
-    const int ATLAS_COLS_OUTLINE2 = 5;
-    const int ATLAS_ROWS_OUTLINE2 = 1;
+    const _int ATLAS_COLS_OUTLINE2 = 5;
+    const _int ATLAS_ROWS_OUTLINE2 = 1;
 };

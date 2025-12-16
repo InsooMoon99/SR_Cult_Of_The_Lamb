@@ -1152,7 +1152,7 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     // Dungeon_Deco
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_DUNGEON_DECO, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/MapObject/Dungeon_Deco2/Dungeon_Deco2_%d.png", 139))))
+            L"../Bin/Resource/Texture/MapObject/Dungeon_Deco2/Dungeon_Deco2_%d.png", 165))))
         return E_FAIL;
 
     // ETC

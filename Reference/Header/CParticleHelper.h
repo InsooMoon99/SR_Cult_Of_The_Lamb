@@ -120,7 +120,7 @@ public:
             _vec3 velocity;
             velocity.x = (rand() % 30 - 10) / 10.f;
             velocity.y = (rand() % 50 + 10) / 10.f;
-			velocity.z = (rand() % 40 - 30) / 10.f;
+            velocity.z = (rand() % 20 + 10) / 10.f;
 
             particle->Set_Velocity(velocity);
             particle->Set_Gravity(gravity);
