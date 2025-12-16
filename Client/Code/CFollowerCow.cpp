@@ -1,11 +1,13 @@
 ﻿#include "pch.h"
 #include "CFollowerCow.h"
 
+#include <CDInputMgr.h>
 #include "CAnimator.h"
 #include "CCreateHelper.h"
 #include "CNPCController.h"
 #include "CTexture.h"
 #include "CTransform.h"
+#include "CUI_FollowerCommand.h"
 
 CFollowerCow::CFollowerCow(DEVICE graphicDev)
     : CNPCBase(graphicDev)
@@ -44,6 +46,18 @@ _int CFollowerCow::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CNPCBase::Update_GameObject(timeDelta);
 
+    if (m_bHovering == true)
+    {
+        if (CDInputMgr::GetInstance()->MouseDown(DIM_LB))
+        {
+            m_FollowerCommandUI->Set_IsActive(true);
+        }
+    }
+
+    if (m_FollowerCommandUI->Get_Active()==true&&CDInputMgr::GetInstance()->MouseDown(DIM_RB))
+    {
+        m_FollowerCommandUI->Set_IsActive(false);
+    }
     return exit;
 }
 

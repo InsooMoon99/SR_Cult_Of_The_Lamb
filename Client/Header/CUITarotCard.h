@@ -53,6 +53,9 @@ public:
     void            Set_PrevState(TAROTSTATE state) { m_PrevState = state; }
     void            Set_TarotType(TAROTTYPE type) { m_CurrentType = type; }
 
+    void            AlphaRenderStart(float alpha);
+    void            AlphaRenderEnd();
+
     void OnHoverStart();
     void OnHoverEnd();
 

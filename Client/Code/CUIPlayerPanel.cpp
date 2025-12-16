@@ -97,15 +97,18 @@ _int CUIPlayerPanel::Update_GameObject(const _float& timeDelta)
         // ----------------------------------------------------
 
         float hp = m_CombatStatCom->Get_Hp();
+        float maxHp = m_CombatStatCom->Get_MaxHp();
+        float ratio = (maxHp > 0.f) ? (hp / maxHp) : 0.f;
         float start = i * 2.0f;//0,2,4
         float end = start + 2.0f;//2,4,6
-
+        int heartCount = static_cast<int>(m_Children.size());
+        float filledHalfUnits = ratio * (2.0f * heartCount);
         HEARTSTATE state;
 
-        if (hp >= end)
+        if (filledHalfUnits >= end)
             state = HEARTSTATE::FULL;
 
-        else if (hp > start)
+        else if (filledHalfUnits > start)
             state = HEARTSTATE::HALF;
 
         else

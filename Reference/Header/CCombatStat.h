@@ -83,7 +83,7 @@ public:
     _float  Get_Mp() { return m_Mp; }
     _float  Get_Speed() { return m_Speed; }
     _float  Get_MaxMp() { return m_MaxMp; }
-    _int    Get_CurrentCharges() { return m_CurrentCharges; }
+  //  _int    Get_CurrentCharges() { return m_CurrentCharges; }
 
     //  아이템용
     _vec3   Get_Dir() { return m_DirForItem; }
@@ -104,7 +104,7 @@ public:
     void    Set_MaxMp(_float maxMp) { m_MaxMp = maxMp; Set_Mp(maxMp); }
     void    Set_Speed(_float speed) { m_Speed = speed; }
     void    Set_Invincible(bool invincible) { m_IsInvincible = invincible; }
-    void    Set_CurrentCharges(int chargeCount) { m_CurrentCharges += chargeCount; }
+  //  void    Set_CurrentCharges(int chargeCount) { m_CurrentCharges += chargeCount; }
 
     void    Add_Attack(float attack) { m_Attack += attack; }
 
@@ -130,13 +130,13 @@ private:
     _float  m_AttackSpeed;   // 공격 속도
 
     _float  m_Hp;
-    _float  m_MaxHp = 6.f;
+    _float  m_MaxHp = 100.f;
     _float  m_Mp;
     _float  m_MaxMp = 10.f;
     _float  m_Speed;
 
-    _int    m_CurrentCharges = 3 ;   // 스킬 사용 가능 횟수
-    _int    m_MaxCharges = 3;
+  //  _int    m_CurrentCharges = 0 ;   // 스킬 사용 가능 횟수
+  //  _int    m_MaxCharges = 0;
 
     _bool   m_IsDead;
     _bool   m_CanHitState; // 보스는 false로 설정해줘야 Hit상태로 변환 안됨

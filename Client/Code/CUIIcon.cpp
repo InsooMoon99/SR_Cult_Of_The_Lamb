@@ -50,6 +50,7 @@ bool CUIIcon::SetCloneTexAspectScale(_vec3 vec) // 텍스쳐 등록후
 
 _int CUIIcon::Update_GameObject(const _float& timeDelta)
 {
+ 
     _int exit = CUI::Update_GameObject(timeDelta);
     if(m_Register)
     {
@@ -68,13 +69,11 @@ void CUIIcon::Render_Setting()
 {
     m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
 
-
     //m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
     //
-    //m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-    //m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-    //m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR);
 }
 
 

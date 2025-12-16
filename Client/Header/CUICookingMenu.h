@@ -37,7 +37,7 @@ private:
     CUIButton*              m_CancelButton{};
 
     CInventory*             m_Inventory;
-   CCookingController *     m_CookingController;
+    CCookingController *     m_CookingController;
     float                   m_TargetX{};
     float                   m_ClosedX{};
     float                   m_Speed{};

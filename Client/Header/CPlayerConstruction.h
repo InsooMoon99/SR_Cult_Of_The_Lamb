@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CComponent.h"
 
+class CUI_ProgressBar;
 BEGIN(Engine)
 class CCollider;
 END
@@ -28,15 +29,23 @@ public:
     void OnOverlapEnter(CCollider* self, CCollider* other);
     void OnOverlapExit(CCollider* self, CCollider* other);
 
-    // Getters
+    // GettersG
     CConstructCircle* Get_ConstructZone() const { return m_pConstructZone; }
+    void Set_ProgressBar(CUI_ProgressBar* progressui) { m_ProgressBar = progressui; }
+    void Set_IsActive(_bool active) { m_Active = active; }
+
+    void BuildingCompleted();
 
 private:
     CConstructCircle* m_pConstructZone = nullptr;
 
 public:
     static CPlayerConstruction* Create(DEVICE graphicDev);
-    CComponent*                 Clone() override;
+    CComponent* Clone() override;
 
     void Free() override;
+
+private:
+    CUI_ProgressBar* m_ProgressBar;
+    _bool m_IsCompleted = false;
 };

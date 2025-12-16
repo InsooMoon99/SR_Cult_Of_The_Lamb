@@ -4,7 +4,7 @@ class CMenuExtra :
     public CRenderObject
 {
 private:
-    explicit CMenuExtra(DEVICE graphicDev);
+    explicit CMenuExtra(DEVICE graphicDev, int textureIndex);
     explicit CMenuExtra(const CMenuExtra& rhs);
     ~CMenuExtra() override;
 
@@ -20,7 +20,7 @@ private:
 
 
 public:
-   
+    int m_textureIndex = 0;
 
 private:
     CRcTex* m_BufferComOffset1;
@@ -29,7 +29,7 @@ private:
     
 
 public:
-    static CMenuExtra* Create(DEVICE graphicDev);
+    static CMenuExtra* Create(DEVICE graphicDev, int textureIndex);
 
 private:
     void Free() override;

@@ -22,7 +22,7 @@ public:
 
 public:
     void Setup_Construction(BUILDING_TYPE type);
-
+    _float Get_Progress() { return m_Progress; }
 private:
     HRESULT Add_Component() override;
 

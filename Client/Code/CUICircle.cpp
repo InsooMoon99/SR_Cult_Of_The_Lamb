@@ -7,7 +7,7 @@
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CCombatStat.h"
-
+#include "CPlayerSkill.h"
 
 int CUICircle::m_nextID = 0;
 
@@ -65,7 +65,8 @@ void CUICircle::Render_GameObject()
     _vec2 fontOffset = { 0.f,10.f };
     _vec2 screen = { WINCX / 2 + pos.x + fontOffset.x,WINCY / 2 - pos.y + fontOffset.y };
 
-    int currentCharges = m_CombatStatCom->Get_CurrentCharges();
+    CPlayerSkill* playerskill = dynamic_cast<CPlayerSkill*>(CManagement::GetInstance()->Get_Component(COMPONENTID::ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::PL_SKILL));
+    int currentCharges = playerskill->Get_CurrentCharges();
 
     CFontMgr::GetInstance()->Render_FontOutlined(L"NanumSquare_Skill", to_wstring(currentCharges), &screen, D3DXCOLOR(1.f, 1.f, 1.f, 1.f), D3DXCOLOR(0.f, 0.f, 0.f, 1.f), 2);
 

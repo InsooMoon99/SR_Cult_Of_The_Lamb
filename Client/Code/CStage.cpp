@@ -47,6 +47,25 @@
 #include "CVillageStateMgr.h"
 #include "CWorkBench.h"
 #include "ItemInstance.h"
+#include "CHarvestableHerb.h"
+#include "CPlayerSkill.h"
+#include "CRock.h"
+#include "CTree.h"
+#include "CTrigger_Dungeon.h"
+#include "CUIBuildMenu.h"
+#include "CUI_Dialogue.h"
+#include "CKitchen.h"
+#include "CUICookingGame.h"
+#include "CCookingController.h"
+#include "CCreateHelper.h"
+#include "CUICookingMenu.h"
+#include "CChest.h"
+#include "CUI_Skill.h"
+#include "CUI_FollowerCommand.h"
+#include "CUI_SkillPanel.h"
+#include "CPlayerConstruction.h"
+#include "CPlayerGathering.h"
+#include "CUI_ProgressBar.h"
 
 class CUIBuildMenu;
 
@@ -78,9 +97,12 @@ HRESULT CStage::Ready_Scene()
     if (FAILED(Ready_Light()))
         return E_FAIL;
 
-    // 안은수 test
-    // 이젠 테스트 끝내야죠
+    // 이건 드롭 시스템 쓸려면 각 씬 마다 셋팅 해야함
     CDropSystem::GetInstance()->SetCurrentScene(this);
+
+
+    // 안은수 test
+    // 이젠 테스트 끝내야죠 
 
     struct SpawnInfo
     {
@@ -284,6 +306,16 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     m_PlayerSkillCom = dynamic_cast<CPlayerSkill*>(gameObject->Get_Component(ID_STATIC, COMPONENTTYPE::PL_SKILL));
     NULL_CHECK_RETURN(m_PlayerSkillCom, E_FAIL);
 
+
+    m_PlayerConstructionCom =
+        dynamic_cast<CPlayerConstruction*>(gameObject->Get_Component(
+            ID_STATIC,
+            COMPONENTTYPE::CONSTRUCTION));
+
+    m_PlayerGatherCom = dynamic_cast<CPlayerGathering*>(gameObject->Get_Component(
+        ID_STATIC,
+        COMPONENTTYPE::GATHERING));
+
     // -----------------------------
     // Camera
     // -----------------------------
@@ -458,13 +490,15 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
 
     // -----------------------------
     // Follower
-    // -----------------------------
-    //gameObject = CFollowerCow::Create(m_GraphicDev);
-    //NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"Create NPC object has failed");
-    //FAILED_CHECK_MSG(
-    //    layer->Add_GameObject(OBJTYPE::NPC, gameObject),
-    //    L"Add NPC object on layer has failed");
-
+    //-----------------------------
+   // gameObject = CFollowerCow::Create(m_GraphicDev);
+   // NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"Create NPC object has failed");
+   // FAILED_CHECK_MSG(
+   //     layer->Add_GameObject(OBJTYPE::NPC, gameObject),
+   //     L"Add NPC object on layer has failed");
+   //
+   // m_FollowerCow = dynamic_cast<CFollowerCow*>(gameObject); //UI 생성시점이 Follower 생성 시점보다 늦어서 나중에 포인터 주입하기 위해 멤버변수로 저장해둠
+    
     // -----------------------------
     // 저장된 건물 불러오기 기능
     // -----------------------------
@@ -624,6 +658,30 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiCookingMenu),
                      L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UI_CookingMenu) failed");
     m_Kitchen->Set_CookingMenu(uiCookingMenu);
+
+
+  //  CUI_FollowerCommand* followerCommand = CUI_FollowerCommand::Create(m_GraphicDev);
+  //  FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, followerCommand),
+  //      L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUI_FollowerCommand) failed");
+  //
+  //  m_FollowerCow->Set_FollowerCommandUI(followerCommand); // 여기서 뒤늦게 포인터 주입
+
+    FAILED_CHECK_MSG(
+        Engine::AcquirePersistentObject<CUI_SkillPanel>(
+            OBJTYPE::UI,
+            L"UI_SkillPanel",
+            m_GraphicDev,
+            layer,
+            &gameObject),
+        L"Persistent object setup failed: UI_SkillPanel");
+
+    CUI_ProgressBar* uiProgressBar = CUI_ProgressBar::Create(m_GraphicDev);
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiProgressBar),
+        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UI_ProgressBar) failed");
+
+    m_PlayerGatherCom->Set_ProgressBar(uiProgressBar);
+    m_PlayerConstructionCom->Set_ProgressBar(uiProgressBar);
+
     m_Layers.insert({ layerType, layer });
 
     return S_OK;

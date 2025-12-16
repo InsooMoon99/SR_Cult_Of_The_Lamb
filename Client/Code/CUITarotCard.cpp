@@ -103,6 +103,8 @@ _int CUITarotCard::Update_GameObject(const _float& timeDelta)
             {
                 m_OnClick();
             }
+
+            AlphaRenderStart(0.8);
         }
 
     }
@@ -186,8 +188,10 @@ void CUITarotCard::Render_GameObject()
 
             m_TextureCom->Set_Texture(key, frame);
         }
-
+     
         m_BufferCom->Render_Buffer();
+
+        AlphaRenderEnd();
     }
     //cout << m_TransformCom->Get_Scale().x << "\t" << m_TransformCom->Get_Scale().y << endl;
 }
@@ -316,4 +320,24 @@ void CUITarotCard::Render_Editor()
 		}
 		ImGui::SameLine();
 	}
+}
+void CUITarotCard::AlphaRenderStart(float alpha)
+{
+    //알파
+    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(static_cast<int>(alpha * 255), 255, 255, 255));
+    //
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR); // ← texturefactor.alpha 사용
+}
+
+void CUITarotCard::AlphaRenderEnd()
+{
+    // 알파 리셋
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
+    m_GraphicDev->SetRenderState(
+        D3DRS_TEXTUREFACTOR,
+        D3DCOLOR_ARGB(255, 255, 255, 255)); // 알파 1.0, 색 그대로
 }

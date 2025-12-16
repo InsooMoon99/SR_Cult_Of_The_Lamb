@@ -207,6 +207,15 @@
     <ClInclude Include="..\Header\CCharacterBase.h" />
     <ClInclude Include="..\Header\CChest.h" />
     <ClInclude Include="..\Header\CCookingController.h" />
+    <ClInclude Include="..\Header\CEligos.h" />
+    <ClInclude Include="..\Header\CEligos_Attack_Bullet.h" />
+    <ClInclude Include="..\Header\CEligos_Attack_Melee.h" />
+    <ClInclude Include="..\Header\CEligos_Dead.h" />
+    <ClInclude Include="..\Header\CEligos_Flies.h" />
+    <ClInclude Include="..\Header\CEligos_Idle.h" />
+    <ClInclude Include="..\Header\CEligos_Move.h" />
+    <ClInclude Include="..\Header\CEligos_StateMachine.h" />
+    <ClInclude Include="..\Header\CEligos_Reveal.h" />
     <ClInclude Include="..\Header\CEyeball_CenterAttack.h" />
     <ClInclude Include="..\Header\CMenuExtra.h" />
     <ClInclude Include="..\Header\CNPCState_Build.h" />
@@ -218,6 +227,8 @@
     <ClInclude Include="..\Header\CNPCState_WalkPast.h" />
     <ClInclude Include="..\Header\CFog.h" />
     <ClInclude Include="..\Header\CFogMgr.h" />
+    <ClInclude Include="..\Header\CRunLootLog.h" />
+    <ClInclude Include="..\Header\CTarotNPC.h" />
     <ClInclude Include="..\Header\CUICookedFoodCell.h" />
     <ClInclude Include="..\Header\CUICookingCell.h" />
     <ClInclude Include="..\Header\CFollowerCow.h" />
@@ -334,9 +345,14 @@
     <ClInclude Include="..\Header\CUIWeapon.h" />
     <ClInclude Include="..\Header\CUI_BossHp.h" />
     <ClInclude Include="..\Header\CUI_Dialogue.h" />
+    <ClInclude Include="..\Header\CUI_DungeonLootPanel.h" />
     <ClInclude Include="..\Header\CUI_Fade.h" />
     <ClInclude Include="..\Header\CUI_LoadingCircle.h" />
+    <ClInclude Include="..\Header\CUI_FollowerCommand.h" />
     <ClInclude Include="..\Header\CUI_MonsterHp.h" />
+    <ClInclude Include="..\Header\CUI_ProgressBar.h" />
+    <ClInclude Include="..\Header\CUI_Skill.h" />
+    <ClInclude Include="..\Header\CUI_SkillPanel.h" />
     <ClInclude Include="..\Header\CVillageStateMgr.h" />
     <ClInclude Include="..\Header\CWarningChain.h" />
     <ClInclude Include="..\Header\CWall.h" />
@@ -345,6 +361,7 @@
     <ClInclude Include="..\Header\CUIWeaponExplain.h" />
     <ClInclude Include="..\Header\CWorkBench.h" />
     <ClInclude Include="..\Header\CWorldInteractive.h" />
+    <ClInclude Include="..\Header\CEligos_Attack_Fly.h" />
     <ClInclude Include="..\Header\ItemData.h" />
     <ClInclude Include="..\Header\ItemInstance.h" />
     <ClInclude Include="..\Header\CUIMp.h" />
@@ -394,6 +411,15 @@
     <ClCompile Include="..\Code\CChest.cpp" />
     <ClCompile Include="..\Code\CConstructionPlacer.cpp" />
     <ClCompile Include="..\Code\CCookingController.cpp" />
+    <ClCompile Include="..\Code\CEligos.cpp" />
+    <ClCompile Include="..\Code\CEligos_Attack_Bullet.cpp" />
+    <ClCompile Include="..\Code\CEligos_Attack_Melee.cpp" />
+    <ClCompile Include="..\Code\CEligos_Dead.cpp" />
+    <ClCompile Include="..\Code\CEligos_Flies.cpp" />
+    <ClCompile Include="..\Code\CEligos_Idle.cpp" />
+    <ClCompile Include="..\Code\CEligos_Move.cpp" />
+    <ClCompile Include="..\Code\CEligos_StateMachine.cpp" />
+    <ClCompile Include="..\Code\CEligos_Reveal.cpp" />
     <ClCompile Include="..\Code\CEyeball_CenterAttack.cpp" />
     <ClCompile Include="..\Code\CMenuExtra.cpp" />
     <ClCompile Include="..\Code\CNPCState_Build.cpp" />
@@ -405,6 +431,8 @@
     <ClCompile Include="..\Code\CNPCState_WalkPast.cpp" />
     <ClCompile Include="..\Code\CFog.cpp" />
     <ClCompile Include="..\Code\CFogMgr.cpp" />
+    <ClCompile Include="..\Code\CRunLootLog.cpp" />
+    <ClCompile Include="..\Code\CTarotNPC.cpp" />
     <ClCompile Include="..\Code\CUICookedFoodCell.cpp" />
     <ClCompile Include="..\Code\CUICookingCell.cpp" />
     <ClCompile Include="..\Code\CFollowerCow.cpp" />
@@ -517,9 +545,14 @@
     <ClCompile Include="..\Code\CUIWeapon.cpp" />
     <ClCompile Include="..\Code\CUI_BossHp.cpp" />
     <ClCompile Include="..\Code\CUI_Dialogue.cpp" />
+    <ClCompile Include="..\Code\CUI_DungeonLootPanel.cpp" />
     <ClCompile Include="..\Code\CUI_Fade.cpp" />
     <ClCompile Include="..\Code\CUI_LoadingCircle.cpp" />
+    <ClCompile Include="..\Code\CUI_FollowerCommand.cpp" />
     <ClCompile Include="..\Code\CUI_MonsterHp.cpp" />
+    <ClCompile Include="..\Code\CUI_ProgressBar.cpp" />
+    <ClCompile Include="..\Code\CUI_Skill.cpp" />
+    <ClCompile Include="..\Code\CUI_SkillPanel.cpp" />
     <ClCompile Include="..\Code\CVillageStateMgr.cpp" />
     <ClCompile Include="..\Code\CWarningChain.cpp" />
     <ClCompile Include="..\Code\CWall.cpp" />
@@ -529,6 +562,7 @@
     <ClCompile Include="..\Code\CWorkBench.cpp" />
     <ClCompile Include="..\Code\CWorldInteractive.cpp" />
     <ClCompile Include="..\Code\CRecipeDB.cpp" />
+    <ClCompile Include="..\Code\CEligos_Attack_Fly.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
