@@ -89,7 +89,6 @@ HRESULT CStage::Ready_Scene()
     // 이건 드롭 시스템 쓸려면 각 씬 마다 셋팅 해야함
     CDropSystem::GetInstance()->SetCurrentScene(this);
 
-
     // 안은수 test
     // 이젠 테스트 끝내야죠 
 
@@ -316,7 +315,6 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     m_PlayerSkillCom = dynamic_cast<CPlayerSkill*>(gameObject->Get_Component(ID_STATIC, COMPONENTTYPE::PL_SKILL));
     NULL_CHECK_RETURN(m_PlayerSkillCom, E_FAIL);
 
-
     m_PlayerConstructionCom =
         dynamic_cast<CPlayerConstruction*>(gameObject->Get_Component(
             ID_STATIC,
@@ -502,20 +500,20 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     // Follower
     // -----------------------------
     //TODO 추종자 3마리로 늘리면서, 각자 함수를 만들어 그 안에서 생성되고 Init도 그 안에서 수동으로 하도록, 또한 키 R, T, Y로 수동 생성 테스트도 만들어보자
-    //SavedNpc* cowState       = CVillageStateMgr::GetInstance()->Get_NPCState(L"FollowerCow");
-    //_bool     shouldSpawnCow = true; // 기본값: 데이터 없으면 스폰 (테스트 편의상)
-    //
-    //if (cowState != nullptr)
-    //    shouldSpawnCow = cowState->isActive;
-    //
-    //if (shouldSpawnCow)
-    //{
-    //    gameObject = CFollowerCow::Create(m_GraphicDev);
-    //    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"Create NPC object has failed");
-    //    FAILED_CHECK_MSG(
-    //        layer->Add_GameObject(OBJTYPE::NPC, gameObject),
-    //        L"Add NPC object on layer has failed");
-    //}
+    SavedNpc* cowState       = CVillageStateMgr::GetInstance()->Get_NPCState(L"FollowerCow");
+    _bool     shouldSpawnCow = true; // 기본값: 데이터 없으면 스폰 (테스트 편의상)
+
+    if (cowState != nullptr)
+        shouldSpawnCow = cowState->isActive;
+
+    if (shouldSpawnCow)
+    {
+        gameObject = CFollowerCow::Create(m_GraphicDev);
+        NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"Create NPC object has failed");
+        FAILED_CHECK_MSG(
+            layer->Add_GameObject(OBJTYPE::NPC, gameObject),
+            L"Add NPC object on layer has failed");
+    }
 
     // -----------------------------
     // 저장된 건물 불러오기 기능
@@ -686,7 +684,6 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     if (followerCommand)
         m_FollowerCommand = followerCommand;
 
-
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CUI_SkillPanel>(
             OBJTYPE::UI,
@@ -698,7 +695,7 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
 
     CUI_ProgressBar* uiProgressBar = CUI_ProgressBar::Create(m_GraphicDev);
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiProgressBar),
-        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UI_ProgressBar) failed");
+                     L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UI_ProgressBar) failed");
 
     m_PlayerGatherCom->Set_ProgressBar(uiProgressBar);
     m_PlayerConstructionCom->Set_ProgressBar(uiProgressBar);

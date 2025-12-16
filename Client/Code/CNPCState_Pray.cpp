@@ -1,7 +1,6 @@
 ﻿#include "pch.h"
 #include "CNPCState_Pray.h"
 
-#include <CSoundMgr.h>
 #include "CAnimator.h"
 #include "CConstructCircle.h"
 #include "CDroppedItem.h"
@@ -9,6 +8,7 @@
 #include "CNPCBase.h"
 #include "CNPCController.h"
 #include "CNPCStateMachine.h"
+#include "CSoundMgr.h"
 #include "CTransform.h"
 #include "CWorldInteractive.h"
 
@@ -30,9 +30,7 @@ void CNPCState_Pray::Enter()
         m_OwnerAnimator->Play_Animation(key, ANIMSTATE::LOOP);
     }
 
-    CSoundMgr::GetInstance()->Play_Once(L"Follower/Follower_Praying.wav",
-                                        SOUND_EFFECT,
-                                        0.5f);
+    CSoundMgr::GetInstance()->Play_Once(L"Follower/Follower_Praying.wav", SOUND_EFFECT, 0.5f);
 
     m_Timer = 0.f;
 }
@@ -125,6 +123,9 @@ _int CNPCState_Pray::Update_State(const _float& timeDelta)
 void CNPCState_Pray::Exit()
 {
     CNPCState::Exit();
+
+    CSoundMgr::GetInstance()->Stop_Sound(L"Follower/Follower_Praying.wav");
+
 }
 
 HRESULT CNPCState_Pray::Ready_State()

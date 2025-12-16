@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "CConstructCircle.h"
 
+#include <CSoundMgr.h>
 #include "CStage.h"
 #include "CBoxCollider.h"
 #include "CCollider.h"
@@ -97,23 +98,21 @@ void CConstructCircle::OnStayOverlap(CCollider* self, CCollider* other)
     if (m_IsPreview)
         return;
 
-    CGameObject* playerObj = other->Get_Owner();
-    NULL_CHECK(playerObj);
+    CGameObject* obj = other->Get_Owner();
+    NULL_CHECK(obj);
 
     // 플레이어 체크
-    if (auto player = dynamic_cast<CPlayer*>(playerObj))
+    if (auto player = dynamic_cast<CPlayer*>(obj))
     {
         auto playerState = dynamic_cast<CState*>(
-            playerObj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
+            obj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
 
         if (playerState && playerState->Get_State() == ACTORSTATE::PLAYER_HAMMER)
-        {
             m_Progress += 10.f * CTimerMgr::GetInstance()->Get_TimeDelta();
-            // Logic continues...
-        }
     }
+
     // NPC 체크
-    else if (auto npc = dynamic_cast<CNPCBase*>(playerObj))
+    else if (auto npc = dynamic_cast<CNPCBase*>(obj))
     {
         auto controller = dynamic_cast<CNPCController*>(
             npc->Get_Component(ID_DYNAMIC, COMPONENTTYPE::NPC_CONTROLLER));
@@ -180,11 +179,8 @@ void CConstructCircle::OnStayOverlap(CCollider* self, CCollider* other)
                     playerObj->Get_Component(ID_STATIC, COMPONENTTYPE::CONSTRUCTION));
 
                 if (playerConstruction)
-                {
                     playerConstruction->BuildingCompleted();
-                }
             }
-
 
             this->Mark_As_PendingKill();
         }

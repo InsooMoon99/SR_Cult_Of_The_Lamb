@@ -536,7 +536,7 @@ void CPlayerController::Action_Construction(const _float& timeDelta)
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
 }
 
-void CPlayerController::Action_Hit(const _float& timeDetla)
+void CPlayerController::Action_Hit(const _float& timeDelta)
 {
     m_OwnerMovementCom->Stop();
 
@@ -548,7 +548,7 @@ void CPlayerController::Action_Hit(const _float& timeDetla)
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
 }
 
-void CPlayerController::Action_Decide(const _float& timeDetla)
+void CPlayerController::Action_Decide(const _float& timeDelta)
 {
     auto animator = dynamic_cast<CAnimator*>(
         m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
@@ -559,7 +559,7 @@ void CPlayerController::Action_Decide(const _float& timeDetla)
         animator->Play_Animation(L"Decide_Loop", ANIMSTATE::LOOP);
 }
 
-void CPlayerController::Action_Refuse(const _float& timeDetla)
+void CPlayerController::Action_Refuse(const _float& timeDelta)
 {
     auto animator = dynamic_cast<CAnimator*>(
         m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));

@@ -7,6 +7,7 @@
 #include "CNPCController.h"
 #include "CNPCStateMachine.h"
 #include "CRigidbody.h"
+#include "CSoundMgr.h"
 
 CNPCState_Eat::CNPCState_Eat(CNPCBase* owner, CNPCStateMachine* stateMachine)
     : CNPCState(owner, stateMachine)
@@ -36,6 +37,10 @@ void CNPCState_Eat::Enter()
 
     if (m_OwnerRigidbody)
         m_OwnerRigidbody->Set_Friction(0.3f);
+
+    CSoundMgr::GetInstance()->Play_Once(L"Follower/food_eat3.wav",
+                                        SOUND_EFFECT,
+                                        0.4f);
 }
 
 _int CNPCState_Eat::Update_State(const _float& timeDelta)

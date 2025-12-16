@@ -1,6 +1,8 @@
 ﻿#include "pch.h"
 #include "CComponent.h"
 #include "CPlayerConstruction.h"
+
+#include <CSoundMgr.h>
 #include "CUI_ProgressBar.h"
 #include "CCollider.h"
 #include "CConstructCircle.h"
@@ -49,7 +51,16 @@ void CPlayerConstruction::Action_Construction(const _float& timeDelta)
             m_ProgressBar->Set_Progress(progress / 100.f);
             m_ProgressBar->Set_IsActive(true);
         }
-        // Add custom logic here if needed
+
+#pragma region 건축 효과음. 0.5초마다 재생
+        g_Timers[TIMER_SOUND_PL_CONSTRUCT] += timeDelta;
+
+        if (g_Timers[TIMER_SOUND_PL_CONSTRUCT] > 0.7f)
+        {
+            CSoundMgr::GetInstance()->Play_Once(L"Construction/Hammering_2.wav", SOUND_EFFECT, 0.5f);
+            g_Timers[TIMER_SOUND_PL_CONSTRUCT] = 0.f;
+        }
+#pragma endregion
     }
 }
 
@@ -70,12 +81,9 @@ void CPlayerConstruction::OnOverlapExit(CCollider* self, CCollider* other)
 
 void CPlayerConstruction::BuildingCompleted() // 초기화
 {
-	if (m_ProgressBar)
-	{
-		m_ProgressBar->Set_IsActive(false);
-	}
+    if (m_ProgressBar)
+        m_ProgressBar->Set_IsActive(false);
     m_pConstructZone = nullptr;
-
 }
 
 CPlayerConstruction* CPlayerConstruction::Create(DEVICE graphicDev)

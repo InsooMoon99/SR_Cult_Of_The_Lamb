@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "CNPCState_ChopWood.h"
 
+#include <CSoundMgr.h>
 #include "CAnimator.h"
 #include "CNPCBase.h"
 #include "CNPCController.h"
@@ -76,6 +77,10 @@ _int CNPCState_ChopWood::Update_State(const _float& timeDelta)
 
                     combat->Apply_Damage(h);
                     m_bAttackFlag = true;
+
+                    CSoundMgr::GetInstance()->Play_Once(L"Object/Wood/Wood_Chop_2.wav",
+                                                        SOUND_EFFECT,
+                                                        0.5f);
                 }
             }
         }

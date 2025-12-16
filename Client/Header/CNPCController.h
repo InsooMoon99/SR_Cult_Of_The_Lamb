@@ -95,7 +95,7 @@ public:  // --- Getter / Setter ---
 
     // 음식 탐색 쿨다운 관리
     _bool Is_FoodSearchAvailable() const { return m_FoodSearchCooldown <= 0.f; }
-    void  Reset_FoodSearchCooldown() { m_FoodSearchCooldown = 15.f; }
+    void  Reset_FoodSearchCooldown() { m_FoodSearchCooldown = 20.f; }
 
 private:
     void  Cache_Components();

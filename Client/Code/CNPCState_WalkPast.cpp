@@ -8,6 +8,7 @@
 #include "CNPCController.h"
 #include "CNPCStateMachine.h"
 #include "CRigidbody.h"
+#include "CSoundMgr.h"
 #include "CState.h"
 #include "CTransform.h"
 
@@ -29,7 +30,7 @@ void CNPCState_WalkPast::Enter()
     }
 
     //if (m_OwnerRigidbody)
-    //    m_OwnerRigidbody->Set_Friction(0.1f); 
+    //    m_OwnerRigidbody->Set_Friction(0.1f);
 }
 
 _int CNPCState_WalkPast::Update_State(const _float& timeDelta)
@@ -39,6 +40,21 @@ _int CNPCState_WalkPast::Update_State(const _float& timeDelta)
     // Animation Finish Check
     if (m_OwnerAnimator && m_OwnerAnimator->Is_AnimationFinished())
         return static_cast<_int>(CNPCStateMachine::NPC_STATE::RUN);
+
+#pragma region ㅎㅇ 효과음. 0.16초지나면 한 번 재생
+    if (!m_SoundPlayed)
+    {
+        g_Timers[TIMER_SOUND_FOL_WALKPAST] += timeDelta;
+
+        if (g_Timers[TIMER_SOUND_FOL_WALKPAST] >= 0.16f)
+        {
+            CSoundMgr::GetInstance()->Play_Once(L"Follower/wave4.wav", SOUND_EFFECT, 0.5f);
+
+            g_Timers[TIMER_SOUND_FOL_WALKPAST] = 0.f;
+            m_SoundPlayed                      = true;
+        }
+    }
+#pragma endregion
 
     // 이동 로직
     if (m_Controller && m_OwnerTransform && m_OwnerRigidbody)
