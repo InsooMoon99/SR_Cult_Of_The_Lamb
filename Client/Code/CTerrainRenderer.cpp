@@ -680,6 +680,9 @@ HRESULT CTerrainRenderer::LoadMap(const char* filePath)
 
         if (version >= 6)
             ifs.read(reinterpret_cast<char*>(m_TileIndicesOutline.data()),sizeof(_int) * tileSize);
+
+        if (version >= 9)
+            ifs.read(reinterpret_cast<char*>(m_TileIndicesOutline2.data()), sizeof(_int) * tileSize);
     }
 
     if (version >= 7)
