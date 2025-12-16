@@ -26,6 +26,8 @@ HRESULT CStaticParticle::Ready_GameObject()
     if (FAILED(CRenderObject::Ready_GameObject()))
         return E_FAIL;
 
+    m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(25.f));
+
     return S_OK;
 }
 

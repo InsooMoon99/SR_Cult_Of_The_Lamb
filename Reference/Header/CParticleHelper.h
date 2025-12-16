@@ -96,7 +96,7 @@ public:
     static void Spawn_StaticBurstParticle(
         const _vec3& position,
         COMPONENTTYPE textureType,  // Rock, Grass, Tree 타입 지정
-        _int count = 8,             // 몇개 소환할건지
+        _int count = 6,             // 몇개 소환할건지
         _float minScale = 0.3f,     // 크기
         _float maxScale = 0.8f,
         _int maxTextureIndex = 2,
@@ -118,9 +118,9 @@ public:
 
             // 랜덤 속도
             _vec3 velocity;
-            velocity.x = (rand() % 100 - 50) / 10.f;
-            velocity.y = (rand() % 50 + 50) / 10.f;
-            velocity.z = (rand() % 20 - 10) / 100.f;
+            velocity.x = (rand() % 30 - 10) / 10.f;
+            velocity.y = (rand() % 50 + 10) / 10.f;
+            velocity.z = (rand() % 20 - 10) / 10.f;
 
             particle->Set_Velocity(velocity);
             particle->Set_Gravity(gravity);

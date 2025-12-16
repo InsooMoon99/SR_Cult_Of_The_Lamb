@@ -87,24 +87,24 @@ _int CMapObjectBase::Update_GameObject(const _float& timeDelta)
 
 #pragma region 카메라 기준으로 Alpha값 세팅
 
-    if (m_PlayerTransformCom && m_TransformCom)
-    {
-        _vec3 playerPos = m_PlayerTransformCom->Get_Pos();
-        _vec3 objPos = m_TransformCom->Get_Pos();
-
-        // 오브젝트가 카메라 앞에있는지 체크, Z값이 작을수록 카메라에 가까운 거
-        _bool inFront = (objPos.z < playerPos.z);
-
-        _bool xOverlap = (abs(objPos.x - playerPos.x) < 0.8f);
-        _bool yOverlap = (objPos.y > playerPos.y - 0.5f) &&
-            (objPos.y < playerPos.y + 2.5f);
-
-        _bool isBlocking = inFront && xOverlap && yOverlap;
-
-        m_TargetAlpha = isBlocking ? 0.3f : 1.f;  
-    }
-    // 부드러운 알파 전환
-    m_Alpha += (m_TargetAlpha - m_Alpha) * timeDelta * 10.f;  
+    //if (m_PlayerTransformCom && m_TransformCom)
+    //{
+    //    _vec3 playerPos = m_PlayerTransformCom->Get_Pos();
+    //    _vec3 objPos = m_TransformCom->Get_Pos();
+    //
+    //    // 오브젝트가 카메라 앞에있는지 체크, Z값이 작을수록 카메라에 가까운 거
+    //    _bool inFront = (objPos.z < playerPos.z);
+    //
+    //    _bool xOverlap = (abs(objPos.x - playerPos.x) < 0.8f);
+    //    _bool yOverlap = (objPos.y > playerPos.y - 0.5f) &&
+    //        (objPos.y < playerPos.y + 2.5f);
+    //
+    //    _bool isBlocking = inFront && xOverlap && yOverlap;
+    //
+    //    m_TargetAlpha = isBlocking ? 0.3f : 1.f;  
+    //}
+    //// 
+    //m_Alpha += (m_TargetAlpha - m_Alpha) * timeDelta * 10.f;  
 
 #pragma endregion
 

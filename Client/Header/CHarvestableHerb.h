@@ -18,6 +18,8 @@ public:
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
 
+    void    OnInteractiveDamaged() override;
+
 protected:
     virtual HRESULT Add_Component();
 

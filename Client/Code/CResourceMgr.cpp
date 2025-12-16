@@ -1118,6 +1118,12 @@ HRESULT CResourceMgr::Ready_Terrain(DEVICE graphicDev)
             L"../Bin/Resource/Texture/Terrain/TileOutline%d.png", 3))))
         return E_FAIL;
 
+    // Terrain_Outline2
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_TILE_OUTLINE2, CTexture::Create(graphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/Terrain/TileOutline4.png", 1))))
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -1244,8 +1250,14 @@ HRESULT CResourceMgr::Ready_Particle(DEVICE graphicDev)
         return E_FAIL;
 
     // Grass
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_GRASS_PARTICLE,
+        CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Particle/Grass/Grass_Particle%d.png", 4))))
+        return E_FAIL;
 
     // Tree
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_TREE_PARTICLE,
+        CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Particle/Tree/Tree_Particle%d.png", 6))))
+        return E_FAIL;
 
     return S_OK;
 }

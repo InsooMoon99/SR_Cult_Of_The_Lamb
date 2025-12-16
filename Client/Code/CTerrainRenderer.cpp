@@ -13,6 +13,9 @@
 #include "CTerrain.h"
 #include "CWallRenderer.h"
 
+const int ATLAS_COLS_OUTLINE2 = 4; 
+const int ATLAS_ROWS_OUTLINE2 = 1;
+
 CTerrainRenderer::CTerrainRenderer(DEVICE graphicDev)
     : CComponent(graphicDev),
       m_TransformCom(nullptr),
