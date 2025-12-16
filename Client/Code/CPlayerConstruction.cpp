@@ -29,6 +29,9 @@ _int CPlayerConstruction::Update_Component(const _float& timeDelta)
     if (CSceneMgr::GetInstance()->Is_Changing())
         m_pConstructZone = nullptr;
 
+    if (m_pConstructZone && m_pConstructZone->Is_PendingDestroy())
+        m_pConstructZone = nullptr;
+
     return 0;
 }
 
