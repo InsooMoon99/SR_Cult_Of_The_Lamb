@@ -368,7 +368,7 @@ void CStage_Dungeon::Change_Room(Room room)
     {
         m_NextRoom = room;
         m_IsFading = true;
-        m_UI_Fade->StartFadeOut(3.5f);
+        m_UI_Fade->Start_FadeOut(3.5f);
     }
 }
 
@@ -484,6 +484,7 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
         // 에디터에 카메라 설정
         CMainEditorMgr::GetInstance()->Set_MainCamera(camController);
     }
+
     CGameObject* tarotController = CTarotStageController::Create(m_GraphicDev);
 
     NULL_CHECK_RETURN_MSG(
@@ -664,7 +665,7 @@ void CStage_Dungeon::Fade_Check(const _float timeDelta)
     if (!m_IsFading || !m_UI_Fade)
         return;
 
-    if (!m_UI_Fade->IsFading() && m_UI_Fade->GetAlpha() >= 1.0f)
+    if (!m_UI_Fade->IsFading() && m_UI_Fade->Get_Alpha() >= 1.0f)
     {
         // 페이드 아웃 완료 후, 잠시 대기
 
@@ -674,7 +675,7 @@ void CStage_Dungeon::Fade_Check(const _float timeDelta)
         if (m_PlayerTransform)
             m_PlayerTransform->Set_Pos(m_RoomData[static_cast<_int>(m_NextRoom)].playerSpawnPos);
 
-        m_UI_Fade->StartFadeIn(0.5f);
+        m_UI_Fade->Start_FadeIn(0.5f);
         m_IsFading = false;
     }
 }

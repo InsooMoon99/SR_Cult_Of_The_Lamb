@@ -66,6 +66,9 @@ public:
 protected:
     HRESULT Add_BaseComponent(COMPONENTTYPE InType);
     void    Render_Setting() override;
+    void    Render_Reset() override;
+
+    
 
 protected:
     void Free() override;
@@ -73,14 +76,19 @@ protected:
 protected:
     CTexture*   m_TextureCom;
 
-    _bool m_AttachTerrain;
-    _bool m_IsPreview;
+    _bool       m_AttachTerrain;
+    _bool       m_IsPreview;
 
-    _int  m_CellX = -1;
-    _int  m_CellZ = -1;
+    _int        m_CellX = -1;
+    _int        m_CellZ = -1;
 
-    CTerrain* m_Terrain;
+    CTerrain*   m_Terrain;
 
-    _int m_TextureIndex = 0;
+    _int        m_TextureIndex = 0;
+
+    // 오브젝트 반투명 세팅
+    _float      m_Alpha = 1.f;
+    _float      m_TargetAlpha = 1.f;
+    CTransform* m_PlayerTransformCom = nullptr;
     
 };

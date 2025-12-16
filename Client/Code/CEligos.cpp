@@ -179,13 +179,13 @@ const char* CEligos::GetBossStateName(_int StateNum)
     {
     case BOSSREVEAL:         return "BOSSREVEAL";
     case ATTACK_BULLET:      return "ATTACK_BULLET";
-    case ATTACK_FLY:       return "ATTACK_FLY";
+    case ATTACK_FLY:         return "ATTACK_FLY";
     case ATTACK_MELEE:       return "ATTACK_MELEE";
-    case BOSSDEAD:          return "BOSSDEAD";
-    case BOSSIDLE:          return "BOSSIDLE";
-    case BOSSMOVE:          return "BOSSMOVE";
+    case BOSSDEAD:           return "BOSSDEAD";
+    case BOSSIDLE:           return "BOSSIDLE";
+    case BOSSMOVE:           return "BOSSMOVE";
 
-    case BOSS_END:          return "BOSS_END";
+    case BOSS_END:           return "BOSS_END";
     }
     return "UNKNOWN";
 }

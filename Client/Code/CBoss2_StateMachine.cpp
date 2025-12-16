@@ -11,6 +11,7 @@
 #include "CBoss2_Die.h"
 #include "CBoss2_Follower.h"
 #include "CBoss2_Groggy.h"
+#include "CBoss2_SummonFollower.h"
 
 CBoss2_StateMachine::CBoss2_StateMachine(CMonsterBase* owner)
     : m_Owner(owner)
@@ -33,6 +34,10 @@ HRESULT CBoss2_StateMachine::Ready_StateMachine()
 
 #pragma region 상태 등록
     {
+        // Summon
+        if (FAILED(RegisterState<CBoss2_SummonFollower>(CBossPhase2::PATTERN::PHASE2_SUMMON, m_Owner)))
+            return E_FAIL;
+
         // Start
         if (FAILED(RegisterState<CBoss2_Start>(CBossPhase2::PATTERN::PHASE2_START, m_Owner)))
             return E_FAIL;
@@ -70,8 +75,8 @@ HRESULT CBoss2_StateMachine::Ready_StateMachine()
     
 
     // 초기 상태 설정
-    m_CurState = m_vecState[CBossPhase2::PATTERN::PHASE2_START];
-    m_CurStateKey = CBossPhase2::PATTERN::PHASE2_START;
+    m_CurState = m_vecState[CBossPhase2::PATTERN::PHASE2_SUMMON];
+    m_CurStateKey = CBossPhase2::PATTERN::PHASE2_SUMMON;
     m_CurState->Enter();
 
     return S_OK;

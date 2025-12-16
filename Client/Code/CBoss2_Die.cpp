@@ -29,6 +29,8 @@ void CBoss2_Die::Enter()
             animator->Play_Animation(L"Boss2_Dead", ANIMSTATE::ONCE);
     }
 
+    boss->Trigger_OnDead();
+
     m_fCurStateElapsedTime = 0.f;
 }
 

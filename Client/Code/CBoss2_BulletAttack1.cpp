@@ -10,6 +10,9 @@
 #include "CTimerMgr.h"
 #include "Cboss2_Bullet.h"
 #include "CAttackBuilder.h"
+#include "CCameraController.h"
+#include "CCameraMovement.h"
+#include "CMainEditorMgr.h"
 #include "CProjectile.h"
 
 CBoss2_BulletAttack1::CBoss2_BulletAttack1(CGameObject* owner)
@@ -111,6 +114,14 @@ void CBoss2_BulletAttack1::Play_HandSlam()
 
     if (curFrame >= 30 && !m_HasFiredBullet)
     {
+        auto camController = CMainEditorMgr::GetInstance()->Get_MainCameraControl();
+        if (camController)
+        {
+            auto camMovement = camController->Get_OwnerCamMovement();
+            if (camMovement)
+                camMovement->Start_CamShake(0.42f, 0.7f, 55.7f, 10.5f);
+        }
+
         m_HasFiredBullet = true;
 
         auto boss = static_cast<CBossPhase2*>(m_Owner);

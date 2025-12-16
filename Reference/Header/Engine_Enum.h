@@ -210,6 +210,15 @@ enum class COMPONENTTYPE
     BOX_COLL,
     SPHERE_COLL,
 
+    TEX_LOADING_CIRCLE,
+
+    ////////////////
+    //  Particle  //
+    ////////////////
+    TEX_ROCK_PARTICLE,
+    TEX_GRASS_PARTICLE,
+    TEX_TREE_PARTICLE,
+
     ////////////////
     //  Follower  //
     ////////////////

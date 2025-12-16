@@ -54,6 +54,7 @@ void CUICircle::Render_GameObject()
 {
     CUI::Render_GameObject();
 
+    //m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
     m_TextureCom->Set_Texture(0);
@@ -68,6 +69,9 @@ void CUICircle::Render_GameObject()
     int currentCharges = playerskill->Get_CurrentCharges();
 
     CFontMgr::GetInstance()->Render_FontOutlined(L"NanumSquare_Skill", to_wstring(currentCharges), &screen, D3DXCOLOR(1.f, 1.f, 1.f, 1.f), D3DXCOLOR(0.f, 0.f, 0.f, 1.f), 2);
+
+    //m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
+
 }
 
 HRESULT CUICircle::Add_Component()

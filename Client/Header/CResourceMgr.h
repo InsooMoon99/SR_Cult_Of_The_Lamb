@@ -32,6 +32,7 @@ public:
 public:
     HRESULT Ready_BossP2(DEVICE graphicDev);
     HRESULT Ready_BossP2_Eyeball(DEVICE graphicDev);
+    HRESULT Ready_BossP2_Follower(DEVICE graphicDev);
 
     HRESULT Ready_Follower(DEVICE graphicDev);
 
@@ -41,3 +42,5 @@ public:
 public:
     void Free() override;
 };
+
+

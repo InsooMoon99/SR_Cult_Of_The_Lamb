@@ -19,6 +19,9 @@ public:
     void            Update_SceneMgr(const _float& timeDelta);
     void            Render_SceneMgr();
 
+    void            StartFadeIn(_float speed = 2.0f);
+    void            StartFadeOut(_float speed = 2.0f);
+
     // Fade 중인지 확인
     _bool           Is_Changing() const { return m_IsChanging; }
 

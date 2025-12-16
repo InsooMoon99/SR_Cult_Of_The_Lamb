@@ -358,6 +358,7 @@
       <Filter>98. Utility</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CTrigger.h" />
+    <ClInclude Include="..\Header\CStaticParticle.h" />
   </ItemGroup>
   <!-- ===================== -->
   <!--       SOURCES         -->
@@ -508,5 +509,6 @@
       <Filter>01. Logic\08. Particle</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CTrigger.cpp" />
+    <ClCompile Include="..\Code\CStaticParticle.cpp" />
   </ItemGroup>
 </Project>
