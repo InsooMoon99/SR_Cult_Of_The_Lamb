@@ -1,5 +1,7 @@
 ﻿#pragma once
-#include "Engine_Define.h"
+
+USING(std);
+USING(Engine);
 
 typedef struct tagBossData
 {
@@ -82,4 +84,4 @@ struct SavedSceneState
     map<wstring, SavedNpc>   savedNPCs;
 };
 
-enum FOODQUALITY { GOOD, BAD, NO_FOOD };
+

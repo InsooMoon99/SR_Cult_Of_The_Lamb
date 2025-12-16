@@ -200,6 +200,7 @@
     <ClInclude Include="..\Header\CCharacterBase.h" />
     <ClInclude Include="..\Header\CChest.h" />
     <ClInclude Include="..\Header\CCookingController.h" />
+    <ClInclude Include="..\Header\Client_Global.h" />
     <ClInclude Include="..\Header\CMenuExtra.h" />
     <ClInclude Include="..\Header\CNPCState_Build.h" />
     <ClInclude Include="..\Header\CNPCState_ChopWood.h" />

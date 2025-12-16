@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "CConstructCircle.h"
 
+#include "CStage.h"
 #include "CBoxCollider.h"
 #include "CCollider.h"
 #include "CCreateHelper.h"
@@ -137,6 +138,15 @@ void CConstructCircle::OnStayOverlap(CCollider* self, CCollider* other)
 
         if (newObj)
         {
+            if (auto kitchen = dynamic_cast<CKitchen*>(newObj))
+            {
+                if (auto scene = CManagement::GetInstance()->Get_Scene())
+                {
+                    if (auto stage = dynamic_cast<CStage*>(scene))
+                        kitchen->Set_CookingMenu(stage->Get_CookingMenu());
+                }
+            }
+
             newObj->Initialize_GameObject();
 
             auto* transform = dynamic_cast<CTransform*>(

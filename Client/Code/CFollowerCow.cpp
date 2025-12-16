@@ -199,20 +199,20 @@ void CFollowerCow::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"CowTransform1",
                                     94,
                                     0.04f,
-                                    _vec2(1.f, 1.f),
-                                    _vec2(0.f, 0.f));
+                                    _vec2(1.5f, 2.4f),
+                                    _vec2(0.f, 1.2f));
 
     m_AnimatorCom->Create_Animation(L"CowTransform2",
                                     26,
                                     0.04f,
-                                    _vec2(1.f, 1.f),
-                                    _vec2(0.f, 0.f));
+                                    _vec2(1.5f, 2.4f),
+                                    _vec2(0.f, 1.2f));
 
     m_AnimatorCom->Create_Animation(L"CowTransform3",
                                     89,
                                     0.04f,
-                                    _vec2(1.f, 1.f),
-                                    _vec2(0.f, 0.f));
+                                    _vec2(1.5f, 2.4f),
+                                    _vec2(0.f, 1.2f));
 }
 
 CFollowerCow* CFollowerCow::Create(DEVICE graphicDev)

@@ -90,7 +90,11 @@ void CUICookingMenu::Initialize_GameObject()
     m_StartButton->Set_HasText();
     m_StartButton->Set_Text(L"요리하기");
     m_StartButton->SetCloneTexAspectScale({ 0.17f, 0.22f, 0.f });
-    m_StartButton->SetOnClick([this]() { PlayCloseAnimation();  m_CookingController->Set_Start(true); });
+    m_StartButton->SetOnClick([this]() { 
+        PlayCloseAnimation();  
+        m_CookingController->SetUIRecipeSlot(0, m_CancelButton, m_StartButton); // 콜백 재설정 
+        m_CookingController->Set_Start(true); 
+    });
     //m_StartButton->Set_Selected(true);
 
     m_CancelButton = CUIButton::Create(m_GraphicDev, 3, 2);
@@ -111,6 +115,9 @@ _int CUICookingMenu::Update_GameObject(const _float& timeDelta)
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
     m_Inventory = dynamic_cast<CInventory*>(CManagement::GetInstance()->Get_Component(ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::INVENTORY));
+
+    if (nullptr == m_CookingController)
+        return exit;
 
     vector<int> RecipeQueue = m_CookingController->Get_Vector();
    

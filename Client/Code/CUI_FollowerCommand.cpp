@@ -4,6 +4,7 @@
 #include "CNPCController.h"
 #include "CRcTex.h"
 #include "CCreateHelper.h"
+#include "CDInputMgr.h"
 #include "CUI.h"
 #include "CTransform.h"
 #include "CTexture.h"
@@ -13,17 +14,19 @@
 
 CUI_FollowerCommand::CUI_FollowerCommand(DEVICE graphicDev)
     : CUI(graphicDev),
-    m_PrayButton(nullptr),
-    m_MiningButton(nullptr),
-    m_AxeButton(nullptr) {
-}
+      m_PrayButton(nullptr),
+      m_MiningButton(nullptr),
+      m_AxeButton(nullptr),
+      m_TargetNPC(nullptr)
+{}
 
 CUI_FollowerCommand::CUI_FollowerCommand(const CUI_FollowerCommand& rhs)
     : CUI(rhs),
-    m_PrayButton(nullptr),
-    m_MiningButton(nullptr),
-    m_AxeButton(nullptr) {
-}
+      m_PrayButton(nullptr),
+      m_MiningButton(nullptr),
+      m_AxeButton(nullptr),
+      m_TargetNPC(nullptr)
+{}
 
 void CUI_FollowerCommand::Initialize_GameObject()
 {
@@ -121,6 +124,9 @@ _int CUI_FollowerCommand::Update_GameObject(const _float& timeDelta)
     if (!m_Active)
         return 0;
 
+    if (CDInputMgr::GetInstance()->MouseDown(DIM_RB))
+        m_Active = false;
+
     _int exit = CUI::Update_GameObject(timeDelta);
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
@@ -182,6 +188,10 @@ HRESULT CUI_FollowerCommand::Add_Component()
     m_TransformCom = CreateProtoComponent<CTransform>(this, COMPONENTTYPE::TRANSFORM);
     NULL_CHECK_RETURN(m_TransformCom, E_FAIL);
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
+
+    m_BufferCom = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
+    NULL_CHECK_RETURN(m_BufferCom, E_FAIL);
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::RC_TEX, m_BufferCom });
 
     return S_OK;
 }

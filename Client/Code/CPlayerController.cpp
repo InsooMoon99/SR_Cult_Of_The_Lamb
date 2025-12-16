@@ -1,7 +1,6 @@
 ﻿#include "pch.h"
 #include "CPlayerController.h"
-#include "CWeaponEquip.h"
-#include "CTimerMgr.h"
+
 #include "CAnimator.h"
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
@@ -17,6 +16,8 @@
 #include "CRigidbody.h"
 #include "CSoundMgr.h"
 #include "CState.h"
+#include "CTimerMgr.h"
+#include "CWeaponEquip.h"
 #include "CWorldInteractive.h"
 
 CPlayerController::CPlayerController(DEVICE graphicDev)
@@ -31,25 +32,21 @@ CPlayerController::CPlayerController(DEVICE graphicDev)
       m_OwnerSkillCom(nullptr),
       m_OwnerGatherCom(nullptr),
       m_OwnerConstructionCom(nullptr)
-{
-    ZeroMemory(m_Timers, sizeof(m_Timers));
-}
+{ }
 
 CPlayerController::CPlayerController(const CPlayerController& rhs)
     : CComponent(rhs),
-    m_OwnerStateCom(nullptr),
-    m_OwnerCombatStatCom(nullptr),
-    m_OwnerRigidbodyCom(nullptr),
-    m_OwnerColliderCom(nullptr),
-    m_OwnerInputCom(nullptr),
-    m_OwnerMovementCom(nullptr),
-    m_OwnerAttackCom(nullptr),
-    m_OwnerSkillCom(nullptr),
-    m_OwnerGatherCom(nullptr),
-    m_OwnerConstructionCom(nullptr)
-{
-    ZeroMemory(m_Timers, sizeof(m_Timers));
-}
+      m_OwnerStateCom(nullptr),
+      m_OwnerCombatStatCom(nullptr),
+      m_OwnerRigidbodyCom(nullptr),
+      m_OwnerColliderCom(nullptr),
+      m_OwnerInputCom(nullptr),
+      m_OwnerMovementCom(nullptr),
+      m_OwnerAttackCom(nullptr),
+      m_OwnerSkillCom(nullptr),
+      m_OwnerGatherCom(nullptr),
+      m_OwnerConstructionCom(nullptr)
+{ }
 
 CPlayerController::~CPlayerController()
 { }
@@ -60,9 +57,7 @@ HRESULT CPlayerController::Ready_PlayerController()
 }
 
 void CPlayerController::Initialize_Component()
-{
-    m_Timers[TIMER_RUNSOUND] = FLT_MAX;
-}
+{ }
 
 _int CPlayerController::Update_Component(const _float& timeDelta)
 {
@@ -379,7 +374,7 @@ void CPlayerController::Update_State(const _float& timeDelta)
         break;
     case ACTORSTATE::HIT:
         Action_Hit(timeDelta);
-    break;
+        break;
 
     case ACTORSTATE::PLAYER_BERRY:
     case ACTORSTATE::PLAYER_WOOD:
@@ -450,13 +445,13 @@ void CPlayerController::Action_Idle(const _float& timeDelta)
 
 void CPlayerController::Action_Run(const _float& timeDelta)
 {
-#pragma region 플레이어 달리기 효과음. 지속적으로 재성되어야 하므로 Run() 안에 넣어도 되지만, 여기 넣도록 하겠다
-    m_Timers[TIMER_RUNSOUND] += timeDelta;
+#pragma region 플레이어 달리기 효과음. 0.2초마다 재생
+    g_Timers[TIMER_SOUND_PL_FOOTSTEP] -= timeDelta;
 
-    if (m_Timers[TIMER_RUNSOUND] >= 0.2f)
+    if (g_Timers[TIMER_SOUND_PL_FOOTSTEP] < 0.f)
     {
-        CSoundMgr::GetInstance()->Play_Once(L"Player/Player_Walk2.wav", SOUND_EFFECT, 0.5f);
-        m_Timers[TIMER_RUNSOUND] = 0.f;
+        CSoundMgr::GetInstance()->Play_Once(L"Player/Player_Footstep.wav", SOUND_EFFECT, 0.5f);
+        g_Timers[TIMER_SOUND_PL_FOOTSTEP] = 0.2f;
     }
 #pragma endregion
 
@@ -550,9 +545,7 @@ void CPlayerController::Action_Hit(const _float& timeDetla)
 
     if (animator && animator->Is_AnimationFinished() &&
         !m_OwnerCombatStatCom->Is_Knockback())
-    {
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
-    }
 }
 
 void CPlayerController::Action_Decide(const _float& timeDetla)
@@ -563,9 +556,7 @@ void CPlayerController::Action_Decide(const _float& timeDetla)
     NULL_CHECK(animator);
 
     if (animator->Is_AnimationFinished())
-    {
         animator->Play_Animation(L"Decide_Loop", ANIMSTATE::LOOP);
-    }
 }
 
 void CPlayerController::Action_Refuse(const _float& timeDetla)

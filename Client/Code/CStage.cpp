@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "CStage.h"
 
+#include <CSoundMgr.h>
 #include "CCameraController.h"
 #include "CCamSetupBuilder.h"
 #include "CChest.h"
@@ -92,10 +93,31 @@ HRESULT CStage::Ready_Scene()
     };
 
     vector<SpawnInfo> spawnList = {
-        { 1001, { 5.f, 1.f, 10.f } },   // 동전
-        { 3001, { 10.f, 1.f, 10.f } },  // 검
-        { 2001, { 15.f, 1.f, 10.f } },  // 풀죽
-        { 2003, { 20.f, 1.f, 10.f } }   // 베리 그릇
+        { 1001, { 5.f, 1.f, 10.f } },       // 동전
+        { 1001, { 5.5f, 1.f, 10.f } },
+        { 1001, { 6.f, 1.f, 10.f } },
+        { 1001, { 6.5f, 1.f, 10.f } },
+        { 1001, { 7.f, 1.f, 10.f } },
+        { 1001, { 7.5f, 1.f, 10.f } },
+        { 1001, { 8.f, 1.f, 10.f } },
+        { 1001, { 8.5f, 1.f, 10.f } },
+        { 1001, { 9.f, 1.f, 10.f } },
+        { 1001, { 9.5f, 1.f, 10.f } },
+        { 1001, { 10.f, 1.f, 10.f } },
+        { 1001, { 10.5f, 1.f, 10.f } },
+        { 1001, { 11.f, 1.f, 10.f } },
+        { 1001, { 11.5f, 1.f, 10.f } },
+        { 1001, { 12.f, 1.f, 10.f } },
+        { 1001, { 12.5f, 1.f, 10.f } },
+        { 1001, { 13.f, 1.f, 10.f } },
+        { 1001, { 13.5f, 1.f, 10.f } },
+        { 1001, { 14.f, 1.f, 10.f } },
+        { 1001, { 14.5f, 1.f, 10.f } },
+        { 3001, { 20.f, 1.f, 10.f } },      // 검
+        { 2001, { 25.f, 1.f, 10.f } },      // 풀죽
+        { 2001, { 27.f, 1.f, 10.f } },
+        { 2003, { 30.f, 1.f, 10.f } },      // 베리 그릇
+        { 2003, { 32.f, 1.f, 10.f } }
     };
 
     for (const auto& info : spawnList)
@@ -143,6 +165,8 @@ void CStage::Initialize_Scene()
 
     // 초기 맵 불러오기 <- 이거 Initialize에서 진행해야 맵 오브젝트가 잘 불러진다.
     m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Village2.map");
+
+    CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Village.wav", 0.3f, true, 1.f);
 
     // 던전 이동 트리거 만들기
     Create_Trigger();
@@ -491,8 +515,8 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     // Follower
     // -----------------------------
     // 저장된 NPC 상태 확인
-    SavedNpc* cowState = CVillageStateMgr::GetInstance()->Get_NPCState(L"FollowerCow");
-    _bool shouldSpawnCow = true; // 기본값: 데이터 없으면 스폰 (테스트 편의상)
+    SavedNpc* cowState       = CVillageStateMgr::GetInstance()->Get_NPCState(L"FollowerCow");
+    _bool     shouldSpawnCow = true; // 기본값: 데이터 없으면 스폰 (테스트 편의상)
 
     if (cowState != nullptr)
         shouldSpawnCow = cowState->isActive;
@@ -665,7 +689,6 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
         COMPONENTID::ID_STATIC,
         COMPONENTTYPE::COOKCTRL));
     uiBuildMenu->Set_Inventory(m_PlayerInventoryCom);
-    uiBuildMenu->Set_CookingController(cookingController);
     /*uiBuildMenu->SetCellEvent([]()
     {
         return dynamic_cast<CCookingController*>(m_WorkBench->Get_Component(COMPONENTID::ID_STATIC,COMPONENTTYPE::COOKCTRL))->CanCooK(uiBuildMenu->,m_PlayerInventoryCom)})*/

@@ -70,6 +70,9 @@ HRESULT CMainApp::Ready_MainApp()
     // ConstructionMgr Init
     CConstructionMgr::GetInstance()->Ready_ConstructionMgr(m_GraphicDev);
 
+    // 전역 타이머 초기화
+    ZeroMemory(g_Timers, sizeof(g_Timers));
+
     return S_OK;
 }
 

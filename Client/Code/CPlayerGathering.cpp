@@ -6,6 +6,7 @@
 #include "CCombatStat.h"
 #include "CDInputMgr.h"
 #include "CSceneMgr.h"
+#include "CSoundMgr.h"
 #include "CState.h"
 #include "CTransform.h"
 #include "CWorldInteractive.h"
@@ -80,7 +81,7 @@ _int CPlayerGathering::Update_Component(const _float& timeDelta)
     switch (m_Target->GetInteractiveType())
     {
     case CWorldInteractive::TYPE::BERRY:
-
+    {
         if (m_AttackTimer >= 0.5)
         {
             // 공격 1 씩 주기
@@ -90,9 +91,22 @@ _int CPlayerGathering::Update_Component(const _float& timeDelta)
 
             combat->Apply_Damage(h);
 
+            //TODO ACTION 사운드
+
             m_AttackTimer = 0;
         }
-        break;
+
+#pragma region 플레이어 Action 효과음. 0.3초마다 재생
+        g_Timers[TIMER_SOUND_PL_ACTION] -= timeDelta;
+
+        if (g_Timers[TIMER_SOUND_PL_ACTION] < 0.f)
+        {
+            CSoundMgr::GetInstance()->Play_Once(L"Player/Player_Action.wav", SOUND_EFFECT, 0.5f);
+            g_Timers[TIMER_SOUND_PL_ACTION] = 0.3f;
+        }
+#pragma endregion
+    }
+    break;
 
     case CWorldInteractive::TYPE::WOOD:
 

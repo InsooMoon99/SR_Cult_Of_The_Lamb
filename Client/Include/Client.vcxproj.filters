@@ -911,6 +911,9 @@
     <ClInclude Include="..\Header\CNPCState_Rescued.h">
       <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\11. Rescued</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\Client_Global.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">

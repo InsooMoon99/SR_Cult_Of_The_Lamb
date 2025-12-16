@@ -1,9 +1,11 @@
 ﻿#include "pch.h"
 #include "CWeaponEquip.h"
+
 #include "CCombatStat.h"
 #include "CDropSystem.h"
 #include "CItemDB.h"
 #include "CPlayer.h"
+#include "CSoundMgr.h"
 #include "CTransform.h"
 
 CWeaponEquip::CWeaponEquip(DEVICE graphicDev)
@@ -44,6 +46,10 @@ void CWeaponEquip::Equip_Weapon(ItemInstance itemInst)
         ApplyWeaponStat(itemData);
 
     m_WeaponEquipped = true;
+
+    CSoundMgr::GetInstance()->Play_Once(L"Player/Player_ChangeWeapon.wav",
+                                    SOUND_EFFECT,
+                                    0.5f);
 
     //cout << "Weapon Equipped" << endl;
 }

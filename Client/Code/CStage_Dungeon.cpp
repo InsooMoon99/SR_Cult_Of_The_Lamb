@@ -1,5 +1,7 @@
 ﻿#include "pch.h"
 #include "CStage_Dungeon.h"
+
+#include <CSoundMgr.h>
 #include "CCameraController.h"
 #include "CCamSetupBuilder.h"
 #include "CCombatStat.h"
@@ -60,9 +62,6 @@ HRESULT CStage_Dungeon::Ready_Scene()
 
     if (FAILED(Ready_Light()))
         return E_FAIL;
-
-    // BGM Test
-    // CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Intro.wav", 0.5f);
 
     return S_OK;
 }
@@ -135,6 +134,8 @@ void CStage_Dungeon::Initialize_Scene()
     // Init에서 RoomData 세팅 이후 위치 세팅해줘야 함
     _vec3 startPos = m_RoomData[static_cast<_int>(Room::START)].playerSpawnPos;
     m_PlayerTransform->Set_Pos(_vec3(startPos.x, startPos.y, startPos.z));
+
+    CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Battle2.wav", 0.4f, true, 1.f);
 }
 _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
 {

@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "CPlayer.h"
+
 #include "CAnimator.h"
 #include "CAttackBuilder.h"
 #include "CAttackSphere.h"
@@ -17,6 +18,7 @@
 #include "CPlayerMovement.h"
 #include "CPlayerSkill.h"
 #include "CRigidbody.h"
+#include "CSoundMgr.h"
 #include "CState.h"
 #include "CTexture.h"
 #include "CTransform.h"
@@ -68,6 +70,14 @@ HRESULT CPlayer::Ready_GameObject()
     // Hit 상태로 전환할 것인가? [ 보스1, 보스2 ]만 False로 세팅할듯 추가로 중간보스가 있다면 세팅
     m_CombatStatCom->Set_HitState(true);
 
+    m_CombatStatCom->Set_OnDamagedEvent([&]()
+    {
+        CSoundMgr::GetInstance()->Play_Once(L"Player/Player_GetHit.wav",
+                                        SOUND_EFFECT,
+                                        0.5f);
+    });
+
+
     m_TransformCom->Set_Pos(_vec3(20.f, 1.f, 15.f));
     m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
     m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(45.f));
@@ -92,7 +102,6 @@ void CPlayer::Initialize_GameObject()
     m_PlayerAttackCom->Init_OwnerComponent();
 
     m_PlayerSkillCom->Init_OwnerComponent();
-    //m_PlayerConstructionCom->Init_OwnerComponent(); // Construction doesn't have Init_Owner logic yet, but safe to add if base has it or we add it later
 }
 
 _int CPlayer::Update_GameObject(const _float& timeDelta)
@@ -469,8 +478,6 @@ void CPlayer::Animation_Setting()
     //m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_REFUSE, L"Refuse_Sword", ANIMSTATE::ONCE);
 
 #pragma endregion
-
-
 }
 
 CPlayer* CPlayer::Create(DEVICE graphicDev)

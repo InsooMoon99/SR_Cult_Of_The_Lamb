@@ -127,7 +127,7 @@ void CPlayerMovement::Start_Roll(const _vec3& moveDir)
     m_OwnerRigidbodyCom->Set_Friction(0.f);
     m_OwnerRigidbodyCom->Set_UseAccel(false);
 
-    CSoundMgr::GetInstance()->Play_Once(L"Player/Player_Roll2.wav",
+    CSoundMgr::GetInstance()->Play_Once(L"Player/Player_Roll.wav",
                                         SOUND_EFFECT,
                                         0.5f);
 }
