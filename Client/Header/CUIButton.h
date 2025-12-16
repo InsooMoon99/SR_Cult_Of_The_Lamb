@@ -46,7 +46,7 @@ private:
     std::function<void()> m_OnClick;
 
     static int m_NextID;
-    int        m_TextureIndex = 0;
+    int        m_TextureIndex;
 
     int m_TextureOn;
     int m_TextureOff;

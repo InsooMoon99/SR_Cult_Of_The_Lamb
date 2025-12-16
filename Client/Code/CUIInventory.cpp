@@ -14,8 +14,8 @@
 #include "CUIButton.h"
 #include "CUIInventoryCell.h"
 
-CUIInventory::CUIInventory(DEVICE pGraphicDev)
-    : CUI(pGraphicDev),
+CUIInventory::CUIInventory(DEVICE graphicDev)
+    : CUI(graphicDev),
       m_Cols(6),
       m_CellWidth(100.f),
       m_CellHeight(150.f),

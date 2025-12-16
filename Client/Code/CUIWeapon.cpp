@@ -133,7 +133,7 @@ CUIWeapon* CUIWeapon::Create(DEVICE graphicDev)
     if (FAILED(circle->Ready_GameObject()))
     {
         Safe_Release(circle);
-        MSG_BOX("UIHeartBar Created Failed");
+        MSG_BOX("UI_Weapon Created Failed");
         return nullptr;
     }
     return circle;

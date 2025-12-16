@@ -157,17 +157,7 @@ HRESULT CStage_TarotTest::Ready_GameLogic_Layer(LAYERTYPE layerType)
         CMainEditorMgr::GetInstance()->Set_MainCamera(camController);
     }
 
-    gameObject = CTarotStageController::Create(m_GraphicDev);
-
-    NULL_CHECK_RETURN_MSG(
-        gameObject,
-        E_FAIL,
-        L"CStage_TarotTest::Ready_GameLogic_Layer() failed: CTarotStageController::Create() returned null");
-
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::LOGIC, gameObject),
-        L"CStage_TarotTest::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CTarotStageController) failed");
-
+  
     m_Layers.insert({ layerType, layer });
 
     return S_OK;

@@ -1,15 +1,20 @@
 ﻿#include "pch.h"
 #include "CTarotStageController.h"
+
+#include <CManagement.h>
 #include "CUITarotCard.h"
 #include "CRenderer.h"
 #include "CTransform.h"
 #include "CUITarotDescCard.h"
+#include "CPlayerSkill.h"
 
-CTarotStageController::CTarotStageController(DEVICE graphicDev) : CUI(graphicDev)
+class CPlayerSkill;
+
+CTarotStageController::CTarotStageController(DEVICE graphicDev) : CGameObject(graphicDev)
 {
 }
 
-CTarotStageController::CTarotStageController(const CTarotStageController& rhs) : CUI(rhs)
+CTarotStageController::CTarotStageController(const CTarotStageController& rhs) : CGameObject(rhs)
 {
 }
 
@@ -19,7 +24,7 @@ CTarotStageController::~CTarotStageController()
 
 void CTarotStageController::Render_Editor()
 {
-    CUI::Render_Editor();
+    CGameObject::Render_Editor();
 }
 HRESULT CTarotStageController::Ready_GameObject()
 {
@@ -27,16 +32,21 @@ HRESULT CTarotStageController::Ready_GameObject()
 
     Create_Cards();
 
+    m_Active = false;
+
     return S_OK;
 }
 
 _int CTarotStageController::Update_GameObject(const _float& timeDelta)
 {
-    int exit = CUI::Update_GameObject(timeDelta);
+    if (!m_Active)
+        return 0;
+
+    int exit = CGameObject::Update_GameObject(timeDelta);
+
     switch(m_CurrentState)
     {
-        case STAGESTATE::NONE:m_CurrentState = STAGESTATE::CARD;
-            //TODO 유림 : 건물 상호작용
+        case STAGESTATE::NONE: m_CurrentState = STAGESTATE::CARD;
             break;
         case STAGESTATE::DIALOGUE:
             //TODO 유림 : DialogueMgr 같은 거 나중에 추가하면 넣기
@@ -68,6 +78,7 @@ _int CTarotStageController::Update_GameObject(const _float& timeDelta)
                 m_TarotCard1->Set_PrevState(TAROTSTATE::CHOICE);
                 m_TarotCard2->Set_CurrentState(TAROTSTATE::RESULT);
                 m_TarotCard2->Set_PrevState(TAROTSTATE::CHOICE);
+              
                 m_ExplainCard1->Set_RenderOff(true);
                 m_ExplainCard2->Set_RenderOff(true);
                 m_CurrentState = STAGESTATE::ENDING;
@@ -81,7 +92,6 @@ _int CTarotStageController::Update_GameObject(const _float& timeDelta)
 
     }
   
-   
 
    
     return exit;
@@ -89,7 +99,10 @@ _int CTarotStageController::Update_GameObject(const _float& timeDelta)
 
 void CTarotStageController::LateUpdate_GameObject(const _float& timeDelta)
 {
-    CUI::LateUpdate_GameObject(timeDelta);
+    if (!m_Active)
+        return;
+
+    CGameObject::LateUpdate_GameObject(timeDelta);
 
     switch (m_CurrentState)
     {
@@ -133,14 +146,14 @@ void CTarotStageController::Create_Cards()
     //하트 설명 카드
     m_ExplainCard1 = CUITarotDescCard::Create(m_GraphicDev);
     m_ExplainCard1->Set_TextureIndex(4);
-    m_ExplainCard1->Get_Transform()->Set_Scale(128.f, 128.f, 1.f);
+    m_ExplainCard1->Get_Transform()->Set_Scale(153.6f, 153.6f, 1.f);
     m_ExplainCard1->Get_Transform()->Set_Pos(-250.f, 0.f, 1.f);
     m_ExplainCard1->InitializeScale();
 
     //화살 설명 카드
     m_ExplainCard2 = CUITarotDescCard::Create(m_GraphicDev);
-    m_ExplainCard2->Set_TextureIndex(4);
-    m_ExplainCard2->Get_Transform()->Set_Scale(128.f, 128.f, 1.f);
+    m_ExplainCard2->Set_TextureIndex(5);
+    m_ExplainCard2->Get_Transform()->Set_Scale(153.6f, 153.6f, 1.f);
     m_ExplainCard2->Get_Transform()->Set_Pos(250.f, 0.f, 1.f);
     m_ExplainCard2->InitializeScale();
 
@@ -159,6 +172,8 @@ void CTarotStageController::Create_Cards()
     m_TarotCard2->Get_Transform()->Set_Scale(300.f, 500.f, 1.f);
     m_TarotCard2->Get_Transform()->Set_Pos(250.f, 0.f, 1.f);
     m_TarotCard2->InitializeScale();
+    CPlayerSkill* playerskill = dynamic_cast<CPlayerSkill*>(CManagement::GetInstance()->Get_Component(COMPONENTID::ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::PL_SKILL));
+    m_TarotCard2->SetOnClick([this, playerskill]() {playerskill->Set_SkillUnlocked(true); playerskill->Set_CurrentCharges(3); });
 }
 
 void CTarotStageController::Free()
@@ -168,5 +183,5 @@ void CTarotStageController::Free()
     Safe_Release(m_ExplainCard1);
     Safe_Release(m_ExplainCard2);
  
-    CUI::Free();
+    CGameObject::Free();
 }

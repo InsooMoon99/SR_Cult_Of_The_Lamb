@@ -11,25 +11,25 @@
 #include "CTimerMgr.h"
 
 CPlayerSkill::CPlayerSkill(DEVICE graphicDev) : CComponent(graphicDev),
-                                                m_OwnerStateCom(nullptr),
-                                                m_OwnerCombatStatCom(nullptr),
-                                                m_Fireball(nullptr),
-                                                m_OwnerInputCom(nullptr),
-                                                m_CurrentAttackObj(nullptr),
-                                                m_IsSkillUnlocked(true),
-                                                m_SkillInfo{},
-                                                m_SkillTimer(0),
-                                                m_ChargeTimer(0),
-                                                m_MaxChargeTime(5.f),
-                                                m_ProjectileFired(false),
-                                                m_SkillIndex(0.f),
-                                                m_IsCharged(false),
-                                                m_IsCharging(false), 
-                                                m_SingleSkillEnable(false),
-                                                m_TripleSkillEnable(false),
-                                                m_SingleFired(false),
-                                                m_TripleFired(false)
-
+m_OwnerStateCom(nullptr),
+m_OwnerCombatStatCom(nullptr),
+m_Fireball(nullptr),
+m_OwnerInputCom(nullptr),
+m_CurrentAttackObj(nullptr),
+m_IsSkillUnlocked(false),
+m_SkillInfo{},
+m_SkillTimer(0),
+m_ChargeTimer(0),
+m_MaxChargeTime(5.f),
+m_ProjectileFired(false),
+m_SkillIndex(0.f),
+m_IsCharged(false),
+m_IsCharging(false),
+m_SingleSkillEnable(false),
+m_TripleSkillEnable(false),
+m_SingleFired(false),
+m_TripleFired(false),
+m_CurrentCharges(0)
 {}
 
 CPlayerSkill::CPlayerSkill(const CPlayerSkill& rhs)
@@ -38,7 +38,7 @@ CPlayerSkill::CPlayerSkill(const CPlayerSkill& rhs)
       m_OwnerCombatStatCom(nullptr),
       m_OwnerInputCom(nullptr),
       m_CurrentAttackObj(nullptr),
-      m_IsSkillUnlocked(true),
+      m_IsSkillUnlocked(false),
       m_SkillTimer(rhs.m_SkillTimer),
       m_ChargeTimer(rhs.m_ChargeTimer),
       m_MaxChargeTime(5.f),
@@ -52,7 +52,8 @@ CPlayerSkill::CPlayerSkill(const CPlayerSkill& rhs)
       m_LeftChargingUI(nullptr),
       m_CenterChargingUI(nullptr),
       m_RightChargingUI(nullptr),
-      m_SkillInfo{  }
+      m_SkillInfo{  },
+    m_CurrentCharges(0)
 {
     copy_n(&rhs.m_SkillInfo[0], static_cast<_int>(SKILL_MAX), &m_SkillInfo[0]);
 }
@@ -171,7 +172,7 @@ ACTORSTATE CPlayerSkill::Start_Charging()
 
 	CCombatStat* playerCombatStat = dynamic_cast<CCombatStat*>(m_Owner->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
 
-	if (playerCombatStat->Get_CurrentCharges() <= 0)
+	if (m_CurrentCharges <= 0)
 		return ACTORSTATE::STATE_END;
 
     if (!m_IsCharging)
@@ -307,8 +308,8 @@ _bool       CPlayerSkill::Update_SingleSkill(const float& timeDelta)
 
         CCombatStat* playerCombatStat = dynamic_cast<CCombatStat*>(m_Owner->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
 
-        playerCombatStat->Set_CurrentCharges(-1);
-
+       // playerCombatStat->Set_CurrentCharges(-1);
+        m_CurrentCharges -= 1;
         m_SingleFired = true;
         m_SingleSkillEnable = false;
     }
@@ -392,8 +393,8 @@ _bool       CPlayerSkill::Update_TripleSkill(const _float& timeDelta)
         m_RightChargingUI->Set_IsActive(false);
 
         CCombatStat* playerCombatStat = dynamic_cast<CCombatStat*>(m_Owner->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
-        playerCombatStat->Set_CurrentCharges(-1);
-
+        //playerCombatStat->Set_CurrentCharges(-1);
+        m_CurrentCharges -= 1;
         m_TripleFired = true;
         m_TripleSkillEnable = false;
     }

@@ -1,8 +1,6 @@
 ﻿#include "pch.h"
 #include "CMonsterBase.h"
-
-#include <CScene.h>
-
+#include "CScene.h"
 #include "CManagement.h"
 #include "CAnimator.h"
 #include "CBoxCollider.h"
@@ -10,6 +8,12 @@
 #include "CRcTex.h"
 #include "CTexture.h"
 #include "CTransform.h"
+#include "CStage_Dungeon.h";
+
+namespace Engine
+{
+class CScene;
+}
 
 CMonsterBase::CMonsterBase(DEVICE graphicDev)
     : CCharacterBase(graphicDev),
@@ -58,8 +62,9 @@ void CMonsterBase::Initialize_GameObject()
 
 _int CMonsterBase::Update_GameObject(const _float& timeDelta)
 {
-    _int exit = CCharacterBase::Update_GameObject(timeDelta);
 
+    _int exit = CCharacterBase::Update_GameObject(timeDelta);
+ 
     if (m_Target) // 타겟의 방향 설정
     {
         _vec3 pos       = m_TransformCom->Get_Pos();

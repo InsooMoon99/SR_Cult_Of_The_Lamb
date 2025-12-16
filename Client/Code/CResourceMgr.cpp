@@ -440,7 +440,19 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
             L"../Bin/Resource/Texture/Player/Bullet/Fireball.png", 1))))
         return E_FAIL;
 
-    return S_OK;
+    //TarotNPC
+    //플레이어는 아니긴 한데 마땅한 자리가 없어서 좀 빌리겠습니다ㅎㅎ;
+
+    CTexture* TarotNpcTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(TarotNpcTex, E_FAIL);
+
+    if (FAILED(TarotNpcTex->Add_Texture(L"TarotNpcIdle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/TarotSeller/TarotSeller%d.png", 87)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_TAROTNPC, TarotNpcTex)))
+        return E_FAIL;
+
 }
 
 HRESULT CResourceMgr::Ready_Monster(DEVICE graphicDev)
@@ -754,6 +766,12 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
             L"../Bin/Resource/Texture/UI/PlayerState/Icon/Weapon%d.png", 2))))
         return E_FAIL;
 
+	//circleTex
+	if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_SKILL,
+		Engine::CTexture::Create(graphicDev, TEX_NORMAL,
+			L"../Bin/Resource/Texture/UI/PlayerState/Icon/Skill%d.png", 3))))
+		return E_FAIL;
+
     // 메인 메뉴 이미지
 
     CTexture* menuChar = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
@@ -808,7 +826,14 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     pathVec2.push_back(L"../Bin/Resource/Texture/UI/Inventory/ButtonTab0.png");
     pathVec2.push_back(L"../Bin/Resource/Texture/UI/Inventory/ButtonTab1.png");
     pathVec2.push_back(L"../Bin/Resource/Texture/UI/Tarot/ExplainBox/HeartExplain.png");
-
+	pathVec2.push_back(L"../Bin/Resource/Texture/UI/Tarot/ExplainBox/SkillExplain.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/Tarot/ExplainBox/SkillExplain.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/FollowerCommand/Pray_Icon0.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/FollowerCommand/Pray_Icon1.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/FollowerCommand/Axe_Icon0.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/FollowerCommand/Axe_Icon1.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/FollowerCommand/Mining_Icon0.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/FollowerCommand/Mining_Icon1.png");
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_BUTTON, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec2))))
         return E_FAIL;
@@ -924,6 +949,8 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     vector<wstring> decoTex;
     decoTex.emplace_back(L"../Bin/Resource/Texture/UI/Inventory/Title_Bracket_Left.png");
     decoTex.emplace_back(L"../Bin/Resource/Texture/UI/Inventory/Title_Bracket_Right.png");
+    decoTex.emplace_back(L"../Bin/Resource/Texture/UI/Deco/Skeleton.png");
+    decoTex.emplace_back(L"../Bin/Resource/Texture/UI/Deco/Timer.png");
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_DECO, CTexture::Create(graphicDev, TEX_NORMAL, decoTex))))
         return E_FAIL;
@@ -946,6 +973,24 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
         COMPONENTTYPE::TEX_UI_INTERACTION, CTexture::Create(graphicDev, TEX_NORMAL, interactionTex))))
         return E_FAIL;
 
+
+    //Follower Command
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_COMMAND,
+        Engine::CTexture::Create(
+            graphicDev,
+            TEX_NORMAL,
+            L"../Bin/Resource/Texture/UI/FollowerCommand/BackGround0.png",
+            1))))
+        return E_FAIL;
+
+    //// Texture : Clear BackGround
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_CLEAR,
+        Engine::CTexture::Create(
+            graphicDev,
+            TEX_NORMAL,
+            L"../Bin/Resource/Texture/UI/BG/ClearBG.png",
+            1))))
+        return E_FAIL;
 
     // Texture : MainMenu Extra
     //
