@@ -65,6 +65,7 @@ private:
     Engine::CTexture*           m_TextureCom284;
     Engine::CTexture*           m_TextureCom1024;
     Engine::CTexture*           m_TextureComOutline;
+    Engine::CTexture*           m_TextureComOutline2;
 
     CTerrainRenderer*           m_TerrainRendererCom;
     CWallRenderer*              m_WallRendererCom;

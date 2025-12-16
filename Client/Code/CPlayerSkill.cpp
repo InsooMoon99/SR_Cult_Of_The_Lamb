@@ -173,7 +173,7 @@ ACTORSTATE CPlayerSkill::Start_Charging()
         return ACTORSTATE::STATE_END;
 
     // 슬로우모션 시작
-    CTimerMgr::GetInstance()->Set_TimeScale(0.5f);
+    CTimerMgr::GetInstance()->Set_TimeScale(0.8f);
 
     CCombatStat* playerCombatStat = dynamic_cast<CCombatStat*>(m_Owner->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
 
