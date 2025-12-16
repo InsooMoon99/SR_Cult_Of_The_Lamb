@@ -222,7 +222,6 @@ void CTerrain::Set_Material()
     material.Diffuse = COLOR(1.f, 1.f, 1.f, 1.f);       // 빛을 받았을 때 색
     material.Ambient = COLOR(0.2f, 0.2f, 0.2f, 1.f);    // 배경광 색
     material.Specular = COLOR(1.f, 1.f, 1.f, 1.f);      // 반사광 색
-    material.Emissive = COLOR(0.f, 0.f, 0.f, 1.f);      // 자체 발광
     material.Power = 0.f; // 반사광 세기
 
     m_GraphicDev->SetMaterial(&material);

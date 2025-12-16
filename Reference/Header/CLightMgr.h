@@ -18,6 +18,8 @@ public:
                         const D3DLIGHT9* lightInfo,
                         const _uint&     index);
 
+    void Clear_Lights();
+
 private:
     list<CLight*> m_LightList;  // 리스트를 통한 광원 관리
 

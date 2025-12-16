@@ -140,6 +140,7 @@ void CRenderer::Render_UI(DEVICE& graphicDev)
     graphicDev->SetTransform(D3DTS_PROJECTION, &uiProj);    // UI 투영 행렬 사용
 
     // 깊이 끄기
+    graphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
     graphicDev->SetRenderState(D3DRS_ZENABLE, FALSE);
 
     // 알파 블렌딩
@@ -153,6 +154,8 @@ void CRenderer::Render_UI(DEVICE& graphicDev)
     }
 
     // 상태 복구
+    graphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
+
     graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
     graphicDev->SetRenderState(D3DRS_ZENABLE, TRUE);
 
@@ -189,6 +192,7 @@ void CRenderer::Render_Priority_UI(DEVICE& graphicDev)
     graphicDev->SetTransform(D3DTS_PROJECTION, &uiProj);    // UI 투영 행렬 사용
 
     // 깊이 끄기
+    graphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
     graphicDev->SetRenderState(D3DRS_ZENABLE, FALSE);
 
     // 알파 블렌딩
@@ -202,6 +206,8 @@ void CRenderer::Render_Priority_UI(DEVICE& graphicDev)
     }
 
     // 상태 복구
+    graphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
+
     graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
     graphicDev->SetRenderState(D3DRS_ZENABLE, TRUE);
 
@@ -275,6 +281,7 @@ void CRenderer::SetFogOff(LPDIRECT3DDEVICE9 graphicDev)
         return;
 
     graphicDev->SetRenderState(D3DRS_FOGENABLE, FALSE);
+    graphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
 void CRenderer::Free()

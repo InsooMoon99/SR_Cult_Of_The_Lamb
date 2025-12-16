@@ -1010,6 +1010,9 @@
     <ClInclude Include="..\Header\CUI_ProgressBar.h">
       <Filter>05. UI\01. UI\14. UI_ProgressBar</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CLogo_Dungeon.h">
+      <Filter>02. Scene\00. Logo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1602,6 +1605,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CUI_ProgressBar.cpp">
       <Filter>05. UI\01. UI\14. UI_ProgressBar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CLogo_Dungeon.cpp">
+      <Filter>02. Scene\00. Logo</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

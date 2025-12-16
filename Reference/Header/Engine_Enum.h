@@ -213,6 +213,9 @@ enum class COMPONENTTYPE
 
     TEX_LOADING_CIRCLE,
 
+    TEX_BAT_MONSTER,
+    TEX_HUMAN_MONSTER2,
+
     ////////////////
     //  Particle  //
     ////////////////
