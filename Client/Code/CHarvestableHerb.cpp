@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include "CHarvestableHerb.h"
-
+#include "CParticleHelper.h"
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
 #include "CCreateHelper.h"
@@ -83,8 +83,8 @@ HRESULT CHarvestableHerb::Ready_GameObject()
 void CHarvestableHerb::Initialize_GameObject()
 {
     CWorldInteractive::Initialize_GameObject();
-    // 인벤 셋팅 (동전 1001, 라즈베리 1002, 잔디 1003, 나무 1005, 돌 1006)
 
+    // 인벤 셋팅 (동전 1001, 라즈베리 1002, 잔디 1003, 나무 1005, 돌 1006)
     ItemInstance Item = { 1002, -1, 0 };
 
     for (int i = 0; i < m_ItemNum; i++)
@@ -117,7 +117,23 @@ void CHarvestableHerb::LateUpdate_GameObject(const _float& timeDelta)
 void CHarvestableHerb::Render_GameObject()
 {
     m_TextureCom->Set_Texture(m_CurTexIndex);
+
     CWorldInteractive::Render_GameObject();
+}
+
+void CHarvestableHerb::OnInteractiveDamaged()
+{
+    CWorldInteractive::OnInteractiveDamaged();
+
+    CParticleHelper::Spawn_StaticBurstParticle(
+        m_TransformCom->Get_Pos(),          // 위치
+        COMPONENTTYPE::TEX_GRASS_PARTICLE,  // 텍스처 타입
+        5,                                  // 생성할 개수
+        0.1f, 0.12f,                 // 크기 범위
+        6,                                  // 텍스처 랜덤으로 몇개 출력
+        15.f,                               // 땅에 떨어지는 속도
+        m_TransformCom->Get_Pos().y - 0.5f  // 바닥 Y (돌 아래쪽)
+    );
 }
 
 HRESULT CHarvestableHerb::Add_Component()

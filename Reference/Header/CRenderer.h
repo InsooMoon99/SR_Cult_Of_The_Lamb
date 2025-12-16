@@ -25,6 +25,7 @@ private:
     void Render_Priority_Alpha(DEVICE& graphicDev);
     void Render_NonAlpha(DEVICE& graphicDev);
     void Render_Alpha(DEVICE& graphicDev);
+    void Render_Particle(DEVICE& graphicDev);
     void Render_UI(DEVICE& graphicDev);
     // 추가 (백 ui , 트레일용)
     void Render_Priority_UI(DEVICE& graphicDev);

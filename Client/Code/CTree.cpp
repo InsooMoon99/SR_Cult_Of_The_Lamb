@@ -131,9 +131,19 @@ void CTree::OnInteractiveDamaged()
     this->m_OnDamage = true;
 
     // HitEffect_Star
-    CParticleHelper::Spawn_Particle({ m_TransformCom->Get_Pos().x, m_TransformCom->Get_Pos().y + 0.5f, m_TransformCom->Get_Pos().z },
-                                    L"HitEffect_Star",
-                                    14);
+    //CParticleHelper::Spawn_Particle({ m_TransformCom->Get_Pos().x, m_TransformCom->Get_Pos().y + 0.5f, m_TransformCom->Get_Pos().z },
+    //                                L"HitEffect_Star",
+    //                                14);
+
+    CParticleHelper::Spawn_StaticBurstParticle(
+        m_TransformCom->Get_Pos(),          // 위치
+        COMPONENTTYPE::TEX_TREE_PARTICLE,   // 텍스처 타입
+        5,                                  // 생성할 개수
+        0.1f, 0.12f,						// 크기 범위
+        4,                                  // 텍스처 랜덤으로 몇개 출력
+        15.f,                               // 땅에 떨어지는 속도
+        0.5f								// 바닥 Y (돌 아래쪽)
+    );
 }
 
 _int CTree::Update_GameObject(const _float& timeDelta)

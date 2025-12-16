@@ -116,6 +116,7 @@ void CRock::OnInteractiveDamaged()
     CWorldInteractive::OnInteractiveDamaged();
 
     this->m_OnDamage = true;
+
     //CParticleHelper::Spawn_Particle({ m_TransformCom->Get_Pos().x, m_TransformCom->Get_Pos().y + 0.3f, m_TransformCom->Get_Pos().z },
     //                                L"HitEffect_Star",
     //                                14);
