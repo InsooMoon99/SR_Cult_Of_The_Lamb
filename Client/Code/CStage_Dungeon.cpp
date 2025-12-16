@@ -30,10 +30,10 @@
 #include "CTrigger_Dungeon.h"
 #include "CUI_DungeonLootPanel.h"
 #include "CUI_Fade.h"
-#include "CUI_Skill.h"
 #include "CUI_SkillPanel.h"
 
 class CUI_DungeonLootPanel;
+#include "CEligos.h"
 
 CStage_Dungeon::CStage_Dungeon(DEVICE graphicDev)
     : CScene(graphicDev),
@@ -476,6 +476,19 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::MONSTER, gameObject),
         L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CFloaterMonster) failed");
     dynamic_cast<CFloaterMonster*>(gameObject)->Get_Transform()->Set_Pos(15.f, 1.f, 10.f);
+
+    ///////////////////////////////////////////////////////////////////////////////
+    //보스
+    ///////////////////////////////////////////////////////////////////////////////
+
+    // 보스 생성
+   CGameObject* m_Boss = CEligos::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(m_Boss, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase2::Create() returned null")
+
+        FAILED_CHECK_MSG(
+            layer->Add_GameObject(OBJTYPE::BOSS1, m_Boss),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Boss) failed");
+
 
     m_Layers.insert({ layerType, layer });
 

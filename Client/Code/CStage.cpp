@@ -97,9 +97,12 @@ HRESULT CStage::Ready_Scene()
     if (FAILED(Ready_Light()))
         return E_FAIL;
 
-    // 안은수 test
-    // 이젠 테스트 끝내야죠
+    // 이건 드롭 시스템 쓸려면 각 씬 마다 셋팅 해야함
     CDropSystem::GetInstance()->SetCurrentScene(this);
+
+
+    // 안은수 test
+    // 이젠 테스트 끝내야죠 
 
     struct SpawnInfo
     {
