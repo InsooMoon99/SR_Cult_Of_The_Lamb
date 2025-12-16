@@ -54,7 +54,9 @@ public:
 
 public:
     void    Spawn_Weapon();
-    void    Spawn_Follower();
+    void    Spawn_FollowerCow_Rescue();
+    void    Spawn_FollowerElephant_Rescue();
+    void    Spawn_FollowerPig_Rescue();
 
     void    Create_RoomTriggers();
     void    Create_Trigger_Between(Room fromRoom, Room toRoom,

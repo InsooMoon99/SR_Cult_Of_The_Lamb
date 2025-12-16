@@ -48,7 +48,9 @@ private:
     void Create_Trigger();
 
     // 추종자 생성
-    //void Spawn_Follower();
+    void Spawn_FollowerCow();
+    void Spawn_FollowerElephant();
+    void Spawn_FollowerPig();
 
 public:
     static CStage* Create(DEVICE graphicDev);
@@ -71,4 +73,8 @@ private:
     //CWorkBench*   m_WorkBench;
     //CKitchen*     m_Kitchen;
     //CFollowerCow* m_FollowerCow;
+
+private:
+    _float m_FollowerSpawnTimer = 0.f;
+    _int   m_FollowerSpawnStep  = 0;
 };

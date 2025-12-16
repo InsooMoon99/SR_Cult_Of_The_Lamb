@@ -17,15 +17,15 @@ public:
 
     // --- Building ---
     void Save_Building(const SavedBuilding& buildingInfo);
-    void Update_Building(const _vec3& vPos, _bool bBuilt);
+    void Update_Building(const _vec3& pos, _bool built);
     
     // --- Interactive Object ---
     void Save_Interactive(const SavedInteractive& interactiveInfo);
-    SavedInteractive* Get_InteractiveState(const _vec3& vPos);
+    SavedInteractive* Get_InteractiveState(const _vec3& pos);
 
     // --- NPC ---
     void      Save_NPC(const wstring& name, _bool canSpawn, _bool firstSpawn);
-    SavedNpc* Get_NPCState(const wstring& wstrName);
+    SavedNpc* Get_NPCState(const wstring& name);
 
 private:
     void Free() override;

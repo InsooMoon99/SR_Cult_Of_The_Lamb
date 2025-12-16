@@ -65,11 +65,11 @@ HRESULT CFollowerElephant::Add_Component()
         return E_FAIL;
 
     // Texture
-    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_COW);
+    m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_ELEPHANT);
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
-    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_COW, m_TextureCom });
+    m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_ELEPHANT, m_TextureCom });
 
-    m_AnimatorCom->Set_TextureType(COMPONENTTYPE::TEX_COW);
+    m_AnimatorCom->Set_TextureType(COMPONENTTYPE::TEX_ELEPHANT);
 
     // 디버그: 텍스처 컴포넌트 추가 성공 여부 확인
     if (!m_TextureCom)
