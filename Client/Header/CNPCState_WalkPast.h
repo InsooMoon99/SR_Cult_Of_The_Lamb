@@ -23,4 +23,5 @@ private:
 
 private:
     _bool m_SoundPlayed = false;
+    _float m_fSoundTimer = 0.f;
 };

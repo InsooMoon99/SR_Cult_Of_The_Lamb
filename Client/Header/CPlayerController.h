@@ -72,7 +72,9 @@ private:
     void Action_Refuse(const _float& timeDelta);
 
     // --- [기타 기능 함수] ---
-    _bool Living_Interaction(); // 채집, 건축 등의 상황, CheckStateTransition 내에서 사용
+    void Check_Gathering();
+    void Check_Construction();
+    // _bool Living_Interaction(); // Deprecated
 
 private:
 #pragma region Caching owner components

@@ -54,6 +54,7 @@
 #include "CPlayerConstruction.h"
 #include "CPlayerGathering.h"
 #include "CUI_ProgressBar.h"
+#include "CWeaponEquip.h"
 
 class CUIBuildMenu;
 
@@ -66,7 +67,9 @@ CStage::CStage(DEVICE graphicDev)
       m_PlayerSkillCom(nullptr),
       m_Terrain(nullptr),
       m_CookingMenu(nullptr),
-      m_FollowerCommand(nullptr)
+      m_FollowerCommand(nullptr),
+      m_PlayerGatherCom(nullptr),
+      m_PlayerConstructionCom(nullptr)
 { }
 
 CStage::~CStage()
@@ -176,6 +179,71 @@ void CStage::Initialize_Scene()
 
     // 던전 이동 트리거 만들기
     Create_Trigger();
+
+    // -----------------------------
+    // 저장된 건물 불러오기 기능
+    // -----------------------------
+    auto layer = m_Layers[LAYERTYPE::GAMELOGIC];
+    if (layer && CVillageStateMgr::GetInstance()->Get_State())
+    {
+        SavedSceneState* savedSceneState = CVillageStateMgr::GetInstance()->Get_State();
+        for (const auto& building : savedSceneState->savedBuildings)
+        {
+            if (building.isBuilt)
+            {
+                CGameObject* obj      = nullptr;
+                _vec3        spawnPos = building.pos;
+
+                switch (building.type)
+                {
+                case BUILDING_TYPE::TEMPLE:
+                {
+                    obj = CTemple::Create(m_GraphicDev);
+                    spawnPos.y += 2.f;
+                }
+                break;
+                case BUILDING_TYPE::KITCHEN:
+                {
+                    obj = CKitchen::Create(m_GraphicDev);
+                    spawnPos.y += 0.6f;
+
+                    // Kitchen은 CookingMenu 연결 필요
+                    if (auto kitchen = dynamic_cast<CKitchen*>(obj))
+                        kitchen->Set_CookingMenu(m_CookingMenu);
+                }
+                break;
+                default: break;
+                }
+
+                if (obj != nullptr)
+                {
+                    obj->Initialize_GameObject();
+                    auto transform = dynamic_cast<CTransform*>(obj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+                    if (transform) transform->Set_Pos(spawnPos);
+
+                    layer->Add_GameObject(OBJTYPE::BUILDING, obj);
+                }
+            }
+            else
+            {
+                _vec3 scale = { 1.f, 1.f, 1.f };
+                if (building.type == BUILDING_TYPE::TEMPLE) scale = _vec3(4.f, 2.8f, 1.f);
+                else if (building.type == BUILDING_TYPE::KITCHEN) scale = _vec3(3.5f, 2.5f, 1.f);
+
+                CConstructCircle* circle = CConstructCircle::Create(m_GraphicDev, scale);
+                if (circle != nullptr)
+                {
+                    circle->Setup_Construction(building.type);
+                    circle->Initialize_GameObject();
+
+                    auto transform = dynamic_cast<CTransform*>(circle->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+                    if (transform) transform->Set_Pos(building.pos);
+
+                    layer->Add_GameObject(OBJTYPE::CONSTRUCTION_SITE, circle);
+                }
+            }
+        }
+    }
 }
 
 _int CStage::Update_Scene(const _float& timeDelta)
@@ -323,6 +391,13 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     m_PlayerGatherCom = dynamic_cast<CPlayerGathering*>(gameObject->Get_Component(
         ID_STATIC,
         COMPONENTTYPE::GATHERING));
+
+    m_WeaponEquipCom = dynamic_cast<CWeaponEquip*>(gameObject->Get_Component(
+        ID_STATIC,
+        COMPONENTTYPE::WEAPON_EQUIP));
+
+    if (m_WeaponEquipCom && m_WeaponEquipCom->Get_WeaponEquipped())
+        m_WeaponEquipCom->Unequip_Weapon(false);
 
     // -----------------------------
     // Camera
@@ -516,61 +591,9 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     }
 
     // -----------------------------
-    // 저장된 건물 불러오기 기능
+    // 저장된 건물 불러오기 기능은 Initialize_Scene으로 이동함
+    // 이유: UI 레이어(CookingMenu 등)가 초기화된 후에 건물을 생성해야 의존성 주입이 가능함.
     // -----------------------------
-    if (SavedSceneState* savedSceneState = CVillageStateMgr::GetInstance()->Get_State())
-    {
-        for (const auto& building : savedSceneState->savedBuildings)
-        {
-            if (building.isBuilt)
-            {
-                CGameObject* obj      = nullptr;
-                _vec3        spawnPos = building.pos;
-
-                switch (building.type)
-                {
-                case BUILDING_TYPE::TEMPLE:
-                    obj = CTemple::Create(m_GraphicDev);
-                    spawnPos.y += 2.f;
-                    break;
-
-                case BUILDING_TYPE::KITCHEN:
-                    obj = CKitchen::Create(m_GraphicDev);
-                    spawnPos.y += 0.6f;
-                    break;
-
-                default: break;
-                }
-
-                if (obj)
-                {
-                    obj->Initialize_GameObject();
-                    auto transform = dynamic_cast<CTransform*>(obj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-                    if (transform) transform->Set_Pos(spawnPos);
-
-                    layer->Add_GameObject(OBJTYPE::BUILDING, obj);
-                }
-            }
-            else
-            {
-                _vec3 scale = { 1.f, 1.f, 1.f };
-                if (building.type == BUILDING_TYPE::TEMPLE) scale = _vec3(4.f, 2.8f, 1.f);
-                else if (building.type == BUILDING_TYPE::KITCHEN) scale = _vec3(3.5f, 2.5f, 1.f);
-
-                CConstructCircle* circle = CConstructCircle::Create(m_GraphicDev, scale);
-                if (circle)
-                {
-                    circle->Setup_Construction(building.type);
-                    circle->Initialize_GameObject();
-
-                    auto transform = dynamic_cast<CTransform*>(circle->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-                    if (transform) transform->Set_Pos(building.pos);
-
-                    layer->Add_GameObject(OBJTYPE::CONSTRUCTION_SITE, circle);
-                }
-            }
-        }
-    }
 
     m_Layers.insert({ layerType, layer });
 

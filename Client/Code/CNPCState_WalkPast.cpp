@@ -23,6 +23,9 @@ void CNPCState_WalkPast::Enter()
 {
     CNPCState::Enter();
 
+    m_SoundPlayed = false;
+    m_fSoundTimer = 0.f;
+
     if (m_OwnerAnimator && m_Controller)
     {
         wstring key = m_Controller->Get_AnimKeyPrefix() + L"WalkPast";
@@ -44,14 +47,14 @@ _int CNPCState_WalkPast::Update_State(const _float& timeDelta)
 #pragma region ㅎㅇ 효과음. 0.16초지나면 한 번 재생
     if (!m_SoundPlayed)
     {
-        g_Timers[TIMER_SOUND_FOL_WALKPAST] += timeDelta;
+        m_fSoundTimer += timeDelta;
 
-        if (g_Timers[TIMER_SOUND_FOL_WALKPAST] >= 0.16f)
+        if (m_fSoundTimer >= 0.16f)
         {
             CSoundMgr::GetInstance()->Play_Once(L"Follower/wave4.wav", SOUND_EFFECT, 0.5f);
 
-            g_Timers[TIMER_SOUND_FOL_WALKPAST] = 0.f;
-            m_SoundPlayed                      = true;
+            m_fSoundTimer = 0.f;
+            m_SoundPlayed = true;
         }
     }
 #pragma endregion

@@ -52,10 +52,10 @@ void CPlayerConstruction::Action_Construction(const _float& timeDelta)
             m_ProgressBar->Set_IsActive(true);
         }
 
-#pragma region 건축 효과음. 0.5초마다 재생
+#pragma region 건축 효과음. 0.6초마다 재생
         g_Timers[TIMER_SOUND_PL_CONSTRUCT] += timeDelta;
 
-        if (g_Timers[TIMER_SOUND_PL_CONSTRUCT] > 0.7f)
+        if (g_Timers[TIMER_SOUND_PL_CONSTRUCT] >= 0.6f)
         {
             CSoundMgr::GetInstance()->Play_Once(L"Construction/Hammering_2.wav", SOUND_EFFECT, 0.5f);
             g_Timers[TIMER_SOUND_PL_CONSTRUCT] = 0.f;
@@ -66,13 +66,18 @@ void CPlayerConstruction::Action_Construction(const _float& timeDelta)
 
 void CPlayerConstruction::OnOverlapEnter(CCollider* self, CCollider* other)
 {
-    if (other->Get_CollisionLayer() == COLLISION_LAYERTYPE::CONSTRUCTION_SITE)
-        m_pConstructZone = dynamic_cast<CConstructCircle*>(other->Get_Owner());
+    if (other->Get_CollisionLayer() == COLLISION_LAYERTYPE::CONSTRUCTION_SITE ||
+        other->Get_CollisionLayer() == COLLISION_LAYERTYPE::TRIGGER)
+    {
+        if (auto circle = dynamic_cast<CConstructCircle*>(other->Get_Owner()))
+            m_pConstructZone = circle;
+    }
 }
 
 void CPlayerConstruction::OnOverlapExit(CCollider* self, CCollider* other)
 {
-    if (other->Get_CollisionLayer() == COLLISION_LAYERTYPE::CONSTRUCTION_SITE)
+    if (other->Get_CollisionLayer() == COLLISION_LAYERTYPE::CONSTRUCTION_SITE ||
+        other->Get_CollisionLayer() == COLLISION_LAYERTYPE::TRIGGER)
     {
         if (m_pConstructZone == dynamic_cast<CConstructCircle*>(other->Get_Owner()))
             m_pConstructZone = nullptr;

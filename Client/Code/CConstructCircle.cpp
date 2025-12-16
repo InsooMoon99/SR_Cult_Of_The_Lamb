@@ -49,7 +49,7 @@ void CConstructCircle::Initialize_GameObject()
     m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(90.f));
 
     m_BoxCollCom->Set_RawSize(_vec3(1.5f, 1.f, 3.f));
-    m_BoxCollCom->Set_CollisionLayer(COLLISION_LAYERTYPE::CONSTRUCTION_SITE);
+    m_BoxCollCom->Set_CollisionLayer(COLLISION_LAYERTYPE::TRIGGER);
 
     m_OutlineEnabled = false;
 }

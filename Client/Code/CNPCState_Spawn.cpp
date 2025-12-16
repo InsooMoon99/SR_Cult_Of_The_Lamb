@@ -28,7 +28,7 @@ void CNPCState_Spawn::Enter()
 
     CSoundMgr::GetInstance()->Play_Once(L"Follower/Follower_Start_Indo.wav",
                                         SOUND_EFFECT,
-                                        0.5f);
+                                        0.38f);
 }
 
 _int CNPCState_Spawn::Update_State(const _float& timeDelta)

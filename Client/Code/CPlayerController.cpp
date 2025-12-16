@@ -211,8 +211,11 @@ void CPlayerController::CheckStateTransition()
         if (io.WantCaptureMouse)
             return;
 
-        // 좌클릭으로 채집, 건축
-        if (Living_Interaction())
+        // 좌클릭으로 채집
+        Check_Gathering();
+        if (m_OwnerStateCom->Get_State() == ACTORSTATE::PLAYER_BERRY ||
+            m_OwnerStateCom->Get_State() == ACTORSTATE::PLAYER_WOOD ||
+            m_OwnerStateCom->Get_State() == ACTORSTATE::PLAYER_STONE)
             return;
 
         if (curState == ACTORSTATE::PLAYER_ROLL ||
@@ -290,7 +293,13 @@ void CPlayerController::CheckStateTransition()
     // [우선순위 3] E 키
     else if (inputMgr->KeyPress(DIK_E))
     {
-        if (Living_Interaction())
+        Check_Gathering();
+        Check_Construction();
+
+        if (m_OwnerStateCom->Get_State() == ACTORSTATE::PLAYER_BERRY ||
+            m_OwnerStateCom->Get_State() == ACTORSTATE::PLAYER_WOOD ||
+            m_OwnerStateCom->Get_State() == ACTORSTATE::PLAYER_STONE ||
+            m_OwnerStateCom->Get_State() == ACTORSTATE::PLAYER_HAMMER)
             return;
     }
 
@@ -520,8 +529,8 @@ void CPlayerController::Action_TripleSkill(const _float& timeDelta)
 
 void CPlayerController::Action_Construction(const _float& timeDelta)
 {
-    bool bStopConstruction = CDInputMgr::GetInstance()->KeyUp(DIK_E) ||
-                             CDInputMgr::GetInstance()->MouseUp(DIM_LB);
+    bool bStopConstruction = CDInputMgr::GetInstance()->KeyUp(DIK_E);
+                             //CDInputMgr::GetInstance()->MouseUp(DIM_LB);
 
     if (!bStopConstruction)
     {
@@ -576,7 +585,7 @@ void CPlayerController::Action_Refuse(const _float& timeDelta)
     }
 }
 
-_bool CPlayerController::Living_Interaction()
+void CPlayerController::Check_Gathering()
 {
     // 채집 상호작용
     if (m_OwnerGatherCom->GetInteractiveObj() != nullptr)
@@ -588,36 +597,44 @@ _bool CPlayerController::Living_Interaction()
             if (m_OwnerStateCom->Get_State() != ACTORSTATE::PLAYER_BERRY)
                 m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_BERRY);
             m_OwnerMovementCom->Stop();
-            return true;
+            //return true;
         }
+        break;
         case CWorldInteractive::TYPE::WOOD:
         {
             if (m_OwnerStateCom->Get_State() != ACTORSTATE::PLAYER_WOOD)
                 m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_WOOD);
             m_OwnerMovementCom->Stop();
-            return true;
+            //return true;
         }
+        break;
         case CWorldInteractive::TYPE::ROCK:
         {
             if (m_OwnerStateCom->Get_State() != ACTORSTATE::PLAYER_STONE)
                 m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_STONE);
             m_OwnerMovementCom->Stop();
-            return true;
+            //return true;
         }
+        break;
         default: break;
         }
     }
 
+    //return false;
+}
+
+void CPlayerController::Check_Construction()
+{
     // 건축 상호작용
     if (m_OwnerConstructionCom && m_OwnerConstructionCom->Get_ConstructZone())
     {
         if (m_OwnerStateCom->Get_State() != ACTORSTATE::PLAYER_HAMMER)
             m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_HAMMER);
         m_OwnerMovementCom->Stop();
-        return true;
+        //return true;
     }
 
-    return false;
+    //return false;
 }
 
 CPlayerController* CPlayerController::Create(DEVICE graphicDev)

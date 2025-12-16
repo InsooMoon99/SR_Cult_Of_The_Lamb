@@ -1,12 +1,12 @@
 ﻿#include "pch.h"
 #include "CNPCState_Build.h"
 
-#include "CSoundMgr.h"
 #include "CAnimator.h"
 #include "CGameObject.h"
 #include "CNPCBase.h"
 #include "CNPCController.h"
 #include "CNPCStateMachine.h"
+#include "CSoundMgr.h"
 
 CNPCState_Build::CNPCState_Build(CNPCBase* owner, CNPCStateMachine* stateMachine)
     : CNPCState(owner, stateMachine)
@@ -30,10 +30,10 @@ _int CNPCState_Build::Update_State(const _float& timeDelta)
 {
     CNPCState::Update_State(timeDelta);
 
-#pragma region 건축 효과음. 0.5초마다 재생
+#pragma region 건축 효과음. 0.53초마다 재생
             g_Timers[TIMER_SOUND_FOL_CONSTRUCT] += timeDelta;
 
-            if (g_Timers[TIMER_SOUND_FOL_CONSTRUCT] > 0.5f)
+            if (g_Timers[TIMER_SOUND_FOL_CONSTRUCT] >= 0.53f)
             {
                 CSoundMgr::GetInstance()->Play_Once(L"Construction/Hammering_16.wav", SOUND_EFFECT, 0.5f);
                 g_Timers[TIMER_SOUND_FOL_CONSTRUCT] = 0.f;

@@ -70,6 +70,7 @@ enum class COLLISION_LAYERTYPE
     DEFAULT, // 모든 충돌
     PLAYER,
     ENEMY,
+    NPC,
     WALL,
     PLAYERPROJECTILE,
     BOSSPROJECTILE,

@@ -125,7 +125,6 @@ void CNPCState_Pray::Exit()
     CNPCState::Exit();
 
     CSoundMgr::GetInstance()->Stop_Sound(L"Follower/Follower_Praying.wav");
-
 }
 
 HRESULT CNPCState_Pray::Ready_State()
@@ -148,5 +147,7 @@ CNPCState_Pray* CNPCState_Pray::Create(CNPCBase* owner, CNPCStateMachine* stateM
 
 void CNPCState_Pray::Free()
 {
+    CSoundMgr::GetInstance()->Stop_Sound(L"Follower/Follower_Praying.wav");
+
     CNPCState::Free();
 }
