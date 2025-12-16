@@ -46,7 +46,10 @@ HRESULT CEligos::Ready_GameObject()
     m_RigidbodyCom->Set_UseFriction(true);
     m_RigidbodyCom->Set_UseGravity(false);
 
-    m_RigidbodyCom->Set_Friction(0.3f);
+    m_RigidbodyCom->Set_VelocityLimit({ 50.f,100.f,50.f });
+
+    m_RigidbodyCom->Set_Friction(0.2f);
+    m_RigidbodyCom->Set_Mass(1.2f);
     //
 
     m_TransformCom->Set_Pos(0.f, 0.f, 0.f);
@@ -109,6 +112,9 @@ void CEligos::Render_Editor()
 
     _int num = m_StateMachine->GetCurStateNum();
 
+
+
+
     for (int i = 0; i < BOSS_END; i++)
     {
         if (ImGui::Button(GetBossStateName(i)))
@@ -166,7 +172,7 @@ void CEligos::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"Eligos_burpcharge", 50, 0.02f, _vec2(1.0f, 1.0f));
     m_AnimatorCom->Create_Animation(L"Eligos_burp", 42, 0.02f, _vec2(1.0f, 1.0f));
     m_AnimatorCom->Create_Animation(L"Eligos_attackcharge", 59, 0.02f, _vec2(1.0f, 1.0f));
-    m_AnimatorCom->Create_Animation(L"Eligos_attack", 32, 0.02f, _vec2(1.0f, 1.0f));
+    m_AnimatorCom->Create_Animation(L"Eligos_attack", 32, 0.04f, _vec2(1.0f, 1.0f));
 
     m_AnimatorCom->Create_Animation(L"Eligos_attackcharge_bullet", 59, 0.02f, _vec2(1.0f, 1.0f));
     m_AnimatorCom->Create_Animation(L"Eligos_attack_bullet", 32, 0.06f, _vec2(1.0f, 1.0f));

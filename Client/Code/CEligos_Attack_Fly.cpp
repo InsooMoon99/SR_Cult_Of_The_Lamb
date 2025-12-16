@@ -44,7 +44,7 @@ HRESULT CEligos_Attack_Fly::Ready_State()
     m_pOwnerTransformCom = static_cast<CTransform*>(m_pOwner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
     m_pOwnerAnimatorCom = static_cast<CAnimator*>(m_pOwner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
 
-
+    Find_Player();
 
     return S_OK;
 }
@@ -62,7 +62,7 @@ _int CEligos_Attack_Fly::Update_State(const _float& timeDelta)
     {
     case PHASE::WAIT:
 
-        if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
+        if (m_pOwnerAnimatorCom->Is_AnimationFinished())
         {
             m_ePhase = PHASE::READY;
             m_StartFlag = false;
@@ -79,7 +79,7 @@ _int CEligos_Attack_Fly::Update_State(const _float& timeDelta)
             m_StartFlag = true;
 
         }
-        if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
+        if (m_pOwnerAnimatorCom->Is_AnimationFinished())
         {
             m_StartFlag = false;
 
@@ -93,13 +93,13 @@ _int CEligos_Attack_Fly::Update_State(const _float& timeDelta)
         if (m_StartFlag == false)
         {
             m_pOwnerAnimatorCom->Play_Animation(L"Eligos_burp", ANIMSTATE::ONCE);
-            SpawnFlies(10,0.3,0.3, 1);
+            SpawnFlies(10,0.6,0.6, 1);
             m_StartFlag = true;
 
         }
 
 
-        if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
+        if (m_pOwnerAnimatorCom->Is_AnimationFinished())
         {
 
             m_StartFlag = false;
@@ -116,11 +116,12 @@ void CEligos_Attack_Fly::LateUpdate_State(const _float& timeDelta)
 }
 void CEligos_Attack_Fly::SpawnFlies(int fliesNum, float noiseAngle, float noiseDist, float baseDist)
 {
-    Find_Player();
+
     for (int i = 0; i < fliesNum; i++)
     {
     int angle = (360/fliesNum)*i;
     float dist = baseDist;
+
         angle += (CRandomMgr::GetInstance()->Get_Int_Random(int(-noiseAngle * 1000), + int(noiseAngle * 1000))) / 1000.f;
         dist += (CRandomMgr::GetInstance()->Get_Int_Random(int( - noiseDist * 1000), + int (noiseDist * 1000))) / 1000.f;
     
