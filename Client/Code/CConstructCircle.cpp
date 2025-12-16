@@ -20,6 +20,7 @@
 #include "CTimerMgr.h"
 #include "CTransform.h"
 #include "CVillageStateMgr.h"
+#include "CPlayerConstruction.h"
 
 CConstructCircle::CConstructCircle(DEVICE graphicDev)
     : CBuildingBase(graphicDev)
@@ -170,6 +171,20 @@ void CConstructCircle::OnStayOverlap(CCollider* self, CCollider* other)
             // 월드 상태 업데이트 (건설 완료)
             _vec3 myPos = m_TransformCom->Get_Pos();
             CVillageStateMgr::GetInstance()->Update_Building(myPos, true);
+
+            CGameObject* playerObj;
+            CManagement::GetInstance()->Get_PersistentObject(L"Player", &playerObj);
+            if (playerObj)
+            {
+                CPlayerConstruction* playerConstruction = dynamic_cast<CPlayerConstruction*>(
+                    playerObj->Get_Component(ID_STATIC, COMPONENTTYPE::CONSTRUCTION));
+
+                if (playerConstruction)
+                {
+                    playerConstruction->BuildingCompleted();
+                }
+            }
+
 
             this->Mark_As_PendingKill();
         }

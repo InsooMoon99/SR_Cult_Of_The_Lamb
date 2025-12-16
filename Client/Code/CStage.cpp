@@ -1,7 +1,7 @@
 ﻿#include "pch.h"
 #include "CStage.h"
 
-#include <CSoundMgr.h>
+#include "CSoundMgr.h"
 #include "CCameraController.h"
 #include "CCamSetupBuilder.h"
 #include "CChest.h"
@@ -50,6 +50,10 @@
 #include "CVillageStateMgr.h"
 #include "CWorkBench.h"
 #include "ItemInstance.h"
+#include "CUI_SkillPanel.h"
+#include "CPlayerConstruction.h"
+#include "CPlayerGathering.h"
+#include "CUI_ProgressBar.h"
 
 class CUIBuildMenu;
 
@@ -311,6 +315,16 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
 
     m_PlayerSkillCom = dynamic_cast<CPlayerSkill*>(gameObject->Get_Component(ID_STATIC, COMPONENTTYPE::PL_SKILL));
     NULL_CHECK_RETURN(m_PlayerSkillCom, E_FAIL);
+
+
+    m_PlayerConstructionCom =
+        dynamic_cast<CPlayerConstruction*>(gameObject->Get_Component(
+            ID_STATIC,
+            COMPONENTTYPE::CONSTRUCTION));
+
+    m_PlayerGatherCom = dynamic_cast<CPlayerGathering*>(gameObject->Get_Component(
+        ID_STATIC,
+        COMPONENTTYPE::GATHERING));
 
     // -----------------------------
     // Camera
@@ -619,15 +633,6 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
             &gameObject),
         L"Persistent object setup failed: UI_Weapon");
 
-    FAILED_CHECK_MSG(
-        Engine::AcquirePersistentObject<CUI_Skill>(
-            OBJTYPE::UI,
-            L"UI_Skill",
-            m_GraphicDev,
-            layer,
-            &gameObject),
-        L"Persistent object setup failed: UI_Skill");
-
     //왼쪽 상단 스킬 아이콘 UI
     CUIIcon* pgameObject = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_ICON);
     pgameObject->Set_TextureIndex(1);
@@ -674,12 +679,30 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     if (uiCookingMenu)
         m_CookingMenu = uiCookingMenu;
 
+    //TODO ?? 이게 필요한가?
     CUI_FollowerCommand* followerCommand = CUI_FollowerCommand::Create(m_GraphicDev);
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, followerCommand),
                      L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUI_FollowerCommand) failed");
 
     if (followerCommand)
         m_FollowerCommand = followerCommand;
+
+
+    FAILED_CHECK_MSG(
+        Engine::AcquirePersistentObject<CUI_SkillPanel>(
+            OBJTYPE::UI,
+            L"UI_SkillPanel",
+            m_GraphicDev,
+            layer,
+            &gameObject),
+        L"Persistent object setup failed: UI_SkillPanel");
+
+    CUI_ProgressBar* uiProgressBar = CUI_ProgressBar::Create(m_GraphicDev);
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiProgressBar),
+        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UI_ProgressBar) failed");
+
+    m_PlayerGatherCom->Set_ProgressBar(uiProgressBar);
+    m_PlayerConstructionCom->Set_ProgressBar(uiProgressBar);
 
     m_Layers.insert({ layerType, layer });
 

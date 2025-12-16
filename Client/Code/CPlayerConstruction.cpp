@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
+#include "CComponent.h"
 #include "CPlayerConstruction.h"
-
+#include "CUI_ProgressBar.h"
 #include "CCollider.h"
 #include "CConstructCircle.h"
 #include "CSceneMgr.h"
@@ -42,6 +43,12 @@ void CPlayerConstruction::Action_Construction(const _float& timeDelta)
 {
     if (m_pConstructZone)
     {
+        if (m_ProgressBar)
+        {
+            _float progress = m_pConstructZone->Get_Progress();
+            m_ProgressBar->Set_Progress(progress / 100.f);
+            m_ProgressBar->Set_IsActive(true);
+        }
         // Add custom logic here if needed
     }
 }
@@ -59,6 +66,15 @@ void CPlayerConstruction::OnOverlapExit(CCollider* self, CCollider* other)
         if (m_pConstructZone == dynamic_cast<CConstructCircle*>(other->Get_Owner()))
             m_pConstructZone = nullptr;
     }
+}
+
+void CPlayerConstruction::BuildingCompleted() // 초기화
+{
+	if (m_ProgressBar)
+	{
+		m_ProgressBar->Set_IsActive(false);
+	}
+
 }
 
 CPlayerConstruction* CPlayerConstruction::Create(DEVICE graphicDev)

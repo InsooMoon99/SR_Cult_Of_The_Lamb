@@ -130,7 +130,7 @@ private:
     _float  m_AttackSpeed;   // 공격 속도
 
     _float  m_Hp;
-    _float  m_MaxHp = 6.f;
+    _float  m_MaxHp = 100.f;
     _float  m_Mp;
     _float  m_MaxMp = 10.f;
     _float  m_Speed;

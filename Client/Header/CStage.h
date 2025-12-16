@@ -12,6 +12,10 @@ class CWeaponEquip;
 class CInventory;
 class CUI_FollowerCommand;
 class CUICookingMenu;
+class CPlayerGathering;
+class CPlayerConstruction;
+class CFollowerCow;
+class CKitchen;
 
 class CStage : public CScene
 {
@@ -58,4 +62,10 @@ private:
     CTerrain*            m_Terrain;
     CUICookingMenu*      m_CookingMenu;
     CUI_FollowerCommand* m_FollowerCommand;
+    CPlayerGathering* m_PlayerGatherCom;
+
+    //CPlayerConstruction* m_PlayerConstructionCom;
+    //CWorkBench*   m_WorkBench;
+    //CKitchen*     m_Kitchen;
+    //CFollowerCow* m_FollowerCow;
 };

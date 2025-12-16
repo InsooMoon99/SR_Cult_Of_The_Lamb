@@ -32,6 +32,8 @@ public:
     static CTarotStageController* Create(DEVICE graphicDev);
     void Create_Cards();
 
+    HRESULT Add_Component();
+
 protected:
     void Free() override;
 

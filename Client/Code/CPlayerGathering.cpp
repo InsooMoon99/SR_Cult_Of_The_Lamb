@@ -1,6 +1,5 @@
 ﻿#include "pch.h"
 #include "CPlayerGathering.h"
-
 #include "CAnimator.h"
 #include "CCollider.h"
 #include "CCombatStat.h"
@@ -10,6 +9,7 @@
 #include "CState.h"
 #include "CTransform.h"
 #include "CWorldInteractive.h"
+#include "CUI_ProgressBar.h"
 
 CPlayerGathering::CPlayerGathering(DEVICE graphicDev)
     : CComponent(graphicDev),
@@ -57,13 +57,23 @@ _int CPlayerGathering::Update_Component(const _float& timeDelta)
     if (m_Target == nullptr ||
         CDInputMgr::GetInstance()->MouseUp(DIM_LB) ||
         CDInputMgr::GetInstance()->KeyUp(DIK_E)/*&& m_Target */ ||
-        m_Target->Get_Hovering() == false)
+        m_Target->Get_Hovering() == false&&m_ProgressBar)
     {
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
         m_AttackTimer = 0;
+        m_ProgressBar->Set_IsActive(false);
         return exit;
     }
 
+
+    if (m_Target && m_ProgressBar)
+    {
+        m_ProgressBar->Set_Progress(CalcProgress());
+        m_ProgressBar->Set_IsActive(true);
+
+        CCombatStat* combat = dynamic_cast<CCombatStat*>(m_Target->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
+
+    }
     //애니메이션 방향 결정
     _vec3 vTargetDir = m_Target->Get_Transform()->Get_Pos();
 
@@ -142,7 +152,7 @@ _int CPlayerGathering::Update_Component(const _float& timeDelta)
         }
         break;
     }
-
+    
     return exit;
 }
 
@@ -165,6 +175,17 @@ void CPlayerGathering::OnEndOverlap(CCollider* self, CCollider* other)
 {
     if (other->Get_Owner() == m_Target)
         m_Target = nullptr;
+}
+
+_float CPlayerGathering::CalcProgress()
+{
+    CCombatStat* combat = dynamic_cast<CCombatStat*>(m_Target->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
+    _float cur = (_float)combat->Get_Hp();
+    _float max = (_float)combat->Get_MaxHp();
+
+   m_Progress = (1.f - cur / max);
+
+   return std::clamp(m_Progress, 0.f, 1.f);
 }
 
 CPlayerGathering* CPlayerGathering::Create(DEVICE graphicDev)

@@ -226,6 +226,7 @@
     <ClInclude Include="..\Header\CNPCState_WalkPast.h" />
     <ClInclude Include="..\Header\CFog.h" />
     <ClInclude Include="..\Header\CFogMgr.h" />
+    <ClInclude Include="..\Header\CRunLootLog.h" />
     <ClInclude Include="..\Header\CTarotNPC.h" />
     <ClInclude Include="..\Header\CUICookedFoodCell.h" />
     <ClInclude Include="..\Header\CUICookingCell.h" />
@@ -343,9 +344,11 @@
     <ClInclude Include="..\Header\CUIWeapon.h" />
     <ClInclude Include="..\Header\CUI_BossHp.h" />
     <ClInclude Include="..\Header\CUI_Dialogue.h" />
+    <ClInclude Include="..\Header\CUI_DungeonLootPanel.h" />
     <ClInclude Include="..\Header\CUI_Fade.h" />
     <ClInclude Include="..\Header\CUI_FollowerCommand.h" />
     <ClInclude Include="..\Header\CUI_MonsterHp.h" />
+    <ClInclude Include="..\Header\CUI_ProgressBar.h" />
     <ClInclude Include="..\Header\CUI_Skill.h" />
     <ClInclude Include="..\Header\CUI_SkillPanel.h" />
     <ClInclude Include="..\Header\CVillageStateMgr.h" />
@@ -424,6 +427,7 @@
     <ClCompile Include="..\Code\CNPCState_WalkPast.cpp" />
     <ClCompile Include="..\Code\CFog.cpp" />
     <ClCompile Include="..\Code\CFogMgr.cpp" />
+    <ClCompile Include="..\Code\CRunLootLog.cpp" />
     <ClCompile Include="..\Code\CTarotNPC.cpp" />
     <ClCompile Include="..\Code\CUICookedFoodCell.cpp" />
     <ClCompile Include="..\Code\CUICookingCell.cpp" />
@@ -537,9 +541,11 @@
     <ClCompile Include="..\Code\CUIWeapon.cpp" />
     <ClCompile Include="..\Code\CUI_BossHp.cpp" />
     <ClCompile Include="..\Code\CUI_Dialogue.cpp" />
+    <ClCompile Include="..\Code\CUI_DungeonLootPanel.cpp" />
     <ClCompile Include="..\Code\CUI_Fade.cpp" />
     <ClCompile Include="..\Code\CUI_FollowerCommand.cpp" />
     <ClCompile Include="..\Code\CUI_MonsterHp.cpp" />
+    <ClCompile Include="..\Code\CUI_ProgressBar.cpp" />
     <ClCompile Include="..\Code\CUI_Skill.cpp" />
     <ClCompile Include="..\Code\CUI_SkillPanel.cpp" />
     <ClCompile Include="..\Code\CVillageStateMgr.cpp" />

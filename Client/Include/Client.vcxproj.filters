@@ -358,6 +358,15 @@
     <Filter Include="03. GameObject\11. NPC\99. Class for FSM\01. State\11. Rescued">
       <UniqueIdentifier>{89d3ba52-ea7d-4479-8975-f5a363c7f7d6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="91. RunLootLog">
+      <UniqueIdentifier>{9f4546c0-9cd4-470c-bfe4-7f9d5f1a3a16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. UI\01. UI\13. UI_DungeonLootPanel">
+      <UniqueIdentifier>{efba4223-937b-4295-bccd-d3e92a26a09b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. UI\01. UI\14. UI_ProgressBar">
+      <UniqueIdentifier>{500a6299-4aa2-4e0c-8e0d-6551a299aa09}</UniqueIdentifier>
+    </Filter>
     <Filter Include="03. GameObject\04. Boss\03.MiniBoss">
       <UniqueIdentifier>{b8e27f44-5ee8-4e47-aa08-3d9d38c59df5}</UniqueIdentifier>
     </Filter>
@@ -839,9 +848,6 @@
     <ClInclude Include="..\Header\CUICookingCell.h">
       <Filter>05. UI\01. UI\11. UICooking</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CUICookedFoodCell.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\CInteractionChecker.h">
       <Filter>03. GameObject\11. NPC\98. Components\00. Interaction Checker</Filter>
     </ClInclude>
@@ -898,6 +904,27 @@
     </ClInclude>
     <ClInclude Include="..\Header\CChest.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUI_Skill.h">
+      <Filter>05. UI\01. UI\03. UIWeapon&amp;Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUI_SkillPanel.h">
+      <Filter>05. UI\01. UI\03. UIWeapon&amp;Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUI_FollowerCommand.h">
+      <Filter>05. UI\01. UI\12. UI_FollowerCommand</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUICookedFoodCell.h">
+      <Filter>05. UI\01. UI\11. UICooking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CTarotNPC.h">
+      <Filter>03. GameObject\11. NPC\97. Tarot NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CRunLootLog.h">
+      <Filter>91. RunLootLog</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUI_DungeonLootPanel.h">
+      <Filter>05. UI\01. UI\13. UI_DungeonLootPanel</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CBoss2_BulletAttack1.h">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
@@ -964,6 +991,9 @@
     </ClInclude>
     <ClInclude Include="..\Header\CBoss2_Follower.h">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUI_ProgressBar.h">
+      <Filter>05. UI\01. UI\14. UI_ProgressBar</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1402,9 +1432,6 @@
     <ClCompile Include="..\Code\CUICookingCell.cpp">
       <Filter>05. UI\01. UI\11. UICooking</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CUICookedFoodCell.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\CInteractionChecker.cpp">
       <Filter>03. GameObject\11. NPC\98. Components\00. Interaction Checker</Filter>
     </ClCompile>
@@ -1461,6 +1488,27 @@
     </ClCompile>
     <ClCompile Include="..\Code\CChest.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_Skill.cpp">
+      <Filter>05. UI\01. UI\03. UIWeapon&amp;Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_SkillPanel.cpp">
+      <Filter>05. UI\01. UI\03. UIWeapon&amp;Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_FollowerCommand.cpp">
+      <Filter>05. UI\01. UI\12. UI_FollowerCommand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUICookedFoodCell.cpp">
+      <Filter>05. UI\01. UI\11. UICooking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CTarotNPC.cpp">
+      <Filter>03. GameObject\11. NPC\97. Tarot NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CRunLootLog.cpp">
+      <Filter>91. RunLootLog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_DungeonLootPanel.cpp">
+      <Filter>05. UI\01. UI\13. UI_DungeonLootPanel</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CBoss2_BulletAttack1.cpp">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
@@ -1524,6 +1572,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CBoss2_Follower.cpp">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_ProgressBar.cpp">
+      <Filter>05. UI\01. UI\14. UI_ProgressBar</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

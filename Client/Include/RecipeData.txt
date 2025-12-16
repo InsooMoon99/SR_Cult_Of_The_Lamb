@@ -62,11 +62,11 @@
       "ingredients": [
         {
           "id": 1001,
-          "count": 3
+          "count": 1
         },
       {
           "id": 1005,
-          "count": 5
+          "count": 1
         }
       ],
       "UIFileName": "Icon_CookingFire",
@@ -81,11 +81,11 @@
       "ingredients": [
         {
           "id": 1001,
-          "count": 4
+          "count": 1
         },
     {
     "id": 1005,
-    "count": 3
+    "count": 1
     }
       ],
       "UIFileName": "Icon_Temple",

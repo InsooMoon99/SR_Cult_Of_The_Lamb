@@ -19,7 +19,8 @@ public:
 
 public:
     static CUIIcon* Create(DEVICE graphicDev, COMPONENTTYPE texProtoTag);
-
+    void    Set_Alpha(int alpha) { m_Alpha = alpha; }
+    int    Get_Alpha() { return m_Alpha; }
     void        Set_TextureIndex(int textureIndex) { m_textureIndex = textureIndex; }
     CTransform* Get_Transform() const { return m_TransformCom; }
     bool SetCloneTexAspectScale(_vec3 vec);
@@ -29,6 +30,7 @@ private:
     static int m_nextID;
     int        m_textureIndex = 0;
     bool       m_Register;
+    int m_Alpha =1 ;
 private:
     void Free() override;
 };
