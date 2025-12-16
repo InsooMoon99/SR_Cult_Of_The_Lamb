@@ -150,7 +150,7 @@ void CStage_Dungeon::Initialize_Scene()
     CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Battle2.wav", 0.4f, true, 1.f);
 
     // 테스 트
-    m_PlayerTransform->Set_Pos({ 250,10,1 });
+    m_PlayerTransform->Set_Pos({ 250,1,10 });
 }
 
 _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
@@ -524,9 +524,9 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
         layer->Add_GameObject(OBJTYPE::BOSS1, m_Boss),
         L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Boss) failed");
 
-    //CTransform* m_BTransform = dynamic_cast<CTransform*>(
-    //    m_Boss->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-    //m_BTransform->Set_Pos({ 250,1,10 });
+    CTransform* m_BTransform = dynamic_cast<CTransform*>(
+        m_Boss->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+    m_BTransform->Set_Pos({ 280,3,10 });
 
     m_Layers.insert({ layerType, layer });
     return S_OK;

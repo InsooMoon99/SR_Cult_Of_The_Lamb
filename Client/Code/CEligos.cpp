@@ -13,6 +13,7 @@
 #include "CRigidbody.h"
 
 #include "CEligos_StateMachine.h"
+#include "CWall.h"
 
 
 
@@ -38,7 +39,7 @@ HRESULT CEligos::Ready_GameObject()
 
     m_StateMachine = CEligos_StateMachine::Create(this);
 
-    m_TransformCom->Set_Scale({ 5.0f,5.0f ,1.f });
+    m_TransformCom->Set_Scale({ 3.0f,3.0f ,1.f });
 
     m_BoxColCom->Set_Size({ m_TransformCom->Get_Scale().x * .2f,m_TransformCom->Get_Scale().y ,2.f });
 
@@ -53,7 +54,7 @@ HRESULT CEligos::Ready_GameObject()
     m_RigidbodyCom->Set_Mass(1.2f);
     //
 
-    m_TransformCom->Set_Pos(0.f, 0.f, 0.f);
+    m_TransformCom->Set_Pos(0.f, 3.f, 0.f);
     m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(25.f));
 
     m_CombatStatCom->Set_MaxHp(500.f);
@@ -130,13 +131,21 @@ void CEligos::Render_Editor()
 void CEligos::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CMonsterBase::OnBeginOverlap(self, other);
+
+    CWall* wall = dynamic_cast<CWall*>(other->Get_Owner());
+    if (wall)
+    {
+        m_RigidbodyCom->Set_Velocity({ 0,0,0 });
+        m_OnWall = true;
+    }
+
     m_bHurt = true;
 }
 
 void CEligos::OnEndOverlap(CCollider* self, CCollider* other)
 {
     CMonsterBase::OnEndOverlap(self, other);
-
+    m_OnWall = false;
 }
 
 HRESULT CEligos::Add_Component()

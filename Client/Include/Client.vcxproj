@@ -171,6 +171,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Code\CBossSpawn.h" />
     <ClInclude Include="..\Header\CBoss2_Bullet.h" />
     <ClInclude Include="..\Header\CBoss2_BulletAttack1.h" />
     <ClInclude Include="..\Header\CBoss2_BulletAttack2.h" />
@@ -195,6 +196,7 @@
     <ClInclude Include="..\Header\CBossMove.h" />
     <ClInclude Include="..\Header\CBossPhase2.h" />
     <ClInclude Include="..\Header\CBossPhase1.h" />
+    <ClInclude Include="..\Header\CBossSpawn.h" />
     <ClInclude Include="..\Header\CBossTalk.h" />
     <ClInclude Include="..\Header\CBossStateMachine.h" />
     <ClInclude Include="..\Header\CBoss_SlaveElephant.h" />
@@ -566,6 +568,7 @@
     <ClCompile Include="..\Code\CWorldInteractive.cpp" />
     <ClCompile Include="..\Code\CRecipeDB.cpp" />
     <ClCompile Include="..\Code\CEligos_Attack_Fly.cpp" />
+    <ClCompile Include="..\Header\CBossSpawn.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

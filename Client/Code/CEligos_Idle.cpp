@@ -8,6 +8,8 @@
 #include "CSceneMgr.h"
 #include "CSpriteAnimation.h"
 #include "CCombatStat.h"
+#include "CRandomMgr.h"
+#include "CRigidbody.h"
 
 int CEligos_Idle::ChangeAPattern = 0;
 
@@ -24,7 +26,18 @@ CEligos_Idle::~CEligos_Idle()
 void CEligos_Idle::Enter()
 {
     CMonsterState::Enter();
-    // 일단 지금은 
+    // 일단 지금은
+
+        // 랜덤 시작 방향
+    //float angle = CRandomMgr::GetInstance()->Get_Int_Random(int((-D3DX_PI * 0.25) * 1000), int((D3DX_PI * 0.25) * 1000)) / 1000;
+    //m_curAngle = angle;
+    //RandDir = { cosf(m_curAngle), 0.f, sinf(m_curAngle) };
+    //D3DXVec3Normalize(&RandDir, &RandDir);
+
+    //// 속도 리셋 (중요!!)
+    //m_pOwnerRigidbodyCom->Set_Velocity({ 0.f, 0.f, 0.f });
+
+
     m_pOwnerAnimatorCom->Play_Animation(L"Eligos_fly", ANIMSTATE::LOOP);
 
 }
@@ -41,6 +54,7 @@ HRESULT CEligos_Idle::Ready_State()
     m_pOwnerTransformCom = static_cast<CTransform*>(m_pOwner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
     m_pOwnerAnimatorCom = static_cast<CAnimator*>(m_pOwner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
     m_pOwnerStateCom = static_cast<CCombatStat*>(m_pOwner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
+    m_pOwnerRigidbodyCom = static_cast<CRigidbody*>(m_pOwner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::RIGIDBODY));
 
     Find_Player();
 
@@ -53,6 +67,28 @@ _int CEligos_Idle::Update_State(const _float& timeDelta)
 
     if (m_pOwnerAnimatorCom->Get_CurAnimation() == nullptr)
         return CEligos::ELIGOSSTATE::BOSSIDLE;
+
+    m_RandTimer += timeDelta;
+
+
+    
+   // if (m_RandTimer >= 0.5f)
+   // {
+   // /*float*/ m_curAngle = CRandomMgr::GetInstance()->Get_Int_Random(int(( - D3DX_PI * 0.25) * 1000), int((D3DX_PI * 0.25) * 1000)) / 1000;
+   //// m_curAngle += angle;
+   // RandDir = { cosf(m_curAngle), 0.f, sinf(m_curAngle) };
+
+   // D3DXVec3Normalize(&RandDir, &RandDir);
+   // m_RandTimer = 0;
+
+   // m_pOwner->SetRandDir(RandDir);
+   // }
+
+
+   // _vec3 pos = m_pOwnerTransformCom->Get_Pos();
+   // pos += RandDir * 1.5f * timeDelta;
+   // m_pOwnerTransformCom->Set_Pos(pos);
+
 
     // 여기는 애니 없이 바로
 
@@ -72,9 +108,9 @@ _int CEligos_Idle::Update_State(const _float& timeDelta)
     if (m_pStateMachine->Get_PrevStateKey() == (int)CEligos::ELIGOSSTATE::BOSSREVEAL)
     {
         // 플레이어가 일정범위 안이면
-        if (length <= 5.f)
+        if (length <= 20.f)
         {
-            return  CEligos::ELIGOSSTATE::BOSSDEAD;
+            return  CEligos::ELIGOSSTATE::ATTACK_MELEE;
         }
         else
         {
@@ -83,42 +119,42 @@ _int CEligos_Idle::Update_State(const _float& timeDelta)
         }
     }
 
-    ////어택->이동
-    //if (m_pStateMachine->Get_PrevStateKey() == (int)CEligos::ELIGOSSTATE::ATTACK_BULLET ||
-    //    m_pStateMachine->Get_PrevStateKey() == (int)CEligos::ELIGOSSTATE::ATTACK_FLY ||
-    //    m_pStateMachine->Get_PrevStateKey() == (int)CEligos::ELIGOSSTATE::ATTACK_MELEE)
-    //{
+    //어택->이동
+    if (m_pStateMachine->Get_PrevStateKey() == (int)CEligos::ELIGOSSTATE::ATTACK_BULLET ||
+        m_pStateMachine->Get_PrevStateKey() == (int)CEligos::ELIGOSSTATE::ATTACK_FLY ||
+        m_pStateMachine->Get_PrevStateKey() == (int)CEligos::ELIGOSSTATE::ATTACK_MELEE)
+    {
 
-    //    // 플레이어가 일정범위 안이면
-    //    if (length <= 5.f)
-    //    {
-    //        cout << "melee\n";
+        // 플레이어가 일정범위 안이면
+        if (length <= 20.f)
+        {
+            cout << "melee\n";
 
-    //        return  CEligos::ELIGOSSTATE::ATTACK_MELEE;
-    //    }
-    //    else
-    //    {
-    //    ChangeAPattern %= 2;
-    //    int tmp = ChangeAPattern;
-    //    ChangeAPattern++;
+            return  CEligos::ELIGOSSTATE::ATTACK_MELEE;
+        }
+        else
+        {
+        ChangeAPattern %= 2;
+        int tmp = ChangeAPattern;
+        ChangeAPattern++;
 
-    //    //if ((CRandomMgr::GetInstance()->Get_Int_Random(0, 1)) == 1) // 랜덤
-    //    if (tmp == 1)
-    //    {
+        //if ((CRandomMgr::GetInstance()->Get_Int_Random(0, 1)) == 1) // 랜덤
+        if (tmp == 1)
+        {
 
-    //        cout << "fly\n";
-    //        return CEligos::ELIGOSSTATE::ATTACK_FLY;
-    //    }
-    //    else
-    //    {
-    //        cout << "bullet\n";
+            cout << "fly\n";
+            return CEligos::ELIGOSSTATE::ATTACK_FLY;
+        }
+        else
+        {
+            cout << "bullet\n";
 
-    //        return CEligos::ELIGOSSTATE::ATTACK_BULLET;
+            return CEligos::ELIGOSSTATE::ATTACK_BULLET;
 
-    //    }
+        }
 
-    //    }
-    //}
+        }
+    }
 
 
     return  CEligos::ELIGOSSTATE::BOSSIDLE;

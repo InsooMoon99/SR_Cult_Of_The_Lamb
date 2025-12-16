@@ -275,6 +275,8 @@ void CRenderer::SetFogOff(LPDIRECT3DDEVICE9 graphicDev)
         return;
 
     graphicDev->SetRenderState(D3DRS_FOGENABLE, FALSE);
+
+    graphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
 void CRenderer::Free()
