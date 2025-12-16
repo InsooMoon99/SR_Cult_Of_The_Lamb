@@ -95,7 +95,8 @@ _int CUICookingGame::Update_GameObject(const _float& timeDelta)
     m_Curser->Update_GameObject(timeDelta);
     m_ItemIcon->Update_GameObject(timeDelta);
 
-    if (CDInputMgr::GetInstance()->KeyDown(DIK_P))
+    if (CDInputMgr::GetInstance()->KeyDown(DIK_P) ||     //?? P로 한 건 실수?
+        CDInputMgr::GetInstance()->MouseDown(DIM_LB))  
     {
         //커서포즈 멈춤
         OnClick = true;

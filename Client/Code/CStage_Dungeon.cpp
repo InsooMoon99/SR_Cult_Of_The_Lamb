@@ -1,12 +1,15 @@
 ﻿#include "pch.h"
 #include "CStage_Dungeon.h"
+
 #include "CCameraController.h"
 #include "CCamSetupBuilder.h"
 #include "CCombatStat.h"
 #include "CDInputMgr.h"
 #include "CDroppedItem.h"
 #include "CDropSystem.h"
+#include "CEligos.h"
 #include "CFloaterMonster.h"
+#include "CFollowerCow.h"
 #include "CInventory.h"
 #include "CItemDB.h"
 #include "CLayer.h"
@@ -15,10 +18,12 @@
 #include "CPersistentObjectHelper.h"
 #include "CPlayer.h"
 #include "CSceneMgr.h"
+#include "CSoundMgr.h"
 #include "CTarotNPC.h"
 #include "CTarotStageController.h"
 #include "CTerrain.h"
 #include "CTransform.h"
+#include "CTrigger_Dungeon.h"
 #include "CUICircle.h"
 #include "CUIIcon.h"
 #include "CUIItemGetManager.h"
@@ -26,37 +31,35 @@
 #include "CUIPlayerPanel.h"
 #include "CUITabMenu.h"
 #include "CUIWeapon.h"
-#include "ItemInstance.h"
-#include "CTrigger_Dungeon.h"
 #include "CUI_DungeonLootPanel.h"
 #include "CUI_Fade.h"
+#include "CUI_Skill.h"
 #include "CUI_SkillPanel.h"
+#include "ItemInstance.h"
 
 class CUI_DungeonLootPanel;
-#include "CEligos.h"
 
 CStage_Dungeon::CStage_Dungeon(DEVICE graphicDev)
     : CScene(graphicDev),
       m_PlayerCombatStatCom(nullptr),
       m_PlayerInventoryCom(nullptr),
       m_WeaponEquipCom(nullptr),
+      m_CurrentRoom(Room::DUNGEON_END),
+      m_Player(nullptr),
+      m_PlayerTransform(nullptr),
       m_UI_Fade(nullptr),
       m_NextRoom(Room::DUNGEON_END),
       m_CamMovement(nullptr),
       m_Timer(0),
       m_TimerRunning(false),
-      m_DungeonCleared(false),
-      m_CurrentRoom(Room::DUNGEON_END),
-      m_Player(nullptr),
-      m_PlayerTransform(nullptr)
-{}
+      m_DungeonCleared(false)
+{ }
 
 CStage_Dungeon::~CStage_Dungeon()
 { }
 
 HRESULT CStage_Dungeon::Ready_Scene()
 {
-
     if (FAILED(Ready_Environment_Layer(LAYERTYPE::ENVIRONMENT)))
         return E_FAIL;
 
@@ -71,9 +74,6 @@ HRESULT CStage_Dungeon::Ready_Scene()
 
     EnterDungeon();
 
-    // BGM Test
-    // CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Intro.wav", 0.5f);
-
     return S_OK;
 }
 
@@ -83,56 +83,53 @@ void CStage_Dungeon::Initialize_Scene()
 
     m_RoomData[static_cast<_int>(Room::START)] =
     {
-        {10.f, 1.f, 10.f},
+        { 10.f, 1.f, 10.f },
         "../Bin/Resource/Data/Terrain/Terrain_DungeonStart.map",
-        {0.f, 0.f, 0.f}
+        { 0.f, 0.f, 0.f }
     };
 
     m_RoomData[static_cast<_int>(Room::MONSTER1)] =
     {
-        {55.f, 1.f, 25.f},
+        { 55.f, 1.f, 25.f },
         "../Bin/Resource/Data/Terrain/Terrain_Mon1Test.map",
-        {50.f, 0.f, 0.f}
+        { 50.f, 0.f, 0.f }
     };
 
     m_RoomData[static_cast<_int>(Room::MONSTER2)] =
     {
-        {140.f, 1.f, 10.f},
+        { 140.f, 1.f, 10.f },
         "../Bin/Resource/Data/Terrain/Terrain_TarotMapFinal.map",
-        {150.f, 0.f, 0.f}
+        { 150.f, 0.f, 0.f }
     };
 
     m_RoomData[static_cast<_int>(Room::TARO)] =
     {
-        {160.f, 1.f, 10.f},
+        { 160.f, 1.f, 10.f },
         "../Bin/Resource/Data/Terrain/Terrain_TaroTest.map",
-        {250.f, 0.f, 0.f}
+        { 250.f, 0.f, 0.f }
     };
 
     m_RoomData[static_cast<_int>(Room::BOSS)] =
     {
-        {210.f, 1.f, 10.f},
+        { 210.f, 1.f, 10.f },
         "../Bin/Resource/Data/Terrain/Terrain_BossTest.map",
-        {200.f, 0.f, 0.f}
+        { 200.f, 0.f, 0.f }
     };
 
     m_CurrentRoom = Room::START;
 
     for (auto& pair : m_Terrains)
     {
-        Room room = pair.first;
+        Room      room    = pair.first;
         CTerrain* terrain = pair.second;
 
         if (terrain)
         {
             auto terrainTransform = terrain->Get_Transform();
             if (terrainTransform)
-            {
                 terrainTransform->Set_Pos(m_RoomData[static_cast<_int>(room)].terrainOffset);
-            }
 
             terrain->LoadMapOnStart(m_RoomData[static_cast<_int>(room)].terrainFilePath.c_str());
-
         }
     }
 
@@ -145,7 +142,11 @@ void CStage_Dungeon::Initialize_Scene()
     // Init에서 RoomData 세팅 이후 위치 세팅해줘야 함
     _vec3 startPos = m_RoomData[static_cast<_int>(Room::START)].playerSpawnPos;
     m_PlayerTransform->Set_Pos(_vec3(startPos.x, startPos.y, startPos.z));
+
+    // 전투 BGM
+    CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Battle2.wav", 0.4f, true, 1.f);
 }
+
 _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
 {
     if (m_TimerRunning)
@@ -155,7 +156,7 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
     {
         if (CDInputMgr::GetInstance()->KeyDown(DIK_M))
         {
-            m_TimerRunning = false;
+            m_TimerRunning   = false;
             m_DungeonCleared = true;
         }
     }
@@ -187,17 +188,17 @@ void CStage_Dungeon::LateUpdate_Scene(const _float& timeDelta)
 
     if (CDInputMgr::GetInstance()->KeyDown(DIK_G))
         CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS2);
+
+    if (CDInputMgr::GetInstance()->KeyDown(DIK_R))
+        Spawn_Follower();
 }
 
 void CStage_Dungeon::Render_Scene()
-{
-    
-}
+{ }
 
 HRESULT CStage_Dungeon::Ready_Light()
 {
     return CScene::Ready_Light();
-
 }
 
 void CStage_Dungeon::Spawn_Weapon()
@@ -215,9 +216,9 @@ void CStage_Dungeon::Spawn_Weapon()
         _vec3 roomPos = m_RoomData[static_cast<_int>(Room::START)].playerSpawnPos;
 
         auto drop = CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev,
-            inst,
-            { roomPos.x + (i * 3.f) - 3.f, 1.f, roomPos.z - 2.5f  },
-            _vec3( 0.5f, 0.5f, 0.5f));
+                                                          inst,
+                                                          { roomPos.x + (i * 3.f) - 3.f, 1.f, roomPos.z - 2.5f },
+                                                          _vec3(0.5f, 0.5f, 0.5f));
 
         drop->Initialize_GameObject();
     }
@@ -231,11 +232,38 @@ void CStage_Dungeon::Spawn_Weapon()
         _vec3 roomPos = m_RoomData[static_cast<_int>(Room::START)].playerSpawnPos;
 
         auto drop = CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev,
-            inst,
-            { roomPos.x + (i * 3.f) - 3.f, 1.f, roomPos.z - 3.5f },
-            _vec3(0.5f, 0.5f, 0.5f));
+                                                          inst,
+                                                          { roomPos.x + (i * 3.f) - 3.f, 1.f, roomPos.z - 3.5f },
+                                                          _vec3(0.5f, 0.5f, 0.5f));
 
         drop->Initialize_GameObject();
+    }
+}
+
+void CStage_Dungeon::Spawn_Follower()
+{
+    auto layer = m_Layers[LAYERTYPE::GAMELOGIC];
+    NULL_CHECK(layer);
+
+    CGameObject* followerCow = CFollowerCow::Create(m_GraphicDev);
+    NULL_CHECK(followerCow);
+
+    if (FAILED(layer->Add_GameObject(OBJTYPE::NPC, followerCow)))
+        return;
+
+    followerCow->Initialize_GameObject();
+
+    dynamic_cast<CNPCBase*>(followerCow)->Set_RescuedState(true);
+
+    auto cowTransform = dynamic_cast<CTransform*>(
+        followerCow->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+    if (cowTransform)
+    {
+        _vec3 spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].playerSpawnPos;
+        spawnPos.x += 2.f;
+
+        cowTransform->Set_Pos(spawnPos);
     }
 }
 
@@ -290,30 +318,32 @@ void CStage_Dungeon::Create_Trigger_Between(Room fromRoom, Room toRoom, _vec3 of
 
     auto trigger = CTrigger_Dungeon::Create(m_GraphicDev);
 
-    _vec3 roomBasePos = m_RoomData[(_int)fromRoom].terrainOffset;
-    _vec3 triggerPos = roomBasePos + offsetFromRoom;
+    _vec3 roomBasePos = m_RoomData[static_cast<_int>(fromRoom)].terrainOffset;
+    _vec3 triggerPos  = roomBasePos + offsetFromRoom;
 
     trigger->Set_Bounds(triggerPos, size);
     trigger->Set_TriggerOnce(true);
 
     trigger->Set_Callback([this, toRoom]()
-        {
-            Change_Room(toRoom);
-        });
+    {
+        Change_Room(toRoom);
+    });
 
     gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
 }
 
-void CStage_Dungeon::Create_Trigger_Between(Room fromRoom, _vec3 offsetFromRoom, _vec3 size,
-    std::function<void()> callback)
+void CStage_Dungeon::Create_Trigger_Between(Room                  fromRoom,
+                                            _vec3                 offsetFromRoom,
+                                            _vec3                 size,
+                                            std::function<void()> callback)
 {
     auto gameLayer = m_Layers[LAYERTYPE::GAMELOGIC];
     NULL_CHECK(gameLayer);
 
     auto trigger = CTrigger_Dungeon::Create(m_GraphicDev);
 
-    _vec3 roomBasePos = m_RoomData[(int)fromRoom].terrainOffset;
-    _vec3 triggerPos = roomBasePos + offsetFromRoom;
+    _vec3 roomBasePos = m_RoomData[static_cast<int>(fromRoom)].terrainOffset;
+    _vec3 triggerPos  = roomBasePos + offsetFromRoom;
 
     trigger->Set_Bounds(triggerPos, size);
     trigger->Set_TriggerOnce(false);
@@ -324,7 +354,7 @@ void CStage_Dungeon::Create_Trigger_Between(Room fromRoom, _vec3 offsetFromRoom,
 
 void CStage_Dungeon::EnterDungeon()
 {
-    m_Timer = 0.f;
+    m_Timer        = 0.f;
     m_TimerRunning = true;
 }
 
@@ -336,9 +366,9 @@ void CStage_Dungeon::Change_Room(Room room)
 
     if (m_UI_Fade)
     {
-        m_NextRoom = room;  
+        m_NextRoom = room;
         m_IsFading = true;
-        m_UI_Fade->StartFadeOut(3.5f);
+        m_UI_Fade->Start_FadeOut(3.5f);
     }
 }
 
@@ -356,7 +386,7 @@ HRESULT CStage_Dungeon::Ready_Environment_Layer(LAYERTYPE layerType)
     if (nullptr == layer)
         return E_FAIL;
 
-    for (_int i = 0; i < (_int)Room::DUNGEON_END; i++)
+    for (_int i = 0; i < static_cast<_int>(Room::DUNGEON_END); i++)
     {
         Room room = static_cast<Room>(i);
 
@@ -454,6 +484,7 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
         // 에디터에 카메라 설정
         CMainEditorMgr::GetInstance()->Set_MainCamera(m_CamController);
     }
+
     CGameObject* tarotController = CTarotStageController::Create(m_GraphicDev);
 
     NULL_CHECK_RETURN_MSG(
@@ -465,17 +496,14 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
         layer->Add_GameObject(OBJTYPE::LOGIC, tarotController),
         L"CStage_TarotTest::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CTarotStageController) failed");
 
-
     gameObject = CTarotNPC::Create(m_GraphicDev);
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::NPC, gameObject),
-        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(TarotNPC) failed");
-	m_TarotNpc= dynamic_cast<CTarotNPC*>(gameObject);
-	m_TarotNpc->Set_TarotController(dynamic_cast<CTarotStageController*>(tarotController));
-
+                     L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(TarotNPC) failed");
+    dynamic_cast<CTarotNPC*>(gameObject)->Set_TarotController(dynamic_cast<CTarotStageController*>(tarotController));
 
     gameObject = CFloaterMonster::Create(m_GraphicDev);
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::MONSTER, gameObject),
-        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CFloaterMonster) failed");
+                     L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CFloaterMonster) failed");
     dynamic_cast<CFloaterMonster*>(gameObject)->Get_Transform()->Set_Pos(15.f, 1.f, 10.f);
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -483,13 +511,12 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
     ///////////////////////////////////////////////////////////////////////////////
 
     // 보스 생성
-   CGameObject* m_Boss = CEligos::Create(m_GraphicDev);
+    CGameObject* m_Boss = CEligos::Create(m_GraphicDev);
     NULL_CHECK_RETURN_MSG(m_Boss, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase2::Create() returned null")
 
-        FAILED_CHECK_MSG(
-            layer->Add_GameObject(OBJTYPE::BOSS1, m_Boss),
-            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Boss) failed");
-
+    FAILED_CHECK_MSG(
+        layer->Add_GameObject(OBJTYPE::BOSS1, m_Boss),
+        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Boss) failed");
 
     m_Layers.insert({ layerType, layer });
 
@@ -549,7 +576,6 @@ HRESULT CStage_Dungeon::Ready_UI_Layer(LAYERTYPE layerType)
             &gameObject),
         L"Persistent object setup failed: UI_Weapon");
 
-
     //왼쪽 상단 스킬 아이콘 UI
     CUIIcon* pgameObject = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_ICON);
     pgameObject->Set_TextureIndex(1);
@@ -565,16 +591,16 @@ HRESULT CStage_Dungeon::Ready_UI_Layer(LAYERTYPE layerType)
     uiTabMenu->SetInventory(m_PlayerInventoryCom);
     uiTabMenu->Set_PlayerCombatStat(m_PlayerCombatStatCom);
     uiTabMenu->Initialize();
- 
-   FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiTabMenu),
-        L"CStage_Dungeon::Ready_UI_Layer() failed: CLayer::Add_GameObject(UITabMenu) failed");
+
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiTabMenu),
+                     L"CStage_Dungeon::Ready_UI_Layer() failed: CLayer::Add_GameObject(UITabMenu) failed");
 
     FAILED_CHECK_MSG(Engine::AcquirePersistentObject<CUIItemGetManager>
-        (OBJTYPE::UI, L"UI_ItemGetManager",
-            m_GraphicDev, layer,
-            &gameObject),
-        L"Persistent object setup failed: UI_ItemGetManager")
-        dynamic_cast<CUIItemGetManager*>(gameObject)->SetInventory(m_PlayerInventoryCom);
+                     (OBJTYPE::UI, L"UI_ItemGetManager",
+                         m_GraphicDev, layer,
+                         &gameObject),
+                     L"Persistent object setup failed: UI_ItemGetManager")
+    dynamic_cast<CUIItemGetManager*>(gameObject)->SetInventory(m_PlayerInventoryCom);
     dynamic_cast<CUIItemGetManager*>(gameObject)->Initialize();
 
     // Fade In - Fade Out
@@ -584,6 +610,12 @@ HRESULT CStage_Dungeon::Ready_UI_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::UI, m_UI_Fade),
         L"CStage_Dungeon::Ready_UI_Layer() failed: CFade_UI Add failed");
+
+    CUI_DungeonLootPanel* dungeonLootPanel = CUI_DungeonLootPanel::Create(m_GraphicDev);
+    dungeonLootPanel->Set_RunLootLog(&m_RunLootLog);
+    dungeonLootPanel->Initialize_GameObject();
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, dungeonLootPanel),
+                     L"CStage_Dungeon::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUI_DungeonLootPanel) failed");
 
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CUI_SkillPanel>(
@@ -629,8 +661,8 @@ void CStage_Dungeon::Free()
     CDropSystem::GetInstance()->Clear_Item();
     CDroppedItem::Reset_WeaponExplainUI();
 
-    m_CamMovement   = nullptr;
-    m_UI_Fade       = nullptr;
+    m_CamMovement = nullptr;
+    m_UI_Fade     = nullptr;
 
     Engine::CScene::Free();
 }
@@ -640,7 +672,7 @@ void CStage_Dungeon::Fade_Check(const _float timeDelta)
     if (!m_IsFading || !m_UI_Fade)
         return;
 
-    if (!m_UI_Fade->IsFading() && m_UI_Fade->GetAlpha() >= 1.0f)
+    if (!m_UI_Fade->IsFading() && m_UI_Fade->Get_Alpha() >= 1.0f)
     {
         // 페이드 아웃 완료 후, 잠시 대기
 
@@ -650,7 +682,7 @@ void CStage_Dungeon::Fade_Check(const _float timeDelta)
         if (m_PlayerTransform)
             m_PlayerTransform->Set_Pos(m_RoomData[static_cast<_int>(m_NextRoom)].playerSpawnPos);
 
-        m_UI_Fade->StartFadeIn(0.5f);
+        m_UI_Fade->Start_FadeIn(0.5f);
         m_IsFading = false;
     }
 }

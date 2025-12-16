@@ -194,18 +194,6 @@ void CTarotNPC::OnBeginOverlap(CCollider* self, CCollider* other)
     if (ply)
         m_bPlayerOverlap = true;
 
-    auto camController = dynamic_cast<CCameraController*>(CManagement::GetInstance()->Get_Component(ID_DYNAMIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::CAM_CONTROLLER));
-
-      if (!(camController==nullptr))
-      {
-          CCamSetupBuilder(camController)
-              .SetTarget(ply->Get_Transform())
-              .PivotOffset({ 0.f, 0.f, 4.f })
-              .Distance(17.5f)
-              .Apply();
-
-      }
-   
 }
 
 void CTarotNPC::OnEndOverlap(CCollider* self, CCollider* other)

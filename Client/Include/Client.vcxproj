@@ -182,6 +182,7 @@
     <ClInclude Include="..\Header\CBoss2_ChainAttack.h" />
     <ClInclude Include="..\Header\CBoss2_Start.h" />
     <ClInclude Include="..\Header\CBoss2_StateMachine.h" />
+    <ClInclude Include="..\Header\CBoss2_SummonFollower.h" />
     <ClInclude Include="..\Header\CBossAwake.h" />
     <ClInclude Include="..\Header\CBossBullet.h" />
     <ClInclude Include="..\Header\CBossBulletAttack.h" />
@@ -196,14 +197,17 @@
     <ClInclude Include="..\Header\CBossPhase1.h" />
     <ClInclude Include="..\Header\CBossTalk.h" />
     <ClInclude Include="..\Header\CBossStateMachine.h" />
+    <ClInclude Include="..\Header\CBoss_SlaveElephant.h" />
+    <ClInclude Include="..\Header\CBoss_SlavePig.h" />
     <ClInclude Include="..\Header\CBuildingBase.h" />
     <ClInclude Include="..\Header\CCameraController.h" />
     <ClInclude Include="..\Header\CCameraMovement.h" />
     <ClInclude Include="..\Header\CCamSetupBuilder.h" />
-    <ClInclude Include="..\Header\CBoss_Slave_Test.h" />
+    <ClInclude Include="..\Header\CBoss_SlaveCow.h" />
     <ClInclude Include="..\Header\CCharacterBase.h" />
     <ClInclude Include="..\Header\CChest.h" />
     <ClInclude Include="..\Header\CCookingController.h" />
+    <ClInclude Include="..\Header\Client_Global.h" />
     <ClInclude Include="..\Header\CEligos.h" />
     <ClInclude Include="..\Header\CEligos_Attack_Bullet.h" />
     <ClInclude Include="..\Header\CEligos_Attack_Melee.h" />
@@ -221,6 +225,7 @@
     <ClInclude Include="..\Header\CNPCState_Mining.h" />
     <ClInclude Include="..\Header\CNPCState_Pray.h" />
     <ClInclude Include="..\Header\CNPCState_PrayPeek.h" />
+    <ClInclude Include="..\Header\CNPCState_Rescued.h" />
     <ClInclude Include="..\Header\CNPCState_WalkPast.h" />
     <ClInclude Include="..\Header\CFog.h" />
     <ClInclude Include="..\Header\CFogMgr.h" />
@@ -344,6 +349,7 @@
     <ClInclude Include="..\Header\CUI_Dialogue.h" />
     <ClInclude Include="..\Header\CUI_DungeonLootPanel.h" />
     <ClInclude Include="..\Header\CUI_Fade.h" />
+    <ClInclude Include="..\Header\CUI_LoadingCircle.h" />
     <ClInclude Include="..\Header\CUI_FollowerCommand.h" />
     <ClInclude Include="..\Header\CUI_MonsterHp.h" />
     <ClInclude Include="..\Header\CUI_ProgressBar.h" />
@@ -382,6 +388,7 @@
     <ClCompile Include="..\Code\CBoss2_ChainAttack.cpp" />
     <ClCompile Include="..\Code\CBoss2_Start.cpp" />
     <ClCompile Include="..\Code\CBoss2_StateMachine.cpp" />
+    <ClCompile Include="..\Code\CBoss2_SummonFollower.cpp" />
     <ClCompile Include="..\Code\CBossAwake.cpp" />
     <ClCompile Include="..\Code\CBossBullet.cpp" />
     <ClCompile Include="..\Code\CBossBulletAttack.cpp" />
@@ -396,10 +403,12 @@
     <ClCompile Include="..\Code\CBossPhase1.cpp" />
     <ClCompile Include="..\Code\CBossTalk.cpp" />
     <ClCompile Include="..\Code\CBossStateMachine.cpp" />
+    <ClCompile Include="..\Code\CBoss_SlaveElephant.cpp" />
+    <ClCompile Include="..\Code\CBoss_SlavePig.cpp" />
     <ClCompile Include="..\Code\CBuildingBase.cpp" />
     <ClCompile Include="..\Code\CCameraController.cpp" />
     <ClCompile Include="..\Code\CCameraMovement.cpp" />
-    <ClCompile Include="..\Code\CBoss_Slave_Test.cpp" />
+    <ClCompile Include="..\Code\CBoss_SlaveCow.cpp" />
     <ClCompile Include="..\Code\CCharacterBase.cpp" />
     <ClCompile Include="..\Code\CChest.cpp" />
     <ClCompile Include="..\Code\CConstructionPlacer.cpp" />
@@ -421,6 +430,7 @@
     <ClCompile Include="..\Code\CNPCState_Mining.cpp" />
     <ClCompile Include="..\Code\CNPCState_Pray.cpp" />
     <ClCompile Include="..\Code\CNPCState_PrayPeek.cpp" />
+    <ClCompile Include="..\Code\CNPCState_Rescued.cpp" />
     <ClCompile Include="..\Code\CNPCState_WalkPast.cpp" />
     <ClCompile Include="..\Code\CFog.cpp" />
     <ClCompile Include="..\Code\CFogMgr.cpp" />
@@ -540,6 +550,7 @@
     <ClCompile Include="..\Code\CUI_Dialogue.cpp" />
     <ClCompile Include="..\Code\CUI_DungeonLootPanel.cpp" />
     <ClCompile Include="..\Code\CUI_Fade.cpp" />
+    <ClCompile Include="..\Code\CUI_LoadingCircle.cpp" />
     <ClCompile Include="..\Code\CUI_FollowerCommand.cpp" />
     <ClCompile Include="..\Code\CUI_MonsterHp.cpp" />
     <ClCompile Include="..\Code\CUI_ProgressBar.cpp" />

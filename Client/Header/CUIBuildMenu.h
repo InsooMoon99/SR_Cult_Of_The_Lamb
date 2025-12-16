@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "CUI.h"
 
-class CCookingController;
+
 class CInventory;
 class CUIBuildCell;
 class CUIIcon;
@@ -28,7 +28,7 @@ public:
     static CUIBuildMenu* Create(DEVICE graphicDev);
     void SetOnDeactivate(function<void()> deactivate) { m_Deactivate = deactivate; }
     void SetCellEvent(function<bool()> event);
-    void Set_CookingController(CCookingController* cookingController) { m_CookingController = cookingController; }
+    bool CheckResources(int recipeID);
     bool Get_IsOpen() { return m_IsOpen; }
 protected:
     void Free() override;
@@ -41,7 +41,6 @@ private:
     CUIIcon* m_DecoIcon1;
     CUIIcon* m_DecoIcon2;
     CUIIcon* m_InteractionKey;
-    CCookingController* m_CookingController;
 
     float m_TargetX;                
     float m_ClosedX;

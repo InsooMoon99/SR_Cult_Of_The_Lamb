@@ -346,6 +346,9 @@
     <Filter Include="03. GameObject\09. MapObject\03. Fog">
       <UniqueIdentifier>{2f846c5f-7436-4050-b8a3-cfae036bed3d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. UI\01. UI\12. UILoading">
+      <UniqueIdentifier>{ef7e3084-5c3c-4182-94f6-f1de1ae79c0d}</UniqueIdentifier>
+    </Filter>
     <Filter Include="03. GameObject\11. NPC\97. Tarot NPC">
       <UniqueIdentifier>{bb97d628-8790-4bf6-be84-4f7a0753ccc6}</UniqueIdentifier>
     </Filter>
@@ -355,6 +358,9 @@
     <Filter Include="05. UI\01. UI\12. UI_FollowerCommand">
       <UniqueIdentifier>{97a31b16-2edb-43dc-a742-c1e3e0c52d78}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\11. NPC\99. Class for FSM\01. State\11. Rescued">
+      <UniqueIdentifier>{89d3ba52-ea7d-4479-8975-f5a363c7f7d6}</UniqueIdentifier>
+    </Filter>
     <Filter Include="91. RunLootLog">
       <UniqueIdentifier>{9f4546c0-9cd4-470c-bfe4-7f9d5f1a3a16}</UniqueIdentifier>
     </Filter>
@@ -363,7 +369,7 @@
     </Filter>
     <Filter Include="05. UI\01. UI\14. UI_ProgressBar">
       <UniqueIdentifier>{500a6299-4aa2-4e0c-8e0d-6551a299aa09}</UniqueIdentifier>
-         </Filter>
+    </Filter>
     <Filter Include="03. GameObject\04. Boss\03.MiniBoss">
       <UniqueIdentifier>{b8e27f44-5ee8-4e47-aa08-3d9d38c59df5}</UniqueIdentifier>
     </Filter>
@@ -627,7 +633,7 @@
     <ClInclude Include="..\Header\CLogo_Boss2.h">
       <Filter>02. Scene\00. Logo</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CBoss_Slave_Test.h">
+    <ClInclude Include="..\Header\CBoss_SlaveCow.h">
       <Filter>03. GameObject\04. Boss\02. Boss2\02. Slave</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\Client_Struct.h">
@@ -938,6 +944,24 @@
     <ClInclude Include="..\Header\CMenuExtra.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CTarotNPC.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUI_Skill.h">
+      <Filter>05. UI\01. UI\03. UIWeapon&amp;Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUI_SkillPanel.h">
+      <Filter>05. UI\01. UI\03. UIWeapon&amp;Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUI_FollowerCommand.h">
+      <Filter>05. UI\01. UI\12. UI_FollowerCommand</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CNPCState_Rescued.h">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\11. Rescued</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\Client_Global.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
     <ClInclude Include="..\Header\CEligos.h">
       <Filter>03. GameObject\04. Boss\03.MiniBoss</Filter>
     </ClInclude>
@@ -970,6 +994,18 @@
     </ClInclude>
     <ClInclude Include="..\Header\CBoss2_Follower.h">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBoss2_SummonFollower.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUI_LoadingCircle.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBoss_SlaveElephant.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\02. Slave</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBoss_SlavePig.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2\02. Slave</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CUI_ProgressBar.h">
       <Filter>05. UI\01. UI\14. UI_ProgressBar</Filter>
@@ -1204,7 +1240,7 @@
     <ClCompile Include="..\Code\CLogo_Boss2.cpp">
       <Filter>02. Scene\00. Logo</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CBoss_Slave_Test.cpp">
+    <ClCompile Include="..\Code\CBoss_SlaveCow.cpp">
       <Filter>03. GameObject\04. Boss\02. Boss2\02. Slave</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CBossPhase2.cpp">
@@ -1504,6 +1540,21 @@
     <ClCompile Include="..\Code\CMenuExtra.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="..\Code\CTarotNPC.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_Skill.cpp">
+      <Filter>05. UI\01. UI\03. UIWeapon&amp;Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_SkillPanel.cpp">
+      <Filter>05. UI\01. UI\03. UIWeapon&amp;Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_FollowerCommand.cpp">
+      <Filter>05. UI\01. UI\12. UI_FollowerCommand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CNPCState_Rescued.cpp">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\11. Rescued</Filter>
+    </ClCompile>
     <ClCompile Include="..\Code\CEligos.cpp">
       <Filter>03. GameObject\04. Boss\03.MiniBoss</Filter>
     </ClCompile>
@@ -1536,6 +1587,18 @@
     </ClCompile>
     <ClCompile Include="..\Code\CBoss2_Follower.cpp">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoss2_SummonFollower.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_LoadingCircle.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoss_SlaveElephant.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\02. Slave</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoss_SlavePig.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2\02. Slave</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CUI_ProgressBar.cpp">
       <Filter>05. UI\01. UI\14. UI_ProgressBar</Filter>

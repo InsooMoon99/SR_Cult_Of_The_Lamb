@@ -1,7 +1,5 @@
 ﻿#include "pch.h"
 #include "CStage_Boss2.h"
-#include "CBossPhase1.h"
-#include "CParticleHelper.h"
 #include "CBossPhase2.h"
 #include "CLayer.h"
 #include "CMainCamera.h"
@@ -15,12 +13,16 @@
 #include "CMainMenu.h"
 #include "CWall.h"
 #include "CDropSystem.h"
-#include "CBoss_Slave_Test.h"
 #include "CCameraController.h"
 #include "CCamSetupBuilder.h"
 #include "CUI_BossHp.h"
 #include "CLightMgr.h"
 #include "CUI_Dialogue.h"
+#include "CUIPlayerPanel.h"
+#include "CUIMp.h"
+#include "CUICircle.h"
+#include "CUIWeapon.h"
+#include "CUIIcon.h"
 
 CStage_Boss2::CStage_Boss2(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -52,6 +54,12 @@ HRESULT CStage_Boss2::Ready_Scene()
     // 아이템 드롭을 위한 씬 세팅 Eyeball 죽일 때마다 체력 아이템 떨구기 ?
     CDropSystem::GetInstance()->SetCurrentScene(this);
 
+    Setup_BossCallbacks();
+
+    // TODO : 일단은 바로 시작 -> 대사끝나면 시작하도록 변경 예정
+    Setup_DynamicCam();
+    Setup_DialogueCallbacks();
+
     return S_OK;
 }
 
@@ -68,15 +76,29 @@ void CStage_Boss2::Initialize_Scene()
         camMovement->Disable_DynamicDistance();
     }
 
-    // TODO : 일단은 바로 시작 -> 대사끝나면 시작하도록 변경 예정
-    Setup_DynamicCam();
-    Setup_BossCallbacks();
-    Setup_DialogueCallbacks();
+    for (auto ui : m_Player_UI)
+    {
+        _vec3 targetPos = ui->Get_Transform()->Get_Pos();     
+        _vec3 startPos = targetPos + _vec3(0.f, 200.f, 0.f);  
+
+        m_TargetUIPositions.push_back(targetPos);
+        m_OriginalUIPositions.push_back(startPos);
+
+        ui->Get_Transform()->Set_Pos(startPos); 
+    }
+
+    if (m_BossHpbar)
+        m_BossHpbar->Get_Transform()->Set_Pos(_vec3(0.f, -400.f, 0.f));
+
 }   
 
 _int CStage_Boss2::Update_Scene(const _float& timeDelta)
 {
     _int exit = Engine::CScene::Update_Scene(timeDelta);
+
+    Move_PlayerUI(timeDelta);
+    Move_BossUI(timeDelta);
+
 
     return exit;
 }
@@ -89,7 +111,6 @@ void CStage_Boss2::LateUpdate_Scene(const _float& timeDelta)
 void CStage_Boss2::Render_Scene()
 {
 
-    
 }
 
 HRESULT CStage_Boss2::Ready_Environment_Layer(LAYERTYPE layerType)
@@ -136,6 +157,9 @@ HRESULT CStage_Boss2::Ready_GameLogic_Layer(LAYERTYPE layerType)
     m_PlayerTransformCom = m_Player->Get_Transform();
     m_PlayerTransformCom->Set_Pos(_vec3(48.f, 1.f, 38.3f));
 
+    m_PlayerCombatStatCom = dynamic_cast<CCombatStat*>(
+        m_Player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
+
     // 카메라 생성
     Engine::CGameObject* cameraObject = nullptr;
 
@@ -166,16 +190,7 @@ HRESULT CStage_Boss2::Ready_GameLogic_Layer(LAYERTYPE layerType)
         CMainEditorMgr::GetInstance()->Set_MainCamera(m_CamController);
     }
 
-    // 춘식이 등장
-    gameObject = CBoss_SlaveTest::Create(m_GraphicDev);
-    NULL_CHECK_RETURN(gameObject, E_FAIL);
-
-    const auto chunSikTrans = gameObject->Get_Transform();
-    NULL_CHECK_RETURN(chunSikTrans, E_FAIL);
-
-    chunSikTrans->Set_Pos(_vec3(37.f, 3.1f, 38.f));
-
-    layer->Add_GameObject(OBJTYPE::NPC, gameObject);
+    // 춘식이 이제 퇴장
 
     // 보스 소환
     m_Boss = CBossPhase2::Create(m_GraphicDev);
@@ -199,12 +214,55 @@ HRESULT CStage_Boss2::Ready_UI_Layer(LAYERTYPE layerType)
 
     Engine::CGameObject* gameObject = nullptr;
 
+    // ===== 플레이어 UI =====
+    // PlayerPanel
+    FAILED_CHECK_MSG(
+        Engine::AcquirePersistentObject<CUIPlayerPanel>(
+            OBJTYPE::UI, L"UI_PlayerPanel", m_GraphicDev, layer, &gameObject),
+        L"Persistent object setup failed: UI_PlayerPanel");
+    m_Player_UI.push_back(dynamic_cast<CUI*>(gameObject));
+
+
+    // Mp
+    FAILED_CHECK_MSG(
+        Engine::AcquirePersistentObject<CUIMp>(
+            OBJTYPE::UI, L"UI_Mp", m_GraphicDev, layer, &gameObject),
+        L"Persistent object setup failed: UI_Mp");
+    dynamic_cast<CUIMp*>(gameObject)->Set_PlayerCombatStat(m_PlayerCombatStatCom);
+    m_Player_UI.push_back(dynamic_cast<CUI*>(gameObject));
+
+
+    // Circle (HP)
+    FAILED_CHECK_MSG(
+        Engine::AcquirePersistentObject<CUICircle>(
+            OBJTYPE::UI, L"UI_Circle", m_GraphicDev, layer, &gameObject),
+        L"Persistent object setup failed: UI_Circle");
+    dynamic_cast<CUICircle*>(gameObject)->Set_PlayerCombatStat(m_PlayerCombatStatCom);
+    m_Player_UI.push_back(dynamic_cast<CUI*>(gameObject));
+
+    // Weapon
+    FAILED_CHECK_MSG(
+        Engine::AcquirePersistentObject<CUIWeapon>(
+            OBJTYPE::UI, L"UI_Weapon", m_GraphicDev, layer, &gameObject),
+        L"Persistent object setup failed: UI_Weapon");
+    m_Player_UI.push_back(dynamic_cast<CUI*>(gameObject));
+
+    // 스킬 아이콘
+    CUIIcon* uiIcon = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_ICON);
+    uiIcon->Set_TextureIndex(1);
+    uiIcon->Get_Transform()->Set_Pos(-524.f, 260.f, 0.f);
+    uiIcon->Get_Transform()->Set_Scale(12.5f, 15.f, 0.f);
+    layer->Add_GameObject(OBJTYPE::UI, uiIcon);
+    m_Player_UI.push_back(uiIcon);
+
+    // 보스 체력
     auto combat = dynamic_cast<CCombatStat*>(m_Boss->Get_Component(ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
     NULL_CHECK_RETURN(combat, E_FAIL);
 
-    gameObject = CUI_BossHp::Create(m_GraphicDev, combat);
-    layer->Add_GameObject(OBJTYPE::UI, gameObject);
+    m_BossHpbar = CUI_BossHp::Create(m_GraphicDev, combat);
+    layer->Add_GameObject(OBJTYPE::UI, m_BossHpbar);
 
+    // 대화
     m_Dialogue = CUI_Dialogue::Create(m_GraphicDev);
     layer->Add_GameObject(OBJTYPE::UI, m_Dialogue);
 
@@ -231,21 +289,158 @@ void CStage_Boss2::Setup_BossCallbacks()
     auto boss = dynamic_cast<CBossPhase2*>(m_Boss);
     if (!boss) return;
 
+    // 소리지르기
+    boss->Set_OnSummonRoarStart([this]()
+        {
+            Start_CameraMoving(CAM_MOVE_TYPE::START_BOSS_ZOOM);
+        });
+
+    // Roar 끝
+    boss->Set_OnSummonRoarEnd([this]()
+        {
+            m_Dialogue->Start_Dialogue("Boss2_Start", _vec2(0.f, 200.f));
+        });
+
+    // 소환 시작
+    boss->Set_OnSummonAnimStart([this]()
+        {
+            Start_CameraMoving(CAM_MOVE_TYPE::SUMMON_ZOOM_OUT);
+        });
+
+    // 소환 끝
+    boss->Set_OnSummonAnimEnd([this]()
+        {
+            Start_CameraMoving(CAM_MOVE_TYPE::EYEBALL_ZOOM);
+        });
+
     // 전투 시작하면 Dynamic Cam 세팅, 이후 죽으면 Disable
     boss->Set_OnBattleStart([this]()
         {
             Setup_DynamicCam();
         });
 
+    // 보스 죽을 때
     boss->Set_OnDead([this]()
         {
+            Start_CameraMoving(CAM_MOVE_TYPE::BOSS_DEAD);
             m_CamController->Get_OwnerCamMovement()->Disable_DynamicDistance();
+
+            m_Player->Get_Transform()->Set_Pos(_vec3(48.3f, 1.0f, 43.837f));
         });
 
+    // 보스 죽고 NPC로 변신
     boss->Set_OnFollowerStart([this]()
         {
-            m_Dialogue->Start_Dialogue("Boss2_Dead", _vec2(0.f, 200.f), _vec2(300.f, 80.f));
+            Start_CameraMoving(CAM_MOVE_TYPE::TRANSFORM_FOLLOWER);
+            m_Dialogue->Start_Dialogue("Boss2_Dead", _vec2(0.f, 120.f), _vec2(250.f, 80.f));
         });
+    
+}
+
+void CStage_Boss2::Start_CameraMoving(CAM_MOVE_TYPE type)
+{
+    switch (type)
+    {
+    case CAM_MOVE_TYPE::START_BOSS_ZOOM:
+        CCamSetupBuilder(m_CamController)
+            .SetTarget(m_Boss->Get_Transform())
+            .Distance(20.5f)
+            .RotX(30.f)
+            .LagSpeed(3.f)
+            .ZoomSpeed(2.5f)
+            .Apply();
+        break;
+
+    case CAM_MOVE_TYPE::SUMMON_ZOOM_OUT:
+        CCamSetupBuilder(m_CamController)
+            .SetTarget(m_Boss->Get_Transform())
+            .Distance(44.f)
+            .RotX(28.f)
+            .LagSpeed(4.f)
+            .ZoomSpeed(3.5f)
+            .Apply();
+        break;
+
+    case CAM_MOVE_TYPE::EYEBALL_ZOOM:
+        // Eyeball로 줌인되고,
+        CCamSetupBuilder(m_CamController)
+            .SetTarget(m_Boss->Get_Transform())
+            .Distance(20.5f)
+            .RotX(35.f)
+            .LagSpeed(3.f)
+            .ZoomSpeed(2.5f)
+            .Apply();
+
+
+        // 줌인 끝나면 플레이어한테 카메라 세팅
+        m_CamController->Get_OwnerCamMovement()->Set_OnTransitionEnd([this]()
+            {
+                CCamSetupBuilder(m_CamController)
+                    .SetTarget(m_PlayerTransformCom)
+                    .Distance(22.f)
+                    .RotX(44.f)
+                    //.Snap()
+                    .LagSpeed(4.f)
+                    .ZoomSpeed(3.5f)
+                    .Apply();
+
+                Start_UIAnimation();
+
+                // 이후 끝나면 Dynamic Camera 키기
+                m_CamController->Get_OwnerCamMovement()->Set_OnTransitionEnd([this]()
+                    {
+                        m_CamController->Get_OwnerCamMovement()->Enable_DynamicDistance(true);
+                    });
+            });
+        break;
+
+    case CAM_MOVE_TYPE::BOSS_DEAD:
+        CCamSetupBuilder(m_CamController)
+            .SetTarget(m_Boss->Get_Transform())
+            .Distance(14.3f)
+            .PivotOffset(_vec3(0.f, -2.f, 0.f))
+            .RotX(10.f)
+            .LagSpeed(3.f)
+            .ZoomSpeed(2.5f)
+            .Apply();
+        break;
+
+    case CAM_MOVE_TYPE::TRANSFORM_FOLLOWER:
+        CCamSetupBuilder(m_CamController)
+            .SetTarget(m_Boss->Get_Transform())
+            .Distance(14.4f)
+            .PivotOffset(_vec3(0.f, -3.6f, 0.f))
+            .RotX(26.f)
+            .LagSpeed(3.f)
+            .ZoomSpeed(2.5f)
+            .Apply();
+        break;
+    }
+
+    // Camera Shake
+    Start_CameraShaking(type);
+}
+
+void CStage_Boss2::Start_CameraShaking(CAM_MOVE_TYPE type)
+{
+    auto camMovement = m_CamController->Get_OwnerCamMovement();
+    NULL_CHECK(camMovement);
+
+    switch (type)
+    {
+    case CAM_MOVE_TYPE::START_BOSS_ZOOM:
+        camMovement->Start_CamShake(0.36f, 0.15f, 49.1f, 25.f);
+        break;
+
+    case CAM_MOVE_TYPE::SUMMON_ZOOM_OUT:
+        // NONE
+        break;
+
+    case CAM_MOVE_TYPE::EYEBALL_ZOOM:
+        // NONE
+        break;
+
+    }
 }
 
 HRESULT CStage_Boss2::Ready_Light()
@@ -289,7 +484,13 @@ void CStage_Boss2::Setup_DialogueCallbacks()
 
 void CStage_Boss2::OnDialogueEnd(const string& id)
 {
-    if (id == "Boss2_Dead")
+    if (id == "Boss2_Start")
+    {
+        auto boss = dynamic_cast<CBossPhase2*>(m_Boss);
+        boss->Resume_Summon();
+    }
+
+    else if (id == "Boss2_Dead")
     {
         OnBoss2DeadEnd();
     }
@@ -302,6 +503,48 @@ void CStage_Boss2::OnDialogueEnd(const string& id)
 void CStage_Boss2::OnBoss2DeadEnd()
 {
     // 메인메뉴 or 엔딩 씬 있으면 추가 ㄱㄱ
+}
+
+void CStage_Boss2::Move_PlayerUI(const _float timeDelta)
+{
+    if (!m_IsUIMoving) return;
+
+    m_UIAnimTime += timeDelta;
+    _float ratio = clamp(m_UIAnimTime / m_UIAnimDuration, 0.f, 1.f);
+
+    for (size_t i = 0; i < m_Player_UI.size(); ++i)
+    {
+        _vec3 current = Engine::Lerp_EaseIn(
+            m_OriginalUIPositions[i],  
+            m_TargetUIPositions[i],    
+            ratio, 3.3f
+        );
+        m_Player_UI[i]->Get_Transform()->Set_Pos(current);
+    }
+
+    if (ratio >= 1.f) m_IsUIMoving = false;
+}
+
+void CStage_Boss2::Move_BossUI(const _float timeDelta)
+{
+    if (!m_IsBossUIMoving || !m_BossHpbar) return;
+
+    const _vec3 startPos = { 0.f, -400.f, 0.f }; 
+    const _vec3 targetPos = { 0.f, -250.f, 0.f };
+
+    _float ratio = clamp(m_UIAnimTime / m_UIAnimDuration, 0.f, 1.f);
+    _vec3 current = Engine::Lerp_EaseIn(startPos, targetPos, ratio, 3.3f);
+
+    m_BossHpbar->Get_Transform()->Set_Pos(current);
+
+    if (ratio >= 1.f) m_IsBossUIMoving = false;
+}
+
+void CStage_Boss2::Start_UIAnimation()
+{
+    m_IsUIMoving = true;
+    m_IsBossUIMoving = true;
+    m_UIAnimTime = 0.f;
 }
 
 CStage_Boss2* CStage_Boss2::Create(DEVICE graphicDev)

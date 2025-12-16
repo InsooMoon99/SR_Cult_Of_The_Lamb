@@ -1,13 +1,12 @@
 ﻿#include "pch.h"
 #include "CFollowerCow.h"
 
-#include <CDInputMgr.h>
 #include "CAnimator.h"
 #include "CCreateHelper.h"
+#include "CDInputMgr.h"
 #include "CNPCController.h"
 #include "CTexture.h"
 #include "CTransform.h"
-#include "CUI_FollowerCommand.h"
 
 CFollowerCow::CFollowerCow(DEVICE graphicDev)
     : CNPCBase(graphicDev)
@@ -23,13 +22,14 @@ CFollowerCow::~CFollowerCow()
 
 HRESULT CFollowerCow::Ready_GameObject()
 {
+    Set_Name(L"FollowerCow");
+
     if (FAILED(CNPCBase::Ready_GameObject()))
         return E_FAIL;
 
     // 초기 생성 위치
     m_TransformCom->Set_Pos(23.5f, 1.f, 24.5f);
 
-    //!! 이 Set_Work로 어떤 작업을 시킬 지 정해줄 수 있다!
     m_NPCController->Set_Work(CNPCController::NPC_WORK::CHOPWOOD);
     m_NPCController->Set_PrayTargetPos(_vec3(18.f, 1.f, 21.5f));
     m_NPCController->Set_AnimKeyPrefix(L"Cow");
@@ -46,18 +46,6 @@ _int CFollowerCow::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CNPCBase::Update_GameObject(timeDelta);
 
-    if (m_bHovering == true)
-    {
-        if (CDInputMgr::GetInstance()->MouseDown(DIM_LB))
-        {
-            m_FollowerCommandUI->Set_IsActive(true);
-        }
-    }
-
-    if (m_FollowerCommandUI->Get_Active()==true&&CDInputMgr::GetInstance()->MouseDown(DIM_RB))
-    {
-        m_FollowerCommandUI->Set_IsActive(false);
-    }
     return exit;
 }
 
@@ -82,6 +70,11 @@ HRESULT CFollowerCow::Add_Component()
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_COW, m_TextureCom });
 
     m_AnimatorCom->Set_TextureType(COMPONENTTYPE::TEX_COW);
+
+    // 디버그: 텍스처 컴포넌트 추가 성공 여부 확인
+    if (!m_TextureCom)
+        MSG_BOX("FollowerCow: Texture Component Missing in Add_Component");
+    // else { MSG_BOX("FollowerCow: Texture Component Added Successfully"); }
 
     return S_OK;
 }
@@ -147,6 +140,24 @@ void CFollowerCow::Animation_Setting()
                                     0.04f,
                                     _vec2(1.5f, 1.5f),
                                     _vec2(0.f, 0.2f));
+
+    m_AnimatorCom->Create_Animation(L"CowTransform1",
+                                    94,
+                                    0.04f,
+                                    _vec2(1.5f, 2.4f),
+                                    _vec2(0.f, 1.2f));
+
+    m_AnimatorCom->Create_Animation(L"CowTransform2",
+                                    26,
+                                    0.04f,
+                                    _vec2(1.5f, 2.4f),
+                                    _vec2(0.f, 1.2f));
+
+    m_AnimatorCom->Create_Animation(L"CowTransform3",
+                                    89,
+                                    0.04f,
+                                    _vec2(1.5f, 2.4f),
+                                    _vec2(0.f, 1.2f));
 }
 
 CFollowerCow* CFollowerCow::Create(DEVICE graphicDev)

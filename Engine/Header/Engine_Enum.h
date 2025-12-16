@@ -191,10 +191,11 @@ enum class COMPONENTTYPE
     TEX_DIALOGUE,
     TEX_UI_COOK,
     TEX_CHEST,
+    TEX_MAINMENU,
     TEX_UI_SKILL,
     TEX_UI_COMMAND,
     TEX_UI_CLEAR,
-    TEX_MAINMENU,
+
     TEX_MINIBOSS,
     TEX_FLY,
 
@@ -208,6 +209,15 @@ enum class COMPONENTTYPE
     CIRCLE_COLL,
     BOX_COLL,
     SPHERE_COLL,
+
+    TEX_LOADING_CIRCLE,
+
+    ////////////////
+    //  Particle  //
+    ////////////////
+    TEX_ROCK_PARTICLE,
+    TEX_GRASS_PARTICLE,
+    TEX_TREE_PARTICLE,
 
     ////////////////
     //  Follower  //

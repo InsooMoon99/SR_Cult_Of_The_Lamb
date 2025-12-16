@@ -39,6 +39,10 @@
 #include "Engine_Function.h"
 #include "Engine_Math.h"
 
+#include "Client_Enum.h"
+#include "Client_Struct.h"
+#include "Client_Global.h"
+
 #ifdef _DEBUG
 
 #define _CRTDBG_MAP_ALLOC

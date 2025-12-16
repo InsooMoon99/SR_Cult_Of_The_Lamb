@@ -57,6 +57,7 @@ public:
 
 public:
     void    Spawn_Weapon();
+    void    Spawn_Follower();
 
     void    Create_RoomTriggers();
     void    Create_Trigger_Between(Room fromRoom, Room toRoom,

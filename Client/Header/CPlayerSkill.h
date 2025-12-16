@@ -90,7 +90,7 @@ private:
     CPlayerInput* m_OwnerInputCom;
     CState* m_OwnerStateCom;
     CCombatStat* m_OwnerCombatStatCom;
-    CFireball* m_Fireball{};
+    CFireball* m_Fireball;
 private:
     CAttackBase* m_CurrentAttackObj;
 
@@ -108,7 +108,7 @@ private:
     _bool     m_SingleSkillEnable;
     _bool     m_TripleSkillEnable;
     _bool     m_SingleFired;
-    _bool    m_TripleFired{};
+    _bool    m_TripleFired;
 
     vector<CFireball*> m_Fireballs;
 
@@ -120,9 +120,9 @@ private:
     void Free() override;
 
 private:
-    CUICharging* m_LeftChargingUI{};
-    CUICharging* m_CenterChargingUI{};
-    CUICharging* m_RightChargingUI{};
+    CUICharging* m_LeftChargingUI;
+    CUICharging* m_CenterChargingUI;
+    CUICharging* m_RightChargingUI;
 
     _int m_CurrentCharges;
 };

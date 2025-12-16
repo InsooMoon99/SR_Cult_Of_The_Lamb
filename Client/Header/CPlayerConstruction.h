@@ -46,6 +46,6 @@ public:
     void Free() override;
 
 private:
-    CUI_ProgressBar* m_ProgressBar;
+    CUI_ProgressBar* m_ProgressBar = nullptr;
     _bool m_IsCompleted = false;
 };

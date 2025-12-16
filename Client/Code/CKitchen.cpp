@@ -7,7 +7,6 @@
 #include "CDInputMgr.h"
 #include "CPlayer.h"
 #include "CRcTex.h"
-#include "CRigidbody.h"
 #include "CSpriteEff.h"
 #include "CTexture.h"
 #include "CTransform.h"
@@ -57,7 +56,11 @@ _int CKitchen::Update_GameObject(const _float& timeDelta)
     {
         if (CDInputMgr::GetInstance()->MouseDown(DIM_LB))
         {
+            if (m_CookingCtrlCom && m_CookingCtrlCom->IsCooking())
+                return exit;
+
             m_CookingMenu->Set_IsActive(true);
+            m_CookingMenu->Set_CookingController(m_CookingCtrlCom);
             m_CookingMenu->PlayOpenAnimation();
 
             m_Active = true;
