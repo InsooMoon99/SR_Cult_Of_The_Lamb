@@ -64,6 +64,8 @@ _int CUITarotCard::Update_GameObject(const _float& timeDelta)
 
     _int exit = CUI::Update_GameObject(timeDelta);
 
+    m_Alpha -= timeDelta;
+
     if(m_CurrentState== TAROTSTATE::CHOICE)
     {
         
@@ -119,7 +121,7 @@ _int CUITarotCard::Update_GameObject(const _float& timeDelta)
                     {
                     case TAROTSTATE::START:   m_AnimatorCom->Play_Animation(L"Tarot_Heart_Start", ANIMSTATE::ONCE, true); break;
                     case TAROTSTATE::CHOICE:  break;//m_AnimatorCom->Play_Animation(L"Tarot_Heart_Choice", ANIMSTATE::ONCE, true); break;
-                    case TAROTSTATE::RESULT:  m_RenderOff = true;
+                    case TAROTSTATE::RESULT:    m_SpriteEffCom->AlphaRenderStart(m_Alpha);  //m_RenderOff = true;
                         break;
                     //case TAROTSTATE::EXIT:    m_AnimatorCom->Play_Animation(ExitKey, ANIMSTATE::ONCE, true); break;
                     }
@@ -137,7 +139,7 @@ _int CUITarotCard::Update_GameObject(const _float& timeDelta)
                 {
                 case TAROTSTATE::START:   m_AnimatorCom->Play_Animation(L"Tarot_Arrow_Start", ANIMSTATE::ONCE, true); break;
                 case TAROTSTATE::CHOICE:  break; //m_AnimatorCom->Play_Animation(L"Tarot_Arrow_Choice", ANIMSTATE::ONCE, true); break;
-                case TAROTSTATE::RESULT: m_RenderOff = true;
+                case TAROTSTATE::RESULT:  m_SpriteEffCom->AlphaRenderStart(m_Alpha); //m_RenderOff = true;
                     break;
                 //case TAROTSTATE::EXIT:    m_AnimatorCom->Play_Animation(ExitKey, ANIMSTATE::ONCE, true); break;
                 }

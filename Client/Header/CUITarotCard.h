@@ -86,7 +86,7 @@ protected:
     CAnimator* m_AnimatorCom;
     CSpriteEff* m_SpriteEffCom;
 
-
+    _float m_Alpha = 0.8f;
 };
 
 

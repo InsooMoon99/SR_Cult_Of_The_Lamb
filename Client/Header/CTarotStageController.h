@@ -25,6 +25,7 @@ private:
 public:
     void    Render_Editor() override;
     HRESULT Ready_GameObject() override;
+    void    Initialize_GameObject() override;
     _int    Update_GameObject(const _float& timeDelta) override;
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
@@ -40,12 +41,13 @@ protected:
 
 private:
     STAGESTATE             m_CurrentState;
-    CUITarotCard*          m_TarotCard1;
-    CUITarotCard*          m_TarotCard2;
-    CUITarotDescCard*      m_ExplainCard1;
-    CUITarotDescCard*      m_ExplainCard2;
-    CUI_Dialogue*          m_Dialogue;
-    _float                 m_WaitingTime =5.f;
+    CUITarotCard* m_TarotCard1;
+    CUITarotCard* m_TarotCard2;
+    CUITarotDescCard* m_ExplainCard1;
+    CUITarotDescCard* m_ExplainCard2;
+    CUI_Dialogue* m_Dialogue;
+    _float                 m_WaitingTime = 5.f;
+
+    _bool                  m_DialogueStarted = false;
+    _bool                  m_DialogueEnded = false;
 };
-
-
