@@ -1,7 +1,6 @@
 ﻿#include "pch.h"
 #include "CMainMenu.h"
-
-#include <CSoundMgr.h>
+#include "CSoundMgr.h"
 #include "CCameraController.h"
 #include "CCamSetupBuilder.h"
 #include "CDInputMgr.h"

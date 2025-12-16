@@ -19,7 +19,7 @@ public:
 
     void    RenderFont(const wstring& font, const wstring& text, CUIButton* btt);
 
-    void Set_ShowUI(bool show) { m_ShowUI = show; }
+    void    Set_ShowUI(bool show) { m_ShowUI = show; }
 
 private:
     HRESULT Ready_Environment_Layer(LAYERTYPE layerType);
