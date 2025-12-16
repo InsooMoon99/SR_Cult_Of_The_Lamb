@@ -54,14 +54,22 @@ _int CPlayerGathering::Update_Component(const _float& timeDelta)
         return exit;
     }
 
-    if (m_Target == nullptr ||
-        CDInputMgr::GetInstance()->MouseUp(DIM_LB) ||
-        CDInputMgr::GetInstance()->KeyUp(DIK_E)/*&& m_Target */ ||
-        m_Target->Get_Hovering() == false&&m_ProgressBar)
+    // 채집 종료 조건 체크 (괄호로 우선순위 명확화)
+    // 1. 타겟이 없음
+    // 2. 좌클릭 뗌
+    // 3. E키 뗌  
+    // 4. 타겟이 더 이상 호버링되지 않음
+    bool bShouldStop = (m_Target == nullptr) ||
+                       CDInputMgr::GetInstance()->MouseUp(DIM_LB) ||
+                       CDInputMgr::GetInstance()->KeyUp(DIK_E) ||
+                       (m_Target && m_Target->Get_Hovering() == false);
+
+    if (bShouldStop)
     {
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
         m_AttackTimer = 0;
-        m_ProgressBar->Set_IsActive(false);
+        if (m_ProgressBar)  // nullptr 체크 추가
+            m_ProgressBar->Set_IsActive(false);
         return exit;
     }
 

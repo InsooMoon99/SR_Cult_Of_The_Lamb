@@ -74,6 +74,7 @@ void CPlayerConstruction::BuildingCompleted() // 초기화
 	{
 		m_ProgressBar->Set_IsActive(false);
 	}
+    m_pConstructZone = nullptr;
 
 }
 

@@ -46,6 +46,8 @@ void CUI_FollowerCommand::Initialize_GameObject()
                 controller->Set_Work(CNPCController::NPC_WORK::PRAY);
                 cout << "PrayButton Click" << endl;
             }
+            m_TargetNPC = nullptr;
+            Set_IsActive(false);
         }
     });
 
@@ -61,6 +63,8 @@ void CUI_FollowerCommand::Initialize_GameObject()
                 controller->Set_Work(CNPCController::NPC_WORK::CHOPWOOD);
                 cout << "AxeButton Click" << endl;
             }
+            m_TargetNPC = nullptr;
+            Set_IsActive(false);
          } 
     });
     
@@ -75,6 +79,8 @@ void CUI_FollowerCommand::Initialize_GameObject()
                  controller->Set_Work(CNPCController::NPC_WORK::MINING);
                  cout << "MiningButton Click" << endl;
              }
+             m_TargetNPC = nullptr;
+             Set_IsActive(false);
          }
     });
 
@@ -125,7 +131,10 @@ _int CUI_FollowerCommand::Update_GameObject(const _float& timeDelta)
         return 0;
 
     if (CDInputMgr::GetInstance()->MouseDown(DIM_RB))
+    {
+        m_TargetNPC = nullptr;
         m_Active = false;
+    }
 
     _int exit = CUI::Update_GameObject(timeDelta);
 

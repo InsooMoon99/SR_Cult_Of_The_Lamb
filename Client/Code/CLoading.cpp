@@ -180,10 +180,14 @@ _uint CLoading::Loading_ForState_Parallel()
         }));
 
     // 병렬 태스크 완료 대기
-    for (auto& future : futures)
+    for (size_t i = 0; i < futures.size(); ++i)
     {
-        if (FAILED(future.get()))
+        if (FAILED(futures[i].get()))
+        {
+            wstring msg = L"[Parallel Loading Failed] Task Index: " + to_wstring(i) + L"\n";
+            OutputDebugString(msg.c_str());
             return E_FAIL;
+        }
     }
 
     auto end = chrono::high_resolution_clock::now();

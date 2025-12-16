@@ -62,9 +62,9 @@ private:
     CTerrain*            m_Terrain;
     CUICookingMenu*      m_CookingMenu;
     CUI_FollowerCommand* m_FollowerCommand;
-    CPlayerGathering* m_PlayerGatherCom;
+    CPlayerGathering*    m_PlayerGatherCom;
+    CPlayerConstruction* m_PlayerConstructionCom;
 
-    //CPlayerConstruction* m_PlayerConstructionCom;
     //CWorkBench*   m_WorkBench;
     //CKitchen*     m_Kitchen;
     //CFollowerCow* m_FollowerCow;
