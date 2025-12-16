@@ -64,14 +64,12 @@ public:
     void    EnterDungeon();
     void    Change_Room(Room room);
     CRunLootLog& Get_RunLootLog() { return m_RunLootLog; }
-    void    Add_KillCount() { m_KillCount++; }
-    _int    Get_KillCounts() { return m_KillCount; }
     _float  Get_Timer() { return m_Timer; }
     void    Set_TimerRunning(bool timerRunning) { m_TimerRunning = timerRunning; }
 
     // 몬스터 죽었을 때 호출
     void    OnMonsterDeath(CGameObject* obj) override;
-
+    _bool   IsCleared() { return m_DungeonCleared; }
 private:
     const CRunLootLog& Get_RunLootLog() const { return m_RunLootLog; }
 private:
@@ -120,6 +118,7 @@ private:
 
     _float          m_Timer;
     _bool           m_TimerRunning;
+    _bool           m_DungeonCleared;
 };
 
 

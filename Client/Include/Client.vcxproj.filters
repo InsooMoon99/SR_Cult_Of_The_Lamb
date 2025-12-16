@@ -361,6 +361,9 @@
     <Filter Include="05. UI\01. UI\13. UI_DungeonLootPanel">
       <UniqueIdentifier>{efba4223-937b-4295-bccd-d3e92a26a09b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. UI\01. UI\14. UI_ProgressBar">
+      <UniqueIdentifier>{500a6299-4aa2-4e0c-8e0d-6551a299aa09}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -913,6 +916,7 @@
     </ClInclude>
     <ClInclude Include="..\Header\CUI_DungeonLootPanel.h">
       <Filter>05. UI\01. UI\13. UI_DungeonLootPanel</Filter>
+    </ClInclude>
     <ClInclude Include="..\Header\CBoss2_BulletAttack1.h">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
     </ClInclude>
@@ -930,6 +934,9 @@
     </ClInclude>
     <ClInclude Include="..\Header\CBoss2_Follower.h">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUI_ProgressBar.h">
+      <Filter>05. UI\01. UI\14. UI_ProgressBar</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1463,6 +1470,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CBoss2_Follower.cpp">
       <Filter>03. GameObject\04. Boss\02. Boss2\03. State\00. Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_ProgressBar.cpp">
+      <Filter>05. UI\01. UI\14. UI_ProgressBar</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

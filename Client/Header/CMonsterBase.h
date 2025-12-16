@@ -88,7 +88,6 @@ private:
     bool    m_bHurt = false;
     float   HurtTime = 0;
     float   flashTime = 0.1f;
-    bool    m_CountKillDone = false;
 
 };
 

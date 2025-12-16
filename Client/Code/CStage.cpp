@@ -62,6 +62,10 @@
 #include "CChest.h"
 #include "CUI_Skill.h"
 #include "CUI_FollowerCommand.h"
+#include "CUI_SkillPanel.h"
+#include "CPlayerConstruction.h"
+#include "CPlayerGathering.h"
+#include "CUI_ProgressBar.h"
 
 class CUIBuildMenu;
 
@@ -299,6 +303,16 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     m_PlayerSkillCom = dynamic_cast<CPlayerSkill*>(gameObject->Get_Component(ID_STATIC, COMPONENTTYPE::PL_SKILL));
     NULL_CHECK_RETURN(m_PlayerSkillCom, E_FAIL);
 
+
+    m_PlayerConstructionCom =
+        dynamic_cast<CPlayerConstruction*>(gameObject->Get_Component(
+            ID_STATIC,
+            COMPONENTTYPE::CONSTRUCTION));
+
+    m_PlayerGatherCom = dynamic_cast<CPlayerGathering*>(gameObject->Get_Component(
+        ID_STATIC,
+        COMPONENTTYPE::GATHERING));
+
     // -----------------------------
     // Camera
     // -----------------------------
@@ -473,14 +487,14 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
 
     // -----------------------------
     // Follower
-    // -----------------------------
-    //gameObject = CFollowerCow::Create(m_GraphicDev);
-    //NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"Create NPC object has failed");
-    //FAILED_CHECK_MSG(
-    //    layer->Add_GameObject(OBJTYPE::NPC, gameObject),
-    //    L"Add NPC object on layer has failed");
-
-    m_FollowerCow = dynamic_cast<CFollowerCow*>(gameObject); //UI 생성시점이 Follower 생성 시점보다 늦어서 나중에 포인터 주입하기 위해 멤버변수로 저장해둠
+    //-----------------------------
+   // gameObject = CFollowerCow::Create(m_GraphicDev);
+   // NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"Create NPC object has failed");
+   // FAILED_CHECK_MSG(
+   //     layer->Add_GameObject(OBJTYPE::NPC, gameObject),
+   //     L"Add NPC object on layer has failed");
+   //
+   // m_FollowerCow = dynamic_cast<CFollowerCow*>(gameObject); //UI 생성시점이 Follower 생성 시점보다 늦어서 나중에 포인터 주입하기 위해 멤버변수로 저장해둠
     
     // -----------------------------
     // 저장된 건물 불러오기 기능
@@ -597,16 +611,6 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
             &gameObject),
         L"Persistent object setup failed: UI_Weapon");
 
-    FAILED_CHECK_MSG(
-        Engine::AcquirePersistentObject<CUI_Skill>(
-            OBJTYPE::UI,
-            L"UI_Skill",
-            m_GraphicDev,
-            layer,
-            &gameObject),
-        L"Persistent object setup failed: UI_Skill");
-
-
     //왼쪽 상단 스킬 아이콘 UI
     CUIIcon* pgameObject = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_ICON);
     pgameObject->Set_TextureIndex(1);
@@ -653,11 +657,27 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     m_Kitchen->Set_CookingMenu(uiCookingMenu);
 
 
-    CUI_FollowerCommand* followerCommand = CUI_FollowerCommand::Create(m_GraphicDev);
-    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, followerCommand),
-        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUI_FollowerCommand) failed");
+  //  CUI_FollowerCommand* followerCommand = CUI_FollowerCommand::Create(m_GraphicDev);
+  //  FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, followerCommand),
+  //      L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUI_FollowerCommand) failed");
+  //
+  //  m_FollowerCow->Set_FollowerCommandUI(followerCommand); // 여기서 뒤늦게 포인터 주입
 
-    m_FollowerCow->Set_FollowerCommandUI(followerCommand); // 여기서 뒤늦게 포인터 주입
+    FAILED_CHECK_MSG(
+        Engine::AcquirePersistentObject<CUI_SkillPanel>(
+            OBJTYPE::UI,
+            L"UI_SkillPanel",
+            m_GraphicDev,
+            layer,
+            &gameObject),
+        L"Persistent object setup failed: UI_SkillPanel");
+
+    CUI_ProgressBar* uiProgressBar = CUI_ProgressBar::Create(m_GraphicDev);
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiProgressBar),
+        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UI_ProgressBar) failed");
+
+    m_PlayerGatherCom->Set_ProgressBar(uiProgressBar);
+    m_PlayerConstructionCom->Set_ProgressBar(uiProgressBar);
 
     m_Layers.insert({ layerType, layer });
 

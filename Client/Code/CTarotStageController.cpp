@@ -92,7 +92,6 @@ _int CTarotStageController::Update_GameObject(const _float& timeDelta)
 
     }
   
-   
 
    
     return exit;
@@ -147,14 +146,14 @@ void CTarotStageController::Create_Cards()
     //하트 설명 카드
     m_ExplainCard1 = CUITarotDescCard::Create(m_GraphicDev);
     m_ExplainCard1->Set_TextureIndex(4);
-    m_ExplainCard1->Get_Transform()->Set_Scale(128.f, 128.f, 1.f);
+    m_ExplainCard1->Get_Transform()->Set_Scale(153.6f, 153.6f, 1.f);
     m_ExplainCard1->Get_Transform()->Set_Pos(-250.f, 0.f, 1.f);
     m_ExplainCard1->InitializeScale();
 
     //화살 설명 카드
     m_ExplainCard2 = CUITarotDescCard::Create(m_GraphicDev);
     m_ExplainCard2->Set_TextureIndex(5);
-    m_ExplainCard2->Get_Transform()->Set_Scale(128.f, 128.f, 1.f);
+    m_ExplainCard2->Get_Transform()->Set_Scale(153.6f, 153.6f, 1.f);
     m_ExplainCard2->Get_Transform()->Set_Pos(250.f, 0.f, 1.f);
     m_ExplainCard2->InitializeScale();
 

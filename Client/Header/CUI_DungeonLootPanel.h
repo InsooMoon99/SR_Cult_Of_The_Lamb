@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CRunLootLog.h"
 #include "CUI.h"
+class CSpriteEff;
 class CUIInventoryCell;
 class CUIIcon;
 
@@ -21,6 +22,17 @@ public:
     HRESULT Add_Component();
     void    Set_RunLootLog(CRunLootLog* runlootlog) { m_RunLootLog = runlootlog; }
     static CUI_DungeonLootPanel* Create(DEVICE graphicDev);
+    wstring FormatTime(_float time)
+    {
+        int totalSec = static_cast<int>(time);
+        int minutes = totalSec / 60;
+        int seconds = totalSec % 60;
+
+        wchar_t buf[16];
+        swprintf(buf, 16, L"%02d:%02d", minutes, seconds);
+
+        return buf;
+    }
 
 protected:
     void Free() override;
@@ -34,12 +46,16 @@ private:
     CUIIcon* m_DecoIcon2;
     CUIIcon* m_DecoIcon3;
 
-private:
     CUIIcon* m_ItemIcon;
     CUIIcon* m_TimerIcon;
+    CSpriteEff* m_SpriteEff;
+
     vector<CUIInventoryCell*> m_Cells;
     CRunLootLog* m_RunLootLog;
 
+
+    _float  m_Alpha = 0;
+    _float m_FadeInSpeed = 1.f;
 };
 
 

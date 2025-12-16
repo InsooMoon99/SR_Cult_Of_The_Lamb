@@ -31,6 +31,7 @@
 #include "CUI_DungeonLootPanel.h"
 #include "CUI_Fade.h"
 #include "CUI_Skill.h"
+#include "CUI_SkillPanel.h"
 
 class CUI_DungeonLootPanel;
 
@@ -42,7 +43,9 @@ CStage_Dungeon::CStage_Dungeon(DEVICE graphicDev)
       m_UI_Fade(nullptr),
       m_NextRoom(Room::DUNGEON_END),
       m_CamMovement(nullptr),
-      m_KillCount(0),
+      m_Timer(0),
+      m_TimerRunning(false),
+      m_DungeonCleared(false),
       m_CurrentRoom(Room::DUNGEON_END),
       m_Player(nullptr),
       m_PlayerTransform(nullptr)
@@ -95,7 +98,7 @@ void CStage_Dungeon::Initialize_Scene()
     m_RoomData[static_cast<_int>(Room::MONSTER2)] =
     {
         {140.f, 1.f, 10.f},
-        "../Bin/Resource/Data/Terrain/Terrain_TarotMap.map",
+        "../Bin/Resource/Data/Terrain/Terrain_TarotMapFinal.map",
         {150.f, 0.f, 0.f}
     };
 
@@ -147,6 +150,15 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
 {
     if (m_TimerRunning)
         m_Timer += timeDelta;
+
+    if (!m_DungeonCleared && m_TimerRunning && m_CurrentRoom == Room::MONSTER2)
+    {
+        if (CDInputMgr::GetInstance()->KeyDown(DIK_M))
+        {
+            m_TimerRunning = false;
+            m_DungeonCleared = true;
+        }
+    }
 
     if (m_RequestChangeScene)
     {
@@ -523,15 +535,6 @@ HRESULT CStage_Dungeon::Ready_UI_Layer(LAYERTYPE layerType)
             &gameObject),
         L"Persistent object setup failed: UI_Weapon");
 
-    FAILED_CHECK_MSG(
-        Engine::AcquirePersistentObject<CUI_Skill>(
-            OBJTYPE::UI,
-            L"UI_Skill",
-            m_GraphicDev,
-            layer,
-            &gameObject),
-        L"Persistent object setup failed: UI_Skill");
-
 
     //왼쪽 상단 스킬 아이콘 UI
     CUIIcon* pgameObject = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_ICON);
@@ -574,6 +577,15 @@ HRESULT CStage_Dungeon::Ready_UI_Layer(LAYERTYPE layerType)
     dungeonLootPanel->Initialize_GameObject();
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, dungeonLootPanel),
         L"CStage_Dungeon::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUI_DungeonLootPanel) failed");
+
+    FAILED_CHECK_MSG(
+        Engine::AcquirePersistentObject<CUI_SkillPanel>(
+            OBJTYPE::UI,
+            L"UI_SkillPanel",
+            m_GraphicDev,
+            layer,
+            &gameObject),
+        L"Persistent object setup failed: UI_SkillPanel");
     m_Layers.insert({ layerType, layer });
 
     return S_OK;

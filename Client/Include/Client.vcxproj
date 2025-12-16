@@ -337,6 +337,7 @@
     <ClInclude Include="..\Header\CUI_Fade.h" />
     <ClInclude Include="..\Header\CUI_FollowerCommand.h" />
     <ClInclude Include="..\Header\CUI_MonsterHp.h" />
+    <ClInclude Include="..\Header\CUI_ProgressBar.h" />
     <ClInclude Include="..\Header\CUI_Skill.h" />
     <ClInclude Include="..\Header\CUI_SkillPanel.h" />
     <ClInclude Include="..\Header\CVillageStateMgr.h" />
@@ -522,6 +523,7 @@
     <ClCompile Include="..\Code\CUI_Fade.cpp" />
     <ClCompile Include="..\Code\CUI_FollowerCommand.cpp" />
     <ClCompile Include="..\Code\CUI_MonsterHp.cpp" />
+    <ClCompile Include="..\Code\CUI_ProgressBar.cpp" />
     <ClCompile Include="..\Code\CUI_Skill.cpp" />
     <ClCompile Include="..\Code\CUI_SkillPanel.cpp" />
     <ClCompile Include="..\Code\CVillageStateMgr.cpp" />
