@@ -345,7 +345,7 @@ void CMapObjectMgr::Render_DungeonDeco()
 
         if (decoTexture)
         {
-            const _int TOTAL_DECO = 139;
+            const _int TOTAL_DECO = 165;
             const _int COLS = 5;
             const ImVec2 buttonSize(50.f, 50.f);
 
