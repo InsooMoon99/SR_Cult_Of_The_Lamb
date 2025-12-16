@@ -517,16 +517,16 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
     ///////////////////////////////////////////////////////////////////////////////
 
     // 보스 생성
-    //CGameObject* m_Boss = CEligos::Create(m_GraphicDev);
-    //NULL_CHECK_RETURN_MSG(m_Boss, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase2::Create() returned null")
-    //
-    //FAILED_CHECK_MSG(
-    //    layer->Add_GameObject(OBJTYPE::BOSS1, m_Boss),
-    //    L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Boss) failed");
+    CGameObject* m_Boss = CEligos::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(m_Boss, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase2::Create() returned null")
+    
+    FAILED_CHECK_MSG(
+        layer->Add_GameObject(OBJTYPE::BOSS1, m_Boss),
+        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Boss) failed");
 
-    CTransform* m_BTransform = dynamic_cast<CTransform*>(
-        m_Boss->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-    m_BTransform->Set_Pos({ 250,1,10 });
+    //CTransform* m_BTransform = dynamic_cast<CTransform*>(
+    //    m_Boss->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+    //m_BTransform->Set_Pos({ 250,1,10 });
 
     m_Layers.insert({ layerType, layer });
     return S_OK;

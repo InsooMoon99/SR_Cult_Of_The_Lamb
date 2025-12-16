@@ -30,10 +30,11 @@ CEligos::~CEligos()
 
 HRESULT CEligos::Ready_GameObject()
 {
-    CMonsterBase::Ready_GameObject();
+    if (FAILED(CMonsterBase::Ready_GameObject()))
+        return E_FAIL;
 
-    //if (FAILED(Add_Component()))
-    //    return E_FAIL;
+  //if (FAILED(Add_Component()))
+  //      return E_FAIL;
 
     m_StateMachine = CEligos_StateMachine::Create(this);
 
@@ -145,7 +146,7 @@ HRESULT CEligos::Add_Component()
 
 
     // 부모쪽에 Transform, Buffer, Animator, State, CombatStat, BoxCollider 있음
-    if (FAILED(CCharacterBase::Add_Component()))
+    if (FAILED(CMonsterBase::Add_Component()))
         return E_FAIL;
 
     // Texture

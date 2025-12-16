@@ -20,7 +20,7 @@ CMonsterBase::CMonsterBase(DEVICE graphicDev)
       m_Target(nullptr),
       m_TargetTransform(nullptr),
       m_StoppingDistance(2.f),
-      m_AttackRange(2.5f),
+       m_AttackRange(2.5f),
       m_ChaseRange(10.f),
       m_AttackCooldown(0),
       m_AttackTimer(0),
