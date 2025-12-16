@@ -44,6 +44,8 @@ HRESULT CEligos_Attack_Fly::Ready_State()
     m_pOwnerTransformCom = static_cast<CTransform*>(m_pOwner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
     m_pOwnerAnimatorCom = static_cast<CAnimator*>(m_pOwner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
 
+
+
     return S_OK;
 }
 
@@ -103,6 +105,7 @@ _int CEligos_Attack_Fly::Update_State(const _float& timeDelta)
             m_StartFlag = false;
             return CEligos::ELIGOSSTATE::BOSSIDLE;
         }
+        break;
     }
 
     return CEligos::ELIGOSSTATE::ATTACK_FLY;
@@ -124,7 +127,7 @@ void CEligos_Attack_Fly::SpawnFlies(int fliesNum, float noiseAngle, float noiseD
 
         CEligos_Flies* fly = CEligos_Flies::Create(m_pOwner->Get_GraphicDev(),m_pOwner, (CGameObject*)m_pPlayer);
         fly->Initialize_GameObject();
-        _vec3 pos = { cos(D3DXToRadian(angle) * dist), 0.f, sin(D3DXToRadian(angle) * dist) };
+        _vec3 pos = { cos(D3DXToRadian(angle) )* dist, 0.f, sin(D3DXToRadian(angle) )* dist };
 
         fly->Get_Transform()->Set_Pos(m_pOwnerTransformCom->Get_Pos() + pos);
         SpawnObjectOnLayer(fly, OBJTYPE::MONSTER);

@@ -42,6 +42,8 @@ HRESULT CEligos_Idle::Ready_State()
     m_pOwnerAnimatorCom = static_cast<CAnimator*>(m_pOwner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
     m_pOwnerStateCom = static_cast<CCombatStat*>(m_pOwner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
 
+    Find_Player();
+
     return S_OK;
 }
 
@@ -59,7 +61,7 @@ _int CEligos_Idle::Update_State(const _float& timeDelta)
         return  CEligos::ELIGOSSTATE::BOSSDEAD;
     }
 
-    Find_Player();
+
         _vec3 tmpOwnerPos = { m_pOwnerTransformCom->Get_Pos().x,m_pPlayerTransformCom->Get_Pos().y,m_pOwnerTransformCom->Get_Pos().z };
         _vec3 vec = m_pPlayerTransformCom->Get_Pos() - tmpOwnerPos;
         float length = D3DXVec3Length(&vec);

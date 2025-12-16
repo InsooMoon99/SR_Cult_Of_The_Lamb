@@ -194,6 +194,7 @@ _bool CMonsterBase::Is_OutofChaseRange() const
 
 void CMonsterBase::OnBeginOverlap(CCollider* self, CCollider* other)
 {
+    CCharacterBase::OnBeginOverlap(self, other);
     m_bHurt = true;
 }
 
