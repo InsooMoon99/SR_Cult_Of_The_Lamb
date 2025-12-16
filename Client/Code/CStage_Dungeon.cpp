@@ -424,7 +424,7 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
             OBJTYPE::CAMERA, L"MainCamera", m_GraphicDev, layer, &gameObject),
         L"Persistent object setup failed");
 
-    auto camController = dynamic_cast<CCameraController*>(
+    m_CamController = dynamic_cast<CCameraController*>(
         gameObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAM_CONTROLLER));
 
     m_CamMovement = dynamic_cast<CCameraMovement*>(
@@ -435,12 +435,12 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
         m_PrevZoomSpeed = m_CamMovement->Get_ZoomSpeed();
 
     // 카메라 설정값 초기화
-    if (camController != nullptr)
+    if (m_CamController != nullptr)
     {
         // 씬에서 카메라 생성 시 값 초기화
         // : CCameraSetup을 카메라 설정을 중도에 바꿀 때 사용 가능하고,
         //   그럴 때는 필요한 것만 사용해 .Apply() 하면 된다.
-        CCamSetupBuilder(camController)
+        CCamSetupBuilder(m_CamController)
             .SetTarget(m_PlayerTransform)
             //.PivotOffset({ 0.f, 0.f, 0.f })
             //.Distance(12.f)
@@ -452,7 +452,7 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
             .Apply();
 
         // 에디터에 카메라 설정
-        CMainEditorMgr::GetInstance()->Set_MainCamera(camController);
+        CMainEditorMgr::GetInstance()->Set_MainCamera(m_CamController);
     }
     CGameObject* tarotController = CTarotStageController::Create(m_GraphicDev);
 
@@ -469,7 +469,8 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
     gameObject = CTarotNPC::Create(m_GraphicDev);
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::NPC, gameObject),
         L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(TarotNPC) failed");
-    dynamic_cast<CTarotNPC*>(gameObject)->Set_TarotController(dynamic_cast<CTarotStageController*>(tarotController));
+	m_TarotNpc= dynamic_cast<CTarotNPC*>(gameObject);
+	m_TarotNpc->Set_TarotController(dynamic_cast<CTarotStageController*>(tarotController));
 
 
     gameObject = CFloaterMonster::Create(m_GraphicDev);
@@ -584,13 +585,6 @@ HRESULT CStage_Dungeon::Ready_UI_Layer(LAYERTYPE layerType)
         layer->Add_GameObject(OBJTYPE::UI, m_UI_Fade),
         L"CStage_Dungeon::Ready_UI_Layer() failed: CFade_UI Add failed");
 
-
-    CUI_DungeonLootPanel* dungeonLootPanel = CUI_DungeonLootPanel::Create(m_GraphicDev);
-    dungeonLootPanel->Set_RunLootLog(&m_RunLootLog);
-    dungeonLootPanel->Initialize_GameObject();
-    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, dungeonLootPanel),
-        L"CStage_Dungeon::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUI_DungeonLootPanel) failed");
-
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CUI_SkillPanel>(
             OBJTYPE::UI,
@@ -599,6 +593,13 @@ HRESULT CStage_Dungeon::Ready_UI_Layer(LAYERTYPE layerType)
             layer,
             &gameObject),
         L"Persistent object setup failed: UI_SkillPanel");
+
+    CUI_DungeonLootPanel* dungeonLootPanel = CUI_DungeonLootPanel::Create(m_GraphicDev);
+    dungeonLootPanel->Set_RunLootLog(&m_RunLootLog);
+    dungeonLootPanel->Initialize_GameObject();
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, dungeonLootPanel),
+        L"CStage_Dungeon::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUI_DungeonLootPanel) failed");
+
     m_Layers.insert({ layerType, layer });
 
     return S_OK;

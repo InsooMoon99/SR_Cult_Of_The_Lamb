@@ -4,6 +4,7 @@
 class CUITarotDescCard;
 class CUIButton;
 class CUITarotCard;
+class CUI_Dialogue;
 
 enum class STAGESTATE
 {
@@ -43,6 +44,7 @@ private:
     CUITarotCard*          m_TarotCard2;
     CUITarotDescCard*      m_ExplainCard1;
     CUITarotDescCard*      m_ExplainCard2;
+    CUI_Dialogue*          m_Dialogue;
 };
 
 

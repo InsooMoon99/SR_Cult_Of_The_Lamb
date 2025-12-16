@@ -8,10 +8,13 @@ class CTerrain;
 class CPlayer;
 class CUI_Fade;
 class CCameraMovement;
+class CCameraController;
+class CTarotNPC;
 
 BEGIN(Engine)
 class CCombatStat;
 class CTransform;
+
 END
 
 struct RoomData
@@ -113,12 +116,14 @@ private:
 
     // 카메라 무브먼트
     CCameraMovement* m_CamMovement;
-    
-    CRunLootLog     m_RunLootLog;
-
+    CCameraController* m_CamController;
+    CRunLootLog         m_RunLootLog;
+    CTarotNPC*         m_TarotNpc;
     _float          m_Timer;
+
     _bool           m_TimerRunning;
     _bool           m_DungeonCleared;
+    _bool           m_Start;
 };
 
 

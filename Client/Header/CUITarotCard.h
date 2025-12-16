@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include "CUI.h"
 
+class CSpriteEff;
+
 enum class TAROTSTATE
 {
     START,
@@ -53,9 +55,6 @@ public:
     void            Set_PrevState(TAROTSTATE state) { m_PrevState = state; }
     void            Set_TarotType(TAROTTYPE type) { m_CurrentType = type; }
 
-    void            AlphaRenderStart(float alpha);
-    void            AlphaRenderEnd();
-
     void OnHoverStart();
     void OnHoverEnd();
 
@@ -73,7 +72,6 @@ protected:
     bool m_Selected;
     RECT m_Rect;
     int  m_TextureIndex;
-    CAnimator* m_AnimatorCom;
     TAROTSTATE m_CurrentState;
     TAROTTYPE m_CurrentType;
     TAROTSTATE m_PrevState;
@@ -84,6 +82,9 @@ protected:
     function<void()> m_OnClick;
     _vec3       m_BaseScale;
     _vec3       m_TargetScale;
+
+    CAnimator* m_AnimatorCom;
+    CSpriteEff* m_SpriteEffCom;
 
 
 };

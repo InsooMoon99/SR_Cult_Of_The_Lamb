@@ -13,6 +13,9 @@
 #include "CBoxCollider.h"
 #include "CTarotStageController.h"
 #include "CRenderer.h"
+#include "CCameraController.h"
+#include "CManagement.h"
+#include "CCamSetupBuilder.h"
 
 CTarotNPC::CTarotNPC(DEVICE graphicDev)
     : CCharacterBase(graphicDev),
@@ -190,6 +193,19 @@ void CTarotNPC::OnBeginOverlap(CCollider* self, CCollider* other)
     CPlayer* ply = dynamic_cast<CPlayer*>(other->Get_Owner());
     if (ply)
         m_bPlayerOverlap = true;
+
+    auto camController = dynamic_cast<CCameraController*>(CManagement::GetInstance()->Get_Component(ID_DYNAMIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::CAM_CONTROLLER));
+
+      if (!(camController==nullptr))
+      {
+          CCamSetupBuilder(camController)
+              .SetTarget(ply->Get_Transform())
+              .PivotOffset({ 0.f, 0.f, 4.f })
+              .Distance(17.5f)
+              .Apply();
+
+      }
+   
 }
 
 void CTarotNPC::OnEndOverlap(CCollider* self, CCollider* other)
@@ -199,6 +215,10 @@ void CTarotNPC::OnEndOverlap(CCollider* self, CCollider* other)
 
     if (m_bPlayerOverlap == true && ply != nullptr)
         m_bPlayerOverlap = false;
+    auto camController = dynamic_cast<CCameraController*>(CManagement::GetInstance()->Get_Component(ID_DYNAMIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::CAM_CONTROLLER));
+    CCamSetupBuilder(camController)
+        .SetTarget(ply->Get_Transform())
+        .Apply();
 }
 
 void CTarotNPC::OnStayOverlap(CCollider* self, CCollider* other)
