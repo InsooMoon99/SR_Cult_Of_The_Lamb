@@ -20,6 +20,8 @@
 #include "CUIWeaponExplain.h"
 #include "CDInputMgr.h"
 #include "CAnimator.h"
+#include "CCameraController.h"
+#include "CCamSetupBuilder.h"
 #include "CParticleHelper.h"
 #include "CStage_Dungeon.h"
 
@@ -183,11 +185,12 @@ void CDroppedItem::OnBeginOverlap(CCollider* self, CCollider* other)
     }
 
     CGameObject::OnBeginOverlap(self, other);
+
+
 }
 
 void CDroppedItem::OnStayOverlap(CCollider* self, CCollider* other)
 {
-
     if (m_ignoreTime < 0.5f)
         return; // ★ 추가해야 함!!
 
@@ -223,8 +226,11 @@ void CDroppedItem::OnStayOverlap(CCollider* self, CCollider* other)
             //if (io.WantCaptureKeyboard)
             //    return;
 
+            // 무기 드랍
             if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
             {
+                Player_ZoomIn(ply);
+
                 dynamic_cast<CWeaponEquip*>(ply->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::WEAPON_EQUIP))->Equip_Weapon(m_itemInst);
 
                 auto state = dynamic_cast<CState*>(ply->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
@@ -349,6 +355,37 @@ CDroppedItem* CDroppedItem::Create(DEVICE graphicDev, ItemInstance itemInst, _ve
     }
 
     return DroppedItem;
+}
+
+void CDroppedItem::Player_ZoomIn(CPlayer* ply)
+{
+    // 카메라
+    auto* layer = CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::GAMELOGIC);
+    if (layer)
+    {
+        auto* camController = dynamic_cast<CCameraController*>(
+            layer->Get_Component(ID_DYNAMIC, OBJTYPE::CAMERA, COMPONENTTYPE::CAM_CONTROLLER));
+
+        if (camController)
+        {
+            auto* movement = camController->Get_OwnerCamMovement();
+
+            // 카메라 무빙 끝나면 원래대로 돌리는 콜백 설정
+            movement->Set_OnTransitionEnd([movement]()
+                {
+                    // 기본 프리셋으로 리셋
+                    movement->Reset_Camera(CAM_PRESET(), false);
+                });
+
+            // 플레이어한테 줌인
+            CCamSetupBuilder(camController)
+                .SetTarget(ply->Get_Transform())
+                .Distance(8.f)
+                .LagSpeed(2.5f)
+                .ZoomSpeed(1.f)
+                .Apply();
+        }
+    }
 }
 
 void CDroppedItem::Free()

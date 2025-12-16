@@ -17,6 +17,7 @@ enum class TileType
     TILE_284,
     TILE_1024,
     TILE_Outline,
+    TILE_Outline2,
 
     TILE_End
 };
@@ -38,7 +39,9 @@ public:
     void Render_TileWindow();
     void Render_Tile284();
     void Render_Tile1024();
+
     void Render_Outline();
+    void Render_Outline2();
 
 public:
     HRESULT SaveMap(const char* filePath);
@@ -79,11 +82,13 @@ private:
     CTexture*       m_TextureCom284;
     CTexture*       m_TextureCom1024;
     CTexture*       m_TextureComOutline;
+    CTexture*       m_TextureComOutline2;
 
     // 타일 데이터
     vector<_int>    m_TileIndices284{};
     vector<_int>    m_TileIndices1024{};
     vector<_int>    m_TileIndicesOutline{};
+    vector<_int>    m_TileIndicesOutline2{};
 
     // 충돌체 데이터
     vector<_bool>   m_WallTiles;
@@ -92,6 +97,7 @@ private:
 
     _int            m_SelectedTile;
     _int            m_SelectedOutline;
+    _int            m_SelectedOutline2;
 
     _int            m_PaintX, m_PaintZ;
 
@@ -115,4 +121,7 @@ private:
 
     const int ATLAS_COLS_OUTLINE = 5;
     const int ATLAS_ROWS_OUTLINE = 1;
+
+    const int ATLAS_COLS_OUTLINE2 = 5;
+    const int ATLAS_ROWS_OUTLINE2 = 1;
 };
