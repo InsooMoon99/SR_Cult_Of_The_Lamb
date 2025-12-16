@@ -11,6 +11,7 @@
 #include "CNPCState_Mining.h"
 #include "CNPCState_Pray.h"
 #include "CNPCState_PrayPeek.h"
+#include "CNPCState_Rescued.h"
 #include "CNPCState_Run.h"
 #include "CNPCState_Spawn.h"
 #include "CNPCState_WalkPast.h"
@@ -54,6 +55,9 @@ HRESULT CNPCStateMachine::Ready_StateMachine()
         return E_FAIL;
 
     if (FAILED(RegisterState<CNPCState_Spawn>(NPC_STATE::SPAWN, m_Owner)))
+        return E_FAIL;
+
+    if (FAILED(RegisterState<CNPCState_Rescued>(NPC_STATE::RESCUED, m_Owner)))
         return E_FAIL;
 
     // 초기 상태

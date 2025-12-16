@@ -28,14 +28,6 @@ class CPlayerConstruction;
 /// - CPlayerAttack: 공격 및 전투 로직을 처리합니다.
 class CPlayerController : public CComponent
 {
-private:
-    // 플레이어 컨트롤러 내 사용하는 타이머용 열거체
-    enum PLCON_TIMER
-    {
-        TIMER_RUNSOUND,  // 달리기 효과음 재생용
-
-        TIMER_END
-    };
 
 private:
     explicit CPlayerController(DEVICE graphicDev);
@@ -97,7 +89,7 @@ private:
     CPlayerConstruction* m_OwnerConstructionCom;
 #pragma endregion
 
-    _float m_Timers[TIMER_END]; // enum값을 통해 사용하는 타이머
+    
 
     OnRefuseEndCallback m_OnRefuseEnd = nullptr;
 

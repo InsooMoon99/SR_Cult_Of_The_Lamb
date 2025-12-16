@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "CComponent.h"
-#include "Engine_Struct.h"
 
 BEGIN(Engine)
 class CAttackBase;
@@ -116,6 +115,8 @@ private: // --- 내부 로직 ---
     /// @param attackInfo 현재 공격의 설정 데이터 (데미지 배율, 크기, 오프셋 등)
     /// @param vAttackDir 계산된 공격 방향 벡터
     void Create_AttackObj(const AttackInfo& attackInfo, const _vec3& vAttackDir);
+
+    void Play_AttackSound(); // 공격 사운드 재생
 
 private: // --- Owner Component 캐싱 ---
     Engine::CState*      m_OwnerStateCom;

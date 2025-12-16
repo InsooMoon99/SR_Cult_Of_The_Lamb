@@ -23,6 +23,7 @@ public:
         PRAY,           // 기도
         PRAY_PEEK,      // 기도 중 딴짓
         SPAWN,          // 소환
+        RESCUED,        // 구출
         
         STATE_END
     };

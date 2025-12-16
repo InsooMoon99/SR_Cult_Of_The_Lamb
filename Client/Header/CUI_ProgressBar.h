@@ -18,7 +18,7 @@ public:
     void    Render_GameObject() override;
     HRESULT    Add_Component();
     void    Set_Progress(_float progress) { m_Progress = progress; }
-    void Set_IsActive(_bool active) { m_Active = active; }
+
 protected:
     void Free() override;
 

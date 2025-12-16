@@ -60,14 +60,14 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
 {
     if (FAILED(Ready_Buffer(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Player(graphicDev))) return E_FAIL;
-    //if (FAILED(Ready_Monster(graphicDev))) return E_FAIL;
+    if (FAILED(Ready_Monster(graphicDev))) return E_FAIL;
     if (FAILED(Ready_UI(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Item(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Common(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Terrain(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Decoration(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Building(graphicDev))) return E_FAIL;
-    //if (FAILED(Ready_Follower(graphicDev))) return E_FAIL;
+    if (FAILED(Ready_Follower(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Particle(graphicDev))) return E_FAIL;
     if (FAILED(Ready_MiniBoss(graphicDev))) return E_FAIL;
 
@@ -167,7 +167,6 @@ HRESULT CResourceMgr::Ready_Common(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TRAILEFFECT, CTrailEff::Create(graphicDev))))
         return E_FAIL;
-
 
     // Construction
     if (FAILED(protoMgr->Ready_Prototype(
@@ -453,6 +452,7 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_TAROTNPC, TarotNpcTex)))
         return E_FAIL;
 
+    return S_OK;
 }
 
 HRESULT CResourceMgr::Ready_Monster(DEVICE graphicDev)
@@ -766,11 +766,11 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
             L"../Bin/Resource/Texture/UI/PlayerState/Icon/Weapon%d.png", 2))))
         return E_FAIL;
 
-	//circleTex
-	if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_SKILL,
-		Engine::CTexture::Create(graphicDev, TEX_NORMAL,
-			L"../Bin/Resource/Texture/UI/PlayerState/Icon/Skill%d.png", 3))))
-		return E_FAIL;
+    //circleTex
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_SKILL,
+        Engine::CTexture::Create(graphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/UI/PlayerState/Icon/Skill%d.png", 3))))
+        return E_FAIL;
 
     // 메인 메뉴 이미지
 
@@ -826,7 +826,7 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     pathVec2.push_back(L"../Bin/Resource/Texture/UI/Inventory/ButtonTab0.png");
     pathVec2.push_back(L"../Bin/Resource/Texture/UI/Inventory/ButtonTab1.png");
     pathVec2.push_back(L"../Bin/Resource/Texture/UI/Tarot/ExplainBox/HeartExplain.png");
-	pathVec2.push_back(L"../Bin/Resource/Texture/UI/Tarot/ExplainBox/SkillExplain.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/Tarot/ExplainBox/SkillExplain.png");
     pathVec2.push_back(L"../Bin/Resource/Texture/UI/Tarot/ExplainBox/SkillExplain.png");
     pathVec2.push_back(L"../Bin/Resource/Texture/UI/FollowerCommand/Pray_Icon0.png");
     pathVec2.push_back(L"../Bin/Resource/Texture/UI/FollowerCommand/Pray_Icon1.png");
@@ -840,15 +840,14 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
 
     //// Texture : MainMenu BackGround
 
-        //UIButton 텍스쳐
+    //UIButton 텍스쳐
     vector<wstring> BG;
     BG.push_back(L"../Bin/Resource/Texture/BackGround/MainMenu/MenuMask1.png");
     BG.push_back(L"../Bin/Resource/Texture/MainMenu/RitualStone_Activated.png");
-  
+
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_MAINBG, Engine::CTexture::Create(graphicDev, TEX_NORMAL, BG))))
         return E_FAIL;
-
 
     //if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_MAINBG,
     //    Engine::CTexture::Create(
@@ -973,16 +972,6 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
         COMPONENTTYPE::TEX_UI_INTERACTION, CTexture::Create(graphicDev, TEX_NORMAL, interactionTex))))
         return E_FAIL;
 
-
-    //Follower Command
-    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_COMMAND,
-        Engine::CTexture::Create(
-            graphicDev,
-            TEX_NORMAL,
-            L"../Bin/Resource/Texture/UI/FollowerCommand/BackGround0.png",
-            1))))
-        return E_FAIL;
-
     //// Texture : Clear BackGround
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_CLEAR,
         Engine::CTexture::Create(
@@ -1014,12 +1003,17 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
 
     //extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_0.png");
 
-
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_MAINMENU, CTexture::Create(graphicDev, TEX_NORMAL, extra))))
         return E_FAIL;
 
-   
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_COMMAND,
+        Engine::CTexture::Create(
+            graphicDev,
+            TEX_NORMAL,
+            L"../Bin/Resource/Texture/UI/FollowerCommand/BackGround0.png",
+            1))))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -1040,9 +1034,6 @@ HRESULT CResourceMgr::Ready_Item(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_ITEM, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec))))
         return E_FAIL;
-
-
-
 
     return S_OK;
 }
@@ -1461,7 +1452,6 @@ HRESULT CResourceMgr::Ready_MiniBoss(DEVICE graphicDev)
     CTexture* MiniBossTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(MiniBossTex, E_FAIL);
 
-
     if (FAILED(MiniBossTex->Add_Texture(L"Eligos_roar", TEX_NORMAL,
         L"../Bin/Resource/Texture/MiniBoss/Eligos_roar/Eligos_roar%d.png", 140)))
         return E_FAIL;
@@ -1497,8 +1487,6 @@ HRESULT CResourceMgr::Ready_MiniBoss(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_MINIBOSS, MiniBossTex)))
         return E_FAIL;
 
-
-
     CTexture* flyTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(flyTex, E_FAIL);
 
@@ -1509,10 +1497,8 @@ HRESULT CResourceMgr::Ready_MiniBoss(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_FLY, flyTex)))
         return E_FAIL;
 
-
     return S_OK;
 }
-
 
 void CResourceMgr::Free()
 { }
