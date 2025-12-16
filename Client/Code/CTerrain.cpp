@@ -23,18 +23,18 @@
 CTerrain::CTerrain(DEVICE GraphicDev)
     : CRenderObject(GraphicDev), m_BufferCom(nullptr), m_TextureCom284(nullptr),
       m_TextureCom1024(nullptr),
-      m_TextureComOutline(nullptr),
+      m_TextureComOutline(nullptr), m_TextureComOutline2(nullptr),
       m_TerrainRendererCom(nullptr),
-      m_WallRendererCom(nullptr), m_IsWallSpawn(false)
+      m_WallRendererCom(nullptr), m_ObjectSpawnerCom(nullptr), m_IsWallSpawn(false), m_IsObjectSpawn(false)
 {
 }
 
 CTerrain::CTerrain(const CTerrain& rhs)
     : CRenderObject(rhs), m_BufferCom(nullptr), m_TextureCom284(nullptr),
       m_TextureCom1024(nullptr),
-      m_TextureComOutline(nullptr),
+      m_TextureComOutline(nullptr), m_TextureComOutline2(nullptr),
       m_TerrainRendererCom(nullptr),
-      m_WallRendererCom(nullptr), m_IsWallSpawn(false)
+      m_WallRendererCom(nullptr), m_ObjectSpawnerCom(nullptr), m_IsWallSpawn(false), m_IsObjectSpawn(false)
 {
 }
 
@@ -178,6 +178,10 @@ HRESULT CTerrain::Add_Component()
         m_TextureComOutline = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_TILE_OUTLINE);
         NULL_CHECK_RETURN(m_TextureComOutline, E_FAIL);
         m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_TILE_OUTLINE, m_TextureComOutline });
+
+        m_TextureComOutline2 = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_TILE_OUTLINE2);
+        NULL_CHECK_RETURN(m_TextureComOutline2, E_FAIL);
+        m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_TILE_OUTLINE2, m_TextureComOutline2 });
     }
 
     // Terrain Renderer

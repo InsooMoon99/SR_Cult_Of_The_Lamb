@@ -34,6 +34,7 @@ void CRenderer::Render_GameObject(DEVICE& graphicDev)
     Render_NonAlpha(graphicDev);
     Render_Trail(graphicDev);
     Render_Alpha(graphicDev);
+    Render_Particle(graphicDev);
     SetFogOff(graphicDev);
 
     Render_UI(graphicDev);
@@ -92,6 +93,22 @@ void CRenderer::Render_Alpha(DEVICE& graphicDev)
         obj->Render_GameObject();
     }
 
+    graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+}
+
+void CRenderer::Render_Particle(DEVICE& graphicDev)
+{
+    // 알파 블렌딩 켜기
+    graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    graphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+    graphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
+    for (auto& obj : m_RenderGroup[RENDER_PARTICLE])
+    {
+        obj->Render_GameObject();
+    }
+
+    // 알파 블렌딩 끄기
     graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 }
 

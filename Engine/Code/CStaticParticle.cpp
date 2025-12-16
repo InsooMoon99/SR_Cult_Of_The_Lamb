@@ -35,7 +35,7 @@ _int CStaticParticle::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CRenderObject::Update_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_PARTICLE, this);
 
     if (!m_TransformCom)
         return exit;

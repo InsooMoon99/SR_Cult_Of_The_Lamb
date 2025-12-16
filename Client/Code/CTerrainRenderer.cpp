@@ -13,15 +13,12 @@
 #include "CTerrain.h"
 #include "CWallRenderer.h"
 
-const int ATLAS_COLS_OUTLINE2 = 4; 
-const int ATLAS_ROWS_OUTLINE2 = 1;
-
 CTerrainRenderer::CTerrainRenderer(DEVICE graphicDev)
     : CComponent(graphicDev),
       m_TransformCom(nullptr),
       m_BufferCom(nullptr),
-      m_TextureCom284(nullptr), m_TextureCom1024(nullptr), m_TextureComOutline(nullptr),
-      m_SelectedTile(0), m_SelectedOutline(0),
+      m_TextureCom284(nullptr), m_TextureCom1024(nullptr), m_TextureComOutline(nullptr), m_TextureComOutline2(nullptr),
+      m_SelectedTile(0), m_SelectedOutline(0), m_SelectedOutline2(0),
       m_PaintX(0),
       m_PaintZ(0),
       m_MapName{"Terrain_"},
@@ -34,9 +31,9 @@ CTerrainRenderer::CTerrainRenderer(const CTerrainRenderer& rhs)
     : CComponent(rhs),
       m_TransformCom(nullptr),
       m_BufferCom(nullptr),
-      m_TextureCom284(nullptr), m_TextureCom1024(nullptr), m_TextureComOutline(nullptr),
+      m_TextureCom284(nullptr), m_TextureCom1024(nullptr), m_TextureComOutline(nullptr), m_TextureComOutline2(nullptr),
       m_TileIndices284(rhs.m_TileIndices284),
-      m_SelectedTile(rhs.m_SelectedTile), m_SelectedOutline(0),
+      m_SelectedTile(rhs.m_SelectedTile), m_SelectedOutline(0), m_SelectedOutline2(0),
       m_PaintX(rhs.m_PaintX),
       m_PaintZ(rhs.m_PaintZ),
       m_SelectedMapIndex(rhs.m_SelectedMapIndex), m_SizeX(TILE_CNT_X), m_SizeZ(TILE_CNT_Z), m_CellSize(rhs.m_CellSize),
@@ -68,6 +65,9 @@ HRESULT CTerrainRenderer::Ready_TerrainRenderer()
 
         m_TextureComOutline = dynamic_cast<CTexture*>(
             m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::TEX_TILE_OUTLINE));
+
+        m_TextureComOutline2 = dynamic_cast<CTexture*>(
+            m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::TEX_TILE_OUTLINE2));
     }
 
     NULL_CHECK_RETURN(m_TransformCom, E_FAIL);
@@ -75,6 +75,7 @@ HRESULT CTerrainRenderer::Ready_TerrainRenderer()
     NULL_CHECK_RETURN(m_TextureCom284, E_FAIL);
     NULL_CHECK_RETURN(m_TextureCom1024, E_FAIL);
     NULL_CHECK_RETURN(m_TextureComOutline, E_FAIL);
+    NULL_CHECK_RETURN(m_TextureComOutline2, E_FAIL);
 
     m_BufferCom->AddRef();
 
@@ -85,6 +86,7 @@ HRESULT CTerrainRenderer::Ready_TerrainRenderer()
     m_TileIndices284.assign(cellCount, 0);
     m_TileIndices1024.assign(cellCount, -1);
     m_TileIndicesOutline.assign(cellCount, -1);
+    m_TileIndicesOutline2.assign(cellCount, -1);
 
     // 초기에 맵 리스트 로드 한번 진행
     Refresh_MapFileList();
@@ -130,6 +132,11 @@ _int CTerrainRenderer::Update_Component(const _float& timeDelta)
                 {
                     _int combinedIndex = m_SelectedOutline * ATLAS_COLS_OUTLINE + m_SelectedTile;
                     m_TileIndicesOutline[index] = combinedIndex;
+                }
+                else if (m_TileTypeIndex == static_cast<_int>(TileType::TILE_Outline2))
+                {
+                    _int combinedIndex = m_SelectedOutline2 * ATLAS_COLS_OUTLINE2 + m_SelectedTile;
+                    m_TileIndicesOutline2[index] = combinedIndex;
                 }
             }
         }
@@ -211,6 +218,14 @@ void CTerrainRenderer::Render_TerrainRenderer()
             m_TextureComOutline->Set_Texture(outlineIdx);
             m_BufferCom->Render_Buffer();
         }
+
+        if (m_TextureComOutline2 && m_TileIndicesOutline2.size() == cellCount)
+        {
+            m_BufferCom->ApplyTileSetting(m_TileIndicesOutline2,
+                ATLAS_COLS_OUTLINE2, ATLAS_ROWS_OUTLINE2, 530.f, 84.f);  
+            m_TextureComOutline2->Set_Texture(0);
+            m_BufferCom->Render_Buffer();
+        }
     }
 
 
@@ -287,7 +302,7 @@ void CTerrainRenderer::Render_TileWindow()
 	{
 		if (ImGui::Begin("Tile", &m_ShowTile))
 		{
-			const char* tileItems[] = { "Tile_284", "Tile_1024", "Tile_Outline"};
+			const char* tileItems[] = { "Tile_284", "Tile_1024", "Tile_Outline", "Tile_Outline2"};
 
             _int prevIndex = m_TileTypeIndex;
             ImGui::Combo("##Combo Tile", &m_TileTypeIndex, tileItems, IM_ARRAYSIZE(tileItems));
@@ -311,6 +326,10 @@ void CTerrainRenderer::Render_TileWindow()
             else if (m_TileTypeIndex == 2)
             {
                 Render_Outline();
+            }
+            else if (m_TileTypeIndex == 3)
+            {
+                Render_Outline2();
             }
 		}
 
@@ -496,6 +515,49 @@ void CTerrainRenderer::Render_Outline()
     ImGui::PopID();
 }
 
+void CTerrainRenderer::Render_Outline2()
+{
+    if (!m_TextureComOutline2)
+        return;
+
+    ImGui::PushID("Outline2_Render");
+    ImGui::Text(u8"선택된 타일 : %d", m_SelectedTile + 1);
+    ImGui::Separator();
+
+    IDirect3DBaseTexture9* tex = m_TextureComOutline2->Get_BaseTexture(0);
+
+    if (tex)
+    {
+        const ImVec2 tileSize(48.f, 48.f);
+        for (int i = 0; i < ATLAS_COLS_OUTLINE2; ++i)
+        {
+            if (i > 0) ImGui::SameLine();
+
+            _float du = 1.f / (_float)ATLAS_COLS_OUTLINE2;
+
+            ImVec2 uv0(i * du, 0.f);
+            ImVec2 uv1((i + 1) * du, 1.f);
+
+            ImGui::PushID(i);
+
+            _bool isSelected = (i == m_SelectedTile);
+            if (isSelected)
+                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.7f, 0.7f, 0.2f, 1.f));
+
+            if (ImGui::ImageButton("Outline2Tile", (ImTextureID)tex, tileSize, uv0, uv1))
+            {
+                m_SelectedTile = i;
+            }
+
+            if (isSelected)
+                ImGui::PopStyleColor();
+
+            ImGui::PopID();
+        }
+    }
+    ImGui::PopID();
+}
+
 HRESULT CTerrainRenderer::SaveMap(const char* filePath)
 {
     ofstream ofs(filePath, ios_base::binary);
@@ -503,7 +565,7 @@ HRESULT CTerrainRenderer::SaveMap(const char* filePath)
         return E_FAIL;
 
     uint32_t magic = 0x54494C45; // 'TILE'
-    uint32_t version = 8;
+    uint32_t version = 9;
 
     uint32_t cellCntX = m_SizeX - 1;
     uint32_t cellCntZ = m_SizeZ - 1;
@@ -521,6 +583,7 @@ HRESULT CTerrainRenderer::SaveMap(const char* filePath)
         ofs.write(reinterpret_cast<const char*>(m_TileIndices284.data()), sizeof(_int) * tileSize);
         ofs.write(reinterpret_cast<const char*>(m_TileIndices1024.data()), sizeof(_int) * tileSize);
         ofs.write(reinterpret_cast<const char*>(m_TileIndicesOutline.data()), sizeof(_int) * tileSize);
+        ofs.write(reinterpret_cast<const char*>(m_TileIndicesOutline2.data()), sizeof(_int) * tileSize);
     }
 
     if (m_TransformCom && m_TransformCom->Get_Owner())
@@ -605,6 +668,8 @@ HRESULT CTerrainRenderer::LoadMap(const char* filePath)
     m_TileIndices284.resize(tileSize);
     m_TileIndices1024.resize(tileSize);
     m_TileIndicesOutline.resize(tileSize);
+    m_TileIndicesOutline2.resize(tileSize);
+
 
     if (tileSize > 0)
     {
@@ -666,6 +731,9 @@ HRESULT CTerrainRenderer::LoadMap(const char* filePath)
         // 안개 소환
         CFogMgr::GetInstance()->Load_FromStream(ifs, terrainPos);
     }
+
+    if (version >= 9)
+        ifs.read(reinterpret_cast<char*>(m_TileIndicesOutline2.data()), sizeof(_int) * tileSize);
 
 
     ifs.close();
@@ -785,6 +853,7 @@ void CTerrainRenderer::Resize_Terrain(_int sizeX, _int sizeZ, _float cellSize)
     m_TileIndices284.assign(cellCount, 0);     
     m_TileIndices1024.assign(cellCount, -1);   
     m_TileIndicesOutline.assign(cellCount, -1);
+    m_TileIndicesOutline2.assign(cellCount, -1);
 }
 
 CTerrainRenderer* CTerrainRenderer::Create(DEVICE graphicDev)

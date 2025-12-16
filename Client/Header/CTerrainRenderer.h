@@ -39,7 +39,9 @@ public:
     void Render_TileWindow();
     void Render_Tile284();
     void Render_Tile1024();
+
     void Render_Outline();
+    void Render_Outline2();
 
 public:
     HRESULT SaveMap(const char* filePath);
@@ -119,4 +121,7 @@ private:
 
     const int ATLAS_COLS_OUTLINE = 5;
     const int ATLAS_ROWS_OUTLINE = 1;
+
+    const int ATLAS_COLS_OUTLINE2 = 5;
+    const int ATLAS_ROWS_OUTLINE2 = 1;
 };
