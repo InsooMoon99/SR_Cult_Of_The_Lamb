@@ -47,6 +47,9 @@ private:
     // 마을 -> 던전 씬 전환용 트리거
     void Create_Trigger();
 
+    // 추종자 생성
+    //void Spawn_Follower();
+
 public:
     static CStage* Create(DEVICE graphicDev);
 
