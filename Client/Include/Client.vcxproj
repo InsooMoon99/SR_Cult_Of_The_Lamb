@@ -234,6 +234,7 @@
     <ClInclude Include="..\Header\CNPCState_Pray.h" />
     <ClInclude Include="..\Header\CNPCState_PrayPeek.h" />
     <ClInclude Include="..\Header\CNPCState_Rescued.h" />
+    <ClInclude Include="..\Header\CNPCState_Talk.h" />
     <ClInclude Include="..\Header\CNPCState_WalkPast.h" />
     <ClInclude Include="..\Header\CFog.h" />
     <ClInclude Include="..\Header\CFogMgr.h" />
@@ -449,6 +450,7 @@
     <ClCompile Include="..\Code\CNPCState_Pray.cpp" />
     <ClCompile Include="..\Code\CNPCState_PrayPeek.cpp" />
     <ClCompile Include="..\Code\CNPCState_Rescued.cpp" />
+    <ClCompile Include="..\Code\CNPCState_Talk.cpp" />
     <ClCompile Include="..\Code\CNPCState_WalkPast.cpp" />
     <ClCompile Include="..\Code\CFog.cpp" />
     <ClCompile Include="..\Code\CFogMgr.cpp" />

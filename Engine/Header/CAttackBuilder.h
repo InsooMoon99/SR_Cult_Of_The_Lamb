@@ -172,6 +172,12 @@ public:
         return *this;
     }
 
+    CAttackBuilder& OnHit(function<void(CGameObject*)> callback)
+    {
+        m_OnHitCallback = move(callback);
+        return *this;
+    }
+
     void Spawn()
     {
         NULL_CHECK(m_AttackObj);
@@ -191,6 +197,9 @@ public:
 
         // Destroy
         m_AttackObj->Set_DestroyOnHit(m_DestroyOnHit);
+        
+        // Callback
+        m_AttackObj->Set_OnHitCallback(m_OnHitCallback);
 
         // Transform 설정
         auto transform = dynamic_cast<CTransform*>(
@@ -240,6 +249,8 @@ private:
     _vec3 m_Scale;
     _bool m_UseInstigatorPos; // 공격자의 위치를 사용할지
     _bool m_DestroyOnHit;
+
+    function<void(CGameObject*)> m_OnHitCallback;
 
     COLLISION_LAYERTYPE m_Collision_LayerType;
 };

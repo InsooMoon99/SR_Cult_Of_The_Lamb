@@ -54,8 +54,7 @@ CStage_Dungeon::CStage_Dungeon(DEVICE graphicDev)
       m_NextRoom(Room::DUNGEON_END),
       m_CamMovement(nullptr),
       m_Timer(0),
-      m_TimerRunning(false),
-      m_DungeonCleared(false)
+      m_TimerRunning(false)
 { }
 
 CStage_Dungeon::~CStage_Dungeon()
@@ -119,9 +118,6 @@ void CStage_Dungeon::Initialize_Scene()
         { 250.f, 0.f, 0.f }
     };
 
-
-
-
     m_CurrentRoom = Room::START;
 
     for (auto& pair : m_Terrains)
@@ -154,8 +150,8 @@ void CStage_Dungeon::Initialize_Scene()
 
     m_DungeonCleared = false;
 
-        // 테스 트
-    m_PlayerTransform->Set_Pos({ 250,1,10 });
+    // 테스트
+    //m_PlayerTransform->Set_Pos({ 250,1,10 });
 }
 
 _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
@@ -169,15 +165,13 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
 
         if (m_IsClearMenuOpened)
         {
-            m_TimerRunning = false;   
-            m_DungeonCleared = true;    
+            m_TimerRunning   = false;
+            m_DungeonCleared = true;
         }
         else
-        {
-            m_DungeonCleared = false; 
-        }
+            m_DungeonCleared = false;
     }
-   
+
     if (m_RequestChangeScene)
     {
         CSceneMgr::GetInstance()->Change_SceneMgr(m_NextSceneType);
@@ -191,7 +185,7 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
     // Fade
     Fade_Check(timeDelta);
 
-   // cout << m_KillCount << endl;
+    // cout << m_KillCount << endl;
 
     return exit;
 }
@@ -281,7 +275,7 @@ void CStage_Dungeon::Spawn_FollowerCow_Rescue()
     if (cowTransform)
     {
         _vec3 spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
-       spawnPos += _vec3(6.f, 1.f, 8.f);
+        spawnPos += _vec3(6.f, 1.f, 8.f);
 
         cowTransform->Set_Pos(spawnPos);
     }
@@ -340,7 +334,6 @@ void CStage_Dungeon::Spawn_FollowerPig_Rescue()
     {
         _vec3 spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
         spawnPos += _vec3(10.f, 1.f, 8.f);
-
 
         pigTransform->Set_Pos(spawnPos);
     }
@@ -529,7 +522,7 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
             COMPONENTTYPE::COMBATSTAT));
 
     NULL_CHECK_RETURN(m_PlayerCombatStatCom, E_FAIL);
-    m_PlayerTransform->Set_Pos({ 200,1,10 });
+    m_PlayerTransform->Set_Pos({ 200, 1, 10 });
     // 카메라 생성
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CMainCamera>(
@@ -595,14 +588,14 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
     // 보스 생성
     CGameObject* m_Boss = CEligos::Create(m_GraphicDev);
     NULL_CHECK_RETURN_MSG(m_Boss, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase2::Create() returned null")
-    
+
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::BOSS1, m_Boss),
         L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Boss) failed");
 
     CTransform* m_BTransform = dynamic_cast<CTransform*>(
         m_Boss->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-    m_BTransform->Set_Pos({ 280,3,10 });
+    m_BTransform->Set_Pos({ 280, 3, 10 });
 
     m_Layers.insert({ layerType, layer });
     return S_OK;
@@ -709,7 +702,7 @@ HRESULT CStage_Dungeon::Ready_UI_Layer(LAYERTYPE layerType)
     dungeonLootPanel->Set_RunLootLog(&m_RunLootLog);
     dungeonLootPanel->Initialize_GameObject();
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, dungeonLootPanel),
-        L"CStage_Dungeon::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUI_DungeonLootPanel) failed");
+                     L"CStage_Dungeon::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUI_DungeonLootPanel) failed");
 
     m_Layers.insert({ layerType, layer });
 

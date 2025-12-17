@@ -394,6 +394,9 @@
     <Filter Include="05. UI\01. UI\16. UIInteractive">
       <UniqueIdentifier>{09a203e9-0c7d-4e4c-98f8-6ab7ca0bb20a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\11. NPC\99. Class for FSM\01. State\12. Talk">
+      <UniqueIdentifier>{3c4721f7-65ea-4921-b702-4cf6bba5239a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1028,9 +1031,6 @@
     <ClInclude Include="..\Code\CBossSpawn.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CStage_Prologue_Boss.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\CEtc.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -1063,6 +1063,12 @@
     </ClInclude>
     <ClInclude Include="..\Header\CStage_Prologue.h">
       <Filter>02. Scene\01. Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CStage_Prologue_Boss.h">
+      <Filter>02. Scene\01. Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CNPCState_Talk.h">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\12. Talk</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1654,9 +1660,6 @@
     <ClCompile Include="..\Header\CBossSpawn.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CStage_Prologue_Boss.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\CEtc.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -1689,6 +1692,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\CStage_Prologue.cpp">
       <Filter>02. Scene\01. Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CStage_Prologue_Boss.cpp">
+      <Filter>02. Scene\01. Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CNPCState_Talk.cpp">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\12. Talk</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

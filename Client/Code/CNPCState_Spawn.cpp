@@ -2,6 +2,8 @@
 #include "CNPCState_Spawn.h"
 
 #include "CAnimator.h"
+#include "CCamSetupBuilder.h"
+#include "CManagement.h"
 #include "CNPCBase.h"
 #include "CNPCController.h"
 #include "CNPCStateMachine.h"
@@ -29,6 +31,26 @@ void CNPCState_Spawn::Enter()
     CSoundMgr::GetInstance()->Play_Once(L"Follower/Follower_Start_Indo.wav",
                                         SOUND_EFFECT,
                                         0.38f);
+
+    auto camController = dynamic_cast<CCameraController*>(
+        CManagement::GetInstance()->Get_Component(
+            ID_DYNAMIC,
+            LAYERTYPE::GAMELOGIC,
+            OBJTYPE::CAMERA,
+            COMPONENTTYPE::CAM_CONTROLLER));
+
+    if (m_Owner->Get_Name() == L"FollowerCow")
+    {
+        CCamSetupBuilder(camController)
+            .SetTarget(m_OwnerTransform)
+            .PivotOffset({ 0.f, 0.f, -0.5f })
+            .Distance(9.f)
+            .RotX(45.f)
+            .RotY(0.f)
+            .LagSpeed(10.f)
+            .ZoomSpeed(5.f)
+            .Apply();
+    }
 }
 
 _int CNPCState_Spawn::Update_State(const _float& timeDelta)
@@ -53,6 +75,26 @@ _int CNPCState_Spawn::Update_State(const _float& timeDelta)
 void CNPCState_Spawn::Exit()
 {
     CNPCState::Exit();
+
+    if (m_Owner->Get_Name() == L"FollowerCow")
+    {
+        auto camController = dynamic_cast<CCameraController*>(
+            CManagement::GetInstance()->Get_Component(
+                ID_DYNAMIC,
+                LAYERTYPE::GAMELOGIC,
+                OBJTYPE::CAMERA,
+                COMPONENTTYPE::CAM_CONTROLLER));
+
+        CCamSetupBuilder(camController)
+            .SetTarget(m_PlayerTransform)
+            .PivotOffset({ 0.f, 0.f, 0.f })
+            .Distance(12.f)
+            .RotX(45.f)
+            .RotY(0.f)
+            .LagSpeed(10.f)
+            .ZoomSpeed(5.f)
+            .Apply();
+    }
 }
 
 HRESULT CNPCState_Spawn::Ready_State()

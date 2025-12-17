@@ -2,8 +2,10 @@
 #include "CFollowerCow.h"
 
 #include "CAnimator.h"
+#include "CCamSetupBuilder.h"
 #include "CCreateHelper.h"
 #include "CDInputMgr.h"
+#include "CManagement.h"
 #include "CNPCController.h"
 #include "CTexture.h"
 #include "CTransform.h"
@@ -28,7 +30,7 @@ HRESULT CFollowerCow::Ready_GameObject()
         return E_FAIL;
 
     // 초기 생성 위치
-    m_TransformCom->Set_Pos(23.5f, 1.f, 25.f);
+    m_TransformCom->Set_Pos(23.4f, 1.f, 26.f);
 
     m_NPCController->Set_Work(CNPCController::NPC_WORK::CHOPWOOD);
     m_NPCController->Set_PrayTargetPos(_vec3(18.f, 1.f, 21.5f));
