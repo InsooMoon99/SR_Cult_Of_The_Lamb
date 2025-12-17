@@ -10,6 +10,8 @@
 #include "CEligos.h"
 #include "CFloaterMonster.h"
 #include "CFollowerCow.h"
+#include "CFollowerElephant.h"
+#include "CFollowerPig.h"
 #include "CInventory.h"
 #include "CItemDB.h"
 #include "CLayer.h"
@@ -36,6 +38,7 @@
 #include "CUI_Skill.h"
 #include "CUI_SkillPanel.h"
 #include "ItemInstance.h"
+#include "CVillageStateMgr.h"
 
 class CUI_DungeonLootPanel;
 
@@ -190,7 +193,11 @@ void CStage_Dungeon::LateUpdate_Scene(const _float& timeDelta)
         CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS2);
 
     if (CDInputMgr::GetInstance()->KeyDown(DIK_R))
-        Spawn_Follower();
+    {
+        Spawn_FollowerCow_Rescue();
+        Spawn_FollowerElephant_Rescue();
+        Spawn_FollowerPig_Rescue();
+    }
 }
 
 void CStage_Dungeon::Render_Scene()
@@ -240,31 +247,92 @@ void CStage_Dungeon::Spawn_Weapon()
     }
 }
 
-void CStage_Dungeon::Spawn_Follower()
+void CStage_Dungeon::Spawn_FollowerCow_Rescue()
 {
     auto layer = m_Layers[LAYERTYPE::GAMELOGIC];
     NULL_CHECK(layer);
 
-    CGameObject* followerCow = CFollowerCow::Create(m_GraphicDev);
+    CFollowerCow* followerCow = CFollowerCow::Create(m_GraphicDev);
     NULL_CHECK(followerCow);
 
     if (FAILED(layer->Add_GameObject(OBJTYPE::NPC, followerCow)))
         return;
 
     followerCow->Initialize_GameObject();
-
-    dynamic_cast<CNPCBase*>(followerCow)->Set_RescuedState(true);
+    followerCow->Set_RescuedState(true);
 
     auto cowTransform = dynamic_cast<CTransform*>(
         followerCow->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
 
     if (cowTransform)
     {
-        _vec3 spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].playerSpawnPos;
-        spawnPos.x += 2.f;
+        _vec3 spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
+       spawnPos += _vec3(6.f, 1.f, 8.f);
 
         cowTransform->Set_Pos(spawnPos);
     }
+
+    SavedNpc* state = CVillageStateMgr::GetInstance()->Get_NPCState(L"FollowerCow");
+    if (state) state->isActive = true;
+}
+
+void CStage_Dungeon::Spawn_FollowerElephant_Rescue()
+{
+    auto layer = m_Layers[LAYERTYPE::GAMELOGIC];
+    NULL_CHECK(layer);
+
+    CFollowerElephant* followerElephant = CFollowerElephant::Create(m_GraphicDev);
+    NULL_CHECK(followerElephant);
+
+    if (FAILED(layer->Add_GameObject(OBJTYPE::NPC, followerElephant)))
+        return;
+
+    followerElephant->Initialize_GameObject();
+    followerElephant->Set_RescuedState(true);
+
+    auto elephantTransform = dynamic_cast<CTransform*>(
+        followerElephant->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+    if (elephantTransform)
+    {
+        _vec3 spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
+        spawnPos += _vec3(8.f, 1.f, 8.f);
+
+        elephantTransform->Set_Pos(spawnPos);
+    }
+
+    SavedNpc* state = CVillageStateMgr::GetInstance()->Get_NPCState(L"FollowerElephant");
+    if (state) state->isActive = true;
+}
+
+void CStage_Dungeon::Spawn_FollowerPig_Rescue()
+{
+    auto layer = m_Layers[LAYERTYPE::GAMELOGIC];
+    NULL_CHECK(layer);
+
+    CFollowerPig* followerPig = CFollowerPig::Create(m_GraphicDev);
+    NULL_CHECK(followerPig);
+
+    if (FAILED(layer->Add_GameObject(OBJTYPE::NPC, followerPig)))
+        return;
+
+    followerPig->Initialize_GameObject();
+    followerPig->Set_RescuedState(true);
+
+    auto pigTransform = dynamic_cast<CTransform*>(
+        followerPig->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+    if (pigTransform)
+    {
+        _vec3 spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
+        spawnPos += _vec3(10.f, 1.f, 8.f);
+
+
+        pigTransform->Set_Pos(spawnPos);
+    }
+
+    SavedNpc* state = CVillageStateMgr::GetInstance()->Get_NPCState(L"FollowerPig");
+    if (state) state->isActive = true;
 }
 
 void CStage_Dungeon::Create_RoomTriggers()

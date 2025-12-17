@@ -55,7 +55,7 @@ void CMapObjectBase::LateUpdate_GameObject(const _float& timeDelta)
     CRenderObject::LateUpdate_GameObject(timeDelta);
 
     if (!m_IsPreview)
-        CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_PRIORITY_ALPHA, this);
+        CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_ALPHA, this);
 }
 
 void CMapObjectBase::Render_GameObject()

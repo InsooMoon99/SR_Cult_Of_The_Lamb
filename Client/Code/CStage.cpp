@@ -15,6 +15,8 @@
 #include "CDropSystem.h"
 #include "CFloaterMonster.h"
 #include "CFollowerCow.h"
+#include "CFollowerElephant.h"
+#include "CFollowerPig.h"
 #include "CHarvestableHerb.h"
 #include "CHumanMonster.h"
 #include "CInventory.h"
@@ -103,26 +105,11 @@ HRESULT CStage::Ready_Scene()
     };
 
     vector<SpawnInfo> spawnList = {
-        { 1001, { 5.f, 1.f, 10.f } },       // 동전
-        { 1001, { 5.5f, 1.f, 10.f } },
-        { 1001, { 6.f, 1.f, 10.f } },
-        { 1001, { 6.5f, 1.f, 10.f } },
-        { 1001, { 7.f, 1.f, 10.f } },
-        { 1001, { 7.5f, 1.f, 10.f } },
-        { 1001, { 8.f, 1.f, 10.f } },
-        { 1001, { 8.5f, 1.f, 10.f } },
-        { 1001, { 9.f, 1.f, 10.f } },
-        { 1001, { 9.5f, 1.f, 10.f } },
-        { 1001, { 10.f, 1.f, 10.f } },
-        { 1001, { 10.5f, 1.f, 10.f } },
-        { 1001, { 11.f, 1.f, 10.f } },
-        { 1001, { 11.5f, 1.f, 10.f } },
+        { 1001, { 11.f, 1.f, 10.f } },      // 동전
         { 1001, { 12.f, 1.f, 10.f } },
-        { 1001, { 12.5f, 1.f, 10.f } },
         { 1001, { 13.f, 1.f, 10.f } },
-        { 1001, { 13.5f, 1.f, 10.f } },
         { 1001, { 14.f, 1.f, 10.f } },
-        { 1001, { 14.5f, 1.f, 10.f } },
+        { 1001, { 15.f, 1.f, 10.f } },
         { 3001, { 20.f, 1.f, 10.f } },      // 검
         { 2001, { 25.f, 1.f, 10.f } },      // 풀죽
         { 2001, { 27.f, 1.f, 10.f } },
@@ -175,6 +162,7 @@ void CStage::Initialize_Scene()
 
     // 초기 맵 불러오기 <- 이거 Initialize에서 진행해야 맵 오브젝트가 잘 불러진다.
     m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Village2.map");
+    
 
     CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Village.wav", 0.3f, true, 1.f);
 
@@ -245,11 +233,41 @@ void CStage::Initialize_Scene()
             }
         }
     }
+
+    // Follower Creation
+    m_FollowerSpawnTimer = 7.f;
+    m_FollowerSpawnStep  = 0;
 }
 
 _int CStage::Update_Scene(const _float& timeDelta)
 {
     _int exit = Engine::CScene::Update_Scene(timeDelta);
+
+    m_FollowerSpawnTimer += timeDelta;
+
+    // 던전에서 구출한 이후, 순차적으로 소환
+    if (m_FollowerSpawnTimer >= 7.f)
+    {
+        switch (m_FollowerSpawnStep)
+        {
+        case 0:
+            Spawn_FollowerCow();
+            m_FollowerSpawnTimer = 0.f;
+            m_FollowerSpawnStep++;
+            break;
+        case 1:
+            Spawn_FollowerElephant();
+            m_FollowerSpawnTimer = 0.f;
+            m_FollowerSpawnStep++;
+            break;
+        case 2:
+            Spawn_FollowerPig();
+            m_FollowerSpawnTimer = 0.f;
+            m_FollowerSpawnStep++;
+            break;
+        default: break;
+        }
+    }
 
     CConstructionMgr::GetInstance()->Update_ConstructionMgr(timeDelta);
 
@@ -259,7 +277,34 @@ _int CStage::Update_Scene(const _float& timeDelta)
     if (CDInputMgr::GetInstance()->KeyDown(DIK_G))
         CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS2);
 
-    // Building Mode Test : Temple
+    // 수동 소환 테스트 : FollowerCow
+    if (CDInputMgr::GetInstance()->KeyDown(DIK_R))
+    {
+        // Force activate and spawn
+        SavedNpc* cowState = CVillageStateMgr::GetInstance()->Get_NPCState(L"FollowerCow");
+        if (cowState) cowState->isActive = true;
+        Spawn_FollowerCow();
+    }
+
+    // 수동 소환 테스트 : FollowerElephant
+    if (CDInputMgr::GetInstance()->KeyDown(DIK_T))
+    {
+        // Force activate and spawn
+        SavedNpc* elephantState = CVillageStateMgr::GetInstance()->Get_NPCState(L"FollowerElephant");
+        if (elephantState) elephantState->isActive = true;
+        Spawn_FollowerElephant();
+    }
+
+    // 수동 소환 테스트 : FollowerPig
+    if (CDInputMgr::GetInstance()->KeyDown(DIK_Y))
+    {
+        // Force activate and spawn
+        SavedNpc* pigState = CVillageStateMgr::GetInstance()->Get_NPCState(L"FollowerPig");
+        if (pigState) pigState->isActive = true;
+        Spawn_FollowerPig();
+    }
+
+    // 건축 모드 테스트 : Temple
     if (CDInputMgr::GetInstance()->KeyDown(DIK_B))
     {
         if (CConstructionMgr::GetInstance()->IsBuilding())
@@ -268,7 +313,7 @@ _int CStage::Update_Scene(const _float& timeDelta)
             CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::TEMPLE);
     }
 
-    // Building Mode Test : Kitchen
+    // 건축 모드 테스트 : Kitchen
     if (CDInputMgr::GetInstance()->KeyDown(DIK_N))
     {
         if (CConstructionMgr::GetInstance()->IsBuilding())
@@ -445,7 +490,7 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::INTERACTIVE, tmpHerb),
         L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
-    tmpHerb->Get_Transform()->Set_Pos(30.f, .6f, 30.f);
+    tmpHerb->Get_Transform()->Set_Pos(10.f, 0.5f, 30.f);
     tmpHerb->Check_WorldState();
 
     ///////////////////////////////////////////////////////////////////
@@ -566,36 +611,6 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
         layer->Add_GameObject(OBJTYPE::BUILDING, workBench),
         L"Add_GameObject(CWorkBench) failed");
 
-    //auto kitchen = CKitchen::Create(m_GraphicDev);
-    //m_Kitchen    = kitchen;
-    //FAILED_CHECK_MSG(
-    //    layer->Add_GameObject(OBJTYPE::BUILDING, kitchen),
-    //    L"Add_GameObject(CWorkBench) failed");
-
-    // -----------------------------
-    // Follower
-    // -----------------------------
-    //TODO 추종자 3마리로 늘리면서, 각자 함수를 만들어 그 안에서 생성되고 Init도 그 안에서 수동으로 하도록, 또한 키 R, T, Y로 수동 생성 테스트도 만들어보자
-    SavedNpc* cowState       = CVillageStateMgr::GetInstance()->Get_NPCState(L"FollowerCow");
-    _bool     shouldSpawnCow = true; // 기본값: 데이터 없으면 스폰 (테스트 편의상)
-
-    if (cowState != nullptr)
-        shouldSpawnCow = cowState->isActive;
-
-    if (shouldSpawnCow)
-    {
-        gameObject = CFollowerCow::Create(m_GraphicDev);
-        NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"Create NPC object has failed");
-        FAILED_CHECK_MSG(
-            layer->Add_GameObject(OBJTYPE::NPC, gameObject),
-            L"Add NPC object on layer has failed");
-    }
-
-    // -----------------------------
-    // 저장된 건물 불러오기 기능은 Initialize_Scene으로 이동함
-    // 이유: UI 레이어(CookingMenu 등)가 초기화된 후에 건물을 생성해야 의존성 주입이 가능함.
-    // -----------------------------
-
     m_Layers.insert({ layerType, layer });
 
     return S_OK;
@@ -700,7 +715,6 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     if (uiCookingMenu)
         m_CookingMenu = uiCookingMenu;
 
-    //TODO ?? 이게 필요한가?
     CUI_FollowerCommand* followerCommand = CUI_FollowerCommand::Create(m_GraphicDev);
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, followerCommand),
                      L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUI_FollowerCommand) failed");
@@ -762,6 +776,69 @@ void CStage::Create_Trigger()
     });
 
     gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
+}
+
+void CStage::Spawn_FollowerCow()
+{
+    auto layer = m_Layers[LAYERTYPE::GAMELOGIC];
+    NULL_CHECK(layer);
+
+    SavedNpc* cowState       = CVillageStateMgr::GetInstance()->Get_NPCState(L"FollowerCow");
+    _bool     shouldSpawnCow = false; // 기본값: 데이터 없으면 스폰 안함
+
+    if (cowState != nullptr)
+        shouldSpawnCow = cowState->isActive;
+
+    if (shouldSpawnCow)
+    {
+        CFollowerCow* followerCow = CFollowerCow::Create(m_GraphicDev);
+
+        layer->Add_GameObject(OBJTYPE::NPC, followerCow);
+
+        followerCow->Initialize_GameObject();
+    }
+}
+
+void CStage::Spawn_FollowerElephant()
+{
+    auto layer = m_Layers[LAYERTYPE::GAMELOGIC];
+    NULL_CHECK(layer);
+
+    SavedNpc* cowState            = CVillageStateMgr::GetInstance()->Get_NPCState(L"FollowerElephant");
+    _bool     shouldSpawnElephant = false; // 기본값: 데이터 없으면 스폰 안함
+
+    if (cowState != nullptr)
+        shouldSpawnElephant = cowState->isActive;
+
+    if (shouldSpawnElephant)
+    {
+        CFollowerElephant* followerElephant = CFollowerElephant::Create(m_GraphicDev);
+
+        layer->Add_GameObject(OBJTYPE::NPC, followerElephant);
+
+        followerElephant->Initialize_GameObject();
+    }
+}
+
+void CStage::Spawn_FollowerPig()
+{
+    auto layer = m_Layers[LAYERTYPE::GAMELOGIC];
+    NULL_CHECK(layer);
+
+    SavedNpc* cowState       = CVillageStateMgr::GetInstance()->Get_NPCState(L"FollowerPig");
+    _bool     shouldSpawnPig = false; // 기본값: 데이터 없으면 스폰 안함
+
+    if (cowState != nullptr)
+        shouldSpawnPig = cowState->isActive;
+
+    if (shouldSpawnPig)
+    {
+        CFollowerPig* followerPig = CFollowerPig::Create(m_GraphicDev);
+
+        layer->Add_GameObject(OBJTYPE::NPC, followerPig);
+
+        followerPig->Initialize_GameObject();
+    }
 }
 
 CStage* CStage::Create(DEVICE graphicDev)

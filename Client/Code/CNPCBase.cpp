@@ -34,7 +34,7 @@ HRESULT CNPCBase::Ready_GameObject()
     if (FAILED(CCharacterBase::Ready_GameObject()))
         return E_FAIL;
 
-     if (m_BoxColCom)
+    if (m_BoxColCom)
         m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::NPC);
 
     return S_OK;
@@ -68,13 +68,7 @@ void CNPCBase::Initialize_GameObject()
     auto curScene = CManagement::GetInstance()->Get_Scene();
 
     if (dynamic_cast<CStage*>(curScene))
-    {
-        if (savedState && savedState->firstSpawnAnimPlayed == false)
-        {
-            // 데이터 업데이트: 첫 등장 애니메이션 봤음 처리
-            CVillageStateMgr::GetInstance()->Save_NPC(Get_Name(), true, true);
-        }
-    }
+    { }
     else
     {
         // 마을이 아니라면 (전투 씬 등) -> 기본적으로 IDLE 상태로 시작 (테스트 용도)
