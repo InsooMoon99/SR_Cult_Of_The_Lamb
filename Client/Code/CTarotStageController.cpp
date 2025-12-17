@@ -58,9 +58,8 @@ void CTarotStageController::Initialize_GameObject()
             if (id == "Tarot_End")
             {
                 m_Active = false;
-                m_CurrentState = STAGESTATE::NONE;
-                m_DialogueStarted = true;
-                m_DialogueEnded = false;
+                m_CurrentState = STAGESTATE::ENDING;
+        
             }
         });
 }
@@ -89,17 +88,16 @@ _int CTarotStageController::Update_GameObject(const _float& timeDelta)
     case STAGESTATE::CARD:
         if (!m_SoundEnded)
         {
-            CSoundMgr::GetInstance()->Play_Once(L"UI/UI_TarotCardPull.wav",
-                SOUND_EFFECT,
-                0.3f);
-
+            CSoundMgr::GetInstance()->Play_Once(L"ui/UI_TarotCardPull.wav",
+                SOUNDTYPE::SOUND_UI,
+                0.5f);
             m_SoundEnded = true;
         }
-        m_ExplainCard1->Update_GameObject(timeDelta);
-        m_ExplainCard2->Update_GameObject(timeDelta);
-        m_TarotCard1->Update_GameObject(timeDelta);
-        m_TarotCard2->Update_GameObject(timeDelta);
-
+            m_ExplainCard1->Update_GameObject(timeDelta);
+            m_ExplainCard2->Update_GameObject(timeDelta);
+            m_TarotCard1->Update_GameObject(timeDelta);
+            m_TarotCard2->Update_GameObject(timeDelta);
+       
         //시작 애니메이션이 끝났는지 확인하고 끝났으면 다음 상태로 연결
         if (m_TarotCard1->Get_IsFinished() && m_TarotCard2->Get_IsFinished() && m_TarotCard1->Get_TarotState() == TAROTSTATE::START)
         {
@@ -112,21 +110,11 @@ _int CTarotStageController::Update_GameObject(const _float& timeDelta)
             m_ExplainCard1->Set_Slide(true);
             m_ExplainCard2->Set_Slide(true);
             m_SoundEnded = false;
-
-            
-
-
         }
 
         if (m_TarotCard1->Get_Selected() || m_TarotCard2->Get_Selected())
         {
-            if (!m_SoundEnded)
-            {
-                CSoundMgr::GetInstance()->Play_Once(L"UI_Tarot_Close.wav",
-                    SOUND_EFFECT,
-                    1.f);
-                m_SoundEnded = false;
-            }
+         
             m_TarotCard1->Set_CurrentState(TAROTSTATE::RESULT);
             m_TarotCard1->Set_PrevState(TAROTSTATE::CHOICE);
             m_TarotCard2->Set_CurrentState(TAROTSTATE::RESULT);

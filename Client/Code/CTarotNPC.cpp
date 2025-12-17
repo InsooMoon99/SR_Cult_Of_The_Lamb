@@ -68,7 +68,7 @@ _int CTarotNPC::Update_GameObject(const _float& timeDelta)
 
     if(m_bPlayerOverlap == true && m_bHovering == true)
     {
-        if(CDInputMgr::GetInstance()->MouseDown(DIM_LB))
+        if(CDInputMgr::GetInstance()->KeyDown(DIK_E))
         {
             m_TarotStageController->Set_Active(true);
         }

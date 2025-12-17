@@ -11,7 +11,7 @@
 #include "CItemDB.h"
 #include "CFontMgr.h"
 #include "CRandomMgr.h"
-
+#include "CSoundMgr.h"
 
 
 CUICookingGame::CUICookingGame(DEVICE graphicDev, CGameObject* owner, RecipeInst recipeInst)
@@ -143,7 +143,7 @@ _int CUICookingGame::Update_GameObject(const _float& timeDelta)
            
            m_DoneEvent();
             m_ResultItemDrop(m_recipeInst.ResultItemID, m_result);
-
+			CSoundMgr::GetInstance()->Play_Once(L"Cook/Meal_Cooked.wav", SOUNDTYPE::SOUND_UI, 1.f);
             Mark_As_PendingKill();
         }
 

@@ -508,14 +508,14 @@ void CPlayerController::Action_SingleSkill(const _float& timeDelta)
 {
     if (!m_OwnerSkillCom->Update_SingleSkill(timeDelta))
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
-
-    //아니면 TripleSkill로 넘기는 것도 여기서 해줘야 하는 건가?
+		m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir()*-1, 150.f);
 }
 
 void CPlayerController::Action_TripleSkill(const _float& timeDelta)
 {
     if (!m_OwnerSkillCom->Update_TripleSkill(timeDelta))
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+	m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir() * -1, 150.f);
 }
 
 void CPlayerController::Action_Construction(const _float& timeDelta)

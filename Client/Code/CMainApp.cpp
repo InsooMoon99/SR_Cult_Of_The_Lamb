@@ -155,7 +155,18 @@ HRESULT CMainApp::Ready_DefaultSetting(DEVICE* graphicDev)
         *graphicDev, L"LaptureDisplay-Regular", L"LaptureDisplay-Regular", 10, 24, FW_HEAVY)))
         return E_FAIL;
 
+
+    if (FAILED(CFontMgr::GetInstance()->Ready_Font(
+        *graphicDev, L"NanumSquare_Max", L"나눔스퀘어 네오 Heavy", 100, 110, FW_HEAVY)))
+        return E_FAIL;
+
+
     //아이템 숫자 출력용 폰트
+
+    if (FAILED(CFontMgr::GetInstance()->Ready_Font(
+        *graphicDev, L"Ghana_Heavy", L"가나초콜릿", 33, 37, FW_HEAVY)))
+        return E_FAIL;
+
     if (FAILED(CFontMgr::GetInstance()->Ready_Font(
         *graphicDev, L"NanumSquare_Heavy", L"나눔스퀘어 네오 Heavy", 33, 35, FW_HEAVY)))
         return E_FAIL;

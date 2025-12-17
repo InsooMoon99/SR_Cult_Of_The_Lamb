@@ -376,6 +376,12 @@
     <Filter Include="03. GameObject\04. Boss\03.MiniBoss\00.State">
       <UniqueIdentifier>{976fd86d-08ad-4220-bb29-ae776502cc0d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. UI\01. UI\15. UIText">
+      <UniqueIdentifier>{2749aa75-f322-4adb-8247-0108c2a2a75d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. UI\01. UI\16. UIInteractive">
+      <UniqueIdentifier>{09a203e9-0c7d-4e4c-98f8-6ab7ca0bb20a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1010,6 +1016,12 @@
     <ClInclude Include="..\Header\CUI_ProgressBar.h">
       <Filter>05. UI\01. UI\14. UI_ProgressBar</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CUI_Text.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUI_Interactive.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1602,6 +1614,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\CUI_ProgressBar.cpp">
       <Filter>05. UI\01. UI\14. UI_ProgressBar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_Text.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_Interactive.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

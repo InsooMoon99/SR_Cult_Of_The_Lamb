@@ -143,7 +143,7 @@ void CUIInventoryCell::Render_GameObject()
         _vec2 cellPos = { m_TransformCom->Get_Pos().x + WINCX / 2, WINCY / 2 - m_TransformCom->Get_Pos().y };
 
         _vec2 number = { cellPos.x + numberOffsetX, cellPos.y + numberOffsetY };
-        CFontMgr::GetInstance()->Render_FontOutlined(L"NanumSquare_Heavy",
+        CFontMgr::GetInstance()->Render_FontOutlined(L"Ghana_Heavy",
                                                      to_wstring(m_Count),
                                                      &number,
                                                      D3DXCOLOR(1.f, 1.f, 1.f, 1.f),

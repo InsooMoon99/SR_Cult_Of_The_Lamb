@@ -138,9 +138,9 @@ _int CUIBuildCell::Update_GameObject(const _float& timeDelta)
         // cout << "CUIBuildCell::Update_GameObject: Click detected!" << endl;
         if (m_OnClick)
         {
-			CSoundMgr::GetInstance()->Play_Once(L"UI_Confirm_Selection.wav",
+			CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Confirm_Selection.wav",
 				SOUND_EFFECT,
-				1.f);
+				0.7f);
             // cout << "CUIBuildCell::Update_GameObject: Executing OnClick" << endl;
             m_OnClick();
         }

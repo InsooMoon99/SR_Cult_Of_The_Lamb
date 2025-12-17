@@ -12,6 +12,7 @@ class CPlayerInput;
 class CWeaponEquip;
 class CPlayerGathering;
 class CPlayerConstruction;
+class CUI_Interactive;
 
 BEGIN(Engine)
 class CRigidbody;
@@ -56,7 +57,6 @@ private:
     CPlayerAttack*     m_PlayerAttackCom;
     CPlayerSkill*      m_PlayerSkillCom;
     CPlayerGathering*  m_PlayerGatherCom;
-
     CPlayerConstruction* m_PlayerConstructionCom;
 
 #pragma endregion
@@ -68,4 +68,8 @@ public:
 
 private:
     void Free() override;
+
+private:
+    CUI_Interactive* m_InteractiveUI;
+    _bool           m_OverlapBegin;
 };

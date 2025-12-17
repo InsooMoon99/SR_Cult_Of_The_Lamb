@@ -51,4 +51,5 @@ private:
     _bool                  m_DialogueStarted = false;
     _bool                  m_DialogueEnded = false;
     _bool                  m_SoundEnded = false;
+    _bool                  m_IsChoiced = false;
 };

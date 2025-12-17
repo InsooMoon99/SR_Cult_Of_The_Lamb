@@ -145,6 +145,8 @@ void CStage_Dungeon::Initialize_Scene()
 
     // 전투 BGM
     CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Battle2.wav", 0.4f, true, 1.f);
+
+    m_IsClearMenuOpened = false;
 }
 
 _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
@@ -154,13 +156,31 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
 
     if (!m_DungeonCleared && m_TimerRunning && m_CurrentRoom == Room::MONSTER2)
     {
-        if (CDInputMgr::GetInstance()->KeyDown(DIK_M))
-        {
-            m_TimerRunning   = false;
-            m_DungeonCleared = true;
-        }
+		if (CDInputMgr::GetInstance()->KeyDown(DIK_M))
+		{
+			switch (m_IsClearMenuOpened)
+			{
+			case true:
+				m_DungeonCleared = false;
+				break;
+			case false:
+				m_TimerRunning = false;
+				m_DungeonCleared = true;
+				break;
+			}
+		}
+       // if (CDInputMgr::GetInstance()->KeyDown(DIK_M)&&!m_IsClearMenuOpened)
+       // {
+       //     m_TimerRunning   = false;
+       //     m_DungeonCleared = true;
+       //     m_IsClearMenuOpened = true;
+       // }
+       // //if(m_IsClearMenuOpened)
+        //{
+        //    m_DungeonCleared = false;
+        //}
     }
-
+   
     if (m_RequestChangeScene)
     {
         CSceneMgr::GetInstance()->Change_SceneMgr(m_NextSceneType);

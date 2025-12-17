@@ -60,7 +60,7 @@ _int CKitchen::Update_GameObject(const _float& timeDelta)
             if (m_CookingCtrlCom && m_CookingCtrlCom->IsCooking())
                 return exit;
 
-			CSoundMgr::GetInstance()->Play_Once(L"UI_Open_Menu.wav",
+			CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Open_Menu.wav",
 				SOUND_EFFECT,
 				1.f);
 

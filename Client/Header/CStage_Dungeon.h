@@ -74,6 +74,7 @@ public:
     // 몬스터 죽었을 때 호출
     void    OnMonsterDeath(CGameObject* obj) override;
     _bool   IsCleared() { return m_DungeonCleared; }
+
 private:
     const CRunLootLog& Get_RunLootLog() const { return m_RunLootLog; }
 private:
@@ -123,6 +124,7 @@ private:
 
     _bool           m_TimerRunning;
     _bool           m_DungeonCleared;
+    _bool           m_IsClearMenuOpened;
     _bool           m_Start;
 };
 

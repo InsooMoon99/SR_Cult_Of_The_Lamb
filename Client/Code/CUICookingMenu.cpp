@@ -15,6 +15,7 @@
 #include "CInventory.h"
 #include "CUICookedFoodCell.h"
 #include "CManagement.h"
+#include "CSoundMgr.h"
 
 CUICookingMenu::CUICookingMenu(DEVICE graphicDev)
     : CUI(graphicDev),
@@ -61,7 +62,14 @@ void CUICookingMenu::Initialize_GameObject()
             int recipeId = recipes[i].id;
             int IngredientId = CRecipeDB::GetInstance()->GetRecipeById(recipeId)->ingredients.begin()->first;
 
-            cookingCell->Set_OnClick([this, recipeId]() {if (m_CookingController->CanCook(recipeId, m_Inventory)) m_CookingController->AddRecipe(recipeId, m_Inventory); });
+            cookingCell->Set_OnClick([this, recipeId]()
+            {if (m_CookingController->CanCook(recipeId, m_Inventory))
+                {
+                m_CookingController->AddRecipe(recipeId, m_Inventory);
+                CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Confirm_Selection.wav",
+                    SOUND_EFFECT,
+                    0.7f);
+                } });
             cookingCell->Set_OnActive([this, recipeId]() { return m_CookingController->CanCook(recipeId, m_Inventory); });
             cookingCell->Set_GetCount([this, IngredientId]() {return m_Inventory->GetItemCount(IngredientId); });
             cookingCell->Set_RecipeId(recipeId);
@@ -93,7 +101,10 @@ void CUICookingMenu::Initialize_GameObject()
     m_StartButton->SetOnClick([this]() { 
         PlayCloseAnimation();  
         m_CookingController->SetUIRecipeSlot(0, m_CancelButton, m_StartButton); // 콜백 재설정 
-        m_CookingController->Set_Start(true); 
+        m_CookingController->Set_Start(true);
+        CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Confirm_Selection.wav",
+            SOUND_EFFECT,
+            0.7f);
     });
     //m_StartButton->Set_Selected(true);
 
@@ -101,8 +112,9 @@ void CUICookingMenu::Initialize_GameObject()
     m_CancelButton->Set_HasText();
     m_CancelButton->Set_Text(L"취소");
     m_CancelButton->SetCloneTexAspectScale({ 0.17f, 0.22f, 0.f });
-    m_CancelButton->SetOnClick([this]() { PlayCloseAnimation(); m_CookingController->RemoveAllRecipe(m_Inventory); m_CookingController->Quit();
-});
+    m_CancelButton->SetOnClick([this]() { PlayCloseAnimation(); m_CookingController->RemoveAllRecipe(m_Inventory);
+                                          m_CookingController->Quit();
+                                          CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Close_Menu.wav", SOUNDTYPE::SOUND_UI, 1.f); });
 
 }
 
@@ -219,6 +231,12 @@ void CUICookingMenu::Check_Hovered()
 
         if (hoveredNow != m_CookingCells[i]->Get_IsHovered())
         {
+			if (hoveredNow)
+			{
+                CSoundMgr::GetInstance()->Play_Once(L"ui/ui_pointeron.wav",
+                    SOUNDTYPE::SOUND_UI,
+                    5.f);
+			}
             m_CookingCells[i]->Set_IsHovered(hoveredNow);
         }
 

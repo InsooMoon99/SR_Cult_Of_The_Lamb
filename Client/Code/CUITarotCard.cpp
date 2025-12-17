@@ -116,6 +116,9 @@ _int CUITarotCard::Update_GameObject(const _float& timeDelta)
 
                 if (m_OnClick)
                 {
+                    CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Tarot_Close.wav",
+                        SOUND_EFFECT,
+                        1.f);
                     m_OnClick();
                 }
             }
@@ -276,9 +279,9 @@ void CUITarotCard::InitializeScale()
 }
 void CUITarotCard::OnHoverStart()
 {
-    CSoundMgr::GetInstance()->Play_Once(L"UI_Tarot_Close.wav",
-        SOUND_EFFECT,
-        1.f);
+	CSoundMgr::GetInstance()->Play_Once(L"ui/ui_pointeron.wav",
+		SOUNDTYPE::SOUND_UI,
+		5.f);
     m_TargetScale = m_BaseScale * 1.15;
 }
 

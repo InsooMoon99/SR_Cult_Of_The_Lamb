@@ -117,10 +117,6 @@ _int CUICookingCell::Update_GameObject(const _float& timeDelta)
     {
         if (m_OnClick)
         {
-            CSoundMgr::GetInstance()->Play_Once(L"UI_Confirm_Selection.wav",
-                SOUND_EFFECT,
-                1.f);
-
             m_OnClick();
         }
     }
