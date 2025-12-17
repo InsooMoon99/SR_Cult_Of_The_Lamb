@@ -76,7 +76,7 @@ HRESULT CUIBuildMenu::Ready_GameObject()
         }
         else
         {
-            cout << "Not enough resources for Kitchen!" << endl;
+            //cout << "Not enough resources for Kitchen!" << endl;
         }
     });
     m_CookingFireCell->Set_OnActive([this]() {return CheckResources(5001); });
@@ -96,7 +96,7 @@ HRESULT CUIBuildMenu::Ready_GameObject()
         }
         else
         {
-             cout << "Not enough resources for Temple!" << endl;
+             //cout << "Not enough resources for Temple!" << endl;
         }
     });
     m_TempleCell->Set_OnActive([this]() { return CheckResources(5002); });
@@ -290,14 +290,14 @@ bool CUIBuildMenu::CheckResources(int recipeID)
 {
     if (nullptr == m_Inventory)
     {
-        cout << "CUIBuildMenu::CheckResources: m_Inventory is null" << endl;
+        //cout << "CUIBuildMenu::CheckResources: m_Inventory is null" << endl;
         return false;
     }
 
     Recipe* recipe = CRecipeDB::GetInstance()->GetRecipeById(recipeID);
     if (nullptr == recipe)
     {
-        cout << "CUIBuildMenu::CheckResources: Recipe not found for ID " << recipeID << endl;
+        //cout << "CUIBuildMenu::CheckResources: Recipe not found for ID " << recipeID << endl;
         return false;
     }
 

@@ -158,7 +158,7 @@ void CUI_MonsterHp::Render_GameObject()
         _float offsetX = FULL_HALF_WIDTH * (1.f - delayRatio);
 
         m_Buffer_Delay->Set_Scale(hw, FULL_HALF_HEIGHT);
-        m_Buffer_Delay->Set_Offset(-offsetX, 0.f);
+        m_Buffer_Delay->Set_Offset(+offsetX, 0.f);
 
         m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
         m_TextureCom->Set_Texture(2);  // 흰색 텍스처
@@ -171,7 +171,7 @@ void CUI_MonsterHp::Render_GameObject()
         _float offsetX = FULL_HALF_WIDTH * (1.f - ratio);
 
         m_Buffer_Hp->Set_Scale(hw, FULL_HALF_HEIGHT);
-        m_Buffer_Hp->Set_Offset(-offsetX, 0.f);
+        m_Buffer_Hp->Set_Offset(+offsetX, 0.f);
 
         m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
         m_TextureCom->Set_Texture(0);  // HP 바 텍스처

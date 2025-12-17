@@ -174,7 +174,7 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
     // Fade
     Fade_Check(timeDelta);
 
-    cout << m_KillCount << endl;
+    //cout << m_KillCount << endl;
 
     return exit;
 }

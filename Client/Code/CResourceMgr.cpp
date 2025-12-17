@@ -463,10 +463,6 @@ HRESULT CResourceMgr::Ready_Monster(DEVICE graphicDev)
         L"../Bin/Resource/Texture/Monster/Human/Run/Run%d.png", 18)))
         return E_FAIL;
 
-    if (FAILED(humanmonsterTex->Add_Texture(L"HumanMonsterRunUp", TEX_NORMAL,
-        L"../Bin/Resource/Texture/Monster/Human/Run_Up/Run_Up%d.png", 22)))
-        return E_FAIL;
-
     if (FAILED(humanmonsterTex->Add_Texture(L"HumanMonsterAttack", TEX_NORMAL,
         L"../Bin/Resource/Texture/Monster/Human/Attack/Attack%d.png", 65)))
         return E_FAIL;
@@ -532,20 +528,41 @@ HRESULT CResourceMgr::Ready_Monster(DEVICE graphicDev)
         return E_FAIL;
 
     if (FAILED(human2Tex->Add_Texture(L"Human2_Attack", TEX_NORMAL,
-        L"../Bin/Resource/Texture/Monster/Human2/Attack/Cultist-attack%d.png", 38)))
+        L"../Bin/Resource/Texture/Monster/Human2/Attack_Long/Cultist-grunt-attack-impact%d.png", 56)))
         return E_FAIL;
 
     if (FAILED(human2Tex->Add_Texture(L"Human2_Run", TEX_NORMAL,
         L"../Bin/Resource/Texture/Monster/Human2/Run/Cultist-run%d.png", 29)))
         return E_FAIL;
 
-    if (FAILED(human2Tex->Add_Texture(L"Human2_RunUp", TEX_NORMAL,
-        L"../Bin/Resource/Texture/Monster/Human2/Run_up/Cultist-run-up%d.png", 34)))
-        return E_FAIL;
-
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_HUMAN_MONSTER2, human2Tex)))
         return E_FAIL;
+
+    // Burper
+    CTexture* burperTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(burperTex, E_FAIL);
+
+    if (FAILED(burperTex->Add_Texture(L"Burper_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Burper/Idle/Burper-idle%d.png", 34)))
+        return E_FAIL;
+
+    if (FAILED(burperTex->Add_Texture(L"Burper_Hit", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Burper/Hit/Burper-hit%d.png", 16)))
+        return E_FAIL;
+
+    if (FAILED(burperTex->Add_Texture(L"Burper_Attack", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Burper/Attack/Burper-attack%d.png", 61)))
+        return E_FAIL;
+
+    if (FAILED(burperTex->Add_Texture(L"Burper_Run", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Burper/Run/Burper-jump%d.png", 49)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_BURPER_MONSTER, burperTex)))
+        return E_FAIL;
+
 
     // 보물상자....
     CTexture* chest = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);

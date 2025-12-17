@@ -20,6 +20,8 @@ public:
     _int Get_Frame() const { return m_Frame; }
     _int Get_MaxFrameX() const { return m_MaxFrame; }
 
+    void Set_Frame(_int frame) { m_Frame = frame; }
+
     // 현재 UV 사각형
     void Get_UV(_float& u0, _float& v0, _float& u1, _float& v1) const;
 

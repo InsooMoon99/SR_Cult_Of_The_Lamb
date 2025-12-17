@@ -1,5 +1,7 @@
 ﻿#include "pch.h"
 #include "CTerrain.h"
+
+#include "CBatMonster.h"
 #include "CCombatStat.h"
 #include "CBoxCollider.h"
 #include "CCreateHelper.h"
@@ -19,6 +21,7 @@
 #include "CWall.h"
 #include "CWallRenderer.h"
 #include "CBoss_SlaveCow.h"
+#include "CHumanMonster2.h"
 
 CTerrain::CTerrain(DEVICE GraphicDev)
     : CRenderObject(GraphicDev), m_BufferCom(nullptr), m_TextureCom284(nullptr),
@@ -340,6 +343,17 @@ void CTerrain::Spawn_Objects(CLayer* layer)
             objType = OBJTYPE::MONSTER;
             break;
 
+        case SPAWN_OBJ_TYPE::HUMAN_MONSTER2:
+            object = CHumanMonster2::Create(m_GraphicDev);
+            objType = OBJTYPE::MONSTER;
+            break;
+
+        case SPAWN_OBJ_TYPE::BAT_MONSTER:
+            object = CBatMonster::Create(m_GraphicDev);
+            objType = OBJTYPE::MONSTER;
+            break;
+
+            // NPC
         case SPAWN_OBJ_TYPE::NPC_SLAVE:
             object = CBoss_SlaveCow::Create(m_GraphicDev);
             objType = OBJTYPE::NPC;
