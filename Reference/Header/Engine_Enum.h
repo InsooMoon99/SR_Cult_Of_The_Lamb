@@ -70,6 +70,7 @@ enum class COLLISION_LAYERTYPE
     DEFAULT, // 모든 충돌
     PLAYER,
     ENEMY,
+    NPC,
     WALL,
     PLAYERPROJECTILE,
     BOSSPROJECTILE,
@@ -213,6 +214,10 @@ enum class COMPONENTTYPE
 
     TEX_LOADING_CIRCLE,
 
+    TEX_BAT_MONSTER,
+    TEX_HUMAN_MONSTER2,
+    TEX_BURPER_MONSTER,
+
     ////////////////
     //  Particle  //
     ////////////////
@@ -325,6 +330,7 @@ enum class SCENETYPE
     SC_LOGO_BOSS1,
     SC_LOGO_BOSS2,
     SC_MAINMENU,
+    SC_PROLOGUE,
     SC_STAGE,
     SC_DUNGEON,
     SC_TAROT_TEST,
@@ -341,7 +347,7 @@ enum SOUNDTYPE
 {
     SOUND_BGM,
     SOUND_EFFECT,
-
+    SOUND_UI,
     SOUND_END
 };
 

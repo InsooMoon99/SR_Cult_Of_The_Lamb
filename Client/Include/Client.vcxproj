@@ -172,6 +172,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Code\CBossSpawn.h" />
+    <ClInclude Include="..\Header\CBatMonster.h" />
     <ClInclude Include="..\Header\CBoss2_Bullet.h" />
     <ClInclude Include="..\Header\CBoss2_BulletAttack1.h" />
     <ClInclude Include="..\Header\CBoss2_BulletAttack2.h" />
@@ -210,6 +211,9 @@
     <ClInclude Include="..\Header\CChest.h" />
     <ClInclude Include="..\Header\CCookingController.h" />
     <ClInclude Include="..\Header\CEtc.h" />
+    <ClInclude Include="..\Header\CFollowerElephant.h" />
+    <ClInclude Include="..\Header\CFollowerPig.h" />
+    <ClInclude Include="..\Header\CHumanMonster2.h" />
     <ClInclude Include="..\Header\Client_Global.h" />
     <ClInclude Include="..\Header\CEligos.h" />
     <ClInclude Include="..\Header\CEligos_Attack_Bullet.h" />
@@ -221,6 +225,7 @@
     <ClInclude Include="..\Header\CEligos_StateMachine.h" />
     <ClInclude Include="..\Header\CEligos_Reveal.h" />
     <ClInclude Include="..\Header\CEyeball_CenterAttack.h" />
+    <ClInclude Include="..\Header\CLogo_Dungeon.h" />
     <ClInclude Include="..\Header\CMenuExtra.h" />
     <ClInclude Include="..\Header\CNPCState_Build.h" />
     <ClInclude Include="..\Header\CNPCState_ChopWood.h" />
@@ -234,6 +239,7 @@
     <ClInclude Include="..\Header\CFogMgr.h" />
     <ClInclude Include="..\Header\CRunLootLog.h" />
     <ClInclude Include="..\Header\CStage_Prologue_Boss.h" />
+    <ClInclude Include="..\Header\CStage_Prologue.h" />
     <ClInclude Include="..\Header\CTarotNPC.h" />
     <ClInclude Include="..\Header\CUICookedFoodCell.h" />
     <ClInclude Include="..\Header\CUICookingCell.h" />
@@ -353,12 +359,14 @@
     <ClInclude Include="..\Header\CUI_Dialogue.h" />
     <ClInclude Include="..\Header\CUI_DungeonLootPanel.h" />
     <ClInclude Include="..\Header\CUI_Fade.h" />
+    <ClInclude Include="..\Header\CUI_Interactive.h" />
     <ClInclude Include="..\Header\CUI_LoadingCircle.h" />
     <ClInclude Include="..\Header\CUI_FollowerCommand.h" />
     <ClInclude Include="..\Header\CUI_MonsterHp.h" />
     <ClInclude Include="..\Header\CUI_ProgressBar.h" />
     <ClInclude Include="..\Header\CUI_Skill.h" />
     <ClInclude Include="..\Header\CUI_SkillPanel.h" />
+    <ClInclude Include="..\Header\CUI_Text.h" />
     <ClInclude Include="..\Header\CVillageStateMgr.h" />
     <ClInclude Include="..\Header\CWarningChain.h" />
     <ClInclude Include="..\Header\CWall.h" />
@@ -381,6 +389,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Code\CBatMonster.cpp" />
     <ClCompile Include="..\Code\CBoss2_Bullet.cpp" />
     <ClCompile Include="..\Code\CBoss2_BulletAttack1.cpp" />
     <ClCompile Include="..\Code\CBoss2_BulletAttack2.cpp" />
@@ -428,6 +437,10 @@
     <ClCompile Include="..\Code\CEligos_Reveal.cpp" />
     <ClCompile Include="..\Code\CEtc.cpp" />
     <ClCompile Include="..\Code\CEyeball_CenterAttack.cpp" />
+    <ClCompile Include="..\Code\CHumanMonster2.cpp" />
+    <ClCompile Include="..\Code\CLogo_Dungeon.cpp" />
+    <ClCompile Include="..\Code\CFollowerElephant.cpp" />
+    <ClCompile Include="..\Code\CFollowerPig.cpp" />
     <ClCompile Include="..\Code\CMenuExtra.cpp" />
     <ClCompile Include="..\Code\CNPCState_Build.cpp" />
     <ClCompile Include="..\Code\CNPCState_ChopWood.cpp" />
@@ -441,6 +454,7 @@
     <ClCompile Include="..\Code\CFogMgr.cpp" />
     <ClCompile Include="..\Code\CRunLootLog.cpp" />
     <ClCompile Include="..\Code\CStage_Prologue_Boss.cpp" />
+    <ClCompile Include="..\Code\CStage_Prologue.cpp" />
     <ClCompile Include="..\Code\CTarotNPC.cpp" />
     <ClCompile Include="..\Code\CUICookedFoodCell.cpp" />
     <ClCompile Include="..\Code\CUICookingCell.cpp" />
@@ -556,12 +570,14 @@
     <ClCompile Include="..\Code\CUI_Dialogue.cpp" />
     <ClCompile Include="..\Code\CUI_DungeonLootPanel.cpp" />
     <ClCompile Include="..\Code\CUI_Fade.cpp" />
+    <ClCompile Include="..\Code\CUI_Interactive.cpp" />
     <ClCompile Include="..\Code\CUI_LoadingCircle.cpp" />
     <ClCompile Include="..\Code\CUI_FollowerCommand.cpp" />
     <ClCompile Include="..\Code\CUI_MonsterHp.cpp" />
     <ClCompile Include="..\Code\CUI_ProgressBar.cpp" />
     <ClCompile Include="..\Code\CUI_Skill.cpp" />
     <ClCompile Include="..\Code\CUI_SkillPanel.cpp" />
+    <ClCompile Include="..\Code\CUI_Text.cpp" />
     <ClCompile Include="..\Code\CVillageStateMgr.cpp" />
     <ClCompile Include="..\Code\CWarningChain.cpp" />
     <ClCompile Include="..\Code\CWall.cpp" />

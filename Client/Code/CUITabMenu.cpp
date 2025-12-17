@@ -10,7 +10,7 @@
 #include "CTransform.h"
 #include "CRenderer.h"
 #include "CUIPlayerPage.h"
-
+#include "CSoundMgr.h"
 CUITabMenu::CUITabMenu(DEVICE graphicDev)
     : CUI(graphicDev),
       m_Current(UITabCategory::INVENTORY),
@@ -95,8 +95,8 @@ HRESULT CUITabMenu::Ready_GameObject()
     m_PlayerBtn->SetCloneTexAspectScale({ 0.16f, 0.16f, 0.f });
     m_GyodanBtn->SetCloneTexAspectScale({ 0.16f, 0.16f, 0.f });
     m_QuestBtn->SetCloneTexAspectScale({ 0.16f, 0.16f, 0.f });
-    m_InvenBtn->SetOnClick([this]() {ChangePage(UITabCategory::INVENTORY); });
-    m_PlayerBtn->SetOnClick([this]() { ChangePage(UITabCategory::PLAYER); });
+    m_InvenBtn->SetOnClick([this]() {ChangePage(UITabCategory::INVENTORY); CSoundMgr::GetInstance()->Play_Once(L"UI/UI_PageFlip.wav",SOUNDTYPE::SOUND_UI,0.6f); });
+    m_PlayerBtn->SetOnClick([this]() { ChangePage(UITabCategory::PLAYER); CSoundMgr::GetInstance()->Play_Once(L"UI/UI_PageFlip.wav", SOUNDTYPE::SOUND_UI,0.6f); });
 
     return S_OK;
 } 
@@ -111,6 +111,19 @@ _int CUITabMenu::Update_GameObject(const _float& timeDelta)
     {
         m_IsOpen = !m_IsOpen;
         m_IsAnimating = true;
+
+        switch (m_IsOpen)
+        {
+        case true:
+            CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Open_Menu.wav", SOUNDTYPE::SOUND_UI, 1.f);
+            break;
+
+        case false:
+            CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Close_Menu.wav", SOUNDTYPE::SOUND_UI, 1.f);
+            break;
+        }
+        
+        
     }
     
     float targetX = m_IsOpen ? m_TargetX : m_ClosedX; //열려있냐 닫혀있냐에 따라서 목표 X값이 달라짐

@@ -1,5 +1,7 @@
 ﻿#include "pch.h"
 #include "CTerrain.h"
+
+#include "CBatMonster.h"
 #include "CCombatStat.h"
 #include "CBoxCollider.h"
 #include "CCreateHelper.h"
@@ -19,6 +21,7 @@
 #include "CWall.h"
 #include "CWallRenderer.h"
 #include "CBoss_SlaveCow.h"
+#include "CHumanMonster2.h"
 
 CTerrain::CTerrain(DEVICE GraphicDev)
     : CRenderObject(GraphicDev), m_BufferCom(nullptr), m_TextureCom284(nullptr),
@@ -222,7 +225,6 @@ void CTerrain::Set_Material()
     material.Diffuse = COLOR(1.f, 1.f, 1.f, 1.f);       // 빛을 받았을 때 색
     material.Ambient = COLOR(0.2f, 0.2f, 0.2f, 1.f);    // 배경광 색
     material.Specular = COLOR(1.f, 1.f, 1.f, 1.f);      // 반사광 색
-    material.Emissive = COLOR(0.f, 0.f, 0.f, 1.f);      // 자체 발광
     material.Power = 0.f; // 반사광 세기
 
     m_GraphicDev->SetMaterial(&material);
@@ -341,6 +343,17 @@ void CTerrain::Spawn_Objects(CLayer* layer)
             objType = OBJTYPE::MONSTER;
             break;
 
+        case SPAWN_OBJ_TYPE::HUMAN_MONSTER2:
+            object = CHumanMonster2::Create(m_GraphicDev);
+            objType = OBJTYPE::MONSTER;
+            break;
+
+        case SPAWN_OBJ_TYPE::BAT_MONSTER:
+            object = CBatMonster::Create(m_GraphicDev);
+            objType = OBJTYPE::MONSTER;
+            break;
+
+            // NPC
         case SPAWN_OBJ_TYPE::NPC_SLAVE:
             object = CBoss_SlaveCow::Create(m_GraphicDev);
             objType = OBJTYPE::NPC;

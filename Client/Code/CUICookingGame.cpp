@@ -11,7 +11,7 @@
 #include "CItemDB.h"
 #include "CFontMgr.h"
 #include "CRandomMgr.h"
-
+#include "CSoundMgr.h"
 
 
 CUICookingGame::CUICookingGame(DEVICE graphicDev, CGameObject* owner, RecipeInst recipeInst)
@@ -45,6 +45,8 @@ HRESULT CUICookingGame::Ready_GameObject()
 void CUICookingGame::Initialize_GameObject()
 {
     CUI::Initialize_GameObject();
+
+    CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Cooking_Meal_Loop.wav", 0.6f, false, 0.f);
 
     if (m_Owner)
     {
@@ -110,7 +112,7 @@ _int CUICookingGame::Update_GameObject(const _float& timeDelta)
         {
             m_Speed *= -1;
         }
-        cout << "m_CurserX" << m_CurserX << endl;
+        //cout << "m_CurserX" << m_CurserX << endl;
     }
 
     if (OnClick == true)
@@ -120,22 +122,22 @@ _int CUICookingGame::Update_GameObject(const _float& timeDelta)
         if (m_CurserX >= -m_StencilRight && m_CurserX <= -m_StencilLeft)
         {
             m_result = GOOD; // 안탄거
-            cout << "curser" << "true" << endl;
+            //cout << "curser" << "true" << endl;
         }
         else
         {
             m_result = BAD; // 탄거
-            cout << "curser" << "false" << endl;
+            //cout << "curser" << "false" << endl;
 
         }
 
 
         if (DelayTime > 1.f)
         {
-            cout << "m_StencilLeft" << m_StencilLeft << endl;
-            cout << "m_StencilRight" << m_StencilRight << endl;
-            cout << "m_StencilLength" << m_StencilLength << endl;
-            cout << "m_StencilPosX" << m_StencilPosX << endl;
+            //cout << "m_StencilLeft" << m_StencilLeft << endl;
+            //cout << "m_StencilRight" << m_StencilRight << endl;
+            //cout << "m_StencilLength" << m_StencilLength << endl;
+            //cout << "m_StencilPosX" << m_StencilPosX << endl;
 
 
            
@@ -143,7 +145,7 @@ _int CUICookingGame::Update_GameObject(const _float& timeDelta)
            
            m_DoneEvent();
             m_ResultItemDrop(m_recipeInst.ResultItemID, m_result);
-
+			CSoundMgr::GetInstance()->Play_Once(L"Cook/Meal_Cooked.wav", SOUNDTYPE::SOUND_UI, 1.f);
             Mark_As_PendingKill();
         }
 
@@ -388,6 +390,7 @@ CUICookingGame* CUICookingGame::Create(DEVICE graphicDev, CGameObject* owner, Re
 
 void CUICookingGame::Free()
 {
+    CSoundMgr::GetInstance()->Stop_Sound(L"BGM/BGM_Cooking_Meal_Loop.wav");
 
     Safe_Release(m_Buffer_Deco);
     Safe_Release(m_Buffer_keyInfo);

@@ -698,6 +698,7 @@ static void Animator_Inspector(CAnimator* animator)
 
     CSpriteAnimation* curAnimation = animator->Get_CurAnimation();
     _bool             isFinished   = false;
+    _int editFrame = curFrame;
 
     if (curAnimation)
         isFinished = curAnimation->IsFinished();
@@ -715,7 +716,10 @@ static void Animator_Inspector(CAnimator* animator)
 
         ImGui::Text(u8"현재 프레임 : ");
         ImGui::SameLine();
-        ImGui::Text("%d", curFrame);
+        if (ImGui::DragInt("##CurFrame", &editFrame, 1.f, 0, maxFrame - 1))
+        {
+            animator->Set_CurFrame(editFrame);
+        }
 
         ImGui::Text(u8"최대 프레임 : ");
         ImGui::SameLine();
@@ -737,17 +741,34 @@ static void Animator_Inspector(CAnimator* animator)
             animator->Set_CurSize(size);
 
         ImGui::Columns(1);
+        // Offset Left
 
-        ImGui::Columns(2, "##Offset");
+        ImGui::Columns(2, "##OffsetLeft");
         ImGui::SetColumnWidth(0, columnsWidth);
 
-        ImGui::Text("Offset : ");
-        ImGui::SameLine();
+        _vec2 offsetLeft = animator->Get_CurOffset(false);
 
+        ImGui::Text("Offset Left : ");
+        ImGui::SameLine();
         ImGui::NextColumn();
 
-        if (ImGui::DragFloat2("##AnimOffset", &offset.x, 0.01f, -15.f, 15.f))
-            animator->Set_CurOffset(offset);
+        if (ImGui::DragFloat2("##AnimOffsetLeft", &offsetLeft.x, 0.01f, -15.f, 15.f))
+            animator->Set_CurOffsetLeft(offsetLeft);
+
+        ImGui::Columns(1);
+
+        // Offset Right
+        ImGui::Columns(2, "##OffsetRight");
+        ImGui::SetColumnWidth(0, columnsWidth);
+
+        _vec2 offsetRight = animator->Get_CurOffset(true);
+
+        ImGui::Text("Offset Right : ");
+        ImGui::SameLine();
+        ImGui::NextColumn();
+
+        if (ImGui::DragFloat2("##AnimOffsetRight", &offsetRight.x, 0.01f, -15.f, 15.f))
+            animator->Set_CurOffsetRight(offsetRight);
 
         ImGui::Columns(1);
     }

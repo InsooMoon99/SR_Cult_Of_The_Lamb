@@ -1,14 +1,12 @@
 ﻿#include "CRenderer.h"
 
 #include "CGameObject.h"
-
-
+#include "CTransform.h"
 
 IMPLEMENT_SINGLETON(CRenderer)
 
 CRenderer::CRenderer()
-{
-}
+{}
 
 CRenderer::~CRenderer()
 {
@@ -46,7 +44,6 @@ void CRenderer::Clear_RenderGroup()
 {
     for (size_t i = 0; i < RENDER_END; ++i)
     {
-
         for_each(m_RenderGroup[i].begin(), m_RenderGroup[i].end(), CDeleteObj());
         m_RenderGroup[i].clear();
     }
@@ -86,6 +83,30 @@ void CRenderer::Render_NonAlpha(DEVICE& graphicDev)
 
 void CRenderer::Render_Alpha(DEVICE& graphicDev)
 {
+    // 알파 정렬
+    _matrix matView, matCam;
+    graphicDev->GetTransform(D3DTS_VIEW, &matView);
+    D3DXMatrixInverse(&matCam, nullptr, &matView);
+
+    _vec3 camPos = *(_vec3*)&matCam.m[3][0];
+
+    m_RenderGroup[RENDER_ALPHA].sort([&camPos](CGameObject* pObj1, CGameObject* pObj2)
+    {
+        CTransform* trans1 = pObj1->Get_Transform();
+        CTransform* trans2 = pObj2->Get_Transform();
+
+        if (!trans1 || !trans2)
+            return false;
+
+        _vec3 pivot1 = trans1->Get_Pos() - camPos;
+        _vec3 pivot2 = trans2->Get_Pos() - camPos;
+
+        _float dist1 = D3DXVec3LengthSq(&pivot1);
+        _float dist2 = D3DXVec3LengthSq(&pivot2);
+
+        return dist1 > dist2;
+    });
+
     graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 
     for (auto& obj : m_RenderGroup[RENDER_ALPHA])
@@ -140,6 +161,7 @@ void CRenderer::Render_UI(DEVICE& graphicDev)
     graphicDev->SetTransform(D3DTS_PROJECTION, &uiProj);    // UI 투영 행렬 사용
 
     // 깊이 끄기
+    graphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
     graphicDev->SetRenderState(D3DRS_ZENABLE, FALSE);
 
     // 알파 블렌딩
@@ -153,6 +175,8 @@ void CRenderer::Render_UI(DEVICE& graphicDev)
     }
 
     // 상태 복구
+    graphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
+
     graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
     graphicDev->SetRenderState(D3DRS_ZENABLE, TRUE);
 
@@ -189,6 +213,7 @@ void CRenderer::Render_Priority_UI(DEVICE& graphicDev)
     graphicDev->SetTransform(D3DTS_PROJECTION, &uiProj);    // UI 투영 행렬 사용
 
     // 깊이 끄기
+    graphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
     graphicDev->SetRenderState(D3DRS_ZENABLE, FALSE);
 
     // 알파 블렌딩
@@ -202,6 +227,8 @@ void CRenderer::Render_Priority_UI(DEVICE& graphicDev)
     }
 
     // 상태 복구
+    graphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
+
     graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
     graphicDev->SetRenderState(D3DRS_ZENABLE, TRUE);
 
@@ -275,7 +302,6 @@ void CRenderer::SetFogOff(LPDIRECT3DDEVICE9 graphicDev)
         return;
 
     graphicDev->SetRenderState(D3DRS_FOGENABLE, FALSE);
-
     graphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 

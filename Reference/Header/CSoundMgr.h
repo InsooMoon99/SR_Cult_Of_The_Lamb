@@ -48,6 +48,10 @@ public:  // --- 주요 기능 ---
     /// @note BGM을 수동으로 끌 때 쓰면 됩니다.
     void Stop_SoundChannel(SOUNDTYPE soundType, _float fadeOutDuration = 0.f);
 
+    /// @brief 특정 키 값(파일 경로)에 해당하는 사운드를 찾아 모든 채널에서 정지합니다.
+    /// @param soundFile        정지할 사운드 파일 경로 (Play_Once 등에 사용한 키)
+    void Stop_Sound(const wstring& soundFile);
+
     /// @brief 모든 채널 정지 기능
     /// @note 씬 넘어가는 상황 등 소리 다 끌때 쓰면 됩니다.
     void Stop_All();

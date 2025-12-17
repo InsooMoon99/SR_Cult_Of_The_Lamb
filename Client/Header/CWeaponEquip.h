@@ -14,7 +14,7 @@ private:
 
 public:
     void Equip_Weapon(ItemInstance itemInst);
-    void Unequip_Weapon();
+    void Unequip_Weapon(bool weaponDrop = true);
     void ApplyWeaponStat(Item* item);
     void RemoveWeaponStat();
     bool Get_WeaponEquipped() { return m_WeaponEquipped; }

@@ -24,6 +24,7 @@
 #include "CCamSetupBuilder.h"
 #include "CParticleHelper.h"
 #include "CStage_Dungeon.h"
+#include "CSoundMgr.h"
 
 CUIWeaponExplain* CDroppedItem::m_WeaponExplainUI = nullptr;
 
@@ -204,28 +205,32 @@ void CDroppedItem::OnStayOverlap(CCollider* self, CCollider* other)
         if (CItemDB::GetInstance()->GetItemById(m_itemInst.itemId)->type == ItemType::Weapon)
         {
             //*** 아이템 지우기 ***
-
+            _bool wasActive = m_WeaponExplainUI->Get_Active();
             //1. 무기 정보 UI 띄우기
             switch (m_itemInst.itemId)
             {
-            case 3001:
-            {
-                m_WeaponExplainUI->Set_ItemID(3001);
-                break;
+             case 3001:
+             {
+                 m_WeaponExplainUI->Set_ItemID(3001);
+                 break;
+             }
+             case 3002:
+             {
+                 m_WeaponExplainUI->Set_ItemID(3002);
+                 break;
+             }
             }
-            case 3002:
-            {
-                m_WeaponExplainUI->Set_ItemID(3002);
-                break;
-            }
-            }
-            m_WeaponExplainUI->Set_Active(true);
+           
 
-            // ImGui 클릭 시 무시
-            //ImGuiIO& io = ImGui::GetIO();
-            //if (io.WantCaptureKeyboard)
-            //    return;
-
+            if (!wasActive)
+            {
+                CSoundMgr::GetInstance()->Play_Once(L"UI/Objective_Text_Appear_Base.wav",
+                    SOUND_EFFECT,
+                    1.f);
+            }
+              
+                m_WeaponExplainUI->Set_Active(true);
+           
             // 무기 드랍
             if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
             {
@@ -371,10 +376,15 @@ void CDroppedItem::Player_ZoomIn(CPlayer* ply)
             auto* movement = camController->Get_OwnerCamMovement();
 
             // 카메라 무빙 끝나면 원래대로 돌리는 콜백 설정
-            movement->Set_OnTransitionEnd([movement]()
+            movement->Set_OnTransitionEnd([movement, camController, ply]()
                 {
                     // 기본 프리셋으로 리셋
-                    movement->Reset_Camera(CAM_PRESET(), false);
+                    CCamSetupBuilder(camController)
+                        .SetTarget(ply->Get_Transform())
+                        .Distance(12.f)
+                        .LagSpeed(4.5f)
+                        .ZoomSpeed(4.f)
+                        .Apply();
                 });
 
             // 플레이어한테 줌인
@@ -382,7 +392,7 @@ void CDroppedItem::Player_ZoomIn(CPlayer* ply)
                 .SetTarget(ply->Get_Transform())
                 .Distance(8.f)
                 .LagSpeed(2.5f)
-                .ZoomSpeed(1.f)
+                .ZoomSpeed(3.f)
                 .Apply();
         }
     }

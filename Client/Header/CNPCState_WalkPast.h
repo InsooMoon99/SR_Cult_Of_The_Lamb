@@ -4,7 +4,7 @@
 /// @brief NPC가 플레이어를 지나쳐 이동하는 상태
 class CNPCState_WalkPast : public CNPCState
 {
-public:
+private:
     explicit CNPCState_WalkPast(CNPCBase* owner, CNPCStateMachine* stateMachine);
     ~CNPCState_WalkPast() override;
 
@@ -18,6 +18,10 @@ public:
 public:
     static CNPCState_WalkPast* Create(CNPCBase* owner, CNPCStateMachine* stateMachine);
 
-protected:
+private:
     void Free() override;
+
+private:
+    _bool m_SoundPlayed = false;
+    _float m_fSoundTimer = 0.f;
 };

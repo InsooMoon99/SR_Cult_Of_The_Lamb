@@ -10,6 +10,7 @@
 #include "CRecipeDB.h"
 #include "CFontMgr.h"
 #include "CUICookingMenu.h"
+#include "CSoundMgr.h"
 
 CUICookingCell::CUICookingCell(DEVICE graphicDev)
     : CUI(graphicDev),
@@ -190,6 +191,10 @@ void CUICookingCell::Render_GameObject()
 
         if (m_IsHovered && m_CookingMenu->Get_IsOpen())
         {
+            CSoundMgr::GetInstance()->Play_Once(L"UI_Change_Selection.wav",
+                SOUND_EFFECT,
+                1.f);
+
             m_TargetScale = m_BaseScale * 1.2;
             m_ItemTargetScale = m_ItemBaseScale * 1.2;
 

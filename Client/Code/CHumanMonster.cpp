@@ -36,7 +36,7 @@ HRESULT CHumanMonster::Ready_GameObject()
         return E_FAIL;
 
     m_TransformCom->Set_Pos(_vec3(5.f, 1.f, 7.f));
-    m_TransformCom->Set_Scale(_vec3(1.8f, 1.8f, 1.2f));
+    m_TransformCom->Set_Scale(_vec3(2.3f, 2.1f, 1.2f));
 
     m_CombatStatCom->Set_MaxHp(750.f);
     m_CombatStatCom->Set_Speed(65.f);
@@ -55,7 +55,7 @@ HRESULT CHumanMonster::Ready_GameObject()
     m_AttackTimer    = 0.f;
 
     // 거리 설정
-    Set_StoppingDistance(2.f);
+    Set_StoppingDistance(2.5f);
     Set_AttackRange(2.5f);
     Set_ChaseRange(10.f);
 
@@ -75,12 +75,6 @@ void CHumanMonster::Initialize_GameObject()
     if (m_TargetTransform)
         m_Target = m_TargetTransform->Get_Owner();
 
-    // Hp Bar 추가
-    /*m_HpBar = CUI_MonsterHp::Create(m_GraphicDev, this);
-    if (m_HpBar)
-    {
-        SpawnUIOnLayer(m_HpBar, OBJTYPE::UI);
-    }*/
 }
 
 _int CHumanMonster::Update_GameObject(const _float& timeDelta)
@@ -162,8 +156,26 @@ void CHumanMonster::Update_State_Run(const _float timeDelta)
 {
     m_AttackTimer += timeDelta;
 
-    // 멈춤 거리 밖이면 추적
-    if (!Is_InStoppingRange())
+    _float dist = Get_DistanceToTarget();
+
+    // 쿨타임 중
+    if (!Can_Attack())
+    {
+        const _float MAX_RETREAT_DIST = 4.5f;
+
+        if (dist < MAX_RETREAT_DIST)
+        {
+            _float factor = 1.f - (dist / MAX_RETREAT_DIST); 
+            factor = max(factor, 0.f);
+
+            Retreat_FromTarget(timeDelta, m_CombatStatCom->Get_Speed() * 0.785f * factor);
+        }
+        // 멀면 그냥 대기
+
+        return;
+    }
+
+    if (!Is_InAttackRange())
         Chase_Target(timeDelta, m_CombatStatCom->Get_Speed());
 
     // 공격 가능
@@ -245,10 +257,25 @@ void CHumanMonster::Update_Direction()
 void CHumanMonster::Animation_Setting()
 {
     // 애니메이션 생성
-    m_AnimatorCom->Create_Animation(L"HumanMonsterIdle", 34, 0.02f);
-    m_AnimatorCom->Create_Animation(L"HumanMonsterAttack", 65, 0.02f);
-    m_AnimatorCom->Create_Animation(L"HumanMonsterHurt", 28, 0.02f);
-    m_AnimatorCom->Create_Animation(L"HumanMonsterRun", 18, 0.02f);
+    m_AnimatorCom->Create_Animation(L"HumanMonsterIdle", 34, 0.02f,
+        _vec2(1.f, 1.f),
+        _vec2(0.f, 0.04f));
+
+    m_AnimatorCom->Create_Animation(L"HumanMonsterAttack", 65, 0.02f,
+        _vec2(1.f, 1.f),
+        _vec2(0.f, 0.04f));
+
+    m_AnimatorCom->Create_Animation(L"HumanMonsterHurt", 28, 0.02f,
+        _vec2(1.f, 1.f),
+        _vec2(0.f, 0.04f));
+
+    m_AnimatorCom->Create_Animation(L"HumanMonsterRun", 18, 0.02f,
+        _vec2(1.f, 1.f),
+        _vec2(0.f, 0.04f));
+
+    m_AnimatorCom->Create_Animation(L"HumanMonsterRunUp", 22, 0.02f,
+        _vec2(1.f, 1.f),
+        _vec2(0.f, 0.04f));
 
     // State -> Animation 연동
     m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"HumanMonsterIdle", ANIMSTATE::LOOP);
@@ -283,6 +310,29 @@ void CHumanMonster::Chase_Target(const float& timeDelta, _float speed)
 
     _vec3 moveForce = dir * m_CombatStatCom->Get_Speed();
     m_RigidbodyCom->Add_Force(moveForce);
+}
+
+void CHumanMonster::Retreat_FromTarget(const _float& timeDelta, _float speed)
+{
+    CMonsterBase::Retreat_FromTarget(timeDelta, speed);
+
+    if (!m_TargetTransform || !m_TransformCom)
+        return;
+
+    _vec3 pos = m_TransformCom->Get_Pos();
+    _vec3 targetPos = m_TargetTransform->Get_Pos();
+
+    _vec3 dir = pos - targetPos;
+    dir.y = 0.f;
+
+    D3DXVec3Normalize(&dir, &dir);
+
+    m_TransformCom->Move_Pos(dir, timeDelta, speed * 0.05f);
+
+    /*_vec3 moveForce = dir * speed;
+
+    m_RigidbodyCom->Add_Force(moveForce);*/
+
 }
 
 HRESULT CHumanMonster::Add_Component()

@@ -74,7 +74,6 @@ HRESULT CFollowerCow::Add_Component()
     // 디버그: 텍스처 컴포넌트 추가 성공 여부 확인
     if (!m_TextureCom)
         MSG_BOX("FollowerCow: Texture Component Missing in Add_Component");
-    // else { MSG_BOX("FollowerCow: Texture Component Added Successfully"); }
 
     return S_OK;
 }

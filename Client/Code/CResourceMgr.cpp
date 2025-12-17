@@ -67,9 +67,9 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
     if (FAILED(Ready_Terrain(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Decoration(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Building(graphicDev))) return E_FAIL;
-    if (FAILED(Ready_Follower(graphicDev))) return E_FAIL;
+    //if (FAILED(Ready_Follower(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Particle(graphicDev))) return E_FAIL;
-    if (FAILED(Ready_MiniBoss(graphicDev))) return E_FAIL;
+    //if (FAILED(Ready_MiniBoss(graphicDev))) return E_FAIL;
 
     return S_OK;
 }
@@ -494,6 +494,75 @@ HRESULT CResourceMgr::Ready_Monster(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_FLOATER_MONSTER, floaterTex)))
         return E_FAIL;
+
+    // Bat
+    CTexture* batTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(batTex, E_FAIL);
+
+    if (FAILED(batTex->Add_Texture(L"Bat_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Bat2/Fly/Bat-fly%d.png", 34)))
+        return E_FAIL;
+
+    if (FAILED(batTex->Add_Texture(L"Bat_Charge", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Bat2/Charge/Bat-attackcharge%d.png", 59)))
+        return E_FAIL;
+
+    if (FAILED(batTex->Add_Texture(L"Bat_Attack", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Bat2/Attack/Bat-attack%d.png", 32)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_BAT_MONSTER, batTex)))
+        return E_FAIL;
+
+    // HumanMonster2
+    CTexture* human2Tex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(human2Tex, E_FAIL);
+
+    if (FAILED(human2Tex->Add_Texture(L"Human2_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Human2/Idle/Cultist-idle%d.png", 34)))
+        return E_FAIL;
+
+    if (FAILED(human2Tex->Add_Texture(L"Human2_Hit", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Human2/Hit/Cultist_Hit%d.png", 48)))
+        return E_FAIL;
+
+    if (FAILED(human2Tex->Add_Texture(L"Human2_Attack", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Human2/Attack_Long/Cultist-grunt-attack-impact%d.png", 56)))
+        return E_FAIL;
+
+    if (FAILED(human2Tex->Add_Texture(L"Human2_Run", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Human2/Run/Cultist-run%d.png", 29)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_HUMAN_MONSTER2, human2Tex)))
+        return E_FAIL;
+
+    // Burper
+    CTexture* burperTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(burperTex, E_FAIL);
+
+    if (FAILED(burperTex->Add_Texture(L"Burper_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Burper/Idle/Burper-idle%d.png", 34)))
+        return E_FAIL;
+
+    if (FAILED(burperTex->Add_Texture(L"Burper_Hit", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Burper/Hit/Burper-hit%d.png", 16)))
+        return E_FAIL;
+
+    if (FAILED(burperTex->Add_Texture(L"Burper_Attack", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Burper/Attack/Burper-attack%d.png", 61)))
+        return E_FAIL;
+
+    if (FAILED(burperTex->Add_Texture(L"Burper_Run", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Burper/Run/Burper-jump%d.png", 49)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_BURPER_MONSTER, burperTex)))
+        return E_FAIL;
+
 
     // 보물상자....
     CTexture* chest = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
@@ -1019,6 +1088,9 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     //UI 상호작용 키 
     vector<wstring> interactionTex;
     interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InterAction_E.png");
+    interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey0.png");
+    interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey1.png");
+    interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey2.png");
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_INTERACTION, CTexture::Create(graphicDev, TEX_NORMAL, interactionTex))))
         return E_FAIL;
@@ -1148,7 +1220,7 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     // Rubble
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_RUBBLE, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/MapObject/Rubble/Rubble%d.png", 50))))
+            L"../Bin/Resource/Texture/MapObject/Rubble/Rubble%d.png", 94))))
         return E_FAIL;
 
     // Deco

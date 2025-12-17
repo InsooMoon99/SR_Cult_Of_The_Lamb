@@ -213,7 +213,7 @@ void CTerrainRenderer::Render_TerrainRenderer()
             }
 
             m_BufferCom->ApplyTileSetting(indicesOutline,
-                ATLAS_COLS_OUTLINE, ATLAS_ROWS_OUTLINE, 530.f, 84.f);
+            ATLAS_COLS_OUTLINE, ATLAS_ROWS_OUTLINE, 530.f, 84.f);
 
             m_TextureComOutline->Set_Texture(outlineIdx);
             m_BufferCom->Render_Buffer();
@@ -222,12 +222,11 @@ void CTerrainRenderer::Render_TerrainRenderer()
         if (m_TextureComOutline2 && m_TileIndicesOutline2.size() == cellCount)
         {
             m_BufferCom->ApplyTileSetting(m_TileIndicesOutline2,
-                ATLAS_COLS_OUTLINE2, ATLAS_ROWS_OUTLINE2, 530.f, 84.f);  
+            ATLAS_COLS_OUTLINE2, ATLAS_ROWS_OUTLINE2, 530.f, 84.f);  
             m_TextureComOutline2->Set_Texture(0);
             m_BufferCom->Render_Buffer();
         }
     }
-
 
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
     m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);

@@ -54,17 +54,20 @@ void CWeaponEquip::Equip_Weapon(ItemInstance itemInst)
     //cout << "Weapon Equipped" << endl;
 }
 
-void CWeaponEquip::Unequip_Weapon()
+void CWeaponEquip::Unequip_Weapon(bool weaponDrop)
 {
     if (m_CurrentWeaponID == -1)
         return;
 
     RemoveWeaponStat();
 
-    auto transform = dynamic_cast<CTransform*>(Get_Owner()->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+    if (weaponDrop)
+    {
+        auto transform = dynamic_cast<CTransform*>(Get_Owner()->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
 
-    _vec3 DropPos = transform->Get_Pos();
-    CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, m_CurrentWeaponSlot.itemInst, { DropPos.x,DropPos.y,DropPos.z + 2.f });
+        _vec3 DropPos = transform->Get_Pos();
+        CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, m_CurrentWeaponSlot.itemInst, { DropPos.x,DropPos.y,DropPos.z + 2.f });
+    }
 
     m_CurrentWeaponID = -1;
     m_WeaponEquipped  = false;

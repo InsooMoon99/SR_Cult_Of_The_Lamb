@@ -5,6 +5,7 @@
 #include "CNPCBase.h"
 #include "CNPCController.h"
 #include "CNPCStateMachine.h"
+#include "CSoundMgr.h"
 #include "CSpriteAnimation.h"
 #include "CVillageStateMgr.h"
 
@@ -24,6 +25,10 @@ void CNPCState_Spawn::Enter()
         wstring key = m_Controller->Get_AnimKeyPrefix() + L"Spawn";
         m_OwnerAnimator->Play_Animation(key, ANIMSTATE::ONCE);
     }
+
+    CSoundMgr::GetInstance()->Play_Once(L"Follower/Follower_Start_Indo.wav",
+                                        SOUND_EFFECT,
+                                        0.38f);
 }
 
 _int CNPCState_Spawn::Update_State(const _float& timeDelta)

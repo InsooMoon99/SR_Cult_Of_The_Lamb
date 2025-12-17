@@ -7,10 +7,10 @@
 #include "CTexture.h"
 #include "CCreateHelper.h"
 #include "CAnimator.h"
+#include "CSpriteEff.h"
+#include "CSoundMgr.h"
 
 int CUITarotCard::m_NextID = 0;
-
-
 
 CUITarotCard::CUITarotCard(DEVICE graphicDev)
     : CUI(graphicDev),
@@ -64,6 +64,19 @@ _int CUITarotCard::Update_GameObject(const _float& timeDelta)
 
     _int exit = CUI::Update_GameObject(timeDelta);
 
+    if (m_FadeOut)
+    {
+        m_Alpha -= m_FadeSpeed * timeDelta;
+
+        if (m_Alpha <= 0.f)
+        {
+            m_Alpha = 0.f;
+            m_FadeOut = false;
+            m_RenderOff = true;     // 완전 투명해지면 렌더 끄기(끝)
+        }
+
+    }
+
     if(m_CurrentState== TAROTSTATE::CHOICE)
     {
         
@@ -97,14 +110,18 @@ _int CUITarotCard::Update_GameObject(const _float& timeDelta)
         if (m_Hovered &&
             (CDInputMgr::GetInstance()->Get_DIMouseState(MOUSEKEYSTATE::DIM_LB) & 0x80))
         {
-            m_Selected = true;
-
-            if (m_OnClick)
+            if(!m_Selected)
             {
-                m_OnClick();
-            }
+                m_Selected = true;
 
-            AlphaRenderStart(0.8);
+                if (m_OnClick)
+                {
+                    CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Tarot_Close.wav",
+                        SOUND_EFFECT,
+                        1.f);
+                    m_OnClick();
+                }
+            }
         }
 
     }
@@ -120,7 +137,13 @@ _int CUITarotCard::Update_GameObject(const _float& timeDelta)
                     {
                     case TAROTSTATE::START:   m_AnimatorCom->Play_Animation(L"Tarot_Heart_Start", ANIMSTATE::ONCE, true); break;
                     case TAROTSTATE::CHOICE:  break;//m_AnimatorCom->Play_Animation(L"Tarot_Heart_Choice", ANIMSTATE::ONCE, true); break;
-                    case TAROTSTATE::RESULT:  m_RenderOff = true;
+                    case TAROTSTATE::RESULT:
+                        if (!m_FadeOut)
+                        {
+                            m_FadeOut = true;
+                            m_Alpha = 1.f;
+                        }
+                                            //m_RenderOff = true;
                         break;
                     //case TAROTSTATE::EXIT:    m_AnimatorCom->Play_Animation(ExitKey, ANIMSTATE::ONCE, true); break;
                     }
@@ -138,7 +161,12 @@ _int CUITarotCard::Update_GameObject(const _float& timeDelta)
                 {
                 case TAROTSTATE::START:   m_AnimatorCom->Play_Animation(L"Tarot_Arrow_Start", ANIMSTATE::ONCE, true); break;
                 case TAROTSTATE::CHOICE:  break; //m_AnimatorCom->Play_Animation(L"Tarot_Arrow_Choice", ANIMSTATE::ONCE, true); break;
-                case TAROTSTATE::RESULT: m_RenderOff = true;
+                case TAROTSTATE::RESULT:
+                    if (!m_FadeOut)
+                    {
+                        m_FadeOut = true;
+                        m_Alpha = 1.f;
+                    }//m_RenderOff = true;
                     break;
                 //case TAROTSTATE::EXIT:    m_AnimatorCom->Play_Animation(ExitKey, ANIMSTATE::ONCE, true); break;
                 }
@@ -181,6 +209,9 @@ void CUITarotCard::Render_GameObject()
     {
         m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
+        if (m_FadeOut)           
+            m_SpriteEffCom->AlphaRenderStart(m_Alpha);
+
         if (m_TextureCom && m_AnimatorCom)
         {
             const wstring& key = m_AnimatorCom->Get_CurKey();
@@ -191,9 +222,10 @@ void CUITarotCard::Render_GameObject()
      
         m_BufferCom->Render_Buffer();
 
-        AlphaRenderEnd();
+        if(m_FadeOut)
+        m_SpriteEffCom->AlphaRenderEnd();
     }
-    //cout << m_TransformCom->Get_Scale().x << "\t" << m_TransformCom->Get_Scale().y << endl;
+   
 }
 
 HRESULT CUITarotCard::Add_Component()
@@ -224,6 +256,11 @@ HRESULT CUITarotCard::Add_Component()
 
     m_AnimatorCom->Set_TextureType(COMPONENTTYPE::TEX_UI_TAROT);
 
+    m_SpriteEffCom = CreateProtoComponent<CSpriteEff>(this, COMPONENTTYPE::SPRITEEFFECT);
+    NULL_CHECK_RETURN(m_SpriteEffCom, E_FAIL);
+
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::SPRITEEFFECT, m_SpriteEffCom });
+
     return S_OK;
 }
 
@@ -242,6 +279,9 @@ void CUITarotCard::InitializeScale()
 }
 void CUITarotCard::OnHoverStart()
 {
+	CSoundMgr::GetInstance()->Play_Once(L"ui/ui_pointeron.wav",
+		SOUNDTYPE::SOUND_UI,
+		5.f);
     m_TargetScale = m_BaseScale * 1.15;
 }
 
@@ -320,24 +360,4 @@ void CUITarotCard::Render_Editor()
 		}
 		ImGui::SameLine();
 	}
-}
-void CUITarotCard::AlphaRenderStart(float alpha)
-{
-    //알파
-    m_GraphicDev->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(static_cast<int>(alpha * 255), 255, 255, 255));
-    //
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR); // ← texturefactor.alpha 사용
-}
-
-void CUITarotCard::AlphaRenderEnd()
-{
-    // 알파 리셋
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
-    m_GraphicDev->SetRenderState(
-        D3DRS_TEXTUREFACTOR,
-        D3DCOLOR_ARGB(255, 255, 255, 255)); // 알파 1.0, 색 그대로
 }

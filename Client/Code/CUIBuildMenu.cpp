@@ -13,6 +13,7 @@
 #include "CUIBuildCell.h"
 #include "CManagement.h"
 #include "CUIIcon.h"
+#include "CSoundMgr.h"
 
 CUIBuildMenu::CUIBuildMenu(DEVICE graphicDev)
     : CUI(graphicDev),
@@ -72,11 +73,12 @@ HRESULT CUIBuildMenu::Ready_GameObject()
         if (CheckResources(5001))
         {
             PlayCloseAnimation(); 
-            CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::KITCHEN); 
+            CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::KITCHEN);
+            CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Confirm_Selection", SOUNDTYPE::SOUND_UI, 0.7f);
         }
         else
         {
-            cout << "Not enough resources for Kitchen!" << endl;
+            //cout << "Not enough resources for Kitchen!" << endl;
         }
     });
     m_CookingFireCell->Set_OnActive([this]() {return CheckResources(5001); });
@@ -92,11 +94,12 @@ HRESULT CUIBuildMenu::Ready_GameObject()
         if (CheckResources(5002))
         {
             PlayCloseAnimation(); 
-            CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::TEMPLE); 
+            CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::TEMPLE);
+            CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Confirm_Selection", SOUNDTYPE::SOUND_UI, 1.f);
         }
         else
         {
-             cout << "Not enough resources for Temple!" << endl;
+             //cout << "Not enough resources for Temple!" << endl;
         }
     });
     m_TempleCell->Set_OnActive([this]() { return CheckResources(5002); });
@@ -144,9 +147,11 @@ _int CUIBuildMenu::Update_GameObject(const _float& timeDelta)
     m_DecoIcon2->Update_GameObject(timeDelta);
     m_InteractionKey->Update_GameObject(timeDelta);
 
-    if (CDInputMgr::GetInstance()->KeyDown(DIK_E) && m_IsOpen == true)
-        PlayCloseAnimation();
-
+	if (CDInputMgr::GetInstance()->KeyDown(DIK_E) && m_IsOpen == true)
+	{
+		CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Close_Menu.wav", SOUNDTYPE::SOUND_UI, 1.f);
+		PlayCloseAnimation();
+	}
     float targetX = m_IsOpen ? m_TargetX : m_ClosedX; //열려있냐 닫혀있냐에 따라서 목표 X값이 달라짐
     _vec3 pos     = m_TransformCom->Get_Pos();
 
@@ -159,6 +164,9 @@ _int CUIBuildMenu::Update_GameObject(const _float& timeDelta)
         {
             pos.x         = targetX;
             m_IsAnimating = false;
+
+            if (!m_IsOpen)
+                m_Active = false;
         }
         m_TransformCom->Set_Pos(pos);
     }
@@ -287,14 +295,14 @@ bool CUIBuildMenu::CheckResources(int recipeID)
 {
     if (nullptr == m_Inventory)
     {
-        cout << "CUIBuildMenu::CheckResources: m_Inventory is null" << endl;
+        //cout << "CUIBuildMenu::CheckResources: m_Inventory is null" << endl;
         return false;
     }
 
     Recipe* recipe = CRecipeDB::GetInstance()->GetRecipeById(recipeID);
     if (nullptr == recipe)
     {
-        cout << "CUIBuildMenu::CheckResources: Recipe not found for ID " << recipeID << endl;
+        //cout << "CUIBuildMenu::CheckResources: Recipe not found for ID " << recipeID << endl;
         return false;
     }
 
@@ -331,7 +339,15 @@ void CUIBuildMenu::Check_Hovered()
         bool hoveredNow = PtInRect(&m_tRect, pt) != 0;
 
         if (hoveredNow != m_BuildCells[i]->Get_IsHovered())
+        {
+            if (hoveredNow&&m_BuildCells[i]->Get_IsActive()())
+            {
+                CSoundMgr::GetInstance()->Play_Once(L"ui/ui_pointeron.wav",
+                    SOUNDTYPE::SOUND_UI,
+                    5.f);
+            };
             m_BuildCells[i]->Set_IsHovered(hoveredNow);
+        }
     }
 }
 

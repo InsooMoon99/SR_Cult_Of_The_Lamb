@@ -313,9 +313,6 @@ ACTORSTATE CPlayerAttack::Start_NormalAttack()
     // 마우스 방향으로 도약
     m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir(), 450.f);
 
-    // 공격 시작: 사운드 재생
-    Play_AttackSound();
-
     // Controller에서 상태를 변경하도록 상태값 반환
     return m_AttackInfo[weaponIdx][ATTACK_COMBO1].state;
 }
@@ -396,8 +393,6 @@ _bool CPlayerAttack::Update_NormalAttack(const _float& timeDelta)
             m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir(), 450.f);
 
         m_OwnerStateCom->Change_State(m_AttackInfo[weaponIdx][m_ComboIndex].state);
-
-        Play_AttackSound();
 
         return true;
     }
@@ -554,30 +549,27 @@ void CPlayerAttack::Create_AttackObj(const AttackInfo& attackInfo, const _vec3& 
                 m_CurrentAttackObj = nullptr;
         });
     }
+
+    // 공격 사운드를 히트박스의 생성과 동시에 재생
+    Play_AttackSound();
 }
 
 void CPlayerAttack::Play_AttackSound()
 {
-    const _int weaponIdx = Get_WeaponIndex(m_OwnerWeaponCom->Get_CurrentWeaponID());
-    if (weaponIdx < 0) return;
-
-    switch (weaponIdx)
+    switch (m_ComboIndex)
     {
-    case WEAPON_SWORD:
-    {
-        CSoundMgr::GetInstance()->Play_Once(L"Player/Player_Attack_Normal.wav",
-                                            SOUND_EFFECT,
-                                            1.f);
-    }
-    break;
-    case WEAPON_GAUNTLET:
-    {
-        CSoundMgr::GetInstance()->Play_Once(L"Player/Player_Attack_Heavy.wav",
-                                            SOUND_EFFECT,
-                                            1.f);
-    }
-    break;
-    default: break;
+    case 3:
+        CSoundMgr::GetInstance()->Play_Once(
+            L"Player/Player_Attack_3.wav",
+            SOUND_EFFECT,
+            1.f);
+        break;
+    default:
+        CSoundMgr::GetInstance()->Play_Once(
+            L"Player/Player_Attack_0.wav",
+            SOUND_EFFECT,
+            1.f);
+        break;
     }
 }
 

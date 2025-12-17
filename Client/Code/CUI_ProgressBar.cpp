@@ -7,7 +7,6 @@
 #include "CManagement.h"
 #include "CRenderer.h"
 
-
 CUI_ProgressBar::CUI_ProgressBar(DEVICE graphicDev): CUI(graphicDev) {}
 CUI_ProgressBar::CUI_ProgressBar(const CUI_ProgressBar& rhs): CUI(rhs) {}
 CUI_ProgressBar::~CUI_ProgressBar() {}
@@ -17,26 +16,24 @@ HRESULT CUI_ProgressBar::Ready_GameObject()
     if (FAILED(Add_Component()))
         return E_FAIL;
 
-
-   
     return S_OK;
 }
+
 void CUI_ProgressBar::Initialize_GameObject()
 {
     CUI::Initialize_GameObject();
 
     if (m_TransformCom)
     {
-        CTransform* playerTransform = dynamic_cast<CTransform*>(CManagement::GetInstance()->Get_Component(ID_DYNAMIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::TRANSFORM));
-        if (playerTransform)
-        {
-            _vec3 playerPos = playerTransform->Get_Pos();
-            m_TransformCom->Set_Pos(playerPos.x, playerPos.y + 60.f, playerPos.z);  //플레이어의 상단
-            m_TransformCom->Set_Scale(_vec3(50.f, 20.f, 1.f));
-        }
+        m_PlayerTransform = dynamic_cast<CTransform*>(
+            CManagement::GetInstance()->Get_Component(
+                ID_DYNAMIC,
+                LAYERTYPE::GAMELOGIC,
+                OBJTYPE::PLAYER,
+                COMPONENTTYPE::TRANSFORM));
+        m_TransformCom->Set_Scale(0.5f, 0.2f, 1.f);
     }
     m_Active = false;
-
 }
 
 _int CUI_ProgressBar::Update_GameObject(const _float& timeDelta)
@@ -44,17 +41,36 @@ _int CUI_ProgressBar::Update_GameObject(const _float& timeDelta)
     if (!m_Active)
         return 0;
 
-    //if (m_Progress == 1)
-    //{
-    //    m_Active = false;
-    //}
-
     _int exit = CUI::Update_GameObject(timeDelta);
+
+    if (m_PlayerTransform)
+    {
+        _matrix view,      proj, world;
+        _vec3   screenPos, ownerPos;
+
+        ownerPos = m_PlayerTransform->Get_Pos();
+        ownerPos.y += 2.2f;
+
+        m_GraphicDev->GetTransform(D3DTS_VIEW, &view);
+        m_GraphicDev->GetTransform(D3DTS_PROJECTION, &proj);
+        D3DXMatrixIdentity(&world);
+
+        D3DVIEWPORT9 vp;
+        m_GraphicDev->GetViewport(&vp);
+
+        D3DXVec3Project(&screenPos, &ownerPos, &vp, &proj, &view, &world);
+
+        _float uiX = screenPos.x - WINCX * 0.5f;
+        _float uiY = -(screenPos.y - WINCY * 0.5f);
+
+        m_TransformCom->Set_Pos(uiX, uiY, 0.f);
+    }
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
     return exit;
 }
+
 void CUI_ProgressBar::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
@@ -69,13 +85,11 @@ void CUI_ProgressBar::Render_GameObject()
     //m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
     CUI::Render_GameObject();
 
-
-    const _float HALF_WIDTH = 100.f;
+    const _float HALF_WIDTH  = 100.f;
     const _float HALF_HEIGHT = 50.f;
 
     m_BufferCom->Set_Scale(HALF_WIDTH, HALF_HEIGHT);
     m_BufferCom->Set_Offset(0.f, 0.f);
-
 
     m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
@@ -89,17 +103,14 @@ void CUI_ProgressBar::Render_GameObject()
     m_TransformCom->Get_Pos();
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
-    m_TransformCom->Set_Pos(0.f, 0.f + 60.f, 0.f);
-    
-    m_TransformCom->Set_Scale(_vec3(0.5f, 0.2f, 1.f));
     m_TextureCom->Set_Texture(0);
     m_BufferCom->Render_Buffer();
 
-    const float UV_LEFT = 590/598.f;
-    const float UV_RIGHT =1/598.f;
+    const float UV_LEFT  = 590 / 598.f;
+    const float UV_RIGHT = 1 / 598.f;
     const float UV_RANGE = UV_RIGHT - UV_LEFT;
 
-    float hw = HALF_WIDTH * m_Progress;
+    float hw      = HALF_WIDTH * m_Progress;
     float offsetX = HALF_WIDTH * (1.f - m_Progress);
 
     m_ProgressBar->Set_Scale(hw, HALF_HEIGHT);
