@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CUI.h"
 #include "Client_Struct.h"
+#include "Client_Enum.h"
 #include <functional>
 
 class CUIIcon;

@@ -56,6 +56,7 @@ private:
 
     _float  m_Alpha = 0;
     _float m_FadeInSpeed = 1.f;
+    _bool m_BGMStarted = false;
 };
 
 

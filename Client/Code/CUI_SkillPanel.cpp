@@ -58,8 +58,13 @@ _int CUI_SkillPanel::Update_GameObject(const _float& timeDelta)
     }
 
     if (m_PlayerSkillCom->Get_IsSkillUnlocked())
+    {
         m_Active = true;
-
+    }
+    else
+    {
+        m_Active = false;
+    }
     if (!m_Active)
         return 0;
 

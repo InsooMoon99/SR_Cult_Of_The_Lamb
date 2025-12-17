@@ -8,10 +8,13 @@ class CTerrain;
 class CPlayer;
 class CUI_Fade;
 class CCameraMovement;
+class CCameraController;
+class CTarotNPC;
 
 BEGIN(Engine)
 class CCombatStat;
 class CTransform;
+
 END
 
 struct RoomData
@@ -73,6 +76,7 @@ public:
     // 몬스터 죽었을 때 호출
     void    OnMonsterDeath(CGameObject* obj) override;
     _bool   IsCleared() { return m_DungeonCleared; }
+
 private:
     const CRunLootLog& Get_RunLootLog() const { return m_RunLootLog; }
 private:
@@ -116,12 +120,14 @@ private:
 
     // 카메라 무브먼트
     CCameraMovement* m_CamMovement;
-    
-    CRunLootLog     m_RunLootLog;
-
+    CCameraController* m_CamController;
+    CRunLootLog         m_RunLootLog;
     _float          m_Timer;
+
     _bool           m_TimerRunning;
-    _bool           m_DungeonCleared;
+    _bool           m_DungeonCleared = false;
+    _bool           m_IsClearMenuOpened;
+    _bool           m_Start;
 };
 
 

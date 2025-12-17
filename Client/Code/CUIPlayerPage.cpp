@@ -79,7 +79,7 @@ HRESULT CUIPlayerPage::Ready_GameObject()
 
     //Weapon UI
     m_WeaponUI = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_UI_ICON);
-    dynamic_cast<CTransform*>(m_WeaponUI->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Set_Scale(50.f, 50.f, 0.f);
+    dynamic_cast<CTransform*>(m_WeaponUI->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Set_Scale(40.f, 40.f, 0.f);
     m_WeaponUI->SetRegister(false);
 
     return S_OK;
@@ -129,6 +129,8 @@ _int CUIPlayerPage::Update_GameObject(const _float& timeDelta)
         pos.y + UnlockOffset.y,
         0.f);
     m_WeaponUI->Update_GameObject(timeDelta);
+
+    dynamic_cast<CTransform*>(m_WeaponUI->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM))->Set_Scale(38.f, 35.f, 0.f);
     return exit;
 }
 

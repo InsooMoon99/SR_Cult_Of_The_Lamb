@@ -9,6 +9,8 @@
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CUIIcon.h"
+#include "CSpriteEff.h"
+#include "CSoundMgr.h"
 
 CUIWeaponExplain::CUIWeaponExplain(DEVICE graphicDev)
     : CUI(graphicDev),
@@ -45,6 +47,10 @@ _int CUIWeaponExplain::Update_GameObject(const _float& timeDelta)
 {
     int exit = CUI::Update_GameObject(timeDelta);
 
+    m_Alpha += timeDelta;
+
+    m_Alpha = clamp(m_Alpha, 0.f, 1.f);
+
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
     return exit;
 }
@@ -58,12 +64,20 @@ void CUIWeaponExplain::Render_GameObject()
 {
     CUI::Render_GameObject();
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-
+    if (m_Active && !m_SoundEnded)
+    {
+        CSoundMgr::GetInstance()->Play_Once(L"UI/Objective_Text_Appear_Base.wav",
+            SOUND_EFFECT,
+            1.f);
+        m_SoundEnded = true;
+    }
     //배경 그리기
     if (m_Active)
     {
+        m_SpriteEffCom->AlphaRenderStart(m_Alpha);
         m_TextureCom->Set_Texture(11);
         m_BufferCom->Render_Buffer();
+        m_SpriteEffCom->AlphaRenderEnd();
 
         //아이템 이름 출력
         Item* item = CItemDB::GetInstance()->GetItemById(m_ItemID);
@@ -74,7 +88,7 @@ void CUIWeaponExplain::Render_GameObject()
         CFontMgr::GetInstance()->Render_Font(L"아이템 이름",
                                              CItemDB::GetInstance()->Utf8ToWstring(item->name),
                                              &screenPos,
-                                             D3DXCOLOR{ 1.f, 1.f, 1.f, 1.f });
+                                             D3DXCOLOR{ 1.f, 1.f, 1.f, m_Alpha });
 
         //아이템 메인 설명 출력
         descOffset = { 0.f, 65.f };
@@ -82,7 +96,7 @@ void CUIWeaponExplain::Render_GameObject()
         CFontMgr::GetInstance()->Render_Font(L"카드 설명",
                                              CItemDB::GetInstance()->Utf8ToWstring(item->desc),
                                              &screenPos,
-                                             D3DXCOLOR{ 1.f, 1.f, 1.f, 1.f });
+                                             D3DXCOLOR{ 1.f, 1.f, 1.f, m_Alpha });
 
         //아이템 부연 설명 출력
         descOffset = { 0.f, -20.f };
@@ -90,34 +104,9 @@ void CUIWeaponExplain::Render_GameObject()
         CFontMgr::GetInstance()->Render_Font(L"부연 설명",
                                              CItemDB::GetInstance()->Utf8ToWstring(item->additionalDesc),
                                              &screenPos,
-                                             D3DXCOLOR{ 0.6f, 0.6f, 0.6f, 1.f });
+                                             D3DXCOLOR{ 0.6f, 0.6f, 0.6f, m_Alpha });
     }
-    //Item* WeaponGauntlet = CItemDB::GetInstance()->GetItemById(3002);
-    //
-    //_vec3 Gauntletpos = m_CardIcon->Get_Transform()->Get_Pos();
-    //_vec2 GauntletDescOffset = { 0.f, 0.f };
-    //_vec2 GaultetScreenPos = { WINCX / 2 + Gauntletpos.x, WINCY / 2 - Gauntletpos.y + GauntletDescOffset.y };
-    //CFontMgr::GetInstance()->Render_Font(L"아이템 이름",
-    //    CItemDB::GetInstance()->Utf8ToWstring(WeaponGauntlet->name),
-    //    &GaultetScreenPos,
-    //    D3DXCOLOR{ 1.f, 1.f, 1.f, 1.f });
-    //
-    ////아이템 메인 설명 출력
-    //GauntletDescOffset = { 0.f, 95.f };
-    //GaultetScreenPos = { WINCX / 2 + Gauntletpos.x, WINCY / 2 - Gauntletpos.y + GauntletDescOffset.y };
-    //CFontMgr::GetInstance()->Render_Font(L"카드 설명",
-    //    CItemDB::GetInstance()->Utf8ToWstring(WeaponGauntlet->desc),
-    //    &GaultetScreenPos,
-    //    D3DXCOLOR{ 1.f, 1.f, 1.f, 1.f });
-    //
-    ////아이템 부연 설명 출력
-    //GauntletDescOffset = { 0.f, 25.f };
-    //GaultetScreenPos = { WINCX / 2 + GaultetScreenPos.x, WINCY / 2 - GaultetScreenPos.y + GauntletDescOffset.y };
-    //CFontMgr::GetInstance()->Render_Font(L"부연 설명",
-    //    CItemDB::GetInstance()->Utf8ToWstring(WeaponGauntlet->additionalDesc),
-    //    &GaultetScreenPos,
-    //    D3DXCOLOR{ 0.6f, 0.6f, 0.6f, 1.f });
-    //
+
 }
 
 HRESULT CUIWeaponExplain::Add_Component()
@@ -133,6 +122,11 @@ HRESULT CUIWeaponExplain::Add_Component()
     m_BufferCom = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
     NULL_CHECK_RETURN(m_BufferCom, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::RC_TEX, m_BufferCom });
+
+    m_SpriteEffCom = CreateProtoComponent<CSpriteEff>(this, COMPONENTTYPE::SPRITEEFFECT);
+    NULL_CHECK_RETURN(m_SpriteEffCom, E_FAIL);
+
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::SPRITEEFFECT, m_SpriteEffCom });
     return S_OK;
 }
 
@@ -150,5 +144,6 @@ CUIWeaponExplain* CUIWeaponExplain::Create(DEVICE graphicDev)
 
 void CUIWeaponExplain::Free()
 {
+
     CUI::Free();
 }

@@ -344,7 +344,7 @@ enum SOUNDTYPE
 {
     SOUND_BGM,
     SOUND_EFFECT,
-
+    SOUND_UI,
     SOUND_END
 };
 
