@@ -13,6 +13,7 @@
 #include "CStage_Dungeon.h"
 #include "CStage_TarotTest.h"
 #include "CUI_Fade.h"
+#include "CStage_Prologue_Boss.h"
 #include "CLightMgr.h"
 #include "CStage_Prologue.h"
 
@@ -104,6 +105,9 @@ void CSceneMgr::Change_SceneMgr(SCENETYPE typeInput)
             CManagement::GetInstance()->Request_ChangeScene(CLogo_Boss2::Create(m_GraphicDev));
             break;
 
+        case SCENETYPE::SC_BOSS_PROLOGUE:
+            CManagement::GetInstance()->Request_ChangeScene(CStage_Prologue_Boss::Create(m_GraphicDev));
+            break;
         case SCENETYPE::SC_PROLOGUE:
             CManagement::GetInstance()->Request_ChangeScene(CStage_Prologue::Create(m_GraphicDev));
             break;
@@ -172,6 +176,10 @@ void CSceneMgr::Update_SceneMgr(const _float& timeDelta)
 
         case SCENETYPE::SC_LOGO_BOSS2:
             CManagement::GetInstance()->Request_ChangeScene(CLogo_Boss2::Create(m_GraphicDev));
+            break;
+
+        case SCENETYPE::SC_BOSS_PROLOGUE:
+            CManagement::GetInstance()->Request_ChangeScene(CStage_Prologue_Boss::Create(m_GraphicDev));
             break;
 
         case SCENETYPE::SC_PROLOGUE:

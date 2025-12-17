@@ -336,6 +336,7 @@ enum class SCENETYPE
     SC_TAROT_TEST,
     SC_BOSS_STAGE1,
     SC_BOSS_STAGE2,
+    SC_BOSS_PROLOGUE,
 
     SC_EDIT,
 

@@ -2,6 +2,10 @@
 #include "CBase.h"
 #include "CStateMachine.h"
 #include "Client_Enum.h"
+//뭐냐 이거
+#include "CBossSpawn.h"
+
+
 
 class CBossPhase1;
 class CMonsterState;

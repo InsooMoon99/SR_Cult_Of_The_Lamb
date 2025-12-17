@@ -171,6 +171,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Code\CBossSpawn.h" />
     <ClInclude Include="..\Header\CBatMonster.h" />
     <ClInclude Include="..\Header\CBoss2_Bullet.h" />
     <ClInclude Include="..\Header\CBoss2_BulletAttack1.h" />
@@ -196,6 +197,7 @@
     <ClInclude Include="..\Header\CBossMove.h" />
     <ClInclude Include="..\Header\CBossPhase2.h" />
     <ClInclude Include="..\Header\CBossPhase1.h" />
+    <ClInclude Include="..\Header\CBossSpawn.h" />
     <ClInclude Include="..\Header\CBossTalk.h" />
     <ClInclude Include="..\Header\CBossStateMachine.h" />
     <ClInclude Include="..\Header\CBoss_SlaveElephant.h" />
@@ -208,6 +210,7 @@
     <ClInclude Include="..\Header\CCharacterBase.h" />
     <ClInclude Include="..\Header\CChest.h" />
     <ClInclude Include="..\Header\CCookingController.h" />
+    <ClInclude Include="..\Header\CEtc.h" />
     <ClInclude Include="..\Header\CFollowerElephant.h" />
     <ClInclude Include="..\Header\CFollowerPig.h" />
     <ClInclude Include="..\Header\CHumanMonster2.h" />
@@ -235,6 +238,7 @@
     <ClInclude Include="..\Header\CFog.h" />
     <ClInclude Include="..\Header\CFogMgr.h" />
     <ClInclude Include="..\Header\CRunLootLog.h" />
+    <ClInclude Include="..\Header\CStage_Prologue_Boss.h" />
     <ClInclude Include="..\Header\CStage_Prologue.h" />
     <ClInclude Include="..\Header\CTarotNPC.h" />
     <ClInclude Include="..\Header\CUICookedFoodCell.h" />
@@ -431,6 +435,7 @@
     <ClCompile Include="..\Code\CEligos_Move.cpp" />
     <ClCompile Include="..\Code\CEligos_StateMachine.cpp" />
     <ClCompile Include="..\Code\CEligos_Reveal.cpp" />
+    <ClCompile Include="..\Code\CEtc.cpp" />
     <ClCompile Include="..\Code\CEyeball_CenterAttack.cpp" />
     <ClCompile Include="..\Code\CHumanMonster2.cpp" />
     <ClCompile Include="..\Code\CLogo_Dungeon.cpp" />
@@ -448,6 +453,7 @@
     <ClCompile Include="..\Code\CFog.cpp" />
     <ClCompile Include="..\Code\CFogMgr.cpp" />
     <ClCompile Include="..\Code\CRunLootLog.cpp" />
+    <ClCompile Include="..\Code\CStage_Prologue_Boss.cpp" />
     <ClCompile Include="..\Code\CStage_Prologue.cpp" />
     <ClCompile Include="..\Code\CTarotNPC.cpp" />
     <ClCompile Include="..\Code\CUICookedFoodCell.cpp" />
@@ -582,6 +588,7 @@
     <ClCompile Include="..\Code\CWorldInteractive.cpp" />
     <ClCompile Include="..\Code\CRecipeDB.cpp" />
     <ClCompile Include="..\Code\CEligos_Attack_Fly.cpp" />
+    <ClCompile Include="..\Header\CBossSpawn.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

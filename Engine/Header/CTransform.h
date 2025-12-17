@@ -43,7 +43,7 @@ public: // Getter       ====================================
     bool Get_DirtyFlag() const { return m_IsDirty; }
 
 public: // Setter       ====================================
-
+    void Set_Quat(_quat q) { m_Rotation = q; }
     void Set_Pos(const _vec3& pos) { m_Info[INFO_POS] = pos; }
     void Set_Pos(_float x, _float y, _float z) { m_Info[INFO_POS] = { x, y, z }; }
 
@@ -56,6 +56,8 @@ public: // Setter       ====================================
     // Radian 기준 Euler(Pitch=X, Yaw=Y, Roll=Z) 세팅
     void Set_Rotation(const _vec3& rad);
     void Set_RotationAxis(ROTATION axis, _float value);
+
+    void Set_Dirty(bool b) { m_IsDirty = b; }
 
 public: // Transform Operations     ========================
 
@@ -75,10 +77,11 @@ public: // Transform Operations     ========================
 
     void LookAt(const _vec3& targetPos);
 
+    // 일단 올림 퍼블릭으로
+    _matrix BuildLookRotation(const _vec3& inputForward, const _vec3& inputWorldUp);
 private: // Internal Calculations   ========================
 
     _quat   Compute_LookAtTarget_Quat(const _vec3* pTargetPos);
-    _matrix BuildLookRotation(const _vec3& inputForward, const _vec3& inputWorldUp);
 
     // 월드행렬 변환
     void Compute_WorldMatrix();

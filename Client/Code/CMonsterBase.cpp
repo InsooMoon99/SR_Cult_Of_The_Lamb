@@ -9,6 +9,7 @@
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CStage_Dungeon.h";
+#include "CWall.h";
 
 namespace Engine
 {
@@ -20,7 +21,7 @@ CMonsterBase::CMonsterBase(DEVICE graphicDev)
       m_Target(nullptr),
       m_TargetTransform(nullptr),
       m_StoppingDistance(2.f),
-      m_AttackRange(2.5f),
+       m_AttackRange(2.5f),
       m_ChaseRange(10.f),
       m_AttackCooldown(0),
       m_AttackTimer(0),
@@ -194,6 +195,12 @@ _bool CMonsterBase::Is_OutofChaseRange() const
 
 void CMonsterBase::OnBeginOverlap(CCollider* self, CCollider* other)
 {
+    CCharacterBase::OnBeginOverlap(self, other);
+
+    CWall* wall = dynamic_cast<CWall*>(other->Get_Owner());
+    if (wall)
+        return;
+
     m_bHurt = true;
 }
 

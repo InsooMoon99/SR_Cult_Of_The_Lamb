@@ -50,7 +50,7 @@ _int CEligos_Reveal::Update_State(const _float& timeDelta)
     if (m_pOwnerAnimatorCom->Get_CurAnimation() == nullptr)
         return CEligos::ELIGOSSTATE::BOSSREVEAL;
 
-    if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
+    if (m_pOwnerAnimatorCom->Get_CurFrame() >= m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
     {
         return CEligos::ELIGOSSTATE::BOSSIDLE;
     }
