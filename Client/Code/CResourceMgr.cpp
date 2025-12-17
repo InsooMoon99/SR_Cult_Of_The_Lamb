@@ -67,9 +67,9 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
     if (FAILED(Ready_Terrain(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Decoration(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Building(graphicDev))) return E_FAIL;
-    if (FAILED(Ready_Follower(graphicDev))) return E_FAIL;
+    //if (FAILED(Ready_Follower(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Particle(graphicDev))) return E_FAIL;
-    if (FAILED(Ready_MiniBoss(graphicDev))) return E_FAIL;
+    //if (FAILED(Ready_MiniBoss(graphicDev))) return E_FAIL;
 
     return S_OK;
 }
@@ -1080,6 +1080,9 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     //UI 상호작용 키 
     vector<wstring> interactionTex;
     interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InterAction_E.png");
+    interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey0.png");
+    interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey1.png");
+    interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey2.png");
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_INTERACTION, CTexture::Create(graphicDev, TEX_NORMAL, interactionTex))))
         return E_FAIL;

@@ -235,6 +235,7 @@
     <ClInclude Include="..\Header\CFog.h" />
     <ClInclude Include="..\Header\CFogMgr.h" />
     <ClInclude Include="..\Header\CRunLootLog.h" />
+    <ClInclude Include="..\Header\CStage_Prologue.h" />
     <ClInclude Include="..\Header\CTarotNPC.h" />
     <ClInclude Include="..\Header\CUICookedFoodCell.h" />
     <ClInclude Include="..\Header\CUICookingCell.h" />
@@ -354,12 +355,14 @@
     <ClInclude Include="..\Header\CUI_Dialogue.h" />
     <ClInclude Include="..\Header\CUI_DungeonLootPanel.h" />
     <ClInclude Include="..\Header\CUI_Fade.h" />
+    <ClInclude Include="..\Header\CUI_Interactive.h" />
     <ClInclude Include="..\Header\CUI_LoadingCircle.h" />
     <ClInclude Include="..\Header\CUI_FollowerCommand.h" />
     <ClInclude Include="..\Header\CUI_MonsterHp.h" />
     <ClInclude Include="..\Header\CUI_ProgressBar.h" />
     <ClInclude Include="..\Header\CUI_Skill.h" />
     <ClInclude Include="..\Header\CUI_SkillPanel.h" />
+    <ClInclude Include="..\Header\CUI_Text.h" />
     <ClInclude Include="..\Header\CVillageStateMgr.h" />
     <ClInclude Include="..\Header\CWarningChain.h" />
     <ClInclude Include="..\Header\CWall.h" />
@@ -445,6 +448,7 @@
     <ClCompile Include="..\Code\CFog.cpp" />
     <ClCompile Include="..\Code\CFogMgr.cpp" />
     <ClCompile Include="..\Code\CRunLootLog.cpp" />
+    <ClCompile Include="..\Code\CStage_Prologue.cpp" />
     <ClCompile Include="..\Code\CTarotNPC.cpp" />
     <ClCompile Include="..\Code\CUICookedFoodCell.cpp" />
     <ClCompile Include="..\Code\CUICookingCell.cpp" />
@@ -560,12 +564,14 @@
     <ClCompile Include="..\Code\CUI_Dialogue.cpp" />
     <ClCompile Include="..\Code\CUI_DungeonLootPanel.cpp" />
     <ClCompile Include="..\Code\CUI_Fade.cpp" />
+    <ClCompile Include="..\Code\CUI_Interactive.cpp" />
     <ClCompile Include="..\Code\CUI_LoadingCircle.cpp" />
     <ClCompile Include="..\Code\CUI_FollowerCommand.cpp" />
     <ClCompile Include="..\Code\CUI_MonsterHp.cpp" />
     <ClCompile Include="..\Code\CUI_ProgressBar.cpp" />
     <ClCompile Include="..\Code\CUI_Skill.cpp" />
     <ClCompile Include="..\Code\CUI_SkillPanel.cpp" />
+    <ClCompile Include="..\Code\CUI_Text.cpp" />
     <ClCompile Include="..\Code\CVillageStateMgr.cpp" />
     <ClCompile Include="..\Code\CWarningChain.cpp" />
     <ClCompile Include="..\Code\CWall.cpp" />

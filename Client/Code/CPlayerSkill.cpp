@@ -1,6 +1,5 @@
 ﻿#include "pch.h"
 #include "CPlayerSkill.h"
-
 #include "CAttackBuilder.h"
 #include "CCombatStat.h"
 #include "CFireball.h"
@@ -111,6 +110,7 @@ HRESULT CPlayerSkill::Init_OwnerComponent()
     m_OwnerStateCom      = dynamic_cast<CState*>(m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
     m_OwnerCombatStatCom = dynamic_cast<CCombatStat*>(m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
     m_OwnerInputCom      = dynamic_cast<CPlayerInput*>(m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::PL_INPUT));
+    m_OwnerPlayerMovement = dynamic_cast<CPlayerMovement*>(m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::PL_MOVEMENT));
 
     m_LeftChargingUI = CUICharging::Create(m_GraphicDev);
     m_LeftChargingUI->Set_PlayerSkill(this);

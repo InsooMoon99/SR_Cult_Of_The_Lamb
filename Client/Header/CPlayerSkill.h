@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "CComponent.h"
+#include <CPlayerMovement.h>
 
 class CPlayerInput;
 class CWeaponEquip;
@@ -90,6 +91,7 @@ private:
     CPlayerInput* m_OwnerInputCom;
     CState* m_OwnerStateCom;
     CCombatStat* m_OwnerCombatStatCom;
+    CPlayerMovement* m_OwnerPlayerMovement;
     CFireball* m_Fireball;
 private:
     CAttackBase* m_CurrentAttackObj;

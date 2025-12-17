@@ -10,6 +10,8 @@
 #include "CEligos.h"
 #include "CFloaterMonster.h"
 #include "CFollowerCow.h"
+#include "CFollowerElephant.h"
+#include "CFollowerPig.h"
 #include "CInventory.h"
 #include "CItemDB.h"
 #include "CLayer.h"
@@ -36,6 +38,7 @@
 #include "CUI_Skill.h"
 #include "CUI_SkillPanel.h"
 #include "ItemInstance.h"
+#include "CVillageStateMgr.h"
 
 class CUI_DungeonLootPanel;
 
@@ -145,6 +148,8 @@ void CStage_Dungeon::Initialize_Scene()
 
     // 전투 BGM
     CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Battle2.wav", 0.3f, true, 1.f);
+
+    m_DungeonCleared = false;
 }
 
 _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
@@ -152,15 +157,21 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
     if (m_TimerRunning)
         m_Timer += timeDelta;
 
-    if (!m_DungeonCleared && m_TimerRunning && m_CurrentRoom == Room::MONSTER2)
+    if (m_CurrentRoom == Room::MONSTER2 && CDInputMgr::GetInstance()->KeyDown(DIK_M))
     {
-        if (CDInputMgr::GetInstance()->KeyDown(DIK_M))
+        m_IsClearMenuOpened = !m_IsClearMenuOpened;
+
+        if (m_IsClearMenuOpened)
         {
-            m_TimerRunning   = false;
-            m_DungeonCleared = true;
+            m_TimerRunning = false;   
+            m_DungeonCleared = true;    
+        }
+        else
+        {
+            m_DungeonCleared = false; 
         }
     }
-
+   
     if (m_RequestChangeScene)
     {
         CSceneMgr::GetInstance()->Change_SceneMgr(m_NextSceneType);
@@ -190,7 +201,11 @@ void CStage_Dungeon::LateUpdate_Scene(const _float& timeDelta)
         CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS2);
 
     if (CDInputMgr::GetInstance()->KeyDown(DIK_R))
-        Spawn_Follower();
+    {
+        Spawn_FollowerCow_Rescue();
+        Spawn_FollowerElephant_Rescue();
+        Spawn_FollowerPig_Rescue();
+    }
 }
 
 void CStage_Dungeon::Render_Scene()
@@ -240,31 +255,92 @@ void CStage_Dungeon::Spawn_Weapon()
     }
 }
 
-void CStage_Dungeon::Spawn_Follower()
+void CStage_Dungeon::Spawn_FollowerCow_Rescue()
 {
     auto layer = m_Layers[LAYERTYPE::GAMELOGIC];
     NULL_CHECK(layer);
 
-    CGameObject* followerCow = CFollowerCow::Create(m_GraphicDev);
+    CFollowerCow* followerCow = CFollowerCow::Create(m_GraphicDev);
     NULL_CHECK(followerCow);
 
     if (FAILED(layer->Add_GameObject(OBJTYPE::NPC, followerCow)))
         return;
 
     followerCow->Initialize_GameObject();
-
-    dynamic_cast<CNPCBase*>(followerCow)->Set_RescuedState(true);
+    followerCow->Set_RescuedState(true);
 
     auto cowTransform = dynamic_cast<CTransform*>(
         followerCow->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
 
     if (cowTransform)
     {
-        _vec3 spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].playerSpawnPos;
-        spawnPos.x += 2.f;
+        _vec3 spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
+       spawnPos += _vec3(6.f, 1.f, 8.f);
 
         cowTransform->Set_Pos(spawnPos);
     }
+
+    SavedNpc* state = CVillageStateMgr::GetInstance()->Get_NPCState(L"FollowerCow");
+    if (state) state->isActive = true;
+}
+
+void CStage_Dungeon::Spawn_FollowerElephant_Rescue()
+{
+    auto layer = m_Layers[LAYERTYPE::GAMELOGIC];
+    NULL_CHECK(layer);
+
+    CFollowerElephant* followerElephant = CFollowerElephant::Create(m_GraphicDev);
+    NULL_CHECK(followerElephant);
+
+    if (FAILED(layer->Add_GameObject(OBJTYPE::NPC, followerElephant)))
+        return;
+
+    followerElephant->Initialize_GameObject();
+    followerElephant->Set_RescuedState(true);
+
+    auto elephantTransform = dynamic_cast<CTransform*>(
+        followerElephant->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+    if (elephantTransform)
+    {
+        _vec3 spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
+        spawnPos += _vec3(8.f, 1.f, 8.f);
+
+        elephantTransform->Set_Pos(spawnPos);
+    }
+
+    SavedNpc* state = CVillageStateMgr::GetInstance()->Get_NPCState(L"FollowerElephant");
+    if (state) state->isActive = true;
+}
+
+void CStage_Dungeon::Spawn_FollowerPig_Rescue()
+{
+    auto layer = m_Layers[LAYERTYPE::GAMELOGIC];
+    NULL_CHECK(layer);
+
+    CFollowerPig* followerPig = CFollowerPig::Create(m_GraphicDev);
+    NULL_CHECK(followerPig);
+
+    if (FAILED(layer->Add_GameObject(OBJTYPE::NPC, followerPig)))
+        return;
+
+    followerPig->Initialize_GameObject();
+    followerPig->Set_RescuedState(true);
+
+    auto pigTransform = dynamic_cast<CTransform*>(
+        followerPig->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+    if (pigTransform)
+    {
+        _vec3 spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
+        spawnPos += _vec3(10.f, 1.f, 8.f);
+
+
+        pigTransform->Set_Pos(spawnPos);
+    }
+
+    SavedNpc* state = CVillageStateMgr::GetInstance()->Get_NPCState(L"FollowerPig");
+    if (state) state->isActive = true;
 }
 
 void CStage_Dungeon::Create_RoomTriggers()
@@ -454,7 +530,7 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
             OBJTYPE::CAMERA, L"MainCamera", m_GraphicDev, layer, &gameObject),
         L"Persistent object setup failed");
 
-    auto camController = dynamic_cast<CCameraController*>(
+    m_CamController = dynamic_cast<CCameraController*>(
         gameObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAM_CONTROLLER));
 
     m_CamMovement = dynamic_cast<CCameraMovement*>(
@@ -465,12 +541,12 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
         m_PrevZoomSpeed = m_CamMovement->Get_ZoomSpeed();
 
     // 카메라 설정값 초기화
-    if (camController != nullptr)
+    if (m_CamController != nullptr)
     {
         // 씬에서 카메라 생성 시 값 초기화
         // : CCameraSetup을 카메라 설정을 중도에 바꿀 때 사용 가능하고,
         //   그럴 때는 필요한 것만 사용해 .Apply() 하면 된다.
-        CCamSetupBuilder(camController)
+        CCamSetupBuilder(m_CamController)
             .SetTarget(m_PlayerTransform)
             //.PivotOffset({ 0.f, 0.f, 0.f })
             //.Distance(12.f)
@@ -482,7 +558,7 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
             .Apply();
 
         // 에디터에 카메라 설정
-        CMainEditorMgr::GetInstance()->Set_MainCamera(camController);
+        CMainEditorMgr::GetInstance()->Set_MainCamera(m_CamController);
     }
 
     CGameObject* tarotController = CTarotStageController::Create(m_GraphicDev);
@@ -611,12 +687,6 @@ HRESULT CStage_Dungeon::Ready_UI_Layer(LAYERTYPE layerType)
         layer->Add_GameObject(OBJTYPE::UI, m_UI_Fade),
         L"CStage_Dungeon::Ready_UI_Layer() failed: CFade_UI Add failed");
 
-    CUI_DungeonLootPanel* dungeonLootPanel = CUI_DungeonLootPanel::Create(m_GraphicDev);
-    dungeonLootPanel->Set_RunLootLog(&m_RunLootLog);
-    dungeonLootPanel->Initialize_GameObject();
-    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, dungeonLootPanel),
-                     L"CStage_Dungeon::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUI_DungeonLootPanel) failed");
-
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CUI_SkillPanel>(
             OBJTYPE::UI,
@@ -625,6 +695,13 @@ HRESULT CStage_Dungeon::Ready_UI_Layer(LAYERTYPE layerType)
             layer,
             &gameObject),
         L"Persistent object setup failed: UI_SkillPanel");
+
+    CUI_DungeonLootPanel* dungeonLootPanel = CUI_DungeonLootPanel::Create(m_GraphicDev);
+    dungeonLootPanel->Set_RunLootLog(&m_RunLootLog);
+    dungeonLootPanel->Initialize_GameObject();
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, dungeonLootPanel),
+        L"CStage_Dungeon::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUI_DungeonLootPanel) failed");
+
     m_Layers.insert({ layerType, layer });
 
     return S_OK;

@@ -16,6 +16,7 @@ class CPlayerGathering;
 class CPlayerConstruction;
 class CFollowerCow;
 class CKitchen;
+class CUI_Text;
 
 class CStage : public CScene
 {
@@ -48,7 +49,9 @@ private:
     void Create_Trigger();
 
     // 추종자 생성
-    //void Spawn_Follower();
+    void Spawn_FollowerCow();
+    void Spawn_FollowerElephant();
+    void Spawn_FollowerPig();
 
 public:
     static CStage* Create(DEVICE graphicDev);
@@ -67,6 +70,10 @@ private:
     CUI_FollowerCommand* m_FollowerCommand;
     CPlayerGathering*    m_PlayerGatherCom;
     CPlayerConstruction* m_PlayerConstructionCom;
+    CUI_Text*            m_VillageEnterUI;
+    _float               m_Alpha      = 0;
+    _float               m_UIOpenTime = 3.f;
+    _bool                m_StageBegin;
 
     //CWorkBench*   m_WorkBench;
     //CKitchen*     m_Kitchen;

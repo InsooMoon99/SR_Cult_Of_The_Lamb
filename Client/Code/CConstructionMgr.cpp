@@ -58,6 +58,7 @@ void CConstructionMgr::Update_ConstructionMgr(const _float& fTimeDelta)
                 if (m_pPlacer->Try_PlaceObject())
                 {
                     // 배치 성공 시 후처리
+                    End_BuildMode();
                 }
             }
         }
