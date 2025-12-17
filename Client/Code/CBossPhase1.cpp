@@ -54,6 +54,9 @@ HRESULT CBossPhase1::Ready_GameObject()
     m_CombatStatCom->Set_HitState(false);
 
 
+    BaseCenter = { 47 ,m_TransformCom->Get_Scale().y, 47 };
+    m_TransformCom->Set_Pos(StartPos);
+
     if (m_BoxColCom)
         m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::ENEMY);
 
@@ -62,8 +65,6 @@ HRESULT CBossPhase1::Ready_GameObject()
 
 void CBossPhase1::Initialize_GameObject()
 {
-    BaseCenter = { 47 ,m_TransformCom->Get_Scale().y, 47 };
-    m_TransformCom->Set_Pos(StartPos);
 
 }
 
@@ -172,6 +173,7 @@ const char* CBossPhase1::GetBossStateName(_int StateNum)
     case BULLETATTACK:      return "BULLETATTACK";
     case CHAINATTACK:       return "CHAINATTACK";
     case BOSSDEAD:          return "BOSSDEAD";
+    case SPAWNATTACK:          return "SPAWNATTACK";
     case BOSSIDLE:          return "BOSSIDLE";
     case BOSSMOVE:          return "BOSSMOVE";
     case BOSSGROGGRY:       return "BOSSGROGGRY";

@@ -20,7 +20,7 @@ class CBossStateMachine;
 class CBossPhase1 : public CMonsterBase
 {
 public:
-    enum  BOSSPHASE1 { BOSSAWAKE = 0, BULLETATTACK, CHAINATTACK, BOSSDEAD, BOSSIDLE, BOSSMOVE, BOSSGROGGRY, TALK, BOSS_END };
+    enum  BOSSPHASE1 { BOSSAWAKE = 0, BULLETATTACK, CHAINATTACK,SPAWNATTACK, BOSSDEAD, BOSSIDLE, BOSSMOVE, BOSSGROGGRY, TALK, BOSS_END };
 private:
     explicit CBossPhase1(DEVICE graphicDev);
     explicit CBossPhase1(const CBossPhase1& rhs);

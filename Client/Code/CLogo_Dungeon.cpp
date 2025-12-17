@@ -28,7 +28,7 @@ HRESULT CLogo_Dungeon::Ready_Scene()
     if (FAILED(Ready_UI_Layer(LAYERTYPE::UI)))
         return E_FAIL;
 
-    CRenderer::GetInstance()->SetFog(false);
+    CRenderer::GetInstance()->OffFog();
 
     m_Loading = CLoading::Create(m_GraphicDev, CLoading::LOADING_BOSS2);
 

@@ -73,7 +73,9 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
     // 업데이트 입장시
     if (m_flag == false)
     {
-       
+
+
+
         m_TrailEff->Initialize_Component();
 
         // 생성시의 위치 값 저장

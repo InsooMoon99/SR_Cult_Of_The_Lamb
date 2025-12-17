@@ -168,6 +168,7 @@ HRESULT CStage_Boss1::Ready_Environment_Layer(LAYERTYPE layerType)
     NULL_CHECK_RETURN(wall, E_FAIL);
     layer->Add_GameObject(OBJTYPE::WALL, wall);
 
+    //////////////////////////////////////////////////
     // Fog
     m_Fog = CFog::Create(m_GraphicDev);
     NULL_CHECK_RETURN(m_Fog, E_FAIL);
