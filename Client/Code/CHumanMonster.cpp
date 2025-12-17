@@ -249,6 +249,7 @@ void CHumanMonster::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"HumanMonsterAttack", 65, 0.02f);
     m_AnimatorCom->Create_Animation(L"HumanMonsterHurt", 28, 0.02f);
     m_AnimatorCom->Create_Animation(L"HumanMonsterRun", 18, 0.02f);
+    m_AnimatorCom->Create_Animation(L"HumanMonsterRunUp", 22, 0.02f);
 
     // State -> Animation 연동
     m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"HumanMonsterIdle", ANIMSTATE::LOOP);

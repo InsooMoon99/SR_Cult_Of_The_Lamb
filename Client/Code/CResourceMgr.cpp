@@ -463,6 +463,10 @@ HRESULT CResourceMgr::Ready_Monster(DEVICE graphicDev)
         L"../Bin/Resource/Texture/Monster/Human/Run/Run%d.png", 18)))
         return E_FAIL;
 
+    if (FAILED(humanmonsterTex->Add_Texture(L"HumanMonsterRunUp", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Human/Run_Up/Run_Up%d.png", 22)))
+        return E_FAIL;
+
     if (FAILED(humanmonsterTex->Add_Texture(L"HumanMonsterAttack", TEX_NORMAL,
         L"../Bin/Resource/Texture/Monster/Human/Attack/Attack%d.png", 65)))
         return E_FAIL;
@@ -493,6 +497,54 @@ HRESULT CResourceMgr::Ready_Monster(DEVICE graphicDev)
 
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_FLOATER_MONSTER, floaterTex)))
+        return E_FAIL;
+
+    // Bat
+    CTexture* batTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(batTex, E_FAIL);
+
+    if (FAILED(batTex->Add_Texture(L"Bat_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Bat2/Fly/Bat-fly%d.png", 34)))
+        return E_FAIL;
+
+    if (FAILED(batTex->Add_Texture(L"Bat_Charge", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Bat2/Charge/Bat-attackcharge%d.png", 59)))
+        return E_FAIL;
+
+    if (FAILED(batTex->Add_Texture(L"Bat_Attack", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Bat2/Attack/Bat-attack%d.png", 32)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_BAT_MONSTER, batTex)))
+        return E_FAIL;
+
+    // HumanMonster2
+    CTexture* human2Tex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(human2Tex, E_FAIL);
+
+    if (FAILED(human2Tex->Add_Texture(L"Human2_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Human2/Idle/Cultist-idle%d.png", 34)))
+        return E_FAIL;
+
+    if (FAILED(human2Tex->Add_Texture(L"Human2_Hit", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Human2/Hit/Cultist_Hit%d.png", 48)))
+        return E_FAIL;
+
+    if (FAILED(human2Tex->Add_Texture(L"Human2_Attack", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Human2/Attack/Cultist-attack%d.png", 38)))
+        return E_FAIL;
+
+    if (FAILED(human2Tex->Add_Texture(L"Human2_Run", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Human2/Run/Cultist-run%d.png", 29)))
+        return E_FAIL;
+
+    if (FAILED(human2Tex->Add_Texture(L"Human2_RunUp", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Human2/Run_up/Cultist-run-up%d.png", 34)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_HUMAN_MONSTER2, human2Tex)))
         return E_FAIL;
 
     // 보물상자....

@@ -13,6 +13,7 @@
 #include "CStage_Dungeon.h"
 #include "CStage_TarotTest.h"
 #include "CUI_Fade.h"
+#include "CLightMgr.h"
 
 IMPLEMENT_SINGLETON(CSceneMgr)
 
@@ -64,6 +65,7 @@ void CSceneMgr::Change_SceneMgr(SCENETYPE typeInput)
     // Fade UI 생성 실패 시 바로 전환
     if (m_FadeUI == nullptr)
     {
+
         m_SceneType = typeInput;
 
         switch (m_SceneType)
@@ -131,6 +133,7 @@ void CSceneMgr::Update_SceneMgr(const _float& timeDelta)
     {
         m_FadeOutComplete = true;
         m_SceneType = m_PendingScene;
+
         // 실제 씬 전환
         switch (m_SceneType)
         {

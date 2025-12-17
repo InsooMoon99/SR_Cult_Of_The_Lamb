@@ -1010,6 +1010,9 @@
     <ClInclude Include="..\Header\CUI_ProgressBar.h">
       <Filter>05. UI\01. UI\14. UI_ProgressBar</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CLogo_Dungeon.h">
+      <Filter>02. Scene\00. Logo</Filter>
+    </ClInclude>
     <ClInclude Include="..\Header\CFollowerElephant.h">
       <Filter>03. GameObject\11. NPC\01. Follower Elephant</Filter>
     </ClInclude>
@@ -1608,6 +1611,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CUI_ProgressBar.cpp">
       <Filter>05. UI\01. UI\14. UI_ProgressBar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CLogo_Dungeon.cpp">
+      <Filter>02. Scene\00. Logo</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CFollowerElephant.cpp">
       <Filter>03. GameObject\11. NPC\01. Follower Elephant</Filter>
