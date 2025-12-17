@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "CNPCState_Mining.h"
 
+#include <CSoundMgr.h>
 #include "CAnimator.h"
 #include "CCombatStat.h"
 #include "CNPCBase.h"
@@ -73,6 +74,8 @@ _int CNPCState_Mining::Update_State(const _float& timeDelta)
 
                     combat->Apply_Damage(h);
                     m_bAttackFlag = true;
+
+                    CSoundMgr::GetInstance()->Play_Once(L"Object/Rock/Stone_Impact_2.wav", SOUND_EFFECT, 0.5f);
                 }
             }
         }

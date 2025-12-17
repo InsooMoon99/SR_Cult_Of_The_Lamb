@@ -25,4 +25,6 @@ private:
 
 private:
     _int m_AnimStep = 0;
+
+    _bool m_CanPlayRescueSound = false;
 };

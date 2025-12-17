@@ -5,14 +5,9 @@
 #include "CFontMgr.h"
 #include "CLayer.h"
 #include "CLoading.h"
-#include "CMonster.h"
-#include "CProtoMgr.h"
 #include "CSceneMgr.h"
 #include "CUI_LoadingCircle.h"
-#include "CRcTex.h"
-#include "CAnimator.h"
-#include "CTransform.h"
-#include "CTexture.h"
+#include "CRenderer.h"
 
 CLogo_Boss2::CLogo_Boss2(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -32,6 +27,8 @@ HRESULT CLogo_Boss2::Ready_Scene()
 
     if (FAILED(Ready_UI_Layer(LAYERTYPE::UI)))
         return E_FAIL;
+
+    CRenderer::GetInstance()->SetFog(false);
 
     m_Loading = CLoading::Create(m_GraphicDev, CLoading::LOADING_BOSS2);
 

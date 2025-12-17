@@ -70,6 +70,7 @@ enum class COLLISION_LAYERTYPE
     DEFAULT, // 모든 충돌
     PLAYER,
     ENEMY,
+    NPC,
     WALL,
     PLAYERPROJECTILE,
     BOSSPROJECTILE,
@@ -212,6 +213,9 @@ enum class COMPONENTTYPE
     SPHERE_COLL,
 
     TEX_LOADING_CIRCLE,
+
+    TEX_BAT_MONSTER,
+    TEX_HUMAN_MONSTER2,
 
     ////////////////
     //  Particle  //

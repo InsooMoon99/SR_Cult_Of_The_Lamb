@@ -183,6 +183,55 @@ void CSoundMgr::Stop_SoundChannel(SOUNDTYPE soundType, _float fadeOutDuration)
         m_Channel[soundType] = nullptr;
 }
 
+void CSoundMgr::Stop_Sound(const wstring& soundFile)
+{
+    NULL_CHECK(m_System);
+
+    wstring key = soundFile;
+    transform(key.begin(), key.end(), key.begin(), ::towlower);
+
+    auto iter = m_Sounds.find(key);
+    if (iter == m_Sounds.end())
+        return;
+
+    FMOD_SOUND* pTargetSound = iter->second;
+    vector<FMOD_CHANNEL*> channelsToStop;
+
+    // 모든 채널 그룹(BGM/EFFECT)을 순회하며 해당 사운드를 재생 중인 채널 검색
+    for (_int i = 0; i < SOUND_END; ++i)
+    {
+        int iNumChannels = 0;
+        FMOD_ChannelGroup_GetNumChannels(m_SoundGroups[i], &iNumChannels);
+
+        for (int j = 0; j < iNumChannels; ++j)
+        {
+            FMOD_CHANNEL* pChannel = nullptr;
+            FMOD_ChannelGroup_GetChannel(m_SoundGroups[i], j, &pChannel);
+
+            if (!pChannel) continue;
+
+            FMOD_BOOL bIsPlaying = FALSE;
+            FMOD_Channel_IsPlaying(pChannel, &bIsPlaying);
+
+            if (!bIsPlaying) continue;
+
+            FMOD_SOUND* pCurrentSound = nullptr;
+            FMOD_Channel_GetCurrentSound(pChannel, &pCurrentSound);
+
+            if (pCurrentSound == pTargetSound)
+            {
+                channelsToStop.push_back(pChannel);
+            }
+        }
+    }
+
+    // 수집된 채널들 정지
+    for (auto& pChannel : channelsToStop)
+    {
+        FMOD_Channel_Stop(pChannel);
+    }
+}
+
 void CSoundMgr::Stop_All()
 {
     NULL_CHECK(m_System);

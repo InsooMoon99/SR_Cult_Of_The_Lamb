@@ -1021,6 +1021,15 @@
     </ClInclude>
     <ClInclude Include="..\Header\CUI_Interactive.h">
       <Filter>헤더 파일</Filter>
+          </ClInclude>
+    <ClInclude Include="..\Header\CLogo_Dungeon.h">
+      <Filter>02. Scene\00. Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CFollowerElephant.h">
+      <Filter>03. GameObject\11. NPC\01. Follower Elephant</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CFollowerPig.h">
+      <Filter>03. GameObject\11. NPC\02. Follower Pig</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1620,6 +1629,15 @@
     </ClCompile>
     <ClCompile Include="..\Code\CUI_Interactive.cpp">
       <Filter>소스 파일</Filter>
+          </ClCompile>
+    <ClCompile Include="..\Code\CLogo_Dungeon.cpp">
+      <Filter>02. Scene\00. Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CFollowerElephant.cpp">
+      <Filter>03. GameObject\11. NPC\01. Follower Elephant</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CFollowerPig.cpp">
+      <Filter>03. GameObject\11. NPC\02. Follower Pig</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

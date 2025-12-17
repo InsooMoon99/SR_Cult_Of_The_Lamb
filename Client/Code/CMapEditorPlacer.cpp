@@ -81,7 +81,7 @@ void CMapEditorPlacer::Update_MapPlacer(const _float& timeDelta)
         {
             if (input->KeyPress(DIK_LALT) && input->KeyPress(DIK_LCONTROL))
             {
-                _float rotChange = (wheelDelta > 0 ? D3DX_PI / 50.f : -D3DX_PI / 50.f);
+                _float rotChange = (wheelDelta > 0 ? D3DXToRadian(1.f) : -D3DXToRadian(1.f));
                 m_PreviewRotation.z += rotChange;
 
                 // Z축 회전 제한
@@ -91,7 +91,7 @@ void CMapEditorPlacer::Update_MapPlacer(const _float& timeDelta)
             }
             else if (input->KeyPress(DIK_LCONTROL) || input->KeyPress(DIK_RCONTROL))
             {
-                _float rotChange = (wheelDelta > 0 ? D3DX_PI / 50.f : -D3DX_PI / 50.f);
+                _float rotChange = (wheelDelta > 0 ? D3DXToRadian(1.f) : -D3DXToRadian(1.f));
                 m_PreviewRotation.x += rotChange;
 
                 // X축 회전 제한
@@ -101,7 +101,7 @@ void CMapEditorPlacer::Update_MapPlacer(const _float& timeDelta)
             }
             else if (input->KeyPress(DIK_LALT) || input->KeyPress(DIK_RALT))
             {
-                _float rotChange = (wheelDelta > 0 ? D3DX_PI / 50.f : -D3DX_PI / 50.f);
+                _float rotChange = (wheelDelta > 0 ? D3DXToRadian(1.f) : -D3DXToRadian(1.f));
                 m_PreviewRotation.y += rotChange;
 
                 // Y축 회전 제한

@@ -221,6 +221,7 @@ void CCollisionManager::Initialize_CollisionMatrix()
 
     _int player_Index           = static_cast<_int>(COLLISION_LAYERTYPE::PLAYER);
     _int enemy_Index            = static_cast<_int>(COLLISION_LAYERTYPE::ENEMY);
+    _int npc_Index              = static_cast<_int>(COLLISION_LAYERTYPE::NPC);
     _int wall_Index             = static_cast<_int>(COLLISION_LAYERTYPE::WALL);
     _int playerprojectile_Index = static_cast<_int>(COLLISION_LAYERTYPE::PLAYERPROJECTILE);
     _int projectile_Index       = static_cast<_int>(COLLISION_LAYERTYPE::BOSSPROJECTILE);
@@ -268,12 +269,12 @@ void CCollisionManager::Initialize_CollisionMatrix()
     m_CollisionMatrix[enemy_Index][player_Index] = false;
     m_CollisionMatrix[player_Index][enemy_Index] = false;
 
-    // 트리거는 플레이어와만 충돌 가능
+    // 트리거와 충돌 판정 : 플레이어, NPC가 가능
     m_CollisionMatrix[trigger_Index][trigger_Index] = false;
 
     for (_int i = 0; i < colLayerEnd; i++)
     {
-        if (i != player_Index && i != trigger_Index)
+        if (i != player_Index && i != npc_Index && i != trigger_Index)
         {
             m_CollisionMatrix[trigger_Index][i] = false;
             m_CollisionMatrix[i][trigger_Index] = false;
