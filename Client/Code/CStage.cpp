@@ -97,9 +97,6 @@ HRESULT CStage::Ready_Scene()
     // 이건 드롭 시스템 쓸려면 각 씬 마다 셋팅 해야함
     CDropSystem::GetInstance()->SetCurrentScene(this);
 
-    // 안은수 test
-    // 이젠 테스트 끝내야죠 
-
     struct SpawnInfo
     {
         int   id;
@@ -164,11 +161,11 @@ void CStage::Initialize_Scene()
 
     // 초기 맵 불러오기 <- 이거 Initialize에서 진행해야 맵 오브젝트가 잘 불러진다.
     m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Village2.map");
-    
 
     CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Village.wav", 0.3f, true, 1.f);
+    CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Bird.wav", 0.1f, false, 1.f);
 
-   // m_UIOpenTime = 4.f;
+    // m_UIOpenTime = 4.f;
 
     m_VillageEnterUI = CUI_Text::Create(m_GraphicDev);
     m_VillageEnterUI->Set_Font(L"NanumSquare_Max");
@@ -176,7 +173,7 @@ void CStage::Initialize_Scene()
     m_VillageEnterUI->Set_Color({ 1.f, 1.f, 1.f, 0.5f });
 
     CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::UI)->Add_GameObject(OBJTYPE::UI, m_VillageEnterUI);
-    
+
     // 던전 이동 트리거 만들기
     Create_Trigger();
 
@@ -245,20 +242,21 @@ void CStage::Initialize_Scene()
         }
     }
 
-    // Follower Creation
-    m_FollowerSpawnTimer = 7.f;
-    m_FollowerSpawnStep  = 0;
+    //TODO 소환 위치 살짝 바꾸기
+    Spawn_FollowerCow();
+    Spawn_FollowerElephant();
+    Spawn_FollowerPig();
 }
 
 _int CStage::Update_Scene(const _float& timeDelta)
 {
     _int exit = Engine::CScene::Update_Scene(timeDelta);
 
-    if (m_UIOpenTime>=0.f)
+    if (m_UIOpenTime >= 0.f)
     {
-         m_UIOpenTime -= timeDelta;
+        m_UIOpenTime -= timeDelta;
 
-        _vec2 pos = { 50.f,50.f };
+        _vec2 pos = { 50.f, 50.f };
 
         m_VillageEnterUI->Set_IsActive(true);
 
@@ -269,7 +267,6 @@ _int CStage::Update_Scene(const _float& timeDelta)
         }
     }
 
-
     auto* playerSkill = dynamic_cast<CPlayerSkill*>(
         CManagement::GetInstance()->Get_Component(ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::PL_SKILL));
 
@@ -277,38 +274,11 @@ _int CStage::Update_Scene(const _float& timeDelta)
     {
         playerSkill->Set_SkillUnlocked(false);
         playerSkill->Set_CurrentCharges(0);
-
     }
-   // m_WeaponEquipCom = dynamic_cast<CWeaponEquip*>(
-   //     CManagement::GetInstance()->Get_Component(ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::WEAPON_EQUIP));
-   // if (m_WeaponEquipCom && m_WeaponEquipCom->Get_WeaponEquipped())
-   //     m_WeaponEquipCom->Unequip_Weapon();
-
-    m_FollowerSpawnTimer += timeDelta;
-
-    // 던전에서 구출한 이후, 순차적으로 소환
-    if (m_FollowerSpawnTimer >= 7.f)
-    {
-        switch (m_FollowerSpawnStep)
-        {
-        case 0:
-            Spawn_FollowerCow();
-            m_FollowerSpawnTimer = 0.f;
-            m_FollowerSpawnStep++;
-            break;
-        case 1:
-            Spawn_FollowerElephant();
-            m_FollowerSpawnTimer = 0.f;
-            m_FollowerSpawnStep++;
-            break;
-        case 2:
-            Spawn_FollowerPig();
-            m_FollowerSpawnTimer = 0.f;
-            m_FollowerSpawnStep++;
-            break;
-        default: break;
-        }
-    }
+    // m_WeaponEquipCom = dynamic_cast<CWeaponEquip*>(
+    //     CManagement::GetInstance()->Get_Component(ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::WEAPON_EQUIP));
+    // if (m_WeaponEquipCom && m_WeaponEquipCom->Get_WeaponEquipped())
+    //     m_WeaponEquipCom->Unequip_Weapon();
 
     CConstructionMgr::GetInstance()->Update_ConstructionMgr(timeDelta);
 
@@ -901,6 +871,6 @@ void CStage::Free()
     CDropSystem::GetInstance()->Clear_Item();
     CDroppedItem::Reset_WeaponExplainUI();
     CConstructionMgr::GetInstance()->Release_Placer();
-   
+
     Engine::CScene::Free();
 }
