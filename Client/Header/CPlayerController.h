@@ -91,8 +91,6 @@ private:
     CPlayerConstruction* m_OwnerConstructionCom;
 #pragma endregion
 
-    
-
     OnRefuseEndCallback m_OnRefuseEnd = nullptr;
 
 public:

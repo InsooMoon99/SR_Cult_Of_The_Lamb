@@ -168,6 +168,12 @@ void CState::Set_AnimInfo(ACTORSTATE playerState, const wstring& key, ANIMSTATE 
     m_AnimStateMap[playerState]   = animState;
 }
 
+void CState::Force_UpdateAnimation()
+{
+    m_PrevState = ACTORSTATE::STATE_END;
+    m_PrevDir = ACTORDIR::DIR_END;
+}
+
 CState* CState::Create(DEVICE graphicDev)
 {
     CState* state = new CState(graphicDev);

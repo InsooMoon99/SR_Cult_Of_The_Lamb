@@ -232,14 +232,14 @@ private:
     CGameObject* m_Instigator;
     CAttackBase* m_AttackObj;
 
-    ATTACKDATA m_AttackData;
-    _float     m_LifeTime;
+    ATTACKDATA   m_AttackData;
+    _float       m_LifeTime;
 
-    _vec3 m_Position;
-    _vec3 m_Offset;
-    _vec3 m_Scale;
-    _bool m_UseInstigatorPos; // 공격자의 위치를 사용할지
-    _bool m_DestroyOnHit;
+    _vec3        m_Position;
+    _vec3        m_Offset;
+    _vec3        m_Scale;
+    _bool        m_UseInstigatorPos; // 공격자의 위치를 사용할지
+    _bool        m_DestroyOnHit;
 
     COLLISION_LAYERTYPE m_Collision_LayerType;
 };

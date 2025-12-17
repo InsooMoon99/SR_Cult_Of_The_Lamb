@@ -63,5 +63,6 @@ private:
     _bool            m_IsFinished = false;
     _bool            m_HasFiredBullet = false;
 
+    _bool            m_SoundPlayed = false;
 };
 

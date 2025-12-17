@@ -32,5 +32,7 @@ private:
     CGameObject*     m_Owner;
     _float           m_Pattern_Cooldown;
 
+    _bool            m_SoundPlayed = false;
+
 };
 
