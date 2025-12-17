@@ -148,6 +148,8 @@ void CStage_Dungeon::Initialize_Scene()
 
     // 전투 BGM
     CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Battle2.wav", 0.3f, true, 1.f);
+
+    m_DungeonCleared = false;
 }
 
 _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
@@ -155,31 +157,19 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
     if (m_TimerRunning)
         m_Timer += timeDelta;
 
-    if (!m_DungeonCleared && m_TimerRunning && m_CurrentRoom == Room::MONSTER2)
+    if (m_CurrentRoom == Room::MONSTER2 && CDInputMgr::GetInstance()->KeyDown(DIK_M))
     {
-		if (CDInputMgr::GetInstance()->KeyDown(DIK_M))
-		{
-			switch (m_IsClearMenuOpened)
-			{
-			case true:
-				m_DungeonCleared = false;
-				break;
-			case false:
-				m_TimerRunning = false;
-				m_DungeonCleared = true;
-				break;
-			}
-		}
-       // if (CDInputMgr::GetInstance()->KeyDown(DIK_M)&&!m_IsClearMenuOpened)
-       // {
-       //     m_TimerRunning   = false;
-       //     m_DungeonCleared = true;
-       //     m_IsClearMenuOpened = true;
-       // }
-       // //if(m_IsClearMenuOpened)
-        //{
-        //    m_DungeonCleared = false;
-        //}
+        m_IsClearMenuOpened = !m_IsClearMenuOpened;
+
+        if (m_IsClearMenuOpened)
+        {
+            m_TimerRunning = false;   
+            m_DungeonCleared = true;    
+        }
+        else
+        {
+            m_DungeonCleared = false; 
+        }
     }
    
     if (m_RequestChangeScene)

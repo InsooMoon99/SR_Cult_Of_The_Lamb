@@ -125,7 +125,7 @@ private:
     _float          m_Timer;
 
     _bool           m_TimerRunning;
-    _bool           m_DungeonCleared;
+    _bool           m_DungeonCleared = false;
     _bool           m_IsClearMenuOpened;
     _bool           m_Start;
 };

@@ -113,7 +113,7 @@ _int CUI_DungeonLootPanel::Update_GameObject(const _float& timeDelta)
             CSoundMgr::GetInstance()->Play_BGM(L"UI/UI_DungeonClear.wav",
                 SOUND_EFFECT,
                 0.3f);
-            m_BGMStarted = false;
+            m_BGMStarted = true;
         }
         m_Active = true;
         m_Alpha = 0.f;
