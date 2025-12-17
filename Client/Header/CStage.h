@@ -70,16 +70,12 @@ private:
     CUI_FollowerCommand* m_FollowerCommand;
     CPlayerGathering*    m_PlayerGatherCom;
     CPlayerConstruction* m_PlayerConstructionCom;
-    CUI_Text*           m_VillageEnterUI;
-    _float               m_Alpha = 0;
+    CUI_Text*            m_VillageEnterUI;
+    _float               m_Alpha      = 0;
     _float               m_UIOpenTime = 3.f;
     _bool                m_StageBegin;
 
     //CWorkBench*   m_WorkBench;
     //CKitchen*     m_Kitchen;
     //CFollowerCow* m_FollowerCow;
-
-private:
-    _float m_FollowerSpawnTimer = 0.f;
-    _int   m_FollowerSpawnStep  = 0;
 };

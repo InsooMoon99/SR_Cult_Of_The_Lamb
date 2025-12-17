@@ -46,6 +46,8 @@ void CUICookingGame::Initialize_GameObject()
 {
     CUI::Initialize_GameObject();
 
+    CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Cooking_Meal_Loop.wav", 0.6f, false, 0.f);
+
     if (m_Owner)
     {
         m_OwnerTransform = dynamic_cast<CTransform*>(
@@ -388,6 +390,7 @@ CUICookingGame* CUICookingGame::Create(DEVICE graphicDev, CGameObject* owner, Re
 
 void CUICookingGame::Free()
 {
+    CSoundMgr::GetInstance()->Stop_Sound(L"BGM/BGM_Cooking_Meal_Loop.wav");
 
     Safe_Release(m_Buffer_Deco);
     Safe_Release(m_Buffer_keyInfo);
