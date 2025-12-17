@@ -3,6 +3,13 @@
 
 class CTerrain;
 
+BEGIN(Engine)
+
+class CTransform;
+class CRigidbody;
+
+END
+
 class CStage_Prologue : public CScene
 {
 private:
@@ -33,4 +40,8 @@ private:
 
 private:
     CTerrain* m_Terrain;
+
+    CTransform* m_PlayerTransform = nullptr;
+    CRigidbody* m_PlayerRigid = nullptr;
+
 };

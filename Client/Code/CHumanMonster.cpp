@@ -79,6 +79,9 @@ void CHumanMonster::Initialize_GameObject()
 
 _int CHumanMonster::Update_GameObject(const _float& timeDelta)
 {
+    if (m_IsPraying)
+        return CMonsterBase::Update_GameObject(timeDelta);
+
     _int exit = CMonsterBase::Update_GameObject(timeDelta);
 
     if (Check_CommonTransitions())
@@ -273,9 +276,13 @@ void CHumanMonster::Animation_Setting()
         _vec2(1.f, 1.f),
         _vec2(0.f, 0.04f));
 
-    m_AnimatorCom->Create_Animation(L"HumanMonsterRunUp", 22, 0.02f,
+    m_AnimatorCom->Create_Animation(L"Huma  nMonsterRunUp", 22, 0.02f,
         _vec2(1.f, 1.f),
         _vec2(0.f, 0.04f));
+
+    m_AnimatorCom->Create_Animation(L"HumanMonsterPray", 45, 0.02f,
+        _vec2(0.24f, 0.36f),
+        _vec2(0.f, -0.04f));
 
     // State -> Animation 연동
     m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"HumanMonsterIdle", ANIMSTATE::LOOP);
@@ -333,6 +340,22 @@ void CHumanMonster::Retreat_FromTarget(const _float& timeDelta, _float speed)
 
     m_RigidbodyCom->Add_Force(moveForce);*/
 
+}
+
+void CHumanMonster::Set_PrayMode(_bool pray)
+{
+    m_IsPraying = pray;
+
+    if (pray)
+    {
+        m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"HumanMonsterPray", ANIMSTATE::LOOP);
+    }
+    else
+    {
+        m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"HumanMonsterIdle", ANIMSTATE::LOOP);
+    }
+
+    m_StateCom->Force_UpdateAnimation();
 }
 
 HRESULT CHumanMonster::Add_Component()

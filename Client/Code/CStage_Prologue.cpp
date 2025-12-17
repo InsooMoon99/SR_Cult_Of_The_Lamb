@@ -1,13 +1,19 @@
 ﻿#include "pch.h"
 #include "CStage_Prologue.h"
-
+#include "CRigidbody.h"
 #include "CCamSetupBuilder.h"
+#include "CExcutioner.h"
 #include "CGameObject.h"
+#include "CHeket.h"
+#include "CHumanMonster.h"
+#include "CKallamar.h"
 #include "CLayer.h"
+#include "CLeshy.h"
 #include "CMainCamera.h"
 #include "CMainEditorMgr.h"
 #include "CPersistentObjectHelper.h"
 #include "CPlayer.h"
+#include "CShamura.h"
 #include "CSoundMgr.h"
 #include "CTerrain.h"
 #include "CTransform.h"
@@ -45,6 +51,12 @@ void CStage_Prologue::Initialize_Scene()
 
     CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Prologue.wav", 0.4f, true, 1.f);
     CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Bird.wav", 0.15f, false, 1.f);
+
+    auto player = dynamic_cast<CPlayer*>(m_PlayerTransform->Get_Owner());
+    NULL_CHECK(player);
+
+    player->Set_PrologueMode(true);
+
 }
 
 _int CStage_Prologue::Update_Scene(const _float& timeDelta)
@@ -104,12 +116,49 @@ HRESULT CStage_Prologue::Ready_GameLogic_Layer(LAYERTYPE layerType)
     NULL_CHECK_RETURN(gameObject, E_FAIL);
 
     // 플레이어의 Transform 가져오기
-    const auto playerTransform =
+    m_PlayerTransform =
         dynamic_cast<CTransform*>(gameObject->Get_Component(
             ID_DYNAMIC,
             COMPONENTTYPE::TRANSFORM));
 
-    NULL_CHECK_RETURN(playerTransform, E_FAIL);
+    NULL_CHECK_RETURN(m_PlayerTransform, E_FAIL);
+
+    //m_PlayerTransform->Set_Pos(_vec3(15.f, 1.f, 5.f));
+    m_PlayerTransform->Set_Pos(_vec3(15.f, 1.f, 37.f));
+
+    // Rigid
+    m_PlayerRigid =
+        dynamic_cast<CRigidbody*>(gameObject->Get_Component(
+            ID_DYNAMIC,
+            COMPONENTTYPE::RIGIDBODY));
+
+    NULL_CHECK_RETURN(m_PlayerRigid, E_FAIL);
+
+    m_PlayerRigid->Set_VelocityLimit(_vec3(2.5f, 0.f, 2.5f));
+
+    // Monster
+    gameObject = CHumanMonster::Create(m_GraphicDev);
+    layer->Add_GameObject(OBJTYPE::MONSTER, gameObject);
+
+    gameObject->Get_Transform()->Set_Pos(18.9f, 1.f, 41.6f);
+    dynamic_cast<CHumanMonster*>(gameObject)->Set_PrayMode(true);
+
+    gameObject = CExcutioner::Create(m_GraphicDev);
+    layer->Add_GameObject(OBJTYPE::MONSTER, gameObject);
+
+    // NPC
+    gameObject = CLeshy::Create(m_GraphicDev);
+    layer->Add_GameObject(OBJTYPE::MONSTER, gameObject);
+
+    gameObject = CHeket::Create(m_GraphicDev);
+    layer->Add_GameObject(OBJTYPE::MONSTER, gameObject);
+
+    gameObject = CKallamar::Create(m_GraphicDev);
+    layer->Add_GameObject(OBJTYPE::MONSTER, gameObject);
+
+    gameObject = CShamura::Create(m_GraphicDev);
+    layer->Add_GameObject(OBJTYPE::MONSTER, gameObject);
+
 
     // -----------------------------
     // Camera
@@ -132,9 +181,9 @@ HRESULT CStage_Prologue::Ready_GameLogic_Layer(LAYERTYPE layerType)
         // : CCameraSetup을 카메라 설정을 중도에 바꿀 때 사용 가능하고,
         //   그럴 때는 필요한 것만 사용해 .Apply() 하면 된다.
         CCamSetupBuilder(camController)
-            .SetTarget(playerTransform)
+            .SetTarget(m_PlayerTransform)
             .PivotOffset({ 0.f, 0.f, 0.f })
-            .Distance(12.f)
+            .Distance(9.5f)
             .RotX(45.f)
             .RotY(0.f)
             .LagSpeed(10.f)
