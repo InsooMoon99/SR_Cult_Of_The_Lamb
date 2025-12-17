@@ -104,26 +104,11 @@ HRESULT CStage::Ready_Scene()
     };
 
     vector<SpawnInfo> spawnList = {
-        { 1001, { 5.f, 1.f, 10.f } },       // 동전
-        { 1001, { 5.5f, 1.f, 10.f } },
-        { 1001, { 6.f, 1.f, 10.f } },
-        { 1001, { 6.5f, 1.f, 10.f } },
-        { 1001, { 7.f, 1.f, 10.f } },
-        { 1001, { 7.5f, 1.f, 10.f } },
-        { 1001, { 8.f, 1.f, 10.f } },
-        { 1001, { 8.5f, 1.f, 10.f } },
-        { 1001, { 9.f, 1.f, 10.f } },
-        { 1001, { 9.5f, 1.f, 10.f } },
-        { 1001, { 10.f, 1.f, 10.f } },
-        { 1001, { 10.5f, 1.f, 10.f } },
-        { 1001, { 11.f, 1.f, 10.f } },
-        { 1001, { 11.5f, 1.f, 10.f } },
+        { 1001, { 11.f, 1.f, 10.f } },      // 동전
         { 1001, { 12.f, 1.f, 10.f } },
-        { 1001, { 12.5f, 1.f, 10.f } },
         { 1001, { 13.f, 1.f, 10.f } },
-        { 1001, { 13.5f, 1.f, 10.f } },
         { 1001, { 14.f, 1.f, 10.f } },
-        { 1001, { 14.5f, 1.f, 10.f } },
+        { 1001, { 15.f, 1.f, 10.f } },
         { 3001, { 20.f, 1.f, 10.f } },      // 검
         { 2001, { 25.f, 1.f, 10.f } },      // 풀죽
         { 2001, { 27.f, 1.f, 10.f } },
@@ -503,7 +488,7 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::INTERACTIVE, tmpHerb),
         L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
-    tmpHerb->Get_Transform()->Set_Pos(30.f, .6f, 30.f);
+    tmpHerb->Get_Transform()->Set_Pos(10.f, 0.5f, 30.f);
     tmpHerb->Check_WorldState();
 
     ///////////////////////////////////////////////////////////////////
