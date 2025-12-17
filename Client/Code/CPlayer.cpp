@@ -23,6 +23,10 @@
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CWeaponEquip.h"
+#include "CWorldInteractive.h"
+#include "CUI_Interactive.h"
+#include "CLayer.h"
+#include "CBuildingBase.h"
 
 CPlayer::CPlayer(DEVICE graphicDev)
     : CCharacterBase(graphicDev),
@@ -100,8 +104,10 @@ void CPlayer::Initialize_GameObject()
     m_PlayerControllerCom->Init_OwnerComponent();
     m_PlayerMovementCom->Init_OwnerComponent();
     m_PlayerAttackCom->Init_OwnerComponent();
-
     m_PlayerSkillCom->Init_OwnerComponent();
+
+    m_InteractiveUI = CUI_Interactive::Create(m_GraphicDev);
+    CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::UI)->Add_GameObject(OBJTYPE::UI, m_InteractiveUI);
 }
 
 _int CPlayer::Update_GameObject(const _float& timeDelta)
@@ -130,11 +136,33 @@ void CPlayer::OnBeginOverlap(CCollider* self, CCollider* other)
     CCharacterBase::OnBeginOverlap(self, other);
     m_PlayerGatherCom->OnBeginOverlap(self, other);
     m_PlayerConstructionCom->OnOverlapEnter(self, other);
+
+    m_OverlapBegin = true;
 }
 
 void CPlayer::OnStayOverlap(CCollider* self, CCollider* other)
 {
     CCharacterBase::OnStayOverlap(self, other);
+
+   CWorldInteractive* worldInteractiveObj = dynamic_cast<CWorldInteractive*>(other->Get_Owner());
+   CBuildingBase* building = dynamic_cast<CBuildingBase*>(other->Get_Owner());
+   CCharacterBase* character = dynamic_cast<CCharacterBase*>(other->Get_Owner());
+   
+   if ((worldInteractiveObj||building||character)&&m_OverlapBegin)
+   {
+       m_InteractiveUI->Set_TextureIndex(2);
+       m_InteractiveUI->Set_IsActive(true);
+       m_InteractiveUI->Get_Transform()->Set_Scale(110.f,35.f,1.f);
+
+   
+       if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
+       {
+           m_InteractiveUI->Set_IsActive(false);
+           m_OverlapBegin = false;
+       }
+   }
+    
+
 }
 
 void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)
@@ -143,6 +171,15 @@ void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)
 
     m_PlayerGatherCom->OnEndOverlap(self, other);
     m_PlayerConstructionCom->OnOverlapExit(self, other);
+    CWorldInteractive* worldInteractiveObj = dynamic_cast<CWorldInteractive*>(other->Get_Owner());
+    CBuildingBase* building = dynamic_cast<CBuildingBase*>(other->Get_Owner());
+    CCharacterBase* character = dynamic_cast<CCharacterBase*>(other->Get_Owner());
+    if (worldInteractiveObj|| building|| character)
+    {
+        m_InteractiveUI->Set_IsActive(false);
+
+    }
+
     //cout << "Player HitOut" << endl;
 }
 

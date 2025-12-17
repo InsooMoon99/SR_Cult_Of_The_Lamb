@@ -11,6 +11,7 @@
 #include "CRenderer.h"
 #include "CStage_Dungeon.h"
 #include "CSpriteEff.h"
+#include "CSoundMgr.h"
 
 class CSpriteEff;
 class CStage_Dungeon;
@@ -107,6 +108,13 @@ _int CUI_DungeonLootPanel::Update_GameObject(const _float& timeDelta)
 
     if(dungeonStage->IsCleared()&&!m_Active)
     {
+        if (!m_BGMStarted)
+        {
+            CSoundMgr::GetInstance()->Play_BGM(L"UI/UI_DungeonClear.wav",
+                SOUND_EFFECT,
+                0.3f);
+            m_BGMStarted = true;
+        }
         m_Active = true;
         m_Alpha = 0.f;
     }
@@ -209,7 +217,7 @@ void CUI_DungeonLootPanel::Render_GameObject()
     CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Big",
         L"정화한 불신자들",
         &screen1,
-        D3DXCOLOR(0.7f, 0.7f, 0.7f, m_Alpha));
+        D3DXCOLOR(242.f / 255.f, 237.f / 255.f, 221.f / 255.f, m_Alpha * 0.6f));
 
     CScene* scene = CManagement::GetInstance()->Get_Scene();
     CStage_Dungeon* dungeonStage = dynamic_cast<CStage_Dungeon*>(scene);
@@ -297,7 +305,6 @@ void CUI_DungeonLootPanel::Free()
     }
 
     m_Cells.clear();
-
     Safe_Release(m_DecoIcon1);
     Safe_Release(m_DecoIcon2);
     Safe_Release(m_DecoIcon3);

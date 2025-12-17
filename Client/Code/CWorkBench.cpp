@@ -11,6 +11,7 @@
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CUIBuildMenu.h"
+#include "CSoundMgr.h"
 
 CWorkBench::CWorkBench(DEVICE graphicDev)
     : CBuildingBase(graphicDev),
@@ -57,6 +58,7 @@ _int CWorkBench::Update_GameObject(const _float& timeDelta)
     {
         if (CDInputMgr::GetInstance()->MouseDown(DIM_LB))
         {
+            CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Open_Menu.wav", SOUNDTYPE::SOUND_UI, 1.f);
             m_BuildMenu->Set_IsActive(true);
             m_BuildMenu->PlayOpenAnimation();
 

@@ -1,12 +1,15 @@
 ﻿#include "pch.h"
 #include "CTarotStageController.h"
-
+#include "CUI_Dialogue.h"
 #include <CManagement.h>
 #include "CUITarotCard.h"
 #include "CRenderer.h"
 #include "CTransform.h"
 #include "CUITarotDescCard.h"
 #include "CPlayerSkill.h"
+#include "CScene.h"
+#include "CLayer.h"
+#include "CSoundMgr.h"
 
 class CPlayerSkill;
 
@@ -37,6 +40,30 @@ HRESULT CTarotStageController::Ready_GameObject()
     return S_OK;
 }
 
+void CTarotStageController::Initialize_GameObject()
+{
+    CGameObject::Initialize_GameObject();
+
+    m_Dialogue = CUI_Dialogue::Create(m_GraphicDev);
+    auto layer = CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::UI);
+    layer->Add_GameObject(OBJTYPE::UI, m_Dialogue);
+
+    m_Dialogue->Set_OnDialogueEnd([this](const string& id)
+        {
+            if (id == "Tarot_Start")
+            {
+                m_CurrentState = STAGESTATE::CARD;
+            }
+
+            if (id == "Tarot_End")
+            {
+                m_Active = false;
+                m_CurrentState = STAGESTATE::ENDING;
+        
+            }
+        });
+}
+
 _int CTarotStageController::Update_GameObject(const _float& timeDelta)
 {
     if (!m_Active)
@@ -44,56 +71,74 @@ _int CTarotStageController::Update_GameObject(const _float& timeDelta)
 
     int exit = CGameObject::Update_GameObject(timeDelta);
 
-    switch(m_CurrentState)
+    switch (m_CurrentState)
     {
-        case STAGESTATE::NONE: m_CurrentState = STAGESTATE::CARD;
-            break;
-        case STAGESTATE::DIALOGUE:
-            //TODO 유림 : DialogueMgr 같은 거 나중에 추가하면 넣기
-            break;
-        case STAGESTATE::CARD:
+    case STAGESTATE::NONE:
+        m_CurrentState = STAGESTATE::DIALOGUE;
+        break;
+    case STAGESTATE::DIALOGUE:
+        if (!m_DialogueStarted)
+        {
+            m_Dialogue->Start_Dialogue("Tarot_Start", _vec2(0.f, 200.f), _vec2(300.f, 80.f));
 
+            m_DialogueStarted = true;
+        }
+
+        break;
+    case STAGESTATE::CARD:
+        if (!m_SoundEnded)
+        {
+            CSoundMgr::GetInstance()->Play_Once(L"ui/UI_TarotCardPull.wav",
+                SOUNDTYPE::SOUND_UI,
+                0.5f);
+            m_SoundEnded = true;
+        }
             m_ExplainCard1->Update_GameObject(timeDelta);
             m_ExplainCard2->Update_GameObject(timeDelta);
             m_TarotCard1->Update_GameObject(timeDelta);
             m_TarotCard2->Update_GameObject(timeDelta);
+       
+        //시작 애니메이션이 끝났는지 확인하고 끝났으면 다음 상태로 연결
+        if (m_TarotCard1->Get_IsFinished() && m_TarotCard2->Get_IsFinished() && m_TarotCard1->Get_TarotState() == TAROTSTATE::START)
+        {
+            m_TarotCard1->Set_CurrentState(TAROTSTATE::CHOICE);
+            m_TarotCard1->Set_PrevState(TAROTSTATE::START);
+            m_TarotCard2->Set_CurrentState(TAROTSTATE::CHOICE);
+            m_TarotCard2->Set_PrevState(TAROTSTATE::START);
+            m_TarotCard1->Set_IsFinished(false);
+            m_TarotCard2->Set_IsFinished(false);
+            m_ExplainCard1->Set_Slide(true);
+            m_ExplainCard2->Set_Slide(true);
+            m_SoundEnded = false;
+        }
 
-            //시작 애니메이션이 끝났는지 확인하고 끝났으면 다음 상태로 연결
-            if (m_TarotCard1->Get_IsFinished() && m_TarotCard2->Get_IsFinished() && m_TarotCard1->Get_TarotState() == TAROTSTATE::START)
-            {
-                m_TarotCard1->Set_CurrentState(TAROTSTATE::CHOICE);
-                m_TarotCard1->Set_PrevState(TAROTSTATE::START);
-                m_TarotCard2->Set_CurrentState(TAROTSTATE::CHOICE);
-                m_TarotCard2->Set_PrevState(TAROTSTATE::START);
-                m_TarotCard1->Set_IsFinished(false);
-                m_TarotCard2->Set_IsFinished(false);
-                m_ExplainCard1->Set_Slide(true);
-                m_ExplainCard2->Set_Slide(true);
-                
-            }
+        if (m_TarotCard1->Get_Selected() || m_TarotCard2->Get_Selected())
+        {
+         
+            m_TarotCard1->Set_CurrentState(TAROTSTATE::RESULT);
+            m_TarotCard1->Set_PrevState(TAROTSTATE::CHOICE);
+            m_TarotCard2->Set_CurrentState(TAROTSTATE::RESULT);
+            m_TarotCard2->Set_PrevState(TAROTSTATE::CHOICE);
 
-            if (m_TarotCard1->Get_Selected() || m_TarotCard2->Get_Selected())
-            {
-                m_TarotCard1->Set_CurrentState(TAROTSTATE::RESULT);
-                m_TarotCard1->Set_PrevState(TAROTSTATE::CHOICE);
-                m_TarotCard2->Set_CurrentState(TAROTSTATE::RESULT);
-                m_TarotCard2->Set_PrevState(TAROTSTATE::CHOICE);
-              
-                m_ExplainCard1->Set_RenderOff(true);
-                m_ExplainCard2->Set_RenderOff(true);
-                m_CurrentState = STAGESTATE::ENDING;
-            }
+            m_ExplainCard1->Set_RenderOff(true);
+            m_ExplainCard2->Set_RenderOff(true);
+            m_CurrentState = STAGESTATE::ENDING;
+        }
 
-            break;
-        case STAGESTATE::ENDING:
-            //TODO 유림 : 타로 뽑기 종료
-            break;
-      
+        break;
+    case STAGESTATE::ENDING:
+        if (!m_DialogueEnded)
+        {
+        m_Dialogue->Start_Dialogue("Tarot_End", _vec2(0.f, 200.f), _vec2(300.f, 80.f));
+        m_DialogueEnded = true;
+        }
+        break;
+
 
     }
-  
 
-   
+
+
     return exit;
 }
 
@@ -142,7 +187,7 @@ CTarotStageController* CTarotStageController::Create(DEVICE graphicDev)
 
 void CTarotStageController::Create_Cards()
 {
-    
+
     //하트 설명 카드
     m_ExplainCard1 = CUITarotDescCard::Create(m_GraphicDev);
     m_ExplainCard1->Set_TextureIndex(4);
@@ -182,6 +227,6 @@ void CTarotStageController::Free()
     Safe_Release(m_TarotCard2);
     Safe_Release(m_ExplainCard1);
     Safe_Release(m_ExplainCard2);
- 
+
     CGameObject::Free();
 }

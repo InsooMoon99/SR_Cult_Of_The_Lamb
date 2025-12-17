@@ -56,8 +56,10 @@
 #include "CPlayerConstruction.h"
 #include "CPlayerGathering.h"
 #include "CUI_ProgressBar.h"
-#include "CRenderer.h"
 #include "CWeaponEquip.h"
+#include "CFontMgr.h"
+#include "CUI_Text.h"
+#include "CRenderer.h"
 
 class CUIBuildMenu;
 
@@ -166,6 +168,15 @@ void CStage::Initialize_Scene()
 
     CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Village.wav", 0.3f, true, 1.f);
 
+   // m_UIOpenTime = 4.f;
+
+    m_VillageEnterUI = CUI_Text::Create(m_GraphicDev);
+    m_VillageEnterUI->Set_Font(L"NanumSquare_Max");
+    m_VillageEnterUI->Set_Text(L"어린 양의 교단");
+    m_VillageEnterUI->Set_Color({ 1.f, 1.f, 1.f, 0.5f });
+
+    CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::UI)->Add_GameObject(OBJTYPE::UI, m_VillageEnterUI);
+    
     // 던전 이동 트리거 만들기
     Create_Trigger();
 
@@ -242,6 +253,36 @@ void CStage::Initialize_Scene()
 _int CStage::Update_Scene(const _float& timeDelta)
 {
     _int exit = Engine::CScene::Update_Scene(timeDelta);
+
+    if (m_UIOpenTime>=0.f)
+    {
+         m_UIOpenTime -= timeDelta;
+
+        _vec2 pos = { 50.f,50.f };
+
+        m_VillageEnterUI->Set_IsActive(true);
+
+        if (m_UIOpenTime <= 0.f)
+        {
+            m_VillageEnterUI->Set_IsActive(false);
+            m_UIOpenTime = 0.f;
+        }
+    }
+
+
+    auto* playerSkill = dynamic_cast<CPlayerSkill*>(
+        CManagement::GetInstance()->Get_Component(ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::PL_SKILL));
+
+    if (playerSkill)
+    {
+        playerSkill->Set_SkillUnlocked(false);
+        playerSkill->Set_CurrentCharges(0);
+
+    }
+   // m_WeaponEquipCom = dynamic_cast<CWeaponEquip*>(
+   //     CManagement::GetInstance()->Get_Component(ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::WEAPON_EQUIP));
+   // if (m_WeaponEquipCom && m_WeaponEquipCom->Get_WeaponEquipped())
+   //     m_WeaponEquipCom->Unequip_Weapon();
 
     m_FollowerSpawnTimer += timeDelta;
 
@@ -860,6 +901,6 @@ void CStage::Free()
     CDropSystem::GetInstance()->Clear_Item();
     CDroppedItem::Reset_WeaponExplainUI();
     CConstructionMgr::GetInstance()->Release_Placer();
-
+   
     Engine::CScene::Free();
 }

@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CUI.h"
 class CUIIcon;
+class CSpriteEff;
 
 class CUIWeaponExplain : public CUI
 {
@@ -18,6 +19,7 @@ public:
     HRESULT Add_Component();
     void    Set_ItemID(int ID) { m_ItemID = ID; }
     void    Set_Active(_bool tf) { m_Active = tf; }
+    _bool   Get_Active() { return m_Active; }
     static CUIWeaponExplain* Create(DEVICE graphicDev);
 
 protected:
@@ -25,4 +27,7 @@ protected:
 
 private:
     int m_ItemID;
+    _float m_Alpha = 0.f;
+    CSpriteEff* m_SpriteEffCom;
+    _bool m_SoundEnded;
 };
