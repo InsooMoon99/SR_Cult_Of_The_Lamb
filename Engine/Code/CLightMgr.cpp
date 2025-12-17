@@ -25,6 +25,12 @@ HRESULT CLightMgr::Ready_Light(DEVICE           graphicDev,
     return S_OK;
 }
 
+void CLightMgr::Clear_Lights()
+{
+    for_each(m_LightList.begin(), m_LightList.end(), CDeleteObj());
+    m_LightList.clear();
+}
+
 void CLightMgr::Free()
 {
     for_each(m_LightList.begin(), m_LightList.end(), CDeleteObj());

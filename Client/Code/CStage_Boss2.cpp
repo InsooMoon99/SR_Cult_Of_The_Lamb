@@ -7,6 +7,7 @@
 #include "CPlayer.h"
 #include "CCombatStat.h"
 #include "CState.h"
+#include "CRenderer.h"
 #include "CTerrain.h"
 #include "CTransform.h"
 #include "CMainEditorMgr.h"
@@ -445,10 +446,14 @@ void CStage_Boss2::Start_CameraShaking(CAM_MOVE_TYPE type)
 
 HRESULT CStage_Boss2::Ready_Light()
 {
+    m_GraphicDev->LightEnable(0, FALSE);
+
     D3DLIGHT9 lightInfo;
     ZeroMemory(&lightInfo, sizeof(D3DLIGHT9));
 
     //lightInfo.Type = D3DLIGHT_DIRECTIONAL;  // 방향성 조명
+    //lightInfo.Direction = D3DXVECTOR3(0.f, -1.f, 0.f);
+
     lightInfo.Type = D3DLIGHT_POINT;          // Point Light
 
     lightInfo.Diffuse = m_LightDiffuse;

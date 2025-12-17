@@ -56,6 +56,7 @@
 #include "CPlayerConstruction.h"
 #include "CPlayerGathering.h"
 #include "CUI_ProgressBar.h"
+#include "CRenderer.h"
 #include "CWeaponEquip.h"
 
 class CUIBuildMenu;
