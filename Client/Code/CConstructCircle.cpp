@@ -108,7 +108,19 @@ void CConstructCircle::OnStayOverlap(CCollider* self, CCollider* other)
             obj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
 
         if (playerState && playerState->Get_State() == ACTORSTATE::PLAYER_HAMMER)
+        {
+            g_Timers[TIMER_SOUND_PL_HAMMERING] -= CTimerMgr::GetInstance()->Get_TimeDelta();
+
+            if (g_Timers[TIMER_SOUND_PL_HAMMERING] < 0.f)
+            {
+                CSoundMgr::GetInstance()->Play_Once(L"Construction/Hammering_2.wav",
+                    SOUND_EFFECT,
+                    1.f);
+                g_Timers[TIMER_SOUND_PL_HAMMERING] = 0.3f;
+            }
+           
             m_Progress += 10.f * CTimerMgr::GetInstance()->Get_TimeDelta();
+        }
     }
 
     // NPC 체크
@@ -129,9 +141,15 @@ void CConstructCircle::OnStayOverlap(CCollider* self, CCollider* other)
         {
         case BUILDING_TYPE::TEMPLE:
             newObj = CTemple::Create(m_GraphicDev);
+            CSoundMgr::GetInstance()->Play_Once(L"Construction/Building_Finished_Epic.wav",
+                SOUND_EFFECT,
+                1.f);
             break;
         case BUILDING_TYPE::KITCHEN:
             newObj = CKitchen::Create(m_GraphicDev);
+            CSoundMgr::GetInstance()->Play_Once(L"Construction/Building_Finished_Wood.wav",
+                SOUND_EFFECT,
+                1.f);
             break;
         default: break;
         }

@@ -168,7 +168,6 @@ void CStage::Initialize_Scene()
 
     CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Village.wav", 0.3f, true, 1.f);
 
-   // m_UIOpenTime = 4.f;
 
     m_VillageEnterUI = CUI_Text::Create(m_GraphicDev);
     m_VillageEnterUI->Set_Font(L"NanumSquare_Max");
@@ -254,6 +253,7 @@ _int CStage::Update_Scene(const _float& timeDelta)
 {
     _int exit = Engine::CScene::Update_Scene(timeDelta);
 
+    // 마을 입장할 때 폰트 UI
     if (m_UIOpenTime>=0.f)
     {
          m_UIOpenTime -= timeDelta;

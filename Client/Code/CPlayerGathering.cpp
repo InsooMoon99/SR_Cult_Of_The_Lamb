@@ -68,11 +68,16 @@ _int CPlayerGathering::Update_Component(const _float& timeDelta)
     {
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
         m_AttackTimer = 0;
+
         if (m_ProgressBar)  // nullptr 체크 추가
             m_ProgressBar->Set_IsActive(false);
+
+        if (m_Target)
+        {
+            cout << "타겟 존재" << endl;
+        }
         return exit;
     }
-
 
     if (m_Target && m_ProgressBar)
     {
@@ -80,7 +85,7 @@ _int CPlayerGathering::Update_Component(const _float& timeDelta)
         m_ProgressBar->Set_IsActive(true);
 
         CCombatStat* combat = dynamic_cast<CCombatStat*>(m_Target->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
-
+      
     }
     //애니메이션 방향 결정
     _vec3 vTargetDir = m_Target->Get_Transform()->Get_Pos();
@@ -108,7 +113,7 @@ _int CPlayerGathering::Update_Component(const _float& timeDelta)
             h.hitter            = m_Target;
 
             combat->Apply_Damage(h);
-
+            
             //TODO ACTION 사운드
 
             m_AttackTimer = 0;

@@ -382,6 +382,9 @@
     <Filter Include="05. UI\01. UI\16. UIInteractive">
       <UniqueIdentifier>{09a203e9-0c7d-4e4c-98f8-6ab7ca0bb20a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\12. Interactive Object">
+      <UniqueIdentifier>{2b5339d0-8214-432a-8734-67f3f6dc4a91}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -1021,7 +1024,7 @@
     </ClInclude>
     <ClInclude Include="..\Header\CUI_Interactive.h">
       <Filter>헤더 파일</Filter>
-          </ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Header\CLogo_Dungeon.h">
       <Filter>02. Scene\00. Logo</Filter>
     </ClInclude>
@@ -1030,6 +1033,9 @@
     </ClInclude>
     <ClInclude Include="..\Header\CFollowerPig.h">
       <Filter>03. GameObject\11. NPC\02. Follower Pig</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CInteractiveGrass.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1629,7 +1635,7 @@
     </ClCompile>
     <ClCompile Include="..\Code\CUI_Interactive.cpp">
       <Filter>소스 파일</Filter>
-          </ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Code\CLogo_Dungeon.cpp">
       <Filter>02. Scene\00. Logo</Filter>
     </ClCompile>
@@ -1638,6 +1644,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CFollowerPig.cpp">
       <Filter>03. GameObject\11. NPC\02. Follower Pig</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CInteractiveGrass.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

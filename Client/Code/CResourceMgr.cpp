@@ -852,7 +852,7 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     //circleTex
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_CIRCLE,
         Engine::CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Circle_Red.png", 1))))
+            L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Circle_Red%d.png", 2))))
         return E_FAIL;
 
     //circleTex
@@ -1111,6 +1111,15 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
             TEX_NORMAL,
             L"../Bin/Resource/Texture/UI/FollowerCommand/BackGround0.png",
             1))))
+        return E_FAIL;
+
+    //// Texture : InteractiveObj
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_INTERACTIVEOBJ,
+        Engine::CTexture::Create(
+            graphicDev,
+            TEX_NORMAL,
+            L"../Bin/Resource/Texture/InteractiveObj/InteractiveGrass%d.png",
+            2))))
         return E_FAIL;
 
     return S_OK;

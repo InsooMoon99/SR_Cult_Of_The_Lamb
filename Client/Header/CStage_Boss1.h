@@ -10,6 +10,7 @@ class CCameraController;
 class CPlayerSkill;
 class CWeaponEquip;
 class CInventory;
+class CUI_Text;
 
 BEGIN(Engine)
 class CUI;
@@ -95,7 +96,7 @@ private:
     vector<CUI*>        m_Player_UI;
 
     CUI_BossHp*         m_BossHpbar;
-
+    CUI_Text*           m_BossEnterUI;
 private:
     _bool               m_IsUIMoving = false;
     _bool               m_IsBossUIMoving = false;
@@ -110,6 +111,7 @@ private:
     _float              m_DialogueDelayTimer = 0.f;
     _bool               m_WaitingForDialogue = false;
 
+    _float              m_UIOpenTime = 3.f;
 private:
     // Fog
     CFog*               m_Fog = nullptr;

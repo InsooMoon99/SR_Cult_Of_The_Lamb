@@ -27,6 +27,7 @@
 #include "CUI_Interactive.h"
 #include "CLayer.h"
 #include "CBuildingBase.h"
+#include "CInteractiveGrass.h"
 
 CPlayer::CPlayer(DEVICE graphicDev)
     : CCharacterBase(graphicDev),
@@ -147,7 +148,10 @@ void CPlayer::OnStayOverlap(CCollider* self, CCollider* other)
    CWorldInteractive* worldInteractiveObj = dynamic_cast<CWorldInteractive*>(other->Get_Owner());
    CBuildingBase* building = dynamic_cast<CBuildingBase*>(other->Get_Owner());
    CCharacterBase* character = dynamic_cast<CCharacterBase*>(other->Get_Owner());
-   
+   if (dynamic_cast<CInteractiveGrass*>(worldInteractiveObj))
+   {
+       worldInteractiveObj = nullptr;
+   }
    if ((worldInteractiveObj||building||character)&&m_OverlapBegin)
    {
        m_InteractiveUI->Set_TextureIndex(2);
@@ -160,6 +164,7 @@ void CPlayer::OnStayOverlap(CCollider* self, CCollider* other)
            m_InteractiveUI->Set_IsActive(false);
            m_OverlapBegin = false;
        }
+       //|| CDInputMgr::GetInstance()->MouseDown(DIM_LB)
    }
     
 
@@ -172,8 +177,13 @@ void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)
     m_PlayerGatherCom->OnEndOverlap(self, other);
     m_PlayerConstructionCom->OnOverlapExit(self, other);
     CWorldInteractive* worldInteractiveObj = dynamic_cast<CWorldInteractive*>(other->Get_Owner());
+    if (dynamic_cast<CInteractiveGrass*>(worldInteractiveObj))
+    {
+        worldInteractiveObj = nullptr;
+    }
     CBuildingBase* building = dynamic_cast<CBuildingBase*>(other->Get_Owner());
     CCharacterBase* character = dynamic_cast<CCharacterBase*>(other->Get_Owner());
+
     if (worldInteractiveObj|| building|| character)
     {
         m_InteractiveUI->Set_IsActive(false);

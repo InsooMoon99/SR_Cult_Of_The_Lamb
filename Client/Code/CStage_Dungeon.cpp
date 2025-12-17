@@ -39,6 +39,7 @@
 #include "CUI_SkillPanel.h"
 #include "ItemInstance.h"
 #include "CVillageStateMgr.h"
+#include "CInteractiveGrass.h"
 
 class CUI_DungeonLootPanel;
 
@@ -593,6 +594,15 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
     //FAILED_CHECK_MSG(
     //    layer->Add_GameObject(OBJTYPE::BOSS1, m_Boss),
     //    L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Boss) failed");
+
+    //상호작용 오브젝트
+    CInteractiveGrass* grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(10.f, 0.5f, 30.f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
 
     m_Layers.insert({ layerType, layer });
 
