@@ -1,14 +1,12 @@
 ﻿#include "CRenderer.h"
 
 #include "CGameObject.h"
-
-
+#include "CTransform.h"
 
 IMPLEMENT_SINGLETON(CRenderer)
 
 CRenderer::CRenderer()
-{
-}
+{}
 
 CRenderer::~CRenderer()
 {
@@ -46,7 +44,6 @@ void CRenderer::Clear_RenderGroup()
 {
     for (size_t i = 0; i < RENDER_END; ++i)
     {
-
         for_each(m_RenderGroup[i].begin(), m_RenderGroup[i].end(), CDeleteObj());
         m_RenderGroup[i].clear();
     }
@@ -86,6 +83,30 @@ void CRenderer::Render_NonAlpha(DEVICE& graphicDev)
 
 void CRenderer::Render_Alpha(DEVICE& graphicDev)
 {
+    // 알파 정렬
+    _matrix matView, matCam;
+    graphicDev->GetTransform(D3DTS_VIEW, &matView);
+    D3DXMatrixInverse(&matCam, nullptr, &matView);
+
+    _vec3 camPos = *(_vec3*)&matCam.m[3][0];
+
+    m_RenderGroup[RENDER_ALPHA].sort([&camPos](CGameObject* pObj1, CGameObject* pObj2)
+    {
+        CTransform* trans1 = pObj1->Get_Transform();
+        CTransform* trans2 = pObj2->Get_Transform();
+
+        if (!trans1 || !trans2)
+            return false;
+
+        _vec3 pivot1 = trans1->Get_Pos() - camPos;
+        _vec3 pivot2 = trans2->Get_Pos() - camPos;
+
+        _float dist1 = D3DXVec3LengthSq(&pivot1);
+        _float dist2 = D3DXVec3LengthSq(&pivot2);
+
+        return dist1 > dist2;
+    });
+
     graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 
     for (auto& obj : m_RenderGroup[RENDER_ALPHA])
@@ -263,7 +284,7 @@ void CRenderer::SetFogOn(LPDIRECT3DDEVICE9 graphicDev)
 
     // 안개 시작/끝 거리
     float fogStart = 5.f;   // 이 거리 전까진 원래색
-    float fogEnd = 25.f;   // 이 거리 이후엔 거의 안개색
+    float fogEnd   = 25.f;   // 이 거리 이후엔 거의 안개색
 
     graphicDev->SetRenderState(D3DRS_FOGSTART, *(DWORD*)&fogStart);
     graphicDev->SetRenderState(D3DRS_FOGEND, *(DWORD*)&fogEnd);
