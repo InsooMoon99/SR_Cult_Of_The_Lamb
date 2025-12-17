@@ -627,7 +627,7 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     NULL_CHECK_RETURN_MSG(tmpTree, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
 
     FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::BUILDING, tmpTree),
+        layer->Add_GameObject(OBJTYPE::INTERACTIVE, tmpTree),
         L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
     tmpTree->Get_Transform()->Set_Pos(4.f, 1.f, 23.f);
     tmpTree->Check_WorldState();
