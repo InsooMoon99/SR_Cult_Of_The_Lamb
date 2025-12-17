@@ -24,6 +24,7 @@
 #include "CUICircle.h"
 #include "CUIWeapon.h"
 #include "CUIIcon.h"
+#include "CSoundMgr.h"
 
 CStage_Boss2::CStage_Boss2(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -70,6 +71,8 @@ void CStage_Boss2::Initialize_Scene()
 
     if (m_Terrain)
         m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Boss2.map");
+
+    CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Deathcat_2.wav", 0.4f, true, 1.f);
 
     if (m_CamController)
     {

@@ -85,10 +85,24 @@ void CSoundMgr::Play_Once(const wstring& soundFile, SOUNDTYPE soundType, _float 
     }
 }
 
+void CSoundMgr::Play_Once_Pitched(const wstring& soundFile, SOUNDTYPE soundType, _float volume, _float pitch)
+{
+    wstring key = soundFile;
+    transform(key.begin(), key.end(), key.begin(), ::towlower);
+
+    auto iter = m_Sounds.find(key);
+    if (iter == m_Sounds.end())
+        return;
+
+    FMOD_System_PlaySound(m_System, iter->second, m_SoundGroups[soundType], FALSE, &m_Channel[soundType]);
+    FMOD_Channel_SetVolume(m_Channel[soundType], volume);
+    FMOD_Channel_SetPitch(m_Channel[soundType], pitch);
+}
+
 void CSoundMgr::Play_BGM(const wstring& soundFile,
-                          _float         volume,
-                          _bool          stopPrevBGM,
-                          _float         fadeOutDuration)
+                         _float         volume,
+                         _bool          stopPrevBGM,
+                         _float         fadeOutDuration)
 {
     NULL_CHECK_MSG(m_System, L"FMod System is Null");
 

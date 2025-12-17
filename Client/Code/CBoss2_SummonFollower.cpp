@@ -10,6 +10,7 @@
 #include "CEyeball.h"
 #include "CCreateHelper.h"
 #include "CTransform.h"
+#include "CSoundMgr.h"
 
 CBoss2_SummonFollower::CBoss2_SummonFollower(CMonsterBase* owner)
     : m_Owner(owner), m_Pattern_Cooldown(0)
@@ -43,6 +44,10 @@ void CBoss2_SummonFollower::Enter()
         if (animator)
         {
             animator->Play_Animation(L"Boss2_Roar_Alive", ANIMSTATE::ONCE);
+
+            CSoundMgr::GetInstance()->Play_Once_Pitched(L"Boss/DeathCat/DeathCat_Roar.wav",
+                SOUND_EFFECT,
+                0.5f, 1.65f);
         }
     }
 
@@ -80,7 +85,12 @@ _int CBoss2_SummonFollower::Update_State(const _float& timeDelta)
             m_Phase = SummonPhase::SUMMON;
 
             if (animator)
+            {
                 animator->Play_Animation(L"Boss2_Summon", ANIMSTATE::ONCE);
+                CSoundMgr::GetInstance()->Play_Once_Pitched(L"Boss/DeathCat/Deathcat_Grunt3.wav", SOUNDTYPE::SOUND_EFFECT, 0.6f, 1.f);
+                CSoundMgr::GetInstance()->Play_Once_Pitched(L"Boss/DeathCat/Deathcat_1st_Death_Earthquake.wav", SOUNDTYPE::SOUND_EFFECT, 0.25f, 1.3f);
+
+            }
         }
         break;
 
@@ -89,10 +99,26 @@ _int CBoss2_SummonFollower::Update_State(const _float& timeDelta)
         if (!m_IsSummon && animator && animator->Get_CurFrame() >= 22)
         {
             m_IsSummon = true;
+            m_SpawnIndex = 0;
+            m_SpawnTimer = 0.f;
+            m_SpawnComplete = false;
 
             boss->Trigger_OnSummonAnimStart();
+        }
 
-            Summon_Follower();
+        // 시간차 소환
+        if (m_IsSummon && !m_SpawnComplete)
+        {
+            m_SpawnTimer += timeDelta;
+            if (m_SpawnTimer > 0.05f)  // 0.05초 간격
+            {
+                Spawn_Single(m_SpawnIndex);
+                m_SpawnIndex++;
+                m_SpawnTimer = 0.f;
+
+                if (m_SpawnIndex >= 6)
+                    m_SpawnComplete = true;
+            }
         }
 
         // Summon 끝나면 Start로 전환
@@ -147,7 +173,63 @@ void CBoss2_SummonFollower::Summon_Follower()
         pig->Get_Transform()->Set_Pos(_vec3(62.5f, 3.4f, 45.5f));
         SpawnObjectOnLayer(pig, OBJTYPE::NPC);
     }
-    
+
+}
+
+void CBoss2_SummonFollower::Spawn_Single(_int index)
+{
+    auto dev = m_Owner->Get_GraphicDev();
+
+    switch (index)
+    {
+    case 0:
+    {
+        auto cow = CBoss_SlaveCow::Create(dev);
+        cow->Get_Transform()->Set_Pos(_vec3(34.1f, 3.5f, 43.7f));
+        SpawnObjectOnLayer(cow, OBJTYPE::NPC);
+    }
+    break;
+
+    case 1:
+    {
+        auto elephant = CBoss_SlaveElephant::Create(dev);
+        elephant->Get_Transform()->Set_Pos(_vec3(36.8f, 3.7f, 46.6f));
+        SpawnObjectOnLayer(elephant, OBJTYPE::NPC);
+    }
+    break;
+
+    case 2:
+    {
+        auto pig = CBoss_SlavePig::Create(dev);
+        pig->Get_Transform()->Set_Pos(_vec3(36.7f, 3.4f, 42.f));
+        SpawnObjectOnLayer(pig, OBJTYPE::NPC);
+    }
+    break;
+
+    case 3:
+    {
+        auto cow = CBoss_SlaveCow::Create(dev);
+        cow->Get_Transform()->Set_Pos(_vec3(64.3f, 3.5f, 42.1f));
+        SpawnObjectOnLayer(cow, OBJTYPE::NPC);
+    }
+    break;
+
+    case 4:
+    {
+        auto elephant = CBoss_SlaveElephant::Create(dev);
+        elephant->Get_Transform()->Set_Pos(_vec3(62.4f, 3.7f, 40.0f));
+        SpawnObjectOnLayer(elephant, OBJTYPE::NPC);
+    }
+    break;
+
+    case 5:
+    {
+        auto pig = CBoss_SlavePig::Create(dev);
+        pig->Get_Transform()->Set_Pos(_vec3(62.5f, 3.4f, 45.5f));
+        SpawnObjectOnLayer(pig, OBJTYPE::NPC);
+    }
+    break;
+    }
 }
 
 CBoss2_SummonFollower* CBoss2_SummonFollower::Create(CMonsterBase* owner)
@@ -166,5 +248,5 @@ CBoss2_SummonFollower* CBoss2_SummonFollower::Create(CMonsterBase* owner)
 
 void CBoss2_SummonFollower::Free()
 {
-    
+
 }

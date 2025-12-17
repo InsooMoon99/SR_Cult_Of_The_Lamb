@@ -27,6 +27,8 @@ public:  // --- 주요 기능 ---
                    SOUNDTYPE      soundType,
                    _float         volume);
 
+    void Play_Once_Pitched(const wstring& soundFile, SOUNDTYPE soundType, _float volume, _float pitch);
+
     /// @brief BGM용 반복 재생 기능
     /// @param soundFile        Sound 폴더부터의 주소 (ex. BGM/TestBGM.wav)
     /// @param volume           볼륨. 0~1 사이로 조절

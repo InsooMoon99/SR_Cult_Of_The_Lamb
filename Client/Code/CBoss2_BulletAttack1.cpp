@@ -8,12 +8,13 @@
 #include "CTransform.h"
 #include "CCreateHelper.h"
 #include "CTimerMgr.h"
-#include "Cboss2_Bullet.h"
+#include "CBoss2_Bullet.h"
 #include "CAttackBuilder.h"
 #include "CCameraController.h"
 #include "CCameraMovement.h"
 #include "CMainEditorMgr.h"
 #include "CProjectile.h"
+#include "CSoundMgr.h"
 
 CBoss2_BulletAttack1::CBoss2_BulletAttack1(CGameObject* owner)
     : m_Owner(owner), m_Pattern_Cooldown(0)
@@ -39,6 +40,10 @@ void CBoss2_BulletAttack1::Enter()
         auto animator = m_Controller->Get_OwnerAnimator();
         if (animator)
             animator->Play_Animation(L"Boss2_Roar", ANIMSTATE::ONCE);
+
+        CSoundMgr::GetInstance()->Play_Once_Pitched(L"Boss/DeathCat/DeathCat_Roar.wav",
+            SOUND_EFFECT,
+            0.5f, 1.65f);
     }
 
     m_fCurStateElapsedTime = 0.f;
@@ -99,8 +104,12 @@ void CBoss2_BulletAttack1::Play_Roar()
     if (animator && animator->Is_AnimationFinished())
     {
         m_ChainAnim = HANDSLMA;
+
         animator->Play_Animation(L"Boss2_HandSlam", ANIMSTATE::LOOP);
-        m_HasFiredBullet = false; 
+
+
+        m_HasFiredBullet = false;
+        m_SoundPlayed = false;
     }
 
 }
@@ -111,9 +120,19 @@ void CBoss2_BulletAttack1::Play_HandSlam()
     if (!animator) return;
 
     _int curFrame = animator->Get_CurFrame();
+    _int maxFrame = animator->Get_MaxFrame();
+
+    if (curFrame <= 2 && !m_SoundPlayed)
+    {
+        m_SoundPlayed = true;
+        CSoundMgr::GetInstance()->Play_Once_Pitched(
+            L"Boss/DeathCat/Deathcat_Handslam2.wav", SOUND_EFFECT, 0.3f, 1.5f);
+    }
 
     if (curFrame >= 30 && !m_HasFiredBullet)
     {
+        m_HasFiredBullet = true;
+
         auto camController = CMainEditorMgr::GetInstance()->Get_MainCameraControl();
         if (camController)
         {
@@ -122,13 +141,14 @@ void CBoss2_BulletAttack1::Play_HandSlam()
                 camMovement->Start_CamShake(0.42f, 0.7f, 55.7f, 10.5f);
         }
 
-        m_HasFiredBullet = true;
 
         auto boss = static_cast<CBossPhase2*>(m_Owner);
         DEVICE device = boss->Get_GraphicDev();
 
         if (m_SlamCount == 0)
         {
+
+
             SpawnBullets_Horizontal(device);
         }
         else if (m_SlamCount == 1)
@@ -148,6 +168,12 @@ void CBoss2_BulletAttack1::Play_HandSlam()
     if (m_HasFiredBullet && curFrame < 10)
     {
         m_SlamCount++;
+
+        if (m_SlamCount < 4)
+        {
+            CSoundMgr::GetInstance()->Play_Once_Pitched(L"Boss/DeathCat/Deathcat_Handslam2.wav",
+                SOUND_EFFECT, 0.3f, 1.5f);
+        }
         m_HasFiredBullet = false;
 
         if (m_SlamCount >= 4)

@@ -7,6 +7,7 @@
 #include "CTransform.h"
 #include "CCreateHelper.h"
 #include "CTimerMgr.h"
+#include "CSoundMgr.h"
 
 CBoss2_Groggy::CBoss2_Groggy(CGameObject* owner)
     : m_Owner(owner), m_Pattern_Cooldown(0)
@@ -28,7 +29,11 @@ void CBoss2_Groggy::Enter()
     {
         auto animator = m_Controller->Get_OwnerAnimator();
         if (animator)
+        {
             animator->Play_Animation(L"Boss2_DownStart", ANIMSTATE::ONCE);
+
+            CSoundMgr::GetInstance()->Play_Once_Pitched(L"Boss/DeathCat/DeathCat_Hurt.wav", SOUNDTYPE::SOUND_EFFECT, 0.3f, 1.4f);
+        }
     }
 
     m_fCurStateElapsedTime = 0.f;

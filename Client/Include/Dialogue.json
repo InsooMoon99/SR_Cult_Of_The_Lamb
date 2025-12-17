@@ -8,7 +8,8 @@
           "lineIndex": 0,
           "speaker": "기다리는 자",
           "text": "드디어... 내가 자유로워진다!",
-          "hasChoices": false
+          "hasChoices": false,
+          "leftPadding": 150.0
         },
         {
           "lineIndex": 1,
@@ -43,7 +44,7 @@
         {
           "lineIndex": 0,
           "speaker": "기다리는 자",
-          "text": "그렇게 날 배신하는구나, 어린 양이여, 나의 명을 거부하고는, 스스로 거짓된 우상이 되는구나.",
+          "text": "그렇게 날 배신하는구나, 어린 양이여. \n나의 명을 거부하고는, 스스로 거짓된 우상이 되는구나.",
           "hasChoices": false
         },
         {
