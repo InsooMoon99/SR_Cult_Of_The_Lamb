@@ -54,6 +54,8 @@ public:
     virtual void    AlphaRenderEnd();
     void            Set_Hurt(bool hurt) { m_bHurt = hurt; }
 
+    virtual void    Retreat_FromTarget(const _float& timeDelta, _float speed) { }
+
 public:
     using   OnDeathCallback = function<void()>;
     void    Set_OnDeath(OnDeathCallback callback) { m_OnDeath = callback; }

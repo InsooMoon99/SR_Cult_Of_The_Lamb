@@ -41,6 +41,8 @@ public:
     void    OnEndOverlap(CCollider* self, CCollider* other) override;
 
     void    Chase_Target(const float& timeDelta, _float speed) override;
+    void    Retreat_FromTarget(const _float& timeDelta, _float speed) override;
+
 
 private:
     void     Animation_Setting() override;

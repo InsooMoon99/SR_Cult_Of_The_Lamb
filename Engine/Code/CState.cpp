@@ -131,7 +131,14 @@ void CState::Update_Animation()
             CRcTex*     rcTex     = dynamic_cast<CRcTex*>(bufferCom);
 
             if (rcTex)
+            {
                 rcTex->Set_FlipX(dirInfo.second);
+
+                if (m_Animator)
+                {
+                    m_Animator->Set_CurOffsetByDir(dirInfo.second);
+                }
+            }
         }
 
         m_PrevState = m_State;

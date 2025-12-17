@@ -63,6 +63,9 @@ void CObjectSpawner::Render_Editor()
             const char* items[] = {
                 "Human Monster",
                 "Floater Monster",
+                "Human Monster2",
+                "Bat Monster",
+                "NPC - Ratau",
                 "NPC - Taro",
                 "NPC - Slave"};
 
@@ -104,6 +107,14 @@ void CObjectSpawner::Render_Editor()
 
                     case SPAWN_OBJ_TYPE::FLOATER_MONSTER:
                         color = D3DCOLOR_ARGB(255, 0, 255, 255);  // 시안
+                        break;
+
+                    case SPAWN_OBJ_TYPE::HUMAN_MONSTER2:
+                        color = D3DCOLOR_ARGB(66, 123, 133, 255);
+                        break;
+
+                    case SPAWN_OBJ_TYPE::BAT_MONSTER:
+                        color = D3DCOLOR_ARGB(123, 66, 133, 255);
                         break;
 
                     case SPAWN_OBJ_TYPE::NPC_TARO:

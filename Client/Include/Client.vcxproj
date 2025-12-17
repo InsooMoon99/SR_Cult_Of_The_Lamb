@@ -171,6 +171,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Header\CBatMonster.h" />
     <ClInclude Include="..\Header\CBoss2_Bullet.h" />
     <ClInclude Include="..\Header\CBoss2_BulletAttack1.h" />
     <ClInclude Include="..\Header\CBoss2_BulletAttack2.h" />
@@ -209,6 +210,7 @@
     <ClInclude Include="..\Header\CCookingController.h" />
     <ClInclude Include="..\Header\CFollowerElephant.h" />
     <ClInclude Include="..\Header\CFollowerPig.h" />
+    <ClInclude Include="..\Header\CHumanMonster2.h" />
     <ClInclude Include="..\Header\Client_Global.h" />
     <ClInclude Include="..\Header\CEligos.h" />
     <ClInclude Include="..\Header\CEligos_Attack_Bullet.h" />
@@ -383,6 +385,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Code\CBatMonster.cpp" />
     <ClCompile Include="..\Code\CBoss2_Bullet.cpp" />
     <ClCompile Include="..\Code\CBoss2_BulletAttack1.cpp" />
     <ClCompile Include="..\Code\CBoss2_BulletAttack2.cpp" />
@@ -429,6 +432,7 @@
     <ClCompile Include="..\Code\CEligos_StateMachine.cpp" />
     <ClCompile Include="..\Code\CEligos_Reveal.cpp" />
     <ClCompile Include="..\Code\CEyeball_CenterAttack.cpp" />
+    <ClCompile Include="..\Code\CHumanMonster2.cpp" />
     <ClCompile Include="..\Code\CLogo_Dungeon.cpp" />
     <ClCompile Include="..\Code\CFollowerElephant.cpp" />
     <ClCompile Include="..\Code\CFollowerPig.cpp" />
