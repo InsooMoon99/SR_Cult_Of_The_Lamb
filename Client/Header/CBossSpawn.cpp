@@ -11,6 +11,7 @@
 #include "CHumanMonster.h"
 #include "CCreateHelper.h"
 
+
 CBossSpawn::CBossSpawn(CBossPhase1* pOwner, CBossStateMachine* pStateMachine)
 {
     m_pOwner = pOwner;
@@ -36,6 +37,7 @@ void CBossSpawn::Exit()
 
 HRESULT CBossSpawn::Ready_State()
 {
+    CMonsterState::Ready_State();
     m_fMinStateTime = 0.f;
 
     m_pOwnerTransformCom = static_cast<CTransform*>(m_pOwner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
@@ -49,7 +51,7 @@ _int CBossSpawn::Update_State(const _float& timeDelta)
     CMonsterState::Update_State(timeDelta);
 
     if (m_pOwnerAnimatorCom->Get_CurAnimation() == nullptr)
-        return CBossPhase1::BOSSPHASE1::BOSSMOVE;
+        return CBossPhase1::BOSSPHASE1::SPAWNATTACK;
 
  
 
@@ -58,17 +60,17 @@ _int CBossSpawn::Update_State(const _float& timeDelta)
         _vec3 BaseCenter = m_pOwner->Get_Center();
         int BaseLength = m_pOwner->Get_Length();
         float interval = 1.f;
-
+    
         RandomMove(timeDelta, BaseCenter, BaseLength, interval);
     }
 
 
-        if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
+        if (m_pOwnerAnimatorCom->Is_AnimationFinished())
             return CBossPhase1::BOSSPHASE1::BOSSIDLE;// 이거 아님 공격상태전환 아이들로
 
   
 
-    return CBossPhase1::BOSSPHASE1::BOSSMOVE;
+    return CBossPhase1::BOSSPHASE1::SPAWNATTACK;
 }
 
 void CBossSpawn::RandomMove(const _float& timeDelta, _vec3 BaseCenter, int BaseLenght, float interval)
@@ -79,17 +81,17 @@ void CBossSpawn::RandomMove(const _float& timeDelta, _vec3 BaseCenter, int BaseL
     _vec3 LT = { BaseCenter.x - BaseLenght * 0.5f, 0.f, BaseCenter.z + BaseLenght * 0.5f };
     _vec3 RB = { BaseCenter.x + BaseLenght * 0.5f,0.f,BaseCenter.z - BaseLenght * 0.5f };
 
-    int offset = 5;// TOOD:: 나중에 맴버 변수로 오프셋 조정 (사이의 거리)
+    int m_CellSize = 5;// TOOD:: 나중에 맴버 변수로 오프셋 조정 (사이의 거리)
 
-    int xCell = BaseLenght / offset;
-    int zCell = BaseLenght / offset;
+    int xCell = BaseLenght / m_CellSize;
+    int zCell = BaseLenght / m_CellSize;
 
 
     int tmpx = CRandomMgr::GetInstance()->Get_Int_Random(0, xCell); // x 몇번쨰 칸인지는 랜덤
     int tmpz = CRandomMgr::GetInstance()->Get_Int_Random(0, zCell); // x 몇번쨰 칸인지는 랜덤
 
-    float xPos = tmpx * (offset);
-    float zPos = tmpz * (offset);
+    float xPos = tmpx * (m_CellSize);
+    float zPos = tmpz * (m_CellSize);
 
    // 스폰 잡몹
 
@@ -101,7 +103,7 @@ void CBossSpawn::RandomMove(const _float& timeDelta, _vec3 BaseCenter, int BaseL
             ID_DYNAMIC,
             COMPONENTTYPE::TRANSFORM));
 
-    Transform->Set_Pos({ xPos,1.f ,zPos });
+    Transform->Set_Pos(LT.x + xPos, 1, LT.z - zPos);
     }
 }
 

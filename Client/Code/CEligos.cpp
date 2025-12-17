@@ -177,14 +177,14 @@ HRESULT CEligos::Add_Component()
 void CEligos::Animation_Setting()
 {
 
-    m_AnimatorCom->Create_Animation(L"Eligos_roar", 140, 0.02f, _vec2(1.f, 1.f));
-    m_AnimatorCom->Create_Animation(L"Eligos_fly", 42, 0.02f, _vec2(1.f, 1.f));
-    m_AnimatorCom->Create_Animation(L"Eligos_burpcharge", 50, 0.02f, _vec2(1.0f, 1.0f));
+    m_AnimatorCom->Create_Animation(L"Eligos_roar", 140, 0.02f, _vec2(1.1f, 1.f), _vec2(0.f, 0.f));
+    m_AnimatorCom->Create_Animation(L"Eligos_fly", 42, 0.02f, _vec2(1.09f, 0.89f), _vec2(0.01f, -0.08f));
+    m_AnimatorCom->Create_Animation(L"Eligos_burpcharge", 50, 0.02f, _vec2(1.2f, 0.88f), _vec2(0.f, -0.09f));
     m_AnimatorCom->Create_Animation(L"Eligos_burp", 42, 0.02f, _vec2(1.0f, 1.0f));
-    m_AnimatorCom->Create_Animation(L"Eligos_attackcharge", 59, 0.02f, _vec2(1.0f, 1.0f));
+    m_AnimatorCom->Create_Animation(L"Eligos_attackcharge", 59, 0.02f, _vec2(1.16f, 1.130f), _vec2(0.010f, 0.120f));
     m_AnimatorCom->Create_Animation(L"Eligos_attack", 32, 0.04f, _vec2(1.0f, 1.0f));
 
-    m_AnimatorCom->Create_Animation(L"Eligos_attackcharge_bullet", 59, 0.02f, _vec2(1.0f, 1.0f));
+    m_AnimatorCom->Create_Animation(L"Eligos_attackcharge_bullet", 59, 0.02f, _vec2(1.16f, 1.130f), _vec2(0.010f, 0.120f));
     m_AnimatorCom->Create_Animation(L"Eligos_attack_bullet", 32, 0.06f, _vec2(1.0f, 1.0f));
    
 }

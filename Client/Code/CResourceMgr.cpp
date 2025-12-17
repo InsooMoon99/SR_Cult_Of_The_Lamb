@@ -824,6 +824,14 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
         L"../Bin/Resource/Texture/MainMenu/MenuChar/Main menu-animation%d.png", 100)))
         return E_FAIL;
 
+    // 일단 여기 넝고 메인보스의 졸
+    if (FAILED(menuChar->Add_Texture(L"Etc_White", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Etc/Etc_White/Etc_White%d.png", 84)))
+        return E_FAIL;
+    if (FAILED(menuChar->Add_Texture(L"Etc_Black", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Etc/Etc_Black/Etc_Black%d.png", 84)))
+        return E_FAIL;
+    //
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_MENU_CHAR, menuChar)))
         return E_FAIL;

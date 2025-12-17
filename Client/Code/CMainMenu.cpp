@@ -51,7 +51,7 @@ HRESULT CMainMenu::Ready_Scene()
 
     // 메인 화면 BGM
     CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Intro.wav", 0.4f, true, 1.f);
-    CRenderer::GetInstance()->SetFog(true);
+    CRenderer::GetInstance()->SetFog(D3DCOLOR_XRGB(255, 240, 211), 5.f, 25.f);
 
     return S_OK;
 }
@@ -356,7 +356,7 @@ CMainMenu* CMainMenu::Create(DEVICE graphicDev)
 
 void CMainMenu::Free()
 {
-    CRenderer::GetInstance()->SetFog(false);
+    CRenderer::GetInstance()->OffFog();
 
     CSoundMgr::GetInstance()->Stop_SoundChannel(SOUND_BGM);
 

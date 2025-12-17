@@ -258,12 +258,12 @@ void CRenderer::SetFogOn(LPDIRECT3DDEVICE9 graphicDev)
     // 안개 색 (멀리 있는 색)
     graphicDev->SetRenderState(
         D3DRS_FOGCOLOR,
-        D3DCOLOR_XRGB(255, 240, 211)   // 메인 메뉴용 노랑이 색임
+        color   // 메인 메뉴용 노랑이 색임
     );
 
     // 안개 시작/끝 거리
-    float fogStart = 5.f;   // 이 거리 전까진 원래색
-    float fogEnd = 25.f;   // 이 거리 이후엔 거의 안개색
+    //float fogStart = 5.f;   // 이 거리 전까진 원래색
+    //float fogEnd = 25.f;   // 이 거리 이후엔 거의 안개색
 
     graphicDev->SetRenderState(D3DRS_FOGSTART, *(DWORD*)&fogStart);
     graphicDev->SetRenderState(D3DRS_FOGEND, *(DWORD*)&fogEnd);

@@ -209,6 +209,7 @@
     <ClInclude Include="..\Header\CCharacterBase.h" />
     <ClInclude Include="..\Header\CChest.h" />
     <ClInclude Include="..\Header\CCookingController.h" />
+    <ClInclude Include="..\Header\CEtc.h" />
     <ClInclude Include="..\Header\Client_Global.h" />
     <ClInclude Include="..\Header\CEligos.h" />
     <ClInclude Include="..\Header\CEligos_Attack_Bullet.h" />
@@ -232,6 +233,7 @@
     <ClInclude Include="..\Header\CFog.h" />
     <ClInclude Include="..\Header\CFogMgr.h" />
     <ClInclude Include="..\Header\CRunLootLog.h" />
+    <ClInclude Include="..\Header\CStage_Prologue_Boss.h" />
     <ClInclude Include="..\Header\CTarotNPC.h" />
     <ClInclude Include="..\Header\CUICookedFoodCell.h" />
     <ClInclude Include="..\Header\CUICookingCell.h" />
@@ -424,6 +426,7 @@
     <ClCompile Include="..\Code\CEligos_Move.cpp" />
     <ClCompile Include="..\Code\CEligos_StateMachine.cpp" />
     <ClCompile Include="..\Code\CEligos_Reveal.cpp" />
+    <ClCompile Include="..\Code\CEtc.cpp" />
     <ClCompile Include="..\Code\CEyeball_CenterAttack.cpp" />
     <ClCompile Include="..\Code\CMenuExtra.cpp" />
     <ClCompile Include="..\Code\CNPCState_Build.cpp" />
@@ -437,6 +440,7 @@
     <ClCompile Include="..\Code\CFog.cpp" />
     <ClCompile Include="..\Code\CFogMgr.cpp" />
     <ClCompile Include="..\Code\CRunLootLog.cpp" />
+    <ClCompile Include="..\Code\CStage_Prologue_Boss.cpp" />
     <ClCompile Include="..\Code\CTarotNPC.cpp" />
     <ClCompile Include="..\Code\CUICookedFoodCell.cpp" />
     <ClCompile Include="..\Code\CUICookingCell.cpp" />

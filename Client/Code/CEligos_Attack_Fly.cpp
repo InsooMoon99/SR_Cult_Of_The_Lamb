@@ -26,7 +26,7 @@ void CEligos_Attack_Fly::Enter()
 {
     CMonsterState::Enter();
     // 일단 지금은 
-    m_pOwnerAnimatorCom->Play_Animation(L"Eligos_roar", ANIMSTATE::ONCE);
+    m_pOwnerAnimatorCom->Play_Animation(L"Eligos_fly", ANIMSTATE::ONCE);
 
     m_ePhase = PHASE::WAIT;
 }

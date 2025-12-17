@@ -72,6 +72,17 @@ _int CEligos_Attack_Melee::Update_State(const _float& timeDelta)
         D3DXVec3Normalize(&m_TargetDir, &m_TargetDir);
         // 플레이어 위치 캐싱
 
+        if (m_pOwnerTransformCom->Get_Pos().x < m_pPlayerTransformCom->Get_Pos().x)// 플레이어 오른쪽
+        {
+            if (m_pOwnerTransformCom->Get_Scale().x > 0)
+                m_pOwnerTransformCom->Set_Scale(m_pOwnerTransformCom->Get_Scale().x * -1, m_pOwnerTransformCom->Get_Scale().y, m_pOwnerTransformCom->Get_Scale().z);
+        }
+        else
+        {
+            if (m_pOwnerTransformCom->Get_Scale().x < 0)
+                m_pOwnerTransformCom->Set_Scale(m_pOwnerTransformCom->Get_Scale().x * -1, m_pOwnerTransformCom->Get_Scale().y, m_pOwnerTransformCom->Get_Scale().z);
+        }
+
         if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
         {
             m_ePhase = PHASE::SHOOT;

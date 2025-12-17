@@ -70,6 +70,16 @@ _int CEligos_Attack_Bullet::Update_State(const _float& timeDelta)
     {
     case PHASE::MOVE:
     {
+        if (m_MoveDir.x > 0)// 플레이어 오른쪽
+        {
+            if (m_pOwnerTransformCom->Get_Scale().x > 0)
+                m_pOwnerTransformCom->Set_Scale(m_pOwnerTransformCom->Get_Scale().x * -1, m_pOwnerTransformCom->Get_Scale().y, m_pOwnerTransformCom->Get_Scale().z);
+        }
+        else
+        {
+            if (m_pOwnerTransformCom->Get_Scale().x < 0)
+                m_pOwnerTransformCom->Set_Scale(m_pOwnerTransformCom->Get_Scale().x * -1, m_pOwnerTransformCom->Get_Scale().y, m_pOwnerTransformCom->Get_Scale().z);
+        }
 
         m_pOwnerRigidbodyCom->Set_Velocity(m_MoveDir * 8.0f);
 
@@ -94,6 +104,18 @@ _int CEligos_Attack_Bullet::Update_State(const _float& timeDelta)
             tmpOwnerPos = { m_pOwnerTransformCom->Get_Pos().x,m_pPlayerTransformCom->Get_Pos().y,m_pOwnerTransformCom->Get_Pos().z };
             m_TargetDir = m_pPlayerTransformCom->Get_Pos() - tmpOwnerPos;
             D3DXVec3Normalize(&m_TargetDir, &m_TargetDir);
+
+            if (m_pOwnerTransformCom->Get_Pos().x < m_pPlayerTransformCom->Get_Pos().x)// 플레이어 오른쪽
+            {
+                if (m_pOwnerTransformCom->Get_Scale().x > 0)
+                    m_pOwnerTransformCom->Set_Scale(m_pOwnerTransformCom->Get_Scale().x * -1, m_pOwnerTransformCom->Get_Scale().y, m_pOwnerTransformCom->Get_Scale().z);
+            }
+            else
+            {
+                if (m_pOwnerTransformCom->Get_Scale().x < 0)
+                    m_pOwnerTransformCom->Set_Scale(m_pOwnerTransformCom->Get_Scale().x * -1, m_pOwnerTransformCom->Get_Scale().y, m_pOwnerTransformCom->Get_Scale().z);
+            }
+
             m_flag = true;
         }
 
@@ -114,9 +136,12 @@ _int CEligos_Attack_Bullet::Update_State(const _float& timeDelta)
         m_pOwnerRigidbodyCom->Set_Velocity(m_TargetDir * 10.0f);
 
         Shoot_Bullet();
-
-
         if (m_pOwner->Get_OnWall() == true)
+        {
+            m_pOwnerRigidbodyCom->Set_Velocity({ 0,0,0 });
+        }
+
+        if (m_pOwnerAnimatorCom->Is_AnimationFinished())
         {
             m_flag = false;
             m_pOwnerRigidbodyCom->Set_Velocity({ 0,0,0 });
@@ -165,6 +190,11 @@ void CEligos_Attack_Bullet::Shoot_Bullet()
                 ID_DYNAMIC,
                 COMPONENTTYPE::TRANSFORM));
 
+        BulletTransform->Set_Scale({ 1.0f,1.0f,1.0f });
+
+
+       
+
         _vec3 ownerPos = m_pOwnerTransformCom->Get_Pos();
         _vec3 Up = { 0, 1, 0 };
         _vec3 AddPos;
@@ -188,25 +218,75 @@ void CEligos_Attack_Bullet::Shoot_Bullet()
             _vec3 Forward = m_TargetDir;
             D3DXVec3Normalize(&Forward, &Forward);
            
-            D3DXMATRIX rotMat;
-            D3DXMatrixRotationAxis(&rotMat, &Up, D3DXToRadian(45.f)); // 45도 회전
+           
+           
             _vec3 vDir45;
-            D3DXVec3TransformNormal(&vDir45, &Forward, &rotMat);
-            D3DXVec3Normalize(&vDir45, &vDir45);
+            D3DXMATRIX rotMat;
 
             switch (i)
             {
             case 0: //오
                
-                //vDir45;
+               
+                D3DXMatrixRotationAxis(&rotMat, &Up, D3DXToRadian(45.f)); // 45도 회전
+
+                D3DXVec3TransformNormal(&vDir45, &Forward, &rotMat);
+                D3DXVec3Normalize(&vDir45, &vDir45);
+
+
                 break;
             case 1://왼
                 
-                vDir45 *= -1.f;
+               
+                D3DXMatrixRotationAxis(&rotMat, &Up, D3DXToRadian(-45.f)); // 45도 회전
+
+                D3DXVec3TransformNormal(&vDir45, &Forward, &rotMat);
+                D3DXVec3Normalize(&vDir45, &vDir45);
 
                 break;
 
             }
+            {
+                //불렛 회전 빌보드 안하고 이걸로  방향 셋팅
+                _vec3 forward = vDir45;
+                D3DXVec3Normalize(&forward, &forward);
+                _vec3 tmpUp(0.f, 1.f, 0.f);
+
+                // 1. 진행 방향 LookAt
+                _matrix rotMat = BulletTransform->BuildLookRotation(forward, _vec3(0.f, 1.f, 0.f));
+
+                _quat lookRot;
+                D3DXQuaternionRotationMatrix(&lookRot, &rotMat);
+
+                _vec3 tmp (1.f, 0.f, 0.f);
+                // 2. 기본 모델 보정 (X축 90도)
+                _quat baseOffset;
+                D3DXQuaternionRotationAxis(
+                    &baseOffset,
+                    &tmp,
+                    D3DXToRadian(90.f)
+                );
+
+                // 3. 추가 기울기 (X축 +25도)
+                _quat tilt25;
+
+                D3DXQuaternionRotationAxis(
+                    &tilt25,
+                    &tmp,
+                    D3DXToRadian(25.f)
+                );
+
+                // ⭐ 최종 회전 = LookAt → 기본보정 → 추가기울기
+                _quat finalRot;
+                D3DXQuaternionMultiply(&finalRot, &baseOffset, &lookRot);
+                D3DXQuaternionMultiply(&finalRot, &tilt25, &finalRot);
+
+                BulletTransform->Set_Quat(finalRot);
+                BulletTransform->Set_Dirty(true);
+            }
+
+
+
             BulletDesc d;
             d.Direction = vDir45;
             d.Speed =5;

@@ -97,18 +97,27 @@ _int CEligos_Idle::Update_State(const _float& timeDelta)
         return  CEligos::ELIGOSSTATE::BOSSDEAD;
     }
 
-
+    if (m_pOwnerTransformCom->Get_Pos().x < m_pPlayerTransformCom->Get_Pos().x)// 플레이어 오른쪽
+    {
+        if (m_pOwnerTransformCom->Get_Scale().x > 0)
+            m_pOwnerTransformCom->Set_Scale(m_pOwnerTransformCom->Get_Scale().x * -1, m_pOwnerTransformCom->Get_Scale().y, m_pOwnerTransformCom->Get_Scale().z);
+    }
+    else
+    {
+        if (m_pOwnerTransformCom->Get_Scale().x < 0)
+            m_pOwnerTransformCom->Set_Scale(m_pOwnerTransformCom->Get_Scale().x * -1, m_pOwnerTransformCom->Get_Scale().y, m_pOwnerTransformCom->Get_Scale().z);
+    }
         _vec3 tmpOwnerPos = { m_pOwnerTransformCom->Get_Pos().x,m_pPlayerTransformCom->Get_Pos().y,m_pOwnerTransformCom->Get_Pos().z };
         _vec3 vec = m_pPlayerTransformCom->Get_Pos() - tmpOwnerPos;
         float length = D3DXVec3Length(&vec);
 
-
+        cout << "length : "<< length << endl;
 
     // 어웨이크 -> 어택
     if (m_pStateMachine->Get_PrevStateKey() == (int)CEligos::ELIGOSSTATE::BOSSREVEAL)
     {
         // 플레이어가 일정범위 안이면
-        if (length <= 20.f)
+        if (length <= 6.f)
         {
             return  CEligos::ELIGOSSTATE::ATTACK_MELEE;
         }
@@ -126,7 +135,7 @@ _int CEligos_Idle::Update_State(const _float& timeDelta)
     {
 
         // 플레이어가 일정범위 안이면
-        if (length <= 20.f)
+        if (length <= 6.f)
         {
             cout << "melee\n";
 
