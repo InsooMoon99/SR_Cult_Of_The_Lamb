@@ -144,7 +144,7 @@ void CStage_Dungeon::Initialize_Scene()
     m_PlayerTransform->Set_Pos(_vec3(startPos.x, startPos.y, startPos.z));
 
     // 전투 BGM
-    CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Battle2.wav", 0.4f, true, 1.f);
+    CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Battle2.wav", 0.3f, true, 1.f);
 }
 
 _int CStage_Dungeon::Update_Scene(const _float& timeDelta)

@@ -207,6 +207,8 @@
     <ClInclude Include="..\Header\CCharacterBase.h" />
     <ClInclude Include="..\Header\CChest.h" />
     <ClInclude Include="..\Header\CCookingController.h" />
+    <ClInclude Include="..\Header\CFollowerElephant.h" />
+    <ClInclude Include="..\Header\CFollowerPig.h" />
     <ClInclude Include="..\Header\Client_Global.h" />
     <ClInclude Include="..\Header\CEligos.h" />
     <ClInclude Include="..\Header\CEligos_Attack_Bullet.h" />
@@ -425,6 +427,8 @@
     <ClCompile Include="..\Code\CEligos_Reveal.cpp" />
     <ClCompile Include="..\Code\CEyeball_CenterAttack.cpp" />
     <ClCompile Include="..\Code\CLogo_Dungeon.cpp" />
+    <ClCompile Include="..\Code\CFollowerElephant.cpp" />
+    <ClCompile Include="..\Code\CFollowerPig.cpp" />
     <ClCompile Include="..\Code\CMenuExtra.cpp" />
     <ClCompile Include="..\Code\CNPCState_Build.cpp" />
     <ClCompile Include="..\Code\CNPCState_ChopWood.cpp" />

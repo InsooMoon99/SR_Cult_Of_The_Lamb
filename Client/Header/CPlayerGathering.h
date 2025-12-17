@@ -31,7 +31,7 @@ public:
     void    OnBeginOverlap(CCollider* self, CCollider* other);
     void    OnEndOverlap(CCollider* self, CCollider* other);
     _float CalcProgress();
-    CWorldInteractive* const GetInteractiveObj() { return m_Target; }
+    CWorldInteractive* GetInteractiveObj() { return m_Target; }
     void Set_ProgressBar(CUI_ProgressBar* progressui) { m_ProgressBar = progressui; }
     /* CWorldInteractive::TYPE  GetInteractiveType() { return m_Target->GetInteractiveType(); }*/
 private:

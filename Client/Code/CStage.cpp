@@ -55,6 +55,7 @@
 #include "CPlayerGathering.h"
 #include "CUI_ProgressBar.h"
 #include "CRenderer.h"
+#include "CWeaponEquip.h"
 
 class CUIBuildMenu;
 
@@ -67,7 +68,9 @@ CStage::CStage(DEVICE graphicDev)
       m_PlayerSkillCom(nullptr),
       m_Terrain(nullptr),
       m_CookingMenu(nullptr),
-      m_FollowerCommand(nullptr)
+      m_FollowerCommand(nullptr),
+      m_PlayerGatherCom(nullptr),
+      m_PlayerConstructionCom(nullptr)
 { }
 
 CStage::~CStage()
@@ -89,7 +92,6 @@ HRESULT CStage::Ready_Scene()
 
     // 이건 드롭 시스템 쓸려면 각 씬 마다 셋팅 해야함
     CDropSystem::GetInstance()->SetCurrentScene(this);
-
 
     // 안은수 test
     // 이젠 테스트 끝내야죠 
@@ -178,6 +180,71 @@ void CStage::Initialize_Scene()
 
     // 던전 이동 트리거 만들기
     Create_Trigger();
+
+    // -----------------------------
+    // 저장된 건물 불러오기 기능
+    // -----------------------------
+    auto layer = m_Layers[LAYERTYPE::GAMELOGIC];
+    if (layer && CVillageStateMgr::GetInstance()->Get_State())
+    {
+        SavedSceneState* savedSceneState = CVillageStateMgr::GetInstance()->Get_State();
+        for (const auto& building : savedSceneState->savedBuildings)
+        {
+            if (building.isBuilt)
+            {
+                CGameObject* obj      = nullptr;
+                _vec3        spawnPos = building.pos;
+
+                switch (building.type)
+                {
+                case BUILDING_TYPE::TEMPLE:
+                {
+                    obj = CTemple::Create(m_GraphicDev);
+                    spawnPos.y += 2.f;
+                }
+                break;
+                case BUILDING_TYPE::KITCHEN:
+                {
+                    obj = CKitchen::Create(m_GraphicDev);
+                    spawnPos.y += 0.6f;
+
+                    // Kitchen은 CookingMenu 연결 필요
+                    if (auto kitchen = dynamic_cast<CKitchen*>(obj))
+                        kitchen->Set_CookingMenu(m_CookingMenu);
+                }
+                break;
+                default: break;
+                }
+
+                if (obj != nullptr)
+                {
+                    obj->Initialize_GameObject();
+                    auto transform = dynamic_cast<CTransform*>(obj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+                    if (transform) transform->Set_Pos(spawnPos);
+
+                    layer->Add_GameObject(OBJTYPE::BUILDING, obj);
+                }
+            }
+            else
+            {
+                _vec3 scale = { 1.f, 1.f, 1.f };
+                if (building.type == BUILDING_TYPE::TEMPLE) scale = _vec3(4.f, 2.8f, 1.f);
+                else if (building.type == BUILDING_TYPE::KITCHEN) scale = _vec3(3.5f, 2.5f, 1.f);
+
+                CConstructCircle* circle = CConstructCircle::Create(m_GraphicDev, scale);
+                if (circle != nullptr)
+                {
+                    circle->Setup_Construction(building.type);
+                    circle->Initialize_GameObject();
+
+                    auto transform = dynamic_cast<CTransform*>(circle->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+                    if (transform) transform->Set_Pos(building.pos);
+
+                    layer->Add_GameObject(OBJTYPE::CONSTRUCTION_SITE, circle);
+                }
+            }
+        }
+    }
 }
 
 _int CStage::Update_Scene(const _float& timeDelta)
@@ -317,7 +384,6 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     m_PlayerSkillCom = dynamic_cast<CPlayerSkill*>(gameObject->Get_Component(ID_STATIC, COMPONENTTYPE::PL_SKILL));
     NULL_CHECK_RETURN(m_PlayerSkillCom, E_FAIL);
 
-
     m_PlayerConstructionCom =
         dynamic_cast<CPlayerConstruction*>(gameObject->Get_Component(
             ID_STATIC,
@@ -326,6 +392,13 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     m_PlayerGatherCom = dynamic_cast<CPlayerGathering*>(gameObject->Get_Component(
         ID_STATIC,
         COMPONENTTYPE::GATHERING));
+
+    m_WeaponEquipCom = dynamic_cast<CWeaponEquip*>(gameObject->Get_Component(
+        ID_STATIC,
+        COMPONENTTYPE::WEAPON_EQUIP));
+
+    if (m_WeaponEquipCom && m_WeaponEquipCom->Get_WeaponEquipped())
+        m_WeaponEquipCom->Unequip_Weapon(false);
 
     // -----------------------------
     // Camera
@@ -502,79 +575,26 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     // -----------------------------
     // Follower
     // -----------------------------
-    // 저장된 NPC 상태 확인
     //TODO 추종자 3마리로 늘리면서, 각자 함수를 만들어 그 안에서 생성되고 Init도 그 안에서 수동으로 하도록, 또한 키 R, T, Y로 수동 생성 테스트도 만들어보자
-    //SavedNpc* cowState       = CVillageStateMgr::GetInstance()->Get_NPCState(L"FollowerCow");
-    //_bool     shouldSpawnCow = true; // 기본값: 데이터 없으면 스폰 (테스트 편의상)
-    //
-    //if (cowState != nullptr)
-    //    shouldSpawnCow = cowState->isActive;
-    //
-    //if (shouldSpawnCow)
-    //{
-    //    gameObject = CFollowerCow::Create(m_GraphicDev);
-    //    NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"Create NPC object has failed");
-    //    FAILED_CHECK_MSG(
-    //        layer->Add_GameObject(OBJTYPE::NPC, gameObject),
-    //        L"Add NPC object on layer has failed");
-    //}
+    SavedNpc* cowState       = CVillageStateMgr::GetInstance()->Get_NPCState(L"FollowerCow");
+    _bool     shouldSpawnCow = true; // 기본값: 데이터 없으면 스폰 (테스트 편의상)
 
-    // -----------------------------
-    // 저장된 건물 불러오기 기능
-    // -----------------------------
-    if (SavedSceneState* savedSceneState = CVillageStateMgr::GetInstance()->Get_State())
+    if (cowState != nullptr)
+        shouldSpawnCow = cowState->isActive;
+
+    if (shouldSpawnCow)
     {
-        for (const auto& building : savedSceneState->savedBuildings)
-        {
-            if (building.isBuilt)
-            {
-                CGameObject* obj      = nullptr;
-                _vec3        spawnPos = building.pos;
-
-                switch (building.type)
-                {
-                case BUILDING_TYPE::TEMPLE:
-                    obj = CTemple::Create(m_GraphicDev);
-                    spawnPos.y += 2.f;
-                    break;
-
-                case BUILDING_TYPE::KITCHEN:
-                    obj = CKitchen::Create(m_GraphicDev);
-                    spawnPos.y += 0.6f;
-                    break;
-
-                default: break;
-                }
-
-                if (obj)
-                {
-                    obj->Initialize_GameObject();
-                    auto transform = dynamic_cast<CTransform*>(obj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-                    if (transform) transform->Set_Pos(spawnPos);
-
-                    layer->Add_GameObject(OBJTYPE::BUILDING, obj);
-                }
-            }
-            else
-            {
-                _vec3 scale = { 1.f, 1.f, 1.f };
-                if (building.type == BUILDING_TYPE::TEMPLE) scale = _vec3(4.f, 2.8f, 1.f);
-                else if (building.type == BUILDING_TYPE::KITCHEN) scale = _vec3(3.5f, 2.5f, 1.f);
-
-                CConstructCircle* circle = CConstructCircle::Create(m_GraphicDev, scale);
-                if (circle)
-                {
-                    circle->Setup_Construction(building.type);
-                    circle->Initialize_GameObject();
-
-                    auto transform = dynamic_cast<CTransform*>(circle->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-                    if (transform) transform->Set_Pos(building.pos);
-
-                    layer->Add_GameObject(OBJTYPE::CONSTRUCTION_SITE, circle);
-                }
-            }
-        }
+        gameObject = CFollowerCow::Create(m_GraphicDev);
+        NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"Create NPC object has failed");
+        FAILED_CHECK_MSG(
+            layer->Add_GameObject(OBJTYPE::NPC, gameObject),
+            L"Add NPC object on layer has failed");
     }
+
+    // -----------------------------
+    // 저장된 건물 불러오기 기능은 Initialize_Scene으로 이동함
+    // 이유: UI 레이어(CookingMenu 등)가 초기화된 후에 건물을 생성해야 의존성 주입이 가능함.
+    // -----------------------------
 
     m_Layers.insert({ layerType, layer });
 
@@ -688,7 +708,6 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
     if (followerCommand)
         m_FollowerCommand = followerCommand;
 
-
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CUI_SkillPanel>(
             OBJTYPE::UI,
@@ -700,7 +719,7 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
 
     CUI_ProgressBar* uiProgressBar = CUI_ProgressBar::Create(m_GraphicDev);
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiProgressBar),
-        L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UI_ProgressBar) failed");
+                     L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(UI_ProgressBar) failed");
 
     m_PlayerGatherCom->Set_ProgressBar(uiProgressBar);
     m_PlayerConstructionCom->Set_ProgressBar(uiProgressBar);

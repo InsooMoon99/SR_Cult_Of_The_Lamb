@@ -114,13 +114,13 @@ _int CPlayerGathering::Update_Component(const _float& timeDelta)
             m_AttackTimer = 0;
         }
 
-#pragma region 플레이어 Action 효과음. 0.3초마다 재생
-        g_Timers[TIMER_SOUND_PL_ACTION] -= timeDelta;
+#pragma region 플레이어 베리 채집 효과음. 0.3초마다 재생
+        g_Timers[TIMER_SOUND_PL_COLLECTBERRY] -= timeDelta;
 
-        if (g_Timers[TIMER_SOUND_PL_ACTION] < 0.f)
+        if (g_Timers[TIMER_SOUND_PL_COLLECTBERRY] < 0.f)
         {
             CSoundMgr::GetInstance()->Play_Once(L"Player/Player_Action.wav", SOUND_EFFECT, 0.5f);
-            g_Timers[TIMER_SOUND_PL_ACTION] = 0.3f;
+            g_Timers[TIMER_SOUND_PL_COLLECTBERRY] = 0.3f;
         }
 #pragma endregion
     }
@@ -139,6 +139,8 @@ _int CPlayerGathering::Update_Component(const _float& timeDelta)
 
             combat->Apply_Damage(h);
             m_AttackFlag = true;
+
+            CSoundMgr::GetInstance()->Play_Once(L"Object/Wood/Wood_Chop_0.wav", SOUND_EFFECT, 0.5f);
         }
         break;
 
@@ -157,6 +159,8 @@ _int CPlayerGathering::Update_Component(const _float& timeDelta)
 
             m_AttackTimer = 0;
             m_AttackFlag  = true;
+
+            CSoundMgr::GetInstance()->Play_Once(L"Object/Rock/Stone_Impact_0.wav", SOUND_EFFECT, 0.5f);
         }
         break;
     }

@@ -29,4 +29,7 @@ public:
 private:
     _float m_Progress;
     CRcTex* m_ProgressBar;
+
+private: // --- 플레이어 컴포넌트 캐싱 ---
+    CTransform* m_PlayerTransform = nullptr;
 };
