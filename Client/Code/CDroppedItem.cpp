@@ -381,7 +381,7 @@ void CDroppedItem::Player_ZoomIn(CPlayer* ply)
                     // 기본 프리셋으로 리셋
                     CCamSetupBuilder(camController)
                         .SetTarget(ply->Get_Transform())
-                        .Distance(12.f)
+                        .Distance(11.f)
                         .LagSpeed(4.5f)
                         .ZoomSpeed(4.f)
                         .Apply();

@@ -57,7 +57,7 @@ void CPlayerConstruction::Action_Construction(const _float& timeDelta)
 
         if (g_Timers[TIMER_SOUND_PL_CONSTRUCT] >= 0.565f)
         {
-            CSoundMgr::GetInstance()->Play_Once(L"Construction/Hammering_2.wav", SOUND_EFFECT, 0.5f);
+            CSoundMgr::GetInstance()->Play_Once(L"Construction/Hammering_2.wav", SOUND_EFFECT, 1.f);
             g_Timers[TIMER_SOUND_PL_CONSTRUCT] = 0.f;
         }
 #pragma endregion

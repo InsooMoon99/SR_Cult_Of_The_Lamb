@@ -309,7 +309,8 @@ enum class ACTORSTATE
     PLAYER_BERRY,
     PLAYER_WEAPONGET,
     PLAYER_HAMMER,              // 플레이어 건축
-    //GATHERING,
+    PLAYER_WARPOUT,
+    PLAYER_WARPIN,
 
     // 보스 1페
     PLAYER_DECIDE,

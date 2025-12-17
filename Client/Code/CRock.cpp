@@ -46,7 +46,7 @@ HRESULT CRock::Ready_GameObject()
 
         m_ItemNum = 3;
 
-        m_CombatStatCom->Set_MaxHp(10.f);
+        m_CombatStatCom->Set_MaxHp(20.f);
         m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
         break;
     case MIDDLEROCK:
@@ -56,7 +56,7 @@ HRESULT CRock::Ready_GameObject()
 
         m_ItemNum = 4;
 
-        m_CombatStatCom->Set_MaxHp(16.f);
+        m_CombatStatCom->Set_MaxHp(40.f);
         m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
         break;
     case BIGROCK:
@@ -66,7 +66,7 @@ HRESULT CRock::Ready_GameObject()
 
         m_ItemNum = 6;
 
-        m_CombatStatCom->Set_MaxHp(20.f);
+        m_CombatStatCom->Set_MaxHp(60.f);
         m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
         break;
     case END_ROCK:
@@ -135,6 +135,7 @@ void CRock::OnInteractiveDamaged()
 void CRock::KnockBackEff(const _float& timeDelta)
 {
     _vec3 backDir = m_CombatStatCom->Get_Dir();
+    backDir.y = 0.f;
 
     D3DXVec3Normalize(&backDir, &backDir);
     if (m_KockBackTimer > 0.f)
@@ -154,7 +155,7 @@ void CRock::KnockBackEff(const _float& timeDelta)
     {
         LerpTime += timeDelta * 5.f;
 
-        if (LerpTime >= 0.f)
+        if (LerpTime >= 0.5f)
         {
             LerpTime     = 0;
             m_ReturnDone = true;

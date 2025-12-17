@@ -44,6 +44,10 @@ void CUI_FollowerCommand::Initialize_GameObject()
             if (auto controller = m_TargetNPC->Get_Controller())
             {
                 controller->Set_Work(CNPCController::NPC_WORK::PRAY);
+                
+                if (auto stateMachine = controller->Get_StateMachine())
+                    stateMachine->Change_State(static_cast<_uint>(CNPCStateMachine::NPC_STATE::IDLE));
+
                 cout << "PrayButton Click" << endl;
             }
             m_TargetNPC = nullptr;
@@ -61,6 +65,10 @@ void CUI_FollowerCommand::Initialize_GameObject()
             if (auto controller = m_TargetNPC->Get_Controller())
             {
                 controller->Set_Work(CNPCController::NPC_WORK::CHOPWOOD);
+
+                if (auto stateMachine = controller->Get_StateMachine())
+                    stateMachine->Change_State(static_cast<_uint>(CNPCStateMachine::NPC_STATE::IDLE));
+
                 cout << "AxeButton Click" << endl;
             }
             m_TargetNPC = nullptr;
@@ -77,6 +85,10 @@ void CUI_FollowerCommand::Initialize_GameObject()
              if (auto controller = m_TargetNPC->Get_Controller())
              {
                  controller->Set_Work(CNPCController::NPC_WORK::MINING);
+
+                 if (auto stateMachine = controller->Get_StateMachine())
+                     stateMachine->Change_State(static_cast<_uint>(CNPCStateMachine::NPC_STATE::IDLE));
+
                  cout << "MiningButton Click" << endl;
              }
              m_TargetNPC = nullptr;
@@ -132,6 +144,18 @@ _int CUI_FollowerCommand::Update_GameObject(const _float& timeDelta)
 
     if (CDInputMgr::GetInstance()->MouseDown(DIM_RB))
     {
+        // 취소 시 이전 상태로 복귀 -> IDLE로 복귀하여 다시 할 일 찾게 함
+        if (m_TargetNPC)
+        {
+            if (auto controller = m_TargetNPC->Get_Controller())
+            {
+                if (CStateMachine* stateMachine = controller->Get_StateMachine())
+                {
+                    stateMachine->Change_State(static_cast<_uint>(CNPCStateMachine::NPC_STATE::IDLE));
+                }
+            }
+        }
+
         m_TargetNPC = nullptr;
         m_Active = false;
     }

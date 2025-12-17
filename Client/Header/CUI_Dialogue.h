@@ -36,6 +36,9 @@ public:
     _bool   IsActive() const { return m_IsActive; }
     _bool   IsShowingChoices() const { return m_IsShowingChoices; }
 
+    static _bool g_IsDialogueActive;
+    static _bool IsGlobalActive() { return g_IsDialogueActive; }
+
 public:
     // 대화 종료
     using   OnDialougeEnd = function<void(const string&)>;

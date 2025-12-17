@@ -9,6 +9,7 @@
 #include "CManagement.h"
 #include "CPickingHelper.h"
 #include "CScene.h"
+#include "CSoundMgr.h"
 #include "CTemple.h"
 #include "CTransform.h"
 #include "CVillageStateMgr.h"
@@ -238,7 +239,9 @@ _bool CConstructionPlacer::Try_PlaceObject()
         return false;
     }
 
-    // TODO: 인벤토리 차감 등 후처리
+    CSoundMgr::GetInstance()->Play_Once(L"Construction/Place_Building_Spot.wav",
+                                        SOUND_EFFECT,
+                                        1.f);
 
     return true;
 }

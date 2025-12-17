@@ -21,7 +21,9 @@ public:
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
 
+public:
     void KnockBackEff(const _float& timeDelta);
+
 protected:
     HRESULT Add_Component() override;
 

@@ -71,6 +71,9 @@ private:
     void Action_Decide(const _float& timeDelta);
     void Action_Refuse(const _float& timeDelta);
 
+    void Action_WarpOut(const _float& timeDelta);
+    void Action_WarpIn(const _float& timeDelta);
+
     // --- [기타 기능 함수] ---
     void Check_Gathering();
     void Check_Construction();

@@ -1,8 +1,6 @@
 ﻿#include "pch.h"
 #include "CConstructCircle.h"
 
-#include <CSoundMgr.h>
-#include "CStage.h"
 #include "CBoxCollider.h"
 #include "CCollider.h"
 #include "CCreateHelper.h"
@@ -13,15 +11,17 @@
 #include "CNPCController.h"
 #include "CNPCStateMachine.h"
 #include "CPlayer.h"
+#include "CPlayerConstruction.h"
 #include "CRcTex.h"
 #include "CScene.h"
+#include "CSoundMgr.h"
+#include "CStage.h"
 #include "CState.h"
 #include "CTemple.h"
 #include "CTexture.h"
 #include "CTimerMgr.h"
 #include "CTransform.h"
 #include "CVillageStateMgr.h"
-#include "CPlayerConstruction.h"
 
 CConstructCircle::CConstructCircle(DEVICE graphicDev)
     : CBuildingBase(graphicDev)
@@ -128,11 +128,23 @@ void CConstructCircle::OnStayOverlap(CCollider* self, CCollider* other)
         switch (m_TargetBuildingType)
         {
         case BUILDING_TYPE::TEMPLE:
+        {
             newObj = CTemple::Create(m_GraphicDev);
-            break;
+
+            CSoundMgr::GetInstance()->Play_Once(L"Construction/Building_Finished_Epic.wav",
+                                                SOUND_EFFECT,
+                                                0.6f);
+        }
+        break;
         case BUILDING_TYPE::KITCHEN:
+        {
             newObj = CKitchen::Create(m_GraphicDev);
-            break;
+
+            CSoundMgr::GetInstance()->Play_Once(L"Construction/Building_Finished_Wood.wav",
+                                                SOUND_EFFECT,
+                                                0.6f);
+        }
+        break;
         default: break;
         }
 
