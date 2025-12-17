@@ -218,6 +218,18 @@ enum class COMPONENTTYPE
     TEX_HUMAN_MONSTER2,
     TEX_BURPER_MONSTER,
 
+    
+    ////////////////////
+    //  Prologue NPC  //
+    ////////////////////
+    TEX_LESHY,
+    TEX_HEKET,
+    TEX_KALLAMAR,
+    TEX_SHAMURA,
+
+    TEX_EXCUTIONER,
+    TEX_RATAU,
+
     ////////////////
     //  Particle  //
     ////////////////

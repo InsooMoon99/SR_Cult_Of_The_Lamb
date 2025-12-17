@@ -183,6 +183,7 @@ void CPlayer::Render_Editor()
     ImGui::Text("=== Player ===");
 }
 
+
 HRESULT CPlayer::Add_Component()
 {
     // 부모쪽에 Transform, Buffer, Animator, State, CombatStat, BoxCollider 있음
@@ -256,7 +257,6 @@ void CPlayer::Animation_Setting()
 #pragma region --- IDLE ---
     m_AnimatorCom->Create_Animation(L"PlayerIdle", 150, 0.02f, _vec2(0.75f, 0.80f));
 
-    m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"PlayerIdle", ANIMSTATE::LOOP);
 #pragma endregion
 
 #pragma region --- RUN ---
@@ -266,7 +266,8 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"PlayerRun_LUP", 19, 0.02f, _vec2(0.68f, 0.8f));
     m_AnimatorCom->Create_Animation(L"PlayerRun_LDOWN", 19, 0.02f, _vec2(0.68f, 0.8f));
 
-    m_StateCom->Set_AnimInfo(ACTORSTATE::RUN, L"PlayerRun", ANIMSTATE::LOOP);
+    Set_NormalMode();
+
 #pragma endregion
 
 #pragma region --- ROLL ---
@@ -531,6 +532,91 @@ void CPlayer::Animation_Setting()
     //m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_REFUSE, L"Refuse_Sword", ANIMSTATE::ONCE);
 
 #pragma endregion
+
+    // 프롤로그
+    Prologue_Animation_Setting();
+}
+
+void CPlayer::Prologue_Animation_Setting()
+{
+    // Idle
+    m_AnimatorCom->Create_Animation(L"Prologue_Idle",
+        38, 0.02f,
+        _vec2(0.84f, 0.65f), _vec2(0.f, -0.59f));
+
+    m_AnimatorCom->Create_Animation(L"Prologue_Idle_Up",
+        38, 0.02f,
+        _vec2(1.f, 1.f), _vec2(0.f, 0.f));
+
+    // Run
+    m_AnimatorCom->Create_Animation(L"Prologue_Run_UP",
+        50, 0.02f,
+        _vec2(1.f, 1.f), _vec2(0.f, 0.f));
+
+    m_AnimatorCom->Create_Animation(L"Prologue_Run_DOWN",
+        50, 0.02f,
+        _vec2(1.f, 1.f), _vec2(0.f, 0.f));
+
+    m_AnimatorCom->Create_Animation(L"Prologue_Run_LDOWN",
+        50, 0.02f,
+        _vec2(1.f, 1.f), _vec2(0.f, 0.f));
+
+    m_AnimatorCom->Create_Animation(L"Prologue_Run_LEFT",
+        50, 0.02f,
+        _vec2(1.f, 1.f), _vec2(0.f, 0.f));
+
+    m_AnimatorCom->Create_Animation(L"Prologue_Run_LUP",
+        50, 0.02f,
+        _vec2(1.f, 1.f), _vec2(0.f, 0.f));
+
+    // Rebirth
+    m_AnimatorCom->Create_Animation(L"Prologue_Rebirth",
+        91, 0.02f,
+        _vec2(1.f, 1.f), _vec2(0.f, 0.f));
+
+    // Knnel
+    m_AnimatorCom->Create_Animation(L"Prologue_Kneel_Start",
+        56, 0.02f,
+        _vec2(1.f, 1.f), _vec2(0.f, 0.f));
+
+    m_AnimatorCom->Create_Animation(L"Prologue_Kneel_Wake",
+        75, 0.02f,
+        _vec2(1.f, 1.f), _vec2(0.f, 0.f));
+
+    m_AnimatorCom->Create_Animation(L"Prologue_Kneel_Loop",
+        34, 0.02f,
+        _vec2(1.f, 1.f), _vec2(0.f, 0.f));
+
+    // Dead
+    m_AnimatorCom->Create_Animation(L"Prologue_Dead",
+        1, 0.02f,
+        _vec2(1.f, 1.f), _vec2(0.f, 0.f));
+
+}
+
+void CPlayer::Set_PrologueMode(_bool prologue)
+{
+    m_IsPrologue = prologue;
+
+    if (prologue)
+    {
+        m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"Prologue_Idle", ANIMSTATE::LOOP);
+        m_StateCom->Set_AnimInfo(ACTORSTATE::RUN, L"Prologue_Run", ANIMSTATE::LOOP);
+
+    }
+
+    else
+    {
+        Set_NormalMode();
+    }
+
+    m_StateCom->Force_UpdateAnimation();
+}
+
+void CPlayer::Set_NormalMode()
+{
+    m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"PlayerIdle", ANIMSTATE::LOOP);
+    m_StateCom->Set_AnimInfo(ACTORSTATE::RUN, L"PlayerRun", ANIMSTATE::LOOP);
 }
 
 CPlayer* CPlayer::Create(DEVICE graphicDev)

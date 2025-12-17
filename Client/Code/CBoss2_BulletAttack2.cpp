@@ -6,6 +6,7 @@
 #include "CTimerMgr.h"
 #include "CEyeball.h"
 #include "CStateMachine.h"
+#include "CSoundMgr.h"
 
 CBoss2_BulletAttack2::CBoss2_BulletAttack2(CGameObject* owner)
     : m_Owner(owner), m_Pattern_Cooldown(0)
@@ -31,6 +32,10 @@ void CBoss2_BulletAttack2::Enter()
         auto animator = m_Controller->Get_OwnerAnimator();
         if (animator)
             animator->Play_Animation(L"Boss2_Roar", ANIMSTATE::ONCE);
+
+        CSoundMgr::GetInstance()->Play_Once_Pitched(L"Boss/DeathCat/DeathCat_Roar.wav",
+            SOUND_EFFECT,
+            0.5f, 1.65f);
     }
 
     auto& eyeballs = boss->Get_Eyeballs();
@@ -109,6 +114,13 @@ void CBoss2_BulletAttack2::PlayRoar()
 void CBoss2_BulletAttack2::PlayHandSlam()
 {
     auto animator = m_Controller->Get_OwnerAnimator();
+
+    if (animator && animator->Get_CurFrame() == 30)
+    {
+        CSoundMgr::GetInstance()->Play_Once_Pitched(L"Boss/DeathCat/Deathcat_Handslam.wav",
+            SOUND_EFFECT,
+            0.5f, 1.f);
+    }
 
     if (m_fCurStateElapsedTime >= 8.f)
     {

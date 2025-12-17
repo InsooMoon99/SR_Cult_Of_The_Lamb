@@ -8,6 +8,7 @@
 #include "CEyeball.h"
 #include "CStateMachine.h"
 #include "CParticleHelper.h"
+#include "CSoundMgr.h"
 
 CBoss2_Start::CBoss2_Start(CMonsterBase* owner)
     : m_Owner(owner), m_Eyeball_SpawnCount(0), m_Pattern_Cooldown(0), m_Eyeball_ReachedCount(0)
@@ -63,16 +64,28 @@ _int CBoss2_Start::Update_State(const _float& timeDelta)
             // 17 , 32 , 50
             if (m_Eyeball_SpawnCount == 0 && curFrame == 17)
             {
+                CSoundMgr::GetInstance()->Play_Once_Pitched(L"Boss/DeathCat/Eye_Appear.wav",
+                    SOUND_EFFECT,
+                    0.15f, 1.4f);
+
                 Spawn_Eyeball(1);
                 m_Eyeball_SpawnCount = 1;
             }
             else if (m_Eyeball_SpawnCount == 1 && curFrame == 32)
             {
+                CSoundMgr::GetInstance()->Play_Once_Pitched(L"Boss/DeathCat/Eye_Appear.wav",
+                    SOUND_EFFECT,
+                    0.15f, 1.4f);
+
                 Spawn_Eyeball(2);
                 m_Eyeball_SpawnCount = 2;
             }
             else if (m_Eyeball_SpawnCount == 2 && curFrame == 50)
             {
+                CSoundMgr::GetInstance()->Play_Once_Pitched(L"Boss/DeathCat/Eye_Appear.wav",
+                    SOUND_EFFECT,
+                    0.15f, 1.4f);
+
                 Spawn_Eyeball(3);
                 m_Eyeball_SpawnCount = 3;
             }

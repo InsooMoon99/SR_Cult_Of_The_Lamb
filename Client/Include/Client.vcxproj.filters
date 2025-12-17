@@ -370,12 +370,6 @@
     <Filter Include="05. UI\01. UI\14. UI_ProgressBar">
       <UniqueIdentifier>{500a6299-4aa2-4e0c-8e0d-6551a299aa09}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\04. Boss\03.MiniBoss">
-      <UniqueIdentifier>{b8e27f44-5ee8-4e47-aa08-3d9d38c59df5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\04. Boss\03.MiniBoss\00.State">
-      <UniqueIdentifier>{976fd86d-08ad-4220-bb29-ae776502cc0d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\02. Monster\01. HumanMonster2">
       <UniqueIdentifier>{2a2ac4e4-dff7-4df6-a1a8-c47cabbd3132}</UniqueIdentifier>
     </Filter>
@@ -396,6 +390,15 @@
     </Filter>
     <Filter Include="03. GameObject\11. NPC\99. Class for FSM\01. State\12. Talk">
       <UniqueIdentifier>{3c4721f7-65ea-4921-b702-4cf6bba5239a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\04. Boss\04. NPC">
+      <UniqueIdentifier>{8ac96dba-a3fe-4b6e-a001-ddefd500da10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\04. Boss\03. MiniBoss">
+      <UniqueIdentifier>{b8e27f44-5ee8-4e47-aa08-3d9d38c59df5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\04. Boss\03. MiniBoss\00.State">
+      <UniqueIdentifier>{976fd86d-08ad-4220-bb29-ae776502cc0d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -978,31 +981,31 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CEligos.h">
-      <Filter>03. GameObject\04. Boss\03.MiniBoss</Filter>
+      <Filter>03. GameObject\04. Boss\03. MiniBoss</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CEligos_StateMachine.h">
-      <Filter>03. GameObject\04. Boss\03.MiniBoss</Filter>
+      <Filter>03. GameObject\04. Boss\03. MiniBoss</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CEligos_Attack_Bullet.h">
-      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+      <Filter>03. GameObject\04. Boss\03. MiniBoss\00.State</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CEligos_Attack_Fly.h">
-      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+      <Filter>03. GameObject\04. Boss\03. MiniBoss\00.State</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CEligos_Attack_Melee.h">
-      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+      <Filter>03. GameObject\04. Boss\03. MiniBoss\00.State</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CEligos_Dead.h">
-      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+      <Filter>03. GameObject\04. Boss\03. MiniBoss\00.State</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CEligos_Idle.h">
-      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+      <Filter>03. GameObject\04. Boss\03. MiniBoss\00.State</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CEligos_Move.h">
-      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+      <Filter>03. GameObject\04. Boss\03. MiniBoss\00.State</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CEligos_Reveal.h">
-      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+      <Filter>03. GameObject\04. Boss\03. MiniBoss\00.State</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CEligos_Flies.h">
       <Filter>헤더 파일</Filter>
@@ -1069,6 +1072,21 @@
     </ClInclude>
     <ClInclude Include="..\Header\CNPCState_Talk.h">
       <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\12. Talk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CExcutioner.h">
+      <Filter>03. GameObject\02. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CLeshy.h">
+      <Filter>03. GameObject\04. Boss\04. NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CHeket.h">
+      <Filter>03. GameObject\04. Boss\04. NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CKallamar.h">
+      <Filter>03. GameObject\04. Boss\04. NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CShamura.h">
+      <Filter>03. GameObject\04. Boss\04. NPC</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1610,31 +1628,31 @@
       <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\11. Rescued</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CEligos.cpp">
-      <Filter>03. GameObject\04. Boss\03.MiniBoss</Filter>
+      <Filter>03. GameObject\04. Boss\03. MiniBoss</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CEligos_StateMachine.cpp">
-      <Filter>03. GameObject\04. Boss\03.MiniBoss</Filter>
+      <Filter>03. GameObject\04. Boss\03. MiniBoss</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CEligos_Attack_Bullet.cpp">
-      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+      <Filter>03. GameObject\04. Boss\03. MiniBoss\00.State</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CEligos_Attack_Melee.cpp">
-      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+      <Filter>03. GameObject\04. Boss\03. MiniBoss\00.State</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CEligos_Dead.cpp">
-      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+      <Filter>03. GameObject\04. Boss\03. MiniBoss\00.State</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CEligos_Idle.cpp">
-      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+      <Filter>03. GameObject\04. Boss\03. MiniBoss\00.State</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CEligos_Move.cpp">
-      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+      <Filter>03. GameObject\04. Boss\03. MiniBoss\00.State</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CEligos_Reveal.cpp">
-      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+      <Filter>03. GameObject\04. Boss\03. MiniBoss\00.State</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CEligos_Attack_Fly.cpp">
-      <Filter>03. GameObject\04. Boss\03.MiniBoss\00.State</Filter>
+      <Filter>03. GameObject\04. Boss\03. MiniBoss\00.State</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CEligos_Flies.cpp">
       <Filter>소스 파일</Filter>
@@ -1698,6 +1716,21 @@
     </ClCompile>
     <ClCompile Include="..\Code\CNPCState_Talk.cpp">
       <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\12. Talk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CExcutioner.cpp">
+      <Filter>03. GameObject\02. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CLeshy.cpp">
+      <Filter>03. GameObject\04. Boss\04. NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CHeket.cpp">
+      <Filter>03. GameObject\04. Boss\04. NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CKallamar.cpp">
+      <Filter>03. GameObject\04. Boss\04. NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CShamura.cpp">
+      <Filter>03. GameObject\04. Boss\04. NPC</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

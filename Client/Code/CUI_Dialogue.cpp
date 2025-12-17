@@ -356,7 +356,7 @@ void CUI_Dialogue::Render_DialogueText()
 
     const DialogueLine& line = m_CurrentDialogue->lines[m_CurrentLineIndex];
 
-    static _float padding = -95.f; // 좌우 여백
+    _float padding = -95.f + line.leftPadding; // 좌우 여백
     static _float offset1 = 43.f;
 
 	wstring fullText = CDialogueDB::GetInstance()->Utf8ToWstring(line.text);

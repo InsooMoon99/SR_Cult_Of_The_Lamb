@@ -239,11 +239,11 @@ void CBossPhase2::Animation_Setting()
 {
     m_AnimatorCom->Create_Animation(L"Boss2_Summon", 134, 0.05f, _vec2(1.01f, 1.05f), _vec2(-0.015f, 0.01f));
 
-    m_AnimatorCom->Create_Animation(L"Boss2_Start", 85, 0.05f, _vec2(1.f, 1.f), _vec2(0.005f, 0.05f));
+    m_AnimatorCom->Create_Animation(L"Boss2_Start", 85, 0.05f, _vec2(1.f, 1.f), _vec2(0.005f, -0.01f));
     m_AnimatorCom->Create_Animation(L"Boss2_Idle", 68, 0.05f, _vec2(1.f, 1.f), _vec2(0.005f, 0.05f));
     m_AnimatorCom->Create_Animation(L"Boss2_Idle_Alive", 68, 0.05f, _vec2(1.f, 1.f), _vec2(0.005f, 0.05f));
 
-    m_AnimatorCom->Create_Animation(L"Boss2_Roar", 70, 0.04f, _vec2(1.f, 1.f), _vec2(0.f, -0.08f));
+    m_AnimatorCom->Create_Animation(L"Boss2_Roar", 70, 0.04f, _vec2(1.06f, 1.02f), _vec2(0.f, -0.08f));
     m_AnimatorCom->Create_Animation(L"Boss2_Roar_Alive", 70, 0.04f, _vec2(1.1f, 1.f), _vec2(-0.005f, -0.025f));
 
     m_AnimatorCom->Create_Animation(L"Boss2_HandSlam", 68, 0.04f, _vec2(1.f, 1.12f), _vec2(0.f, -0.19f));
@@ -252,7 +252,7 @@ void CBossPhase2::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"Boss2_DownStart", 64, 0.04f, _vec2(1.09f, 1.1f), _vec2(0.f, -0.1f));
     m_AnimatorCom->Create_Animation(L"Boss2_DownIdle", 67, 0.04f, _vec2(0.93f, 0.79f), _vec2(0.f, -0.14f));
 
-    m_AnimatorCom->Create_Animation(L"Boss2_Sweep", 82, 0.04f, _vec2(1.16f, 1.25f), _vec2(0.f, -0.18f));
+    m_AnimatorCom->Create_Animation(L"Boss2_Sweep", 82, 0.04f, _vec2(1.16f, 1.25f), _vec2(0.f, -0.12f));
     m_AnimatorCom->Create_Animation(L"Boss2_Follower_Transform", 62, 0.04f, _vec2(0.115f, 0.5f), _vec2(0.f, -0.52f));
     m_AnimatorCom->Create_Animation(L"Boss2_Follower_UnConverted", 50, 0.05f, _vec2(0.046f, 0.14f), _vec2(0.f, -0.75f));
 }
