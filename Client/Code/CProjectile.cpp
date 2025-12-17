@@ -75,12 +75,14 @@ _int CProjectile::Update_Component(const _float& timeDelta)
         if (targetTransform == nullptr)
             break;
 
-        _vec3 myPos = m_TransformCom->Get_Pos();
+        _vec3 myPos = { m_TransformCom->Get_Pos().x,targetTransform->Get_Pos().y,m_TransformCom->Get_Pos().z};
         _vec3 targetPos = targetTransform->Get_Pos();
 
         // 1️ 목표 방향
         _vec3 targetDir = targetPos - myPos;
         D3DXVec3Normalize(&targetDir, &targetDir);
+
+
 
         // 2️ 현재 방향
         _vec3 curDir = m_Direction;

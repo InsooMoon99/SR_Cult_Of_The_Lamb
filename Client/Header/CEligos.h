@@ -25,7 +25,9 @@ public:
     void    OnEndOverlap(CCollider* self, CCollider* other) override;
 
     DEVICE  Get_GraphicDev() { return m_GraphicDev; }
-
+    bool  Get_OnWall() { return m_OnWall; }
+    void SetRandDir(_vec3 dir) { m_RandDir = dir; }
+    _vec3 GetRandDir() { return m_RandDir; }
 private:
     HRESULT Add_Component() override;
     void    Animation_Setting() override;
@@ -57,6 +59,10 @@ private:
     bool    m_bHurt = false;
     float   m_fAlpha = 0.8f;
     float   m_bHurtTime = 0;
+
+    bool m_OnWall = false;
+
+    _vec3 m_RandDir;
 
 public:
     //// 보스 죽기 전에 대화 시작

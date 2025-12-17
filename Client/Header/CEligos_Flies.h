@@ -41,7 +41,7 @@ public:
 
 protected:
     void Free() override;
-
+    bool m_flyDie = false;
 private:
 
     _bool           m_AttackSpawned;

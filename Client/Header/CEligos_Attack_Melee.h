@@ -4,6 +4,11 @@
 class CEligos;
 class CEligos_StateMachine;
 
+BEGIN(Engine)
+class CTexture;
+class CRigidbody;
+END
+
 class CEligos_Attack_Melee :
     public CMonsterState
 {
@@ -25,14 +30,27 @@ public:
     virtual void    LateUpdate_State(const _float& timeDelta);
     virtual void    Render_State();
 
+    bool Attack_Melee();
+
 private:
     CEligos* m_pOwner;
     CEligos_StateMachine* m_pStateMachine;
+
+    CRigidbody* m_pOwnerRigidbodyCom;
 
 public:
     static CEligos_Attack_Melee* Create(CEligos* pOwner, CEligos_StateMachine* pStateMachine);
 
 private:
     virtual void Free();
+
+
+    bool  m_AttackSpawned = false;
+
+    _vec3 tmpOwnerPos;
+    _vec3 m_TargetDir;
+
+    bool m_flag = false;
+    float m_fDashTime = 0;
 };
 

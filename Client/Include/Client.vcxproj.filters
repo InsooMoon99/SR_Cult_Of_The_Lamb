@@ -1022,6 +1022,18 @@
     <ClInclude Include="..\Header\CUI_ProgressBar.h">
       <Filter>05. UI\01. UI\14. UI_ProgressBar</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CBossSpawn.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\CBossSpawn.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CStage_Prologue_Boss.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CEtc.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
     <ClInclude Include="..\Header\CUI_Text.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -1638,6 +1650,15 @@
     </ClCompile>
     <ClCompile Include="..\Code\CUI_ProgressBar.cpp">
       <Filter>05. UI\01. UI\14. UI_ProgressBar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Header\CBossSpawn.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CStage_Prologue_Boss.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CEtc.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CUI_Text.cpp">
       <Filter>소스 파일</Filter>

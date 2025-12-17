@@ -13,6 +13,7 @@
 #include "CRigidbody.h"
 
 #include "CEligos_StateMachine.h"
+#include "CWall.h"
 
 
 
@@ -30,14 +31,15 @@ CEligos::~CEligos()
 
 HRESULT CEligos::Ready_GameObject()
 {
-    CMonsterBase::Ready_GameObject();
+    if (FAILED(CMonsterBase::Ready_GameObject()))
+        return E_FAIL;
 
-    //if (FAILED(Add_Component()))
-    //    return E_FAIL;
+  //if (FAILED(Add_Component()))
+  //      return E_FAIL;
 
     m_StateMachine = CEligos_StateMachine::Create(this);
 
-    m_TransformCom->Set_Scale({ 5.0f,5.0f ,1.f });
+    m_TransformCom->Set_Scale({ 3.0f,3.0f ,1.f });
 
     m_BoxColCom->Set_Size({ m_TransformCom->Get_Scale().x * .2f,m_TransformCom->Get_Scale().y ,2.f });
 
@@ -46,10 +48,13 @@ HRESULT CEligos::Ready_GameObject()
     m_RigidbodyCom->Set_UseFriction(true);
     m_RigidbodyCom->Set_UseGravity(false);
 
-    m_RigidbodyCom->Set_Friction(0.3f);
+    m_RigidbodyCom->Set_VelocityLimit({ 50.f,100.f,50.f });
+
+    m_RigidbodyCom->Set_Friction(0.2f);
+    m_RigidbodyCom->Set_Mass(1.2f);
     //
 
-    m_TransformCom->Set_Pos(0.f, 0.f, 0.f);
+    m_TransformCom->Set_Pos(0.f, 3.f, 0.f);
     m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(25.f));
 
     m_CombatStatCom->Set_MaxHp(500.f);
@@ -109,6 +114,9 @@ void CEligos::Render_Editor()
 
     _int num = m_StateMachine->GetCurStateNum();
 
+
+
+
     for (int i = 0; i < BOSS_END; i++)
     {
         if (ImGui::Button(GetBossStateName(i)))
@@ -123,13 +131,21 @@ void CEligos::Render_Editor()
 void CEligos::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CMonsterBase::OnBeginOverlap(self, other);
+
+    CWall* wall = dynamic_cast<CWall*>(other->Get_Owner());
+    if (wall)
+    {
+        m_RigidbodyCom->Set_Velocity({ 0,0,0 });
+        m_OnWall = true;
+    }
+
     m_bHurt = true;
 }
 
 void CEligos::OnEndOverlap(CCollider* self, CCollider* other)
 {
     CMonsterBase::OnEndOverlap(self, other);
-
+    m_OnWall = false;
 }
 
 HRESULT CEligos::Add_Component()
@@ -139,7 +155,7 @@ HRESULT CEligos::Add_Component()
 
 
     // 부모쪽에 Transform, Buffer, Animator, State, CombatStat, BoxCollider 있음
-    if (FAILED(CCharacterBase::Add_Component()))
+    if (FAILED(CMonsterBase::Add_Component()))
         return E_FAIL;
 
     // Texture
@@ -161,14 +177,14 @@ HRESULT CEligos::Add_Component()
 void CEligos::Animation_Setting()
 {
 
-    m_AnimatorCom->Create_Animation(L"Eligos_roar", 140, 0.02f, _vec2(1.f, 1.f));
-    m_AnimatorCom->Create_Animation(L"Eligos_fly", 42, 0.02f, _vec2(1.f, 1.f));
-    m_AnimatorCom->Create_Animation(L"Eligos_burpcharge", 50, 0.02f, _vec2(1.0f, 1.0f));
+    m_AnimatorCom->Create_Animation(L"Eligos_roar", 140, 0.02f, _vec2(1.1f, 1.f), _vec2(0.f, 0.f));
+    m_AnimatorCom->Create_Animation(L"Eligos_fly", 42, 0.02f, _vec2(1.09f, 0.89f), _vec2(0.01f, -0.08f));
+    m_AnimatorCom->Create_Animation(L"Eligos_burpcharge", 50, 0.02f, _vec2(1.2f, 0.88f), _vec2(0.f, -0.09f));
     m_AnimatorCom->Create_Animation(L"Eligos_burp", 42, 0.02f, _vec2(1.0f, 1.0f));
-    m_AnimatorCom->Create_Animation(L"Eligos_attackcharge", 59, 0.02f, _vec2(1.0f, 1.0f));
-    m_AnimatorCom->Create_Animation(L"Eligos_attack", 32, 0.02f, _vec2(1.0f, 1.0f));
+    m_AnimatorCom->Create_Animation(L"Eligos_attackcharge", 59, 0.02f, _vec2(1.16f, 1.130f), _vec2(0.010f, 0.120f));
+    m_AnimatorCom->Create_Animation(L"Eligos_attack", 32, 0.04f, _vec2(1.0f, 1.0f));
 
-    m_AnimatorCom->Create_Animation(L"Eligos_attackcharge_bullet", 59, 0.02f, _vec2(1.0f, 1.0f));
+    m_AnimatorCom->Create_Animation(L"Eligos_attackcharge_bullet", 59, 0.02f, _vec2(1.16f, 1.130f), _vec2(0.010f, 0.120f));
     m_AnimatorCom->Create_Animation(L"Eligos_attack_bullet", 32, 0.06f, _vec2(1.0f, 1.0f));
    
 }
