@@ -112,7 +112,7 @@ _int CUICookingGame::Update_GameObject(const _float& timeDelta)
         {
             m_Speed *= -1;
         }
-        cout << "m_CurserX" << m_CurserX << endl;
+        //cout << "m_CurserX" << m_CurserX << endl;
     }
 
     if (OnClick == true)
@@ -122,22 +122,22 @@ _int CUICookingGame::Update_GameObject(const _float& timeDelta)
         if (m_CurserX >= -m_StencilRight && m_CurserX <= -m_StencilLeft)
         {
             m_result = GOOD; // 안탄거
-            cout << "curser" << "true" << endl;
+            //cout << "curser" << "true" << endl;
         }
         else
         {
             m_result = BAD; // 탄거
-            cout << "curser" << "false" << endl;
+            //cout << "curser" << "false" << endl;
 
         }
 
 
         if (DelayTime > 1.f)
         {
-            cout << "m_StencilLeft" << m_StencilLeft << endl;
-            cout << "m_StencilRight" << m_StencilRight << endl;
-            cout << "m_StencilLength" << m_StencilLength << endl;
-            cout << "m_StencilPosX" << m_StencilPosX << endl;
+            //cout << "m_StencilLeft" << m_StencilLeft << endl;
+            //cout << "m_StencilRight" << m_StencilRight << endl;
+            //cout << "m_StencilLength" << m_StencilLength << endl;
+            //cout << "m_StencilPosX" << m_StencilPosX << endl;
 
 
            

@@ -376,6 +376,18 @@
     <Filter Include="03. GameObject\04. Boss\03.MiniBoss\00.State">
       <UniqueIdentifier>{976fd86d-08ad-4220-bb29-ae776502cc0d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\02. Monster\01. HumanMonster2">
+      <UniqueIdentifier>{2a2ac4e4-dff7-4df6-a1a8-c47cabbd3132}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\02. Monster\00. HumanMonster">
+      <UniqueIdentifier>{482d2381-d0d0-4cb2-8033-328233039fdc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\02. Monster\03. Floater">
+      <UniqueIdentifier>{92515106-dd5a-4389-975a-e0c197578fea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\02. Monster\04. Bat">
+      <UniqueIdentifier>{3f4ca4a6-175b-461f-a7ae-d4645662f13c}</UniqueIdentifier>
+    </Filter>
     <Filter Include="05. UI\01. UI\15. UIText">
       <UniqueIdentifier>{2749aa75-f322-4adb-8247-0108c2a2a75d}</UniqueIdentifier>
     </Filter>
@@ -451,9 +463,6 @@
       <Filter>99. ImGui_Editor\02. EditorMap</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CTestMonster.h">
-      <Filter>03. GameObject\02. Monster</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Header\CHumanMonster.h">
       <Filter>03. GameObject\02. Monster</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CUIMp.h">
@@ -752,9 +761,6 @@
     <ClInclude Include="..\Header\CUIWeaponExplain.h">
       <Filter>05. UI\01. UI\09. UIWeaponExplain</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CFloaterMonster.h">
-      <Filter>03. GameObject\02. Monster</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\CUI_BossHp.h">
       <Filter>05. UI\01. UI\07. UI_MonsterHp</Filter>
     </ClInclude>
@@ -1031,6 +1037,18 @@
     <ClInclude Include="..\Header\CFollowerPig.h">
       <Filter>03. GameObject\11. NPC\02. Follower Pig</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CFloaterMonster.h">
+      <Filter>03. GameObject\02. Monster\03. Floater</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CHumanMonster.h">
+      <Filter>03. GameObject\02. Monster\00. HumanMonster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CHumanMonster2.h">
+      <Filter>03. GameObject\02. Monster\01. HumanMonster2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBatMonster.h">
+      <Filter>03. GameObject\02. Monster\04. Bat</Filter>
+    </ClInclude>
     <ClInclude Include="..\Header\CStage_Prologue.h">
       <Filter>02. Scene\01. Stage</Filter>
     </ClInclude>
@@ -1088,9 +1106,6 @@
       <Filter>99. ImGui_Editor\02. EditorMap</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CTestMonster.cpp">
-      <Filter>03. GameObject\02. Monster</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Code\CHumanMonster.cpp">
       <Filter>03. GameObject\02. Monster</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CUIMp.cpp">
@@ -1369,9 +1384,6 @@
     <ClCompile Include="..\Code\CUIWeaponExplain.cpp">
       <Filter>05. UI\01. UI\09. UIWeaponExplain</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CFloaterMonster.cpp">
-      <Filter>03. GameObject\02. Monster</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\CConstructionPlacer.cpp">
       <Filter>94. Construction\01. Placer</Filter>
     </ClCompile>
@@ -1641,6 +1653,18 @@
     </ClCompile>
     <ClCompile Include="..\Code\CFollowerPig.cpp">
       <Filter>03. GameObject\11. NPC\02. Follower Pig</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CFloaterMonster.cpp">
+      <Filter>03. GameObject\02. Monster\03. Floater</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CHumanMonster.cpp">
+      <Filter>03. GameObject\02. Monster\00. HumanMonster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CHumanMonster2.cpp">
+      <Filter>03. GameObject\02. Monster\01. HumanMonster2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBatMonster.cpp">
+      <Filter>03. GameObject\02. Monster\04. Bat</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CStage_Prologue.cpp">
       <Filter>02. Scene\01. Stage</Filter>

@@ -216,6 +216,7 @@ enum class COMPONENTTYPE
 
     TEX_BAT_MONSTER,
     TEX_HUMAN_MONSTER2,
+    TEX_BURPER_MONSTER,
 
     ////////////////
     //  Particle  //
