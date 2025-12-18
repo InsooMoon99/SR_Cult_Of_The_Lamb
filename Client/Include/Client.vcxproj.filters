@@ -390,7 +390,7 @@
     </Filter>
     <Filter Include="03. GameObject\12. Interactive Object">
       <UniqueIdentifier>{2b5339d0-8214-432a-8734-67f3f6dc4a91}</UniqueIdentifier>
-        </Filter>
+    </Filter>
     <Filter Include="03. GameObject\11. NPC\99. Class for FSM\01. State\12. Talk">
       <UniqueIdentifier>{3c4721f7-65ea-4921-b702-4cf6bba5239a}</UniqueIdentifier>
     </Filter>
@@ -1043,9 +1043,6 @@
     <ClInclude Include="..\Header\CUI_Text.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CUI_Interactive.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\CLogo_Dungeon.h">
       <Filter>02. Scene\00. Logo</Filter>
     </ClInclude>
@@ -1057,7 +1054,7 @@
     </ClInclude>
     <ClInclude Include="..\Header\CInteractiveGrass.h">
       <Filter>헤더 파일</Filter>
-          </ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Header\CFloaterMonster.h">
       <Filter>03. GameObject\02. Monster\03. Floater</Filter>
     </ClInclude>
@@ -1096,6 +1093,9 @@
     </ClInclude>
     <ClInclude Include="..\Header\CStage_Prologue2.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CUI_Interactive.h">
+      <Filter>05. UI\01. UI\16. UIInteractive</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1693,9 +1693,6 @@
     <ClCompile Include="..\Code\CUI_Text.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CUI_Interactive.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\CLogo_Dungeon.cpp">
       <Filter>02. Scene\00. Logo</Filter>
     </ClCompile>
@@ -1743,6 +1740,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\CStage_Prologue2.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CInteractiveGrass.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CUI_Interactive.cpp">
+      <Filter>05. UI\01. UI\16. UIInteractive</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

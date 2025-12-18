@@ -111,7 +111,7 @@ _int CEligos_Idle::Update_State(const _float& timeDelta)
         _vec3 vec = m_pPlayerTransformCom->Get_Pos() - tmpOwnerPos;
         float length = D3DXVec3Length(&vec);
 
-        cout << "length : "<< length << endl;
+        //cout << "length : "<< length << endl;
 
     // 어웨이크 -> 어택
     if (m_pStateMachine->Get_PrevStateKey() == (int)CEligos::ELIGOSSTATE::BOSSREVEAL)
@@ -137,7 +137,7 @@ _int CEligos_Idle::Update_State(const _float& timeDelta)
         // 플레이어가 일정범위 안이면
         if (length <= 6.f)
         {
-            cout << "melee\n";
+            //cout << "melee\n";
 
             return  CEligos::ELIGOSSTATE::ATTACK_MELEE;
         }
@@ -151,12 +151,12 @@ _int CEligos_Idle::Update_State(const _float& timeDelta)
         if (tmp == 1)
         {
 
-            cout << "fly\n";
+           // cout << "fly\n";
             return CEligos::ELIGOSSTATE::ATTACK_FLY;
         }
         else
         {
-            cout << "bullet\n";
+            //cout << "bullet\n";
 
             return CEligos::ELIGOSSTATE::ATTACK_BULLET;
 
