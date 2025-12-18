@@ -629,8 +629,26 @@ HRESULT CResourceMgr::Ready_Monster(DEVICE graphicDev)
         COMPONENTTYPE::TEX_BURPER_MONSTER, burperTex)))
         return E_FAIL;
 
-    
+    // 라따우
+    CTexture* ratauTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(ratauTex, E_FAIL);
 
+    if (FAILED(ratauTex->Add_Texture(L"Ratau_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Ratau/Idle/Ratau-animation%d.png", 68)))
+        return E_FAIL;
+
+    if (FAILED(ratauTex->Add_Texture(L"Ratau_Enter", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Ratau/Enter/Ratau-enter%d.png", 46)))
+        return E_FAIL;
+
+    if (FAILED(ratauTex->Add_Texture(L"Ratau_Exit", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Ratau/Exit/Ratau-exit%d.png", 50)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_RATAU, ratauTex)))
+        return E_FAIL;
+    
     // 보물상자....
     CTexture* chest = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(floaterTex, E_FAIL);
@@ -769,26 +787,6 @@ HRESULT CResourceMgr::Ready_Prologue(DEVICE graphicDev)
 
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_SHAMURA, shamuraTex)))
-        return E_FAIL;
-
-    // 라따우
-    CTexture* ratauTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
-    NULL_CHECK_RETURN(ratauTex, E_FAIL);
-
-    if (FAILED(ratauTex->Add_Texture(L"Ratau_Idle", TEX_NORMAL,
-        L"../Bin/Resource/Texture/NPC/Ratau/Idle/Ratau-animation%d.png", 68)))
-        return E_FAIL;
-
-    if (FAILED(ratauTex->Add_Texture(L"Ratau_Enter", TEX_NORMAL,
-        L"../Bin/Resource/Texture/NPC/Ratau/Enter/Ratau-enter%d.png", 46)))
-        return E_FAIL;
-
-    if (FAILED(ratauTex->Add_Texture(L"Ratau_Exit", TEX_NORMAL,
-        L"../Bin/Resource/Texture/NPC/Ratau/Exit/Ratau-exit%d.png", 50)))
-        return E_FAIL;
-
-    if (FAILED(protoMgr->Ready_Prototype(
-        COMPONENTTYPE::TEX_RATAU, ratauTex)))
         return E_FAIL;
 
     // 처형하는놈

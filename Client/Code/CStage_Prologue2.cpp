@@ -2,6 +2,7 @@
 #include "CCombatStat.h"
 #include "CAnimator.h"
 #include "CStage_Prologue2.h"
+#include "CDInputMgr.h"
 #include "CRigidbody.h"
 #include "CCamSetupBuilder.h"
 #include "CWeaponEquip.h"
@@ -13,11 +14,15 @@
 #include "CMainEditorMgr.h"
 #include "CPersistentObjectHelper.h"
 #include "CPlayer.h"
+#include "CRatau.h"
 #include "CSoundMgr.h"
 #include "CTerrain.h"
 #include "CTransform.h"
 #include "CTrigger_Dungeon.h"
 #include "CUI_Dialogue.h"
+#include "CUI_DungeonLootPanel.h"
+#include "CUI_Fade.h"
+#include "CUI_Interactive.h"
 #include "CUI_MonsterHp.h"
 
 CStage_Prologue2::CStage_Prologue2(DEVICE graphicDev)
@@ -51,15 +56,15 @@ void CStage_Prologue2::Initialize_Scene()
 {
     CScene::Initialize_Scene();
 
-    m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Tutorial2.map");
+    Set_RoomData();
+
+    //m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Tutorial2.map");
 
     CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Prologue.wav", 0.4f, true, 1.f);
-    CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Bird.wav", 0.15f, false, 1.f);
+    //CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Bird.wav", 0.15f, false, 1.f);
 
     auto player = dynamic_cast<CPlayer*>(m_PlayerTransform->Get_Owner());
     NULL_CHECK(player);
-
-    //player->Set_PrologueMode(true);
 
     auto playerAnimator = dynamic_cast<CAnimator*>(
         m_Player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
@@ -92,6 +97,7 @@ void CStage_Prologue2::Initialize_Scene()
         }
     }
 
+
 }
 
 _int CStage_Prologue2::Update_Scene(const _float& timeDelta)
@@ -99,6 +105,33 @@ _int CStage_Prologue2::Update_Scene(const _float& timeDelta)
     _int exit = Engine::CScene::Update_Scene(timeDelta);
 
     Rebirth_End();
+    Fade_Check(timeDelta);
+
+    if (m_InWarpZone && !m_WarpStarted)
+    {
+        if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
+        {
+            m_WarpStarted = true;
+
+            auto playerState = dynamic_cast<CState*>(
+                m_Player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
+
+            if (playerState)
+                playerState->Change_State(ACTORSTATE::PLAYER_WARPOUT);
+        }
+    }
+
+    if (m_WarpStarted)
+    {
+        auto animator = dynamic_cast<CAnimator*>(
+            m_Player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+
+        if (animator && animator->Get_CurKey() == L"Player_WarpOut"
+            && animator->Is_AnimationFinished())
+        {
+            //m_PrologueCleared = true;
+        }
+    }
 
     return exit;
 }
@@ -118,10 +151,15 @@ HRESULT CStage_Prologue2::Ready_Environment_Layer(LAYERTYPE layerType)
     if (nullptr == layer)
         return E_FAIL;
 
-    m_Terrain = CTerrain::Create(m_GraphicDev);
-    NULL_CHECK_RETURN(m_Terrain, E_FAIL);
+    // 프롤로그 2는 방 4개만?
+    for (_int i = 0; i < static_cast<_int>(Room::PROLOGUE2_END); i++)
+    {
+        Room room = static_cast<Room>(i);
+        m_Terrains[room] = CTerrain::Create(m_GraphicDev);
+        NULL_CHECK_RETURN(m_Terrains[room], E_FAIL);
 
-    layer->Add_GameObject(OBJTYPE::TERRAIN, m_Terrain);
+        layer->Add_GameObject(OBJTYPE::TERRAIN, m_Terrains[room]);
+    }
 
     m_Layers.insert({ layerType, layer });
 
@@ -241,6 +279,17 @@ HRESULT CStage_Prologue2::Ready_UI_Layer(LAYERTYPE layerType)
     m_Dialogue = CUI_Dialogue::Create(m_GraphicDev);
     layer->Add_GameObject(OBJTYPE::UI, m_Dialogue);
 
+    m_UI_Fade = CUI_Fade::Create(m_GraphicDev);
+    layer->Add_GameObject(OBJTYPE::UI, m_UI_Fade);
+
+    //m_UI_Interact = CUI_Interactive::Create(m_GraphicDev);
+    //layer->Add_GameObject(OBJTYPE::UI, m_UI_Interact);
+    //m_UI_Interact->Set_IsActive(false);
+    //
+    //m_ClearPanel = CUI_DungeonLootPanel::Create(m_GraphicDev);
+    //layer->Add_GameObject(OBJTYPE::UI, m_ClearPanel);
+    //m_ClearPanel->Initialize_GameObject();
+
     m_Layers.insert({ layerType, layer });
 
     return S_OK;
@@ -249,6 +298,164 @@ HRESULT CStage_Prologue2::Ready_UI_Layer(LAYERTYPE layerType)
 HRESULT CStage_Prologue2::Ready_Prototype()
 {
     return S_OK;
+}
+
+void CStage_Prologue2::Create_RoomTriggers()
+{
+    // START <-> MIDDLE1
+    Create_BiDirectional_Trigger(                      
+        Room::START, _vec3(29.f, 1.f, 5.f),            // 1
+        Room::MIDDLE1, _vec3(0.f, 1.f, 11.6f),         // 2
+        _vec3(5.f, 5.f, 4.5f));
+
+    // MIDDLE1 <-> MIDDLE2
+    Create_BiDirectional_Trigger(
+        Room::MIDDLE1, _vec3(34.f, 1.f, 11.6f),       // 3
+        Room::MIDDLE2, _vec3(12.f, 1.f, -2.f),        // 4
+        _vec3(5.f, 5.f, 4.5f));
+
+    // MIDDLE2 <-> END_ROOM
+    Create_BiDirectional_Trigger(
+        Room::MIDDLE2, _vec3(13.f, 1.f, 21.4f),      // 5
+        Room::END_ROOM, _vec3(10.f, 1.f, -3.f),        // 6
+        _vec3(5.f, 5.f, 4.5f));
+
+
+    // 라타우 소환 트리거
+    {
+        auto trigger = CTrigger_Dungeon::Create(m_GraphicDev);
+        _vec3 roomPos = m_RoomData[static_cast<_int>(Room::END_ROOM)].terrainOffset;
+
+        trigger->Set_Bounds(roomPos + _vec3(11.f, 1.f, 5.6f), _vec3(5.f, 5.f, 2.5f));
+        trigger->Set_TriggerOnce(true); 
+
+        trigger->Set_Callback([this]()
+            {
+                // 라타우 소환
+                Spawn_Ratau();
+            });
+
+        m_Layers[LAYERTYPE::GAMELOGIC]->Add_GameObject(OBJTYPE::TRIGGER, trigger);
+    }
+
+    // 집가는 트리거
+    {
+        auto trigger = CTrigger_Dungeon::Create(m_GraphicDev);
+        _vec3 roomPos = m_RoomData[static_cast<_int>(Room::END_ROOM)].terrainOffset;
+
+        trigger->Set_Bounds(roomPos + _vec3(11.f, 1.f, 8.6f), _vec3(5.f, 5.f, 2.5f));
+        trigger->Set_TriggerOnce(false);
+
+        trigger->Set_Callback([this]()
+            {
+                m_InWarpZone = true;
+
+                //if (m_UI_Interact)
+                //  m_UI_Interact->Set_IsActive(true);
+            });
+
+        m_Layers[LAYERTYPE::GAMELOGIC]->Add_GameObject(OBJTYPE::TRIGGER, trigger);
+    }
+}
+
+void CStage_Prologue2::Create_BiDirectional_Trigger(Room roomA, _vec3 offsetA, Room roomB, _vec3 offsetB, _vec3 size)
+{
+    auto gameLayer = m_Layers[LAYERTYPE::GAMELOGIC];
+    NULL_CHECK(gameLayer);
+
+    // A → B 트리거
+    {
+        auto trigger = CTrigger_Dungeon::Create(m_GraphicDev);
+        _vec3 roomAPos = m_RoomData[static_cast<_int>(roomA)].terrainOffset;
+        trigger->Set_Bounds(roomAPos + offsetA, size);
+        trigger->Set_TriggerOnce(false);
+        trigger->Set_Callback([this, roomB]() {
+            Change_Room(roomB);
+            });
+        gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
+    }
+
+    // B → A 트리거
+    {
+        auto trigger = CTrigger_Dungeon::Create(m_GraphicDev);
+        _vec3 roomBPos = m_RoomData[static_cast<_int>(roomB)].terrainOffset;
+        trigger->Set_Bounds(roomBPos + offsetB, size);
+        trigger->Set_TriggerOnce(false);
+        trigger->Set_Callback([this, roomA]() {
+            Change_Room(roomA);
+            });
+        gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
+    }
+}
+
+void CStage_Prologue2::Change_Room(Room room)
+{
+    if (m_IsFading)
+        return;
+
+    if (m_UI_Fade)
+    {
+        m_FromRoom = m_CurrentRoom;
+        m_NextRoom = room;
+        m_IsFading = true;
+        m_UI_Fade->Start_FadeOut(3.5f);
+    }
+}
+
+void CStage_Prologue2::Fade_Check(const _float timeDelta)
+{
+    if (!m_IsFading || !m_UI_Fade)
+        return;
+
+    if (!m_UI_Fade->IsFading() && m_UI_Fade->Get_Alpha() >= 1.0f)
+    {
+        if (m_Terrains[m_CurrentRoom])
+            m_Terrains[m_CurrentRoom]->Clear_SpawnedObjects();
+
+        for (auto& pair : m_Terrains)
+            pair.second->Set_Active(false);
+
+        m_Terrains[m_NextRoom]->Set_Active(true);
+        m_CurrentRoom = m_NextRoom;
+
+        auto key = make_pair(m_FromRoom, m_NextRoom);
+        _vec3 spawnPos;
+
+        if (m_SpawnPositions.count(key) > 0)
+            spawnPos = m_SpawnPositions[key];
+        else
+            spawnPos = m_RoomData[static_cast<_int>(m_NextRoom)].playerSpawnPos;
+
+        if (m_PlayerTransform)
+            m_PlayerTransform->Set_Pos(spawnPos);
+
+        m_UI_Fade->Start_FadeIn(0.5f);
+        m_IsFading = false;
+    }
+}
+
+void CStage_Prologue2::Connect_Rooms()
+{
+    m_ConnectRooms[Room::START] = { Room::MIDDLE1 };
+    m_ConnectRooms[Room::MIDDLE1] = { Room::START, Room::MIDDLE2 };
+
+    m_ConnectRooms[Room::MIDDLE2] = { Room::MIDDLE1, Room::END_ROOM };
+    m_ConnectRooms[Room::END_ROOM] = { Room::MIDDLE2 };
+}
+
+void CStage_Prologue2::Set_SpawnPos()
+{
+    // START -> MIDDLE1
+    m_SpawnPositions[{Room::START, Room::MIDDLE1}] = { 104.f, 1.f, 11.6f };
+    m_SpawnPositions[{Room::MIDDLE1, Room::START}] = { 24.f, 1.f, 5.f };
+
+    // MIDDLE1 -> MIDDLE2
+    m_SpawnPositions[{Room::MIDDLE1, Room::MIDDLE2}] = { 212.f, 1.f, 1.75f };
+    m_SpawnPositions[{Room::MIDDLE2, Room::MIDDLE1}] = { 130.f, 1.f, 11.2f };
+
+    // MIDDLE2 -> END_ROOM
+    m_SpawnPositions[{Room::MIDDLE2, Room::END_ROOM}] = { 310.f, 1.f, 2.14f };
+    m_SpawnPositions[{Room::END_ROOM, Room::MIDDLE2}] = { 220.f, 1.f, 0.f };
 }
 
 HRESULT CStage_Prologue2::Ready_Light()
@@ -268,29 +475,6 @@ HRESULT CStage_Prologue2::Ready_Light()
     return S_OK;
 }
 
-void CStage_Prologue2::Create_Trigger()
-{
-    auto gameLayer = m_Layers[LAYERTYPE::GAMELOGIC];
-    NULL_CHECK(gameLayer);
-
-    auto trigger = CTrigger_Dungeon::Create(m_GraphicDev);
-
-    // Terrain 위치에 맞춰서 스폰
-    _vec3 pos = _vec3(15.f, 1.f, 45.4f);
-
-    // 트리거 위치, 크기 세팅
-    trigger->Set_Bounds(pos, _vec3(5.f, 5.f, 3.f));
-    trigger->Set_TriggerOnce(false);
-
-    trigger->Set_Callback([this]
-        {
-            // 대화 시작
-            Start_Dialogue();
-        });
-
-    gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
-}
-
 void CStage_Prologue2::Setup_DialogueCallbacks()
 {
     NULL_CHECK(m_Dialogue);
@@ -303,13 +487,92 @@ void CStage_Prologue2::Setup_DialogueCallbacks()
 
 void CStage_Prologue2::OnDialogueEnd(const string& id)
 {
-    
+    if (id == "Ratau_Start")
+    {
+        auto animator = dynamic_cast<CAnimator*>(
+            m_Ratau->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+
+        if (animator)
+            animator->Play_Animation(L"Ratau_Exit", ANIMSTATE::ONCE);
+
+        auto camMovement = m_CamController->Get_OwnerCamMovement();
+
+        CCamSetupBuilder(m_CamController)
+            .SetTarget(m_Player->Get_Transform())
+            .Distance(12.f)
+            .LagSpeed(3.f)
+            .ZoomSpeed(2.f)
+            .Apply();
+    }
 }
 
 void CStage_Prologue2::Start_Dialogue()
 {
     
 
+}
+
+void CStage_Prologue2::Set_RoomData()
+{
+    m_RoomData[static_cast<_int>(Room::START)] =
+    {
+        { 15.1f, 1.f, 43.f },
+        "../Bin/Resource/Data/Terrain/Terrain_Tutorial2.map",
+        { 0.f, 0.f, 0.f }
+    };
+
+    m_RoomData[static_cast<_int>(Room::MIDDLE1)] =
+    {
+        { 104, 1.f, 11.6f },
+        "../Bin/Resource/Data/Terrain/Terrain_Dungeon_Prologue1.map",
+        { 100.f, 0.f, 0.f },
+        { 117.7f, 1.f, 8.89f }
+    };
+
+    m_RoomData[static_cast<_int>(Room::MIDDLE2)] =
+    {
+        { 210.f, 1.f, 0.f },
+        "../Bin/Resource/Data/Terrain/Terrain_Dungeon_Prologue2.map",
+        { 200.f, 0.f, 0.f },
+        { 213.f, 1.f, 9.986f }
+    };
+
+    m_RoomData[static_cast<_int>(Room::END_ROOM)] =
+    {
+        { 300.f, 1.f, 10.f },
+        "../Bin/Resource/Data/Terrain/Terrain_Dungeon_Prologue3.map",
+        { 300.f, 0.f, 0.f }
+    };
+
+    Set_SpawnPos();
+    Connect_Rooms();
+    m_CurrentRoom = Room::START;
+
+    for (auto& pair : m_Terrains)
+    {
+        Room room = pair.first;
+        CTerrain* terrain = pair.second;
+        if (terrain)
+        {
+            auto transform = terrain->Get_Transform();
+
+            if (transform)
+                transform->Set_Pos(m_RoomData[static_cast<_int>(room)].terrainOffset);
+
+            terrain->LoadMapOnStart(m_RoomData[static_cast<_int>(room)].terrainFilePath.c_str());
+
+            terrain->Set_ChestSpawnPos(m_RoomData[static_cast<_int>(room)].chestSpawnPos);
+        }
+    }
+
+    for (auto& pair : m_Terrains)
+        pair.second->Set_Active(false);
+    m_Terrains[Room::START]->Set_Active(true);
+
+    Create_RoomTriggers();
+
+    _vec3 startPos = m_RoomData[static_cast<_int>(Room::START)].playerSpawnPos;
+    m_PlayerTransform->Set_Pos(startPos);
 }
 
 void CStage_Prologue2::Rebirth_End()
@@ -355,6 +618,37 @@ void CStage_Prologue2::Rebirth_End()
             }
         }
     }
+}
+
+void CStage_Prologue2::Spawn_Ratau()
+{
+    if (m_Ratau)
+        return;
+
+    m_Ratau = CRatau::Create(m_GraphicDev);
+    NULL_CHECK(m_Ratau);
+
+    _vec3 ratauPos = _vec3(317.f, 1.f, 5.7f);
+    m_Ratau->Get_Transform()->Set_Pos(ratauPos);
+
+    m_Layers[LAYERTYPE::GAMELOGIC]->Add_GameObject(OBJTYPE::NPC, m_Ratau);
+    m_Ratau->Initialize_GameObject();
+
+    auto camMovement = m_CamController->Get_OwnerCamMovement();
+
+    CCamSetupBuilder(m_CamController)
+        .SetTarget(m_Ratau->Get_Transform())
+        .Distance(8.f)                      
+        .LagSpeed(3.f)
+        .ZoomSpeed(2.f)
+        .Apply();
+
+    camMovement->Set_OnTransitionEnd([this]()
+        {
+            if (m_Dialogue)
+                m_Dialogue->Start_Dialogue("Ratau_Start", _vec2(15.f, 180.f), _vec2(250.f, 100.f));
+        });
+
 }
 
 CStage_Prologue2* CStage_Prologue2::Create(DEVICE graphicDev)
