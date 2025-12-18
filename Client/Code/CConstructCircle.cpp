@@ -108,29 +108,17 @@ void CConstructCircle::OnStayOverlap(CCollider* self, CCollider* other)
             obj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
 
         if (playerState && playerState->Get_State() == ACTORSTATE::PLAYER_HAMMER)
-        {
-            g_Timers[TIMER_SOUND_PL_HAMMERING] -= CTimerMgr::GetInstance()->Get_TimeDelta();
-
-            if (g_Timers[TIMER_SOUND_PL_HAMMERING] < 0.f)
-            {
-                CSoundMgr::GetInstance()->Play_Once(L"Construction/Hammering_2.wav",
-                    SOUND_EFFECT,
-                    1.f);
-                g_Timers[TIMER_SOUND_PL_HAMMERING] = 0.3f;
-            }
-           
-            m_Progress += 10.f * CTimerMgr::GetInstance()->Get_TimeDelta();
-        }
+            m_Progress += 4.f * CTimerMgr::GetInstance()->Get_TimeDelta();
     }
 
     // NPC 체크
-    else if (auto npc = dynamic_cast<CNPCBase*>(obj))
+    if (auto npc = dynamic_cast<CNPCBase*>(obj))
     {
         auto controller = dynamic_cast<CNPCController*>(
             npc->Get_Component(ID_DYNAMIC, COMPONENTTYPE::NPC_CONTROLLER));
 
         if (controller && controller->Get_CurNPCState() == CNPCStateMachine::NPC_STATE::BUILD)
-            m_Progress += 5.f * CTimerMgr::GetInstance()->Get_TimeDelta();
+            m_Progress += 4.f * CTimerMgr::GetInstance()->Get_TimeDelta();
     }
 
     // 건축 완료 로직
