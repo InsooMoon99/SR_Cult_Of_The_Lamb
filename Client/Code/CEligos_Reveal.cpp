@@ -7,6 +7,7 @@
 #include "CAnimator.h"
 #include "CSceneMgr.h"
 #include "CSpriteAnimation.h"
+#include "CSoundMgr.h"
 
 
 CEligos_Reveal::CEligos_Reveal(CEligos* pOwner, CEligos_StateMachine* pStateMachine)
@@ -30,6 +31,7 @@ void CEligos_Reveal::Enter()
 
 void CEligos_Reveal::Exit()
 {
+
     CMonsterState::Exit();
 }
 
@@ -50,8 +52,18 @@ _int CEligos_Reveal::Update_State(const _float& timeDelta)
     if (m_pOwnerAnimatorCom->Get_CurAnimation() == nullptr)
         return CEligos::ELIGOSSTATE::BOSSREVEAL;
 
+    if (m_Sound == false)
+    {
+        CSoundMgr::GetInstance()->Play_Once(L"Boss/Elligos_Roar.wav", SOUNDTYPE::SOUND_BOSS2, 1.f);
+
+        m_Sound = true;
+    }
+
+
     if (m_pOwnerAnimatorCom->Get_CurFrame() >= m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
     {
+        CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Eligos.wav", 1.0f);
+
         return CEligos::ELIGOSSTATE::BOSSIDLE;
     }
 

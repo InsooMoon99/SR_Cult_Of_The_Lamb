@@ -14,6 +14,7 @@
 #include "CTransform.h"
 #include "CUI_MonsterHp.h"
 #include "CProjectile.h"
+#include "CSoundMgr.h"
 
 CEligos_Flies::CEligos_Flies(DEVICE graphicDev, CGameObject* owner, CGameObject* Target)
     : CMonsterBase(graphicDev), m_pOwner(owner), m_pTarget(Target)
@@ -57,6 +58,7 @@ void CEligos_Flies::Initialize_GameObject()
 {
     CMonsterBase::Initialize_GameObject();
 
+
     m_TargetTransform = dynamic_cast<CTransform*>(
         CManagement::GetInstance()->Get_Component(ID_DYNAMIC,
             LAYERTYPE::GAMELOGIC,
@@ -83,13 +85,30 @@ _int CEligos_Flies::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CMonsterBase::Update_GameObject(timeDelta);
 
+    if (m_spawnSound == false)
+    {
+        CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Fly_Spawn.wav", SOUNDTYPE::SOUND_BOSS4, 1.0f);
+       
+        m_spawnSound = true;
+    }
+#pragma region 플레이어 베리 채집 효과음. 0.5초마다 재생
+    g_Timers[TIMER_SOUND_FOL_FLY] -= timeDelta;
 
+    if (g_Timers[TIMER_SOUND_FOL_FLY] < 0.f)
+    {
+        CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Fly_Fly_Loop.wav", SOUND_BOSS2, 0.5f);
+        g_Timers[TIMER_SOUND_FOL_FLY] = 0.5f;
+    }
+#pragma endregion
     m_ProjectileCom->Update_Component(timeDelta);
     
     if (m_CombatStatCom->Is_Dead() == true||m_flyDie==true)
     {
         //죽었을떄 애니메이션 추가
         //끝나면
+        CSoundMgr::GetInstance()->Stop_Sound(L"Boss/Eligos/Fly_Fly_Loop.wav");
+        CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Flying_Hopper_Miniboss_Bite.wav", SOUNDTYPE::SOUND_BOSS3, 0.7f);
+
         Mark_As_PendingKill();
     }
 
@@ -99,6 +118,12 @@ _int CEligos_Flies::Update_GameObject(const _float& timeDelta)
         m_flag = true;
     }
 
+
+    m_Timer += timeDelta;
+    if (m_Timer > 600)
+    {
+        Mark_As_PendingKill();
+    }
     return exit;
 }
 

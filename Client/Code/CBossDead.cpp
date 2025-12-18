@@ -7,6 +7,7 @@
 #include "CAnimator.h"
 #include "CSceneMgr.h"
 #include "CSpriteAnimation.h"
+#include "CSoundMgr.h"
 
 
 CBossDead::CBossDead(CBossPhase1* pOwner, CBossStateMachine* pStateMachine)
@@ -53,6 +54,12 @@ _int CBossDead::Update_State(const _float& timeDelta)
     switch (m_ePhase)
     {
     case PHASE::DOWN:
+
+        if (m_Sound == false)
+        {
+            CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Deathcat_1st_Death_Earthquake.wav", SOUNDTYPE::SOUND_BOSS2, 1.f);
+            m_Sound = true;
+        }
 
         if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
         {
