@@ -521,6 +521,10 @@ void CStage_Dungeon::EnterDungeon()
 
 void CStage_Dungeon::Change_Room(Room room)
 {
+    // 현재 방 오브젝트 정리 (새 코드 추가)
+    if (m_Terrains[m_CurrentRoom])
+        m_Terrains[m_CurrentRoom]->Clear_SpawnedObjects();
+
     // 모든 방 비활성화
     for (auto& pair : m_Terrains)
     {

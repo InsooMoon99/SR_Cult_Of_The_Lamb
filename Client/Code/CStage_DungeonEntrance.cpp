@@ -250,7 +250,6 @@ void CStage_DungeonEntrance::Create_Trigger()
 
         trigger->Set_Callback([this]
             {
-                // 씬 전환. 던전용 하나, 보스방용 하나
                 CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_DUNGEON);
             });
 
@@ -267,7 +266,6 @@ void CStage_DungeonEntrance::Create_Trigger()
 
         trigger->Set_Callback([this]
             {
-                // 씬 전환. 던전용 하나, 보스방용 하나
                 CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS1);
             });
 

@@ -297,6 +297,7 @@ void CTerrain::Spawn_Walls(CLayer* layer)
                     wallCollider->Set_Size(_vec3(cellSize, 2.f, cellSize));
 
                     layer->Add_GameObject(OBJTYPE::WALL, wall);
+                    m_SpawnedWalls.push_back(wall);
 
                     wall->Initialize_GameObject();
 
@@ -384,6 +385,7 @@ void CTerrain::Spawn_Objects(CLayer* layer)
 
         // Layer에 추가
         layer->Add_GameObject(objType, object);
+        m_SpawnedMonsters.push_back(object);
 
         object->Initialize_GameObject();
 
@@ -414,6 +416,37 @@ CTerrain* CTerrain::Create(DEVICE GraphicDev)
     }
 
     return terrain;
+}
+
+void CTerrain::Clear_SpawnedObjects()
+{
+    // 벽 정리
+    for (auto obj : m_SpawnedWalls)
+    {
+        if (obj)
+            obj->Mark_As_PendingKill();
+    }
+    m_SpawnedWalls.clear();
+
+    // 몬스터 정리
+    for (auto obj : m_SpawnedMonsters)
+    {
+        if (obj)
+            obj->Mark_As_PendingKill();
+    }
+    m_SpawnedMonsters.clear();
+
+    // HP바 정리
+    for (auto obj : m_SpawnedMonsterHpBars)
+    {
+        if (obj)
+            obj->Mark_As_PendingKill();
+    }
+    m_SpawnedMonsterHpBars.clear();
+
+    // 다음 활성화 시 다시 스폰되도록
+    m_IsWallSpawn = true;
+    m_IsObjectSpawn = true;
 }
 
 void CTerrain::Free()

@@ -60,6 +60,8 @@ private:
 public:
     static CTerrain* Create(DEVICE GraphicDev);
 
+    void Clear_SpawnedObjects();
+
 protected:
     void Free() override;
 
@@ -79,5 +81,9 @@ private:
     _bool                       m_IsObjectSpawn;
 
     _bool                       m_IsActive = true;
+
+    vector<CGameObject*>        m_SpawnedWalls;
+    vector<CGameObject*>        m_SpawnedMonsters;
+    vector<CGameObject*>        m_SpawnedMonsterHpBars;
 };
 
