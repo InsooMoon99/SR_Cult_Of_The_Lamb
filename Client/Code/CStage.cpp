@@ -166,8 +166,6 @@ void CStage::Initialize_Scene()
     CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Village.wav", 0.3f, true, 1.f);
     CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Bird.wav", 0.1f, false, 1.f);
 
-    // m_UIOpenTime = 4.f;
-
     m_VillageEnterUI = CUI_Text::Create(m_GraphicDev);
     m_VillageEnterUI->Set_Font(L"NanumSquare_Max");
     m_VillageEnterUI->Set_Text(L"어린 양의 교단");

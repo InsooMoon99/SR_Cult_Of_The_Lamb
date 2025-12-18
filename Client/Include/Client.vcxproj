@@ -214,6 +214,7 @@
     <ClInclude Include="..\Header\CExcutioner.h" />
     <ClInclude Include="..\Header\CFollowerElephant.h" />
     <ClInclude Include="..\Header\CFollowerPig.h" />
+    <ClInclude Include="..\Header\CInteractiveGrass.h" />
     <ClInclude Include="..\Header\CHeket.h" />
     <ClInclude Include="..\Header\CHumanMonster2.h" />
     <ClInclude Include="..\Header\CKallamar.h" />
@@ -444,6 +445,7 @@
     <ClCompile Include="..\Code\CEtc.cpp" />
     <ClCompile Include="..\Code\CExcutioner.cpp" />
     <ClCompile Include="..\Code\CEyeball_CenterAttack.cpp" />
+    <ClCompile Include="..\Code\CInteractiveGrass.cpp" />
     <ClCompile Include="..\Code\CHeket.cpp" />
     <ClCompile Include="..\Code\CHumanMonster2.cpp" />
     <ClCompile Include="..\Code\CKallamar.cpp" />

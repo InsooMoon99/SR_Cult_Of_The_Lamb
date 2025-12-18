@@ -256,7 +256,21 @@ void CDroppedItem::OnStayOverlap(CCollider* self, CCollider* other)
             CComponent* com = ply->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::INVENTORY);
             if (dynamic_cast<CInventory*>(com)->AddItem(m_itemInst) == true)
             {
-
+                if (!m_SoundEnded)
+                {
+                    if (CItemDB::GetInstance()->GetItemById(m_itemInst.itemId)->id == 4001)
+                    {
+                        CSoundMgr::GetInstance()->Play_Once(L"Object/Heart_Pickup.wav",
+                            SOUND_EFFECT,
+                            1.f);
+                    }
+                    else {
+                    CSoundMgr::GetInstance()->Play_Once(L"Object/Get_Item.wav",
+                        SOUND_EFFECT,
+                        1.f);
+                    }
+                    m_SoundEnded = true;
+                }
                 DisappearEff();
                 //*** 아이템 지우기 ***
                 Mark_As_PendingKill();
@@ -267,7 +281,7 @@ void CDroppedItem::OnStayOverlap(CCollider* self, CCollider* other)
 
                 if (dungeonStage)
                 {
-                        dungeonStage->Get_RunLootLog().Add(m_itemInst);
+                   dungeonStage->Get_RunLootLog().Add(m_itemInst);
                 }
 
             }
