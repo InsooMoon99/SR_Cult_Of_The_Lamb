@@ -1,7 +1,15 @@
 ﻿#pragma once
 #include "CScene.h"
 
+class CCameraController;
 class CTerrain;
+class CUI_Dialogue;
+class CPlayer;
+
+class CHeket;
+class CKallamar;
+class CLeshy;
+class CShamura;
 
 BEGIN(Engine)
 
@@ -32,6 +40,13 @@ private:
 
     HRESULT Ready_Light() override;
 
+    void    Create_Trigger();
+
+    void    Setup_DialogueCallbacks();
+    void    OnDialogueEnd(const string& id);
+
+    void    Start_Dialogue();
+
 public:
     static CStage_Prologue* Create(DEVICE graphicDev);
 
@@ -41,7 +56,29 @@ private:
 private:
     CTerrain* m_Terrain;
 
-    CTransform* m_PlayerTransform = nullptr;
-    CRigidbody* m_PlayerRigid = nullptr;
+    CTransform*     m_PlayerTransform = nullptr;
+    CRigidbody*     m_PlayerRigid = nullptr;
+    CUI_Dialogue*   m_Dialogue = nullptr;
+    CGameObject*    m_Player = nullptr;
 
+    CHeket*         m_Heket = nullptr;
+    CKallamar*      m_Kallamar = nullptr;
+    CLeshy*         m_Leshy = nullptr;
+    CShamura*       m_Shamura = nullptr;
+
+    CCameraController* m_CamController = nullptr;
+
+    class CExcutioner* m_Excutioner = nullptr;
+
+    _bool m_IsExcutionerWalking = false;
+    _vec3 m_ExcutionerTargetPos;
+
+    _bool m_SceneChanged = false;
+
+private:
+    // temp
+    D3DXCOLOR m_LightDiffuse = D3DXCOLOR(0.631f, 0.345f, 0.345f, 1.0f);
+    D3DXCOLOR m_LightAmbient = D3DXCOLOR(0.710f, 0.463f, 0.463f, 1.0f);
+    D3DXCOLOR m_LightSpecular = D3DXCOLOR(1.0f, 0.4f, 0.4f, 1.0f);
+    D3DXVECTOR3 m_LightDir = D3DXVECTOR3(0.f, -1.f, 1.f);
 };

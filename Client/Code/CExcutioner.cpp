@@ -99,8 +99,8 @@ void CExcutioner::Animation_Setting()
         _vec2(0.f, 0.32f));
 
     m_AnimatorCom->Create_Animation(L"Excutioner_Excute", 55, 0.02f,
-        _vec2(1.f, 1.f),
-        _vec2(0.f, 0.32f));
+        _vec2(1.57f, 1.39f),
+        _vec2(0.15f, 0.43f));
 
     // State -> Animation 연동
     m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"Excutioner_Idle", ANIMSTATE::LOOP);

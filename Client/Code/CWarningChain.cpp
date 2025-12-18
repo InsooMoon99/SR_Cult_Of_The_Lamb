@@ -13,6 +13,8 @@
 #include "CRenderer.h"
 #include "CTexture.h"
 #include "CTransform.h"
+#include "CSoundMgr.h"
+
 
 CWarningChain::CWarningChain(DEVICE graphicDev, CGameObject* owner)
     : CGameObject(graphicDev),
@@ -93,6 +95,9 @@ _int CWarningChain::Update_GameObject(const _float& timeDelta)
         // 초기 사이즈 저장
         m_originSize = m_TransformCom->Get_Scale();
         m_Sizeflag   = true;
+
+        CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Chain_GroundAppear.wav", SOUNDTYPE::SOUND_BOSS1, 0.5f);
+
     }
     m_fElapsedTime += timeDelta;
 
@@ -124,6 +129,9 @@ _int CWarningChain::Update_GameObject(const _float& timeDelta)
 				_vec3 offset = m_TransformCom->Get_Pos() + tmp;
 				ChainTransform->Set_Pos(offset);
 				SpawnObjectOnLayer(chain);
+
+                CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Chain_Appear.wav", SOUNDTYPE::SOUND_BOSS1, 0.5f);
+
 			}
 		}
 		else if (boss2)

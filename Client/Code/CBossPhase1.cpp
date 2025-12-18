@@ -13,6 +13,7 @@
 #include "CCombatStat.h"
 #include "CMonsterState.h"
 #include "CUI_BossHp.h"
+#include "CSoundMgr.h"
 
 
 CBossPhase1::CBossPhase1(DEVICE graphicDev)
@@ -52,6 +53,8 @@ HRESULT CBossPhase1::Ready_GameObject()
     m_CombatStatCom->Set_Mp(5.f);
     m_CombatStatCom->Set_Speed(5.f);
     m_CombatStatCom->Set_HitState(false);
+
+    m_CombatStatCom->Set_OnDamagedEvent([]() {CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/DeathCat_GetHit.wav", SOUNDTYPE::SOUND_BOSS, 1.f);});
 
 
     BaseCenter = { 47 ,m_TransformCom->Get_Scale().y, 47 };

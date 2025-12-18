@@ -10,6 +10,7 @@ class CUI_Fade;
 class CCameraMovement;
 class CCameraController;
 class CTarotNPC;
+class CUI_BossHp;
 
 BEGIN(Engine)
 class CCombatStat;
@@ -128,6 +129,9 @@ private:
     _bool           m_DungeonCleared = false;
     _bool           m_IsClearMenuOpened;
     _bool           m_Start;
+
+    CGameObject* m_Boss = nullptr;
+    CUI_BossHp* m_BossHpbar = nullptr;
 };
 
 

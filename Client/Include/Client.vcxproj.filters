@@ -1094,6 +1094,9 @@
     <ClInclude Include="..\Header\CShamura.h">
       <Filter>03. GameObject\04. Boss\04. NPC</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CStage_Prologue2.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1737,6 +1740,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CShamura.cpp">
       <Filter>03. GameObject\04. Boss\04. NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CStage_Prologue2.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

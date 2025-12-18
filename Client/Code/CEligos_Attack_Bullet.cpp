@@ -12,6 +12,7 @@
 #include "CBossBullet.h"
 #include "CProjectile.h"
 #include "CCreateHelper.h"
+#include "CSoundMgr.h"
 
 CEligos_Attack_Bullet::CEligos_Attack_Bullet(CEligos* pOwner, CEligos_StateMachine* pStateMachine)
 {
@@ -87,11 +88,9 @@ _int CEligos_Attack_Bullet::Update_State(const _float& timeDelta)
         {
 
             m_pOwnerRigidbodyCom->Set_Velocity({ 0,0,0 });
-            // 이거 말고 제 위치에 도달 하면 레디로 가자
+
             m_ePhase = PHASE::READY;
 
-            //if (m_OnTalkStart)
-            //    m_OnTalkStart();
         }
 
         break;
@@ -116,6 +115,10 @@ _int CEligos_Attack_Bullet::Update_State(const _float& timeDelta)
                     m_pOwnerTransformCom->Set_Scale(m_pOwnerTransformCom->Get_Scale().x * -1, m_pOwnerTransformCom->Get_Scale().y, m_pOwnerTransformCom->Get_Scale().z);
             }
 
+
+                CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Elligos_Charge.wav", SOUNDTYPE::SOUND_BOSS2, 1.f);
+
+
             m_flag = true;
         }
 
@@ -131,7 +134,11 @@ _int CEligos_Attack_Bullet::Update_State(const _float& timeDelta)
 
     case PHASE::SHOOT: //움직이면서 쏘는거
         m_pOwnerAnimatorCom->Play_Animation(L"Eligos_attack_bullet", ANIMSTATE::ONCE);
-
+        if (m_Sound == false)
+        {
+            CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Elligos_Attack1.wav", SOUNDTYPE::SOUND_BOSS2, 1.f);
+            m_Sound = true;
+        }
 
         m_pOwnerRigidbodyCom->Set_Velocity(m_TargetDir * 10.0f);
 

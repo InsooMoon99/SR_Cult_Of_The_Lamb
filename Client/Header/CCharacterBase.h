@@ -36,6 +36,7 @@ protected:
 
     HRESULT Add_Component() override;
     virtual void Render_Setting() override;
+    void Render_Reset() override;
 
 protected:
     void Free() override;

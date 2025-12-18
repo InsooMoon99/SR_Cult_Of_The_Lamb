@@ -67,7 +67,8 @@ _int CBossIdle::Update_State(const _float& timeDelta)
     
     //어택->이동
     if (m_pStateMachine->Get_PrevStateKey() == (int)CBossPhase1::BOSSPHASE1::BULLETATTACK ||
-        m_pStateMachine->Get_PrevStateKey() == (int)CBossPhase1::BOSSPHASE1::CHAINATTACK)
+        m_pStateMachine->Get_PrevStateKey() == (int)CBossPhase1::BOSSPHASE1::CHAINATTACK ||
+        m_pStateMachine->Get_PrevStateKey() == (int)CBossPhase1::BOSSPHASE1::SPAWNATTACK)
     {
         return CBossPhase1::BOSSPHASE1::BOSSMOVE;
     }
