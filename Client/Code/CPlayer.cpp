@@ -28,7 +28,12 @@
 #include "CUI_Interactive.h"
 #include "CWeaponEquip.h"
 #include "CWorldInteractive.h"
-
+#include "CUI_Interactive.h"
+#include "CLayer.h"
+#include "CBuildingBase.h"
+#include "CInteractiveGrass.h"
+#include "CDroppedItem.h"
+#include "CNPCBase.h"
 CPlayer::CPlayer(DEVICE graphicDev)
     : CCharacterBase(graphicDev),
       m_RigidbodyCom(nullptr),
@@ -147,25 +152,65 @@ void CPlayer::OnBeginOverlap(CCollider* self, CCollider* other)
 void CPlayer::OnStayOverlap(CCollider* self, CCollider* other)
 {
     CCharacterBase::OnStayOverlap(self, other);
-
+    //상호작용 키 띄우기
     CWorldInteractive* worldInteractiveObj = dynamic_cast<CWorldInteractive*>(other->Get_Owner());
     CBuildingBase*     building            = dynamic_cast<CBuildingBase*>(other->Get_Owner());
     CCharacterBase*    character           = dynamic_cast<CCharacterBase*>(other->Get_Owner());
-
-    if (dynamic_cast<CInteractiveGrass*>(worldInteractiveObj))
-        worldInteractiveObj = nullptr;
-    if ((worldInteractiveObj || building || character) && m_OverlapBegin)
+    CDroppedItem*       weapon              = dynamic_cast<CDroppedItem*>(other->Get_Owner());
+    if (weapon)
     {
-        m_InteractiveUI->Set_TextureIndex(2);
-        m_InteractiveUI->Set_IsActive(true);
-        m_InteractiveUI->Get_Transform()->Set_Scale(110.f, 35.f, 1.f);
-
-        if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
+        if (!(weapon->Get_ItemInst().itemId == 3001 || weapon->Get_ItemInst().itemId == 3002))
         {
-            m_InteractiveUI->Set_IsActive(false);
-            m_OverlapBegin = false;
+            weapon = nullptr;
         }
     }
+    //if (dynamic_cast<CNPCBase*>(character))
+    //{
+    //    character = nullptr;
+    //}
+
+   if (dynamic_cast<CInteractiveGrass*>(worldInteractiveObj))
+   {
+       worldInteractiveObj = nullptr;
+   }
+
+   if ((character) && m_OverlapBegin)
+   {
+       m_InteractiveUI->Set_TextureIndex(7);
+       m_InteractiveUI->Set_IsActive(true);
+       m_InteractiveUI->Get_Transform()->Set_Scale(110.f, 35.f, 1.f);
+       m_InteractiveUI->Get_Transform()->Set_Pos(0.f, -250.f, 1.f);
+       if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
+       {
+           m_InteractiveUI->Set_IsActive(false);
+           m_OverlapBegin = false;
+       }
+   }
+   if ((worldInteractiveObj||building)&&m_OverlapBegin)
+   {
+       m_InteractiveUI->Set_TextureIndex(4);
+       m_InteractiveUI->Set_IsActive(true);
+       m_InteractiveUI->Get_Transform()->Set_Scale(185.f, 35.f, 1.f);
+       m_InteractiveUI->Get_Transform()->Set_Pos(60.f, -250.f, 1.f);
+       if (CDInputMgr::GetInstance()->MouseDown(DIM_LB))
+       {
+           m_InteractiveUI->Set_IsActive(false);
+           m_OverlapBegin = false;
+       }
+   }
+   if (weapon && m_OverlapBegin)
+   {
+       m_InteractiveUI->Set_TextureIndex(6);
+       m_InteractiveUI->Set_IsActive(true);
+       m_InteractiveUI->Get_Transform()->Set_Scale(110.f, 35.f, 1.f);
+       m_InteractiveUI->Get_Transform()->Set_Pos(0, 80.f, 1.f);
+       if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
+       {
+           m_InteractiveUI->Set_IsActive(false);
+           m_OverlapBegin = false;
+       }
+   }
+  // (building->Get_IsHovered())
 }
 
 void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)
@@ -174,12 +219,16 @@ void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)
 
     m_PlayerGatherCom->OnEndOverlap(self, other);
     m_PlayerConstructionCom->OnOverlapExit(self, other);
+    //상호작용 키 끄기
     CWorldInteractive* worldInteractiveObj = dynamic_cast<CWorldInteractive*>(other->Get_Owner());
-    if (dynamic_cast<CInteractiveGrass*>(worldInteractiveObj))
-        worldInteractiveObj = nullptr;
-    CBuildingBase*  building  = dynamic_cast<CBuildingBase*>(other->Get_Owner());
-    CCharacterBase* character = dynamic_cast<CCharacterBase*>(other->Get_Owner());
-    if (worldInteractiveObj || building || character)
+    //if (dynamic_cast<CInteractiveGrass*>(worldInteractiveObj))
+    //{
+    //    worldInteractiveObj = nullptr;
+    //}   
+    CBuildingBase*     building            = dynamic_cast<CBuildingBase*>(other->Get_Owner());
+    CCharacterBase*    character           = dynamic_cast<CCharacterBase*>(other->Get_Owner());
+    CDroppedItem*      weapon              = dynamic_cast<CDroppedItem*>(other->Get_Owner());
+    if (worldInteractiveObj || building || character || weapon)
         m_InteractiveUI->Set_IsActive(false);
 
     //cout << "Player HitOut" << endl;

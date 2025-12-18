@@ -33,6 +33,8 @@ public:
     bool Set_EnableHoverCheck(bool enableHoverCheck) { return m_EnableHoverCheck = enableHoverCheck; }
     void Check_WorldState();
 
+    //void Set_ProgressBar(CUI_ProgressBar* progressui) { m_ProgressBar = progressui; }
+    _float CalcProgress();
 protected:
     HRESULT Add_Component() override;
 
@@ -51,7 +53,7 @@ protected:
 
     CInventory* m_InventoryCom;
     CSpriteEff* m_SpriteEffCom;
-
+    _float m_Progress;
     bool m_bDead = false;
 private:
     // 상태용
