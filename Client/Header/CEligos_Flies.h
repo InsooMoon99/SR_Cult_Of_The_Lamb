@@ -36,6 +36,7 @@ private:
 
     CProjectile* m_ProjectileCom;
     bool m_flag = false;
+    float m_Timer = 0;
 public:
     static CEligos_Flies* Create(DEVICE graphicDev, CGameObject* owner, CGameObject* Target);
 
@@ -48,6 +49,8 @@ private:
 
     CGameObject* m_pOwner;
     CGameObject* m_pTarget;
+
+    _bool m_spawnSound = false;
     
 };
 

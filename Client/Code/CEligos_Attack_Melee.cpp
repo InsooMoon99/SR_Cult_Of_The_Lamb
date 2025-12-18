@@ -14,6 +14,7 @@
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CUI_MonsterHp.h"
+#include "CSoundMgr.h"
 
 CEligos_Attack_Melee::CEligos_Attack_Melee(CEligos* pOwner, CEligos_StateMachine* pStateMachine)
 {
@@ -67,6 +68,12 @@ _int CEligos_Attack_Melee::Update_State(const _float& timeDelta)
 
     case PHASE::READY:
 
+        if (m_Sound2 == false)
+        {
+            CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Elligos_Charge.wav", SOUNDTYPE::SOUND_BOSS2, 1.f);
+            m_Sound2 = true;
+        }
+
         tmpOwnerPos = { m_pOwnerTransformCom->Get_Pos().x,m_pPlayerTransformCom->Get_Pos().y,m_pOwnerTransformCom->Get_Pos().z };
         m_TargetDir = m_pPlayerTransformCom->Get_Pos() - tmpOwnerPos;
         D3DXVec3Normalize(&m_TargetDir, &m_TargetDir);
@@ -92,6 +99,11 @@ _int CEligos_Attack_Melee::Update_State(const _float& timeDelta)
 
     case PHASE::SHOOT: //근접 공ㄱ겨
         m_pOwnerAnimatorCom->Play_Animation(L"Eligos_attack", ANIMSTATE::ONCE);
+        if (m_Sound == false)
+        {
+            CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Elligos_Attack1.wav", SOUNDTYPE::SOUND_BOSS2, 1.f);
+            m_Sound = true;
+        }
 
         if (Attack_Melee() == true)
         {

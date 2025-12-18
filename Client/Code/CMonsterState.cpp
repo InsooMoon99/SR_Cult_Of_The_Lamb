@@ -30,6 +30,8 @@ void CMonsterState::Exit()
 {
     m_bStarted = false;
     m_bExited = true;
+    m_Sound = false;
+    m_Sound2 = false;
 }
 
 void CMonsterState::Find_Player()

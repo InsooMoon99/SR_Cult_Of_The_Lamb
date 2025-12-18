@@ -10,7 +10,7 @@
 #include "CCollider.h"
 #include "CHumanMonster.h"
 #include "CCreateHelper.h"
-
+#include "CSoundMgr.h"
 
 CBossSpawn::CBossSpawn(CBossPhase1* pOwner, CBossStateMachine* pStateMachine)
 {
@@ -52,7 +52,11 @@ _int CBossSpawn::Update_State(const _float& timeDelta)
 
     if (m_pOwnerAnimatorCom->Get_CurAnimation() == nullptr)
         return CBossPhase1::BOSSPHASE1::SPAWNATTACK;
-
+    if (m_Sound == false)
+    {
+        CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/DeathCat_Grunt.wav", SOUNDTYPE::SOUND_BOSS2, 1.f);
+        m_Sound = true;
+    }
  
 
     if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 20)
@@ -97,7 +101,10 @@ void CBossSpawn::RandomMove(const _float& timeDelta, _vec3 BaseCenter, int BaseL
 
     CGameObject* gameObject = CHumanMonster::Create(m_pOwner->Get_GraphicDev());
     //NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CHumanMonster::Create() returned null");
-    SpawnObjectOnLayer(gameObject, OBJTYPE::MONSTER);
+    SpawnObjectOnLayer(gameObject,OBJTYPE::MONSTER);
+
+    gameObject->Initialize_GameObject();
+
     CTransform* Transform =
         dynamic_cast<CTransform*>(gameObject->Get_Component(
             ID_DYNAMIC,

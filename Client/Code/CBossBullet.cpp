@@ -9,7 +9,7 @@
 #include "CAttackBuilder.h"
 #include "CProjectile.h"
 #include "CTrailEff.h"
-
+#include "CSoundMgr.h"
 
 
 CBossBullet::CBossBullet(DEVICE graphicDev, CGameObject* owner, CGameObject* Target, PROJ_TYPE type)
@@ -73,7 +73,7 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
     // 업데이트 입장시
     if (m_flag == false)
     {
-
+      //  CSoundMgr::GetInstance()->Play_Once(L".wav", SOUNDTYPE::SOUND_BOSS1, 0.7f
 
 
         m_TrailEff->Initialize_Component();
@@ -110,7 +110,11 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
         //    m_ATKBoxTransformCom = nullptr;
         //    this->Mark_As_PendingKill();});
 
-        ATBox->Set_OnDestroyCallback([bullet = this]() { bullet->Mark_As_PendingKill(); });
+        ATBox->Set_OnDestroyCallback([bullet = this]() { bullet->Mark_As_PendingKill();
+    
+          //  CSoundMgr::GetInstance()->Play_Once(L".wav", SOUNDTYPE::SOUND_BOSS1, 0.7f);
+
+            });
 
         m_flag = true;
     }

@@ -77,6 +77,7 @@ private:
     //OnDeadTalkStartCallback m_OnDeadTalkStart = nullptr;
     //OnBossDeadCallback m_OnBossDead = nullptr;
 
+    bool m_spawnSound = false;
 
 };
 

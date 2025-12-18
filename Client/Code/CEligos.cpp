@@ -11,7 +11,7 @@
 #include "CMonsterState.h"
 #include "CUI_BossHp.h"
 #include "CRigidbody.h"
-
+#include "CSoundMgr.h"
 #include "CEligos_StateMachine.h"
 #include "CWall.h"
 
@@ -62,6 +62,8 @@ HRESULT CEligos::Ready_GameObject()
     m_CombatStatCom->Set_Mp(5.f);
     m_CombatStatCom->Set_Speed(5.f);
     m_CombatStatCom->Set_HitState(false);
+    m_CombatStatCom->Set_OnDamagedEvent([]() {CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/GetHit2.wav", SOUNDTYPE::SOUND_BOSS3, 1.0f);
+        });
 
 
     if (m_BoxColCom)
@@ -84,7 +86,11 @@ _int CEligos::Update_GameObject(const _float& timeDelta)
 
     _int result = m_StateMachine->Update_StateMachine(timeDelta);
 
- 
+    if (m_spawnSound == false)
+    {
+        CSoundMgr::GetInstance()->Play_Once(L"Boss/Spawn_Mini_Bosses.wav",SOUNDTYPE::SOUND_BOSS1,1.f);
+        m_spawnSound = true;
+    }
 
     return exit;
 }
