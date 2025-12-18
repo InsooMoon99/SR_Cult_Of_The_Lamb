@@ -237,6 +237,7 @@ enum class COMPONENTTYPE
     TEX_ROCK_PARTICLE,
     TEX_GRASS_PARTICLE,
     TEX_TREE_PARTICLE,
+    TEX_MONSTER_HIT_PARTICLE,
 
     ////////////////
     //  Follower  //
@@ -317,6 +318,10 @@ enum class ACTORSTATE
     PLAYER_DECIDE,
     PLAYER_REFUSE,
 
+    // Kneel
+    KNEEL,
+    KNEEL_WAKE,
+
     NPC_IDLE,
 
     DEAD,
@@ -351,6 +356,7 @@ enum class SCENETYPE
     SC_BOSS_STAGE1,
     SC_BOSS_STAGE2,
     SC_BOSS_PROLOGUE,
+    SC_PROLOGUE2,
 
     SC_EDIT,
 

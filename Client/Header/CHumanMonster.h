@@ -43,6 +43,10 @@ public:
     void    Chase_Target(const float& timeDelta, _float speed) override;
     void    Retreat_FromTarget(const _float& timeDelta, _float speed) override;
 
+    void Enable_Battle() { m_BattleEnabled = true; }
+    void Set_Battle(_bool b) { m_BattleEnabled = b; }
+    bool Is_BattleEnabled() const { return m_BattleEnabled; }
+
 public:
     void    Set_PrayMode(_bool pray);
     _bool   Is_PrayMode() const { return m_IsPraying; }
@@ -60,6 +64,8 @@ protected:
 private:
     CRigidbody*     m_RigidbodyCom;
     _bool           m_AttackSpawned;
+
+    bool            m_BattleEnabled = false;
 
     CUI_MonsterHp*  m_HpBar;
     _bool           m_IsPraying = false;

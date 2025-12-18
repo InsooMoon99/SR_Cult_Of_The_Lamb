@@ -16,6 +16,7 @@
 #include "CStage_Prologue_Boss.h"
 #include "CLightMgr.h"
 #include "CStage_Prologue.h"
+#include "CStage_Prologue2.h"
 
 IMPLEMENT_SINGLETON(CSceneMgr)
 
@@ -111,6 +112,9 @@ void CSceneMgr::Change_SceneMgr(SCENETYPE typeInput)
         case SCENETYPE::SC_PROLOGUE:
             CManagement::GetInstance()->Request_ChangeScene(CStage_Prologue::Create(m_GraphicDev));
             break;
+        case SCENETYPE::SC_PROLOGUE2:
+            CManagement::GetInstance()->Request_ChangeScene(CStage_Prologue2::Create(m_GraphicDev));
+            break;
 
         default:
             break;
@@ -184,6 +188,10 @@ void CSceneMgr::Update_SceneMgr(const _float& timeDelta)
 
         case SCENETYPE::SC_PROLOGUE:
             CManagement::GetInstance()->Request_ChangeScene(CStage_Prologue::Create(m_GraphicDev));
+            break;
+
+        case SCENETYPE::SC_PROLOGUE2:
+            CManagement::GetInstance()->Request_ChangeScene(CStage_Prologue2::Create(m_GraphicDev));
             break;
 
         default:

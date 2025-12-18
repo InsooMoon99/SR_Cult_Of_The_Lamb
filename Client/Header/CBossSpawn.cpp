@@ -110,6 +110,8 @@ void CBossSpawn::RandomMove(const _float& timeDelta, _vec3 BaseCenter, int BaseL
             ID_DYNAMIC,
             COMPONENTTYPE::TRANSFORM));
 
+    gameObject->Initialize_GameObject();
+
     Transform->Set_Pos(LT.x + xPos, 1, LT.z - zPos);
     }
 }

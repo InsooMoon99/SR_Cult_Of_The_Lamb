@@ -83,7 +83,7 @@ void CHumanMonster::Initialize_GameObject()
 
 _int CHumanMonster::Update_GameObject(const _float& timeDelta)
 {
-    if (m_IsPraying)
+    if (m_IsPraying || !m_BattleEnabled)
         return CMonsterBase::Update_GameObject(timeDelta);
 
     _int exit = CMonsterBase::Update_GameObject(timeDelta);
