@@ -77,7 +77,7 @@ _int CEligos_Attack_Fly::Update_State(const _float& timeDelta)
         {
         m_pOwnerAnimatorCom->Play_Animation(L"Eligos_burpcharge", ANIMSTATE::ONCE);
 
-        CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Elligos_Charge.wav", SOUNDTYPE::SOUND_BOSS1, 1.f);
+        CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Elligos_Charge.wav", SOUNDTYPE::SOUND_BOSS3, 1.f);
 
             m_StartFlag = true;
 
@@ -98,11 +98,29 @@ _int CEligos_Attack_Fly::Update_State(const _float& timeDelta)
             CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Burp_Flies.wav", SOUNDTYPE::SOUND_BOSS1, 1.f);
 
             m_pOwnerAnimatorCom->Play_Animation(L"Eligos_burp", ANIMSTATE::ONCE);
-            SpawnFlies(10,0.6,0.6, 1);
+            SpawnFlies(10.f,1.2f,1.2f, 1.f);
+
+
+
+
+
             m_StartFlag = true;
 
         }
+#pragma region 플레이어 베리 채집 효과음. 0.5초마다 재생
+        g_Timers[TIMER_SOUND_ENEMY_FLY] -= timeDelta;
 
+        if (g_Timers[TIMER_SOUND_ENEMY_FLY] < 0.f)
+        {
+            CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Fly_Fly_Loop.wav", SOUND_BOSS2, 0.5f);
+            g_Timers[TIMER_SOUND_ENEMY_FLY] = 0.5f;
+        }
+#pragma endregion
+
+        //if(m_flyVec.Empty()==true)
+        m_Time += timeDelta;
+        if(m_Time >2.f)
+            CSoundMgr::GetInstance()->Stop_Sound(L"Boss/Eligos/Fly_Fly_Loop.wav");
 
         if (m_pOwnerAnimatorCom->Is_AnimationFinished())
         {
@@ -138,6 +156,7 @@ void CEligos_Attack_Fly::SpawnFlies(int fliesNum, float noiseAngle, float noiseD
         fly->Get_Transform()->Set_Pos(m_pOwnerTransformCom->Get_Pos() + pos);
         SpawnObjectOnLayer(fly, OBJTYPE::MONSTER);
 
+        //m_flyVec.push_back(fly);
     }
 
 }

@@ -34,7 +34,7 @@ public:
 private:
     virtual void Free();
 
-
+    bool m_FrstAinDone = false;
 
 };
 

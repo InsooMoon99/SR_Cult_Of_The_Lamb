@@ -24,14 +24,14 @@ void CEligos_Reveal::Enter()
 {
     CMonsterState::Enter();
     // 일단 지금은 
-    m_pOwnerAnimatorCom->Play_Animation(L"Eligos_roar", ANIMSTATE::ONCE);
+    m_pOwnerAnimatorCom->Play_Animation(L"Eligos_fly", ANIMSTATE::ONCE);
 
 
 }
 
 void CEligos_Reveal::Exit()
 {
-
+    m_FrstAinDone = false;
     CMonsterState::Exit();
 }
 
@@ -52,15 +52,24 @@ _int CEligos_Reveal::Update_State(const _float& timeDelta)
     if (m_pOwnerAnimatorCom->Get_CurAnimation() == nullptr)
         return CEligos::ELIGOSSTATE::BOSSREVEAL;
 
-    if (m_Sound == false)
-    {
-        CSoundMgr::GetInstance()->Play_Once(L"Boss/Elligos_Roar.wav", SOUNDTYPE::SOUND_BOSS2, 1.f);
 
-        m_Sound = true;
+    if (m_pOwnerAnimatorCom->Get_CurFrame() >= m_pOwnerAnimatorCom->Get_MaxFrame() - 1&& m_FrstAinDone==false)
+    {
+        m_pOwnerAnimatorCom->Play_Animation(L"Eligos_roar", ANIMSTATE::ONCE);
+
+        m_FrstAinDone = true;
     }
 
+    if (m_FrstAinDone==true)
+    {
+        if (m_Sound == false)
+        {
+        CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Elligos_Roar.wav", SOUNDTYPE::SOUND_BOSS4, 1.5f);
+        m_Sound = true;
 
-    if (m_pOwnerAnimatorCom->Get_CurFrame() >= m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
+        }
+    }
+    if (m_pOwnerAnimatorCom->Is_AnimationFinished()==true && m_FrstAinDone == true)
     {
         CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Eligos.wav", 1.0f);
 
