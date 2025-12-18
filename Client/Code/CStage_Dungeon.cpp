@@ -122,7 +122,7 @@ void CStage_Dungeon::Initialize_Scene()
     m_RoomData[static_cast<_int>(Room::TARO)] =
     {
         { 305.f, 1.f, 124.f },
-        "../Bin/Resource/Data/Terrain/Terrain_TarotMapFinal.map",
+        "../Bin/Resource/Data/Terrain/Terrain_TarotMapFinalFinal.map",
         { 300.f, 0.f, 100.f }
     };
 
@@ -293,7 +293,7 @@ void CStage_Dungeon::Spawn_Weapon()
 
 }
 
-void CStage_Dungeon::Spawn_FollowerCow_Rescue()
+void CStage_Dungeon::Spawn_FollowerCow_Rescue(_vec3* pSpawnPos)
 {
     auto layer = m_Layers[LAYERTYPE::GAMELOGIC];
     NULL_CHECK(layer);
@@ -312,8 +312,18 @@ void CStage_Dungeon::Spawn_FollowerCow_Rescue()
 
     if (cowTransform)
     {
-        _vec3 spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
-        spawnPos += _vec3(6.f, 1.f, 8.f);
+        _vec3 spawnPos;
+        if (pSpawnPos)
+        {
+            spawnPos.x = pSpawnPos->x - 1.0f;
+            spawnPos.y = pSpawnPos->y;
+            spawnPos.z = pSpawnPos->z;
+        }
+        else
+        {
+             spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
+             spawnPos += _vec3(6.f, 1.f, 8.f);
+        }
 
         cowTransform->Set_Pos(spawnPos);
     }
@@ -322,7 +332,7 @@ void CStage_Dungeon::Spawn_FollowerCow_Rescue()
     if (state) state->isActive = true;
 }
 
-void CStage_Dungeon::Spawn_FollowerElephant_Rescue()
+void CStage_Dungeon::Spawn_FollowerElephant_Rescue(_vec3* pSpawnPos)
 {
     auto layer = m_Layers[LAYERTYPE::GAMELOGIC];
     NULL_CHECK(layer);
@@ -341,8 +351,18 @@ void CStage_Dungeon::Spawn_FollowerElephant_Rescue()
 
     if (elephantTransform)
     {
-        _vec3 spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
-        spawnPos += _vec3(8.f, 1.f, 8.f);
+        _vec3 spawnPos;
+        if (pSpawnPos)
+        {
+            spawnPos.x = pSpawnPos->x;
+            spawnPos.y = pSpawnPos->y;
+            spawnPos.z = pSpawnPos->z;
+        }
+        else
+        {
+            spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
+            spawnPos += _vec3(8.f, 1.f, 8.f);
+        }
 
         elephantTransform->Set_Pos(spawnPos);
     }
@@ -351,7 +371,7 @@ void CStage_Dungeon::Spawn_FollowerElephant_Rescue()
     if (state) state->isActive = true;
 }
 
-void CStage_Dungeon::Spawn_FollowerPig_Rescue()
+void CStage_Dungeon::Spawn_FollowerPig_Rescue(_vec3* pSpawnPos)
 {
     auto layer = m_Layers[LAYERTYPE::GAMELOGIC];
     NULL_CHECK(layer);
@@ -370,8 +390,18 @@ void CStage_Dungeon::Spawn_FollowerPig_Rescue()
 
     if (pigTransform)
     {
-        _vec3 spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
-        spawnPos += _vec3(10.f, 1.f, 8.f);
+        _vec3 spawnPos;
+        if (pSpawnPos)
+        {
+            spawnPos.x = pSpawnPos->x + 1.0f;
+            spawnPos.y = pSpawnPos->y;
+            spawnPos.z = pSpawnPos->z;
+        }
+        else
+        {
+            spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
+            spawnPos += _vec3(10.f, 1.f, 8.f);
+        }
 
         pigTransform->Set_Pos(spawnPos);
     }

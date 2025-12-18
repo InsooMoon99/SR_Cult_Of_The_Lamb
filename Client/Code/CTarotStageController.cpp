@@ -1,21 +1,32 @@
 ﻿#include "pch.h"
 #include "CTarotStageController.h"
-#include "CUI_Dialogue.h"
-#include <CManagement.h>
-#include "CUITarotCard.h"
-#include "CRenderer.h"
-#include "CTransform.h"
-#include "CUITarotDescCard.h"
-#include "CPlayerSkill.h"
-#include "CScene.h"
-#include "CLayer.h"
-#include "CSoundMgr.h"
 
-class CPlayerSkill;
+#include "CLayer.h"
+#include "CManagement.h"
+#include "CPlayerSkill.h"
+#include "CRenderer.h"
+#include "CScene.h"
+#include "CSoundMgr.h"
+#include "CTransform.h"
+#include "CUITarotCard.h"
+#include "CUITarotDescCard.h"
+#include "CUI_Dialogue.h"
+
+#pragma region 스태틱 멤버 g_IsTarotUIActive로 외부에서 UI 작동 중인지 파악
+_bool CTarotStageController::g_IsTarotUIActive = false;
+
+void CTarotStageController::Set_Active(bool isActive)
+{
+    m_Active          = isActive;
+    g_IsTarotUIActive = isActive;
+}
+#pragma endregion
 
 CTarotStageController::CTarotStageController(DEVICE graphicDev) : CGameObject(graphicDev)
 {
 }
+
+
 
 CTarotStageController::CTarotStageController(const CTarotStageController& rhs) : CGameObject(rhs)
 {
@@ -35,7 +46,7 @@ HRESULT CTarotStageController::Ready_GameObject()
 
     Create_Cards();
 
-    m_Active = false;
+    Set_Active(false);
 
     return S_OK;
 }
@@ -57,7 +68,7 @@ void CTarotStageController::Initialize_GameObject()
 
             if (id == "Tarot_End")
             {
-                m_Active = false;
+                Set_Active(false);
                 m_CurrentState = STAGESTATE::ENDING;
         
             }

@@ -621,7 +621,7 @@ void CPlayer::Prologue_Animation_Setting()
     m_AnimatorCom->Create_Animation(L"Prologue_Kneel_Loop",
                                     34,
                                     0.02f,
-                                    _vec2(65.f, 0.6f),
+                                    _vec2(0.65f, 0.6f),
                                     _vec2(-0.145f, -0.155f));
 
     // Dead
