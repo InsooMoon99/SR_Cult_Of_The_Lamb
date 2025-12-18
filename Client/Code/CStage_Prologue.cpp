@@ -124,10 +124,10 @@ void CStage_Prologue::Render_Scene()
     {
         bool changed = false;
 
-        changed |= ImGui::ColorEdit4("Diffuse", (float*)&m_LightDiffuse);
-        changed |= ImGui::ColorEdit4("Ambient", (float*)&m_LightAmbient);
-        changed |= ImGui::ColorEdit4("Specular", (float*)&m_LightSpecular);
-        changed |= ImGui::DragFloat3("Direction", (float*)&m_LightDir, 0.01f);
+        changed |= ImGui::ColorEdit4("Diffuse", (_float*)&m_LightDiffuse);
+        changed |= ImGui::ColorEdit4("Ambient", (_float*)&m_LightAmbient);
+        changed |= ImGui::ColorEdit4("Specular", (_float*)&m_LightSpecular);
+        changed |= ImGui::DragFloat3("Direction", (_float*)&m_LightDir, 0.01f);
 
         if (changed)
             Ready_Light();  
@@ -293,6 +293,21 @@ HRESULT CStage_Prologue::Ready_Light()
 
     m_GraphicDev->SetLight(0, &lightInfo);
     m_GraphicDev->LightEnable(0, TRUE);
+
+    // 포인트 라이트
+    D3DLIGHT9 pointLight;
+    ZeroMemory(&pointLight, sizeof(D3DLIGHT9));
+
+    pointLight.Type = D3DLIGHT_POINT;
+    pointLight.Position = D3DXVECTOR3(15.f, 3.f, 44.f);  // 트리거쪽
+    pointLight.Range = 8.f;
+    pointLight.Diffuse = D3DXCOLOR(1.f, 0.9f, 0.7f, 1.f);
+    pointLight.Attenuation0 = 1.f;
+    pointLight.Attenuation1 = 0.1f;
+    pointLight.Attenuation2 = 0.f;
+
+    m_GraphicDev->SetLight(1, &pointLight);
+    m_GraphicDev->LightEnable(1, TRUE);
 
     return S_OK;
 }
