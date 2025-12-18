@@ -197,6 +197,7 @@ enum class COMPONENTTYPE
     TEX_UI_SKILL,
     TEX_UI_COMMAND,
     TEX_UI_CLEAR,
+    TEX_INTERACTIVEOBJ,
 
     TEX_MINIBOSS,
     TEX_FLY,
@@ -217,6 +218,18 @@ enum class COMPONENTTYPE
     TEX_BAT_MONSTER,
     TEX_HUMAN_MONSTER2,
     TEX_BURPER_MONSTER,
+
+    
+    ////////////////////
+    //  Prologue NPC  //
+    ////////////////////
+    TEX_LESHY,
+    TEX_HEKET,
+    TEX_KALLAMAR,
+    TEX_SHAMURA,
+
+    TEX_EXCUTIONER,
+    TEX_RATAU,
 
     ////////////////
     //  Particle  //
@@ -297,7 +310,8 @@ enum class ACTORSTATE
     PLAYER_BERRY,
     PLAYER_WEAPONGET,
     PLAYER_HAMMER,              // 플레이어 건축
-    //GATHERING,
+    PLAYER_WARPOUT,
+    PLAYER_WARPIN,
 
     // 보스 1페
     PLAYER_DECIDE,
@@ -353,6 +367,9 @@ enum SOUNDTYPE
     SOUND_BOSS2,
     SOUND_BOSS3,
     SOUND_BOSS4,
+    SOUND_FLOATERMONSTER,
+    SOUND_HUMANOID,
+    SOUND_MONSTER,
     SOUND_END
 };
 

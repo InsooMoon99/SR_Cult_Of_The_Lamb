@@ -40,7 +40,7 @@ void CUIWeaponExplain::Initialize_GameObject()
     Set_IsActive(false);
 
     m_TransformCom->Set_Pos(0.f, -200.f, 0.f);
-    m_TransformCom->Set_Scale(300.f, 130.f, 0.f);
+    m_TransformCom->Set_Scale(250.f, 130.f, 0.f);
 }
 
 _int CUIWeaponExplain::Update_GameObject(const _float& timeDelta)

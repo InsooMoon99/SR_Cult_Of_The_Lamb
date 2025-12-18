@@ -30,7 +30,7 @@ public:
 
     TYPE GetInteractiveType() { return m_Type; }
     bool Get_Hovering() { return m_bHovering; }
-
+    bool Set_EnableHoverCheck(bool enableHoverCheck) { return m_EnableHoverCheck = enableHoverCheck; }
     void Check_WorldState();
 
 protected:
@@ -59,6 +59,7 @@ private:
     bool m_bHovering      = false;
 
     bool m_bInvenDropped = false;
+    bool m_EnableHoverCheck = true;
 
 public:
     TYPE m_Type = END_TYPE;

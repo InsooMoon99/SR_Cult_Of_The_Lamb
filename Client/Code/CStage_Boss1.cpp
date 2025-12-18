@@ -31,6 +31,7 @@
 #include "CFog.h"
 #include "CPlayerController.h"
 #include "CWeaponEquip.h"
+#include "CUI_Text.h"
 
 CStage_Boss1::CStage_Boss1(DEVICE graphicDev)
     : Engine::CScene(graphicDev), m_Terrain(nullptr), m_Boss(nullptr), m_Player(nullptr), m_Dialogue(nullptr),
@@ -76,6 +77,13 @@ void CStage_Boss1::Initialize_Scene()
     Setup_BossCallbacks();
     Setup_PlayerCallbacks();
 
+    m_BossEnterUI = CUI_Text::Create(m_GraphicDev);
+    m_BossEnterUI->Set_Font(L"NanumSquare_Max");
+    m_BossEnterUI->Set_Text(L"기다리는 자");
+    m_BossEnterUI->Set_Color({ 1.f, 1.f, 1.f, 0.5f });
+
+    CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::UI)->Add_GameObject(OBJTYPE::UI, m_BossEnterUI);
+
     // 처음에는 거리비례 카메라 Off
     auto camMovement = m_CamController->Get_OwnerCamMovement();
     camMovement->Disable_DynamicDistance();
@@ -84,6 +92,22 @@ void CStage_Boss1::Initialize_Scene()
 _int CStage_Boss1::Update_Scene(const _float& timeDelta)
 {
     _int exit = Engine::CScene::Update_Scene(timeDelta);
+
+    if (m_UIOpenTime >= 0.f)
+    {
+        m_UIOpenTime -= timeDelta;
+
+        _vec2 pos = { 50.f, 50.f };
+
+        m_BossEnterUI->Set_IsActive(true);
+
+        if (m_UIOpenTime <= 0.f)
+        {
+            m_BossEnterUI->Set_IsActive(false);
+            m_UIOpenTime = 0.f;
+        }
+    }
+
 
     Move_PlayerUI(timeDelta);
     Move_BossUI(timeDelta);
@@ -244,7 +268,7 @@ HRESULT CStage_Boss1::Ready_GameLogic_Layer(LAYERTYPE layerType)
         CCamSetupBuilder(m_CamController)
             .SetTarget(m_PlayerTransformCom)
             //.PivotOffset({ 0.f, 0.f, 0.f })
-            //.Distance(12.f)
+            //.Distance(11.f)
             //.RotX(45.f)
             //.RotY(0.f)
             //.LagSpeed(10.f)
@@ -459,7 +483,7 @@ void CStage_Boss1::OnRefusedEnd()
     // 카메라 플레이어한테 원래대로 돌리기
     CCamSetupBuilder(m_CamController)
         .SetTarget(m_PlayerTransformCom)
-        .Distance(12.f)
+        .Distance(11.f)
         .LagSpeed(3.f)
         .ZoomSpeed(3.f)
         .Apply();

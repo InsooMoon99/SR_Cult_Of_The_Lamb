@@ -12,23 +12,27 @@
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CUI_MonsterHp.h"
+#include "CSoundMgr.h"
 
 CHumanMonster::CHumanMonster(DEVICE graphicDev)
     : CMonsterBase(graphicDev),
-      m_RigidbodyCom(nullptr),
-      m_AttackSpawned(false),
-      m_HpBar(nullptr)
-{}
+    m_RigidbodyCom(nullptr),
+    m_AttackSpawned(false),
+    m_HpBar(nullptr)
+{
+}
 
 CHumanMonster::CHumanMonster(const CHumanMonster& rhs)
     : CMonsterBase(rhs),
-      m_RigidbodyCom(nullptr),
-      m_AttackSpawned(false),
-      m_HpBar(nullptr)
-{}
+    m_RigidbodyCom(nullptr),
+    m_AttackSpawned(false),
+    m_HpBar(nullptr)
+{
+}
 
 CHumanMonster::~CHumanMonster()
-{}
+{
+}
 
 HRESULT CHumanMonster::Ready_GameObject()
 {
@@ -52,7 +56,7 @@ HRESULT CHumanMonster::Ready_GameObject()
 
     // 공격 주기 설정
     m_AttackCooldown = 2.f;
-    m_AttackTimer    = 0.f;
+    m_AttackTimer = 0.f;
 
     // 거리 설정
     Set_StoppingDistance(2.5f);
@@ -68,9 +72,9 @@ void CHumanMonster::Initialize_GameObject()
 
     m_TargetTransform = dynamic_cast<CTransform*>(
         CManagement::GetInstance()->Get_Component(ID_DYNAMIC,
-                                                  LAYERTYPE::GAMELOGIC,
-                                                  OBJTYPE::PLAYER,
-                                                  COMPONENTTYPE::TRANSFORM));
+            LAYERTYPE::GAMELOGIC,
+            OBJTYPE::PLAYER,
+            COMPONENTTYPE::TRANSFORM));
 
     if (m_TargetTransform)
         m_Target = m_TargetTransform->Get_Owner();
@@ -79,6 +83,9 @@ void CHumanMonster::Initialize_GameObject()
 
 _int CHumanMonster::Update_GameObject(const _float& timeDelta)
 {
+    if (m_IsPraying)
+        return CMonsterBase::Update_GameObject(timeDelta);
+
     _int exit = CMonsterBase::Update_GameObject(timeDelta);
 
     if (Check_CommonTransitions())
@@ -194,6 +201,8 @@ void CHumanMonster::Update_State_Attack(const _float timeDelta)
 {
     if (m_AnimatorCom->Get_CurFrame() == 30 && !m_AttackSpawned)
     {
+        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Humanoid_Attack.wav", SOUNDTYPE::SOUND_HUMANOID, 1.f);
+
         CAttackBuilder(m_GraphicDev, this)
             .SetType<CAttackBox>()
             .Damage(1.f)
@@ -220,7 +229,10 @@ void CHumanMonster::Update_State_Hit(const _float timeDelta)
 {
     // 애니메이션이 끝나고, 넉백이 다 밀렸을 때
     if (m_AnimatorCom->Is_AnimationFinished() && !m_CombatStatCom->Is_Knockback())
+    {
+        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Humanoid_GetHit.wav", SOUNDTYPE::SOUND_HUMANOID, 1.f);
         m_StateCom->Change_State(ACTORSTATE::IDLE);
+    }
 }
 
 void CHumanMonster::Update_State_Dead(const _float timeDelta)
@@ -228,6 +240,7 @@ void CHumanMonster::Update_State_Dead(const _float timeDelta)
     // CombatStat에서 Dead 상태처리 진행중 Dead 애니메이션이 없다. 밀려나면서, 뼛가루 소환?
     if (m_StateCom->Get_State() == ACTORSTATE::DEAD)
     {
+        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Humanoid_Die.wav", SOUNDTYPE::SOUND_HUMANOID, 1.f);
         Trigger_OnDeath();
         Mark_As_PendingKill();
     }
@@ -273,9 +286,13 @@ void CHumanMonster::Animation_Setting()
         _vec2(1.f, 1.f),
         _vec2(0.f, 0.04f));
 
-    m_AnimatorCom->Create_Animation(L"HumanMonsterRunUp", 22, 0.02f,
+    m_AnimatorCom->Create_Animation(L"Huma  nMonsterRunUp", 22, 0.02f,
         _vec2(1.f, 1.f),
         _vec2(0.f, 0.04f));
+
+    m_AnimatorCom->Create_Animation(L"HumanMonsterPray", 45, 0.02f,
+        _vec2(0.24f, 0.36f),
+        _vec2(0.f, -0.04f));
 
     // State -> Animation 연동
     m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"HumanMonsterIdle", ANIMSTATE::LOOP);
@@ -299,12 +316,12 @@ void CHumanMonster::Chase_Target(const float& timeDelta, _float speed)
     if (!m_TargetTransform || !m_TransformCom)
         return;
 
-    _vec3 pos       = m_TransformCom->Get_Pos();
+    _vec3 pos = m_TransformCom->Get_Pos();
     _vec3 targetPos = m_TargetTransform->Get_Pos();
     //m_TransformCom->Chase_Target(&targetPos, timeDelta, speed);
 
     _vec3 dir = targetPos - pos;
-    dir.y     = 0.f;
+    dir.y = 0.f;
 
     D3DXVec3Normalize(&dir, &dir);
 
@@ -333,6 +350,22 @@ void CHumanMonster::Retreat_FromTarget(const _float& timeDelta, _float speed)
 
     m_RigidbodyCom->Add_Force(moveForce);*/
 
+}
+
+void CHumanMonster::Set_PrayMode(_bool pray)
+{
+    m_IsPraying = pray;
+
+    if (pray)
+    {
+        m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"HumanMonsterPray", ANIMSTATE::LOOP);
+    }
+    else
+    {
+        m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"HumanMonsterIdle", ANIMSTATE::LOOP);
+    }
+
+    m_StateCom->Force_UpdateAnimation();
 }
 
 HRESULT CHumanMonster::Add_Component()

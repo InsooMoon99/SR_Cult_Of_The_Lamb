@@ -33,6 +33,7 @@ public:
 
 private:
     void Summon_Follower();
+    void Spawn_Single(_int index);
 
 public:
     static CBoss2_SummonFollower* Create(CMonsterBase* owner);
@@ -48,6 +49,10 @@ private:
 
     _bool           m_DialogueFinished = false;
     _bool           m_IsSummon = false;
+
+    _float      m_SpawnTimer = 0.f;
+    _int        m_SpawnIndex = 0;
+    _bool       m_SpawnComplete = false;
 
 };
 

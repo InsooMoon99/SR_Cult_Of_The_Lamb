@@ -35,7 +35,7 @@ _int CNPCState_Build::Update_State(const _float& timeDelta)
 
             if (g_Timers[TIMER_SOUND_FOL_CONSTRUCT] >= 0.53f)
             {
-                CSoundMgr::GetInstance()->Play_Once(L"Construction/Hammering_16.wav", SOUND_EFFECT, 0.5f);
+                CSoundMgr::GetInstance()->Play_Once(L"Construction/Hammering_16.wav", SOUND_EFFECT, 0.8f);
                 g_Timers[TIMER_SOUND_FOL_CONSTRUCT] = 0.f;
             }
 #pragma endregion

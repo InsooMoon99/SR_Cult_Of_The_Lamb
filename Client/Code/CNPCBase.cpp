@@ -101,6 +101,13 @@ _int CNPCBase::Update_GameObject(const _float& timeDelta)
                 {
                     followerCommand->Set_TargetNPC(this);
                     followerCommand->Set_IsActive(true);
+
+                    // Talk 상태로 전환
+                    if (m_NPCController)
+                    {
+                        if (CStateMachine* stateMachine = m_NPCController->Get_StateMachine())
+                            stateMachine->Change_State(static_cast<_uint>(CNPCStateMachine::NPC_STATE::TALK));
+                    }
                 }
             }
         }

@@ -404,10 +404,22 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         L"../Bin/Resource/Texture/Player/Knockback_Shot/Lamb-knockback%d.png", 34)))
         return E_FAIL;
 
+    // Warp Out
+    if (FAILED(playerTex->Add_Texture(L"Player_WarpOut", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Warp/Warp_Out/Lamb-warp-out-down%d.png", 48)))
+        return E_FAIL;
+
+    // Warp In
+    if (FAILED(playerTex->Add_Texture(L"Player_WarpIn", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Warp/Warp_In/Lamb-warp-in-up%d.png", 51)))
+        return E_FAIL;
+
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
         return E_FAIL;
 
-#pragma region --- Tex: Final
+    //TODO 포탈 타고 들어가는 애니메이션, 포탈에서 나오는 애니메이션 등록 및 상태 추가하기!
+
+#pragma region --- Tex: Final : 현재 TEX_PLAYER에 등록 안해놓았던데 ---
     if (FAILED(playerTex->Add_Texture(L"Decide_Start", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Final/Decide_Start/Decide_Start%d.png", 41)))
         return E_FAIL;
@@ -423,6 +435,61 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
     if (FAILED(playerTex->Add_Texture(L"Refuse_Gauntlet", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Final/Refuse_Guantlets/Refuse_Guantlets%d.png", 54)))
         return E_FAIL;
+
+#pragma region Prologue
+    // Idle
+    if (FAILED(playerTex->Add_Texture(L"Prologue_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Idle/Lamb-intro-idle%d.png", 38)))
+        return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"Prologue_IdleUp", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Idle_Up/Lamb-intro-idle-up%d.png", 38)))
+        return E_FAIL;
+
+    // Run
+    if (FAILED(playerTex->Add_Texture(L"Prologue_Run_UP", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Run/Run_Up/Lamb-intro-run-up%d.png", 50)))
+        return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"Prologue_Run_DOWN", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Run/Run_Down/Lamb-intro-run-down%d.png", 50)))
+        return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"Prologue_Run_LDOWN", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Run/Run_Down/Lamb-intro-run-down%d.png", 50)))
+        return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"Prologue_Run_LEFT", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Run/Run_Horizontal/Lamb-intro-run-horizontal%d.png", 50)))
+        return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"Prologue_Run_LUP", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Run/Run_Diagonal/Lamb-intro-run-up-diagonal%d.png", 50)))
+        return E_FAIL;
+
+    // Rebirth
+    if (FAILED(playerTex->Add_Texture(L"Prologue_Rebirth", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Rebirth/Lamb-intro-rebirth%d.png", 91)))
+        return E_FAIL;
+
+    // Kneel
+    if (FAILED(playerTex->Add_Texture(L"Prologue_Kneel_Start", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Kneel/Start/Lamb-intro-kneel%d.png", 56)))
+        return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"Prologue_Kneel_Wake", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Kneel/Wake/Lamb-intro-kneel-wake%d.png", 75)))
+        return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"Prologue_Kneel_Loop", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Kneel/Loop/Lamb-intro-kneel-loop%d.png", 34)))
+        return E_FAIL;
+
+    // Dead
+    if (FAILED(playerTex->Add_Texture(L"Prologue_Dead", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Dead/Lamb-intro-dead1.png", 1)))
+        return E_FAIL;
+
 
 #pragma endregion
 
@@ -469,6 +536,11 @@ HRESULT CResourceMgr::Ready_Monster(DEVICE graphicDev)
 
     if (FAILED(humanmonsterTex->Add_Texture(L"HumanMonsterHurt", TEX_NORMAL,
         L"../Bin/Resource/Texture/Monster/Human/Hurt/Hurt%d.png", 28)))
+        return E_FAIL;
+
+    // Pray
+    if (FAILED(humanmonsterTex->Add_Texture(L"HumanMonsterPray", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Human/Pray/Cultist-pray%d.png", 45)))
         return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(
@@ -543,26 +615,111 @@ HRESULT CResourceMgr::Ready_Monster(DEVICE graphicDev)
     CTexture* burperTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(burperTex, E_FAIL);
 
-    if (FAILED(burperTex->Add_Texture(L"Burper_Idle", TEX_NORMAL,
-        L"../Bin/Resource/Texture/Monster/Burper/Idle/Burper-idle%d.png", 34)))
-        return E_FAIL;
-
-    if (FAILED(burperTex->Add_Texture(L"Burper_Hit", TEX_NORMAL,
-        L"../Bin/Resource/Texture/Monster/Burper/Hit/Burper-hit%d.png", 16)))
-        return E_FAIL;
-
-    if (FAILED(burperTex->Add_Texture(L"Burper_Attack", TEX_NORMAL,
-        L"../Bin/Resource/Texture/Monster/Burper/Attack/Burper-attack%d.png", 61)))
-        return E_FAIL;
-
-    if (FAILED(burperTex->Add_Texture(L"Burper_Run", TEX_NORMAL,
-        L"../Bin/Resource/Texture/Monster/Burper/Run/Burper-jump%d.png", 49)))
-        return E_FAIL;
-
+    //if (FAILED(burperTex->Add_Texture(L"Burper_Idle", TEX_NORMAL,
+    //    L"../Bin/Resource/Texture/Monster/Burper/Idle/Burper-idle%d.png", 34)))
+    //    return E_FAIL;
+    //
+    //if (FAILED(burperTex->Add_Texture(L"Burper_Hit", TEX_NORMAL,
+    //    L"../Bin/Resource/Texture/Monster/Burper/Hit/Burper-hit%d.png", 16)))
+    //    return E_FAIL;
+    //
+    //if (FAILED(burperTex->Add_Texture(L"Burper_Attack", TEX_NORMAL,
+    //    L"../Bin/Resource/Texture/Monster/Burper/Attack/Burper-attack%d.png", 61)))
+    //    return E_FAIL;
+    //
+    //if (FAILED(burperTex->Add_Texture(L"Burper_Run", TEX_NORMAL,
+    //    L"../Bin/Resource/Texture/Monster/Burper/Run/Burper-jump%d.png", 49)))
+    //    return E_FAIL;
+    //
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_BURPER_MONSTER, burperTex)))
         return E_FAIL;
 
+    // 신 4마리
+
+    // 레쉬
+    CTexture* leshyTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(leshyTex, E_FAIL);
+
+    if (FAILED(leshyTex->Add_Texture(L"Leshy", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Leshy/Leshy-idle%d.png", 84)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_LESHY, leshyTex)))
+        return E_FAIL;
+
+    // 헤켓
+    CTexture* heketTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(heketTex, E_FAIL);
+
+    if (FAILED(heketTex->Add_Texture(L"Heket", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Heket/Heket-idle%d.png", 60)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_HEKET, heketTex)))
+        return E_FAIL;
+
+    // 칼라마르
+    CTexture* kalaTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(kalaTex, E_FAIL);
+
+    if (FAILED(kalaTex->Add_Texture(L"Kallamar", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Kallamar/Kallamar-leader-idle%d.png", 60)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_KALLAMAR, kalaTex)))
+            return E_FAIL;
+
+    // 사무라
+    CTexture* shamuraTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(shamuraTex, E_FAIL);
+
+    if (FAILED(shamuraTex->Add_Texture(L"Shamura", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Shamura/Shamura-idle%d.png", 60)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_SHAMURA, shamuraTex)))
+        return E_FAIL;
+
+    // 라따우
+    CTexture* ratauTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(ratauTex, E_FAIL);
+
+    if (FAILED(ratauTex->Add_Texture(L"Ratau_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Ratau/Idle/Ratau-animation%d.png", 68)))
+        return E_FAIL;
+
+    if (FAILED(ratauTex->Add_Texture(L"Ratau_Enter", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Ratau/Enter/Ratau-enter%d.png", 46)))
+        return E_FAIL;
+
+    if (FAILED(ratauTex->Add_Texture(L"Ratau_Exit", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Ratau/Exit/Ratau-exit%d.png", 50)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_RATAU, ratauTex)))
+        return E_FAIL;
+
+    // 처형하는놈
+    CTexture* excutionerTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(excutionerTex, E_FAIL);
+
+    if (FAILED(excutionerTex->Add_Texture(L"Excutioner_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Excutioner/Idle/Executioner-idle%d.png", 45)))
+        return E_FAIL;
+
+    if (FAILED(excutionerTex->Add_Texture(L"Excutioner_Excute", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Excutioner/Excute/Executioner-execute%d.png", 55)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_EXCUTIONER, excutionerTex)))
+        return E_FAIL;
 
     // 보물상자....
     CTexture* chest = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
@@ -845,7 +1002,6 @@ HRESULT CResourceMgr::Ready_BossP2_Follower(DEVICE graphicDev)
     //    L"../Bin/Resource/Texture/NPC/Follower/Pig2/Finalboss_Freed/Follower-finalboss-freed%d.png", 102)))
     //    return E_FAIL;
 
-
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_SLAVE_TEST, slaveTex)))
         return E_FAIL;
 }
@@ -869,7 +1025,7 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     //circleTex
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_CIRCLE,
         Engine::CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Circle_Red.png", 1))))
+            L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Circle_Red%d.png", 2))))
         return E_FAIL;
 
     //circleTex
@@ -1136,6 +1292,15 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
             TEX_NORMAL,
             L"../Bin/Resource/Texture/UI/FollowerCommand/BackGround0.png",
             1))))
+        return E_FAIL;
+
+    //// Texture : InteractiveObj
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_INTERACTIVEOBJ,
+        Engine::CTexture::Create(
+            graphicDev,
+            TEX_NORMAL,
+            L"../Bin/Resource/Texture/InteractiveObj/InteractiveGrass%d.png",
+            2))))
         return E_FAIL;
 
     return S_OK;

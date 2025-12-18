@@ -32,6 +32,8 @@ public:
 
     void Set_AnimInfo(ACTORSTATE playerState, const wstring& key, ANIMSTATE animState);
 
+    void    Force_UpdateAnimation();
+
     static CState* Create(DEVICE graphicDev);
     CComponent*    Clone() override;
 
