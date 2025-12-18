@@ -76,7 +76,9 @@ private:
     _float               m_UIOpenTime = 3.f;
     _bool                m_StageBegin;
     CWorldInteractive*   m_WorldInteractive;
+    _int                 m_FollowerSpawnStep  = 0;
     //CWorkBench*   m_WorkBench;
     //CKitchen*     m_Kitchen;
     //CFollowerCow* m_FollowerCow;
+
 };

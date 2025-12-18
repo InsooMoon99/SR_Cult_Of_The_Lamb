@@ -1043,6 +1043,9 @@
     <ClInclude Include="..\Header\CUI_Text.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CUI_Interactive.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
     <ClInclude Include="..\Header\CLogo_Dungeon.h">
       <Filter>02. Scene\00. Logo</Filter>
     </ClInclude>
@@ -1094,8 +1097,8 @@
     <ClInclude Include="..\Header\CStage_Prologue2.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CUI_Interactive.h">
-      <Filter>05. UI\01. UI\16. UIInteractive</Filter>
+    <ClInclude Include="..\Header\CStage_DungeonEntrance.h">
+      <Filter>02. Scene\01. Stage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1693,6 +1696,9 @@
     <ClCompile Include="..\Code\CUI_Text.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="..\Code\CUI_Interactive.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
     <ClCompile Include="..\Code\CLogo_Dungeon.cpp">
       <Filter>02. Scene\00. Logo</Filter>
     </ClCompile>
@@ -1744,8 +1750,8 @@
     <ClCompile Include="..\Code\CInteractiveGrass.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CUI_Interactive.cpp">
-      <Filter>05. UI\01. UI\16. UIInteractive</Filter>
+    <ClCompile Include="..\Code\CStage_DungeonEntrance.cpp">
+      <Filter>02. Scene\01. Stage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

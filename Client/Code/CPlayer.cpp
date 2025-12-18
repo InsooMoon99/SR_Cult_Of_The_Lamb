@@ -5,11 +5,14 @@
 #include "CAttackBuilder.h"
 #include "CAttackSphere.h"
 #include "CBoxCollider.h"
+#include "CBuildingBase.h"
 #include "CCombatStat.h"
 #include "CCreateHelper.h"
 #include "CDInputMgr.h"
 #include "CDropSystem.h"
+#include "CInteractiveGrass.h"
 #include "CInventory.h"
+#include "CLayer.h"
 #include "CPlayerAttack.h"
 #include "CPlayerConstruction.h"
 #include "CPlayerController.h"
@@ -22,6 +25,7 @@
 #include "CState.h"
 #include "CTexture.h"
 #include "CTransform.h"
+#include "CUI_Interactive.h"
 #include "CWeaponEquip.h"
 #include "CWorldInteractive.h"
 #include "CUI_Interactive.h"
@@ -41,7 +45,9 @@ CPlayer::CPlayer(DEVICE graphicDev)
       m_PlayerAttackCom(nullptr),
       m_PlayerSkillCom(nullptr),
       m_PlayerGatherCom(nullptr),
-      m_PlayerConstructionCom(nullptr)
+      m_PlayerConstructionCom(nullptr),
+      m_InteractiveUI(nullptr),
+      m_OverlapBegin(false)
 
 { }
 
@@ -56,7 +62,9 @@ CPlayer::CPlayer(const CPlayer& rhs)
       m_PlayerAttackCom(nullptr),
       m_PlayerSkillCom(nullptr),
       m_PlayerGatherCom(nullptr),
-      m_PlayerConstructionCom(nullptr)
+      m_PlayerConstructionCom(nullptr),
+      m_InteractiveUI(nullptr),
+      m_OverlapBegin(false)
 { }
 
 CPlayer::~CPlayer()
@@ -130,8 +138,6 @@ void CPlayer::LateUpdate_GameObject(const _float& timeDelta)
 void CPlayer::Render_GameObject()
 {
     CCharacterBase::Render_GameObject();
-
-
 }
 
 void CPlayer::OnBeginOverlap(CCollider* self, CCollider* other)
@@ -589,52 +595,57 @@ void CPlayer::Prologue_Animation_Setting()
     // Idle
     m_AnimatorCom->Create_Animation(L"Prologue_Idle",
         38, 0.02f,
-        _vec2(0.84f, 0.65f), _vec2(0.f, -0.59f));
+        _vec2(0.8f, 0.65f), _vec2(0.f, -0.1f));
 
     m_AnimatorCom->Create_Animation(L"Prologue_Idle_Up",
         38, 0.02f,
-        _vec2(1.f, 1.f), _vec2(0.f, 0.f));
+        _vec2(0.8f, 0.65f), _vec2(0.f, -0.1f));
 
     // Run
     m_AnimatorCom->Create_Animation(L"Prologue_Run_UP",
         50, 0.02f,
-        _vec2(1.f, 1.f), _vec2(0.f, 0.f));
+        _vec2(0.8f, 0.65f), _vec2(0.f, -0.1f));
 
     m_AnimatorCom->Create_Animation(L"Prologue_Run_DOWN",
         50, 0.02f,
-        _vec2(1.f, 1.f), _vec2(0.f, 0.f));
+        _vec2(0.75f, 0.65f), _vec2(0.f, -0.1f));
 
     m_AnimatorCom->Create_Animation(L"Prologue_Run_LDOWN",
         50, 0.02f,
-        _vec2(1.f, 1.f), _vec2(0.f, 0.f));
+        _vec2(0.75f, 0.65f), _vec2(0.f, -0.1f));
 
     m_AnimatorCom->Create_Animation(L"Prologue_Run_LEFT",
         50, 0.02f,
-        _vec2(1.f, 1.f), _vec2(0.f, 0.f));
+        _vec2(0.67f, 0.67f), _vec2(0.f, -0.1f));
 
     m_AnimatorCom->Create_Animation(L"Prologue_Run_LUP",
         50, 0.02f,
-        _vec2(1.f, 1.f), _vec2(0.f, 0.f));
+        _vec2(0.72f, 0.65f), _vec2(0.f, -0.1f));
 
     // Rebirth
+    //?? 아직 뭔지 모름
     m_AnimatorCom->Create_Animation(L"Prologue_Rebirth",
         91, 0.04f,
         _vec2(2.07f, 2.78f), _vec2(0.f, 1.31f));
 
     // Knnel
+    //!! 아직 스케일 불확실
     m_AnimatorCom->Create_Animation(L"Prologue_Kneel_Start",
         56, 0.02f,
-        _vec2(1.f, 1.f), _vec2(0.f, 0.f));
+        _vec2(0.8f, 0.7f), _vec2(0.f, 0.f));
 
+    //!! 아직 스케일 불확실
     m_AnimatorCom->Create_Animation(L"Prologue_Kneel_Wake",
         75, 0.02f,
-        _vec2(1.f, 1.f), _vec2(0.f, 0.f));
+        _vec2(0.9f, 0.8f), _vec2(0.f, 0.f));
 
+    //!! 아직 스케일 불확실
     m_AnimatorCom->Create_Animation(L"Prologue_Kneel_Loop",
         34, 0.02f,
-        _vec2(1.f, 1.f), _vec2(0.f, 0.f));
+        _vec2(65.f, 0.6f), _vec2(0.f, -0.1f));
 
     // Dead
+    //?? 아직 뭔지 모름
     m_AnimatorCom->Create_Animation(L"Prologue_Dead",
         1, 0.02f,
         _vec2(1.f, 1.f), _vec2(0.f, 0.f));

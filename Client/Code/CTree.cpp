@@ -68,7 +68,7 @@ HRESULT CTree::Ready_GameObject()
 
         m_ItemNum = 4;
 
-        m_CombatStatCom->Set_MaxHp(40.f);
+        m_CombatStatCom->Set_MaxHp(30.f);
         m_TransformCom->Set_Scale(_vec3(3.f, 3.f, 3.f));
         m_BoxColCom->Set_Size({ 1.5f, 1.5f, 1.5f });
 
@@ -82,7 +82,7 @@ HRESULT CTree::Ready_GameObject()
 
         m_ItemNum = 7;
 
-        m_CombatStatCom->Set_MaxHp(60.f);
+        m_CombatStatCom->Set_MaxHp(40.f);
         m_TransformCom->Set_Scale(_vec3(3.f, 3.f, 3.f));
         m_BoxColCom->Set_Size({ 1.5f, 2.5f, 1.5f });
         m_SpriteEffCom->InitOutLine(D3DCOLOR_ARGB(255, 255, 255, 255), 0.025f);

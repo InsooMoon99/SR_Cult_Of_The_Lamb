@@ -1,7 +1,6 @@
 ﻿#include "pch.h"
 #include "CStage.h"
 
-#include "CSoundMgr.h"
 #include "CCameraController.h"
 #include "CCamSetupBuilder.h"
 #include "CChest.h"
@@ -13,12 +12,11 @@
 #include "CDInputMgr.h"
 #include "CDroppedItem.h"
 #include "CDropSystem.h"
-#include "CFloaterMonster.h"
 #include "CFollowerCow.h"
 #include "CFollowerElephant.h"
 #include "CFollowerPig.h"
+#include "CFontMgr.h"
 #include "CHarvestableHerb.h"
-#include "CHumanMonster.h"
 #include "CInventory.h"
 #include "CItemDB.h"
 #include "CKitchen.h"
@@ -28,9 +26,14 @@
 #include "CParticleHelper.h"
 #include "CPersistentObjectHelper.h"
 #include "CPlayer.h"
+#include "CPlayerConstruction.h"
+#include "CPlayerGathering.h"
 #include "CPlayerSkill.h"
+#include "CRenderer.h"
 #include "CRock.h"
 #include "CSceneMgr.h"
+#include "CSoundMgr.h"
+#include "CState.h"
 #include "CTemple.h"
 #include "CTerrain.h"
 #include "CTransform.h"
@@ -48,8 +51,12 @@
 #include "CUIWeapon.h"
 #include "CUI_Dialogue.h"
 #include "CUI_FollowerCommand.h"
+#include "CUI_ProgressBar.h"
 #include "CUI_Skill.h"
+#include "CUI_SkillPanel.h"
+#include "CUI_Text.h"
 #include "CVillageStateMgr.h"
+#include "CWeaponEquip.h"
 #include "CWorkBench.h"
 #include "ItemInstance.h"
 #include "CUI_SkillPanel.h"
@@ -76,7 +83,8 @@ CStage::CStage(DEVICE graphicDev)
       m_CookingMenu(nullptr),
       m_FollowerCommand(nullptr),
       m_PlayerGatherCom(nullptr),
-      m_PlayerConstructionCom(nullptr)
+      m_PlayerConstructionCom(nullptr),
+      m_VillageEnterUI(nullptr)
 { }
 
 CStage::~CStage()
@@ -108,13 +116,13 @@ HRESULT CStage::Ready_Scene()
     vector<SpawnInfo> spawnList = {
         { 1001, { 11.f, 1.f, 10.f } },      // 동전
         { 1001, { 12.f, 1.f, 10.f } },
-        { 1001, { 13.f, 1.f, 10.f } },
-        { 1001, { 14.f, 1.f, 10.f } },
-        { 1001, { 15.f, 1.f, 10.f } },
-        { 3001, { 20.f, 1.f, 10.f } },      // 검
-        //{ 2001, { 25.f, 1.f, 10.f } },      // 풀죽
+        //{ 1001, { 13.f, 1.f, 10.f } },
+        //{ 1001, { 14.f, 1.f, 10.f } },
+        //{ 1001, { 15.f, 1.f, 10.f } },
+        //{ 3001, { 20.f, 1.f, 10.f } },    // 검
+        //{ 2001, { 25.f, 1.f, 10.f } },    // 풀죽
         //{ 2001, { 27.f, 1.f, 10.f } },
-        //{ 2003, { 30.f, 1.f, 10.f } },      // 베리 그릇
+        //{ 2003, { 30.f, 1.f, 10.f } },    // 베리 그릇
         //{ 2003, { 32.f, 1.f, 10.f } }
     };
 
@@ -242,9 +250,11 @@ void CStage::Initialize_Scene()
         }
     }
 
-    Spawn_FollowerCow();
-    Spawn_FollowerElephant();
-    Spawn_FollowerPig();
+    //Spawn_FollowerCow();
+    //Spawn_FollowerElephant();
+    //Spawn_FollowerPig();
+
+    g_Timers[TIMER_SOUND_FOL_SPAWN] = 0.3f;
 }
 
 _int CStage::Update_Scene(const _float& timeDelta)
@@ -278,6 +288,32 @@ _int CStage::Update_Scene(const _float& timeDelta)
     //     CManagement::GetInstance()->Get_Component(ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::WEAPON_EQUIP));
     // if (m_WeaponEquipCom && m_WeaponEquipCom->Get_WeaponEquipped())
     //     m_WeaponEquipCom->Unequip_Weapon();
+
+    g_Timers[TIMER_SOUND_FOL_SPAWN] += timeDelta;
+
+    // 던전에서 구출한 이후, 순차적으로 소환
+    if (g_Timers[TIMER_SOUND_FOL_SPAWN] >= 0.5f)
+    {
+        switch (m_FollowerSpawnStep)
+        {
+        case 0:
+            Spawn_FollowerCow();
+            g_Timers[TIMER_SOUND_FOL_SPAWN] = 0.f;
+            m_FollowerSpawnStep++;
+            break;
+        case 1:
+            Spawn_FollowerElephant();
+            g_Timers[TIMER_SOUND_FOL_SPAWN] = 0.f;
+            m_FollowerSpawnStep++;
+            break;
+        case 2:
+            Spawn_FollowerPig();
+            g_Timers[TIMER_SOUND_FOL_SPAWN] = 0.f;
+            m_FollowerSpawnStep++;
+            break;
+        default: break;
+        }
+    }
 
     CConstructionMgr::GetInstance()->Update_ConstructionMgr(timeDelta);
 
@@ -871,7 +907,7 @@ void CStage::Create_Trigger()
     trigger->Set_Callback([this]
     {
         CSceneMgr::GetInstance()->Change_SceneMgr(
-            SCENETYPE::SC_DUNGEON);
+            SCENETYPE::SC_DUNGEON_ENTRANCE);
     });
 
     gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
