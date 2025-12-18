@@ -2,6 +2,7 @@
 #include "CPlayerController.h"
 #include "CRcTex.h"
 #include "CUI_Dialogue.h"
+#include "CPlayer.h"
 
 #include "CAnimator.h"
 #include "CBoxCollider.h"
@@ -463,10 +464,10 @@ void CPlayerController::Update_State(const _float& timeDelta)
     break;
 
     case ACTORSTATE::KNEEL:
-        {
+    {
         Action_Kneel(timeDelta);
-        }
-        break;
+    }
+    break;
 
     case ACTORSTATE::KNEEL_WAKE:
     {
@@ -494,13 +495,21 @@ void CPlayerController::Action_Idle(const _float& timeDelta)
 
 void CPlayerController::Action_Run(const _float& timeDelta)
 {
-#pragma region 플레이어 달리기 효과음. 달릴 때는 0.2초, 걸을 때는 0.6 초마다 재생
+#pragma region 플레이어 달리기 효과음. 달릴 때는 0.2초, 걸을 때는 0.45 초마다 재생
     g_Timers[TIMER_SOUND_PL_FOOTSTEP] -= timeDelta;
 
     if (g_Timers[TIMER_SOUND_PL_FOOTSTEP] < 0.f)
     {
         CSoundMgr::GetInstance()->Play_Once(L"Player/Player_Footstep.wav", SOUND_EFFECT, 0.5f);
-        g_Timers[TIMER_SOUND_PL_FOOTSTEP] = 0.2f;
+
+        _float fDelay = 0.2f;
+        if (auto pPlayer = dynamic_cast<CPlayer*>(m_Owner))
+        {
+            if (pPlayer->Is_PrologueMode())
+                fDelay = 0.45f;
+        }
+
+        g_Timers[TIMER_SOUND_PL_FOOTSTEP] = fDelay;
     }
 #pragma endregion
 
@@ -557,14 +566,14 @@ void CPlayerController::Action_SingleSkill(const _float& timeDelta)
 {
     if (!m_OwnerSkillCom->Update_SingleSkill(timeDelta))
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
-		m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir()*-1, 50.f);
+    m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir() * -1, 50.f);
 }
 
 void CPlayerController::Action_TripleSkill(const _float& timeDelta)
 {
     if (!m_OwnerSkillCom->Update_TripleSkill(timeDelta))
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
-	m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir() * -1, 50.f);
+    m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir() * -1, 50.f);
 }
 
 void CPlayerController::Action_Construction(const _float& timeDelta)
@@ -646,7 +655,6 @@ void CPlayerController::Action_WarpIn(const _float& timeDelta)
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
 }
 
-
 void CPlayerController::Action_Kneel(const _float& timeDelta)
 {
     auto animator = dynamic_cast<CAnimator*>(
@@ -667,16 +675,14 @@ void CPlayerController::Action_Kneel(const _float& timeDelta)
         if (animator->Is_AnimationFinished())
             animator->Play_Animation(L"Prologue_Kneel_Loop", ANIMSTATE::LOOP);
     }
-    
+
     else if (curKey == L"Prologue_Kneel_Loop")
     {
         // 외부에서 Wake 호출 대기
     }
-    
+
     else
-    {
         animator->Play_Animation(L"Prologue_Kneel_Start", ANIMSTATE::ONCE);
-    }
 }
 
 void CPlayerController::Action_Kneel_Wake(const _float& timeDelta)
