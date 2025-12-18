@@ -91,6 +91,8 @@ protected:
 private:
     void Free() override;
 
+    bool m_Sound = false;
+
 
 };
 

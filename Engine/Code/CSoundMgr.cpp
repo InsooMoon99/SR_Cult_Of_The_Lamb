@@ -21,6 +21,10 @@ void CSoundMgr::Ready_SoundMgr()
     FMOD_System_CreateChannelGroup(m_System, "BGM", &m_SoundGroups[SOUND_BGM]);
     FMOD_System_CreateChannelGroup(m_System, "Effect", &m_SoundGroups[SOUND_EFFECT]);
     FMOD_System_CreateChannelGroup(m_System, "UI", &m_SoundGroups[SOUND_UI]);
+    FMOD_System_CreateChannelGroup(m_System, "Boss1", &m_SoundGroups[SOUND_BOSS1]);
+    FMOD_System_CreateChannelGroup(m_System, "Boss2", &m_SoundGroups[SOUND_BOSS2]);
+    FMOD_System_CreateChannelGroup(m_System, "Boss3", &m_SoundGroups[SOUND_BOSS3]);
+    FMOD_System_CreateChannelGroup(m_System, "Boss4", &m_SoundGroups[SOUND_BOSS4]);
     FMOD_System_CreateChannelGroup(m_System, "Floatermonster", &m_SoundGroups[SOUND_FLOATERMONSTER]);
     FMOD_System_CreateChannelGroup(m_System, "Humanoid", &m_SoundGroups[SOUND_HUMANOID]);
     LoadSoundFile();

@@ -6,7 +6,7 @@
 #include "CTransform.h"
 #include "CAnimator.h"
 #include "CSpriteAnimation.h"
-
+#include "CSoundMgr.h"
 CBossGroggy::CBossGroggy(CBossPhase1* pOwner, CBossStateMachine* pStateMachine)
 {
     m_pOwner = pOwner;
@@ -51,6 +51,15 @@ _int CBossGroggy::Update_State(const _float& timeDelta)
     switch (m_ePhase)
     {
     case PHASE::DOWN:
+
+        if (m_Sound == false)
+        {
+        CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/DeathCat_Hurt.wav", SOUNDTYPE::SOUND_BOSS1, 1.f);
+        m_Sound = true;
+        }
+
+        
+
         if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
             m_ePhase = PHASE::LOOP;
         break;
@@ -64,6 +73,13 @@ _int CBossGroggy::Update_State(const _float& timeDelta)
         break;
 
     case PHASE::UP:
+
+        if (m_Sound == false)
+        {
+            CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Deathcat_Start_Transform.wav", SOUNDTYPE::SOUND_BOSS1, 1.f);
+            m_Sound = true;
+        }
+
         m_pOwnerAnimatorCom->Play_Animation(L"BossGroggy_end", ANIMSTATE::ONCE);
         if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
             return CBossPhase1::BOSSPHASE1::BOSSIDLE;// 보스 끝남 

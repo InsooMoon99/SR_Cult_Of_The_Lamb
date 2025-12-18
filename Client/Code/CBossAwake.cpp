@@ -6,6 +6,7 @@
 #include "CTransform.h"
 #include "CAnimator.h"
 #include "CSpriteAnimation.h"
+#include "CSoundMgr.h"
 
 CBossAwake::CBossAwake(CBossPhase1* pOwner, CBossStateMachine* pStateMachine)
 {
@@ -54,14 +55,25 @@ _int CBossAwake::Update_State(const _float& timeDelta)
     case PHASE::AWAKE:
         //m_pOwnerAnimatorCom->Play_Animation(L"BossAwake", ANIMSTATE::ONCE);
 
+
+        if (m_Sound == false)
+        {
+            CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/DeathCat_Start.wav", SOUNDTYPE::SOUND_BOSS3, 0.5f);
+
+            CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Deathcat_Break_Free.wav", SOUNDTYPE::SOUND_BOSS3, 0.5f);
+
+            CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Deathcat_1b.wav",1.0f);
+            m_Sound = true;
+        }
+
         if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
             m_ePhase = PHASE::MOVE;
         break;
 
     case PHASE::MOVE://움직임 + idle
+        m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::LOOP);
 
         
-        m_pOwnerAnimatorCom->Play_Animation(L"BossIdle", ANIMSTATE::LOOP);
         if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
         {
      
@@ -80,6 +92,13 @@ _int CBossAwake::Update_State(const _float& timeDelta)
             {
                 tmpAniDone = false;
                 m_pOwnerTransformCom->Set_Pos((m_pOwner->Get_Center()));
+
+                if (m_Sound2 == false)
+                {
+                    CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/DeathCat_Roar.wav", SOUNDTYPE::SOUND_BOSS2, 1.f);
+                    m_Sound2 = true;
+                }
+
                 return CBossPhase1::BOSSPHASE1::BOSSIDLE;// 이거 아님 공격상태전환 아이들로 
 
             }

@@ -10,6 +10,7 @@
 #include "CSpriteAnimation.h"
 #include "CEligos_Flies.h"
 #include "CRandomMgr.h"
+#include "CSoundMgr.h"
 
 CEligos_Attack_Fly::CEligos_Attack_Fly(CEligos* pOwner, CEligos_StateMachine* pStateMachine)
 {
@@ -75,7 +76,9 @@ _int CEligos_Attack_Fly::Update_State(const _float& timeDelta)
         if (m_StartFlag == false)
         {
         m_pOwnerAnimatorCom->Play_Animation(L"Eligos_burpcharge", ANIMSTATE::ONCE);
-  
+
+        CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Elligos_Charge.wav", SOUNDTYPE::SOUND_BOSS1, 1.f);
+
             m_StartFlag = true;
 
         }
@@ -92,6 +95,8 @@ _int CEligos_Attack_Fly::Update_State(const _float& timeDelta)
 
         if (m_StartFlag == false)
         {
+            CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Burp_Flies.wav", SOUNDTYPE::SOUND_BOSS1, 1.f);
+
             m_pOwnerAnimatorCom->Play_Animation(L"Eligos_burp", ANIMSTATE::ONCE);
             SpawnFlies(10,0.6,0.6, 1);
             m_StartFlag = true;

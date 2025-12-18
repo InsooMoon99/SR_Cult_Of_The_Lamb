@@ -7,7 +7,7 @@
 #include "CAnimator.h"
 #include "CSceneMgr.h"
 #include "CSpriteAnimation.h"
-
+#include "CSoundMgr.h"
 CEligos_Dead::CEligos_Dead(CEligos* pOwner, CEligos_StateMachine* pStateMachine)
 {
     m_pOwner = pOwner;
@@ -30,6 +30,7 @@ void CEligos_Dead::Enter()
 
 void CEligos_Dead::Exit()
 {
+
     CMonsterState::Exit();
 }
 
@@ -50,39 +51,48 @@ _int CEligos_Dead::Update_State(const _float& timeDelta)
     if (m_pOwnerAnimatorCom->Get_CurAnimation() == nullptr)
         return CEligos::ELIGOSSTATE::BOSSDEAD;
 
-    switch (m_ePhase)
+
+    if (m_Sound == false)
     {
-    case PHASE::CHANGE:
+        CSoundMgr::GetInstance()->Stop_All();
+        CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Elligos_Dead.wav", SOUNDTYPE::SOUND_BOSS2, 1.f);
 
-        if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
-        {
-            m_ePhase = PHASE::TALK;
-
-            //if (m_OnTalkStart)
-            //    m_OnTalkStart();
-        }
-
-        break;
-
-    case PHASE::TALK:
-        m_pOwnerAnimatorCom->Play_Animation(L"BossDead", ANIMSTATE::LOOP);
-
-       // if (m_DialogueFinished)
-        {
-            m_ePhase = PHASE::DISAPPEAR;
-        }
-        break;
-
-    case PHASE::DISAPPEAR:
-        m_pOwnerAnimatorCom->Play_Animation(L"BossMove_Down", ANIMSTATE::ONCE);
-
-        if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
-        {
-            //CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_BOSS_STAGE2);
-
-            return CEligos::ELIGOSSTATE::BOSSIDLE;   // 보스 끝남 
-        }
+        m_Sound = true;
     }
+
+    //switch (m_ePhase)
+    //{
+    //case PHASE::CHANGE:
+
+    //    if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
+    //    {
+    //        m_ePhase = PHASE::TALK;
+
+    //        //if (m_OnTalkStart)
+    //        //    m_OnTalkStart();
+    //    }
+
+    //    break;
+
+    //case PHASE::TALK:
+    //    m_pOwnerAnimatorCom->Play_Animation(L"BossDead", ANIMSTATE::LOOP);
+
+    //   // if (m_DialogueFinished)
+    //    {
+    //        m_ePhase = PHASE::DISAPPEAR;
+    //    }
+    //    break;
+
+    //case PHASE::DISAPPEAR:
+    //    m_pOwnerAnimatorCom->Play_Animation(L"BossMove_Down", ANIMSTATE::ONCE);
+
+    //    if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
+    //    {
+    //        //CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_BOSS_STAGE2);
+
+    //        return CEligos::ELIGOSSTATE::BOSSIDLE;   // 보스 끝남 
+    //    }
+    //}
 
     return CEligos::ELIGOSSTATE::BOSSDEAD;
 }
