@@ -244,7 +244,7 @@ void CStage::Initialize_Scene()
     //Spawn_FollowerElephant();
     //Spawn_FollowerPig();
 
-    g_Timers[TIMER_SOUND_FOL_SPAWN] = 0.3f;
+    g_Timers[TIMER_SOUND_FOL_SPAWN] = 0.2f;
 }
 
 _int CStage::Update_Scene(const _float& timeDelta)
@@ -282,7 +282,7 @@ _int CStage::Update_Scene(const _float& timeDelta)
     g_Timers[TIMER_SOUND_FOL_SPAWN] += timeDelta;
 
     // 던전에서 구출한 이후, 순차적으로 소환
-    if (g_Timers[TIMER_SOUND_FOL_SPAWN] >= 0.5f)
+    if (g_Timers[TIMER_SOUND_FOL_SPAWN] >= 0.2f)
     {
         switch (m_FollowerSpawnStep)
         {
@@ -720,7 +720,7 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::INTERACTIVE, tmpTree),
         L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
-    tmpTree->Get_Transform()->Set_Pos(6.5f, 2.3f, 24.f);
+    tmpTree->Get_Transform()->Set_Pos(7.f, 2.3f, 25.f);
     tmpTree->Check_WorldState();
 
     ///////////////////////////////////////////////////////////////////
