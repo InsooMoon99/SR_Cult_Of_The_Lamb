@@ -8,7 +8,6 @@
 #include "CTransform.h"
 #include "CCombatStat.h"
 #include "CPlayerSkill.h"
-
 int CUICircle::m_nextID = 0;
 
 CUICircle::CUICircle(DEVICE pGraphicDev)
@@ -33,6 +32,13 @@ HRESULT CUICircle::Ready_GameObject()
 
     m_TransformCom->Set_Pos(_vec3(-550.f, 270.f, 0.f));
     m_TransformCom->Set_Scale(_vec3(85.f, 85.f, 0.f));
+
+    //m_StarImage = CUIIcon::Create(m_GraphicDev,COMPONENTTYPE::TEX_UI_CIRCLE);
+    //m_StarImage->SetRegister(false);
+    //m_StarImage->Set_TextureIndex(1);
+    //m_StarImage->Get_Transform()->Set_Pos(_vec3(-550.f, 270.f, 0.f));
+   // m_StarImage->Get_Transform()->Set_Scale(50.f, 40.f, 0.f);
+
     return S_OK;
 }
 
@@ -42,18 +48,21 @@ _int CUICircle::Update_GameObject(const _float& timeDelta)
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
+    //m_StarImage->Update_GameObject(timeDelta);
+    //m_StarImage->Get_Transform()->Set_Scale(55.f, 55.f, 0.f);
+    //m_StarImage->Get_Transform()->Set_Pos(_vec3(-540.f, 255.f, 0.f)); 
     return exit;
 }
 
 void CUICircle::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
+   // m_StarImage->LateUpdate_GameObject(timeDelta);
 }
 
 void CUICircle::Render_GameObject()
 {
     CUI::Render_GameObject();
-
     //m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
@@ -64,7 +73,7 @@ void CUICircle::Render_GameObject()
     _vec3 pos = m_TransformCom->Get_Pos();
     _vec2 fontOffset = { 0.f,10.f };
     _vec2 screen = { WINCX / 2 + pos.x + fontOffset.x,WINCY / 2 - pos.y + fontOffset.y };
-
+     
     CPlayerSkill* playerskill = dynamic_cast<CPlayerSkill*>(CManagement::GetInstance()->Get_Component(COMPONENTID::ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::PL_SKILL));
     int currentCharges = playerskill->Get_CurrentCharges();
 
@@ -72,6 +81,7 @@ void CUICircle::Render_GameObject()
 
     //m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
 
+   // m_StarImage->Render_GameObject();
 }
 
 HRESULT CUICircle::Add_Component()
@@ -88,7 +98,7 @@ HRESULT CUICircle::Add_Component()
 
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
 
-    // texture
+    // texture      
     m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_UI_CIRCLE);
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
 
@@ -111,5 +121,6 @@ CUICircle* CUICircle::Create(DEVICE graphicDev)
 
 void CUICircle::Free()
 {
+    //Safe_Release(m_StarImage);
     CUI::Free();
 }

@@ -108,7 +108,19 @@ void CConstructCircle::OnStayOverlap(CCollider* self, CCollider* other)
             obj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
 
         if (playerState && playerState->Get_State() == ACTORSTATE::PLAYER_HAMMER)
+        {
+            g_Timers[TIMER_SOUND_PL_HAMMERING] -= CTimerMgr::GetInstance()->Get_TimeDelta();
+
+            if (g_Timers[TIMER_SOUND_PL_HAMMERING] < 0.f)
+            {
+                CSoundMgr::GetInstance()->Play_Once(L"Construction/Hammering_2.wav",
+                    SOUND_EFFECT,
+                    1.f);
+                g_Timers[TIMER_SOUND_PL_HAMMERING] = 0.3f;
+            }
+           
             m_Progress += 10.f * CTimerMgr::GetInstance()->Get_TimeDelta();
+        }
     }
 
     // NPC 체크

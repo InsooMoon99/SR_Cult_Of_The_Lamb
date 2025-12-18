@@ -11,23 +11,27 @@
 #include "CAttackBuilder.h"
 #include "CParticleHelper.h"
 #include "CUI_MonsterHp.h"
+#include "CSoundMgr.h"
 
 CFloaterMonster::CFloaterMonster(DEVICE graphicDev)
     : CMonsterBase(graphicDev),
-      m_RigidbodyCom(nullptr),
-      m_AttackSpawned(false),
-      m_HpBar(nullptr)
-{ }
+    m_RigidbodyCom(nullptr),
+    m_AttackSpawned(false),
+    m_HpBar(nullptr)
+{
+}
 
 CFloaterMonster::CFloaterMonster(const CFloaterMonster& rhs)
     : CMonsterBase(rhs),
-      m_RigidbodyCom(nullptr),
-      m_AttackSpawned(false),
-      m_HpBar(nullptr)
-{ }
+    m_RigidbodyCom(nullptr),
+    m_AttackSpawned(false),
+    m_HpBar(nullptr)
+{
+}
 
 CFloaterMonster::~CFloaterMonster()
-{ }
+{
+}
 
 HRESULT CFloaterMonster::Ready_GameObject()
 {
@@ -51,7 +55,7 @@ HRESULT CFloaterMonster::Ready_GameObject()
 
     // 공격 주기 설정
     m_AttackCooldown = 2.f;
-    m_AttackTimer    = 0.f;
+    m_AttackTimer = 0.f;
 
     // 거리 설정
     Set_StoppingDistance(2.f);
@@ -67,9 +71,9 @@ void CFloaterMonster::Initialize_GameObject()
 
     m_TargetTransform = dynamic_cast<CTransform*>(
         CManagement::GetInstance()->Get_Component(ID_DYNAMIC,
-                                                  LAYERTYPE::GAMELOGIC,
-                                                  OBJTYPE::PLAYER,
-                                                  COMPONENTTYPE::TRANSFORM));
+            LAYERTYPE::GAMELOGIC,
+            OBJTYPE::PLAYER,
+            COMPONENTTYPE::TRANSFORM));
 
     if (m_TargetTransform)
         m_Target = m_TargetTransform->Get_Owner();
@@ -181,6 +185,8 @@ void CFloaterMonster::Update_State_Attack(const _float timeDelta)
 {
     if (m_AnimatorCom->Get_CurFrame() == 2 && !m_AttackSpawned)
     {
+        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Worm_Attack.wav", SOUNDTYPE::SOUND_FLOATERMONSTER, 1.f);
+
         CAttackBuilder(m_GraphicDev, this)
             .SetType<CAttackBox>()
             .Damage(1.f)
@@ -207,13 +213,18 @@ void CFloaterMonster::Update_State_Hit(const _float timeDelta)
 {
     // 애니메이션이 끝나고, 넉백이 다 밀렸을 때
     if (m_AnimatorCom->Is_AnimationFinished() && !m_CombatStatCom->Is_Knockback())
+    {
+        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Worm_GetHit.wav", SOUNDTYPE::SOUND_FLOATERMONSTER, 1.f);
         m_StateCom->Change_State(ACTORSTATE::IDLE);
-}
 
+    }
+
+}
 void CFloaterMonster::Update_State_Dead(const _float timeDelta)
 {
     if (m_StateCom->Get_State() == ACTORSTATE::DEAD)
     {
+        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Bat_Dead.wav", SOUNDTYPE::SOUND_FLOATERMONSTER, 1.f);
         Trigger_OnDeath();
         Mark_As_PendingKill();
     }
@@ -269,12 +280,12 @@ void CFloaterMonster::Chase_Target(const float& timeDelta, _float speed)
     if (!m_TargetTransform || !m_TransformCom)
         return;
 
-    _vec3 pos       = m_TransformCom->Get_Pos();
+    _vec3 pos = m_TransformCom->Get_Pos();
     _vec3 targetPos = m_TargetTransform->Get_Pos();
     //m_TransformCom->Chase_Target(&targetPos, timeDelta, speed);
 
     _vec3 dir = targetPos - pos;
-    dir.y     = 0.f;
+    dir.y = 0.f;
 
     D3DXVec3Normalize(&dir, &dir);
 

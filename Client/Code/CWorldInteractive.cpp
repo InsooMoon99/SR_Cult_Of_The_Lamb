@@ -79,6 +79,8 @@ _int CWorldInteractive::Update_GameObject(const _float& timeDelta)
 
 
     //CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
+        if (!m_EnableHoverCheck)
+            return 0;
 
     // 플레이어가 가까이 있을떄만
     if (m_bPlayerOverlap == true)

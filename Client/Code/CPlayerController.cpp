@@ -540,14 +540,14 @@ void CPlayerController::Action_SingleSkill(const _float& timeDelta)
 {
     if (!m_OwnerSkillCom->Update_SingleSkill(timeDelta))
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
-    m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir() * -1, 150.f);
+		m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir()*-1, 50.f);
 }
 
 void CPlayerController::Action_TripleSkill(const _float& timeDelta)
 {
     if (!m_OwnerSkillCom->Update_TripleSkill(timeDelta))
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
-    m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir() * -1, 150.f);
+	m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir() * -1, 50.f);
 }
 
 void CPlayerController::Action_Construction(const _float& timeDelta)
