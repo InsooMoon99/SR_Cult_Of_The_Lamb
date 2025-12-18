@@ -383,30 +383,6 @@ _int CStage::Update_Scene(const _float& timeDelta)
         SpawnObjectOnLayer(tmp, OBJTYPE::INTERACTIVE);
     }
 
-    if (CDInputMgr::GetInstance()->KeyDown(DIK_7))
-    {
-        auto* playerState = dynamic_cast<CState*>(
-            CManagement::GetInstance()->Get_Component(ID_DYNAMIC,
-                                                      LAYERTYPE::GAMELOGIC,
-                                                      OBJTYPE::PLAYER,
-                                                      COMPONENTTYPE::STATE));
-
-        if (playerState)
-            playerState->Change_State(ACTORSTATE::PLAYER_WARPOUT);
-    }
-
-    if (CDInputMgr::GetInstance()->KeyDown(DIK_8))
-    {
-        auto* playerState = dynamic_cast<CState*>(
-            CManagement::GetInstance()->Get_Component(ID_DYNAMIC,
-                                                      LAYERTYPE::GAMELOGIC,
-                                                      OBJTYPE::PLAYER,
-                                                      COMPONENTTYPE::STATE));
-
-        if (playerState)
-            playerState->Change_State(ACTORSTATE::PLAYER_WARPIN);
-    }
-
     return exit;
 }
 

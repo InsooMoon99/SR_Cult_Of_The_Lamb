@@ -83,7 +83,7 @@ void CRenderer::Render_NonAlpha(DEVICE& graphicDev)
 
 void CRenderer::Render_Alpha(DEVICE& graphicDev)
 {
-    //// 알파 정렬
+    // 알파 정렬
     //_matrix matView, matCam;
     //graphicDev->GetTransform(D3DTS_VIEW, &matView);
     //D3DXMatrixInverse(&matCam, nullptr, &matView);
