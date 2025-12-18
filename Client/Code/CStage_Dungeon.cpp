@@ -89,28 +89,32 @@ void CStage_Dungeon::Initialize_Scene()
     {
         { 11.8f, 1.f, 3.268f },
         "../Bin/Resource/Data/Terrain/Terrain_Weapon.map",
-        { 0.f, 0.f, 0.f }
+        { 0.f, 0.f, 0.f },
+
     };
 
     m_RoomData[static_cast<_int>(Room::MONSTER1)] =
     {
         { 104.f, 1.f, 11.851f },
         "../Bin/Resource/Data/Terrain/Terrain_Dungeon_Woods.map",
-        { 100.f, 0.f, 0.f }
+        { 100.f, 0.f, 0.f },
+                {117.f, 1.f, 8.8f}
     };
 
     m_RoomData[static_cast<_int>(Room::MONSTER2)] =
     {
         { 205.f, 1.f, 11.85f },
         "../Bin/Resource/Data/Terrain/Terrain_Dungeon_Mush.map",
-        { 200.f, 0.f, 0.f }
+        { 200.f, 0.f, 0.f },
+                {217.f, 1.f, 11.2f}
     };
 
     m_RoomData[static_cast<_int>(Room::MONSTER3)] =
     {
         { 212.1f, 1.f, 103.79f },
         "../Bin/Resource/Data/Terrain/Terrain_Dun_Down_Right_Up_Mon.map",
-        { 200.f, 0.f, 100.f }
+        { 200.f, 0.f, 100.f },
+                {212.f, 1.f, 108.8f}
     };
 
     m_RoomData[static_cast<_int>(Room::TARO)] =
@@ -124,14 +128,16 @@ void CStage_Dungeon::Initialize_Scene()
     {
         { 205.f, 1.f, 205.f },
         "../Bin/Resource/Data/Terrain/Terrain_Down_Up_Mon.map",
-        { 200.f, 0.f, 200.f }
+        { 200.f, 0.f, 200.f },
+                {215.f, 1.f, 213.8f}
     };
 
     m_RoomData[static_cast<_int>(Room::MONSTER5)] =
     {
         { 212.f, 1.f, 302.f },
         "../Bin/Resource/Data/Terrain/Terrain_Dun_Down_Right.map",
-        { 200.f, 0.f, 300.f }
+        { 200.f, 0.f, 300.f },
+                {215.f, 1.f, 308.8f}
     };
 
     m_RoomData[static_cast<_int>(Room::BOSS)] =
@@ -158,7 +164,10 @@ void CStage_Dungeon::Initialize_Scene()
                 terrainTransform->Set_Pos(m_RoomData[static_cast<_int>(room)].terrainOffset);
 
             terrain->LoadMapOnStart(m_RoomData[static_cast<_int>(room)].terrainFilePath.c_str());
+
+            terrain->Set_ChestSpawnPos(m_RoomData[static_cast<_int>(room)].chestSpawnPos);
         }
+
     }
 
     // 시작 방만 활성화
@@ -169,12 +178,6 @@ void CStage_Dungeon::Initialize_Scene()
     }
 
     m_Terrains[Room::START]->Set_Active(true);
-
-    for (Room adj : m_ConnectRooms[Room::START])
-    {
-        m_Terrains[adj]->Set_Active(true);
-
-    }
 
     // 트리거 생성
     Create_RoomTriggers();
@@ -521,21 +524,6 @@ void CStage_Dungeon::EnterDungeon()
 
 void CStage_Dungeon::Change_Room(Room room)
 {
-    // 모든 방 비활성화
-    for (auto& pair : m_Terrains)
-    {
-        pair.second->Set_Active(false);
-    }
-
-    // 현재 방 활성화
-    m_Terrains[room]->Set_Active(true);
-
-    // 인접 방도 활성화
-    for (Room adj : m_ConnectRooms[room])
-    {
-        m_Terrains[adj]->Set_Active(true);
-    }
-
     // 이미 페이딩 중이면 무시
     if (m_IsFading)
         return;
@@ -846,6 +834,14 @@ void CStage_Dungeon::Fade_Check(const _float timeDelta)
 
     if (!m_UI_Fade->IsFading() && m_UI_Fade->Get_Alpha() >= 1.0f)
     {
+        if (m_Terrains[m_CurrentRoom])
+            m_Terrains[m_CurrentRoom]->Clear_SpawnedObjects();
+
+        for (auto& pair : m_Terrains)
+            pair.second->Set_Active(false);
+
+        m_Terrains[m_NextRoom]->Set_Active(true);
+
         m_CurrentRoom = m_NextRoom;
 
         auto key = make_pair(m_FromRoom, m_NextRoom);
@@ -853,10 +849,8 @@ void CStage_Dungeon::Fade_Check(const _float timeDelta)
 
         if (m_SpawnPositions.count(key) > 0)
             spawnPos = m_SpawnPositions[key];
-
         else
             spawnPos = m_RoomData[static_cast<_int>(m_NextRoom)].playerSpawnPos;
-
         if (m_PlayerTransform)
             m_PlayerTransform->Set_Pos(spawnPos);
 

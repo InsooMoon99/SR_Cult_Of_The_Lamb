@@ -13,7 +13,7 @@ CRigidbody::CRigidbody(DEVICE graphicDev)
       m_Force(0.f, 0.f, 0.f),
       m_Accel(0.f, 0.f, 0.f),
       m_Vel(0.f, 0.f, 0.f),
-      m_VelLimit(10.f, 100.f, 10.f),
+      m_VelLimit(9.f, 100.f, 9.f),
       m_Gravity(0.f, -200.f, 0.f)
 { }
 

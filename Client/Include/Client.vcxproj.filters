@@ -1099,6 +1099,9 @@
     </ClInclude>
     <ClInclude Include="..\Header\CStage_Prologue2.h">
       <Filter>02. Scene\01. Stage</Filter>
+          </ClInclude>
+    <ClInclude Include="..\Header\CRatau.h">
+      <Filter>03. GameObject\04. Boss\04. NPC</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1752,6 +1755,9 @@
     </ClCompile>
     <ClCompile Include="..\Code\CStage_Prologue2.cpp">
       <Filter>02. Scene\01. Stage</Filter>
+          </ClCompile>
+    <ClCompile Include="..\Code\CRatau.cpp">
+      <Filter>03. GameObject\04. Boss\04. NPC</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

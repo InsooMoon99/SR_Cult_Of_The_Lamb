@@ -21,6 +21,7 @@
 #include "CWall.h"
 #include "CWallRenderer.h"
 #include "CBoss_SlaveCow.h"
+#include "CChest.h"
 #include "CHumanMonster2.h"
 
 CTerrain::CTerrain(DEVICE GraphicDev)
@@ -164,6 +165,18 @@ void CTerrain::Render_GameObject()
     Render_Reset();
 }
 
+void CTerrain::Activate_SpawnedObjects()
+{
+    for (auto obj : m_SpawnedWalls)
+        if (obj) obj->Set_Active(true);
+
+    for (auto obj : m_SpawnedMonsters)
+        if (obj) obj->Set_Active(true);
+
+    for (auto obj : m_SpawnedMonsterHpBars)
+        if (obj) obj->Set_Active(true);
+}
+
 HRESULT CTerrain::Add_Component()
 {
     if (FAILED(CRenderObject::Add_Component()))
@@ -243,6 +256,34 @@ void CTerrain::Render_Setting()
     Set_Material();
 }
 
+void CTerrain::OnMonsterKilled()
+{
+    m_MonsterCount--;
+
+    if (m_MonsterCount <= 0 && !m_ChestSpawned)
+    {
+        m_ChestSpawned = true;
+        Spawn_Chest();
+    }
+}
+
+void CTerrain::Spawn_Chest()
+{
+    auto layer = CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::GAMELOGIC);
+    if (!layer)
+        return;
+
+    m_ChestSpawnPos.y += 0.5f;
+
+    CChest* chest = CChest::Create(m_GraphicDev, m_ChestSpawnPos);
+    if (!chest)
+        return;
+
+    chest->AddItem(1001, 10);
+    layer->Add_GameObject(OBJTYPE::ITEM, chest);
+    chest->Initialize_GameObject();
+}
+
 void CTerrain::Render_Editor()
 {
     CRenderObject::Render_Editor();
@@ -297,6 +338,7 @@ void CTerrain::Spawn_Walls(CLayer* layer)
                     wallCollider->Set_Size(_vec3(cellSize, 2.f, cellSize));
 
                     layer->Add_GameObject(OBJTYPE::WALL, wall);
+                    m_SpawnedWalls.push_back(wall);
 
                     wall->Initialize_GameObject();
 
@@ -384,19 +426,35 @@ void CTerrain::Spawn_Objects(CLayer* layer)
 
         // Layer에 추가
         layer->Add_GameObject(objType, object);
+        m_SpawnedMonsters.push_back(object);
 
         object->Initialize_GameObject();
 
-        // HpBar 생성
-        if (objType == OBJTYPE::MONSTER)  // ← 조건 추가
+        if (objType == OBJTYPE::MONSTER)
         {
-            auto combat = dynamic_cast<CCombatStat*>(object->Get_Component(ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
-            if (combat)
-            {
-                CUI_MonsterHp* monsterHp = CUI_MonsterHp::Create(m_GraphicDev, combat);
-                SpawnUIOnLayer(monsterHp, OBJTYPE::UI);
+            m_MonsterCount++;
 
-                monsterHp->Initialize_GameObject();
+            auto monster = dynamic_cast<CMonsterBase*>(object);
+            if (monster)
+            {
+                monster->Set_OnDeath([this]()
+                    {
+                        OnMonsterKilled();
+                    });
+            }
+
+            // HpBar 생성
+            if (objType == OBJTYPE::MONSTER)  // ← 조건 추가
+            {
+                auto combat = dynamic_cast<CCombatStat*>(object->Get_Component(ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
+                if (combat)
+                {
+                    CUI_MonsterHp* monsterHp = CUI_MonsterHp::Create(m_GraphicDev, combat);
+                    SpawnUIOnLayer(monsterHp, OBJTYPE::UI);
+                    m_SpawnedMonsterHpBars.push_back(monsterHp);
+
+                    monsterHp->Initialize_GameObject();
+                }
             }
         }
     }
@@ -414,6 +472,32 @@ CTerrain* CTerrain::Create(DEVICE GraphicDev)
     }
 
     return terrain;
+}
+
+void CTerrain::Clear_SpawnedObjects()
+{
+    // 벽 정리
+    for (auto obj : m_SpawnedWalls)
+    {
+        if (obj)
+            obj->Mark_As_PendingKill();
+    }
+    m_SpawnedWalls.clear();
+    
+    for (auto obj : m_SpawnedMonsters)
+    {
+        if (obj)
+            obj->Mark_As_PendingKill();
+    }
+    m_SpawnedMonsters.clear();
+
+    // 체력바 정리
+    for (auto obj : m_SpawnedMonsterHpBars)
+    {
+        if (obj)
+            obj->Mark_As_PendingKill();
+    }
+    m_SpawnedMonsterHpBars.clear();
 }
 
 void CTerrain::Free()
