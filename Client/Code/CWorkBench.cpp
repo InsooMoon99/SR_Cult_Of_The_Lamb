@@ -56,7 +56,8 @@ _int CWorkBench::Update_GameObject(const _float& timeDelta)
 
     if (m_bPlayerOverlap == true && m_bHovering == true)
     {
-        if (CDInputMgr::GetInstance()->MouseDown(DIM_LB))
+        if (CDInputMgr::GetInstance()->MouseDown(DIM_LB) ||
+            CDInputMgr::GetInstance()->KeyDown(DIK_E))
         {
             CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Open_Menu.wav", SOUNDTYPE::SOUND_UI, 1.f);
             m_BuildMenu->Set_IsActive(true);

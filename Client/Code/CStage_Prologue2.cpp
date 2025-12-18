@@ -75,7 +75,7 @@ void CStage_Prologue2::Initialize_Scene()
 
     m_IsRebirthPlaying = true;  
 
-    m_PlayerRigid->Set_VelocityLimit(_vec3(10.f, 100.f, 10.f));
+    m_PlayerRigid->Set_VelocityLimit(_vec3(9.f, 100.f, 9.f));
 
     // Hp Bar 생성 -> 얘네는 에디터에서 생성을 안하고, 처음에 배치를 해주는 애들이기 때문에
     // 체력 UI를 새로 생성해주어야만 한다.
