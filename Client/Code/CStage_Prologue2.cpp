@@ -24,6 +24,7 @@
 #include "CUI_Fade.h"
 #include "CUI_Interactive.h"
 #include "CUI_MonsterHp.h"
+#include "CUI_Interactive.h"
 
 CStage_Prologue2::CStage_Prologue2(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -97,7 +98,18 @@ void CStage_Prologue2::Initialize_Scene()
         }
     }
 
+    m_DescriptionUI = CUI_Interactive::Create(m_GraphicDev);
+    CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::UI)->Add_GameObject(OBJTYPE::UI, m_DescriptionUI);
+    m_DescriptionUI->Set_TextureIndex(5);
+    m_DescriptionUI->Get_Transform()->Set_Pos(_vec3(0.f, -240.f, 1.f));
+    m_DescriptionUI->Get_Transform()->Set_Scale(_vec3(220.f,35.f,1.f));
 
+    m_Description2UI = CUI_Interactive::Create(m_GraphicDev);
+    CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::UI)->Add_GameObject(OBJTYPE::UI, m_Description2UI);
+    m_Description2UI->Set_TextureIndex(8);
+    m_Description2UI->Get_Transform()->Set_Pos(_vec3(0.f, -250.f, 1.f));
+    m_Description2UI->Get_Transform()->Set_Scale(_vec3(110.f, 35.f, 1.f));
+    m_Description2UI->Set_IsActive(false);
 }
 
 _int CStage_Prologue2::Update_Scene(const _float& timeDelta)
@@ -109,9 +121,13 @@ _int CStage_Prologue2::Update_Scene(const _float& timeDelta)
 
     if (m_InWarpZone && !m_WarpStarted)
     {
+        m_Description2UI->Set_IsActive(true);
+
         if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
         {
             m_WarpStarted = true;
+
+            m_Description2UI->Set_IsActive(false);
 
             auto playerState = dynamic_cast<CState*>(
                 m_Player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
@@ -130,6 +146,26 @@ _int CStage_Prologue2::Update_Scene(const _float& timeDelta)
             && animator->Is_AnimationFinished())
         {
             //m_PrologueCleared = true;
+        }
+    }
+
+    if (m_UIDelayTime > 0.f)
+    {
+        m_UIDelayTime -= timeDelta;
+
+        return 0;
+    }
+
+    if (m_UIOpenTime > 0.f)
+    {
+        m_UIOpenTime -= timeDelta;
+
+        m_DescriptionUI->Set_IsActive(true);
+
+        if (m_UIOpenTime <= 0.f)
+        {
+            m_DescriptionUI->Set_IsActive(false);
+            m_UIOpenTime = 0.f;
         }
     }
 

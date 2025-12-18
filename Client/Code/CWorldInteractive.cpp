@@ -16,6 +16,7 @@
 #include "CTransform.h"
 #include "ItemInstance.h"
 #include "CVillageStateMgr.h"
+#include "CManagement.h"
 
 CWorldInteractive::CWorldInteractive(DEVICE graphicDev)
     : CRenderObject(graphicDev),
@@ -99,6 +100,15 @@ _int CWorldInteractive::Update_GameObject(const _float& timeDelta)
     else
         m_bHovering = false;
 
+
+
+   // if (m_ProgressBar)
+   // {
+   //     m_ProgressBar->Set_Progress(CalcProgress());
+   //
+   //     //CCombatStat* combat = dynamic_cast<CCombatStat*>(Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
+   //
+   // }
     return exit;
 }
 
@@ -311,4 +321,14 @@ void CWorldInteractive::OnInteractiveDamaged()
     data.isDead = (data.hp <= 0.f);
 
     CVillageStateMgr::GetInstance()->Save_Interactive(data);
+}
+_float CWorldInteractive::CalcProgress()
+{
+ 
+    _float cur = m_CombatStatCom->Get_Hp();
+    _float max = m_CombatStatCom->Get_MaxHp();
+    
+    m_Progress = (1.f - cur / max);
+    
+    return std::clamp(m_Progress, 0.f, 1.f);    
 }

@@ -75,9 +75,9 @@ _uint CLoading::Loading_ForBoss1()
 
     vector<future<HRESULT>> futures;
 
-    futures.push_back(async(launch::async, [&]() {
-        return resourceMgr->Ready_BossP1(m_GraphicDev);
-        }));
+    //futures.push_back(async(launch::async, [&]() {
+    //    return resourceMgr->Ready_BossP1(m_GraphicDev);
+    //    }));
 
     //futures.push_back(async(launch::async, [&]() {
     //    return resourceMgr->Ready_BossP2(m_GraphicDev);
@@ -117,18 +117,18 @@ _uint CLoading::Loading_ForBoss2()
 
     vector<future<HRESULT>> futures;
 
-    futures.push_back(async(launch::async, [&]() {
-        return resourceMgr->Ready_BossP2(m_GraphicDev);
-        }));
-
-    futures.push_back(async(launch::async, [&]() {
-            return resourceMgr->Ready_BossP2_Eyeball(m_GraphicDev);
-        }));
-
-    futures.push_back(async(launch::async, [&]() {
-        return resourceMgr->Ready_BossP2_Follower(m_GraphicDev);
-        }));
-
+    //futures.push_back(async(launch::async, [&]() {
+    //    return resourceMgr->Ready_BossP2(m_GraphicDev);
+    //    }));
+    //
+    //futures.push_back(async(launch::async, [&]() {
+    //        return resourceMgr->Ready_BossP2_Eyeball(m_GraphicDev);
+    //    }));
+    //
+    //futures.push_back(async(launch::async, [&]() {
+    //    return resourceMgr->Ready_BossP2_Follower(m_GraphicDev);
+    //    }));
+    //
     // 병렬 태스크 완료 대기
     for (auto& future : futures)
     {
@@ -186,9 +186,9 @@ _uint CLoading::Loading_ForState_Parallel()
     futures.push_back(async(launch::async, [&]() {
         return resourceMgr->Ready_Building(m_GraphicDev);
         }));
-    //futures.push_back(async(launch::async, [&]() {
-    //    return resourceMgr->Ready_Follower(m_GraphicDev);
-    //    }));
+    futures.push_back(async(launch::async, [&]() {
+        return resourceMgr->Ready_Follower(m_GraphicDev);
+        }));
     futures.push_back(async(launch::async, [&]() {
         return resourceMgr->Ready_MiniBoss(m_GraphicDev);
         }));
