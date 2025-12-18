@@ -1504,6 +1504,8 @@ HRESULT CResourceMgr::Ready_Particle(DEVICE graphicDev)
         CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Particle/Tree/Tree_Particle%d.png", 6))))
         return E_FAIL;
 
+    // 몬스터 맞았을 때
+
     return S_OK;
 }
 
