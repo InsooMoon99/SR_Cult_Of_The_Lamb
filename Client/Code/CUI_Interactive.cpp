@@ -53,17 +53,18 @@ void CUI_Interactive::Render_GameObject()
     if (!m_Active)
         return;
     m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-    
+   
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
     m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
     m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);    m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-
+   
     m_TextureCom->Set_Texture(m_textureIndex);
     m_BufferCom->Render_Buffer();
 
-    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-    m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+    //이거 안 렌더 스테이트 설정 껐더니 됨
+    //m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+    //m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+    //m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 }
 HRESULT CUI_Interactive::Add_Component()
 {
