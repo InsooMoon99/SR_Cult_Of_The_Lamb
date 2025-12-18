@@ -47,6 +47,8 @@ struct DialogueLine
     DialogueChoice choice;           // 선택지가 있을 때
 
     _float leftPadding = 0.f;
+
+    string voicePath;
 };
 
 // 대화 묶음 (하나의 대화 시퀀스)

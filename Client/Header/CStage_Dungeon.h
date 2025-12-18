@@ -22,12 +22,8 @@ struct RoomData
 {
     _vec3   playerSpawnPos{};         
     string  terrainFilePath;    
-    _vec3   terrainOffset{};    
-
-    // 방 클리어 여부
-    // 근데 이거 일단은 구현 X
-    bool    isCleared = false;
-    _int    requiredKills = 0;
+    _vec3   terrainOffset{};
+    _vec3   chestSpawnPos;
 };
 
 class CStage_Dungeon : public CScene
