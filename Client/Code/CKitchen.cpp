@@ -243,7 +243,7 @@ CKitchen* CKitchen::Create(DEVICE graphicDev)
 
     if (FAILED(kitchen->Ready_GameObject()))
     {
-        MSG_BOX("Temple Create Failed");
+        MSG_BOX("Kitchen Create Failed");
         Safe_Release(kitchen);
         return nullptr;
     }

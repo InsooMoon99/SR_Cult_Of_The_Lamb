@@ -87,7 +87,7 @@ void CStage_Dungeon::Initialize_Scene()
     m_RoomData[static_cast<_int>(Room::START)] =
     {
         { 10.f, 1.f, 10.f },
-        "../Bin/Resource/Data/Terrain/Terrain_DungeonStart.map",
+        "../Bin/Resource/Data/Terrain/Terrain_Dungeon_Entrance_Final.map",
         { 0.f, 0.f, 0.f }
     };
 
