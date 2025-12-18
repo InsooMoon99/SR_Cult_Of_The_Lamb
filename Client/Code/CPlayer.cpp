@@ -149,6 +149,7 @@ void CPlayer::OnStayOverlap(CCollider* self, CCollider* other)
     CWorldInteractive* worldInteractiveObj = dynamic_cast<CWorldInteractive*>(other->Get_Owner());
     CBuildingBase*     building            = dynamic_cast<CBuildingBase*>(other->Get_Owner());
     CCharacterBase*    character           = dynamic_cast<CCharacterBase*>(other->Get_Owner());
+
    if (dynamic_cast<CInteractiveGrass*>(worldInteractiveObj))
    {
        worldInteractiveObj = nullptr;
@@ -582,7 +583,7 @@ void CPlayer::Prologue_Animation_Setting()
     // Rebirth
     m_AnimatorCom->Create_Animation(L"Prologue_Rebirth",
         91, 0.04f,
-        _vec2(2.f, 2.f), _vec2(0.f, 0.f));
+        _vec2(2.07f, 2.78f), _vec2(0.f, 1.31f));
 
     // Knnel
     m_AnimatorCom->Create_Animation(L"Prologue_Kneel_Start",

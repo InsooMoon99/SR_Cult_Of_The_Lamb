@@ -162,7 +162,7 @@ void CPlayerController::CheckStateTransition()
         curState == ACTORSTATE::PLAYER_DECIDE ||
         curState == ACTORSTATE::PLAYER_REFUSE ||
         curState == ACTORSTATE::KNEEL ||
-        curState == ACTORSTATE::KNEEL_WAKE)
+        curState == ACTORSTATE::KNEEL_WAKE || curState == ACTORSTATE::PLAYER_REBIRTH)
         return;
 
     // 피격 시 Hit 처리
@@ -474,6 +474,10 @@ void CPlayerController::Update_State(const _float& timeDelta)
     }
     break;
 
+    case ACTORSTATE::PLAYER_REBIRTH:
+        Action_Rebirth(timeDelta);
+        break;
+
     default:
     {
         MSG_BOX("CPlayerController: Invalid Player State");
@@ -684,6 +688,19 @@ void CPlayerController::Action_Kneel_Wake(const _float& timeDelta)
 
     if (animator->Get_CurKey() != L"Prologue_Kneel_Wake")
         animator->Play_Animation(L"Prologue_Kneel_Wake", ANIMSTATE::ONCE);
+
+    if (animator->Is_AnimationFinished())
+        m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+}
+
+void CPlayerController::Action_Rebirth(const _float& timeDelta)
+{
+    auto animator = dynamic_cast<CAnimator*>(
+        m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+    NULL_CHECK(animator);
+
+    if (animator->Get_CurKey() != L"Prologue_Rebirth")
+        animator->Play_Animation(L"Prologue_Rebirth", ANIMSTATE::ONCE);
 
     if (animator->Is_AnimationFinished())
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);

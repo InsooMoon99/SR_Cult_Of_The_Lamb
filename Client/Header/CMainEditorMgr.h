@@ -49,7 +49,6 @@ public:
     _float Get_TimeScale() const { return m_TimeScale; }
     void   Set_TimeScale(_float timeScale) { m_TimeScale = timeScale; }
 
-
     _bool IsGuiVisible() const { return m_ShowImGui; }
     void  Toggle_ImGui() { m_ShowImGui = !m_ShowImGui; }
 

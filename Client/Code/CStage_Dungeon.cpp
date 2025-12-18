@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include "CStage_Dungeon.h"
-
+#include "CCreateHelper.h"
 #include "CCameraController.h"
 #include "CCamSetupBuilder.h"
 #include "CCombatStat.h"
@@ -87,38 +87,62 @@ void CStage_Dungeon::Initialize_Scene()
 
     m_RoomData[static_cast<_int>(Room::START)] =
     {
-        { 10.f, 1.f, 10.f },
-        "../Bin/Resource/Data/Terrain/Terrain_Dungeon_Entrance_Final.map",
+        { 11.8f, 1.f, 3.268f },
+        "../Bin/Resource/Data/Terrain/Terrain_Weapon.map",
         { 0.f, 0.f, 0.f }
     };
 
     m_RoomData[static_cast<_int>(Room::MONSTER1)] =
     {
-        { 55.f, 1.f, 25.f },
-        "../Bin/Resource/Data/Terrain/Terrain_Mon1Test.map",
-        { 50.f, 0.f, 0.f }
+        { 104.f, 1.f, 11.851f },
+        "../Bin/Resource/Data/Terrain/Terrain_Dungeon_Woods.map",
+        { 100.f, 0.f, 0.f }
     };
 
     m_RoomData[static_cast<_int>(Room::MONSTER2)] =
     {
-        { 140.f, 1.f, 10.f },
-        "../Bin/Resource/Data/Terrain/Terrain_TarotMapFinal.map",
-        { 150.f, 0.f, 0.f }
+        { 205.f, 1.f, 11.85f },
+        "../Bin/Resource/Data/Terrain/Terrain_Dungeon_Mush.map",
+        { 200.f, 0.f, 0.f }
+    };
+
+    m_RoomData[static_cast<_int>(Room::MONSTER3)] =
+    {
+        { 212.1f, 1.f, 103.79f },
+        "../Bin/Resource/Data/Terrain/Terrain_Dun_Down_Right_Up_Mon.map",
+        { 200.f, 0.f, 100.f }
     };
 
     m_RoomData[static_cast<_int>(Room::TARO)] =
     {
-        { 160.f, 1.f, 10.f },
-        "../Bin/Resource/Data/Terrain/Terrain_TaroTest.map",
-        { 200.f, 0.f, 0.f }
+        { 305.f, 1.f, 124.f },
+        "../Bin/Resource/Data/Terrain/Terrain_TarotMapFinal.map",
+        { 300.f, 0.f, 100.f }
+    };
+
+    m_RoomData[static_cast<_int>(Room::MONSTER4)] =
+    {
+        { 205.f, 1.f, 205.f },
+        "../Bin/Resource/Data/Terrain/Terrain_Down_Up_Mon.map",
+        { 200.f, 0.f, 200.f }
+    };
+
+    m_RoomData[static_cast<_int>(Room::MONSTER5)] =
+    {
+        { 212.f, 1.f, 302.f },
+        "../Bin/Resource/Data/Terrain/Terrain_Dun_Down_Right.map",
+        { 200.f, 0.f, 300.f }
     };
 
     m_RoomData[static_cast<_int>(Room::BOSS)] =
     {
-        { 210.f, 1.f, 10.f },
+        { 304.f, 1.f, 310.7f },
         "../Bin/Resource/Data/Terrain/MiniBoss.map",
-        { 250.f, 0.f, 0.f }
+        { 300.f, 0.f, 300.f }
     };
+
+    Set_SpawnPos();
+    Connect_Rooms();
 
     m_CurrentRoom = Room::START;
 
@@ -135,6 +159,21 @@ void CStage_Dungeon::Initialize_Scene()
 
             terrain->LoadMapOnStart(m_RoomData[static_cast<_int>(room)].terrainFilePath.c_str());
         }
+    }
+
+    // 시작 방만 활성화
+    for (auto& pair : m_Terrains)
+    {
+        pair.second->Set_Active(false);
+
+    }
+
+    m_Terrains[Room::START]->Set_Active(true);
+
+    for (Room adj : m_ConnectRooms[Room::START])
+    {
+        m_Terrains[adj]->Set_Active(true);
+
     }
 
     // 트리거 생성
@@ -224,37 +263,28 @@ void CStage_Dungeon::Spawn_Weapon()
     CDropSystem::GetInstance()->SetCurrentScene(this);
 
     _int size = CItemDB::GetInstance()->GetVector().size();
-    for (_int i = 0; i < 10; i++)
+    for (_int i = 1; i <= 2; i++)
     {
         int id = CItemDB::GetInstance()->GetVector()[size - i - 1].id;
 
         ItemInstance inst = { id, -1, 0 };
 
-        _vec3 roomPos = m_RoomData[static_cast<_int>(Room::START)].playerSpawnPos;
+        _vec3 spawnPos;
+        if (i == 1)
+            spawnPos = _vec3(8.1f, 1.f, 7.5f);
+
+        if (i == 2)
+            spawnPos = _vec3(14.3f, 1.f, 7.5f);
+
+        _vec3 size = _vec3(1.2f, 1.2f, 1.2f);
 
         auto drop = CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev,
                                                           inst,
-                                                          { roomPos.x + (i * 3.f) - 3.f, 1.f, roomPos.z - 2.5f },
-                                                          _vec3(0.5f, 0.5f, 0.5f));
+                                                          { spawnPos }, size);
 
         drop->Initialize_GameObject();
     }
-
-    for (_int i = 0; i < 10; i++)
-    {
-        int id = CItemDB::GetInstance()->GetVector()[size - i - 1].id;
-
-        ItemInstance inst = { id, -1, 0 };
-
-        _vec3 roomPos = m_RoomData[static_cast<_int>(Room::START)].playerSpawnPos;
-
-        auto drop = CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev,
-                                                          inst,
-                                                          { roomPos.x + (i * 3.f) - 3.f, 1.f, roomPos.z - 3.5f },
-                                                          _vec3(0.5f, 0.5f, 0.5f));
-
-        drop->Initialize_GameObject();
-    }
+   
 }
 
 void CStage_Dungeon::Spawn_FollowerCow_Rescue()
@@ -347,45 +377,60 @@ void CStage_Dungeon::Spawn_FollowerPig_Rescue()
 void CStage_Dungeon::Create_RoomTriggers()
 {
     // START -> MONSTER1
-    Create_Trigger_Between(
-        Room::START,
-        Room::MONSTER1,
-        _vec3(9.3f, 1.f, 20.f), // 트리거 위치 오프셋 (방 위치 기준으로 소환돼서 적당히)
-        _vec3(5.f, 5.f, 4.5f)); // 트리거 크기
-
-    // MONSTER1 -> MONSTER2
-    Create_Trigger_Between(
-        Room::MONSTER1,
-        Room::MONSTER2,
-        _vec3(38.f, 1.f, 10.f),
+    Create_BiDirectional_Trigger(
+        Room::START, _vec3(22.7f, 1.f, 8.8f),       // 1
+        Room::MONSTER1, _vec3(0.f, 1.f, 11.8f),     // 2
         _vec3(5.f, 5.f, 4.5f));
 
-    // MONSTER1 -> Boss
-    //Create_Trigger_Between(
-    //    Room::MONSTER1,
-    //    _vec3(38.f, 1.f, 10.f),
-    //    _vec3(4.5f, 5.f, 5.f),
-    //    [this]()
-    //    {
-    //        m_RequestChangeScene = true;
-    //        m_NextSceneType = SCENETYPE::SC_LOGO_BOSS1;
-    //    }
-    //);
+    // MONSTER1 <-> MONSTER2
+    Create_BiDirectional_Trigger(
+        Room::MONSTER1, _vec3(34.4f, 1.f, 11.3f),   // 3
+        Room::MONSTER2, _vec3(0.5f, 1.f, 11.9f),    // 4
+        _vec3(5.f, 5.f, 4.5f));
 
-    /*Create_Trigger_Between(
-        Room::MONSTER2,
-        Room::TARO,
-        _vec3(18.f, 1.f, 26.f),     
-        _vec3(4.5f, 5.f, 5.f)      
-    );*/
+    // MONSTER2 <-> MONSTER3
+    Create_BiDirectional_Trigger(
+        Room::MONSTER2, _vec3(17.4f, 1.f, 23.2f),   // 5
+        Room::MONSTER3, _vec3(12.1f, 1.f, -1.7f),   // 6
+        _vec3(6.f, 5.f, 4.5f));
 
-    // MONSTER2 -> BOSS
-    //Create_Trigger_Between(
-    //    Room::MONSTER2,
-    //    Room::BOSS,
-    //    _vec3(18.f, 1.f, 0.f),
-    //    _vec3(5.f, 5.f, 4.5f)
-    //);
+    // MONSTER3 <-> MONSTER4
+    Create_BiDirectional_Trigger(
+        Room::MONSTER3, _vec3(13.2f, 1.f, 21.4f),    // 7
+        Room::MONSTER4, _vec3(2.5f, 1.f, -0.2f),     // 8
+        _vec3(6.f, 5.f, 4.5f));
+
+    // MONSTER3 <-> Taro
+    Create_BiDirectional_Trigger(
+        Room::MONSTER3, _vec3(32.6f, 1.f, 11.4f),    // 9
+        Room::TARO, _vec3(-0.9f, 1.f, 25.2f),        // 10
+        _vec3(5.f, 5.f, 4.5f));
+
+    // MONSTER4 <-> MONSTER5
+    Create_BiDirectional_Trigger(
+        Room::MONSTER4, _vec3(22.5f, 1.f, 28.3f),    // 11
+        Room::MONSTER5, _vec3(12.f, 1.f, -1.5f),     // 12
+        _vec3(6.f, 5.f, 4.5f));
+
+    // 보스방 진입
+    Create_Trigger_Between(
+        Room::MONSTER5, _vec3(31.4f, 1.f, 11.5f), _vec3(5.f, 5.f, 4.5f),
+        [this]()
+        {
+            // 엘리고스 생성
+            m_Boss = CEligos::Create(m_GraphicDev);
+            NULL_CHECK_RETURN_MSG(m_Boss, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase2::Create() returned null");
+
+            SpawnObjectOnLayer(m_Boss, OBJTYPE::BOSS1);
+
+            CTransform* m_BTransform = dynamic_cast<CTransform*>(
+                m_Boss->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+            m_BTransform->Set_Pos({ 318, 3, 310 });
+
+            // 방 이동
+            Change_Room(Room::BOSS);
+        });
+ 
 }
 
 void CStage_Dungeon::Create_Trigger_Between(Room fromRoom, Room toRoom, _vec3 offsetFromRoom, _vec3 size)
@@ -429,6 +474,45 @@ void CStage_Dungeon::Create_Trigger_Between(Room                  fromRoom,
     gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
 }
 
+void CStage_Dungeon::Create_BiDirectional_Trigger(Room roomA, _vec3 offsetA, Room roomB, _vec3 offsetB, _vec3 size)
+{
+    auto gameLayer = m_Layers[LAYERTYPE::GAMELOGIC];
+    NULL_CHECK(gameLayer);
+
+    // A → B 트리거
+    {
+        auto trigger = CTrigger_Dungeon::Create(m_GraphicDev);
+        _vec3 roomAPos = m_RoomData[static_cast<_int>(roomA)].terrainOffset;
+
+        trigger->Set_Bounds(roomAPos + offsetA, size);
+        trigger->Set_TriggerOnce(false);
+
+        trigger->Set_Callback([this, roomB]()
+        {
+            Change_Room(roomB);
+        });
+
+        gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
+    }
+
+    // B → A 트리거
+    {
+        auto trigger = CTrigger_Dungeon::Create(m_GraphicDev);
+        _vec3 roomBPos = m_RoomData[static_cast<_int>(roomB)].terrainOffset;
+
+        trigger->Set_Bounds(roomBPos + offsetB, size);
+        trigger->Set_TriggerOnce(false);
+
+        trigger->Set_Callback([this, roomA]()
+        {
+            Change_Room(roomA);
+        });
+
+        gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
+    }
+
+}
+
 void CStage_Dungeon::EnterDungeon()
 {
     m_Timer        = 0.f;
@@ -437,12 +521,28 @@ void CStage_Dungeon::EnterDungeon()
 
 void CStage_Dungeon::Change_Room(Room room)
 {
+    // 모든 방 비활성화
+    for (auto& pair : m_Terrains)
+    {
+        pair.second->Set_Active(false);
+    }
+
+    // 현재 방 활성화
+    m_Terrains[room]->Set_Active(true);
+
+    // 인접 방도 활성화
+    for (Room adj : m_ConnectRooms[room])
+    {
+        m_Terrains[adj]->Set_Active(true);
+    }
+
     // 이미 페이딩 중이면 무시
     if (m_IsFading)
         return;
 
     if (m_UI_Fade)
     {
+        m_FromRoom = m_CurrentRoom;
         m_NextRoom = room;
         m_IsFading = true;
         m_UI_Fade->Start_FadeOut(3.5f);
@@ -578,26 +678,14 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
                      L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(TarotNPC) failed");
     dynamic_cast<CTarotNPC*>(gameObject)->Set_TarotController(dynamic_cast<CTarotStageController*>(tarotController));
 
-    gameObject = CFloaterMonster::Create(m_GraphicDev);
-    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::MONSTER, gameObject),
-                     L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CFloaterMonster) failed");
-    dynamic_cast<CFloaterMonster*>(gameObject)->Get_Transform()->Set_Pos(15.f, 1.f, 10.f);
+    //gameObject = CFloaterMonster::Create(m_GraphicDev);
+    //FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::MONSTER, gameObject),
+    //                 L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CFloaterMonster) failed");
+    //dynamic_cast<CFloaterMonster*>(gameObject)->Get_Transform()->Set_Pos(15.f, 1.f, 10.f);
 
     ///////////////////////////////////////////////////////////////////////////////
     //보스
     ///////////////////////////////////////////////////////////////////////////////
-
-    // 보스 생성
-    m_Boss = CEligos::Create(m_GraphicDev);
-    NULL_CHECK_RETURN_MSG(m_Boss, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase2::Create() returned null")
-
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::BOSS1, m_Boss),
-        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Boss) failed");
-
-    CTransform* m_BTransform = dynamic_cast<CTransform*>(
-        m_Boss->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-    m_BTransform->Set_Pos({ 280, 3, 10 });
 
     //상호작용 오브젝트
     CInteractiveGrass* grass = CInteractiveGrass::Create(m_GraphicDev);
@@ -758,15 +846,70 @@ void CStage_Dungeon::Fade_Check(const _float timeDelta)
 
     if (!m_UI_Fade->IsFading() && m_UI_Fade->Get_Alpha() >= 1.0f)
     {
-        // 페이드 아웃 완료 후, 잠시 대기
-
         m_CurrentRoom = m_NextRoom;
 
-        // TODO : 플레이어 소환 Offset 조절하기
+        auto key = make_pair(m_FromRoom, m_NextRoom);
+
+        _vec3 spawnPos;
+        if (m_SpawnPositions.count(key) > 0)
+            spawnPos = m_SpawnPositions[key];
+
+        else
+            spawnPos = m_RoomData[static_cast<_int>(m_NextRoom)].playerSpawnPos;
+
         if (m_PlayerTransform)
-            m_PlayerTransform->Set_Pos(m_RoomData[static_cast<_int>(m_NextRoom)].playerSpawnPos);
+            m_PlayerTransform->Set_Pos(spawnPos);
 
         m_UI_Fade->Start_FadeIn(0.5f);
         m_IsFading = false;
+
+        if (m_NextRoom == Room::BOSS && !m_BossHpbar && m_Boss)
+        {
+            auto bossStat = dynamic_cast<CCombatStat*>(
+                m_Boss->Get_Component(ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
+            if (bossStat)
+            {
+                m_BossHpbar = CUI_BossHp::Create(m_GraphicDev, bossStat, L"엘리고스");
+                m_Layers[LAYERTYPE::UI]->Add_GameObject(OBJTYPE::UI, m_BossHpbar);
+            }
+        }
     }
+}
+
+void CStage_Dungeon::Connect_Rooms()
+{
+    m_ConnectRooms[Room::START] = { Room::MONSTER1 };
+
+    m_ConnectRooms[Room::MONSTER1] = { Room::START, Room::MONSTER2 };
+    m_ConnectRooms[Room::MONSTER2] = { Room::MONSTER1, Room::MONSTER3 };
+
+    m_ConnectRooms[Room::MONSTER3] = { Room::MONSTER2, Room::MONSTER4, Room::TARO };
+    m_ConnectRooms[Room::MONSTER4] = { Room::MONSTER3, Room::MONSTER5 };
+    m_ConnectRooms[Room::MONSTER5] = { Room::MONSTER4, Room::BOSS };
+
+    m_ConnectRooms[Room::TARO] = { Room::MONSTER3 };
+    m_ConnectRooms[Room::BOSS] = { Room::MONSTER5 };
+
+}
+
+void CStage_Dungeon::Set_SpawnPos()
+{
+    m_SpawnPositions[{Room::START, Room::MONSTER1}] = { 102.f, 1.f, 11.8f };    
+    m_SpawnPositions[{Room::MONSTER1, Room::START}] = { 20.f, 1.f, 8.8f };
+
+    m_SpawnPositions[{Room::MONSTER1, Room::MONSTER2}] = { 203.f, 1.f, 11.9f };
+    m_SpawnPositions[{Room::MONSTER2, Room::MONSTER1}] = { 132.f, 1.f, 11.3f };
+
+    m_SpawnPositions[{Room::MONSTER2, Room::MONSTER3}] = { 212.1f, 1.f, 102.f };
+    m_SpawnPositions[{Room::MONSTER3, Room::MONSTER2}] = { 217.f, 1.f, 21.f };
+
+    m_SpawnPositions[{Room::MONSTER3, Room::TARO}] = { 302.f, 1.f, 125.f };
+    m_SpawnPositions[{Room::TARO, Room::MONSTER3}] = { 230.f, 1.f, 111.f };
+
+    m_SpawnPositions[{Room::MONSTER3, Room::MONSTER4}] = { 202.5f, 1.f, 203.f };
+    m_SpawnPositions[{Room::MONSTER4, Room::MONSTER3}] = { 213.f, 1.f, 119.f };
+
+    m_SpawnPositions[{Room::MONSTER4, Room::MONSTER5}] = { 212.f, 1.f, 302.f };
+    m_SpawnPositions[{Room::MONSTER5, Room::MONSTER4}] = { 222.f, 1.f, 226.f };
+    m_SpawnPositions[{Room::MONSTER5, Room::BOSS}] = { 304.f, 1.f, 310.7f };
 }
