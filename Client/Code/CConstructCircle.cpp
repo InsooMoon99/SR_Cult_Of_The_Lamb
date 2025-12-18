@@ -108,7 +108,7 @@ void CConstructCircle::OnStayOverlap(CCollider* self, CCollider* other)
             obj->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
 
         if (playerState && playerState->Get_State() == ACTORSTATE::PLAYER_HAMMER)
-            m_Progress += 4.f * CTimerMgr::GetInstance()->Get_TimeDelta();
+            m_Progress += 8.f * CTimerMgr::GetInstance()->Get_TimeDelta();
     }
 
     // NPC 체크

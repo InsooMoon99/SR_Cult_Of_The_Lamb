@@ -149,6 +149,7 @@ void CPlayer::OnStayOverlap(CCollider* self, CCollider* other)
     CWorldInteractive* worldInteractiveObj = dynamic_cast<CWorldInteractive*>(other->Get_Owner());
     CBuildingBase*     building            = dynamic_cast<CBuildingBase*>(other->Get_Owner());
     CCharacterBase*    character           = dynamic_cast<CCharacterBase*>(other->Get_Owner());
+
    if (dynamic_cast<CInteractiveGrass*>(worldInteractiveObj))
    {
        worldInteractiveObj = nullptr;
