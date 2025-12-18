@@ -40,6 +40,7 @@
 #include "ItemInstance.h"
 #include "CVillageStateMgr.h"
 #include "CInteractiveGrass.h"
+#include "CUI_BossHp.h"
 
 class CUI_DungeonLootPanel;
 
@@ -587,7 +588,7 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
     ///////////////////////////////////////////////////////////////////////////////
 
     // 보스 생성
-    CGameObject* m_Boss = CEligos::Create(m_GraphicDev);
+    m_Boss = CEligos::Create(m_GraphicDev);
     NULL_CHECK_RETURN_MSG(m_Boss, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase2::Create() returned null")
 
     FAILED_CHECK_MSG(
@@ -713,6 +714,7 @@ HRESULT CStage_Dungeon::Ready_UI_Layer(LAYERTYPE layerType)
     dungeonLootPanel->Initialize_GameObject();
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, dungeonLootPanel),
                      L"CStage_Dungeon::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUI_DungeonLootPanel) failed");
+
 
     m_Layers.insert({ layerType, layer });
 

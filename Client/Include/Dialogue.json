@@ -156,6 +156,101 @@
           "hasChoices": false
         }
       ]
+    },
+    {
+      "dialogueId": "Heket_Start",
+      "speaker": "",
+      "lines": [
+        {
+          "lineIndex": 0,
+          "speaker": "",
+          "text": "우리 앞에 저들의 마지막 종자가 있다. 다른 놈들은 이미 다 사냥하여 효수시켰지.",
+          "hasChoices": false,
+          "leftPadding": 20.0
+        }
+      ]
+    },
+    {
+      "dialogueId": "Kalla_Start",
+      "speaker": "",
+      "lines": [
+        {
+          "lineIndex": 0,
+          "speaker": "",
+          "text": "이 마지막 번제로, 이제 예언은 결코 달성할 수 없을 것이다.",
+          "hasChoices": false,
+          "leftPadding": 30.0
+        }
+      ]
+    },
+    {
+      "dialogueId": "Leshy_Start",
+      "speaker": "",
+      "lines": [
+        {
+          "lineIndex": 0,
+          "speaker": "",
+          "text": "아래에 묶여있는 저 이단자는 풀려날 수 없다.",
+          "hasChoices": false,
+          "leftPadding": 42.0
+        }
+      ]
+    },
+    {
+      "dialogueId": "Shamura_Start",
+      "speaker": "",
+      "lines": [
+        {
+          "lineIndex": 0,
+          "speaker": "",
+          "text": "그리고 옛 신앙은 보존되리라.",
+          "hasChoices": false,
+          "leftPadding": 98.0
+        }
+      ]
+    },
+    {
+      "dialogueId": "Boss_Prologue",
+      "speaker": "",
+      "lines": [
+        {
+          "lineIndex": 0,
+          "speaker": "",
+          "text": "가까이 오거라, 두려워 말라, 너는 이미 죽었건만, 내 아직 너를 필요로 함이라.",
+          "hasChoices": false,
+          "leftPadding": 20.0
+        },
+        {
+          "lineIndex": 1,
+          "speaker": "",
+          "text": "저 어리석은 주교들은 죽음으로 나와 너를 가를 수 있다고 생각하였다. 허나 이는 너를 내게 곧바로 보냄이라.",
+          "hasChoices": false
+        },
+        {
+          "lineIndex": 2,
+          "speaker": "",
+          "text": "내 너에게 생명을 주나니, 허나 거기에는 대가가 따름이라!",
+          "hasChoices": false
+        },
+        {
+          "lineIndex": 3,
+          "speaker": "",
+          "text": "내 바라는 것은 오직 하나, 나의 이름을 내세운 교단을 만드는 것 뿐이니라.",
+          "hasChoices": false
+        },
+        {
+          "lineIndex": 4,
+          "speaker": "",
+          "text": "어떻게 생각하느냐?",
+          "hasChoices": true,
+          "choice": {
+            "leftText": "예",
+            "leftNextId": "",
+            "rightText": "물론입니다.",
+            "rightNextId": ""
+          }
+        }
+      ]
     }
   ]
 }

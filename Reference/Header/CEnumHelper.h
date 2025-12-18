@@ -109,6 +109,8 @@ static const char* ToString(ACTORSTATE state)
 
     case ACTORSTATE::STATE_END:              return "StateEnd";
 
+    case ACTORSTATE::KNEEL:                  return "Kneel";
+    case ACTORSTATE::NPC_IDLE:               return "NPC_Idle";
     default:                                 return "UnknownState";
     }
 }

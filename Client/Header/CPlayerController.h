@@ -70,6 +70,8 @@ private:
 
     void Action_Decide(const _float& timeDelta);
     void Action_Refuse(const _float& timeDelta);
+    void Action_Kneel(const _float& timeDelta);
+    void Action_Kneel_Wake(const _float& timeDelta);
 
     void Action_WarpOut(const _float& timeDelta);
     void Action_WarpIn(const _float& timeDelta);

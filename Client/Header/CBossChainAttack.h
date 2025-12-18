@@ -64,6 +64,7 @@ private:
     virtual void Free();
 
     //
+    int m_SoundNum = (int)SOUNDTYPE::SOUND_BOSS1;
 
 };
 

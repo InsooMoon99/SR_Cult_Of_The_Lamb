@@ -44,8 +44,11 @@ protected:
 
     CMonsterController* m_Controller;
 
+    bool m_Sound = false;
+    bool m_Sound2 = false;
 private:
     // CBase을(를) 통해 상속됨
     //void Free() override;
+
 };
 

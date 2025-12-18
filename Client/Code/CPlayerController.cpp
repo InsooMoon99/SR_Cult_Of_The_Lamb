@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "CPlayerController.h"
+#include "CRcTex.h"
 #include "CUI_Dialogue.h"
 
 #include "CAnimator.h"
@@ -160,8 +161,8 @@ void CPlayerController::CheckStateTransition()
     if (curState == ACTORSTATE::DEAD ||
         curState == ACTORSTATE::PLAYER_DECIDE ||
         curState == ACTORSTATE::PLAYER_REFUSE ||
-        curState == ACTORSTATE::PLAYER_WARPOUT ||
-        curState == ACTORSTATE::PLAYER_WARPIN)
+        curState == ACTORSTATE::KNEEL ||
+        curState == ACTORSTATE::KNEEL_WAKE)
         return;
 
     // 피격 시 Hit 처리
@@ -461,6 +462,18 @@ void CPlayerController::Update_State(const _float& timeDelta)
     }
     break;
 
+    case ACTORSTATE::KNEEL:
+        {
+        Action_Kneel(timeDelta);
+        }
+        break;
+
+    case ACTORSTATE::KNEEL_WAKE:
+    {
+        Action_Kneel_Wake(timeDelta);
+    }
+    break;
+
     default:
     {
         MSG_BOX("CPlayerController: Invalid Player State");
@@ -477,7 +490,7 @@ void CPlayerController::Action_Idle(const _float& timeDelta)
 
 void CPlayerController::Action_Run(const _float& timeDelta)
 {
-#pragma region 플레이어 달리기 효과음. 0.2초마다 재생
+#pragma region 플레이어 달리기 효과음. 달릴 때는 0.2초, 걸을 때는 0.6 초마다 재생
     g_Timers[TIMER_SOUND_PL_FOOTSTEP] -= timeDelta;
 
     if (g_Timers[TIMER_SOUND_PL_FOOTSTEP] < 0.f)
@@ -624,6 +637,53 @@ void CPlayerController::Action_WarpIn(const _float& timeDelta)
         m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
 
     NULL_CHECK(animator);
+
+    if (animator->Is_AnimationFinished())
+        m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+}
+
+
+void CPlayerController::Action_Kneel(const _float& timeDelta)
+{
+    auto animator = dynamic_cast<CAnimator*>(
+        m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+
+    NULL_CHECK(animator);
+
+    wstring curKey = animator->Get_CurKey();
+
+    auto rcTex = dynamic_cast<CRcTex*>(
+        m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::RC_TEX));
+
+    if (rcTex)
+        rcTex->Set_FlipX(true);
+
+    if (curKey == L"Prologue_Kneel_Start")
+    {
+        if (animator->Is_AnimationFinished())
+            animator->Play_Animation(L"Prologue_Kneel_Loop", ANIMSTATE::LOOP);
+    }
+    
+    else if (curKey == L"Prologue_Kneel_Loop")
+    {
+        // 외부에서 Wake 호출 대기
+    }
+    
+    else
+    {
+        animator->Play_Animation(L"Prologue_Kneel_Start", ANIMSTATE::ONCE);
+    }
+}
+
+void CPlayerController::Action_Kneel_Wake(const _float& timeDelta)
+{
+    auto animator = dynamic_cast<CAnimator*>(
+        m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+
+    NULL_CHECK(animator);
+
+    if (animator->Get_CurKey() != L"Prologue_Kneel_Wake")
+        animator->Play_Animation(L"Prologue_Kneel_Wake", ANIMSTATE::ONCE);
 
     if (animator->Is_AnimationFinished())
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
