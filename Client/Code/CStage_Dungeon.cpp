@@ -378,7 +378,7 @@ void CStage_Dungeon::Create_RoomTriggers()
 {
     // START -> MONSTER1
     Create_BiDirectional_Trigger(
-        Room::START, _vec3(22.7f, 1.f, 8.8f),       // 1
+        Room::START, _vec3(24.7f, 1.f, 8.8f),       // 1
         Room::MONSTER1, _vec3(0.f, 1.f, 11.8f),     // 2
         _vec3(5.f, 5.f, 4.5f));
 
@@ -849,8 +849,8 @@ void CStage_Dungeon::Fade_Check(const _float timeDelta)
         m_CurrentRoom = m_NextRoom;
 
         auto key = make_pair(m_FromRoom, m_NextRoom);
-
         _vec3 spawnPos;
+
         if (m_SpawnPositions.count(key) > 0)
             spawnPos = m_SpawnPositions[key];
 
@@ -894,22 +894,23 @@ void CStage_Dungeon::Connect_Rooms()
 
 void CStage_Dungeon::Set_SpawnPos()
 {
-    m_SpawnPositions[{Room::START, Room::MONSTER1}] = { 102.f, 1.f, 11.8f };    
-    m_SpawnPositions[{Room::MONSTER1, Room::START}] = { 20.f, 1.f, 8.8f };
+    m_SpawnPositions[{Room::START, Room::MONSTER1}] = { 105.f, 1.f, 11.851f };    
+    m_SpawnPositions[{Room::MONSTER1, Room::START}] = { 20.01f, 1.f, 8.507f };
 
-    m_SpawnPositions[{Room::MONSTER1, Room::MONSTER2}] = { 203.f, 1.f, 11.9f };
-    m_SpawnPositions[{Room::MONSTER2, Room::MONSTER1}] = { 132.f, 1.f, 11.3f };
+    m_SpawnPositions[{Room::MONSTER1, Room::MONSTER2}] = { 206.f, 1.f, 11.9f };
+    m_SpawnPositions[{Room::MONSTER2, Room::MONSTER1}] = { 129.9f, 1.f, 11.3f };
 
-    m_SpawnPositions[{Room::MONSTER2, Room::MONSTER3}] = { 212.1f, 1.f, 102.f };
-    m_SpawnPositions[{Room::MONSTER3, Room::MONSTER2}] = { 217.f, 1.f, 21.f };
+    m_SpawnPositions[{Room::MONSTER2, Room::MONSTER3}] = { 213.1f, 1.f, 103.79f };
+    m_SpawnPositions[{Room::MONSTER3, Room::MONSTER2}] = { 217.f, 1.f, 19.2f };
 
-    m_SpawnPositions[{Room::MONSTER3, Room::TARO}] = { 302.f, 1.f, 125.f };
-    m_SpawnPositions[{Room::TARO, Room::MONSTER3}] = { 230.f, 1.f, 111.f };
+    m_SpawnPositions[{Room::MONSTER3, Room::TARO}] = { 305.f, 1.f, 124.f };
+    m_SpawnPositions[{Room::TARO, Room::MONSTER3}] = { 228.f, 1.f, 111.f };
 
     m_SpawnPositions[{Room::MONSTER3, Room::MONSTER4}] = { 202.5f, 1.f, 203.f };
-    m_SpawnPositions[{Room::MONSTER4, Room::MONSTER3}] = { 213.f, 1.f, 119.f };
+    m_SpawnPositions[{Room::MONSTER4, Room::MONSTER3}] = { 213.f, 1.f, 117.3f };
 
     m_SpawnPositions[{Room::MONSTER4, Room::MONSTER5}] = { 212.f, 1.f, 302.f };
-    m_SpawnPositions[{Room::MONSTER5, Room::MONSTER4}] = { 222.f, 1.f, 226.f };
+    m_SpawnPositions[{Room::MONSTER5, Room::MONSTER4}] = { 222.f, 1.f, 224.f };
+
     m_SpawnPositions[{Room::MONSTER5, Room::BOSS}] = { 304.f, 1.f, 310.7f };
 }

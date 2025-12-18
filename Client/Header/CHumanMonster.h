@@ -65,7 +65,7 @@ private:
     CRigidbody*     m_RigidbodyCom;
     _bool           m_AttackSpawned;
 
-    bool            m_BattleEnabled = false;
+    bool            m_BattleEnabled = true;
 
     CUI_MonsterHp*  m_HpBar;
     _bool           m_IsPraying = false;

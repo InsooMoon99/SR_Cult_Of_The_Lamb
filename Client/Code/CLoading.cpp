@@ -192,6 +192,10 @@ _uint CLoading::Loading_ForState_Parallel()
     futures.push_back(async(launch::async, [&]() {
         return resourceMgr->Ready_MiniBoss(m_GraphicDev);
         }));
+
+    futures.push_back(async(launch::async, [&]() {
+        return resourceMgr->Ready_Prologue(m_GraphicDev);
+        }));
     //futures.push_back(async(launch::async, [&]() {
     //    return resourceMgr->Ready_BossP1(m_GraphicDev);
     //    }));
