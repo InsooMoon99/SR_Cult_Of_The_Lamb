@@ -32,6 +32,7 @@
 #include "CPlayerController.h"
 #include "CWeaponEquip.h"
 #include "CUI_Text.h"
+#include "CSoundMgr.h"
 
 CStage_Boss1::CStage_Boss1(DEVICE graphicDev)
     : Engine::CScene(graphicDev), m_Terrain(nullptr), m_Boss(nullptr), m_Player(nullptr), m_Dialogue(nullptr),
@@ -77,6 +78,8 @@ void CStage_Boss1::Initialize_Scene()
     Setup_BossCallbacks();
     Setup_PlayerCallbacks();
 
+    CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Prologue.wav", 0.3f, true, 1.f);
+   
     m_BossEnterUI = CUI_Text::Create(m_GraphicDev);
     m_BossEnterUI->Set_Font(L"NanumSquare_Max");
     m_BossEnterUI->Set_Text(L"기다리는 자");
