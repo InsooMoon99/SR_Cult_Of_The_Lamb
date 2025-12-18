@@ -8,6 +8,7 @@
 #include "CTimerMgr.h"
 #include "CTransform.h"
 
+
 CAttackBase::CAttackBase(DEVICE graphicDev)
     : CGameObject(graphicDev),
       m_TransformCom(nullptr),

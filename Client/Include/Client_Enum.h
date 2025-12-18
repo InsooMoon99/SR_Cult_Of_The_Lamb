@@ -41,6 +41,7 @@ enum TIMER
 
     TIMER_SOUND_FOL_FLY,
     TIMER_SOUND_BS,
+    TIMER_SOUND_BS_Bullet,
 
     TIMER_END
 };
