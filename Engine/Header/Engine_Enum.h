@@ -78,6 +78,7 @@ enum class COLLISION_LAYERTYPE
     ATTACK,
     TRIGGER,
     INTERACTIVEOBJ,
+    FLY,
 
     WORKBENCH,          // COLLISION : 제작대
     KITCHEN,            // COLLISION : 요리

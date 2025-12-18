@@ -9,6 +9,7 @@
 #include "CAttackBuilder.h"
 #include "CProjectile.h"
 #include "CTrailEff.h"
+#include "CPlayer.h"
 #include "CSoundMgr.h"
 
 
@@ -73,7 +74,7 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
     // 업데이트 입장시
     if (m_flag == false)
     {
-      //  CSoundMgr::GetInstance()->Play_Once(L".wav", SOUNDTYPE::SOUND_BOSS1, 0.7f
+        CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Bomb_Shoot3.wav", SOUNDTYPE::SOUND_BOSS1, 0.7f);
 
 
         m_TrailEff->Initialize_Component();
@@ -111,11 +112,15 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
         //    this->Mark_As_PendingKill();});
 
         ATBox->Set_OnDestroyCallback([bullet = this]() { bullet->Mark_As_PendingKill();
-    
-          //  CSoundMgr::GetInstance()->Play_Once(L".wav", SOUNDTYPE::SOUND_BOSS1, 0.7f);
-
             });
+        ATBox->Set_OnHitCallback(
+            [](CGameObject* hitObj)
+            {
+                if(dynamic_cast<CPlayer*>(hitObj))
+                    CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Bomb_End.wav", SOUNDTYPE::SOUND_BOSS3, 0.6f);
 
+            }
+        );
         m_flag = true;
     }
 
@@ -213,6 +218,9 @@ void CBossBullet::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CGameObject::OnBeginOverlap(self, other);
 
+
+    if(dynamic_cast<CPlayer*>(other->Get_Owner()))
+        CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Bomb_End.wav", SOUNDTYPE::SOUND_BOSS3, 0.6f);
 
     //ATBox->Mark_As_PendingKill();
 

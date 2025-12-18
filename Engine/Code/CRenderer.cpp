@@ -169,13 +169,24 @@ void CRenderer::Render_UI(DEVICE& graphicDev)
     graphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
     graphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
+
+    {
+        graphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+        graphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+        graphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+
+        graphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+        graphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+        graphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+    }
+
     for (auto& obj : m_RenderGroup[RENDER_UI])
     {
         obj->Render_GameObject();
     }
 
     // 상태 복구
-    graphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
+    //graphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
 
     graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
     graphicDev->SetRenderState(D3DRS_ZENABLE, TRUE);
