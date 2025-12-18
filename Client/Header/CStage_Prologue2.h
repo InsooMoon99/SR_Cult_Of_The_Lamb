@@ -47,6 +47,9 @@ private:
 
     void    Start_Dialogue();
 
+private:
+    void    Rebirth_End();
+
 public:
     static CStage_Prologue2* Create(DEVICE graphicDev);
 

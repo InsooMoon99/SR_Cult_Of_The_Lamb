@@ -64,14 +64,21 @@ void CStage_Prologue2::Initialize_Scene()
     auto playerAnimator = dynamic_cast<CAnimator*>(
         m_Player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
 
+    auto playerState = dynamic_cast<CState*>(
+        m_Player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
+
     if (playerAnimator)
         playerAnimator->Play_Animation(L"Prologue_Rebirth", ANIMSTATE::ONCE);
 
-    m_IsRebirthPlaying = true;  // 플래그
+    if (playerState)
+        playerState->Change_State(ACTORSTATE::PLAYER_REBIRTH);
+
+    m_IsRebirthPlaying = true;  
 
     m_PlayerRigid->Set_VelocityLimit(_vec3(10.f, 100.f, 10.f));
 
-    // Hp Bar 생성
+    // Hp Bar 생성 -> 얘네는 에디터에서 생성을 안하고, 처음에 배치를 해주는 애들이기 때문에
+    // 체력 UI를 새로 생성해주어야만 한다.
     auto uiLayer = m_Layers[LAYERTYPE::UI];
     for (auto monster : m_Monsters)
     {
@@ -91,53 +98,7 @@ _int CStage_Prologue2::Update_Scene(const _float& timeDelta)
 {
     _int exit = Engine::CScene::Update_Scene(timeDelta);
 
-    if (m_IsRebirthPlaying)
-    {
-        auto playerAnimator = dynamic_cast<CAnimator*>(
-            m_Player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
-
-        if (playerAnimator && playerAnimator->Is_AnimationFinished())
-        {
-            m_IsRebirthPlaying = false;
-
-            auto player = dynamic_cast<CPlayer*>(m_Player);
-            if (player)
-                player->Set_PrologueMode(false);
-
-            auto weaponEquip = dynamic_cast<CWeaponEquip*>(
-                m_Player->Get_Component(ID_STATIC, COMPONENTTYPE::WEAPON_EQUIP));
-
-            if (weaponEquip)
-            {
-                ItemInstance swordItem;
-                swordItem.itemId = 3001;
-
-                weaponEquip->Equip_Weapon(swordItem);
-            }
-
-            auto gameLayer = m_Layers[LAYERTYPE::GAMELOGIC];
-            if (gameLayer)
-            {
-                auto& objects = gameLayer->Get_Objects();
-                auto iter = objects.find(OBJTYPE::MONSTER);
-                if (iter != objects.end())
-                {
-                    for (auto monster : iter->second)
-                    {
-                        auto humanMonster = dynamic_cast<CHumanMonster*>(monster);
-                        if (humanMonster)
-                            humanMonster->Enable_Battle();
-                    }
-                }
-            }
-
-            auto state = dynamic_cast<CState*>(
-                m_Player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
-            if (state)
-                state->Change_State(ACTORSTATE::IDLE);
-            
-        }
-    }
+    Rebirth_End();
 
     return exit;
 }
@@ -349,6 +310,51 @@ void CStage_Prologue2::Start_Dialogue()
 {
     
 
+}
+
+void CStage_Prologue2::Rebirth_End()
+{
+    if (m_IsRebirthPlaying)
+    {
+        auto playerAnimator = dynamic_cast<CAnimator*>(
+            m_Player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+
+        if (playerAnimator && playerAnimator->Is_AnimationFinished())
+        {
+            m_IsRebirthPlaying = false;
+
+            auto player = dynamic_cast<CPlayer*>(m_Player);
+            if (player)
+                player->Set_PrologueMode(false);
+
+            auto weaponEquip = dynamic_cast<CWeaponEquip*>(
+                m_Player->Get_Component(ID_STATIC, COMPONENTTYPE::WEAPON_EQUIP));
+
+            if (weaponEquip)
+            {
+                ItemInstance swordItem;
+                swordItem.itemId = 3001;
+
+                weaponEquip->Equip_Weapon(swordItem);
+            }
+
+            auto gameLayer = m_Layers[LAYERTYPE::GAMELOGIC];
+            if (gameLayer)
+            {
+                auto& objects = gameLayer->Get_Objects();
+                auto iter = objects.find(OBJTYPE::MONSTER);
+                if (iter != objects.end())
+                {
+                    for (auto monster : iter->second)
+                    {
+                        auto humanMonster = dynamic_cast<CHumanMonster*>(monster);
+                        if (humanMonster)
+                            humanMonster->Enable_Battle();
+                    }
+                }
+            }
+        }
+    }
 }
 
 CStage_Prologue2* CStage_Prologue2::Create(DEVICE graphicDev)
