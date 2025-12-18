@@ -59,7 +59,7 @@ _int CKitchen::Update_GameObject(const _float& timeDelta)
             MSG_BOX("m_CookingMenu is nullptr!");
 
         if (CDInputMgr::GetInstance()->MouseDown(DIM_LB) ||
-            CDInputMgr::GetInstance()->KeyDown(DIK_E))
+            CDInputMgr::GetInstance()->KeyDown(DIK_E))  // TODO 안 켜지는 문제 있으면 이거 삭제하기
         {
             if (m_CookingCtrlCom && m_CookingCtrlCom->IsCooking())
                 return exit;
@@ -246,7 +246,7 @@ CKitchen* CKitchen::Create(DEVICE graphicDev)
 
     if (FAILED(kitchen->Ready_GameObject()))
     {
-        MSG_BOX("Temple Create Failed");
+        MSG_BOX("Kitchen Create Failed");
         Safe_Release(kitchen);
         return nullptr;
     }

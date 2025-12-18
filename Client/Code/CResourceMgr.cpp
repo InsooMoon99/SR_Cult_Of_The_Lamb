@@ -1505,6 +1505,10 @@ HRESULT CResourceMgr::Ready_Particle(DEVICE graphicDev)
         return E_FAIL;
 
     // 몬스터 맞았을 때
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_MONSTER_HIT_PARTICLE,
+        CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Particle/Enemy/Enemy_Particle%d.png", 4))))
+        return E_FAIL;
+
 
     return S_OK;
 }

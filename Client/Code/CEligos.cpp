@@ -15,8 +15,6 @@
 #include "CEligos_StateMachine.h"
 #include "CWall.h"
 
-
-
 CEligos::CEligos(DEVICE graphicDev) : CMonsterBase(graphicDev), m_StateMachine(nullptr)
 {
 }

@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "CLoading.h"
 #include <chrono>
 #include <future>
@@ -197,8 +197,7 @@ _uint CLoading::Loading_ForState_Parallel()
     //    return resourceMgr->Ready_BossP1(m_GraphicDev);
     //    }));
 
-
-    // 병렬 태스크 완료 대기
+    // 병렬 태스크 완료 대기AW
     for (size_t i = 0; i < futures.size(); ++i)
     {
         if (FAILED(futures[i].get()))

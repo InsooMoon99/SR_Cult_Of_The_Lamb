@@ -9,7 +9,7 @@ END
 class CUI_BossHp : public CUI
 {
 private:
-    explicit CUI_BossHp(DEVICE graphicDev, CCombatStat* combatStat);
+    explicit CUI_BossHp(DEVICE graphicDev, CCombatStat* combatStat, const wstring& bossName);
 
     // 특정 몬스터한테 1:1로 매칭될 거기 때문에 복사 생성자가 안필요할듯?
     explicit CUI_BossHp(const CUI_BossHp& rhs) = delete;
@@ -26,7 +26,7 @@ private:
     HRESULT Add_Component();
 
 public:
-    static CUI_BossHp* Create(DEVICE graphicDev, CCombatStat* combatStat);
+    static CUI_BossHp* Create(DEVICE graphicDev, CCombatStat* combatStat, const wstring& bossName = L"기다리는 자");
 
 protected:
     void Free() override;
@@ -41,6 +41,8 @@ private:
     _float          m_HpRatio;
     _float          m_HpDelayRatio;   
     _float          m_HpDelayLerpSpeed;
+
+    wstring         m_BossName;
 
 };
 
