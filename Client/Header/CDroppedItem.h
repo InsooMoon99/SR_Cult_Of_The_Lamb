@@ -84,4 +84,7 @@ private:
 
 private:
     void Free() override;
+
+private:
+    _bool  m_SoundEnded = false;
 };

@@ -214,6 +214,7 @@
     <ClInclude Include="..\Header\CExcutioner.h" />
     <ClInclude Include="..\Header\CFollowerElephant.h" />
     <ClInclude Include="..\Header\CFollowerPig.h" />
+    <ClInclude Include="..\Header\CInteractiveGrass.h" />
     <ClInclude Include="..\Header\CHeket.h" />
     <ClInclude Include="..\Header\CHumanMonster2.h" />
     <ClInclude Include="..\Header\CKallamar.h" />
@@ -238,6 +239,7 @@
     <ClInclude Include="..\Header\CNPCState_Pray.h" />
     <ClInclude Include="..\Header\CNPCState_PrayPeek.h" />
     <ClInclude Include="..\Header\CNPCState_Rescued.h" />
+    <ClInclude Include="..\Header\CNPCState_Talk.h" />
     <ClInclude Include="..\Header\CNPCState_WalkPast.h" />
     <ClInclude Include="..\Header\CFog.h" />
     <ClInclude Include="..\Header\CFogMgr.h" />
@@ -444,6 +446,7 @@
     <ClCompile Include="..\Code\CEtc.cpp" />
     <ClCompile Include="..\Code\CExcutioner.cpp" />
     <ClCompile Include="..\Code\CEyeball_CenterAttack.cpp" />
+    <ClCompile Include="..\Code\CInteractiveGrass.cpp" />
     <ClCompile Include="..\Code\CHeket.cpp" />
     <ClCompile Include="..\Code\CHumanMonster2.cpp" />
     <ClCompile Include="..\Code\CKallamar.cpp" />
@@ -459,6 +462,7 @@
     <ClCompile Include="..\Code\CNPCState_Pray.cpp" />
     <ClCompile Include="..\Code\CNPCState_PrayPeek.cpp" />
     <ClCompile Include="..\Code\CNPCState_Rescued.cpp" />
+    <ClCompile Include="..\Code\CNPCState_Talk.cpp" />
     <ClCompile Include="..\Code\CNPCState_WalkPast.cpp" />
     <ClCompile Include="..\Code\CFog.cpp" />
     <ClCompile Include="..\Code\CFogMgr.cpp" />

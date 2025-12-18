@@ -1,6 +1,5 @@
 ﻿#include "pch.h"
 #include "CConstructionPlacer.h"
-
 #include "CBuildingBase.h"
 #include "CConstructCircle.h"
 #include "CGameObject.h"
@@ -9,9 +8,11 @@
 #include "CManagement.h"
 #include "CPickingHelper.h"
 #include "CScene.h"
+#include "CSoundMgr.h"
 #include "CTemple.h"
 #include "CTransform.h"
 #include "CVillageStateMgr.h"
+#include "CSoundMgr.h"
 
 CConstructionPlacer::CConstructionPlacer(DEVICE graphicDev)
     : m_GraphicDev(graphicDev),
@@ -221,6 +222,10 @@ _bool CConstructionPlacer::Try_PlaceObject()
     CScene* curScene = CManagement::GetInstance()->Get_Scene();
     if (curScene)
     {
+        CSoundMgr::GetInstance()->Play_Once(L"Construction/Place_Building_Spot.wav",
+            SOUND_EFFECT,
+            1.f);
+
         // Construction Site는 GAMELOGIC 레이어
         curScene->AddObjectOnLayer(LAYERTYPE::GAMELOGIC, site, OBJTYPE::CONSTRUCTION_SITE);
 
@@ -238,7 +243,9 @@ _bool CConstructionPlacer::Try_PlaceObject()
         return false;
     }
 
-    // TODO: 인벤토리 차감 등 후처리
+    CSoundMgr::GetInstance()->Play_Once(L"Construction/Place_Building_Spot.wav",
+                                        SOUND_EFFECT,
+                                        1.f);
 
     return true;
 }

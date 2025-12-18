@@ -49,6 +49,10 @@ protected:
     _bool           m_DestroyOnHit;
 
     function<void()> m_OnDestroyCallback;
+    function<void(CGameObject*)> m_OnHitCallback;
+
+public:
+    void Set_OnHitCallback(function<void(CGameObject*)> callback) { m_OnHitCallback = move(callback); }
 };
 
 END

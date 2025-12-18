@@ -388,6 +388,12 @@
     <Filter Include="05. UI\01. UI\16. UIInteractive">
       <UniqueIdentifier>{09a203e9-0c7d-4e4c-98f8-6ab7ca0bb20a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\12. Interactive Object">
+      <UniqueIdentifier>{2b5339d0-8214-432a-8734-67f3f6dc4a91}</UniqueIdentifier>
+        </Filter>
+    <Filter Include="03. GameObject\11. NPC\99. Class for FSM\01. State\12. Talk">
+      <UniqueIdentifier>{3c4721f7-65ea-4921-b702-4cf6bba5239a}</UniqueIdentifier>
+    </Filter>
     <Filter Include="03. GameObject\04. Boss\04. NPC">
       <UniqueIdentifier>{8ac96dba-a3fe-4b6e-a001-ddefd500da10}</UniqueIdentifier>
     </Filter>
@@ -1031,9 +1037,6 @@
     <ClInclude Include="..\Code\CBossSpawn.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\Header\CStage_Prologue_Boss.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="..\Header\CEtc.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -1052,6 +1055,9 @@
     <ClInclude Include="..\Header\CFollowerPig.h">
       <Filter>03. GameObject\11. NPC\02. Follower Pig</Filter>
     </ClInclude>
+    <ClInclude Include="..\Header\CInteractiveGrass.h">
+      <Filter>헤더 파일</Filter>
+          </ClInclude>
     <ClInclude Include="..\Header\CFloaterMonster.h">
       <Filter>03. GameObject\02. Monster\03. Floater</Filter>
     </ClInclude>
@@ -1066,6 +1072,12 @@
     </ClInclude>
     <ClInclude Include="..\Header\CStage_Prologue.h">
       <Filter>02. Scene\01. Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CStage_Prologue_Boss.h">
+      <Filter>02. Scene\01. Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CNPCState_Talk.h">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\12. Talk</Filter>
     </ClInclude>
     <ClInclude Include="..\Header\CExcutioner.h">
       <Filter>03. GameObject\02. Monster</Filter>
@@ -1675,9 +1687,6 @@
     <ClCompile Include="..\Header\CBossSpawn.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\Code\CStage_Prologue_Boss.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="..\Code\CEtc.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -1710,6 +1719,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\CStage_Prologue.cpp">
       <Filter>02. Scene\01. Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CStage_Prologue_Boss.cpp">
+      <Filter>02. Scene\01. Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CNPCState_Talk.cpp">
+      <Filter>03. GameObject\11. NPC\99. Class for FSM\01. State\12. Talk</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\CExcutioner.cpp">
       <Filter>03. GameObject\02. Monster</Filter>

@@ -23,5 +23,5 @@ private:
     void Free() override;
 
 private:
-    _float m_Timer;                 // 자동 상태 넘기기 타이머
+    _float m_Timer; // 자동 상태 넘기기 타이머
 };

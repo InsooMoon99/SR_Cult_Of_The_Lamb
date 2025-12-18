@@ -1,6 +1,8 @@
 ﻿#include "pch.h"
 #include "CPlayerController.h"
 #include "CRcTex.h"
+#include "CUI_Dialogue.h"
+
 #include "CAnimator.h"
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
@@ -155,7 +157,7 @@ void CPlayerController::CheckStateTransition()
     ACTORSTATE curState = m_OwnerStateCom->Get_State();
     const auto inputMgr = CDInputMgr::GetInstance();
 
-    //!! 상태 변경 불가 조건 (사망, 결정, 거절)
+    //!! 상태 변경 불가 조건 (사망, 결정, 거절, 워프)
     if (curState == ACTORSTATE::DEAD ||
         curState == ACTORSTATE::PLAYER_DECIDE ||
         curState == ACTORSTATE::PLAYER_REFUSE ||
@@ -175,6 +177,9 @@ void CPlayerController::CheckStateTransition()
     // - 공격 상태여도 구르기로 이행 (캔슬)
     if (inputMgr->KeyDown(DIK_SPACE))
     {
+        if (CUI_Dialogue::IsGlobalActive())
+            return;
+
         if (curState != ACTORSTATE::PLAYER_ROLL)
         {
             // 공격 중이었다면 공격 취소
@@ -211,6 +216,10 @@ void CPlayerController::CheckStateTransition()
         // ImGui 클릭 시 무시
         ImGuiIO& io = ImGui::GetIO();
         if (io.WantCaptureMouse)
+            return;
+
+        // 대화 중이라면 좌클릭 동작 막기
+        if (CUI_Dialogue::IsGlobalActive())
             return;
 
         // 좌클릭으로 채집
@@ -316,7 +325,8 @@ void CPlayerController::CheckStateTransition()
     }
 
     // 이동 (방향 입력)
-    if (D3DXVec3LengthSq(&m_OwnerInputCom->Get_MoveDir()) > 0.001f)
+    if (!CUI_Dialogue::IsGlobalActive() &&
+        D3DXVec3LengthSq(&m_OwnerInputCom->Get_MoveDir()) > 0.001f)
     {
         if (curState != ACTORSTATE::RUN)
             m_OwnerStateCom->Change_State(ACTORSTATE::RUN);
@@ -426,6 +436,18 @@ void CPlayerController::Update_State(const _float& timeDelta)
     }
     break;
 
+    case ACTORSTATE::PLAYER_WARPOUT:
+    {
+        Action_WarpOut(timeDelta);
+    }
+    break;
+
+    case ACTORSTATE::PLAYER_WARPIN:
+    {
+        Action_WarpIn(timeDelta);
+    }
+    break;
+
     case ACTORSTATE::DEAD:
     {
         //MSG_BOX("CPlayerController: Player Dead!");
@@ -531,20 +553,20 @@ void CPlayerController::Action_SingleSkill(const _float& timeDelta)
 {
     if (!m_OwnerSkillCom->Update_SingleSkill(timeDelta))
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
-		m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir()*-1, 150.f);
+		m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir()*-1, 50.f);
 }
 
 void CPlayerController::Action_TripleSkill(const _float& timeDelta)
 {
     if (!m_OwnerSkillCom->Update_TripleSkill(timeDelta))
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
-	m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir() * -1, 150.f);
+	m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir() * -1, 50.f);
 }
 
 void CPlayerController::Action_Construction(const _float& timeDelta)
 {
     bool bStopConstruction = CDInputMgr::GetInstance()->KeyUp(DIK_E);
-                             //CDInputMgr::GetInstance()->MouseUp(DIM_LB);
+    //CDInputMgr::GetInstance()->MouseUp(DIM_LB);
 
     if (!bStopConstruction)
     {
@@ -576,8 +598,6 @@ void CPlayerController::Action_Decide(const _float& timeDelta)
     auto animator = dynamic_cast<CAnimator*>(
         m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
 
-    NULL_CHECK(animator);
-
     if (animator->Is_AnimationFinished())
         animator->Play_Animation(L"Decide_Loop", ANIMSTATE::LOOP);
 }
@@ -598,6 +618,30 @@ void CPlayerController::Action_Refuse(const _float& timeDelta)
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
     }
 }
+
+void CPlayerController::Action_WarpOut(const _float& timeDelta)
+{
+    auto animator = dynamic_cast<CAnimator*>(
+        m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+
+    NULL_CHECK(animator);
+
+    if (animator->Is_AnimationFinished())
+        m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+    //!! WarpOut 상태 이후 씬을 나가기 때문에 일단 Idle로
+}
+
+void CPlayerController::Action_WarpIn(const _float& timeDelta)
+{
+    auto animator = dynamic_cast<CAnimator*>(
+        m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+
+    NULL_CHECK(animator);
+
+    if (animator->Is_AnimationFinished())
+        m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+}
+
 
 void CPlayerController::Action_Kneel(const _float& timeDelta)
 {

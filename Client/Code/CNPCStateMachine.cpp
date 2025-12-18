@@ -15,6 +15,7 @@
 #include "CNPCState_Run.h"
 #include "CNPCState_Spawn.h"
 #include "CNPCState_WalkPast.h"
+#include "CNPCState_Talk.h"
 #include "CVillageStateMgr.h"
 
 CNPCStateMachine::CNPCStateMachine()
@@ -58,6 +59,9 @@ HRESULT CNPCStateMachine::Ready_StateMachine()
         return E_FAIL;
 
     if (FAILED(RegisterState<CNPCState_Rescued>(NPC_STATE::RESCUED, m_Owner)))
+        return E_FAIL;
+
+    if (FAILED(RegisterState<CNPCState_Talk>(NPC_STATE::TALK, m_Owner)))
         return E_FAIL;
 
     // 초기 상태

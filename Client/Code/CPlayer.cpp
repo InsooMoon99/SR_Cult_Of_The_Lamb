@@ -27,6 +27,7 @@
 #include "CUI_Interactive.h"
 #include "CLayer.h"
 #include "CBuildingBase.h"
+#include "CInteractiveGrass.h"
 
 CPlayer::CPlayer(DEVICE graphicDev)
     : CCharacterBase(graphicDev),
@@ -77,10 +78,9 @@ HRESULT CPlayer::Ready_GameObject()
     m_CombatStatCom->Set_OnDamagedEvent([&]()
     {
         CSoundMgr::GetInstance()->Play_Once(L"Player/Player_GetHit.wav",
-                                        SOUND_EFFECT,
-                                        0.5f);
+                                            SOUND_EFFECT,
+                                            0.5f);
     });
-
 
     m_TransformCom->Set_Pos(_vec3(20.f, 1.f, 15.f));
     m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
@@ -146,25 +146,25 @@ void CPlayer::OnStayOverlap(CCollider* self, CCollider* other)
 {
     CCharacterBase::OnStayOverlap(self, other);
 
-   CWorldInteractive* worldInteractiveObj = dynamic_cast<CWorldInteractive*>(other->Get_Owner());
-   CBuildingBase* building = dynamic_cast<CBuildingBase*>(other->Get_Owner());
-   CCharacterBase* character = dynamic_cast<CCharacterBase*>(other->Get_Owner());
-   
-   if ((worldInteractiveObj||building||character)&&m_OverlapBegin)
+    CWorldInteractive* worldInteractiveObj = dynamic_cast<CWorldInteractive*>(other->Get_Owner());
+    CBuildingBase*     building            = dynamic_cast<CBuildingBase*>(other->Get_Owner());
+    CCharacterBase*    character           = dynamic_cast<CCharacterBase*>(other->Get_Owner());
+   if (dynamic_cast<CInteractiveGrass*>(worldInteractiveObj))
    {
-       m_InteractiveUI->Set_TextureIndex(2);
-       m_InteractiveUI->Set_IsActive(true);
-       m_InteractiveUI->Get_Transform()->Set_Scale(110.f,35.f,1.f);
-
-   
-       if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
-       {
-           m_InteractiveUI->Set_IsActive(false);
-           m_OverlapBegin = false;
-       }
+       worldInteractiveObj = nullptr;
    }
-    
+    if ((worldInteractiveObj || building || character) && m_OverlapBegin)
+    {
+        m_InteractiveUI->Set_TextureIndex(2);
+        m_InteractiveUI->Set_IsActive(true);
+        m_InteractiveUI->Get_Transform()->Set_Scale(110.f, 35.f, 1.f);
 
+        if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
+        {
+            m_InteractiveUI->Set_IsActive(false);
+            m_OverlapBegin = false;
+        }
+    }
 }
 
 void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)
@@ -174,13 +174,14 @@ void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)
     m_PlayerGatherCom->OnEndOverlap(self, other);
     m_PlayerConstructionCom->OnOverlapExit(self, other);
     CWorldInteractive* worldInteractiveObj = dynamic_cast<CWorldInteractive*>(other->Get_Owner());
-    CBuildingBase* building = dynamic_cast<CBuildingBase*>(other->Get_Owner());
-    CCharacterBase* character = dynamic_cast<CCharacterBase*>(other->Get_Owner());
-    if (worldInteractiveObj|| building|| character)
+    if (dynamic_cast<CInteractiveGrass*>(worldInteractiveObj))
     {
+        worldInteractiveObj = nullptr;
+    }   
+    CBuildingBase*     building            = dynamic_cast<CBuildingBase*>(other->Get_Owner());
+    CCharacterBase*    character           = dynamic_cast<CCharacterBase*>(other->Get_Owner());
+    if (worldInteractiveObj || building || character)
         m_InteractiveUI->Set_IsActive(false);
-
-    }
 
     //cout << "Player HitOut" << endl;
 }
@@ -348,7 +349,8 @@ void CPlayer::Animation_Setting()
                                     41,
                                     0.02f,
                                     _vec2(2.2f, 1.5f),
-                                    _vec2(0.f, 0.3f));
+                                    _vec2(0.1f, 0.3f),
+                                    _vec2(-0.1f, 0.3f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_COMBO1,
                              L"PlayerGauntletCombo1",
@@ -358,7 +360,8 @@ void CPlayer::Animation_Setting()
                                     43,
                                     0.02f,
                                     _vec2(2.2f, 1.5f),
-                                    _vec2(0.f, 0.f));
+                                    _vec2(0.1f, 0.f),
+                                    _vec2(-0.1f, 0.f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_COMBO2,
                              L"PlayerGauntletCombo2",
@@ -368,7 +371,8 @@ void CPlayer::Animation_Setting()
                                     46,
                                     0.02f,
                                     _vec2(2.6f, 2.f),
-                                    _vec2(0.f, 0.45f));
+                                    _vec2(-1.f, 0.45f),
+                                    _vec2(1.f, 0.45f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_COMBO3,
                              L"PlayerGauntletCombo3",
@@ -485,6 +489,26 @@ void CPlayer::Animation_Setting()
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::HIT,
                              L"Player_Hit",
+                             ANIMSTATE::ONCE);
+
+    m_AnimatorCom->Create_Animation(L"Player_WarpOut",
+                                    48,
+                                    0.04f,
+                                    _vec2(0.8f, 1.6f),
+                                    _vec2(0.f, 0.8f));
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_WARPOUT,
+                             L"Player_WarpOut",
+                             ANIMSTATE::ONCE);
+
+    m_AnimatorCom->Create_Animation(L"Player_WarpIn",
+                                    51,
+                                    0.04f,
+                                    _vec2(0.8f, 1.6f),
+                                    _vec2(0.f, 0.8f));
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_WARPIN,
+                             L"Player_WarpIn",
                              ANIMSTATE::ONCE);
 
 #pragma endregion

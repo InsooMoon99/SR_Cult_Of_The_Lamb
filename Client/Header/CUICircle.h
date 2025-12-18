@@ -27,6 +27,7 @@ public:
 private:
     static int         m_nextID;
     CCombatStat* m_CombatStatCom;
+    //CUIIcon*         m_StarImage;
 
 protected:
     void Free() override;

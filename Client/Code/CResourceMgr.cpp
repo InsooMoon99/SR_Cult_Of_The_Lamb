@@ -404,10 +404,22 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         L"../Bin/Resource/Texture/Player/Knockback_Shot/Lamb-knockback%d.png", 34)))
         return E_FAIL;
 
+    // Warp Out
+    if (FAILED(playerTex->Add_Texture(L"Player_WarpOut", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Warp/Warp_Out/Lamb-warp-out-down%d.png", 48)))
+        return E_FAIL;
+
+    // Warp In
+    if (FAILED(playerTex->Add_Texture(L"Player_WarpIn", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Warp/Warp_In/Lamb-warp-in-up%d.png", 51)))
+        return E_FAIL;
+
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
         return E_FAIL;
 
-#pragma region --- Tex: Final
+    //TODO 포탈 타고 들어가는 애니메이션, 포탈에서 나오는 애니메이션 등록 및 상태 추가하기!
+
+#pragma region --- Tex: Final : 현재 TEX_PLAYER에 등록 안해놓았던데 ---
     if (FAILED(playerTex->Add_Texture(L"Decide_Start", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Final/Decide_Start/Decide_Start%d.png", 41)))
         return E_FAIL;
@@ -990,7 +1002,6 @@ HRESULT CResourceMgr::Ready_BossP2_Follower(DEVICE graphicDev)
     //    L"../Bin/Resource/Texture/NPC/Follower/Pig2/Finalboss_Freed/Follower-finalboss-freed%d.png", 102)))
     //    return E_FAIL;
 
-
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_SLAVE_TEST, slaveTex)))
         return E_FAIL;
 }
@@ -1014,7 +1025,7 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     //circleTex
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_CIRCLE,
         Engine::CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Circle_Red.png", 1))))
+            L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Circle_Red%d.png", 2))))
         return E_FAIL;
 
     //circleTex
@@ -1281,6 +1292,15 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
             TEX_NORMAL,
             L"../Bin/Resource/Texture/UI/FollowerCommand/BackGround0.png",
             1))))
+        return E_FAIL;
+
+    //// Texture : InteractiveObj
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_INTERACTIVEOBJ,
+        Engine::CTexture::Create(
+            graphicDev,
+            TEX_NORMAL,
+            L"../Bin/Resource/Texture/InteractiveObj/InteractiveGrass%d.png",
+            2))))
         return E_FAIL;
 
     return S_OK;

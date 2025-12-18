@@ -2,6 +2,7 @@
 #include "CPlayerAttack.h"
 
 #include "CAttackBuilder.h"
+#include "CCameraMovement.h"
 #include "CCombatStat.h"
 #include "CGameObject.h"
 #include "CPlayerInput.h"
@@ -388,7 +389,7 @@ _bool CPlayerAttack::Update_NormalAttack(const _float& timeDelta)
 
         // 마우스 방향으로 도약
         if (weaponIdx == 1 && m_ComboIndex == 3)
-            m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir(), 600.f);
+            m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir(), 700.f);
         else
             m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir(), 450.f);
 
@@ -535,6 +536,8 @@ void CPlayerAttack::Create_AttackObj(const AttackInfo& attackInfo, const _vec3& 
                   attackInfo.particle.scale,
                   attackInfo.particle.offset)
         .HitStop(attackInfo.hitStopDuration, attackInfo.hitStopScale)
+        // 적중 시 강한 셰이킹 콜백 등록
+        .OnHit(bind(&CPlayerAttack::CamShake_ByHit, this, placeholders::_1))
         // 모든 설정을 마치고 생성
         .Spawn();
 
@@ -552,6 +555,7 @@ void CPlayerAttack::Create_AttackObj(const AttackInfo& attackInfo, const _vec3& 
 
     // 공격 사운드를 히트박스의 생성과 동시에 재생
     Play_AttackSound();
+    CamShake_BySwing();
 }
 
 void CPlayerAttack::Play_AttackSound()
@@ -571,6 +575,34 @@ void CPlayerAttack::Play_AttackSound()
             1.f);
         break;
     }
+}
+
+void CPlayerAttack::CamShake_BySwing()
+{
+    auto camMovement = dynamic_cast<CCameraMovement*>(
+        CManagement::GetInstance()->Get_Component(
+            ID_STATIC,
+            LAYERTYPE::GAMELOGIC,
+            OBJTYPE::CAMERA,
+            COMPONENTTYPE::CAM_MOVEMENT));
+
+    NULL_CHECK(camMovement);
+
+    camMovement->Start_CamShake(0.1f, 0.6f, 50.f, 25.f);
+}
+
+void CPlayerAttack::CamShake_ByHit(CGameObject* hitTarget)
+{
+    auto camMovement = dynamic_cast<CCameraMovement*>(
+        CManagement::GetInstance()->Get_Component(
+            ID_STATIC,
+            LAYERTYPE::GAMELOGIC,
+            OBJTYPE::CAMERA,
+            COMPONENTTYPE::CAM_MOVEMENT));
+
+    NULL_CHECK(camMovement);
+
+    camMovement->Start_CamShake(0.18f, 0.6f, 50.f, 25.f);
 }
 
 CPlayerAttack* CPlayerAttack::Create(DEVICE graphicDev)
