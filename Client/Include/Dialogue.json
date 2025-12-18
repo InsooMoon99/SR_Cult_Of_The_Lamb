@@ -9,7 +9,8 @@
           "speaker": "기다리는 자",
           "text": "드디어... 내가 자유로워진다!",
           "hasChoices": false,
-          "leftPadding": 150.0
+          "leftPadding": 150.0,
+          "voicePath": "Boss/Dialogue/DeathCat/Deathcat7.wav"
         },
         {
           "lineIndex": 1,
@@ -166,7 +167,8 @@
           "speaker": "",
           "text": "우리 앞에 저들의 마지막 종자가 있다. 다른 놈들은 이미 다 사냥하여 효수시켰지.",
           "hasChoices": false,
-          "leftPadding": 20.0
+          "leftPadding": 20.0,
+          "voicePath": "Boss/Dialogue/DeathCat/Deathcat7.wav"
         }
       ]
     },
@@ -179,7 +181,8 @@
           "speaker": "",
           "text": "이 마지막 번제로, 이제 예언은 결코 달성할 수 없을 것이다.",
           "hasChoices": false,
-          "leftPadding": 30.0
+          "leftPadding": 30.0,
+          "voicePath": "Boss/Dialogue/DeathCat/Deathcat7.wav"
         }
       ]
     },
@@ -192,7 +195,8 @@
           "speaker": "",
           "text": "아래에 묶여있는 저 이단자는 풀려날 수 없다.",
           "hasChoices": false,
-          "leftPadding": 42.0
+          "leftPadding": 42.0,
+          "voicePath": "Boss/Dialogue/DeathCat/Deathcat7.wav"
         }
       ]
     },
@@ -205,7 +209,8 @@
           "speaker": "",
           "text": "그리고 옛 신앙은 보존되리라.",
           "hasChoices": false,
-          "leftPadding": 98.0
+          "leftPadding": 98.0,
+          "voicePath": "Boss/Dialogue/DeathCat/Deathcat7.wav"
         }
       ]
     },

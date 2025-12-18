@@ -112,7 +112,7 @@ void CUI_BossHp::Render_GameObject()
     const _matrix& world = m_TransformCom->Get_World();
 
     const _float HALF_WIDTH = 200.f;
-    const _float HALF_HEIGHT = 15.f;
+    const _float HALF_HEIGHT = 75.f;
     
     // Hp 백그라운드
     m_BufferCom->Set_Scale(HALF_WIDTH + 4.f, HALF_HEIGHT);

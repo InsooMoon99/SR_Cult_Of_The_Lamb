@@ -52,6 +52,8 @@ public:
     void    Set_Active(_bool active) { m_IsActive = active; }
     _bool   Is_Active() { return m_IsActive; }
 
+    void    Activate_SpawnedObjects();
+
 private:
     HRESULT Add_Component() override;
     void    Set_Material() override;
@@ -61,6 +63,12 @@ public:
     static CTerrain* Create(DEVICE GraphicDev);
 
     void Clear_SpawnedObjects();
+
+    void Set_ChestSpawnPos(const _vec3& pos) { m_ChestSpawnPos = pos; }
+
+public:
+    void OnMonsterKilled();
+    void Spawn_Chest();
 
 protected:
     void Free() override;
@@ -85,5 +93,10 @@ private:
     vector<CGameObject*>        m_SpawnedWalls;
     vector<CGameObject*>        m_SpawnedMonsters;
     vector<CGameObject*>        m_SpawnedMonsterHpBars;
+
+    _int                        m_MonsterCount = 0;
+    _bool                       m_ChestSpawned = false;
+
+    _vec3 m_ChestSpawnPos = { 0.f, 0.f, 0.f };
 };
 
