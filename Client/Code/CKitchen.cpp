@@ -53,26 +53,20 @@ _int CKitchen::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CBuildingBase::Update_GameObject(timeDelta);
 
-    if (m_bPlayerOverlap == true && m_bHovering == true)
+    if (m_bPlayerOverlap == true && m_bHovering == true && m_CookingMenu)
     {
-        if (m_CookingMenu == nullptr)
-            MSG_BOX("m_CookingMenu is nullptr!");
-
         if (CDInputMgr::GetInstance()->MouseDown(DIM_LB) ||
-            CDInputMgr::GetInstance()->KeyDown(DIK_E))  // TODO 안 켜지는 문제 있으면 이거 삭제하기
+            CDInputMgr::GetInstance()->KeyDown(DIK_E))
         {
             if (m_CookingCtrlCom && m_CookingCtrlCom->IsCooking())
                 return exit;
 
-            if (m_CookingMenu)
-            {
-                CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Open_Menu.wav",
-                                                    SOUND_EFFECT,
-                                                    1.f);
-                m_CookingMenu->Set_IsActive(true);
-                m_CookingMenu->Set_CookingController(m_CookingCtrlCom);
-                m_CookingMenu->PlayOpenAnimation();
-            }
+            CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Open_Menu.wav",
+                                                SOUND_EFFECT,
+                                                1.f);
+            m_CookingMenu->Set_IsActive(true);
+            m_CookingMenu->Set_CookingController(m_CookingCtrlCom);
+            m_CookingMenu->PlayOpenAnimation();
 
             m_Active = true;
         }

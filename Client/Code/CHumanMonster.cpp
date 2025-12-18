@@ -40,7 +40,7 @@ HRESULT CHumanMonster::Ready_GameObject()
         return E_FAIL;
 
     m_TransformCom->Set_Pos(_vec3(5.f, 1.f, 7.f));
-    m_TransformCom->Set_Scale(_vec3(2.3f, 2.1f, 1.2f));
+    m_TransformCom->Set_Scale(_vec3(1.6f, 1.3f, 1.2f));
 
     m_CombatStatCom->Set_MaxHp(750.f);
     m_CombatStatCom->Set_Speed(65.f);

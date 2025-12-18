@@ -88,7 +88,8 @@ _int CNPCBase::Update_GameObject(const _float& timeDelta)
 
     if (m_bHovering == true)
     {
-        if (CDInputMgr::GetInstance()->MouseDown(DIM_LB))
+        if (CDInputMgr::GetInstance()->MouseDown(DIM_LB) ||
+            CDInputMgr::GetInstance()->KeyDown(DIK_E))
         {
             // 동적 바인딩: 현재 씬(CStage)에서 UI를 가져온다.
             auto stageScene = dynamic_cast<CStage*>(CManagement::GetInstance()->Get_Scene());

@@ -152,10 +152,8 @@ void CPlayer::OnStayOverlap(CCollider* self, CCollider* other)
     CBuildingBase*     building            = dynamic_cast<CBuildingBase*>(other->Get_Owner());
     CCharacterBase*    character           = dynamic_cast<CCharacterBase*>(other->Get_Owner());
 
-   if (dynamic_cast<CInteractiveGrass*>(worldInteractiveObj))
-   {
-       worldInteractiveObj = nullptr;
-   }
+    if (dynamic_cast<CInteractiveGrass*>(worldInteractiveObj))
+        worldInteractiveObj = nullptr;
     if ((worldInteractiveObj || building || character) && m_OverlapBegin)
     {
         m_InteractiveUI->Set_TextureIndex(2);
@@ -178,11 +176,9 @@ void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)
     m_PlayerConstructionCom->OnOverlapExit(self, other);
     CWorldInteractive* worldInteractiveObj = dynamic_cast<CWorldInteractive*>(other->Get_Owner());
     if (dynamic_cast<CInteractiveGrass*>(worldInteractiveObj))
-    {
         worldInteractiveObj = nullptr;
-    }   
-    CBuildingBase*     building            = dynamic_cast<CBuildingBase*>(other->Get_Owner());
-    CCharacterBase*    character           = dynamic_cast<CCharacterBase*>(other->Get_Owner());
+    CBuildingBase*  building  = dynamic_cast<CBuildingBase*>(other->Get_Owner());
+    CCharacterBase* character = dynamic_cast<CCharacterBase*>(other->Get_Owner());
     if (worldInteractiveObj || building || character)
         m_InteractiveUI->Set_IsActive(false);
 
@@ -195,7 +191,6 @@ void CPlayer::Render_Editor()
 
     ImGui::Text("=== Player ===");
 }
-
 
 HRESULT CPlayer::Add_Component()
 {
@@ -554,62 +549,81 @@ void CPlayer::Prologue_Animation_Setting()
 {
     // Idle
     m_AnimatorCom->Create_Animation(L"Prologue_Idle",
-        38, 0.02f,
-        _vec2(0.8f, 0.65f), _vec2(0.f, -0.1f));
+                                    38,
+                                    0.02f,
+                                    _vec2(0.8f, 0.65f),
+                                    _vec2(0.f, -0.1f));
 
     m_AnimatorCom->Create_Animation(L"Prologue_Idle_Up",
-        38, 0.02f,
-        _vec2(0.8f, 0.65f), _vec2(0.f, -0.1f));
+                                    38,
+                                    0.02f,
+                                    _vec2(0.8f, 0.65f),
+                                    _vec2(0.f, -0.1f));
 
     // Run
     m_AnimatorCom->Create_Animation(L"Prologue_Run_UP",
-        50, 0.02f,
-        _vec2(0.8f, 0.65f), _vec2(0.f, -0.1f));
+                                    50,
+                                    0.02f,
+                                    _vec2(0.72f, 0.65f),
+                                    _vec2(0.f, -0.1f));
 
     m_AnimatorCom->Create_Animation(L"Prologue_Run_DOWN",
-        50, 0.02f,
-        _vec2(0.75f, 0.65f), _vec2(0.f, -0.1f));
+                                    50,
+                                    0.02f,
+                                    _vec2(0.72f, 0.65f),
+                                    _vec2(0.f, -0.1f));
 
     m_AnimatorCom->Create_Animation(L"Prologue_Run_LDOWN",
-        50, 0.02f,
-        _vec2(0.75f, 0.65f), _vec2(0.f, -0.1f));
+                                    50,
+                                    0.02f,
+                                    _vec2(0.72f, 0.65f),
+                                    _vec2(0.f, -0.1f));
 
     m_AnimatorCom->Create_Animation(L"Prologue_Run_LEFT",
-        50, 0.02f,
-        _vec2(0.67f, 0.67f), _vec2(0.f, -0.1f));
+                                    50,
+                                    0.02f,
+                                    _vec2(0.57f, 0.72f),
+                                    _vec2(0.f, -0.08f));
 
     m_AnimatorCom->Create_Animation(L"Prologue_Run_LUP",
-        50, 0.02f,
-        _vec2(0.72f, 0.65f), _vec2(0.f, -0.1f));
+                                    50,
+                                    0.02f,
+                                    _vec2(0.67f, 0.67f),
+                                    _vec2(0.f, -0.1f));
 
     // Rebirth
-    //?? 아직 뭔지 모름
     m_AnimatorCom->Create_Animation(L"Prologue_Rebirth",
-        91, 0.04f,
-        _vec2(2.07f, 2.78f), _vec2(0.f, 1.31f));
+                                    91,
+                                    0.04f,
+                                    _vec2(2.07f, 2.78f),
+                                    _vec2(0.f, 1.31f));
 
     // Knnel
-    //!! 아직 스케일 불확실
     m_AnimatorCom->Create_Animation(L"Prologue_Kneel_Start",
-        56, 0.02f,
-        _vec2(0.8f, 0.7f), _vec2(0.f, 0.f));
+                                    56,
+                                    0.02f,
+                                    _vec2(0.92f, 0.68f),
+                                    _vec2(-0.07f, -0.08f));
 
-    //!! 아직 스케일 불확실
     m_AnimatorCom->Create_Animation(L"Prologue_Kneel_Wake",
-        75, 0.02f,
-        _vec2(0.9f, 0.8f), _vec2(0.f, 0.f));
+                                    75,
+                                    0.02f,
+                                    _vec2(0.78f, 0.68f),
+                                    _vec2(-0.08f, -0.1f));
 
-    //!! 아직 스케일 불확실
     m_AnimatorCom->Create_Animation(L"Prologue_Kneel_Loop",
-        34, 0.02f,
-        _vec2(65.f, 0.6f), _vec2(0.f, -0.1f));
+                                    34,
+                                    0.02f,
+                                    _vec2(65.f, 0.6f),
+                                    _vec2(-0.145f, -0.155f));
 
     // Dead
     //?? 아직 뭔지 모름
     m_AnimatorCom->Create_Animation(L"Prologue_Dead",
-        1, 0.02f,
-        _vec2(1.f, 1.f), _vec2(0.f, 0.f));
-
+                                    1,
+                                    0.02f,
+                                    _vec2(1.f, 1.f),
+                                    _vec2(0.f, 0.f));
 }
 
 void CPlayer::Set_PrologueMode(_bool prologue)
@@ -620,13 +634,10 @@ void CPlayer::Set_PrologueMode(_bool prologue)
     {
         m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"Prologue_Idle", ANIMSTATE::LOOP);
         m_StateCom->Set_AnimInfo(ACTORSTATE::RUN, L"Prologue_Run", ANIMSTATE::LOOP);
-
     }
 
     else
-    {
         Set_NormalMode();
-    }
 
     m_StateCom->Force_UpdateAnimation();
 }

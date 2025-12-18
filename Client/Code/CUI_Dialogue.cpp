@@ -159,10 +159,6 @@ void CUI_Dialogue::Render_GameObject()
 
 void CUI_Dialogue::Start_Dialogue(const string& dialogueId, const _vec2 boxPos, const _vec2& boxSize)
 {
-   //CSoundMgr::GetInstance()->Play_Once(L"UI/Conversation_Start.wav",
-   //    SOUND_EFFECT,
-   //    1.3f);
-
     m_BoxPos = boxPos;
     m_BoxSize = boxSize;
 
@@ -172,6 +168,16 @@ void CUI_Dialogue::Start_Dialogue(const string& dialogueId, const _vec2 boxPos, 
     m_CurrentDialogue = CDialogueDB::GetInstance()->GetDialogueById(dialogueId);
 
     NULL_CHECK(m_CurrentDialogue);
+
+    if (!m_CurrentDialogue->lines.empty())
+    {
+        const auto& line = m_CurrentDialogue->lines[0];
+        if (!line.voicePath.empty())
+        {
+            wstring path = CDialogueDB::GetInstance()->Utf8ToWstring(line.voicePath);
+            CSoundMgr::GetInstance()->Play_Once(path.c_str(), SOUND_EFFECT, 1.f);
+        }
+    }
 
     m_CurrentLineIndex = 0;
     m_IsActive = true;
@@ -237,6 +243,13 @@ void CUI_Dialogue::Next_Line()
     {
         End_Dialogue();
         return;
+    }
+
+    const auto& line = m_CurrentDialogue->lines[m_CurrentLineIndex];
+    if (!line.voicePath.empty())
+    {
+        wstring path = CDialogueDB::GetInstance()->Utf8ToWstring(line.voicePath);
+        CSoundMgr::GetInstance()->Play_Once(path.c_str(), SOUND_EFFECT, 1.f);
     }
 
 	m_TypeTimer = 0.f;              
