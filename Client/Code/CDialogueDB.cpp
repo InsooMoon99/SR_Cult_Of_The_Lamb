@@ -93,7 +93,7 @@ HRESULT CDialogueDB::LoadFromJson(const string& fileName)
             }
 
             line.leftPadding = lineNode.value("leftPadding", 0.f);
-
+            line.voicePath = lineNode.value("voicePath", "");
 
             dialogue.lines.push_back(line);
         }

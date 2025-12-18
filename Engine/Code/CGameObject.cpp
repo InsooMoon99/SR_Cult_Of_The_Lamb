@@ -53,6 +53,9 @@ void CGameObject::Initialize_GameObject()
 
 _int CGameObject::Update_GameObject(const _float& timeDelta)
 {
+    if (!m_IsActive)
+        return 0;
+
     for (auto& component : m_Components[ID_DYNAMIC])
     {
         component.second->Update_Component(timeDelta);

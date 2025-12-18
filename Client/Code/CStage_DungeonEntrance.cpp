@@ -52,8 +52,6 @@ void CStage_DungeonEntrance::Initialize_Scene()
     auto player = dynamic_cast<CPlayer*>(m_PlayerTransform->Get_Owner());
     NULL_CHECK(player);
 
-    player->Set_PrologueMode(true);
-
     Create_Trigger();
 }
 
@@ -71,18 +69,18 @@ void CStage_DungeonEntrance::LateUpdate_Scene(const _float& timeDelta)
 
 void CStage_DungeonEntrance::Render_Scene()
 {
-    if (ImGui::CollapsingHeader("Light Settings"))
-    {
-        bool changed = false;
-
-        changed |= ImGui::ColorEdit4("Diffuse", (_float*)&m_LightDiffuse);
-        changed |= ImGui::ColorEdit4("Ambient", (_float*)&m_LightAmbient);
-        changed |= ImGui::ColorEdit4("Specular", (_float*)&m_LightSpecular);
-        changed |= ImGui::DragFloat3("Direction", (_float*)&m_LightDir, 0.01f);
-
-        if (changed)
-            Ready_Light();
-    }
+    //if (ImGui::CollapsingHeader("Light Settings"))
+    //{
+    //    bool changed = false;
+    //
+    //    changed |= ImGui::ColorEdit4("Diffuse", (_float*)&m_LightDiffuse);
+    //    changed |= ImGui::ColorEdit4("Ambient", (_float*)&m_LightAmbient);
+    //    changed |= ImGui::ColorEdit4("Specular", (_float*)&m_LightSpecular);
+    //    changed |= ImGui::DragFloat3("Direction", (_float*)&m_LightDir, 0.01f);
+    //
+    //    if (changed)
+    //        Ready_Light();
+    //}
 
 }
 
@@ -135,15 +133,7 @@ HRESULT CStage_DungeonEntrance::Ready_GameLogic_Layer(LAYERTYPE layerType)
 
     NULL_CHECK_RETURN(m_PlayerTransform, E_FAIL);
 
-    m_PlayerTransform->Set_Pos(_vec3(15.f, 1.f, 0.f));
-
-
-    // Monster
-    gameObject = CHumanMonster::Create(m_GraphicDev);
-    layer->Add_GameObject(OBJTYPE::MONSTER, gameObject);
-
-    gameObject->Get_Transform()->Set_Pos(28.151f, 1.f, -2.208f);
-    dynamic_cast<CHumanMonster*>(gameObject)->Set_PrayMode(true);
+    m_PlayerTransform->Set_Pos(_vec3(28.391f, 1.f, -1.3f));
 
     // -----------------------------
     // Camera
@@ -206,32 +196,32 @@ HRESULT CStage_DungeonEntrance::Ready_Prototype()
 
 HRESULT CStage_DungeonEntrance::Ready_Light()
 {
-    D3DLIGHT9 lightInfo;
-    ZeroMemory(&lightInfo, sizeof(D3DLIGHT9));
+    //D3DLIGHT9 lightInfo;
+    //ZeroMemory(&lightInfo, sizeof(D3DLIGHT9));
 
-    lightInfo.Type = D3DLIGHT_DIRECTIONAL;
-    lightInfo.Direction = m_LightDir;
-    lightInfo.Diffuse = m_LightDiffuse;
-    lightInfo.Ambient = m_LightAmbient;
-    lightInfo.Specular = m_LightSpecular;
+    //lightInfo.Type = D3DLIGHT_DIRECTIONAL;
+    //lightInfo.Direction = m_LightDir;
+    //lightInfo.Diffuse = m_LightDiffuse;
+    //lightInfo.Ambient = m_LightAmbient;
+    //lightInfo.Specular = m_LightSpecular;
 
-    m_GraphicDev->SetLight(0, &lightInfo);
-    m_GraphicDev->LightEnable(0, TRUE);
+    //m_GraphicDev->SetLight(0, &lightInfo);
+    //m_GraphicDev->LightEnable(0, TRUE);
 
-    // 포인트 라이트
-    D3DLIGHT9 pointLight;
-    ZeroMemory(&pointLight, sizeof(D3DLIGHT9));
+    //// 포인트 라이트
+    //D3DLIGHT9 pointLight;
+    //ZeroMemory(&pointLight, sizeof(D3DLIGHT9));
 
-    pointLight.Type = D3DLIGHT_POINT;
-    pointLight.Position = D3DXVECTOR3(15.f, 3.f, 44.f);  // 트리거쪽
-    pointLight.Range = 8.f;
-    pointLight.Diffuse = D3DXCOLOR(1.f, 0.9f, 0.7f, 1.f);
-    pointLight.Attenuation0 = 1.f;
-    pointLight.Attenuation1 = 0.1f;
-    pointLight.Attenuation2 = 0.f;
+    //pointLight.Type = D3DLIGHT_POINT;
+    //pointLight.Position = D3DXVECTOR3(15.f, 3.f, 44.f);  // 트리거쪽
+    //pointLight.Range = 8.f;
+    //pointLight.Diffuse = D3DXCOLOR(1.f, 0.9f, 0.7f, 1.f);
+    //pointLight.Attenuation0 = 1.f;
+    //pointLight.Attenuation1 = 0.1f;
+    //pointLight.Attenuation2 = 0.f;
 
-    m_GraphicDev->SetLight(1, &pointLight);
-    m_GraphicDev->LightEnable(1, TRUE);
+    //m_GraphicDev->SetLight(1, &pointLight);
+    //m_GraphicDev->LightEnable(1, TRUE);
 
     return S_OK;
 }
@@ -250,7 +240,6 @@ void CStage_DungeonEntrance::Create_Trigger()
 
         trigger->Set_Callback([this]
             {
-                // 씬 전환. 던전용 하나, 보스방용 하나
                 CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_DUNGEON);
             });
 
@@ -267,7 +256,6 @@ void CStage_DungeonEntrance::Create_Trigger()
 
         trigger->Set_Callback([this]
             {
-                // 씬 전환. 던전용 하나, 보스방용 하나
                 CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS1);
             });
 
