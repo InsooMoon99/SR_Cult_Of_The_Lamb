@@ -33,7 +33,7 @@
 #include "CBuildingBase.h"
 #include "CInteractiveGrass.h"
 #include "CDroppedItem.h"
-
+#include "CNPCBase.h"
 CPlayer::CPlayer(DEVICE graphicDev)
     : CCharacterBase(graphicDev),
       m_RigidbodyCom(nullptr),
@@ -164,6 +164,11 @@ void CPlayer::OnStayOverlap(CCollider* self, CCollider* other)
             weapon = nullptr;
         }
     }
+    //if (dynamic_cast<CNPCBase*>(character))
+    //{
+    //    character = nullptr;
+    //}
+
    if (dynamic_cast<CInteractiveGrass*>(worldInteractiveObj))
    {
        worldInteractiveObj = nullptr;
@@ -215,7 +220,7 @@ void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)
     m_PlayerGatherCom->OnEndOverlap(self, other);
     m_PlayerConstructionCom->OnOverlapExit(self, other);
     //상호작용 키 끄기
-    //CWorldInteractive* worldInteractiveObj = dynamic_cast<CWorldInteractive*>(other->Get_Owner());
+    CWorldInteractive* worldInteractiveObj = dynamic_cast<CWorldInteractive*>(other->Get_Owner());
     //if (dynamic_cast<CInteractiveGrass*>(worldInteractiveObj))
     //{
     //    worldInteractiveObj = nullptr;

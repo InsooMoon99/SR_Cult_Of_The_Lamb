@@ -99,7 +99,8 @@ private:
     CUI_Dialogue*        m_Dialogue = nullptr;
     CGameObject*         m_Player = nullptr;
     CUI_Interactive* m_DescriptionUI = nullptr;
-    
+    CUI_Interactive* m_Description2UI = nullptr;
+
     CCameraController*   m_CamController = nullptr;
     _bool                m_IsRebirthPlaying = false;
 
