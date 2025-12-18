@@ -55,17 +55,20 @@ _int CKitchen::Update_GameObject(const _float& timeDelta)
 
     if (m_bPlayerOverlap == true && m_bHovering == true)
     {
-        if (CDInputMgr::GetInstance()->KeyDown(DIM_LB))
+        if (m_CookingMenu == nullptr)
+            MSG_BOX("m_CookingMenu is nullptr!");
+
+        if (CDInputMgr::GetInstance()->MouseDown(DIM_LB) ||
+            CDInputMgr::GetInstance()->KeyDown(DIK_E))
         {
             if (m_CookingCtrlCom && m_CookingCtrlCom->IsCooking())
                 return exit;
 
             if (m_CookingMenu)
             {
-        
-			CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Open_Menu.wav",
-				SOUND_EFFECT,
-				1.f);
+                CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Open_Menu.wav",
+                                                    SOUND_EFFECT,
+                                                    1.f);
                 m_CookingMenu->Set_IsActive(true);
                 m_CookingMenu->Set_CookingController(m_CookingCtrlCom);
                 m_CookingMenu->PlayOpenAnimation();
