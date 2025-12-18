@@ -217,6 +217,19 @@ enum class COMPONENTTYPE
 
     TEX_BAT_MONSTER,
     TEX_HUMAN_MONSTER2,
+    TEX_BURPER_MONSTER,
+
+    
+    ////////////////////
+    //  Prologue NPC  //
+    ////////////////////
+    TEX_LESHY,
+    TEX_HEKET,
+    TEX_KALLAMAR,
+    TEX_SHAMURA,
+
+    TEX_EXCUTIONER,
+    TEX_RATAU,
 
     ////////////////
     //  Particle  //
@@ -297,7 +310,8 @@ enum class ACTORSTATE
     PLAYER_BERRY,
     PLAYER_WEAPONGET,
     PLAYER_HAMMER,              // 플레이어 건축
-    //GATHERING,
+    PLAYER_WARPOUT,
+    PLAYER_WARPIN,
 
     // 보스 1페
     PLAYER_DECIDE,
@@ -330,11 +344,13 @@ enum class SCENETYPE
     SC_LOGO_BOSS1,
     SC_LOGO_BOSS2,
     SC_MAINMENU,
+    SC_PROLOGUE,
     SC_STAGE,
     SC_DUNGEON,
     SC_TAROT_TEST,
     SC_BOSS_STAGE1,
     SC_BOSS_STAGE2,
+    SC_BOSS_PROLOGUE,
 
     SC_EDIT,
 

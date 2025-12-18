@@ -51,7 +51,7 @@ HRESULT CMainMenu::Ready_Scene()
 
     // 메인 화면 BGM
     CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Intro.wav", 0.4f, true, 1.f);
-    CRenderer::GetInstance()->SetFog(true);
+    CRenderer::GetInstance()->SetFog(D3DCOLOR_XRGB(255, 240, 211), 5.f, 25.f);
 
     return S_OK;
 }
@@ -315,7 +315,7 @@ HRESULT CMainMenu::Ready_UI_Layer(LAYERTYPE layerType)
     //bt2->Set_TextureIndex(1, 0);
     bt2->SetCloneTexAspectScale({ scaleX, scaleY, 1 });
     bt2->Get_Transform()->Set_Pos(-WINCX / 3, -WINCX / 9, .3);
-    bt2->SetOnClick([]() { CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_BOSS_STAGE1); });
+    bt2->SetOnClick([]() { CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_PROLOGUE); });
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::UI, bt2),
         L"CMainMenu::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUIIcon) failed");
@@ -356,7 +356,7 @@ CMainMenu* CMainMenu::Create(DEVICE graphicDev)
 
 void CMainMenu::Free()
 {
-    CRenderer::GetInstance()->SetFog(false);
+    CRenderer::GetInstance()->OffFog();
 
     CSoundMgr::GetInstance()->Stop_SoundChannel(SOUND_BGM);
 

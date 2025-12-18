@@ -36,11 +36,18 @@ HRESULT CEligos_Flies::Ready_GameObject()
     m_TransformCom->Set_Pos(_vec3(5.f, 1.f, 7.f));
     m_TransformCom->Set_Scale(_vec3(0.5f, 0.5f, 0.5f));
 
-    m_CombatStatCom->Set_MaxHp(10.f);
-    m_CombatStatCom->Set_Speed(10.f);
-
     m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(45.f));
 
+
+    m_CombatStatCom->Set_MaxHp(1.f);
+    m_CombatStatCom->Set_Attack(1.f);
+    m_CombatStatCom->Set_Mp(5.f);
+    m_CombatStatCom->Set_Speed(5.f);
+    m_CombatStatCom->Set_HitState(false);
+
+
+    if (m_BoxColCom)
+        m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::BOSSPROJECTILE);
 
 
     return S_OK;
@@ -63,11 +70,11 @@ void CEligos_Flies::Initialize_GameObject()
     d.Radius = 0;
     d.OrbitCenter = { 0,1,0 };
     d.StartAngle = 0;
-    d.Speed = 10;
+    d.Speed = 1.5f;
     d.moveType = PROJ_TYPE::HOMING;
     d.ProjectileOwner = m_pOwner;
     d.Target = m_pTarget;
-    d.TurnSpeed = 3;
+    d.TurnSpeed = d.Speed * 2.f;;
 
     m_ProjectileCom->SetMoveDesc(d);
 }
@@ -78,10 +85,11 @@ _int CEligos_Flies::Update_GameObject(const _float& timeDelta)
 
 
     m_ProjectileCom->Update_Component(timeDelta);
-
-    if (m_CombatStatCom->Is_Dead() == true)
+    
+    if (m_CombatStatCom->Is_Dead() == true||m_flyDie==true)
     {
-        //죽었을떄 애니메이션
+        //죽었을떄 애니메이션 추가
+        //끝나면
         Mark_As_PendingKill();
     }
 
@@ -160,6 +168,32 @@ void CEligos_Flies::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CMonsterBase::OnBeginOverlap(self, other);
 
+    CPlayer* player = dynamic_cast<CPlayer*>(other->Get_Owner());
+    if (player)
+    {
+        CCombatStat* Player_combat = dynamic_cast<CCombatStat*>(player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
+        CTransform* Player_tans = dynamic_cast<CTransform*>(player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+        _vec3 tmp = Player_tans->Get_Pos() - m_TransformCom->Get_Pos();
+
+        _vec3 dir;
+            D3DXVec3Normalize(&dir, &tmp);
+
+        HITDATA hit;
+        hit.  dir = dir;              // 넉백 방향
+        hit. damage = m_CombatStatCom->Get_Attack();           // 데미지
+        hit. knockback=2.f;        // 넉백량
+        hit. knockbackTimer=0.5f;         // 넉백 유지 시간
+
+        hit. attacker = this;   // 때린 놈
+        hit. hitter = player;     // 맞은 놈
+
+
+        Player_combat->Apply_Damage(hit);
+
+        // 나 죽을 수 있게 
+        m_flyDie =true;
+    }
 }
 
 void CEligos_Flies::OnEndOverlap(CCollider* self, CCollider* other)

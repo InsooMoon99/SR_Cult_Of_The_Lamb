@@ -41,6 +41,11 @@ public:
     void    OnEndOverlap(CCollider* self, CCollider* other) override;
 
     void    Chase_Target(const float& timeDelta, _float speed) override;
+    void    Retreat_FromTarget(const _float& timeDelta, _float speed) override;
+
+public:
+    void    Set_PrayMode(_bool pray);
+    _bool   Is_PrayMode() const { return m_IsPraying; }
 
 private:
     void     Animation_Setting() override;
@@ -57,5 +62,6 @@ private:
     _bool           m_AttackSpawned;
 
     CUI_MonsterHp*  m_HpBar;
+    _bool           m_IsPraying = false;
 
 };

@@ -6,6 +6,9 @@ enum class SPAWN_OBJ_TYPE : _int
 {
     HUMAN_MONSTER = 0,
     FLOATER_MONSTER,
+    HUMAN_MONSTER2,
+    BAT_MONSTER,
+    RATAU,
 
     NPC_TARO,
     NPC_SLAVE,

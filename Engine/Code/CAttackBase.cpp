@@ -113,6 +113,9 @@ void CAttackBase::OnBeginOverlap(CCollider* self, CCollider* other)
 
     combat->Take_Damage(hit);
 
+    if (m_OnHitCallback)
+        m_OnHitCallback(hitter);
+
     // HitStop
     if (m_AttackData.hitStopDuration > 0.f)
     {

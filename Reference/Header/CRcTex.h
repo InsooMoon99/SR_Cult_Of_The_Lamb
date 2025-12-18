@@ -23,6 +23,8 @@ public:
 
     void    Set_FlipX(_bool flip);
 
+    _bool   Get_FlipX() { return m_FlipX; }
+
 private:
     void    Apply_VertexSize();
 

@@ -55,8 +55,7 @@ CStage_Dungeon::CStage_Dungeon(DEVICE graphicDev)
       m_NextRoom(Room::DUNGEON_END),
       m_CamMovement(nullptr),
       m_Timer(0),
-      m_TimerRunning(false),
-      m_DungeonCleared(false)
+      m_TimerRunning(false)
 { }
 
 CStage_Dungeon::~CStage_Dungeon()
@@ -110,14 +109,14 @@ void CStage_Dungeon::Initialize_Scene()
     {
         { 160.f, 1.f, 10.f },
         "../Bin/Resource/Data/Terrain/Terrain_TaroTest.map",
-        { 250.f, 0.f, 0.f }
+        { 200.f, 0.f, 0.f }
     };
 
     m_RoomData[static_cast<_int>(Room::BOSS)] =
     {
         { 210.f, 1.f, 10.f },
-        "../Bin/Resource/Data/Terrain/Terrain_BossTest.map",
-        { 200.f, 0.f, 0.f }
+        "../Bin/Resource/Data/Terrain/MiniBoss.map",
+        { 250.f, 0.f, 0.f }
     };
 
     m_CurrentRoom = Room::START;
@@ -151,6 +150,9 @@ void CStage_Dungeon::Initialize_Scene()
     CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Battle2.wav", 0.3f, true, 1.f);
 
     m_DungeonCleared = false;
+
+    // 테스트
+    //m_PlayerTransform->Set_Pos({ 250,1,10 });
 }
 
 _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
@@ -164,15 +166,13 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
 
         if (m_IsClearMenuOpened)
         {
-            m_TimerRunning = false;   
-            m_DungeonCleared = true;    
+            m_TimerRunning   = false;
+            m_DungeonCleared = true;
         }
         else
-        {
-            m_DungeonCleared = false; 
-        }
+            m_DungeonCleared = false;
     }
-   
+
     if (m_RequestChangeScene)
     {
         CSceneMgr::GetInstance()->Change_SceneMgr(m_NextSceneType);
@@ -186,7 +186,7 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
     // Fade
     Fade_Check(timeDelta);
 
-    cout << m_KillCount << endl;
+    // cout << m_KillCount << endl;
 
     return exit;
 }
@@ -276,7 +276,7 @@ void CStage_Dungeon::Spawn_FollowerCow_Rescue()
     if (cowTransform)
     {
         _vec3 spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
-       spawnPos += _vec3(6.f, 1.f, 8.f);
+        spawnPos += _vec3(6.f, 1.f, 8.f);
 
         cowTransform->Set_Pos(spawnPos);
     }
@@ -335,7 +335,6 @@ void CStage_Dungeon::Spawn_FollowerPig_Rescue()
     {
         _vec3 spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
         spawnPos += _vec3(10.f, 1.f, 8.f);
-
 
         pigTransform->Set_Pos(spawnPos);
     }
@@ -524,7 +523,7 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
             COMPONENTTYPE::COMBATSTAT));
 
     NULL_CHECK_RETURN(m_PlayerCombatStatCom, E_FAIL);
-
+    m_PlayerTransform->Set_Pos({ 200, 1, 10 });
     // 카메라 생성
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CMainCamera>(
@@ -550,7 +549,7 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
         CCamSetupBuilder(m_CamController)
             .SetTarget(m_PlayerTransform)
             //.PivotOffset({ 0.f, 0.f, 0.f })
-            //.Distance(12.f)
+            //.Distance(11.f)
             //.RotX(45.f)
             //.RotY(0.f)
             //.LagSpeed(10.f)
@@ -588,12 +587,16 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
     ///////////////////////////////////////////////////////////////////////////////
 
     // 보스 생성
-    //CGameObject* m_Boss = CEligos::Create(m_GraphicDev);
-    //NULL_CHECK_RETURN_MSG(m_Boss, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase2::Create() returned null")
-    //
-    //FAILED_CHECK_MSG(
-    //    layer->Add_GameObject(OBJTYPE::BOSS1, m_Boss),
-    //    L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Boss) failed");
+    CGameObject* m_Boss = CEligos::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(m_Boss, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CBossPhase2::Create() returned null")
+
+    FAILED_CHECK_MSG(
+        layer->Add_GameObject(OBJTYPE::BOSS1, m_Boss),
+        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(Boss) failed");
+
+    CTransform* m_BTransform = dynamic_cast<CTransform*>(
+        m_Boss->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+    m_BTransform->Set_Pos({ 280, 3, 10 });
 
     //상호작용 오브젝트
     CInteractiveGrass* grass = CInteractiveGrass::Create(m_GraphicDev);
@@ -605,7 +608,6 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
     grass->Check_WorldState();
 
     m_Layers.insert({ layerType, layer });
-
     return S_OK;
 }
 
@@ -710,7 +712,7 @@ HRESULT CStage_Dungeon::Ready_UI_Layer(LAYERTYPE layerType)
     dungeonLootPanel->Set_RunLootLog(&m_RunLootLog);
     dungeonLootPanel->Initialize_GameObject();
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, dungeonLootPanel),
-        L"CStage_Dungeon::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUI_DungeonLootPanel) failed");
+                     L"CStage_Dungeon::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUI_DungeonLootPanel) failed");
 
     m_Layers.insert({ layerType, layer });
 

@@ -26,21 +26,21 @@ public:
     // 무기 공격 정보 구조체
     struct AttackInfo
     {
-        ACTORSTATE  state;           // 해당 공격의 애니메이션 상태
+        ACTORSTATE state;           // 해당 공격의 애니메이션 상태
 
-        _float      duration;            // 공격 지속 시간
-        _float      hitboxStartTime;     // 히트박스가 켜지는 시간
-        _float      hitboxEndTime;       // 히트박스가 꺼지는 시간
-        _float      comboInputTime;      // 다음 콤보 선입력 허용 시작 시간
-        _float      damageMultiplier;    //TODO 공격력 배율. 나중에 아이템 정보와 연동하기
-        _float      knockbackPower;      // 넉백 힘
-        _float      knockbackTimer;      // 넉백 밀려나는 시간
-        _float      spawnOffset;         // 생성 거리 오프셋 (얼마나 앞에 생성되는지)
-        _vec3       hitboxScale;         // 공격 오브젝트 크기 (예: 1, 1, 1)
+        _float duration;            // 공격 지속 시간
+        _float hitboxStartTime;     // 히트박스가 켜지는 시간
+        _float hitboxEndTime;       // 히트박스가 꺼지는 시간
+        _float comboInputTime;      // 다음 콤보 선입력 허용 시작 시간
+        _float damageMultiplier;    //TODO 공격력 배율. 나중에 아이템 정보와 연동하기
+        _float knockbackPower;      // 넉백 힘
+        _float knockbackTimer;      // 넉백 밀려나는 시간
+        _float spawnOffset;         // 생성 거리 오프셋 (얼마나 앞에 생성되는지)
+        _vec3  hitboxScale;         // 공격 오브젝트 크기 (예: 1, 1, 1)
 
         PARTICLEDATA particle;
-        _float      hitStopDuration = 0.f;
-        _float      hitStopScale = 0.f;
+        _float       hitStopDuration = 0.f;
+        _float       hitStopScale    = 0.f;
     };
 
     // [AttackInfo 관리용] 무기 종류 enum
@@ -102,8 +102,8 @@ public:  // --- 동작 명령 함수 (Controller가 호출) ---
     void       Try_NextCombo();                              // 일반공격 콤보 예약 (일반공격 중 클릭시 호출)
     _bool      Update_NormalAttack(const _float& timeDelta); // 일반공격 중 매 프레임 호출. false면 종료
 
-    void    Start_HeavyAttack();                          // 강공격 시작
-    _bool   Update_HeavyAttack(const _float& timeDelta);  // 강공격 중 매 프레임 호출. false면 종료
+    void  Start_HeavyAttack();                          // 강공격 시작
+    _bool Update_HeavyAttack(const _float& timeDelta);  // 강공격 중 매 프레임 호출. false면 종료
 
     void Cancel_Attack(); // 공격이 강제 취소될 때 직접 호출
 
@@ -116,7 +116,9 @@ private: // --- 내부 로직 ---
     /// @param vAttackDir 계산된 공격 방향 벡터
     void Create_AttackObj(const AttackInfo& attackInfo, const _vec3& vAttackDir);
 
-    void Play_AttackSound(); // 공격 사운드 재생
+    void Play_AttackSound();    // 공격 사운드 재생
+    void CamShake_BySwing();    // 공격 휘두를 때 약한 셰이킹
+    void CamShake_ByHit(CGameObject* hitTarget);      // 공격 적중 시 강한 셰이킹
 
 private: // --- Owner Component 캐싱 ---
     Engine::CState*      m_OwnerStateCom;

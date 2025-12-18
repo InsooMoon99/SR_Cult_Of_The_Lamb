@@ -192,6 +192,7 @@ HRESULT CStage_Boss1::Ready_Environment_Layer(LAYERTYPE layerType)
     NULL_CHECK_RETURN(wall, E_FAIL);
     layer->Add_GameObject(OBJTYPE::WALL, wall);
 
+    //////////////////////////////////////////////////
     // Fog
     m_Fog = CFog::Create(m_GraphicDev);
     NULL_CHECK_RETURN(m_Fog, E_FAIL);
@@ -267,7 +268,7 @@ HRESULT CStage_Boss1::Ready_GameLogic_Layer(LAYERTYPE layerType)
         CCamSetupBuilder(m_CamController)
             .SetTarget(m_PlayerTransformCom)
             //.PivotOffset({ 0.f, 0.f, 0.f })
-            //.Distance(12.f)
+            //.Distance(11.f)
             //.RotX(45.f)
             //.RotY(0.f)
             //.LagSpeed(10.f)
@@ -482,7 +483,7 @@ void CStage_Boss1::OnRefusedEnd()
     // 카메라 플레이어한테 원래대로 돌리기
     CCamSetupBuilder(m_CamController)
         .SetTarget(m_PlayerTransformCom)
-        .Distance(12.f)
+        .Distance(11.f)
         .LagSpeed(3.f)
         .ZoomSpeed(3.f)
         .Apply();

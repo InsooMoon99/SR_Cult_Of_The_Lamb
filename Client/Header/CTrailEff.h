@@ -57,7 +57,7 @@ public:
 
     float m_NodeIntervalDist =0.01f; // 노드끼리의 간격
     float m_Time = 0.23f; //노드 유지시간
-    float m_TrailWidth = .9f; // 노드 두께
+    float m_TrailWidth = .8f; // 노드 두께
 
     _vec3 m_LastPos{0.f,0.f,0.f}; // 마지막으로 찍힌 노드의 위치ㅏㅒ
 

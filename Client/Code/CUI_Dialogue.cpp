@@ -13,6 +13,8 @@
 const _float SPEAKER_OFFSET = 16.9f;
 const _float DIALOGUE_OFFSET = 15.f;
 
+_bool CUI_Dialogue::g_IsDialogueActive = false;
+
 CUI_Dialogue::CUI_Dialogue(DEVICE graphicDev)
     : CUI(graphicDev),
       m_BufferCom(nullptr),
@@ -173,6 +175,7 @@ void CUI_Dialogue::Start_Dialogue(const string& dialogueId, const _vec2 boxPos, 
 
     m_CurrentLineIndex = 0;
     m_IsActive = true;
+    g_IsDialogueActive = true;
     m_IsShowingChoices = false; // 선택지 보일지
     m_SelectedLeft = true;
 
@@ -196,6 +199,7 @@ void CUI_Dialogue::End_Dialogue()
     m_CurrentDialogue = nullptr;
     m_CurrentLineIndex = 0;
     m_IsActive = false;
+    g_IsDialogueActive = false;
     m_IsShowingChoices = false;
 
     if (m_OnDialogueEnd)
@@ -352,7 +356,7 @@ void CUI_Dialogue::Render_DialogueText()
 
     const DialogueLine& line = m_CurrentDialogue->lines[m_CurrentLineIndex];
 
-    static _float padding = -95.f; // 좌우 여백
+    _float padding = -95.f + line.leftPadding; // 좌우 여백
     static _float offset1 = 43.f;
 
 	wstring fullText = CDialogueDB::GetInstance()->Utf8ToWstring(line.text);
@@ -495,5 +499,6 @@ CUI_Dialogue* CUI_Dialogue::Create(DEVICE graphicDev)
 
 void CUI_Dialogue::Free()
 {
+    g_IsDialogueActive = false;
     CUI::Free();
 }

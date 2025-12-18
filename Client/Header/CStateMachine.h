@@ -15,6 +15,7 @@ public:
     virtual void    Change_State(_uint dwStateKey) = 0;
 
     _uint       Get_CurStateNum() { return m_CurStateKey; }
+    _uint       Get_PrevStateKey() { return m_PrevStateKey; }
     CBaseState* Get_CurState() { return m_CurState; }
 
 protected:

@@ -390,10 +390,15 @@ void CDroppedItem::Player_ZoomIn(CPlayer* ply)
             auto* movement = camController->Get_OwnerCamMovement();
 
             // 카메라 무빙 끝나면 원래대로 돌리는 콜백 설정
-            movement->Set_OnTransitionEnd([movement]()
+            movement->Set_OnTransitionEnd([movement, camController, ply]()
                 {
                     // 기본 프리셋으로 리셋
-                    movement->Reset_Camera(CAM_PRESET(), false);
+                    CCamSetupBuilder(camController)
+                        .SetTarget(ply->Get_Transform())
+                        .Distance(11.f)
+                        .LagSpeed(4.5f)
+                        .ZoomSpeed(4.f)
+                        .Apply();
                 });
 
             // 플레이어한테 줌인
@@ -401,7 +406,7 @@ void CDroppedItem::Player_ZoomIn(CPlayer* ply)
                 .SetTarget(ply->Get_Transform())
                 .Distance(8.f)
                 .LagSpeed(2.5f)
-                .ZoomSpeed(1.f)
+                .ZoomSpeed(3.f)
                 .Apply();
         }
     }

@@ -12,7 +12,9 @@ struct AnimDesc
 {
     CSpriteAnimation* anim;
     _vec2             size;
-    _vec2             offset;
+
+    _vec2             offsetLeft = _vec2(0.f, 0.f);
+    _vec2             offsetRight = _vec2(0.f, 0.f);
 };
 
 /// @brief 여러 개의 애니메이션을 보관하고 있다가, CState의 명령에 따라 애니메이션을 변경해서 재생하는 "재생장치" 컴포넌트
@@ -38,8 +40,21 @@ public:
                             const wstring& key, CSpriteAnimation* animation,
                             const _vec2 size, const _vec2 offset = _vec2(0.f, 0.f));
 
+    // 기존 버전
     HRESULT             Create_Animation(const wstring& key, _uint frameCount,
                              _float interval, const _vec2& size, const _vec2 offset = _vec2(0.f, 0.f));
+
+    HRESULT             Add_Animation(
+        const wstring& key, CSpriteAnimation* animation,
+        const _vec2 size,
+        const _vec2 offsetLeft,
+        const _vec2 offsetRight);
+
+    // Offset Left, Right 버전
+    HRESULT             Create_Animation(const wstring& key, _uint frameCount,
+        _float interval, const _vec2& size,
+        const _vec2 offsetLeft,
+        const _vec2 offsetRight);
 
     void                Play_Animation(const wstring& key, ANIMSTATE state, bool reset = true);
     void                Stop_Animation();
@@ -52,11 +67,17 @@ public:
     _int                Get_CurFrame(); // 현재 재생중인 프레임
     _int                Get_MaxFrame(); // 최대 프레임
 
+    void                Set_CurFrame(_int frame);
+
     _vec2               Get_CurSize() const;
-    _vec2               Get_CurOffset() const;
+    _vec2               Get_CurOffset(_bool bRightDir = false) const;
 
     void                Set_CurSize(const _vec2& size);
     void                Set_CurOffset(const _vec2& offset);
+    void                Set_CurOffsetByDir(_bool rightDir);
+    void                Set_CurOffsetLeft(const _vec2& offset);
+    void                Set_CurOffsetRight(const _vec2& offset);
+
     void                Set_FlipX(_bool flip);
 
     // 주의! Object마다 Set_TextureType 설정 꼭 해줘야함

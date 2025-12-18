@@ -131,7 +131,14 @@ void CState::Update_Animation()
             CRcTex*     rcTex     = dynamic_cast<CRcTex*>(bufferCom);
 
             if (rcTex)
+            {
                 rcTex->Set_FlipX(dirInfo.second);
+
+                if (m_Animator)
+                {
+                    m_Animator->Set_CurOffsetByDir(dirInfo.second);
+                }
+            }
         }
 
         m_PrevState = m_State;
@@ -159,6 +166,12 @@ void CState::Set_AnimInfo(ACTORSTATE playerState, const wstring& key, ANIMSTATE 
 {
     m_PlayerStateMap[playerState] = key;
     m_AnimStateMap[playerState]   = animState;
+}
+
+void CState::Force_UpdateAnimation()
+{
+    m_PrevState = ACTORSTATE::STATE_END;
+    m_PrevDir = ACTORDIR::DIR_END;
 }
 
 CState* CState::Create(DEVICE graphicDev)
