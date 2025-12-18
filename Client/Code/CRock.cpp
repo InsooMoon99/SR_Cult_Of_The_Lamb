@@ -49,6 +49,7 @@ HRESULT CRock::Ready_GameObject()
         m_CombatStatCom->Set_MaxHp(20.f);
         m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
         break;
+
     case MIDDLEROCK:
         m_deadTexIndex = 999;
         m_TexIndex1 = 1;
@@ -56,9 +57,10 @@ HRESULT CRock::Ready_GameObject()
 
         m_ItemNum = 4;
 
-        m_CombatStatCom->Set_MaxHp(40.f);
+        m_CombatStatCom->Set_MaxHp(30.f);
         m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
         break;
+
     case BIGROCK:
         m_deadTexIndex = 999;
         m_TexIndex1 = 2;
@@ -66,12 +68,12 @@ HRESULT CRock::Ready_GameObject()
 
         m_ItemNum = 6;
 
-        m_CombatStatCom->Set_MaxHp(60.f);
+        m_CombatStatCom->Set_MaxHp(40.f);
         m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
         break;
+
     case END_ROCK:
         return E_FAIL;
-        break;
     }
 
     // 밑은 공통
@@ -125,7 +127,8 @@ void CRock::OnInteractiveDamaged()
         m_TransformCom->Get_Pos(),          // 위치
         COMPONENTTYPE::TEX_ROCK_PARTICLE,   // 텍스처 타입
         5,                                  // 생성할 개수
-        0.1f, 0.12f,                        // 크기 범위
+        0.1f,
+        0.12f,                        // 크기 범위
         2,                                  // 텍스처 랜덤으로 몇개 출력
         15.f,                               // 땅에 떨어지는 속도
         m_TransformCom->Get_Pos().y - 0.5f  // 바닥 Y (돌 아래쪽)
@@ -135,7 +138,7 @@ void CRock::OnInteractiveDamaged()
 void CRock::KnockBackEff(const _float& timeDelta)
 {
     _vec3 backDir = m_CombatStatCom->Get_Dir();
-    backDir.y = 0.f;
+    backDir.y     = 0.f;
 
     D3DXVec3Normalize(&backDir, &backDir);
     if (m_KockBackTimer > 0.f)
@@ -179,7 +182,7 @@ void CRock::KnockBackEff(const _float& timeDelta)
         m_KockBackTimer = 0.1f;
         m_OnDamage      = false;
         LerpTime        = 0.f;
-        m_MovedPos = { 0.f, 0.f, 0.f };
+        m_MovedPos      = { 0.f, 0.f, 0.f };
     }
 }
 
