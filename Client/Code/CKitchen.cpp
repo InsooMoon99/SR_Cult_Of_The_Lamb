@@ -55,7 +55,7 @@ _int CKitchen::Update_GameObject(const _float& timeDelta)
 
     if (m_bPlayerOverlap == true && m_bHovering == true)
     {
-        if (CDInputMgr::GetInstance()->KeyDown(DIM_LB))
+        if (CDInputMgr::GetInstance()->MouseDown(DIM_LB))
         {
             if (m_CookingCtrlCom && m_CookingCtrlCom->IsCooking())
                 return exit;
