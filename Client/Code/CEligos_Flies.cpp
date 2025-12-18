@@ -92,12 +92,12 @@ _int CEligos_Flies::Update_GameObject(const _float& timeDelta)
         m_spawnSound = true;
     }
 #pragma region 플레이어 베리 채집 효과음. 0.5초마다 재생
-    g_Timers[TIMER_SOUND_FOL_FLY] -= timeDelta;
+    g_Timers[TIMER_SOUND_ENEMY_FLY] -= timeDelta;
 
-    if (g_Timers[TIMER_SOUND_FOL_FLY] < 0.f)
+    if (g_Timers[TIMER_SOUND_ENEMY_FLY] < 0.f)
     {
         CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Fly_Fly_Loop.wav", SOUND_BOSS2, 0.5f);
-        g_Timers[TIMER_SOUND_FOL_FLY] = 0.5f;
+        g_Timers[TIMER_SOUND_ENEMY_FLY] = 0.5f;
     }
 #pragma endregion
     m_ProjectileCom->Update_Component(timeDelta);
