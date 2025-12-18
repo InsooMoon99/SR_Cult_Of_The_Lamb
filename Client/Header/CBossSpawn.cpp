@@ -97,11 +97,13 @@ void CBossSpawn::RandomMove(const _float& timeDelta, _vec3 BaseCenter, int BaseL
 
     CGameObject* gameObject = CHumanMonster::Create(m_pOwner->Get_GraphicDev());
     //NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CHumanMonster::Create() returned null");
-    SpawnObjectOnLayer(gameObject);
+    SpawnObjectOnLayer(gameObject, OBJTYPE::MONSTER);
     CTransform* Transform =
         dynamic_cast<CTransform*>(gameObject->Get_Component(
             ID_DYNAMIC,
             COMPONENTTYPE::TRANSFORM));
+
+    gameObject->Initialize_GameObject();
 
     Transform->Set_Pos(LT.x + xPos, 1, LT.z - zPos);
     }

@@ -243,6 +243,7 @@
     <ClInclude Include="..\Header\CFogMgr.h" />
     <ClInclude Include="..\Header\CRunLootLog.h" />
     <ClInclude Include="..\Header\CShamura.h" />
+    <ClInclude Include="..\Header\CStage_Prologue2.h" />
     <ClInclude Include="..\Header\CStage_Prologue_Boss.h" />
     <ClInclude Include="..\Header\CStage_Prologue.h" />
     <ClInclude Include="..\Header\CTarotNPC.h" />
@@ -463,6 +464,7 @@
     <ClCompile Include="..\Code\CFogMgr.cpp" />
     <ClCompile Include="..\Code\CRunLootLog.cpp" />
     <ClCompile Include="..\Code\CShamura.cpp" />
+    <ClCompile Include="..\Code\CStage_Prologue2.cpp" />
     <ClCompile Include="..\Code\CStage_Prologue_Boss.cpp" />
     <ClCompile Include="..\Code\CStage_Prologue.cpp" />
     <ClCompile Include="..\Code\CTarotNPC.cpp" />

@@ -134,6 +134,16 @@ void CCharacterBase::Render_Setting()
 {
     CRenderObject::Render_Setting();
 
+    if (m_GraphicDev)
+        m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
+}
+
+void CCharacterBase::Render_Reset()
+{
+    CRenderObject::Render_Reset();
+
+    if (m_GraphicDev)
+        m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
 }
 
 void CCharacterBase::Free()

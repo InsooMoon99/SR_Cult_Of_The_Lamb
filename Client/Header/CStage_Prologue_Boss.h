@@ -52,13 +52,6 @@ private:
     void    Show_PlayerUI();
 
     void    Setup_UIAnimation(_float offsetY);
-    void    OnRefusedEnd();
-
-    // 대화 끝났을 때 호출
-    void    On_BossStartEnd();
-    void    On_SacrificeEnd();
-    void    On_RejectEnd();
-    void    On_DeadEnd();
 
     // 보스 스테이지 1 기본 카메라 세팅
     void    Reset_Cam();
@@ -79,6 +72,7 @@ private:
     void Free() override;
 
 private:
+
     CTerrain* m_Terrain;
     CGameObject* m_Boss;
     CGameObject* m_Player;

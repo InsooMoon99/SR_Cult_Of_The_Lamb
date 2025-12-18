@@ -70,6 +70,8 @@ private:
 
     void Action_Decide(const _float& timeDelta);
     void Action_Refuse(const _float& timeDelta);
+    void Action_Kneel(const _float& timeDelta);
+    void Action_Kneel_Wake(const _float& timeDelta);
 
     // --- [기타 기능 함수] ---
     void Check_Gathering();
