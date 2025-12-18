@@ -38,7 +38,10 @@ public:
         START,
         MONSTER1,
         MONSTER2,
+        MONSTER3,
         TARO,
+        MONSTER4,
+        MONSTER5,
         BOSS,
 
         DUNGEON_END

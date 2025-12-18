@@ -106,61 +106,62 @@ static void State_Inspector(CState* state)
 {
     if (state == nullptr)
         return;
-    
+
     static bool showStateWindow = false;
 
     ImGui::PushID("State_Inspector");
     {
         ImGui::Checkbox("State Debug Window", &showStateWindow);
-        int curStateIdx = static_cast<int>(state->Get_State());
-        static const char* stateNames[] =
-        {
-            "IDLE", "RUN", "ATTACK",
-            "PLAYER_ROLL",
-            "PLAYER_SWORD_COMBO1", "PLAYER_SWORD_COMBO2", "PLAYER_SWORD_COMBO3",
-            "PLAYER_SWORD_HEAVY",
-            "PLAYER_GAUNTLET_COMBO1", "PLAYER_GAUNTLET_COMBO2", "PLAYER_GAUNTLET_COMBO3",
-            "PLAYER_GAUNTLET_HEAVY",
-            "PLAYER_SKILL_CHARGING", "PLAYER_SKILL_SINGLE", "PLAYER_SKILL_TRIPLE",
-            "HIT",
-            "PLAYER_ACTION", "PLAYER_WOOD", "PLAYER_STONE", "PLAYER_BERRY",
-            "PLAYER_WEAPONGET", "PLAYER_HAMMER",
-            "PLAYER_DECIDE", "PLAYER_REFUSE",
-            "DEAD",
-            "STATE_END"
-        };
-
-        // 별도 창으로 띄울지 여부
-        if (showStateWindow)
-        {
-            ImGui::Begin("State Debug");
-            {
-                ImGui::Text("State : ");
-                ImGui::SameLine();
-
-                if (ImGui::Combo("##StateCombo", &curStateIdx, stateNames, IM_ARRAYSIZE(stateNames)))
-                {
-                    state->Change_State(static_cast<ACTORSTATE>(curStateIdx));
-                }
-            }
-            ImGui::End();
-        }
-        else
-        {
-            const char* curState = ToString(state->Get_State());
-            ImGui::Text("State : ");
-            ImGui::SameLine();
-            ImGui::TextUnformatted(curState);
-        }
-
-        // Dir 
+        const char* curStateName = ToString(state->Get_State());
+        ImGui::Text("State : %s", curStateName);
         const char* curDir = ToString(state->Get_Dir());
-        ImGui::Text("Dir   : ");
-        ImGui::SameLine();
-        ImGui::TextUnformatted(curDir);
+        ImGui::Text("Dir   : %s", curDir);
     }
 
     ImGui::PopID();
+
+    if (showStateWindow)
+    {
+        ImGui::Begin("State Debug", &showStateWindow);
+        {
+            ImGui::Text("Current State: %s", ToString(state->Get_State()));
+            ImGui::Separator();
+            static const char* stateNames[] =
+            {
+                "IDLE", "RUN", "ATTACK",
+                "PLAYER_ROLL",
+                "PLAYER_SWORD_COMBO1", "PLAYER_SWORD_COMBO2", "PLAYER_SWORD_COMBO3",
+                "PLAYER_SWORD_HEAVY",
+                "PLAYER_GAUNTLET_COMBO1", "PLAYER_GAUNTLET_COMBO2", "PLAYER_GAUNTLET_COMBO3",
+                "PLAYER_GAUNTLET_HEAVY",
+                "PLAYER_SKILL_CHARGING", "PLAYER_SKILL_SINGLE", "PLAYER_SKILL_TRIPLE",
+                "HIT",
+                "PLAYER_ACTION",
+                "PLAYER_WOOD", "PLAYER_STONE", "PLAYER_BERRY",
+                "PLAYER_WEAPONGET", "PLAYER_HAMMER",
+                "PLAYER_WARPOUT", "PLAYER_WARPIN",
+                "PLAYER_DECIDE", "PLAYER_REFUSE",
+                "KNEEL", "KNEEL_WAKE",
+                "PLAYER_REBIRTH",
+                "NPC_IDLE",
+                "DEAD",
+                "STATE_END"
+            };
+
+            const int buttonWidth = 160;
+            const int buttonsPerRow = 3;
+
+            for (int i = 0; i < IM_ARRAYSIZE(stateNames); i++)
+            {
+                if (ImGui::Button(stateNames[i], ImVec2(buttonWidth, 0)))
+                    state->Change_State(static_cast<ACTORSTATE>(i));
+
+                if ((i + 1) % buttonsPerRow != 0 && i < IM_ARRAYSIZE(stateNames) - 1)
+                    ImGui::SameLine();
+            }
+        }
+        ImGui::End();
+    }
 }
 
 static void CombatStat_Inspector(CCombatStat* stat)

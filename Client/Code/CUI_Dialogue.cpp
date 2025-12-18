@@ -159,9 +159,9 @@ void CUI_Dialogue::Render_GameObject()
 
 void CUI_Dialogue::Start_Dialogue(const string& dialogueId, const _vec2 boxPos, const _vec2& boxSize)
 {
-    CSoundMgr::GetInstance()->Play_Once(L"UI/Conversation_Start.wav",
-        SOUND_EFFECT,
-        1.3f);
+   //CSoundMgr::GetInstance()->Play_Once(L"UI/Conversation_Start.wav",
+   //    SOUND_EFFECT,
+   //    1.3f);
 
     m_BoxPos = boxPos;
     m_BoxSize = boxSize;
@@ -204,9 +204,9 @@ void CUI_Dialogue::End_Dialogue()
 
     if (m_OnDialogueEnd)
     {
-        CSoundMgr::GetInstance()->Play_Once(L"UI/Conversation_End.wav",
-            SOUND_EFFECT,
-            1.4f);
+        //CSoundMgr::GetInstance()->Play_Once(L"UI/Conversation_End.wav",
+        //    SOUND_EFFECT,
+        //    1.4f);
         m_OnDialogueEnd(lastId);
     }
 }
@@ -223,9 +223,9 @@ void CUI_Dialogue::Next_Line()
         wstring fullText = CDialogueDB::GetInstance()->Utf8ToWstring(line.text);
         m_CurrentCharIndex = (_int)fullText.length();
 
-        CSoundMgr::GetInstance()->Play_Once(L"UI/UI_DialogueNext.wav",
-            SOUND_EFFECT,
-            1.f);
+        //CSoundMgr::GetInstance()->Play_Once(L"UI/UI_DialogueNext.wav",
+        //    SOUND_EFFECT,
+        //    1.f);
 
         return;  
     }
