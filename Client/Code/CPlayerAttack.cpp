@@ -588,7 +588,7 @@ void CPlayerAttack::CamShake_BySwing()
 
     NULL_CHECK(camMovement);
 
-    camMovement->Start_CamShake(0.1f, 0.6f, 50.f, 25.f);
+    camMovement->Start_CamShake(0.08f, 0.6f, 50.f, 25.f);
 }
 
 void CPlayerAttack::CamShake_ByHit(CGameObject* hitTarget)
@@ -602,7 +602,7 @@ void CPlayerAttack::CamShake_ByHit(CGameObject* hitTarget)
 
     NULL_CHECK(camMovement);
 
-    camMovement->Start_CamShake(0.18f, 0.6f, 50.f, 25.f);
+    camMovement->Start_CamShake(0.15f, 0.6f, 50.f, 25.f);
 }
 
 CPlayerAttack* CPlayerAttack::Create(DEVICE graphicDev)

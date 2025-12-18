@@ -133,14 +133,11 @@ _int CUIBuildCell::Update_GameObject(const _float& timeDelta)
         m_CoinIcon->Update_GameObject(timeDelta);
 
     if (m_IsHovered &&
-        (CDInputMgr::GetInstance()->Get_DIMouseState(MOUSEKEYSTATE::DIM_LB) & 0x80))
+        (CDInputMgr::GetInstance()->MouseDown(MOUSEKEYSTATE::DIM_LB)))
     {
         // cout << "CUIBuildCell::Update_GameObject: Click detected!" << endl;
         if (m_OnClick)
         {
-			CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Confirm_Selection.wav",
-				SOUND_EFFECT,
-				0.7f);
             // cout << "CUIBuildCell::Update_GameObject: Executing OnClick" << endl;
             m_OnClick();
         }
@@ -209,11 +206,7 @@ void CUIBuildCell::Render_GameObject()
     //셀 선택시 외곽선 그리기
     if (m_IsHovered && m_IsActive() &&m_BuildMenu->Get_IsOpen())
     {
-		CSoundMgr::GetInstance()->Play_Once(L"UI_Change_Selection.wav",
-			SOUND_EFFECT,
-			1.f);
-
-        m_TargetScale = m_BaseScale * 1.2;
+            m_TargetScale = m_BaseScale * 1.2;
 
         m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
         m_Highlight->Set_TextureIndex(0);
