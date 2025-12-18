@@ -26,6 +26,7 @@ public:
     void Animation_Setting();
 public:
     void    OnBeginOverlap(CCollider* self, CCollider* other) override;
+    void OnStayOverlap(CCollider* self, CCollider* other);
     void    OnEndOverlap(CCollider* self, CCollider* other) override;
 
     //void    Chase_Target(const float& timeDelta, _float speed);
@@ -51,6 +52,8 @@ private:
     CGameObject* m_pTarget;
 
     _bool m_spawnSound = false;
-    
+    float m_FlapTime = 0;
+    float RandHeight = 0;
+    float RandTerm = 0;
 };
 

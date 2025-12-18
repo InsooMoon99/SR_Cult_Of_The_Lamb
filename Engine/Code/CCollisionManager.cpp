@@ -232,6 +232,7 @@ void CCollisionManager::Initialize_CollisionMatrix()
     _int workbench_Index        = static_cast<_int>(COLLISION_LAYERTYPE::WORKBENCH);
     _int kitchen_Index          = static_cast<_int>(COLLISION_LAYERTYPE::KITCHEN);
     _int site_Index             = static_cast<_int>(COLLISION_LAYERTYPE::CONSTRUCTION_SITE);
+    _int fly_Index             = static_cast<_int>(COLLISION_LAYERTYPE::FLY);
 
     // 벽끼리는 충돌하지 않도록 설정
     m_CollisionMatrix[wall_Index][wall_Index] = false;
@@ -312,6 +313,11 @@ void CCollisionManager::Initialize_CollisionMatrix()
             m_CollisionMatrix[i][interactive_Index] = false;
         }
     }
+
+    // 투사체끼리도 충돌 X, 투사체랑 보스랑도 충돌X
+    //m_CollisionMatrix[fly_Index][fly_Index] = true;
+    m_CollisionMatrix[fly_Index][enemy_Index] = false;
+    m_CollisionMatrix[enemy_Index][fly_Index] = false;
 }
 
 void CCollisionManager::Free()

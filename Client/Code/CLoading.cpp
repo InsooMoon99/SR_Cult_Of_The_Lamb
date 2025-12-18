@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "CLoading.h"
 #include <chrono>
 #include <future>
@@ -197,6 +197,7 @@ _uint CLoading::Loading_ForState_Parallel()
     //futures.push_back(async(launch::async, [&]() {
     //    return resourceMgr->Ready_Prologue(m_GraphicDev);
     //    }));
+
     //
     //futures.push_back(async(launch::async, [&]() {
     //    return resourceMgr->Ready_BossP1(m_GraphicDev);

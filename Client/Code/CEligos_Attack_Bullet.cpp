@@ -136,7 +136,7 @@ _int CEligos_Attack_Bullet::Update_State(const _float& timeDelta)
         m_pOwnerAnimatorCom->Play_Animation(L"Eligos_attack_bullet", ANIMSTATE::ONCE);
         if (m_Sound == false)
         {
-            CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Elligos_Attack1.wav", SOUNDTYPE::SOUND_BOSS2, 1.f);
+            CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Elligos_Attack1.wav", SOUNDTYPE::SOUND_BOSS4, 1.f);
             m_Sound = true;
         }
 
@@ -280,7 +280,7 @@ void CEligos_Attack_Bullet::Shoot_Bullet()
                 D3DXQuaternionRotationAxis(
                     &tilt25,
                     &tmp,
-                    D3DXToRadian(25.f)
+                    D3DXToRadian(5.f)
                 );
 
                 // ⭐ 최종 회전 = LookAt → 기본보정 → 추가기울기

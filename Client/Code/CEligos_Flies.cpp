@@ -14,6 +14,7 @@
 #include "CTransform.h"
 #include "CUI_MonsterHp.h"
 #include "CProjectile.h"
+#include "CRandomMgr.h"
 #include "CSoundMgr.h"
 
 CEligos_Flies::CEligos_Flies(DEVICE graphicDev, CGameObject* owner, CGameObject* Target)
@@ -48,7 +49,7 @@ HRESULT CEligos_Flies::Ready_GameObject()
 
 
     if (m_BoxColCom)
-        m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::BOSSPROJECTILE);
+        m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::FLY);
 
 
     return S_OK;
@@ -79,11 +80,20 @@ void CEligos_Flies::Initialize_GameObject()
     d.TurnSpeed = d.Speed * 2.f;;
 
     m_ProjectileCom->SetMoveDesc(d);
+
+
+    RandHeight = (CRandomMgr::GetInstance()->Get_Int_Random(30, 40)) / 100;
+    RandTerm = (CRandomMgr::GetInstance()->Get_Int_Random(10,20)) / 100;
 }
 
 _int CEligos_Flies::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CMonsterBase::Update_GameObject(timeDelta);
+
+    m_FlapTime += timeDelta;
+    float y = sinf(m_FlapTime * RandTerm) * RandHeight;
+    _vec3 curPos = m_TransformCom->Get_Pos();
+    m_TransformCom->Set_Pos(curPos.x, curPos.y + y, curPos.z);
 
     if (m_spawnSound == false)
     {
@@ -91,20 +101,26 @@ _int CEligos_Flies::Update_GameObject(const _float& timeDelta)
        
         m_spawnSound = true;
     }
-#pragma region 플레이어 베리 채집 효과음. 0.5초마다 재생
-    g_Timers[TIMER_SOUND_ENEMY_FLY] -= timeDelta;
 
-    if (g_Timers[TIMER_SOUND_ENEMY_FLY] < 0.f)
-    {
-        CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Fly_Fly_Loop.wav", SOUND_BOSS2, 0.5f);
-        g_Timers[TIMER_SOUND_ENEMY_FLY] = 0.5f;
-    }
-#pragma endregion
     m_ProjectileCom->Update_Component(timeDelta);
     
     if (m_CombatStatCom->Is_Dead() == true||m_flyDie==true)
     {
+        if (m_CombatStatCom->Is_Dead() == true)
+        {
         //죽었을떄 애니메이션 추가
+        CParticleHelper::Spawn_StaticBurstParticle(
+            m_TransformCom->Get_Pos(),					 // 위치
+            COMPONENTTYPE::TEX_MONSTER_HIT_PARTICLE,     // 텍스처 타입
+            9,											 // 생성할 개수
+            0.12f, 0.15f,								 // 크기 범위
+            4,											 // 텍스처 랜덤으로 몇개 출력
+            19.f,										 // 땅에 떨어지는 속도
+            0.5f										 // 바닥 Y
+        );
+
+        }
+
         //끝나면
         CSoundMgr::GetInstance()->Stop_Sound(L"Boss/Eligos/Fly_Fly_Loop.wav");
         CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Flying_Hopper_Miniboss_Bite.wav", SOUNDTYPE::SOUND_BOSS3, 0.7f);
@@ -118,9 +134,8 @@ _int CEligos_Flies::Update_GameObject(const _float& timeDelta)
         m_flag = true;
     }
 
-
     m_Timer += timeDelta;
-    if (m_Timer > 600)
+    if (m_Timer > 10)
     {
         Mark_As_PendingKill();
     }
@@ -134,48 +149,7 @@ void CEligos_Flies::LateUpdate_GameObject(const _float& timeDelta)
 
 void CEligos_Flies::Render_GameObject()
 {
-
-
     CMonsterBase::Render_GameObject();
-
-
-    //if (m_TransformCom)
-    //    m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-
-    //Render_Setting();
-
-    //// 4) 텍스처 바인딩
-    //if (m_TextureCom && m_AnimatorCom)
-    //{
-    //    const wstring& key = m_AnimatorCom->Get_CurKey();
-    //    int            frame = m_AnimatorCom->Get_CurFrame();
-    //    m_TextureCom->Set_Texture(key, frame);
-    //}
-
-    ////  5) 기본 초기화 (선택사항)
-    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-    //m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-
-    //if (m_bHurt)
-    //{
-    //    // 현제 값은 초기 값세팅을 한거 나중에 변경 하고 싶으면 인자 넣으면 됩니다 색,투명도
-    //    FlashRenderStart();//색 (ARGB)
-    //    AlphaRenderStart();//투명도(0~1)
-    //}
-
-    //// 7) 버텍스 버퍼 렌더
-    //if (m_BufferCom)
-    //    m_BufferCom->Render_Buffer();
-
-    //// 초기화
-    //if (m_bHurt)
-    //{
-    //    FlashRenderEnd();
-    //    AlphaRenderEnd();
-    //}
-    //if (m_BoxColCom)
-    //    m_BoxColCom->Render();
 }
 
 
@@ -193,6 +167,8 @@ void CEligos_Flies::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CMonsterBase::OnBeginOverlap(self, other);
 
+
+
     CPlayer* player = dynamic_cast<CPlayer*>(other->Get_Owner());
     if (player)
     {
@@ -207,7 +183,7 @@ void CEligos_Flies::OnBeginOverlap(CCollider* self, CCollider* other)
         HITDATA hit;
         hit.  dir = dir;              // 넉백 방향
         hit. damage = m_CombatStatCom->Get_Attack();           // 데미지
-        hit. knockback=2.f;        // 넉백량
+        hit. knockback=8.f;        // 넉백량
         hit. knockbackTimer=0.5f;         // 넉백 유지 시간
 
         hit. attacker = this;   // 때린 놈
@@ -216,19 +192,78 @@ void CEligos_Flies::OnBeginOverlap(CCollider* self, CCollider* other)
 
         Player_combat->Apply_Damage(hit);
 
-		CParticleHelper::Spawn_StaticBurstParticle(
-			m_TransformCom->Get_Pos(),					 // 위치
-			COMPONENTTYPE::TEX_MONSTER_HIT_PARTICLE,     // 텍스처 타입
-			9,											 // 생성할 개수
-			0.12f, 0.15f,								 // 크기 범위
-			4,											 // 텍스처 랜덤으로 몇개 출력
-			19.f,										 // 땅에 떨어지는 속도
-			0.5f										 // 바닥 Y
-		);
+		//CParticleHelper::Spawn_StaticBurstParticle(
+		//	m_TransformCom->Get_Pos(),					 // 위치
+		//	COMPONENTTYPE::TEX_MONSTER_HIT_PARTICLE,     // 텍스처 타입
+		//	9,											 // 생성할 개수
+		//	0.12f, 0.15f,								 // 크기 범위
+		//	4,											 // 텍스처 랜덤으로 몇개 출력
+		//	19.f,										 // 땅에 떨어지는 속도
+		//	0.5f										 // 바닥 Y
+		//);
 
         // 나 죽을 수 있게 
         m_flyDie =true;
     }
+}
+
+
+void CEligos_Flies::OnStayOverlap(CCollider* self, CCollider* other)
+{
+    CRenderObject::OnStayOverlap(self, other);
+
+
+
+    CEligos_Flies* fly = dynamic_cast<CEligos_Flies*>(other->Get_Owner());
+    if (!fly) return;
+
+    CTransform* otherTransform = dynamic_cast<CTransform*>(
+        fly->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+
+    CBoxCollider* playerCollider = dynamic_cast<CBoxCollider*>(other);
+
+
+
+    //// 속도 제거
+    //CRigidbody* rigid = dynamic_cast<CRigidbody*>(
+    //    hitObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::RIGIDBODY));
+
+    //if (rigid)
+    //{
+    //    _vec3 vel = rigid->Get_Velocity();
+    //    vel.x = 0.f;
+    //    vel.z = 0.f;
+    //    rigid->Set_Velocity(vel);
+    //}
+    //
+    //else
+    //    return;
+
+
+
+    if (!otherTransform || !playerCollider) return;
+
+    _vec3 wallPos = m_TransformCom->Get_Pos();
+    _vec3 objPos = otherTransform->Get_Pos();
+
+    // 벽/플레이어 사이즈 합의 절반
+    float halfX = ((m_BoxColCom->Get_Size().x + playerCollider->Get_Size().x) * 0.5f);
+    float halfZ = ((m_BoxColCom->Get_Size().z + playerCollider->Get_Size().z) * 0.5f);
+
+    // 중심 거리
+    float dx = objPos.x - wallPos.x;
+    float dz = objPos.z - wallPos.z;
+
+    float penX = halfX - abs(dx);
+    float penZ = halfZ - abs(dz);
+
+    // 덜 침투한 축으로 밀어냄
+    if (penX < penZ)
+        objPos.x = wallPos.x + (dx > 0 ? halfX : -halfX) + (dx > 0 ? 0.01f : -0.01f);
+    else
+        objPos.z = wallPos.z + (dz > 0 ? halfZ : -halfZ) + (dz > 0 ? 0.01f : -0.01f);
+
+    otherTransform->Set_Pos(objPos);
 }
 
 void CEligos_Flies::OnEndOverlap(CCollider* self, CCollider* other)
@@ -236,8 +271,6 @@ void CEligos_Flies::OnEndOverlap(CCollider* self, CCollider* other)
     CMonsterBase::OnEndOverlap(self, other);
 
 }
-
-
 
 HRESULT CEligos_Flies::Add_Component()
 {

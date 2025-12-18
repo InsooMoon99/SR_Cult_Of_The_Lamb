@@ -104,6 +104,8 @@ private:
     void Connect_Rooms();
     void Set_SpawnPos();
 
+    void Setup_DynamicCam_For_Boss();
+
 private:
     CCombatStat*    m_PlayerCombatStatCom;
     CInventory*     m_PlayerInventoryCom;
@@ -148,6 +150,8 @@ private:
 
     CGameObject* m_Boss = nullptr;
     CUI_BossHp*  m_BossHpbar = nullptr;
+
+    bool m_flag = false;
 };
 
 
