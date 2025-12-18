@@ -4,6 +4,7 @@
 class CCameraController;
 class CTerrain;
 class CUI_Dialogue;
+class CUI_Interactive;
 class CPlayer;
 
 class CHeket;
@@ -61,9 +62,10 @@ private:
 
     CTransform*     m_PlayerTransform = nullptr;
     CRigidbody*     m_PlayerRigid = nullptr;
-    CUI_Dialogue*   m_Dialogue = nullptr;
     CGameObject*    m_Player = nullptr;
 
+    CUI_Dialogue*   m_Dialogue = nullptr;
+    CUI_Interactive* m_DescriptionUI = nullptr;
     CCameraController* m_CamController = nullptr;
 
     _bool m_IsRebirthPlaying = false;
@@ -75,4 +77,6 @@ private:
     D3DXCOLOR m_LightSpecular = D3DXCOLOR(1.0f, 0.4f, 0.4f, 1.0f);
     D3DXVECTOR3 m_LightDir = D3DXVECTOR3(0.f, -1.f, 1.f);
 
+    _float m_UIOpenTime = 4.f;
+    _float m_UIDelayTime = 3.f;
 };

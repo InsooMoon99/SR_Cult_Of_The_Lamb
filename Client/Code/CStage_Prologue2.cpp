@@ -19,6 +19,7 @@
 #include "CTrigger_Dungeon.h"
 #include "CUI_Dialogue.h"
 #include "CUI_MonsterHp.h"
+#include "CUI_Interactive.h"
 
 CStage_Prologue2::CStage_Prologue2(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -92,6 +93,11 @@ void CStage_Prologue2::Initialize_Scene()
         }
     }
 
+    m_DescriptionUI = CUI_Interactive::Create(m_GraphicDev);
+    m_DescriptionUI->Set_TextureIndex(5);
+    m_DescriptionUI->Get_Transform()->Set_Pos(_vec3(0.f, 0.f, 1.f));
+    m_DescriptionUI->Get_Transform()->Set_Scale(_vec3(200.f,35.f,1.f));
+
 }
 
 _int CStage_Prologue2::Update_Scene(const _float& timeDelta)
@@ -99,6 +105,26 @@ _int CStage_Prologue2::Update_Scene(const _float& timeDelta)
     _int exit = Engine::CScene::Update_Scene(timeDelta);
 
     Rebirth_End();
+
+    if (m_UIDelayTime > 0.f)
+    {
+        m_UIDelayTime -= timeDelta;
+
+        return 0;
+    }
+
+    if (m_UIOpenTime >= 0.f)
+    {
+        m_UIOpenTime -= timeDelta;
+
+        m_DescriptionUI->Set_IsActive(true);
+
+        if (m_UIOpenTime <= 0.f)
+        {
+            m_DescriptionUI->Set_IsActive(false);
+            m_UIOpenTime = 0.f;
+        }
+    }
 
     return exit;
 }
@@ -240,6 +266,9 @@ HRESULT CStage_Prologue2::Ready_UI_Layer(LAYERTYPE layerType)
 
     m_Dialogue = CUI_Dialogue::Create(m_GraphicDev);
     layer->Add_GameObject(OBJTYPE::UI, m_Dialogue);
+
+
+    
 
     m_Layers.insert({ layerType, layer });
 
