@@ -123,9 +123,14 @@ static void State_Inspector(CState* state)
             "PLAYER_GAUNTLET_HEAVY",
             "PLAYER_SKILL_CHARGING", "PLAYER_SKILL_SINGLE", "PLAYER_SKILL_TRIPLE",
             "HIT",
-            "PLAYER_ACTION", "PLAYER_WOOD", "PLAYER_STONE", "PLAYER_BERRY",
+            "PLAYER_ACTION",
+            "PLAYER_WOOD", "PLAYER_STONE", "PLAYER_BERRY",
             "PLAYER_WEAPONGET", "PLAYER_HAMMER",
+            "PLAYER_WARPOUT", "PLAYER_WARPIN", 
             "PLAYER_DECIDE", "PLAYER_REFUSE",
+            "KNEEL", "KNEEL_WAKE",
+            "PLAYER_REBIRTH", 
+            "NPC_IDLE",
             "DEAD",
             "STATE_END"
         };

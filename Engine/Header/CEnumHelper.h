@@ -111,6 +111,10 @@ static const char* ToString(ACTORSTATE state)
 
     case ACTORSTATE::KNEEL:                  return "Kneel";
     case ACTORSTATE::NPC_IDLE:               return "NPC_Idle";
+    case ACTORSTATE::PLAYER_WARPOUT:         return "Player_WarpOut";
+    case ACTORSTATE::PLAYER_WARPIN:          return "Player WarpIn";
+    case ACTORSTATE::KNEEL_WAKE:             return "Player_Kneel_Wake";
+    case ACTORSTATE::PLAYER_REBIRTH:         return "Player_Rebirth";
     default:                                 return "UnknownState";
     }
 }
