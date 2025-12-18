@@ -42,7 +42,7 @@ HRESULT CTarotNPC::Ready_GameObject()
     if (FAILED(CCharacterBase::Ready_GameObject()))
         return E_FAIL;
 
-    m_TransformCom->Set_Pos(181.f, 2.f, 30.5f);
+    m_TransformCom->Set_Pos(331.f, 2.f, 130.5f);
     m_TransformCom->Set_Scale(3.f, 3.f, 3.f);
     m_BoxColCom->Set_RawSize(_vec3(2.f, 2.f,2.f));
 

@@ -86,7 +86,14 @@ void CUI_Fade::Render_GameObject()
     CUI::Render_GameObject();
 
     if (!m_IsActive)
+    {
+        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+        m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+        m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+        m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
         return;
+    }
+
 
     m_TransformCom->Set_Pos(0.f, 0.f, 0.f);
     m_TransformCom->Set_Scale(WINCX, WINCY, 1.f);

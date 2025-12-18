@@ -71,11 +71,20 @@ public:
 
     void    Create_Trigger_Between(Room fromRoom,
         _vec3 offsetFromRoom, _vec3 size, function<void()> callback);
+
+    // 양방향 가능 트리거
+    void    Create_BiDirectional_Trigger(
+        Room roomA, _vec3 offsetA,    // A방 출구 위치
+        Room roomB, _vec3 offsetB,    // B방 출구 위치
+        _vec3 size);
+
     void    EnterDungeon();
     void    Change_Room(Room room);
+
+
     CRunLootLog& Get_RunLootLog() { return m_RunLootLog; }
-    _float  Get_Timer() { return m_Timer; }
-    void    Set_TimerRunning(bool timerRunning) { m_TimerRunning = timerRunning; }
+    _float       Get_Timer() { return m_Timer; }
+    void         Set_TimerRunning(bool timerRunning) { m_TimerRunning = timerRunning; }
 
     // 몬스터 죽었을 때 호출
     void    OnMonsterDeath(CGameObject* obj) override;
@@ -96,6 +105,8 @@ public:
 private:
     void Free() override;
     void Fade_Check(const _float timeDelta);
+    void Connect_Rooms();
+    void Set_SpawnPos();
 
 private:
     CCombatStat*    m_PlayerCombatStatCom;
@@ -104,9 +115,15 @@ private:
 
     map<Room, CTerrain*> m_Terrains {};
 
+    // 연결된 방들
+    map<Room, vector<Room>> m_ConnectRooms;
+
+    map<pair<Room, Room>, _vec3> m_SpawnPositions;
+
 private:
-    RoomData        m_RoomData[5];   // 5개 방 미리 생성
+    RoomData        m_RoomData[static_cast<_int>(Room::DUNGEON_END)];
     Room            m_CurrentRoom;   // 현재 방
+    Room            m_FromRoom = Room::DUNGEON_END;
 
     CGameObject*    m_Player;
     CTransform*     m_PlayerTransform;
@@ -134,7 +151,7 @@ private:
     _bool           m_Start;
 
     CGameObject* m_Boss = nullptr;
-    CUI_BossHp* m_BossHpbar = nullptr;
+    CUI_BossHp*  m_BossHpbar = nullptr;
 };
 
 
