@@ -490,7 +490,7 @@ void CPlayerController::Action_Idle(const _float& timeDelta)
 
 void CPlayerController::Action_Run(const _float& timeDelta)
 {
-#pragma region 플레이어 달리기 효과음. 0.2초마다 재생
+#pragma region 플레이어 달리기 효과음. 달릴 때는 0.2초, 걸을 때는 0.6 초마다 재생
     g_Timers[TIMER_SOUND_PL_FOOTSTEP] -= timeDelta;
 
     if (g_Timers[TIMER_SOUND_PL_FOOTSTEP] < 0.f)
