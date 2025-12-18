@@ -216,6 +216,16 @@ void CEligos_Flies::OnBeginOverlap(CCollider* self, CCollider* other)
 
         Player_combat->Apply_Damage(hit);
 
+		CParticleHelper::Spawn_StaticBurstParticle(
+			m_TransformCom->Get_Pos(),					 // 위치
+			COMPONENTTYPE::TEX_MONSTER_HIT_PARTICLE,     // 텍스처 타입
+			9,											 // 생성할 개수
+			0.12f, 0.15f,								 // 크기 범위
+			4,											 // 텍스처 랜덤으로 몇개 출력
+			19.f,										 // 땅에 떨어지는 속도
+			0.5f										 // 바닥 Y
+		);
+
         // 나 죽을 수 있게 
         m_flyDie =true;
     }

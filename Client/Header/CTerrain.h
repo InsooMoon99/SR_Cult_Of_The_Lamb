@@ -48,6 +48,10 @@ public:
     // 오브젝트 소환
     void    Spawn_Objects(CLayer* layer);
 
+    // 활성화
+    void    Set_Active(_bool active) { m_IsActive = active; }
+    _bool   Is_Active() { return m_IsActive; }
+
 private:
     HRESULT Add_Component() override;
     void    Set_Material() override;
@@ -73,5 +77,7 @@ private:
 
     _bool                       m_IsWallSpawn;
     _bool                       m_IsObjectSpawn;
+
+    _bool                       m_IsActive = true;
 };
 

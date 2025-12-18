@@ -63,6 +63,9 @@ void CTerrain::Initialize_GameObject()
 
 _int CTerrain::Update_GameObject(const _float& timeDelta)
 {
+    if (!m_IsActive)
+        return 0;
+
     _int exit = CRenderObject::Update_GameObject(timeDelta);
 
     // 벽 소환, 배치
@@ -151,6 +154,8 @@ void CTerrain::LateUpdate_GameObject(const _float& timeDelta)
 
 void CTerrain::Render_GameObject()
 {
+    if (!m_IsActive) return;
+
     Render_Setting();
 
     if (m_TerrainRendererCom)

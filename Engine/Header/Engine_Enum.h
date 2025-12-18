@@ -321,6 +321,7 @@ enum class ACTORSTATE
     // Kneel
     KNEEL,
     KNEEL_WAKE,
+    PLAYER_REBIRTH,
 
     NPC_IDLE,
 
@@ -357,6 +358,7 @@ enum class SCENETYPE
     SC_BOSS_STAGE2,
     SC_BOSS_PROLOGUE,
     SC_PROLOGUE2,
+    SC_DUNGEON_ENTRANCE,
 
     SC_EDIT,
 

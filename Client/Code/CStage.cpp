@@ -897,7 +897,7 @@ void CStage::Create_Trigger()
     trigger->Set_Callback([this]
     {
         CSceneMgr::GetInstance()->Change_SceneMgr(
-            SCENETYPE::SC_DUNGEON);
+            SCENETYPE::SC_DUNGEON_ENTRANCE);
     });
 
     gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);

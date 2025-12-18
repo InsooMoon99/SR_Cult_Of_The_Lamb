@@ -586,7 +586,7 @@ void CPlayer::Prologue_Animation_Setting()
     //?? 아직 뭔지 모름
     m_AnimatorCom->Create_Animation(L"Prologue_Rebirth",
         91, 0.04f,
-        _vec2(2.f, 2.f), _vec2(0.f, 0.f));
+        _vec2(2.07f, 2.78f), _vec2(0.f, 1.31f));
 
     // Knnel
     //!! 아직 스케일 불확실
