@@ -61,6 +61,7 @@
 #include "CUI_Text.h"
 #include "CState.h"
 #include "CRenderer.h"
+#include "CWorldInteractive.h"
 
 class CUIBuildMenu;
 
@@ -91,7 +92,7 @@ HRESULT CStage::Ready_Scene()
 
     if (FAILED(Ready_UI_Layer(LAYERTYPE::UI)))
         return E_FAIL;
-
+	
     if (FAILED(Ready_Light()))
         return E_FAIL;
 
@@ -695,7 +696,7 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
         L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
     tmpTree->Get_Transform()->Set_Pos(6.5f, 2.3f, 24.f);
     tmpTree->Check_WorldState();
-
+    m_WorldInteractive = tmpTree;
     ///////////////////////////////////////////////////////////////////
 
     // -----------------------------
@@ -835,7 +836,7 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
 
     m_PlayerGatherCom->Set_ProgressBar(uiProgressBar);
     m_PlayerConstructionCom->Set_ProgressBar(uiProgressBar);
-
+   // m_WorldInteractive->Set_ProgressBar(uiProgressBar);
     m_Layers.insert({ layerType, layer });
 
     return S_OK;

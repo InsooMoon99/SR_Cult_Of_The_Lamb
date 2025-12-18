@@ -1247,6 +1247,10 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey0.png");
     interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey1.png");
     interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey2.png");
+    interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey3.png");
+    interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey4.png");
+    interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey5.png");
+    interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey6.png");
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_INTERACTION, CTexture::Create(graphicDev, TEX_NORMAL, interactionTex))))
         return E_FAIL;

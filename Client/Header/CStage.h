@@ -17,6 +17,7 @@ class CPlayerConstruction;
 class CFollowerCow;
 class CKitchen;
 class CUI_Text;
+class CWorldInteractive;
 
 class CStage : public CScene
 {
@@ -74,7 +75,7 @@ private:
     _float               m_Alpha      = 0;
     _float               m_UIOpenTime = 3.f;
     _bool                m_StageBegin;
-
+    CWorldInteractive*   m_WorldInteractive;
     //CWorkBench*   m_WorkBench;
     //CKitchen*     m_Kitchen;
     //CFollowerCow* m_FollowerCow;

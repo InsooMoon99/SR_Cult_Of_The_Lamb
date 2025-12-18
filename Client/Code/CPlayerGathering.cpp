@@ -72,19 +72,13 @@ _int CPlayerGathering::Update_Component(const _float& timeDelta)
         if (m_ProgressBar)  // nullptr 체크 추가
             m_ProgressBar->Set_IsActive(false);
 
-        if (m_Target)
-        {
-            cout << "타겟 존재" << endl;
-        }
         return exit;
     }
 
     if (m_Target && m_ProgressBar)
-    {
-        m_ProgressBar->Set_Progress(CalcProgress());
+	{
         m_ProgressBar->Set_IsActive(true);
-
-        CCombatStat* combat = dynamic_cast<CCombatStat*>(m_Target->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
+		m_ProgressBar->Set_Progress(m_Target->CalcProgress());
       
     }
     //애니메이션 방향 결정
@@ -192,17 +186,6 @@ void CPlayerGathering::OnEndOverlap(CCollider* self, CCollider* other)
 {
     if (other->Get_Owner() == m_Target)
         m_Target = nullptr;
-}
-
-_float CPlayerGathering::CalcProgress()
-{
-    CCombatStat* combat = dynamic_cast<CCombatStat*>(m_Target->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
-    _float cur = (_float)combat->Get_Hp();
-    _float max = (_float)combat->Get_MaxHp();
-
-   m_Progress = (1.f - cur / max);
-
-   return std::clamp(m_Progress, 0.f, 1.f);
 }
 
 CPlayerGathering* CPlayerGathering::Create(DEVICE graphicDev)
