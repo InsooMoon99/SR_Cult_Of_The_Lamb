@@ -84,6 +84,8 @@ void CRenderer::Render_NonAlpha(DEVICE& graphicDev)
 void CRenderer::Render_Alpha(DEVICE& graphicDev)
 {
     // 알파 정렬
+    //!! 이걸 켜면 반투명 오브젝트 뒤에 불투명 오브젝트가 가려지는 문제가 해결되지만
+    //!! 렉 유발의 주범이라 꺼놓음. 왠만하면 사용하지 말 것
     //_matrix matView, matCam;
     //graphicDev->GetTransform(D3DTS_VIEW, &matView);
     //D3DXMatrixInverse(&matCam, nullptr, &matView);
