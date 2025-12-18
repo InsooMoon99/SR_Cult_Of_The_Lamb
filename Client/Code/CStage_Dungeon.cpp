@@ -722,10 +722,65 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
     grass->Set_EnableHoverCheck(false);
     grass->Check_WorldState();
 
+    Grass(m_GraphicDev, layer);
+
     m_Layers.insert({ layerType, layer });
     return S_OK;
 }
+HRESULT CStage_Dungeon::Grass(DEVICE m_GraphicDev ,CLayer* layer)
+{
+    CInteractiveGrass* grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(117.6f, 0.7f, 10.6f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
 
+    //
+    grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(117.6f, 0.7f, 12.3f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
+
+    //
+    grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(116.1f, 0.7f, 11.2f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
+    //
+    grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(119.1f, 0.7f, 11.2f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
+    //
+    grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(107.9f, 0.7f, 16.7f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
+
+    //
+    grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(108.6, 0.7f, 15.7f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
+
+}
 HRESULT CStage_Dungeon::Ready_UI_Layer(LAYERTYPE layerType)
 {
     auto layer = Engine::CLayer::Create();
