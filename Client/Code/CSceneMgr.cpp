@@ -15,6 +15,7 @@
 #include "CUI_Fade.h"
 #include "CStage_Prologue_Boss.h"
 #include "CLightMgr.h"
+#include "CStage_DungeonEntrance.h"
 #include "CStage_Prologue.h"
 #include "CStage_Prologue2.h"
 
@@ -109,11 +110,17 @@ void CSceneMgr::Change_SceneMgr(SCENETYPE typeInput)
         case SCENETYPE::SC_BOSS_PROLOGUE:
             CManagement::GetInstance()->Request_ChangeScene(CStage_Prologue_Boss::Create(m_GraphicDev));
             break;
+
         case SCENETYPE::SC_PROLOGUE:
             CManagement::GetInstance()->Request_ChangeScene(CStage_Prologue::Create(m_GraphicDev));
             break;
+
         case SCENETYPE::SC_PROLOGUE2:
             CManagement::GetInstance()->Request_ChangeScene(CStage_Prologue2::Create(m_GraphicDev));
+            break;
+
+        case SCENETYPE::SC_DUNGEON_ENTRANCE:
+            CManagement::GetInstance()->Request_ChangeScene(CStage_DungeonEntrance::Create(m_GraphicDev));
             break;
 
         default:
@@ -192,6 +199,10 @@ void CSceneMgr::Update_SceneMgr(const _float& timeDelta)
 
         case SCENETYPE::SC_PROLOGUE2:
             CManagement::GetInstance()->Request_ChangeScene(CStage_Prologue2::Create(m_GraphicDev));
+            break;
+
+        case SCENETYPE::SC_DUNGEON_ENTRANCE:
+            CManagement::GetInstance()->Request_ChangeScene(CStage_DungeonEntrance::Create(m_GraphicDev));
             break;
 
         default:
