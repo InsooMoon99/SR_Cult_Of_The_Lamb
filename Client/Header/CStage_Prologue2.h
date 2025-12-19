@@ -106,10 +106,10 @@ private:
 
     vector<CGameObject*> m_Monsters;
 
-    D3DXCOLOR            m_LightDiffuse = D3DXCOLOR(0.631f, 0.345f, 0.345f, 1.0f);
-    D3DXCOLOR            m_LightAmbient = D3DXCOLOR(0.710f, 0.463f, 0.463f, 1.0f);
-    D3DXCOLOR            m_LightSpecular = D3DXCOLOR(1.0f, 0.4f, 0.4f, 1.0f);
-    D3DXVECTOR3          m_LightDir = D3DXVECTOR3(0.f, -1.f, 1.f);
+    D3DXCOLOR m_LightDiffuse = D3DXCOLOR(0.545f, 0.231f, 0.231f, 1.0f);
+    D3DXCOLOR m_LightAmbient = D3DXCOLOR(0.537f, 0.278f, 0.278f, 1.0f);
+    D3DXCOLOR m_LightSpecular = D3DXCOLOR(1.0f, 0.4f, 0.4f, 1.0f);
+    D3DXVECTOR3 m_LightDir = D3DXVECTOR3(0.f, -1.f, 1.f);
 
     _float m_UIOpenTime = 4.f;
     _float m_UIDelayTime = 3.f;

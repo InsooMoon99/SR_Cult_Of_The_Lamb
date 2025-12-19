@@ -24,10 +24,10 @@ public:
     void    OnBeginOverlap(CCollider* self, CCollider* other) override;
     void    OnEndOverlap(CCollider* self, CCollider* other) override;
 
-    DEVICE  Get_GraphicDev() { return m_GraphicDev; }
-    bool  Get_OnWall() { return m_OnWall; }
-    void SetRandDir(_vec3 dir) { m_RandDir = dir; }
-    _vec3 GetRandDir() { return m_RandDir; }
+    DEVICE Get_GraphicDev() override { return m_GraphicDev; }
+    bool   Get_OnWall() { return m_OnWall; }
+    void   SetRandDir(_vec3 dir) { m_RandDir = dir; }
+    _vec3  GetRandDir() { return m_RandDir; }
 private:
     HRESULT Add_Component() override;
     void    Animation_Setting() override;

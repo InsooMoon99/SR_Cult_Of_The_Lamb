@@ -30,7 +30,7 @@ void CNPCState_Spawn::Enter()
 
     CSoundMgr::GetInstance()->Play_Once(L"Follower/Follower_Start_Indo.wav",
                                         SOUND_EFFECT,
-                                        0.38f);
+                                        0.3f);
 
     auto camController = dynamic_cast<CCameraController*>(
         CManagement::GetInstance()->Get_Component(

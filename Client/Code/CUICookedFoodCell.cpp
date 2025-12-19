@@ -29,6 +29,7 @@ HRESULT CUICookedFoodCell::Ready_GameObject()
 
     //셀 크기 지정
     m_TransformCom->Set_Scale(70.f, 70.f, 0.f);
+    m_TransformCom->Set_Pos(WINCX, WINCY, 0.f);
 
     //셀 아이템 그리기용 객체 생성
     m_ItemIcon = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_ITEM); //아이템 텍스처

@@ -147,7 +147,7 @@ _int CUIBuildMenu::Update_GameObject(const _float& timeDelta)
     m_DecoIcon2->Update_GameObject(timeDelta);
     m_InteractionKey->Update_GameObject(timeDelta);
 
-	if (CDInputMgr::GetInstance()->KeyDown(DIK_E) && m_IsOpen == true)
+	if (CDInputMgr::GetInstance()->MouseDown(DIM_RB) && m_IsOpen == true)
 	{
 		CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Close_Menu.wav", SOUNDTYPE::SOUND_UI, 1.f);
 		PlayCloseAnimation();
