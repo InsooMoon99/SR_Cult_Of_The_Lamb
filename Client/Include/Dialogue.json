@@ -113,12 +113,20 @@
         {
           "lineIndex": 1,
           "speaker": "기다리는 자",
-          "text": "난 이제 네 자비 아래에 놓인다. 넌 복수를 외치는 거짓된 우상이 되려는가, 이제 네 사악한 행동으로 나를 비난할 순 없으리라.",
+          "text": "난 이제 네 자비 아래에 놓인다.",
+          "hasChoices": false,
+          "voicePath": "Boss/Dialogue/DeathCat/Deathcat7.wav",
+          "leftPadding": 60.0
+        },
+        {
+          "lineIndex": 2,
+          "speaker": "기다리는 자",
+          "text": "넌 복수를 외치는 거짓된 우상이 되려는가, 이제 네 사악한 행동으로 나를 비난할 순 없으리라.",
           "hasChoices": false,
           "voicePath": "Boss/Dialogue/DeathCat/Deathcat7.wav"
         },
         {
-          "lineIndex": 2,
+          "lineIndex": 3,
           "speaker": "어떻게 하시겠습니까?",
           "text": "",
           "hasChoices": true,

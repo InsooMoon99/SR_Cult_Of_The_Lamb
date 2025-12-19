@@ -723,8 +723,8 @@ void CPlayerController::Action_Sacrifice(const _float& timeDelta)
 
     NULL_CHECK(animator);
 
-    if (animator->Get_CurKey() != L"Player_Sacrifice")
-        animator->Play_Animation(L"Player_Sacrifice", ANIMSTATE::ONCE);
+    if (animator->Get_CurKey() != L"Finish_Sacrifice")
+        animator->Play_Animation(L"Finish_Sacrifice", ANIMSTATE::ONCE);
 
     if (animator->Is_AnimationFinished())
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);

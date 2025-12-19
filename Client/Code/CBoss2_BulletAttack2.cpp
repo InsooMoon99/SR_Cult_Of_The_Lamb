@@ -105,7 +105,7 @@ void CBoss2_BulletAttack2::PlayRoar()
 
     if (animator && animator->Is_AnimationFinished())
     {
-        m_IsFinished = false;
+        m_IsFinished = true;
     }
 }
 

@@ -462,7 +462,7 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
 
     // Sacrifice
     if (FAILED(playerTex->Add_Texture(L"Finish_Sacrifice", TEX_NORMAL,
-        L"../Bin/Resource/Texture/Player/Sacrifice/Lamb-sacrifice-long1.png", 109)))
+        L"../Bin/Resource/Texture/Player/Sacrifice/Lamb-sacrifice-long%d.png", 109)))
         return E_FAIL;
 
     // Rebirth
@@ -901,7 +901,7 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
         return E_FAIL;
 
     if (FAILED(bossPhase2->Add_Texture(L"Boss2_Follower_Die", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase2/Slave/DeathCat/Die/TOWW_Die1.png", 96)))
+        L"../Bin/Resource/Texture/BossPhase2/Slave/DeathCat/Die/TOWW_Die%d.png", 96)))
         return E_FAIL;
 
 
