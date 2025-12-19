@@ -23,6 +23,7 @@ public:
         PHASE2_GROGGY,
         PHASE2_DEAD,
         PHASE2_FOLLOWER,
+        PHASE2_FOLLOWER_DIE,
 
         PHASE2_END
 

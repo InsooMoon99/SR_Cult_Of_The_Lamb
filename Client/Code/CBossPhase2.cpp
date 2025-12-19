@@ -37,7 +37,7 @@ HRESULT CBossPhase2::Ready_GameObject()
     m_TransformCom->Set_Scale(_vec3(13.7f, 6.3f, 3.f));
     m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(25.f));
 
-    m_BoxColCom->Set_Size(_vec3(1.2f, 1.6f, 1.f));
+    m_BoxColCom->Set_Size(_vec3(1.2f, 1.6f, 1.75f));
     m_BoxColCom->Set_Offset(_vec3(0.f, -2.1f, 0.f));
 
     return S_OK;
@@ -69,7 +69,8 @@ _int CBossPhase2::Update_GameObject(const _float& timeDelta)
             {
                 _int curState = stateMachine->Get_CurStateNum();
 
-                if (curState != PATTERN::PHASE2_DEAD && curState != PATTERN::PHASE2_FOLLOWER)
+                if (curState != PATTERN::PHASE2_DEAD && curState != PATTERN::PHASE2_FOLLOWER &&
+                    curState != PATTERN::PHASE2_FOLLOWER_DIE)
                 {
                     stateMachine->Change_State(PATTERN::PHASE2_DEAD);
                 }
@@ -125,7 +126,7 @@ void CBossPhase2::Render_Setting()
     m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
 
     CMonsterBase::Render_Setting();
-
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
 }
 
 const char* CBossPhase2::Get_Boss2_StateName(_int stateNum)
@@ -144,6 +145,7 @@ const char* CBossPhase2::Get_Boss2_StateName(_int stateNum)
     case PHASE2_GROGGY:     return "PHASE_GROGGY";
     case PHASE2_DEAD:       return "PHASE2_DEAD";
     case PHASE2_FOLLOWER:   return "PHASE2_FOLLOWER";
+    case PHASE2_FOLLOWER_DIE:   return "PHASE2_FOLLOWER_DIE";
     case PHASE2_END:        return "PHASE2_END";
     }
     return "UNKNOWN";

@@ -396,8 +396,8 @@ void CDroppedItem::Player_ZoomIn(CPlayer* ply)
                     CCamSetupBuilder(camController)
                         .SetTarget(ply->Get_Transform())
                         .Distance(11.f)
-                        .LagSpeed(4.5f)
-                        .ZoomSpeed(4.f)
+                        .LagSpeed(2.5f)
+                        .ZoomSpeed(2.f)
                         .Apply();
                 });
 
