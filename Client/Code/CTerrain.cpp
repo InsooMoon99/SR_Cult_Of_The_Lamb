@@ -279,7 +279,9 @@ void CTerrain::Spawn_Chest()
     if (!chest)
         return;
 
-    chest->AddItem(1001, 10);
+    chest->AddItem(1001, 4);
+    chest->AddItem(1004, 2);
+    chest->AddItem(1005, 1);
     layer->Add_GameObject(OBJTYPE::ITEM, chest);
     chest->Initialize_GameObject();
 }
