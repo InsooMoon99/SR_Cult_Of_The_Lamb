@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+﻿﻿#include "pch.h"
 #include "CStage_Dungeon.h"
 #include "CCreateHelper.h"
 #include "CCameraController.h"
@@ -237,54 +237,54 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
 
         return 0;
     }
-	if (m_UIOpenTime > 0.f)
-	{
-		m_UIOpenTime -= timeDelta;
+    if (m_UIOpenTime > 0.f)
+    {
+        m_UIOpenTime -= timeDelta;
 
-		if (m_UIOpenTime <= 0.f)
-		{
-			m_UIOpenTime = 0.f;
-			if (m_EligosNameUI)
-				m_EligosNameUI->Set_IsActive(false);
-		}
-	}
+        if (m_UIOpenTime <= 0.f)
+        {
+            m_UIOpenTime = 0.f;
+            if (m_EligosNameUI)
+                m_EligosNameUI->Set_IsActive(false);
+        }
+    }
 
-	if (m_BossIntroPhase == BossIntroPhase::HOLDING)
-	{
-		// 1) 홀드 중간에 폰트 켜기 (한 번만)
-		if (!m_BossNameShown)
-		{
-			m_BossNameDelay -= timeDelta;
-			if (m_BossNameDelay <= 0.f)
-			{
-				m_BossNameShown = true;
+    if (m_BossIntroPhase == BossIntroPhase::HOLDING)
+    {
+        // 1) 홀드 중간에 폰트 켜기 (한 번만)
+        if (!m_BossNameShown)
+        {
+            m_BossNameDelay -= timeDelta;
+            if (m_BossNameDelay <= 0.f)
+            {
+                m_BossNameShown = true;
 
-				// 폰트 ON + 지속시간 시작
-				m_UIOpenTime = 2.f;
-				if (m_EligosNameUI)
-					m_EligosNameUI->Set_IsActive(true);
-			}
-		}
+                // 폰트 ON + 지속시간 시작
+                m_UIOpenTime = 2.f;
+                if (m_EligosNameUI)
+                    m_EligosNameUI->Set_IsActive(true);
+            }
+        }
 
-		// 2) 홀드 시간 감소
-		m_BossHoldTime -= timeDelta;
+        // 2) 홀드 시간 감소
+        m_BossHoldTime -= timeDelta;
 
-		// 3) 홀드 끝나면 카메라 복귀는 딱 1번
-		if (m_BossHoldTime <= 0.f)
-		{
-			CCamSetupBuilder(m_CamController)
-				.SetTarget(m_PlayerTransform)
-				.Distance(11.f)
-				.LagSpeed(3.f)
-				.ZoomSpeed(3.f)
-				.Apply();
+        // 3) 홀드 끝나면 카메라 복귀는 딱 1번
+        if (m_BossHoldTime <= 0.f)
+        {
+            CCamSetupBuilder(m_CamController)
+                .SetTarget(m_PlayerTransform)
+                .Distance(11.f)
+                .LagSpeed(3.f)
+                .ZoomSpeed(3.f)
+                .Apply();
 
-			// 필요하면 여기서 Setup_DynamicCam_For_Boss() 호출
-			// Setup_DynamicCam_For_Boss();
+            // 필요하면 여기서 Setup_DynamicCam_For_Boss() 호출
+            // Setup_DynamicCam_For_Boss();
 
-			m_BossIntroPhase = BossIntroPhase::DONE;
-		}
-	}
+            m_BossIntroPhase = BossIntroPhase::DONE;
+        }
+    }
 
     _int exit = Engine::CScene::Update_Scene(timeDelta);
 
@@ -382,8 +382,8 @@ void CStage_Dungeon::Spawn_FollowerCow_Rescue(_vec3* pSpawnPos)
         }
         else
         {
-             spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
-             spawnPos += _vec3(6.f, 1.f, 8.f);
+            spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
+            spawnPos += _vec3(6.f, 1.f, 8.f);
         }
 
         cowTransform->Set_Pos(spawnPos);
@@ -524,7 +524,7 @@ void CStage_Dungeon::Create_RoomTriggers()
                 m_Boss->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
             m_BTransform->Set_Pos({ 318, 3, 310 });
 
- 
+
             // 카메라 연출
 
                 // 첫 번째 연출 끝났을 때 콜백
@@ -536,22 +536,22 @@ void CStage_Dungeon::Create_RoomTriggers()
                 .LagSpeed(3.f)
                 .ZoomSpeed(3.f)
                 .Apply();
-			m_BossIntroPhase = BossIntroPhase::ZOOMING;
+            m_BossIntroPhase = BossIntroPhase::ZOOMING;
 
-			// 줌(전환) 끝났을 때 -> 홀드 시작 예약
-			m_CamController->Get_OwnerCamMovement()->Set_OnTransitionEnd([this]()
-				{
-					m_BossIntroPhase = BossIntroPhase::HOLDING;
+            // 줌(전환) 끝났을 때 -> 홀드 시작 예약
+            m_CamController->Get_OwnerCamMovement()->Set_OnTransitionEnd([this]()
+                {
+                    m_BossIntroPhase = BossIntroPhase::HOLDING;
 
-					m_BossHoldTime = 2.f;
-					m_BossNameDelay = 0.5f;   // 홀드 시작 후 1초 뒤 폰트
-					m_BossNameShown = false;
+                    m_BossHoldTime = 2.f;
+                    m_BossNameDelay = 0.5f;   // 홀드 시작 후 1초 뒤 폰트
+                    m_BossNameShown = false;
 
-					m_UIOpenTime = 0.f;   // 아직 안 켠 상태
-					m_EligosNameUI->Set_IsActive(false);
-				});
-		
-           
+                    m_UIOpenTime = 0.f;   // 아직 안 켠 상태
+                    m_EligosNameUI->Set_IsActive(false);
+                });
+
+
             // 방 이동
             Change_Room(Room::BOSS);
 
@@ -825,7 +825,7 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
     m_Layers.insert({ layerType, layer });
     return S_OK;
 }
-HRESULT CStage_Dungeon::Grass(DEVICE m_GraphicDev ,CLayer* layer)
+HRESULT CStage_Dungeon::Grass(DEVICE m_GraphicDev, CLayer* layer)
 {
     CInteractiveGrass* grass = CInteractiveGrass::Create(m_GraphicDev);
     NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
