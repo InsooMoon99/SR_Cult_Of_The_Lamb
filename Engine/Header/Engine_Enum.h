@@ -323,6 +323,7 @@ enum class ACTORSTATE
     KNEEL,
     KNEEL_WAKE,
     PLAYER_REBIRTH,
+    PLAYER_SACRIFICE,
 
     NPC_IDLE,
 

@@ -251,7 +251,7 @@ HRESULT CStage_Prologue2::Ready_GameLogic_Layer(LAYERTYPE layerType)
         gameObject = CHumanMonster::Create(m_GraphicDev);
         layer->Add_GameObject(OBJTYPE::MONSTER, gameObject);
 
-        gameObject->Get_Transform()->Set_Pos(18.9f, 1.f, 41.6f);
+        gameObject->Get_Transform()->Set_Pos(17.9f, 1.f, 41.4f);
         dynamic_cast<CHumanMonster*>(gameObject)->Set_Battle(false);
         m_Monsters.push_back(gameObject);
     }
@@ -261,7 +261,27 @@ HRESULT CStage_Prologue2::Ready_GameLogic_Layer(LAYERTYPE layerType)
         gameObject = CHumanMonster::Create(m_GraphicDev);
         layer->Add_GameObject(OBJTYPE::MONSTER, gameObject);
 
-        gameObject->Get_Transform()->Set_Pos(13.9f, 1.f, 41.6f);
+        gameObject->Get_Transform()->Set_Pos(12.3f, 1.f, 41.4f);
+        dynamic_cast<CHumanMonster*>(gameObject)->Set_Battle(false);
+        m_Monsters.push_back(gameObject);
+    }
+
+    // Monster3
+    {
+        gameObject = CHumanMonster::Create(m_GraphicDev);
+        layer->Add_GameObject(OBJTYPE::MONSTER, gameObject);
+
+        gameObject->Get_Transform()->Set_Pos(12.3f, 1.f, 45.4f);
+        dynamic_cast<CHumanMonster*>(gameObject)->Set_Battle(false);
+        m_Monsters.push_back(gameObject);
+    }
+
+    // Monster4
+    {
+        gameObject = CHumanMonster::Create(m_GraphicDev);
+        layer->Add_GameObject(OBJTYPE::MONSTER, gameObject);
+
+        gameObject->Get_Transform()->Set_Pos(17.9f, 1.f, 45.4f);
         dynamic_cast<CHumanMonster*>(gameObject)->Set_Battle(false);
         m_Monsters.push_back(gameObject);
     }
@@ -363,7 +383,7 @@ void CStage_Prologue2::Create_RoomTriggers()
     // MIDDLE1 <-> MIDDLE2
     Create_BiDirectional_Trigger(
         Room::MIDDLE1, _vec3(34.f, 1.f, 11.6f),       // 3
-        Room::MIDDLE2, _vec3(12.f, 1.f, -2.f),        // 4
+        Room::MIDDLE2, _vec3(-22.f, 1.f, 4.7f),        // 4
         _vec3(5.f, 5.f, 4.5f));
 
     // MIDDLE2 <-> END_ROOM
@@ -502,7 +522,7 @@ void CStage_Prologue2::Set_SpawnPos()
     m_SpawnPositions[{Room::MIDDLE1, Room::START}] = { 24.f, 1.f, 5.f };
 
     // MIDDLE1 -> MIDDLE2
-    m_SpawnPositions[{Room::MIDDLE1, Room::MIDDLE2}] = { 212.f, 1.f, 1.75f };
+    m_SpawnPositions[{Room::MIDDLE1, Room::MIDDLE2}] = { 202.f, 1.f, 5.538f };
     m_SpawnPositions[{Room::MIDDLE2, Room::MIDDLE1}] = { 130.f, 1.f, 11.2f };
 
     // MIDDLE2 -> END_ROOM
@@ -613,7 +633,8 @@ void CStage_Prologue2::Set_RoomData()
 
             terrain->LoadMapOnStart(m_RoomData[static_cast<_int>(room)].terrainFilePath.c_str());
 
-            terrain->Set_ChestSpawnPos(m_RoomData[static_cast<_int>(room)].chestSpawnPos);
+            // 보물상자 소환 ㄴ 어차피 인벤토리가 없다. Clear UI도 배제.
+            //terrain->Set_ChestSpawnPos(m_RoomData[static_cast<_int>(room)].chestSpawnPos);
         }
     }
 
@@ -636,6 +657,8 @@ void CStage_Prologue2::Rebirth_End()
 
         if (playerAnimator && playerAnimator->Is_AnimationFinished())
         {
+            CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Battle1.wav", 0.22f, true, 1.f);
+
             m_IsRebirthPlaying = false;
 
             auto player = dynamic_cast<CPlayer*>(m_Player);

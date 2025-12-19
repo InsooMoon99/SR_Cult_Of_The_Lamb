@@ -29,10 +29,10 @@ public:
     _int    Update_GameObject(const _float& timeDelta) override;
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
-    void    Set_Active(bool isActive) { m_Active = isActive; }
+    void    Set_Active(bool isActive);
 
     static CTarotStageController* Create(DEVICE graphicDev);
-    void Create_Cards();
+    void                          Create_Cards();
 
     HRESULT Add_Component();
 
@@ -40,16 +40,20 @@ protected:
     void Free() override;
 
 private:
-    STAGESTATE             m_CurrentState;
-    CUITarotCard* m_TarotCard1;
-    CUITarotCard* m_TarotCard2;
+    STAGESTATE        m_CurrentState;
+    CUITarotCard*     m_TarotCard1;
+    CUITarotCard*     m_TarotCard2;
     CUITarotDescCard* m_ExplainCard1;
     CUITarotDescCard* m_ExplainCard2;
-    CUI_Dialogue* m_Dialogue;
-    _float                 m_WaitingTime = 5.f;
+    CUI_Dialogue*     m_Dialogue;
+    _float            m_WaitingTime = 5.f;
 
-    _bool                  m_DialogueStarted = false;
-    _bool                  m_DialogueEnded = false;
-    _bool                  m_SoundEnded = false;
-    _bool                  m_IsChoiced = false;
+    _bool m_DialogueStarted = false;
+    _bool m_DialogueEnded   = false;
+    _bool m_SoundEnded      = false;
+    _bool m_IsChoiced       = false;
+
+public: // 스태틱 멤버로 외부에서 UI 작동 중인지 파악
+    static _bool g_IsTarotUIActive; 
+    static _bool IsGlobalActive() { return g_IsTarotUIActive; }
 };

@@ -52,10 +52,10 @@ void CPlayerConstruction::Action_Construction(const _float& timeDelta)
             m_ProgressBar->Set_IsActive(true);
         }
 
-#pragma region 건축 효과음. 0.565초마다 재생
+#pragma region 건축 효과음. 0.57초마다 재생
         g_Timers[TIMER_SOUND_PL_CONSTRUCT] += timeDelta;
 
-        if (g_Timers[TIMER_SOUND_PL_CONSTRUCT] >= 0.565f)
+        if (g_Timers[TIMER_SOUND_PL_CONSTRUCT] >= 0.57f)
         {
             CSoundMgr::GetInstance()->Play_Once(L"Construction/Hammering_2.wav", SOUND_EFFECT, 1.f);
             g_Timers[TIMER_SOUND_PL_CONSTRUCT] = 0.f;

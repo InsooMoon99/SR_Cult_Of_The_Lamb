@@ -35,9 +35,11 @@ HRESULT CInteractiveGrass::Ready_GameObject()
     if (m_BoxColCom)
     {
         m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::INTERACTIVEOBJ);
-        m_BoxColCom->Set_Size({ 3.f, 3.f, 3.f });
+        m_BoxColCom->Set_Size({ 1.f, 1.f, 1.f });
     }
     m_InventoryCom->SetInvenSlotNum(3);
+
+    m_TransformCom->Set_Pos(_vec3(30.f, 1.f, 30.f));
 
     return S_OK;
 }
@@ -47,7 +49,8 @@ void CInteractiveGrass::Initialize_GameObject()
     CWorldInteractive::Initialize_GameObject();
     ItemInstance Item = { 1003, -1, 0 };
 
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 1
+        ; i++)
     {
         m_InventoryCom->AddItem(Item);
     }
@@ -58,7 +61,8 @@ _int CInteractiveGrass::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CWorldInteractive::Update_GameObject(timeDelta);
 
-    
+    //m_TransformCom->Set_Pos(_vec3(30.f, 1.f, 30.f));
+
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
     if (m_CombatStatCom->Is_Dead() == true)
     {

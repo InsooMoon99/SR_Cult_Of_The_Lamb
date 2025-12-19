@@ -133,7 +133,7 @@ HRESULT CStage_DungeonEntrance::Ready_GameLogic_Layer(LAYERTYPE layerType)
 
     NULL_CHECK_RETURN(m_PlayerTransform, E_FAIL);
 
-    m_PlayerTransform->Set_Pos(_vec3(28.391f, 1.f, -1.3f));
+    m_PlayerTransform->Set_Pos(_vec3(28.391f, 1.f, 1.96f));
 
     // -----------------------------
     // Camera

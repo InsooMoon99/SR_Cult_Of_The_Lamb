@@ -1,4 +1,5 @@
 ﻿#include "pch.h"
+#include "CAnimator.h"
 #include "CStage_Boss2.h"
 #include "CBossPhase2.h"
 #include "CLayer.h"
@@ -329,7 +330,7 @@ void CStage_Boss2::Setup_BossCallbacks()
             Start_CameraMoving(CAM_MOVE_TYPE::BOSS_DEAD);
             m_CamController->Get_OwnerCamMovement()->Disable_DynamicDistance();
 
-            m_Player->Get_Transform()->Set_Pos(_vec3(48.3f, 1.0f, 43.837f));
+            m_Player->Get_Transform()->Set_Pos(_vec3(50.2f, 1.0f, 45.837f));
         });
 
     // 보스 죽고 NPC로 변신
@@ -498,13 +499,30 @@ void CStage_Boss2::OnDialogueEnd(const string& id)
         boss->Resume_Summon();
     }
 
-    else if (id == "Boss2_Dead")
+    if (id == "Boss2_Dead")
     {
         OnBoss2DeadEnd();
     }
-    else if (id == "Boss2_Ending")
+
+    if (id == "Boss2_Ending")
     {
-        
+        if (m_Boss)
+        {
+            auto bossAnimator = dynamic_cast<CAnimator*>(
+                m_Boss->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+
+            if (bossAnimator)
+                bossAnimator->Play_Animation(L"Boss2_Follower_Die", ANIMSTATE::ONCE);
+        }
+
+        if (m_Player)
+        {
+            auto stateCom = dynamic_cast<CState*>(
+                m_Player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
+
+            if (stateCom)
+                stateCom->Change_State(ACTORSTATE::PLAYER_SACRIFICE);
+        }
     }
 }
 
