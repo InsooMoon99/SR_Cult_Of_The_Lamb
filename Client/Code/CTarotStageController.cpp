@@ -10,6 +10,7 @@
 #include "CScene.h"
 #include "CLayer.h"
 #include "CSoundMgr.h"
+#include "CCombatStat.h"
 
 class CPlayerSkill;
 
@@ -218,7 +219,8 @@ void CTarotStageController::Create_Cards()
     m_TarotCard2->Get_Transform()->Set_Pos(250.f, 0.f, 1.f);
     m_TarotCard2->InitializeScale();
     CPlayerSkill* playerskill = dynamic_cast<CPlayerSkill*>(CManagement::GetInstance()->Get_Component(COMPONENTID::ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::PL_SKILL));
-    m_TarotCard2->SetOnClick([this, playerskill]() {playerskill->Set_SkillUnlocked(true); playerskill->Set_CurrentCharges(3); });
+    CCombatStat* combatstat = dynamic_cast<CCombatStat*>(CManagement::GetInstance()->Get_Component(ID_DYNAMIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::COMBATSTAT));
+    m_TarotCard2->SetOnClick([this, playerskill, combatstat]() {playerskill->Set_SkillUnlocked(true); playerskill->Set_CurrentCharges(3); combatstat->Set_Mp(100.f); });
 }
 
 void CTarotStageController::Free()
