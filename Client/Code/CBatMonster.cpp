@@ -37,7 +37,7 @@ HRESULT CBatMonster::Ready_GameObject()
     m_TransformCom->Set_Pos(_vec3(5.f, 1.f, 7.f));
     m_TransformCom->Set_Scale(_vec3(1.5f, 1.3f, 1.2f));
 
-    m_CombatStatCom->Set_MaxHp(750.f);
+    m_CombatStatCom->Set_MaxHp(150.f);
     m_CombatStatCom->Set_Speed(65.f);
     m_CombatStatCom->Set_HitState(false); // Hit State로 변경할건지
 
@@ -185,7 +185,7 @@ void CBatMonster::Update_State_Attack(const _float timeDelta)
         {
             m_ChargeDir = m_TargetDir;  
             m_ChargedDistance = 0.f;
-            m_ChargeDistance = 2.5f;     
+            m_ChargeDistance = 1.25f;     
         }
 
         if (m_AnimatorCom->Is_AnimationFinished())
@@ -198,6 +198,7 @@ void CBatMonster::Update_State_Attack(const _float timeDelta)
                 .Track(m_AttackBox)
                 .LifeTime(0.8f)
                 .DestroyOnHit(false)
+                .CollisionLayer(COLLISION_LAYERTYPE::ENEMY)
                 .InstigatorPos()  
                 .Knockback(50.f)
                 .Scale(_vec3(0.8f, 0.8f, 0.8f))
@@ -209,7 +210,7 @@ void CBatMonster::Update_State_Attack(const _float timeDelta)
     {
         if (m_ChargedDistance < m_ChargeDistance)
         {
-            _float speed = m_CombatStatCom->Get_Speed() * 0.2f;
+            _float speed = m_CombatStatCom->Get_Speed() * 0.07f;
             _float moveAmount = speed * timeDelta;
 
             if (m_AttackBox)
