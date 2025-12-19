@@ -14,12 +14,17 @@ CCombatStat::CCombatStat(DEVICE graphicDev)
       m_Attack(0),
       m_AttackSpeed(1.f),
       m_Hp(0),
-      m_MaxHp(6),
+      m_MaxHp(100),
       m_Mp(0),
-      m_MaxMp(10),
+      m_MaxMp(100),
       m_Speed(20),
       m_IsDead(false), m_CanHitState(true), m_IsInvincible(false), m_KnockbackTimer(0)
 {
+    m_Hp = m_MaxHp;
+    m_Mp = m_MaxMp;
+
+
+    m_IsDead = false;
 }
 
 CCombatStat::CCombatStat(const CCombatStat& rhs)

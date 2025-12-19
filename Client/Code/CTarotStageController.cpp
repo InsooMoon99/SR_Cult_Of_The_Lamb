@@ -11,6 +11,7 @@
 #include "CUITarotCard.h"
 #include "CUITarotDescCard.h"
 #include "CUI_Dialogue.h"
+#include "CCombatStat.h"
 
 #pragma region 스태틱 멤버 g_IsTarotUIActive로 외부에서 UI 작동 중인지 파악
 _bool CTarotStageController::g_IsTarotUIActive = false;
@@ -229,7 +230,8 @@ void CTarotStageController::Create_Cards()
     m_TarotCard2->Get_Transform()->Set_Pos(250.f, 0.f, 1.f);
     m_TarotCard2->InitializeScale();
     CPlayerSkill* playerskill = dynamic_cast<CPlayerSkill*>(CManagement::GetInstance()->Get_Component(COMPONENTID::ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::PL_SKILL));
-    m_TarotCard2->SetOnClick([this, playerskill]() {playerskill->Set_SkillUnlocked(true); playerskill->Set_CurrentCharges(3); });
+    CCombatStat* combatstat = dynamic_cast<CCombatStat*>(CManagement::GetInstance()->Get_Component(ID_DYNAMIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::COMBATSTAT));
+    m_TarotCard2->SetOnClick([this, playerskill, combatstat]() {playerskill->Set_SkillUnlocked(true); playerskill->Set_CurrentCharges(3); combatstat->Set_Mp(100.f); });
 }
 
 void CTarotStageController::Free()
