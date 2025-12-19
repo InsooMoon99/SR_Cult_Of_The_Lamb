@@ -78,6 +78,8 @@ public:
 private:
     void Free() override;
 
+    void Spawn_Weapon();
+
 private:
     CTerrain*           m_Terrain;
     CGameObject*        m_Boss;

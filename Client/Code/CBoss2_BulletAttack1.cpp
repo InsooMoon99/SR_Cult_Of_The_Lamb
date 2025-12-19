@@ -147,21 +147,23 @@ void CBoss2_BulletAttack1::Play_HandSlam()
 
         if (m_SlamCount == 0)
         {
-
-
             SpawnBullets_Horizontal(device);
+            SpawnBullets_Vertical_BottomToTop(device);
         }
         else if (m_SlamCount == 1)
         {
             SpawnBullets_Vertical_BottomToTop(device);
+            SpawnBullets_Horizontal(device);
         }
         else if (m_SlamCount == 2)
         {
             SpawnBullets_Horizontal(device);
+            SpawnBullets_Vertical_TopToBottom(device);
         }
         else if (m_SlamCount == 3)
         {
             SpawnBullets_Vertical_TopToBottom(device);
+            SpawnBullets_Horizontal(device);
         }
     }
 

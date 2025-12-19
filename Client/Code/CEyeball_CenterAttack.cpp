@@ -104,7 +104,7 @@ void CEyeball_CenterAttack::Exit()
     auto eyeball = static_cast<CEyeball*>(m_Owner);
     if (eyeball && eyeball->Get_Transform())
     {
-        eyeball->Get_Transform()->Set_Scale({ 1.f, 1.f, 1.f });
+        //eyeball->Get_Transform()->Set_Scale({ 1.f, 1.f, 1.f });
     }
 
 }

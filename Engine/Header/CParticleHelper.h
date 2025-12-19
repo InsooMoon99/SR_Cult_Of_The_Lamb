@@ -139,5 +139,41 @@ public:
             SpawnObjectOnLayer(particle, OBJTYPE::PARTICLE);
         }
     }
+
+    template<typename T = CParticle>
+    static T* Spawn_Particle_Random(
+        const _vec3& position,         
+        const wstring& animKey,        
+        _uint frameCount,              
+        _float randomRange = 1.f,      
+        _float randomRangeY = 0.5f,    
+        _float frameInterval = 0.05f,  
+        const _vec3& scale = _vec3(1.f, 1.f, 1.f),
+        const _vec3& baseOffset = _vec3(0.f, 0.f, 0.f),
+        COMPONENTTYPE textureType = COMPONENTTYPE::TEX_PARTICLE,
+        LAYERTYPE layer = LAYERTYPE::GAMELOGIC,
+        bool autoDestroy = true,
+        float lifetime = -1.f
+    )
+    {
+        // 랜덤 오프셋 생성
+        _vec3 randomOffset;
+        randomOffset.x = ((rand() % 200) - 100) / 150.f * randomRange;
+        randomOffset.y = ((rand() % 200) - 100) / 150.f * randomRangeY;
+        randomOffset.z = baseOffset.z;
+        _vec3 finalOffset = baseOffset + randomOffset;
+        return Spawn_Particle<T>(
+            position,
+            animKey,
+            frameCount,
+            frameInterval,
+            scale,
+            finalOffset,
+            textureType,
+            layer,
+            autoDestroy,
+            lifetime
+        );
+    }
 };
 

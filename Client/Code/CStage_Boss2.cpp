@@ -1,4 +1,5 @@
 ﻿#include "pch.h"
+#include "CAnimator.h"
 #include "CStage_Boss2.h"
 #include "CBossPhase2.h"
 #include "CLayer.h"
@@ -18,6 +19,7 @@
 #include "CCamSetupBuilder.h"
 #include "CUI_BossHp.h"
 #include "CLightMgr.h"
+#include "CMonsterController.h"
 #include "CUI_Dialogue.h"
 #include "CUIPlayerPanel.h"
 #include "CUIMp.h"
@@ -25,6 +27,7 @@
 #include "CUIWeapon.h"
 #include "CUIIcon.h"
 #include "CSoundMgr.h"
+#include "CStateMachine.h"
 
 CStage_Boss2::CStage_Boss2(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -329,7 +332,13 @@ void CStage_Boss2::Setup_BossCallbacks()
             Start_CameraMoving(CAM_MOVE_TYPE::BOSS_DEAD);
             m_CamController->Get_OwnerCamMovement()->Disable_DynamicDistance();
 
-            m_Player->Get_Transform()->Set_Pos(_vec3(48.3f, 1.0f, 43.837f));
+            m_Player->Get_Transform()->Set_Pos(_vec3(50.2f, 1.0f, 45.837f));
+
+            auto stateCom = dynamic_cast<CState*>(
+                m_Player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
+
+            if (stateCom)
+                stateCom->Change_Dir(ACTORDIR::LEFT);
         });
 
     // 보스 죽고 NPC로 변신
@@ -498,13 +507,29 @@ void CStage_Boss2::OnDialogueEnd(const string& id)
         boss->Resume_Summon();
     }
 
-    else if (id == "Boss2_Dead")
+    if (id == "Boss2_Dead")
     {
         OnBoss2DeadEnd();
     }
-    else if (id == "Boss2_Ending")
+
+    if (id == "Boss2_Ending")
     {
-        
+        auto boss = dynamic_cast<CBossPhase2*>(m_Boss);
+        if (boss && boss->Get_Controller())
+        {
+            auto stateMachine = boss->Get_Controller()->Get_StateMachine();
+
+            if (stateMachine)
+                stateMachine->Change_State(CBossPhase2::PATTERN::PHASE2_FOLLOWER_DIE);
+        }
+
+        if (m_Player)
+        {
+            auto stateCom = dynamic_cast<CState*>(
+                m_Player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
+            if (stateCom)
+                stateCom->Change_State(ACTORSTATE::PLAYER_SACRIFICE);
+        }
     }
 }
 

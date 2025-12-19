@@ -106,6 +106,8 @@ public:
     void    Set_Invincible(bool invincible) { m_IsInvincible = invincible; }
   //  void    Set_CurrentCharges(int chargeCount) { m_CurrentCharges += chargeCount; }
 
+
+    void    Add_Mp(_float mp) { m_Mp += mp; }
     void    Add_Attack(float attack) { m_Attack += attack; }
 
 public:
@@ -132,7 +134,7 @@ private:
     _float  m_Hp;
     _float  m_MaxHp = 100.f;
     _float  m_Mp;
-    _float  m_MaxMp = 10.f;
+    _float  m_MaxMp = 100.f;
     _float  m_Speed;
 
   //  _int    m_CurrentCharges = 0 ;   // 스킬 사용 가능 횟수

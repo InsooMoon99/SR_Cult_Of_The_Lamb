@@ -78,7 +78,7 @@ HRESULT CPlayer::Ready_GameObject()
     m_CombatStatCom->Set_Hp(100.f);
     m_CombatStatCom->Set_MaxHp(100.f);
     m_CombatStatCom->Set_Attack(50.f);
-    m_CombatStatCom->Set_Mp(5.f);
+    m_CombatStatCom->Set_Mp(0.f);
     m_CombatStatCom->Set_Speed(5.f);
 
     // Hit 상태로 전환할 것인가? [ 보스1, 보스2 ]만 False로 세팅할듯 추가로 중간보스가 있다면 세팅
@@ -164,10 +164,10 @@ void CPlayer::OnStayOverlap(CCollider* self, CCollider* other)
             weapon = nullptr;
         }
     }
-    //if (dynamic_cast<CNPCBase*>(character))
-    //{
-    //    character = nullptr;
-    //}
+    if (dynamic_cast<CNPCBase*>(character))
+    {
+        character = nullptr;
+    }
 
    if (dynamic_cast<CInteractiveGrass*>(worldInteractiveObj))
    {
@@ -594,6 +594,13 @@ void CPlayer::Animation_Setting()
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_DECIDE, L"Decide_Start", ANIMSTATE::ONCE);
     //m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_REFUSE, L"Refuse_Sword", ANIMSTATE::ONCE);
+
+    m_AnimatorCom->Create_Animation(L"Finish_Sacrifice",
+        109,
+        0.03f,
+        _vec2(2.24f, 2.32f),
+        _vec2(0.f, 1.06f));
+
 
 #pragma endregion
 

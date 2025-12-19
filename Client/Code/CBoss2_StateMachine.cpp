@@ -10,6 +10,7 @@
 #include "CBoss2_ChainAttack.h"
 #include "CBoss2_Die.h"
 #include "CBoss2_Follower.h"
+#include "CBoss2_FollowerDie.h"
 #include "CBoss2_Groggy.h"
 #include "CBoss2_SummonFollower.h"
 
@@ -68,6 +69,10 @@ HRESULT CBoss2_StateMachine::Ready_StateMachine()
 
         // Follower
         if (FAILED(RegisterState<CBoss2_Follower>(CBossPhase2::PATTERN::PHASE2_FOLLOWER, m_Owner)))
+            return E_FAIL;
+
+        // Follower Die
+        if (FAILED(RegisterState<CBoss2_FollowerDie>(CBossPhase2::PATTERN::PHASE2_FOLLOWER_DIE, m_Owner)))
             return E_FAIL;
 
     }

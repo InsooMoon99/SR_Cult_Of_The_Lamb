@@ -41,6 +41,7 @@ public:
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
 
+    void    Render_Setting() override;
     void    Render_Editor() override;
 
 public:

@@ -1099,9 +1099,12 @@
     </ClInclude>
     <ClInclude Include="..\Header\CStage_Prologue2.h">
       <Filter>02. Scene\01. Stage</Filter>
-          </ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Header\CRatau.h">
       <Filter>03. GameObject\04. Boss\04. NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Header\CBoss2_FollowerDie.h">
+      <Filter>03. GameObject\04. Boss\02. Boss2</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1755,9 +1758,12 @@
     </ClCompile>
     <ClCompile Include="..\Code\CStage_Prologue2.cpp">
       <Filter>02. Scene\01. Stage</Filter>
-          </ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Code\CRatau.cpp">
       <Filter>03. GameObject\04. Boss\04. NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\CBoss2_FollowerDie.cpp">
+      <Filter>03. GameObject\04. Boss\02. Boss2</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

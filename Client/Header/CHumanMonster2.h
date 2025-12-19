@@ -60,4 +60,6 @@ private:
 
     CUI_MonsterHp*  m_HpBar;
 
+    _bool           m_HitSoundPlayed = false;
+
 };
