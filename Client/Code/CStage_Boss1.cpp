@@ -32,6 +32,7 @@
 #include "CPlayerController.h"
 #include "CWeaponEquip.h"
 #include "CUI_Text.h"
+#include "CDroppedItem.h"
 #include "CSoundMgr.h"
 
 CStage_Boss1::CStage_Boss1(DEVICE graphicDev)
@@ -90,6 +91,8 @@ void CStage_Boss1::Initialize_Scene()
     // 처음에는 거리비례 카메라 Off
     auto camMovement = m_CamController->Get_OwnerCamMovement();
     camMovement->Disable_DynamicDistance();
+
+    Spawn_Weapon();
 }
 
 _int CStage_Boss1::Update_Scene(const _float& timeDelta)
@@ -724,4 +727,34 @@ CStage_Boss1* CStage_Boss1::Create(DEVICE graphicDev)
 void CStage_Boss1::Free()
 {
     Engine::CScene::Free();
+}
+
+void CStage_Boss1::Spawn_Weapon()
+{
+    // 일단 무기 2개만 스폰
+    CDropSystem::GetInstance()->SetCurrentScene(this);
+
+    _int size = CItemDB::GetInstance()->GetVector().size();
+    for (_int i = 1; i <= 2; i++)
+    {
+        int id = CItemDB::GetInstance()->GetVector()[size - i - 1].id;
+
+        ItemInstance inst = { id, -1, 0 };
+
+        _vec3 spawnPos;
+        if (i == 1)
+            spawnPos = _vec3(50.f, 1.f, 13.f);
+
+        if (i == 2)
+            spawnPos = _vec3(44.0f, 1.f, 13.f);
+
+        _vec3 size = _vec3(1.2f, 1.2f, 1.2f);
+
+        auto drop = CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev,
+            inst,
+            { spawnPos }, size);
+
+        drop->Initialize_GameObject();
+    }
+
 }

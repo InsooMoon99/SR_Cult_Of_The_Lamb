@@ -311,6 +311,8 @@ void CCollisionManager::Initialize_CollisionMatrix()
     //m_CollisionMatrix[fly_Index][fly_Index] = true;
     m_CollisionMatrix[fly_Index][enemy_Index] = false;
     m_CollisionMatrix[enemy_Index][fly_Index] = false;
+    m_CollisionMatrix[projectile_Index][fly_Index] = false;
+    m_CollisionMatrix[fly_Index][projectile_Index] = false;
 
 }
 
