@@ -1,5 +1,4 @@
-﻿﻿#include "pch.h"
-#include "CStage_Dungeon.h"
+﻿#include "CStage_Dungeon.h"
 #include "CCreateHelper.h"
 #include "CCameraController.h"
 #include "CCamSetupBuilder.h"
