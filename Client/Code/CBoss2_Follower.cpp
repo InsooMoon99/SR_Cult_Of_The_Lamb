@@ -40,6 +40,9 @@ void CBoss2_Follower::Enter()
         m_TargetPos.y -= 0.3f;
         m_TargetPos.z -= 10.f;
     }
+    _vec3 scale = transform->Get_Scale();
+    scale.x = -fabs(scale.x);  
+    transform->Set_Scale(scale);
 
     auto collider = dynamic_cast<CBoxCollider*>(m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::BOX_COLL));
     if (collider)

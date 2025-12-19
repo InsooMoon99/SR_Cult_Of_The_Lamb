@@ -395,7 +395,7 @@ void CMainEditorMgr::Render_ToolBar()
     // Debug Check
     // ============
     {
-        static _bool debugCheck = true;
+        static _bool debugCheck = false;
         ImGui::AlignTextToFramePadding();
         ImGui::Checkbox("Debugging Mode", &debugCheck);
 

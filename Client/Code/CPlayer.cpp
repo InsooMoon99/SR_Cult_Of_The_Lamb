@@ -591,8 +591,8 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"Finish_Sacrifice",
         109,
         0.03f,
-        _vec2(2.24f, 2.32f),
-        _vec2(0.f, 1.06f));
+        _vec2(0.92f, 0.98f),
+        _vec2(0.f, 0.13f));
 
 
 #pragma endregion

@@ -267,7 +267,7 @@ void CBossPhase2::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"Boss2_Follower_Transform", 62, 0.04f, _vec2(0.115f, 0.5f), _vec2(0.f, -0.52f));
     m_AnimatorCom->Create_Animation(L"Boss2_Follower_UnConverted", 50, 0.05f, _vec2(0.046f, 0.14f), _vec2(0.f, -0.75f));
 
-    m_AnimatorCom->Create_Animation(L"Boss2_Follower_Die", 96, 0.035f, _vec2(0.046f, 0.14f), _vec2(0.f, -0.75f));
+    m_AnimatorCom->Create_Animation(L"Boss2_Follower_Die", 96, 0.035f, _vec2(0.106f, 0.22f), _vec2(0.f, -0.71f));
 }
 
 HRESULT CBossPhase2::Add_Component()

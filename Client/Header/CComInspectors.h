@@ -143,6 +143,7 @@ static void State_Inspector(CState* state)
                 "PLAYER_DECIDE", "PLAYER_REFUSE",
                 "KNEEL", "KNEEL_WAKE",
                 "PLAYER_REBIRTH",
+                "PLAYER_SACRIFICE"
                 "NPC_IDLE",
                 "DEAD",
                 "STATE_END"
