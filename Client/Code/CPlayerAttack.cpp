@@ -107,7 +107,7 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitboxStartTime  = 0.02f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitboxEndTime    = 0.02f * 8;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].comboInputTime   = 0.3f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].damageMultiplier = 1.f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].damageMultiplier = 2.f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].knockbackPower   = 30.f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].spawnOffset      = 1.2f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
@@ -123,7 +123,7 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitboxStartTime  = 0.02f * 4;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitboxEndTime    = 0.02f * 11;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].comboInputTime   = 0.3f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].damageMultiplier = 1.f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].damageMultiplier = 2.f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].knockbackPower   = 30.f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].spawnOffset      = 1.2f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);

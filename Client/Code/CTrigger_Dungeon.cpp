@@ -6,20 +6,14 @@
 
 CTrigger_Dungeon::CTrigger_Dungeon(DEVICE graphicDev)
     : CTrigger(graphicDev)
-{
-    
-
-}
+{ }
 
 CTrigger_Dungeon::CTrigger_Dungeon(const CTrigger_Dungeon& rhs)
     : CTrigger(rhs)
-{
-    
-}
+{ }
 
 CTrigger_Dungeon::~CTrigger_Dungeon()
-{
-}
+{}
 
 HRESULT CTrigger_Dungeon::Ready_GameObject()
 {
@@ -35,15 +29,13 @@ void CTrigger_Dungeon::Render_GameObject()
         m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
     // 버퍼 렌더링
-    if (m_ColliderCom)
-        m_ColliderCom->Render();
+    //if (m_ColliderCom)
+    //    m_ColliderCom->Render();
 }
 
 void CTrigger_Dungeon::Render_Editor()
 {
     ImGui::Text("=== Dungeon Trigger ===");
-
-   
 }
 
 void CTrigger_Dungeon::OnBeginOverlap(CCollider* self, CCollider* other)
@@ -63,11 +55,9 @@ CTrigger_Dungeon* CTrigger_Dungeon::Create(DEVICE graphicDev)
     }
 
     return trigger;
-
 }
 
 void CTrigger_Dungeon::Free()
 {
     CTrigger::Free();
-
 }
