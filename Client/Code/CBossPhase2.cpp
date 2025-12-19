@@ -88,8 +88,9 @@ void CBossPhase2::LateUpdate_GameObject(const _float& timeDelta)
 
 void CBossPhase2::Render_GameObject()
 {
-    CMonsterBase::Render_GameObject();
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);  // 조명 OFF
 
+    CMonsterBase::Render_GameObject();
 
 }
 
@@ -116,6 +117,14 @@ void CBossPhase2::Render_Editor()
             }
         }
     }
+
+}
+
+void CBossPhase2::Render_Setting()
+{
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
+
+    CMonsterBase::Render_Setting();
 
 }
 
@@ -255,6 +264,8 @@ void CBossPhase2::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"Boss2_Sweep", 82, 0.04f, _vec2(1.16f, 1.25f), _vec2(0.f, -0.12f));
     m_AnimatorCom->Create_Animation(L"Boss2_Follower_Transform", 62, 0.04f, _vec2(0.115f, 0.5f), _vec2(0.f, -0.52f));
     m_AnimatorCom->Create_Animation(L"Boss2_Follower_UnConverted", 50, 0.05f, _vec2(0.046f, 0.14f), _vec2(0.f, -0.75f));
+
+    m_AnimatorCom->Create_Animation(L"Boss2_Follower_Die", 96, 0.035f, _vec2(0.046f, 0.14f), _vec2(0.f, -0.75f));
 }
 
 HRESULT CBossPhase2::Add_Component()

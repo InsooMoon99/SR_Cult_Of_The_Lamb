@@ -42,6 +42,8 @@ public:
 
     void    Render_Editor() override;
 
+    void Render_Setting() override;
+
 public:
     CMonsterController* Get_Controller() { return m_BossController; }
     const char*         Get_Boss2_StateName(_int stateNum);

@@ -30,7 +30,7 @@ HRESULT CChest::Ready_GameObject()
 
     m_TransformCom->Set_Rotation({ D3DXToRadian(40), 0, 0 });
     m_TransformCom->Set_Pos(m_Pos);// 생성할때 셋팅
-    m_TransformCom->Set_Scale({ 2.f,2.f,2.f });// 생성할때 셋팅
+    m_TransformCom->Set_Scale({ 2.f,3.f,2.f });// 생성할때 셋팅
 
     m_InventoryCom->SetInvenSlotNum(7);// 기본셋팅 무조건 해야 하는거
 
