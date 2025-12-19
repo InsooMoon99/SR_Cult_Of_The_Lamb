@@ -140,8 +140,11 @@ _int CTarotStageController::Update_GameObject(const _float& timeDelta)
     case STAGESTATE::ENDING:
         if (!m_DialogueEnded)
         {
-        m_Dialogue->Start_Dialogue("Tarot_End", _vec2(0.f, 200.f), _vec2(300.f, 80.f));
-        m_DialogueEnded = true;
+            if (!m_Dialogue->Start_Dialogue("Tarot_End", _vec2(0.f, 200.f), _vec2(300.f, 80.f)))
+            {
+                Set_Active(false);
+            }
+            m_DialogueEnded = true;
         }
         break;
 
