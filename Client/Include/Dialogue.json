@@ -81,8 +81,8 @@
           "lineIndex": 1,
           "speaker": "기다리는 자",
           "text": "스스로 신을 넘어설 수 있다고 생각했느냐?",
-          "voicePath": "Boss/Dialogue/DeathCat/Deathcat12.wav",
-          "hasChoices": false
+          "hasChoices": false,
+          "voicePath": "Boss/Dialogue/DeathCat/Deathcat12.wav"
         }
       ]
     },
@@ -94,7 +94,8 @@
           "lineIndex": 0,
           "speaker": "기다리는 자",
           "text": "나는 타락이요, 거짓된 우상이다. 네 타락이 의심할 것 없이 크구나.",
-          "hasChoices": false
+          "hasChoices": false,
+          "voicePath": "Boss/Dialogue/DeathCat/Deathcat6.wav"
         }
       ]
     },
@@ -106,13 +107,15 @@
           "lineIndex": 0,
           "speaker": "기다리는 자",
           "text": "네가 나를 대체하는구나. 넌 더이상 그릇이 아니야. \n신격을 품은 왕관이로구나. 저주받을 양이야!",
-          "hasChoices": false
+          "hasChoices": false,
+          "voicePath": "Boss/Dialogue/DeathCat/Deathcat8.wav"
         },
         {
           "lineIndex": 1,
           "speaker": "기다리는 자",
           "text": "난 이제 네 자비 아래에 놓인다. 넌 복수를 외치는 거짓된 우상이 되려는가, 이제 네 사악한 행동으로 나를 비난할 순 없으리라.",
-          "hasChoices": false
+          "hasChoices": false,
+          "voicePath": "Boss/Dialogue/DeathCat/Deathcat7.wav"
         },
         {
           "lineIndex": 2,
@@ -136,7 +139,8 @@
           "lineIndex": 0,
           "speaker": "기다리는 자",
           "text": "...좋다. 내 너를 고를 때 잘 골랐던 모양이로군.",
-          "hasChoices": false
+          "hasChoices": false,
+          "voicePath": "Boss/Dialogue/DeathCat/Deathcat12.wav"
         }
       ]
     },

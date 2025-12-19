@@ -12,6 +12,7 @@
 #include "CTexture.h"
 #include "CTransform.h"
 #include "CUI_MonsterHp.h"
+#include "CSoundMgr.h"
 
 CHumanMonster2::CHumanMonster2(DEVICE graphicDev)
     : CMonsterBase(graphicDev),
@@ -219,9 +220,18 @@ void CHumanMonster2::Update_State_Attack(const _float timeDelta)
 
 void CHumanMonster2::Update_State_Hit(const _float timeDelta)
 {
+    if (!m_HitSoundPlayed)
+    {
+        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Humanoid_GetHit.wav", SOUNDTYPE::SOUND_HUMANOID, 1.f);
+        m_HitSoundPlayed = true;
+    }
+
     // 애니메이션이 끝나고, 넉백이 다 밀렸을 때
     if (m_AnimatorCom->Is_AnimationFinished() && !m_CombatStatCom->Is_Knockback())
+    {
         m_StateCom->Change_State(ACTORSTATE::IDLE);
+        m_HitSoundPlayed = false;
+    }
 }
 
 void CHumanMonster2::Update_State_Dead(const _float timeDelta)
@@ -288,6 +298,8 @@ _vec2(0.08f, -0.41f), _vec2(-0.08f, -0.41f));
 void CHumanMonster2::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CMonsterBase::OnBeginOverlap(self, other);
+
+
 }
 
 void CHumanMonster2::OnEndOverlap(CCollider* self, CCollider* other)

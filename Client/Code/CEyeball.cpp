@@ -114,6 +114,14 @@ void CEyeball::Render_GameObject()
 
 }
 
+void CEyeball::Render_Setting()
+{
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);  // 조명 OFF
+
+    CMonsterBase::Render_Setting();
+
+}
+
 void CEyeball::Render_Editor()
 {
     CMonsterBase::Render_Editor();
@@ -238,6 +246,8 @@ const char* CEyeball::Get_StateName(_int stateNum)
     case EYEBALL_START_GROUND:      return "EYEBALL_GROUND";
     case EYEBALL_MOVE:              return "EYEBALL_MOVE";
     case EYEBALL_ATTACK:            return "EYEBALL_ATTACK";
+    case EYEBALL_GROUND_MOVE:       return "EYEBALL_GROUND_MOVE";
+    case EYEBALL_CENTER_ATTACK:     return "EYEBALL_CENTER_ATTACK";
     case EYEBALL_DEAD:              return "EYEBALL_DEAD";
     }
     return "UNKNOWN";

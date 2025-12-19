@@ -486,6 +486,10 @@ void CPlayerController::Update_State(const _float& timeDelta)
         Action_Rebirth(timeDelta);
         break;
 
+    case ACTORSTATE::PLAYER_SACRIFICE:
+        Action_Sacrifice(timeDelta);
+        break;
+
     default:
     {
         MSG_BOX("CPlayerController: Invalid Player State");
@@ -717,6 +721,22 @@ void CPlayerController::Action_Rebirth(const _float& timeDelta)
 
     if (animator->Is_AnimationFinished())
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+}
+
+void CPlayerController::Action_Sacrifice(const _float& timeDelta)
+{
+    auto animator = dynamic_cast<CAnimator*>(
+        m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+
+    NULL_CHECK(animator);
+
+    if (animator->Get_CurKey() != L"Player_Sacrifice")
+        animator->Play_Animation(L"Player_Sacrifice", ANIMSTATE::ONCE);
+
+    if (animator->Is_AnimationFinished())
+        m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+
+
 }
 
 void CPlayerController::Check_Gathering()

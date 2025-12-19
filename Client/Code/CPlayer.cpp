@@ -595,6 +595,13 @@ void CPlayer::Animation_Setting()
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_DECIDE, L"Decide_Start", ANIMSTATE::ONCE);
     //m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_REFUSE, L"Refuse_Sword", ANIMSTATE::ONCE);
 
+    m_AnimatorCom->Create_Animation(L"Finish_Sacrifice",
+        109,
+        0.03f,
+        _vec2(2.24f, 2.32f),
+        _vec2(0.f, 1.06f));
+
+
 #pragma endregion
 
     // 프롤로그
