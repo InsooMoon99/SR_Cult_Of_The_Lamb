@@ -184,8 +184,8 @@ HRESULT CStage_Prologue::Ready_GameLogic_Layer(LAYERTYPE layerType)
 
     NULL_CHECK_RETURN(m_PlayerTransform, E_FAIL);
 
-    //m_PlayerTransform->Set_Pos(_vec3(15.f, 1.f, 5.f));
-    m_PlayerTransform->Set_Pos(_vec3(15.f, 1.f, 37.f));
+    m_PlayerTransform->Set_Pos(_vec3(15.f, 1.f, 5.f));
+    //m_PlayerTransform->Set_Pos(_vec3(15.f, 1.f, 37.f));
 
     // Rigid
     m_PlayerRigid =

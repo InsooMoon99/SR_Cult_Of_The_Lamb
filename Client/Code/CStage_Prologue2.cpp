@@ -25,6 +25,7 @@
 #include "CUI_Interactive.h"
 #include "CUI_MonsterHp.h"
 #include "CUI_Interactive.h"
+#include "CInteractiveGrass.h"
 
 CStage_Prologue2::CStage_Prologue2(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -106,7 +107,7 @@ void CStage_Prologue2::Initialize_Scene()
 
     m_Description2UI = CUI_Interactive::Create(m_GraphicDev);
     CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::UI)->Add_GameObject(OBJTYPE::UI, m_Description2UI);
-    m_Description2UI->Set_TextureIndex(8);
+    m_Description2UI->Set_TextureIndex(2);
     m_Description2UI->Get_Transform()->Set_Pos(_vec3(0.f, -250.f, 1.f));
     m_Description2UI->Get_Transform()->Set_Scale(_vec3(110.f, 35.f, 1.f));
     m_Description2UI->Set_IsActive(false);
@@ -320,7 +321,22 @@ HRESULT CStage_Prologue2::Ready_GameLogic_Layer(LAYERTYPE layerType)
         // 에디터에 카메라 설정
         CMainEditorMgr::GetInstance()->Set_MainCamera(m_CamController);
     }
+    //풀 생성
+    CInteractiveGrass* grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(110.f, 1.f, 8.f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
 
+    grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(140.f, 1.f, 20.f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
 
     m_Layers.insert({ layerType, layer });
 

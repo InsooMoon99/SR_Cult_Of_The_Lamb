@@ -78,7 +78,7 @@ HRESULT CPlayer::Ready_GameObject()
     m_CombatStatCom->Set_Hp(100.f);
     m_CombatStatCom->Set_MaxHp(100.f);
     m_CombatStatCom->Set_Attack(50.f);
-    m_CombatStatCom->Set_Mp(5.f);
+    m_CombatStatCom->Set_Mp(0.f);
     m_CombatStatCom->Set_Speed(5.f);
 
     // Hit 상태로 전환할 것인가? [ 보스1, 보스2 ]만 False로 세팅할듯 추가로 중간보스가 있다면 세팅
@@ -164,10 +164,10 @@ void CPlayer::OnStayOverlap(CCollider* self, CCollider* other)
             weapon = nullptr;
         }
     }
-    //if (dynamic_cast<CNPCBase*>(character))
-    //{
-    //    character = nullptr;
-    //}
+    if (dynamic_cast<CNPCBase*>(character))
+    {
+        character = nullptr;
+    }
 
    if (dynamic_cast<CInteractiveGrass*>(worldInteractiveObj))
    {
@@ -383,8 +383,9 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"PlayerSwordHeavy",
                                     70,
                                     0.02f,
-                                    _vec2(2.f, 2.f),
-                                    _vec2(0.f, 0.f));
+                                    _vec2(2.9f, 2.9f),
+                                    _vec2(0.25f, 1.2f),
+                                    _vec2(-0.25f, 1.2f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SWORD_HEAVY,
                              L"PlayerSwordHeavy",
@@ -428,8 +429,9 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"PlayerGauntletHeavy",
                                     70,
                                     0.02f,
-                                    _vec2(2.2f, 2.2f),
-                                    _vec2(0.f, 0.f));
+                                    _vec2(2.4f, 2.4f),
+                                    _vec2(0.15f, -0.3f),
+                                    _vec2(-0.15f, -0.3f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_HEAVY,
                              L"PlayerGauntletHeavy",
@@ -441,7 +443,8 @@ void CPlayer::Animation_Setting()
                                     17,
                                     0.02f,
                                     _vec2(0.6f, 0.8f),
-                                    _vec2(0.f, 0.f));
+                                    _vec2(-0.15f, 0.f),
+                                    _vec2(0.15f, 0.f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SKILL_CHARGING,
                              L"PlayerSkillCharging",
@@ -451,7 +454,8 @@ void CPlayer::Animation_Setting()
                                     32,
                                     0.02f,
                                     _vec2(1.f, 1.2f),
-                                    _vec2(0.f, 0.4f));
+                                    _vec2(0.2f, 0.4f),
+                                    _vec2(-0.2f, 0.4f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SKILL_SINGLE,
                              L"PlayerSkillAttack",
@@ -522,7 +526,8 @@ void CPlayer::Animation_Setting()
                                     77,
                                     0.02f,
                                     _vec2(1.3f, 1.67f),
-                                    _vec2(0.01f, 0.1f));
+                                    _vec2(0.15f, -0.05f),
+                                    _vec2(-0.15f, -0.05f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_WEAPONGET,
                              L"Player_WeaponGet",
@@ -530,7 +535,7 @@ void CPlayer::Animation_Setting()
 
     m_AnimatorCom->Create_Animation(L"Player_Hit",
                                     34,
-                                    0.01f,
+                                    0.015f,
                                     _vec2(1.f, 0.97f),
                                     _vec2(0.f, 0.18f));
 
@@ -564,14 +569,16 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"Decide_Start",
                                     41,
                                     0.04f,
-                                    _vec2(0.77f, 1.12f),
-                                    _vec2(0.f, 0.32f));
+                                    _vec2(0.74f, 1.09f),
+                                    _vec2(-0.01f, 0.29f),
+                                    _vec2(0.01f, 0.29f));
 
     m_AnimatorCom->Create_Animation(L"Decide_Loop",
                                     50,
                                     0.04f,
-                                    _vec2(0.76f, 0.73f),
-                                    _vec2(0.f, -0.05f));
+                                    _vec2(0.7f, 0.7f),
+                                    _vec2(-0.01f, -0.08f),
+                                    _vec2(0.01f, -0.08f));
 
     m_AnimatorCom->Create_Animation(L"Refuse_Sword",
                                     55,
@@ -651,8 +658,8 @@ void CPlayer::Prologue_Animation_Setting()
     m_AnimatorCom->Create_Animation(L"Prologue_Rebirth",
                                     91,
                                     0.04f,
-                                    _vec2(2.07f, 2.78f),
-                                    _vec2(0.f, 1.31f));
+                                    _vec2(1.9f, 2.6f),
+                                    _vec2(0.f, 1.2f));
 
     // Knnel
     m_AnimatorCom->Create_Animation(L"Prologue_Kneel_Start",
@@ -670,7 +677,7 @@ void CPlayer::Prologue_Animation_Setting()
     m_AnimatorCom->Create_Animation(L"Prologue_Kneel_Loop",
                                     34,
                                     0.02f,
-                                    _vec2(65.f, 0.6f),
+                                    _vec2(0.65f, 0.6f),
                                     _vec2(-0.145f, -0.155f));
 
     // Dead

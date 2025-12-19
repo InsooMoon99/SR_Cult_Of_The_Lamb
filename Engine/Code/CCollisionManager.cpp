@@ -185,18 +185,18 @@ _bool CCollisionManager::Check_PointOverlap(const _vec3& pos, COLLISION_LAYERTYP
 
         _vec3 colPos = transform->Get_Pos();
 
-        _float dx = pos.x - colPos.x;
-        _float dz = pos.z - colPos.z;
+        _float dx   = pos.x - colPos.x;
+        _float dz   = pos.z - colPos.z;
         _float dist = sqrtf(dx * dx + dz * dz);
 
         // 충돌 반경 체크
-        CBoxCollider* boxCol = dynamic_cast<CBoxCollider*>(col);
-        _float colRadius = 1.f; 
+        CBoxCollider* boxCol    = dynamic_cast<CBoxCollider*>(col);
+        _float        colRadius = 1.f;
 
         if (boxCol)
         {
             _vec3 size = boxCol->Get_Size();
-            colRadius = (size.x + size.z) * 0.25f;  
+            colRadius  = (size.x + size.z) * 0.25f;
         }
 
         if (dist < radius + colRadius)
@@ -302,15 +302,24 @@ void CCollisionManager::Initialize_CollisionMatrix()
         }
     }
 
-    // 채집 오브젝트와 건축 부지 사이 충돌 off
-    m_CollisionMatrix[interactive_Index][site_Index] = false;
-    m_CollisionMatrix[site_Index][interactive_Index] = false;
+    // 채집 오브젝트와 충돌 판정 : 플레이어, NPC가 가능
+    m_CollisionMatrix[interactive_Index][interactive_Index] = false;
 
+    for (_int i = 0; i < colLayerEnd; i++)
+    {
+        if (i != player_Index && i != npc_Index && i != interactive_Index)
+        {
+            m_CollisionMatrix[interactive_Index][i] = false;
+            m_CollisionMatrix[i][interactive_Index] = false;
+        }
+    }
 
     // 투사체끼리도 충돌 X, 투사체랑 보스랑도 충돌X
     //m_CollisionMatrix[fly_Index][fly_Index] = true;
     m_CollisionMatrix[fly_Index][enemy_Index] = false;
     m_CollisionMatrix[enemy_Index][fly_Index] = false;
+    m_CollisionMatrix[projectile_Index][fly_Index] = false;
+    m_CollisionMatrix[fly_Index][projectile_Index] = false;
 
 }
 
