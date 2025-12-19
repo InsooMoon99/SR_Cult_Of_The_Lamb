@@ -120,18 +120,7 @@ void CStage_Prologue::LateUpdate_Scene(const _float& timeDelta)
 
 void CStage_Prologue::Render_Scene()
 {
-    if (ImGui::CollapsingHeader("Light Settings"))
-    {
-        bool changed = false;
-
-        changed |= ImGui::ColorEdit4("Diffuse", (_float*)&m_LightDiffuse);
-        changed |= ImGui::ColorEdit4("Ambient", (_float*)&m_LightAmbient);
-        changed |= ImGui::ColorEdit4("Specular", (_float*)&m_LightSpecular);
-        changed |= ImGui::DragFloat3("Direction", (_float*)&m_LightDir, 0.01f);
-
-        if (changed)
-            Ready_Light();  
-    }
+   
 
 }
 
