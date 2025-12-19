@@ -23,6 +23,7 @@ public:
     void    Render_GameObject() override;
 
     virtual bool Is_Hovering();
+    bool            Get_IsHovered() { return m_bHovering; }
 
 public:
     void OnBeginOverlap(CCollider* self, CCollider* other) override;

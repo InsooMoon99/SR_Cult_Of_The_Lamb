@@ -41,6 +41,7 @@
 #include "CVillageStateMgr.h"
 #include "CInteractiveGrass.h"
 #include "CUI_BossHp.h"
+#include "CUI_Text.h"
 
 class CUI_DungeonLootPanel;
 
@@ -198,6 +199,14 @@ void CStage_Dungeon::Initialize_Scene()
 
     // 테스트
     //m_PlayerTransform->Set_Pos({ 250,1,10 });
+
+    m_EligosNameUI = CUI_Text::Create(m_GraphicDev);
+    m_EligosNameUI->Set_Font(L"NanumSquare_Max");
+    m_EligosNameUI->Set_Text(L"엘리고스");
+    m_EligosNameUI->Set_IsActive(false);
+    m_EligosNameUI->Set_Color({ 1.f, 1.f, 1.f, 0.5f });
+
+    CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::UI)->Add_GameObject(OBJTYPE::UI, m_EligosNameUI);
 }
 
 _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
@@ -225,8 +234,57 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
 
         return 0;
     }
+	if (m_UIOpenTime > 0.f)
+	{
+		m_UIOpenTime -= timeDelta;
+
+		if (m_UIOpenTime <= 0.f)
+		{
+			m_UIOpenTime = 0.f;
+			if (m_EligosNameUI)
+				m_EligosNameUI->Set_IsActive(false);
+		}
+	}
+
+	if (m_BossIntroPhase == BossIntroPhase::HOLDING)
+	{
+		// 1) 홀드 중간에 폰트 켜기 (한 번만)
+		if (!m_BossNameShown)
+		{
+			m_BossNameDelay -= timeDelta;
+			if (m_BossNameDelay <= 0.f)
+			{
+				m_BossNameShown = true;
+
+				// 폰트 ON + 지속시간 시작
+				m_UIOpenTime = 2.f;
+				if (m_EligosNameUI)
+					m_EligosNameUI->Set_IsActive(true);
+			}
+		}
+
+		// 2) 홀드 시간 감소
+		m_BossHoldTime -= timeDelta;
+
+		// 3) 홀드 끝나면 카메라 복귀는 딱 1번
+		if (m_BossHoldTime <= 0.f)
+		{
+			CCamSetupBuilder(m_CamController)
+				.SetTarget(m_PlayerTransform)
+				.Distance(11.f)
+				.LagSpeed(3.f)
+				.ZoomSpeed(3.f)
+				.Apply();
+
+			// 필요하면 여기서 Setup_DynamicCam_For_Boss() 호출
+			// Setup_DynamicCam_For_Boss();
+
+			m_BossIntroPhase = BossIntroPhase::DONE;
+		}
+	}
 
     _int exit = Engine::CScene::Update_Scene(timeDelta);
+
 
     // Fade
     Fade_Check(timeDelta);
@@ -475,23 +533,22 @@ void CStage_Dungeon::Create_RoomTriggers()
                 .LagSpeed(3.f)
                 .ZoomSpeed(3.f)
                 .Apply();
+			m_BossIntroPhase = BossIntroPhase::ZOOMING;
 
-            // 두 번쨰 연출 끝났을 때 콜백
-            m_CamController->Get_OwnerCamMovement()->Set_OnTransitionEnd([this]()
-                {
-                    // 대사 시작
-                                 // 카메라 플레이어한테 원래대로 돌리기
-                    CCamSetupBuilder(m_CamController)
-                        .SetTarget(m_PlayerTransform)
-                        .Distance(11.f)
-                        .LagSpeed(3.f)
-                        .ZoomSpeed(3.f)
-                        .Apply();
+			// 줌(전환) 끝났을 때 -> 홀드 시작 예약
+			m_CamController->Get_OwnerCamMovement()->Set_OnTransitionEnd([this]()
+				{
+					m_BossIntroPhase = BossIntroPhase::HOLDING;
 
-                    Setup_DynamicCam_For_Boss();
-                });
+					m_BossHoldTime = 3.f;
+					m_BossNameDelay = 0.5f;   // 홀드 시작 후 1초 뒤 폰트
+					m_BossNameShown = false;
 
-
+					m_UIOpenTime = 0.f;   // 아직 안 켠 상태
+					m_EligosNameUI->Set_IsActive(false);
+				});
+		
+           
             // 방 이동
             Change_Room(Room::BOSS);
 
@@ -525,7 +582,7 @@ void CStage_Dungeon::Create_Trigger_Between(Room fromRoom, Room toRoom, _vec3 of
     gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
 }
 
-void CStage_Dungeon::Create_Trigger_Between(Room                  fromRoom,
+void CStage_Dungeon::Create_Trigger_Between(Room fromRoom,
     _vec3                 offsetFromRoom,
     _vec3                 size,
     std::function<void()> callback)
@@ -752,10 +809,65 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
     grass->Set_EnableHoverCheck(false);
     grass->Check_WorldState();
 
+    Grass(m_GraphicDev, layer);
+
     m_Layers.insert({ layerType, layer });
     return S_OK;
 }
+HRESULT CStage_Dungeon::Grass(DEVICE m_GraphicDev ,CLayer* layer)
+{
+    CInteractiveGrass* grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(117.6f, 0.7f, 10.6f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
 
+    //
+    grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(117.6f, 0.7f, 12.3f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
+
+    //
+    grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(116.1f, 0.7f, 11.2f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
+    //
+    grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(119.1f, 0.7f, 11.2f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
+    //
+    grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(107.9f, 0.7f, 16.7f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
+
+    //
+    grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(108.6, 0.7f, 15.7f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
+
+}
 HRESULT CStage_Dungeon::Ready_UI_Layer(LAYERTYPE layerType)
 {
     auto layer = Engine::CLayer::Create();

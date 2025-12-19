@@ -40,7 +40,9 @@ HRESULT CUI_BossHp::Ready_GameObject()
         m_TransformCom->Set_Pos(_vec3(0.f, -250.f, 0.f));  // 화면 하단
         m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
     }
-
+    //m_TextureCom->Set_Texture(3);
+    //m_TextureCom->Set_Texture(4);
+    //m_TextureCom->Set_Texture(5);
     return S_OK;
 }
 
@@ -105,6 +107,17 @@ void CUI_BossHp::Render_GameObject()
     m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
     m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
     m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+
+    m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
+    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+    m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
+    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+    m_GraphicDev->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+    m_GraphicDev->SetRenderState(D3DRS_ALPHAREF, 0);
+
 
     _float ratio         = clamp(m_HpRatio, 0.f, 1.f);
     _float delayRatio    = clamp(m_HpDelayRatio, 0.f, 1.f);
@@ -173,13 +186,13 @@ void CUI_BossHp::Render_GameObject()
 
     }
 
-    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_CURRENT);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
+    //m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
+   // m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+   // m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+   // m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_CURRENT);
+   // m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+   // m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+   // m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
 }
 
 HRESULT CUI_BossHp::Add_Component()
