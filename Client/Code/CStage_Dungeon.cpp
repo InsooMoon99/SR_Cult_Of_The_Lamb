@@ -552,7 +552,7 @@ void CStage_Dungeon::Create_Trigger_Between(Room fromRoom, Room toRoom, _vec3 of
     gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
 }
 
-void CStage_Dungeon::Create_Trigger_Between(Room                  fromRoom,
+void CStage_Dungeon::Create_Trigger_Between(Room fromRoom,
     _vec3                 offsetFromRoom,
     _vec3                 size,
     std::function<void()> callback)
