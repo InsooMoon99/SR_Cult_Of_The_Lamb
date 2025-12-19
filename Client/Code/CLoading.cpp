@@ -87,6 +87,10 @@ _uint CLoading::Loading_ForBoss1()
     //    return resourceMgr->Ready_BossP2_Eyeball(m_GraphicDev);
     //    }));
     //
+    // futures.push_back(async(launch::async, [&]() {
+    //     return resourceMgr->Ready_Follower(m_GraphicDev);
+    //     }));
+
     //futures.push_back(async(launch::async, [&]() {
     //    return resourceMgr->Ready_BossP2_Follower(m_GraphicDev);
     //    }));

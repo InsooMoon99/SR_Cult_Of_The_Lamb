@@ -8,6 +8,9 @@
 #include "CSceneMgr.h"
 #include "CSpriteAnimation.h"
 #include "CSoundMgr.h"
+#include "CManagement.h"
+#include "CStage_Dungeon.h"
+
 CEligos_Dead::CEligos_Dead(CEligos* pOwner, CEligos_StateMachine* pStateMachine)
 {
     m_pOwner = pOwner;
@@ -24,6 +27,17 @@ void CEligos_Dead::Enter()
     CMonsterState::Enter();
     // 일단 지금은 
     m_pOwnerAnimatorCom->Play_Animation(L"BossGroggy_start", ANIMSTATE::ONCE);
+
+    CStage_Dungeon* stage = dynamic_cast<CStage_Dungeon*>(CManagement::GetInstance()->Get_Scene());
+    if (stage)
+    {
+        _vec3 pos = m_pOwnerTransformCom->Get_Pos();
+        stage->Spawn_FollowerCow_Rescue(&pos);
+        stage->Spawn_FollowerElephant_Rescue(&pos);
+        stage->Spawn_FollowerPig_Rescue(&pos);
+    }
+    
+    m_pOwner->Mark_As_PendingKill();
 
     m_ePhase = PHASE::CHANGE;
 }
@@ -59,40 +73,6 @@ _int CEligos_Dead::Update_State(const _float& timeDelta)
 
         m_Sound = true;
     }
-
-    //switch (m_ePhase)
-    //{
-    //case PHASE::CHANGE:
-
-    //    if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
-    //    {
-    //        m_ePhase = PHASE::TALK;
-
-    //        //if (m_OnTalkStart)
-    //        //    m_OnTalkStart();
-    //    }
-
-    //    break;
-
-    //case PHASE::TALK:
-    //    m_pOwnerAnimatorCom->Play_Animation(L"BossDead", ANIMSTATE::LOOP);
-
-    //   // if (m_DialogueFinished)
-    //    {
-    //        m_ePhase = PHASE::DISAPPEAR;
-    //    }
-    //    break;
-
-    //case PHASE::DISAPPEAR:
-    //    m_pOwnerAnimatorCom->Play_Animation(L"BossMove_Down", ANIMSTATE::ONCE);
-
-    //    if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
-    //    {
-    //        //CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_BOSS_STAGE2);
-
-    //        return CEligos::ELIGOSSTATE::BOSSIDLE;   // 보스 끝남 
-    //    }
-    //}
 
     return CEligos::ELIGOSSTATE::BOSSDEAD;
 }
