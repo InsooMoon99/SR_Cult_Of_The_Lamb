@@ -157,7 +157,7 @@ void CUI_Dialogue::Render_GameObject()
     }
 }
 
-void CUI_Dialogue::Start_Dialogue(const string& dialogueId, const _vec2 boxPos, const _vec2& boxSize)
+_bool CUI_Dialogue::Start_Dialogue(const string& dialogueId, const _vec2 boxPos, const _vec2& boxSize)
 {
     m_BoxPos = boxPos;
     m_BoxSize = boxSize;
@@ -167,7 +167,8 @@ void CUI_Dialogue::Start_Dialogue(const string& dialogueId, const _vec2 boxPos, 
 
     m_CurrentDialogue = CDialogueDB::GetInstance()->GetDialogueById(dialogueId);
 
-    NULL_CHECK(m_CurrentDialogue);
+    if (nullptr == m_CurrentDialogue)
+        return false;
 
     if (!m_CurrentDialogue->lines.empty())
     {
@@ -196,6 +197,8 @@ void CUI_Dialogue::Start_Dialogue(const string& dialogueId, const _vec2 boxPos, 
     {
         m_IsShowingChoices = true;
     }
+
+    return true;
 }
 
 void CUI_Dialogue::End_Dialogue()
