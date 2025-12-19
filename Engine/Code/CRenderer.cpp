@@ -238,7 +238,7 @@ void CRenderer::Render_Priority_UI(DEVICE& graphicDev)
     }
 
     // 상태 복구
-    //graphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
+    graphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
 
     graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
     graphicDev->SetRenderState(D3DRS_ZENABLE, TRUE);

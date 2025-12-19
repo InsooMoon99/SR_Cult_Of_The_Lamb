@@ -42,7 +42,10 @@
 #include "CInteractiveGrass.h"
 #include "CUI_BossHp.h"
 #include "CUI_Text.h"
-
+#include "CManagement.h"
+BEGIN(Engine)
+#include "CCombatStat.h"
+END
 class CUI_DungeonLootPanel;
 
 CStage_Dungeon::CStage_Dungeon(DEVICE graphicDev)
@@ -123,7 +126,7 @@ void CStage_Dungeon::Initialize_Scene()
     m_RoomData[static_cast<_int>(Room::TARO)] =
     {
         { 305.f, 1.f, 124.f },
-        "../Bin/Resource/Data/Terrain/Terrain_TarotMapFinal.map",
+        "../Bin/Resource/Data/Terrain/Terrain_TarotMapFinalFinal.map",
         { 300.f, 0.f, 100.f }
     };
 
@@ -351,7 +354,7 @@ void CStage_Dungeon::Spawn_Weapon()
 
 }
 
-void CStage_Dungeon::Spawn_FollowerCow_Rescue()
+void CStage_Dungeon::Spawn_FollowerCow_Rescue(_vec3* pSpawnPos)
 {
     auto layer = m_Layers[LAYERTYPE::GAMELOGIC];
     NULL_CHECK(layer);
@@ -370,8 +373,18 @@ void CStage_Dungeon::Spawn_FollowerCow_Rescue()
 
     if (cowTransform)
     {
-        _vec3 spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
-        spawnPos += _vec3(6.f, 1.f, 8.f);
+        _vec3 spawnPos;
+        if (pSpawnPos)
+        {
+            spawnPos.x = pSpawnPos->x - 1.0f;
+            spawnPos.y = pSpawnPos->y;
+            spawnPos.z = pSpawnPos->z;
+        }
+        else
+        {
+             spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
+             spawnPos += _vec3(6.f, 1.f, 8.f);
+        }
 
         cowTransform->Set_Pos(spawnPos);
     }
@@ -380,7 +393,7 @@ void CStage_Dungeon::Spawn_FollowerCow_Rescue()
     if (state) state->isActive = true;
 }
 
-void CStage_Dungeon::Spawn_FollowerElephant_Rescue()
+void CStage_Dungeon::Spawn_FollowerElephant_Rescue(_vec3* pSpawnPos)
 {
     auto layer = m_Layers[LAYERTYPE::GAMELOGIC];
     NULL_CHECK(layer);
@@ -399,8 +412,18 @@ void CStage_Dungeon::Spawn_FollowerElephant_Rescue()
 
     if (elephantTransform)
     {
-        _vec3 spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
-        spawnPos += _vec3(8.f, 1.f, 8.f);
+        _vec3 spawnPos;
+        if (pSpawnPos)
+        {
+            spawnPos.x = pSpawnPos->x;
+            spawnPos.y = pSpawnPos->y;
+            spawnPos.z = pSpawnPos->z;
+        }
+        else
+        {
+            spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
+            spawnPos += _vec3(8.f, 1.f, 8.f);
+        }
 
         elephantTransform->Set_Pos(spawnPos);
     }
@@ -409,7 +432,7 @@ void CStage_Dungeon::Spawn_FollowerElephant_Rescue()
     if (state) state->isActive = true;
 }
 
-void CStage_Dungeon::Spawn_FollowerPig_Rescue()
+void CStage_Dungeon::Spawn_FollowerPig_Rescue(_vec3* pSpawnPos)
 {
     auto layer = m_Layers[LAYERTYPE::GAMELOGIC];
     NULL_CHECK(layer);
@@ -428,8 +451,18 @@ void CStage_Dungeon::Spawn_FollowerPig_Rescue()
 
     if (pigTransform)
     {
-        _vec3 spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
-        spawnPos += _vec3(10.f, 1.f, 8.f);
+        _vec3 spawnPos;
+        if (pSpawnPos)
+        {
+            spawnPos.x = pSpawnPos->x + 1.0f;
+            spawnPos.y = pSpawnPos->y;
+            spawnPos.z = pSpawnPos->z;
+        }
+        else
+        {
+            spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
+            spawnPos += _vec3(10.f, 1.f, 8.f);
+        }
 
         pigTransform->Set_Pos(spawnPos);
     }
@@ -510,7 +543,7 @@ void CStage_Dungeon::Create_RoomTriggers()
 				{
 					m_BossIntroPhase = BossIntroPhase::HOLDING;
 
-					m_BossHoldTime = 3.f;
+					m_BossHoldTime = 2.f;
 					m_BossNameDelay = 0.5f;   // 홀드 시작 후 1초 뒤 폰트
 					m_BossNameShown = false;
 
@@ -635,7 +668,7 @@ void CStage_Dungeon::Change_Room(Room room)
 void CStage_Dungeon::OnMonsterDeath(CGameObject* obj)
 {
     CScene::OnMonsterDeath(obj);
-
+    (dynamic_cast<CCombatStat*>(CManagement::GetInstance()->Get_Component(ID_DYNAMIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::COMBATSTAT)))->Add_Mp(5.f);
     m_KillCount++;
 }
 
@@ -775,7 +808,15 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
     NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
         FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
             L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
-    grass->Get_Transform()->Set_Pos(10.f, 0.5f, 30.f);
+    grass->Get_Transform()->Set_Pos(12.f, 1.f, 10.f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
+
+    grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(15.f, 1.f, 30.f);
     grass->Set_EnableHoverCheck(false);
     grass->Check_WorldState();
 

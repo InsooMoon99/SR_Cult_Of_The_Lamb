@@ -51,8 +51,8 @@ HRESULT CBatMonster::Ready_GameObject()
     m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(45.f));
 
     // 공격 주기 설정
-    m_AttackCooldown = 2.8f;
-    m_AttackTimer    = 0.f;
+    m_AttackCooldown = 2.0f + (rand() % 150) / 100.f; 
+    m_AttackTimer = (rand() % 100) / 100.f * m_AttackCooldown;  
 
     // 거리 설정
     Set_StoppingDistance(5.5f);
@@ -169,6 +169,7 @@ void CBatMonster::Update_State_Run(const _float timeDelta)
     {
         m_StateCom->Change_State(ACTORSTATE::ATTACK);
         m_AttackTimer = 0.f;
+        m_AttackCooldown = 2.0f + (rand() % 150) / 100.f;  
         return;
     }
 
@@ -238,6 +239,9 @@ void CBatMonster::Update_State_Attack(const _float timeDelta)
 
 
             m_StateCom->Change_State(ACTORSTATE::IDLE);
+
+            m_StateCom->Change_State(ACTORSTATE::IDLE);
+            m_AttackCooldown = 2.0f + (rand() % 150) / 100.f;
         }
     }
 }

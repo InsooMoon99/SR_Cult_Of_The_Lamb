@@ -23,6 +23,7 @@ public:
         PHASE2_GROGGY,
         PHASE2_DEAD,
         PHASE2_FOLLOWER,
+        PHASE2_FOLLOWER_DIE,
 
         PHASE2_END
 
@@ -41,6 +42,8 @@ public:
     void    Render_GameObject() override;
 
     void    Render_Editor() override;
+
+    void Render_Setting() override;
 
 public:
     CMonsterController* Get_Controller() { return m_BossController; }

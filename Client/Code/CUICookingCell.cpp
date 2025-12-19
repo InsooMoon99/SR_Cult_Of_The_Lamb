@@ -49,6 +49,8 @@ HRESULT CUICookingCell::Ready_GameObject()
     m_TransformCom->Set_Scale(45.f, 45.f, 0.f);
     m_BaseScale = m_TransformCom->Get_Scale();
     m_TargetScale = m_BaseScale;
+    //TODO 버그 수정 테스트
+    m_TransformCom->Set_Pos(WINCX, WINCY, 0.f);
 
     //셀 아이템 그리기용 객체 생성
     m_ItemIcon = CUIIcon::Create(m_GraphicDev, COMPONENTTYPE::TEX_ITEM); //아이템 텍스처

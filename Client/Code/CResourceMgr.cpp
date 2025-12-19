@@ -460,6 +460,11 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         L"../Bin/Resource/Texture/Player/Intro/Run/Run_Diagonal/Lamb-intro-run-up-diagonal%d.png", 50)))
         return E_FAIL;
 
+    // Sacrifice
+    if (FAILED(playerTex->Add_Texture(L"Finish_Sacrifice", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Sacrifice/Lamb-sacrifice-long%d.png", 109)))
+        return E_FAIL;
+
     // Rebirth
     if (FAILED(playerTex->Add_Texture(L"Prologue_Rebirth", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Intro/Rebirth/Lamb-intro-rebirth%d.png", 91)))
@@ -894,6 +899,11 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
     if (FAILED(bossPhase2->Add_Texture(L"Boss2_Follower_UnConverted", TEX_NORMAL,
         L"../Bin/Resource/Texture/BossPhase2/Slave/DeathCat/UnConverted/UnConverted%d.png", 50)))
         return E_FAIL;
+
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Follower_Die", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Slave/DeathCat/Die/TOWW_Die%d.png", 96)))
+        return E_FAIL;
+
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_BOSS2_PHASE2, bossPhase2)))
         return E_FAIL;
@@ -1648,7 +1658,7 @@ HRESULT CResourceMgr::Ready_Follower(DEVICE graphicDev)
 
     if (FAILED(elephantTex->Add_Texture(L"ElephantRun", TEX_NORMAL,
         L"../Bin/Resource/Texture/NPC/Follower/Elephant/Run/Follower-run%d.png", 29)))
-        return E_FAIL;
+        return E_FAIL;  
 
     if (FAILED(elephantTex->Add_Texture(L"ElephantWalkPast", TEX_NORMAL,
         L"../Bin/Resource/Texture/NPC/Follower/Elephant/Walkpast/Follower-conversations-walkpast-love%d.png", 86)))

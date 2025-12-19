@@ -105,7 +105,7 @@ _int CDroppedItem::Update_GameObject(const _float& timeDelta)
     if (m_Active == true)
         m_SpriteEff->Update_Component(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_NONALPHA, this);
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 
     return exit;
 }
@@ -396,8 +396,8 @@ void CDroppedItem::Player_ZoomIn(CPlayer* ply)
                     CCamSetupBuilder(camController)
                         .SetTarget(ply->Get_Transform())
                         .Distance(11.f)
-                        .LagSpeed(4.5f)
-                        .ZoomSpeed(4.f)
+                        .LagSpeed(2.5f)
+                        .ZoomSpeed(2.f)
                         .Apply();
                 });
 

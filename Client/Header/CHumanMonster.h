@@ -43,9 +43,9 @@ public:
     void    Chase_Target(const float& timeDelta, _float speed) override;
     void    Retreat_FromTarget(const _float& timeDelta, _float speed) override;
 
-    void Enable_Battle() { m_BattleEnabled = true; }
-    void Set_Battle(_bool b) { m_BattleEnabled = b; }
-    bool Is_BattleEnabled() const { return m_BattleEnabled; }
+    void    Enable_Battle() { m_BattleEnabled = true; }
+    void    Set_Battle(_bool b) { m_BattleEnabled = b; }
+    bool    Is_BattleEnabled() const { return m_BattleEnabled; }
 
 public:
     void    Set_PrayMode(_bool pray);
@@ -69,5 +69,5 @@ private:
 
     CUI_MonsterHp*  m_HpBar;
     _bool           m_IsPraying = false;
-
+    _bool           m_HitSoundPlayed = false;
 };

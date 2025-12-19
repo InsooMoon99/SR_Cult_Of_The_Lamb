@@ -2,6 +2,7 @@
 #include "CPlayerController.h"
 #include "CRcTex.h"
 #include "CUI_Dialogue.h"
+#include "CTarotStageController.h"
 #include "CPlayer.h"
 
 #include "CAnimator.h"
@@ -178,7 +179,7 @@ void CPlayerController::CheckStateTransition()
     // - 공격 상태여도 구르기로 이행 (캔슬)
     if (inputMgr->KeyDown(DIK_SPACE))
     {
-        if (CUI_Dialogue::IsGlobalActive())
+        if (CUI_Dialogue::IsGlobalActive() || CTarotStageController::IsGlobalActive())
             return;
 
         if (curState != ACTORSTATE::PLAYER_ROLL)
@@ -220,7 +221,7 @@ void CPlayerController::CheckStateTransition()
             return;
 
         // 대화 중이라면 좌클릭 동작 막기
-        if (CUI_Dialogue::IsGlobalActive())
+        if (CUI_Dialogue::IsGlobalActive() || CTarotStageController::IsGlobalActive())
             return;
 
         // 좌클릭으로 채집
@@ -268,6 +269,9 @@ void CPlayerController::CheckStateTransition()
         if (io.WantCaptureMouse)
             return;
 
+        if (CUI_Dialogue::IsGlobalActive() || CTarotStageController::IsGlobalActive())
+            return;
+
         if (curState == ACTORSTATE::PLAYER_ROLL ||
             curState == ACTORSTATE::IDLE ||
             curState == ACTORSTATE::RUN)
@@ -305,6 +309,9 @@ void CPlayerController::CheckStateTransition()
     // [우선순위 3] E 키
     else if (inputMgr->KeyPress(DIK_E))
     {
+        if (CUI_Dialogue::IsGlobalActive() || CTarotStageController::IsGlobalActive())
+            return;
+
         Check_Gathering();
         Check_Construction();
 
@@ -326,7 +333,7 @@ void CPlayerController::CheckStateTransition()
     }
 
     // 이동 (방향 입력)
-    if (!CUI_Dialogue::IsGlobalActive() &&
+    if (!CUI_Dialogue::IsGlobalActive() && !CTarotStageController::IsGlobalActive() &&
         D3DXVec3LengthSq(&m_OwnerInputCom->Get_MoveDir()) > 0.001f)
     {
         if (curState != ACTORSTATE::RUN)
@@ -477,6 +484,10 @@ void CPlayerController::Update_State(const _float& timeDelta)
 
     case ACTORSTATE::PLAYER_REBIRTH:
         Action_Rebirth(timeDelta);
+        break;
+
+    case ACTORSTATE::PLAYER_SACRIFICE:
+        Action_Sacrifice(timeDelta);
         break;
 
     default:
@@ -710,6 +721,22 @@ void CPlayerController::Action_Rebirth(const _float& timeDelta)
 
     if (animator->Is_AnimationFinished())
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+}
+
+void CPlayerController::Action_Sacrifice(const _float& timeDelta)
+{
+    auto animator = dynamic_cast<CAnimator*>(
+        m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+
+    NULL_CHECK(animator);
+
+    if (animator->Get_CurKey() != L"Finish_Sacrifice")
+        animator->Play_Animation(L"Finish_Sacrifice", ANIMSTATE::ONCE);
+
+    if (animator->Is_AnimationFinished())
+        m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+
+
 }
 
 void CPlayerController::Check_Gathering()

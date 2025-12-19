@@ -201,7 +201,8 @@ void CHumanMonster::Update_State_Attack(const _float timeDelta)
 {
     if (m_AnimatorCom->Get_CurFrame() == 30 && !m_AttackSpawned)
     {
-        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Humanoid_Attack.wav", SOUNDTYPE::SOUND_HUMANOID, 1.f);
+        CSoundMgr::GetInstance()->Play_Once_Pitched(
+            L"Enemy/Humanoid_Attack.wav", SOUNDTYPE::SOUND_HUMANOID, 0.8f, 1.25f);
 
         CAttackBuilder(m_GraphicDev, this)
             .SetType<CAttackBox>()
@@ -228,11 +229,17 @@ void CHumanMonster::Update_State_Attack(const _float timeDelta)
 
 void CHumanMonster::Update_State_Hit(const _float timeDelta)
 {
+    if (!m_HitSoundPlayed)
+    {
+        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Humanoid_GetHit.wav", SOUNDTYPE::SOUND_HUMANOID, 1.f);
+        m_HitSoundPlayed = true;
+    }
+
     // 애니메이션이 끝나고, 넉백이 다 밀렸을 때
     if (m_AnimatorCom->Is_AnimationFinished() && !m_CombatStatCom->Is_Knockback())
     {
-        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Humanoid_GetHit.wav", SOUNDTYPE::SOUND_HUMANOID, 1.f);
         m_StateCom->Change_State(ACTORSTATE::IDLE);
+        m_HitSoundPlayed = false;
     }
 }
 
@@ -305,6 +312,8 @@ void CHumanMonster::Animation_Setting()
 void CHumanMonster::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CMonsterBase::OnBeginOverlap(self, other);
+
+    
 }
 
 void CHumanMonster::OnEndOverlap(CCollider* self, CCollider* other)
