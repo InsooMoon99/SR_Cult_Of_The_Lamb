@@ -133,6 +133,8 @@ _int CStage_Prologue2::Update_Scene(const _float& timeDelta)
         }
     }
 
+    cout << m_InWarpZone << endl;
+
     return exit;
 }
 
@@ -151,7 +153,6 @@ HRESULT CStage_Prologue2::Ready_Environment_Layer(LAYERTYPE layerType)
     if (nullptr == layer)
         return E_FAIL;
 
-    // 프롤로그 2는 방 4개만?
     for (_int i = 0; i < static_cast<_int>(Room::PROLOGUE2_END); i++)
     {
         Room room = static_cast<Room>(i);
