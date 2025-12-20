@@ -30,7 +30,7 @@ public:
 public:
     void    OnBeginOverlap(CCollider* self, CCollider* other);
     void    OnEndOverlap(CCollider* self, CCollider* other);
-    _float CalcProgress();
+    //_float CalcProgress();
     CWorldInteractive* GetInteractiveObj() { return m_Target; }
     void Set_ProgressBar(CUI_ProgressBar* progressui) { m_ProgressBar = progressui; }
     /* CWorldInteractive::TYPE  GetInteractiveType() { return m_Target->GetInteractiveType(); }*/
@@ -38,11 +38,11 @@ private:
     CState* m_OwnerStateCom = nullptr;
     CAnimator* m_OwnerAnimationCom;
     CWorldInteractive* m_Target = nullptr;
+
     CUI_ProgressBar* m_ProgressBar = nullptr;
     float m_AttackTimer = 0;
     HITDATA h;
     bool m_AttackFlag = false;
-    _float m_Progress;
 public:
     static CPlayerGathering* Create(DEVICE graphicDev);
     CComponent* Clone() override;

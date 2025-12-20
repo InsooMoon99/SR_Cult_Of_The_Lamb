@@ -180,6 +180,8 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
             }
                // if (tmpBullet.size() != 0)
                //     tmpBullet.clear();
+
+
        
         break;
 
@@ -258,6 +260,16 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
         break;
     }
 
+
+#pragma region 플레이어 베리 채집 효과음. 0.5초마다 재생
+    g_Timers[TIMER_SOUND_BS_Bullet] -= timeDelta;
+
+    if (g_Timers[TIMER_SOUND_BS_Bullet] < 0.f)
+    {
+        CSoundMgr::GetInstance()->Play_Once(L"Bomb_Fuse.wav", SOUND_BOSS4, 0.4f);
+        g_Timers[TIMER_SOUND_BS_Bullet] = 0.2f;
+    }
+#pragma endregion
 
 
     return CBossPhase1::BOSSPHASE1::BULLETATTACK;

@@ -59,6 +59,16 @@
 #include "CWeaponEquip.h"
 #include "CWorkBench.h"
 #include "ItemInstance.h"
+#include "CUI_SkillPanel.h"
+#include "CPlayerConstruction.h"
+#include "CPlayerGathering.h"
+#include "CUI_ProgressBar.h"
+#include "CWeaponEquip.h"
+#include "CFontMgr.h"
+#include "CUI_Text.h"
+#include "CState.h"
+#include "CRenderer.h"
+#include "CWorldInteractive.h"
 
 class CUIBuildMenu;
 
@@ -90,7 +100,7 @@ HRESULT CStage::Ready_Scene()
 
     if (FAILED(Ready_UI_Layer(LAYERTYPE::UI)))
         return E_FAIL;
-
+	
     if (FAILED(Ready_Light()))
         return E_FAIL;
 
@@ -244,7 +254,7 @@ void CStage::Initialize_Scene()
     //Spawn_FollowerElephant();
     //Spawn_FollowerPig();
 
-    g_Timers[TIMER_SOUND_FOL_SPAWN] = 0.3f;
+    g_Timers[TIMER_SOUND_FOL_SPAWN] = 0.2f;
 }
 
 _int CStage::Update_Scene(const _float& timeDelta)
@@ -282,7 +292,7 @@ _int CStage::Update_Scene(const _float& timeDelta)
     g_Timers[TIMER_SOUND_FOL_SPAWN] += timeDelta;
 
     // 던전에서 구출한 이후, 순차적으로 소환
-    if (g_Timers[TIMER_SOUND_FOL_SPAWN] >= 0.5f)
+    if (g_Timers[TIMER_SOUND_FOL_SPAWN] >= 0.2f)
     {
         switch (m_FollowerSpawnStep)
         {
@@ -381,30 +391,6 @@ _int CStage::Update_Scene(const _float& timeDelta)
         tmp->AddItem(1002, 4);
         tmp->Initialize_GameObject();
         SpawnObjectOnLayer(tmp, OBJTYPE::INTERACTIVE);
-    }
-
-    if (CDInputMgr::GetInstance()->KeyDown(DIK_7))
-    {
-        auto* playerState = dynamic_cast<CState*>(
-            CManagement::GetInstance()->Get_Component(ID_DYNAMIC,
-                                                      LAYERTYPE::GAMELOGIC,
-                                                      OBJTYPE::PLAYER,
-                                                      COMPONENTTYPE::STATE));
-
-        if (playerState)
-            playerState->Change_State(ACTORSTATE::PLAYER_WARPOUT);
-    }
-
-    if (CDInputMgr::GetInstance()->KeyDown(DIK_8))
-    {
-        auto* playerState = dynamic_cast<CState*>(
-            CManagement::GetInstance()->Get_Component(ID_DYNAMIC,
-                                                      LAYERTYPE::GAMELOGIC,
-                                                      OBJTYPE::PLAYER,
-                                                      COMPONENTTYPE::STATE));
-
-        if (playerState)
-            playerState->Change_State(ACTORSTATE::PLAYER_WARPIN);
     }
 
     return exit;
@@ -720,9 +706,9 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::INTERACTIVE, tmpTree),
         L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CWorldInteractive) failed");
-    tmpTree->Get_Transform()->Set_Pos(6.5f, 2.3f, 24.f);
+    tmpTree->Get_Transform()->Set_Pos(7.f, 2.3f, 25.f);
     tmpTree->Check_WorldState();
-
+    m_WorldInteractive = tmpTree;
     ///////////////////////////////////////////////////////////////////
 
     // -----------------------------
@@ -862,7 +848,7 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
 
     m_PlayerGatherCom->Set_ProgressBar(uiProgressBar);
     m_PlayerConstructionCom->Set_ProgressBar(uiProgressBar);
-
+   // m_WorldInteractive->Set_ProgressBar(uiProgressBar);
     m_Layers.insert({ layerType, layer });
 
     return S_OK;

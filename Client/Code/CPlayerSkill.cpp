@@ -305,7 +305,7 @@ _bool CPlayerSkill::Update_SingleSkill(const float& timeDelta)
 
         CCombatStat* playerCombatStat = dynamic_cast<CCombatStat*>(m_Owner->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
 
-        // playerCombatStat->Set_CurrentCharges(-1);
+        playerCombatStat->Add_Mp(-30.f);
         m_CurrentCharges -= 1;
         m_SingleFired       = true;
         m_SingleSkillEnable = false;
@@ -389,7 +389,7 @@ _bool CPlayerSkill::Update_TripleSkill(const _float& timeDelta)
         m_RightChargingUI->Set_IsActive(false);
 
         CCombatStat* playerCombatStat = dynamic_cast<CCombatStat*>(m_Owner->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
-        //playerCombatStat->Set_CurrentCharges(-1);
+        playerCombatStat->Add_Mp(-30.f);
         m_CurrentCharges -= 1;
         m_TripleFired       = true;
         m_TripleSkillEnable = false;

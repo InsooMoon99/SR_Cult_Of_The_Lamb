@@ -32,6 +32,7 @@
 #include "CPlayerController.h"
 #include "CWeaponEquip.h"
 #include "CUI_Text.h"
+#include "CSoundMgr.h"
 
 CStage_Boss1::CStage_Boss1(DEVICE graphicDev)
     : Engine::CScene(graphicDev), m_Terrain(nullptr), m_Boss(nullptr), m_Player(nullptr), m_Dialogue(nullptr),
@@ -77,6 +78,8 @@ void CStage_Boss1::Initialize_Scene()
     Setup_BossCallbacks();
     Setup_PlayerCallbacks();
 
+    CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Prologue.wav", 0.3f, true, 1.f);
+   
     m_BossEnterUI = CUI_Text::Create(m_GraphicDev);
     m_BossEnterUI->Set_Font(L"NanumSquare_Max");
     m_BossEnterUI->Set_Text(L"기다리는 자");
@@ -193,23 +196,23 @@ HRESULT CStage_Boss1::Ready_Environment_Layer(LAYERTYPE layerType)
     layer->Add_GameObject(OBJTYPE::WALL, wall);
 
     //////////////////////////////////////////////////
-    // Fog
-    m_Fog = CFog::Create(m_GraphicDev);
-    NULL_CHECK_RETURN(m_Fog, E_FAIL);
+    //// Fog
+    //m_Fog = CFog::Create(m_GraphicDev);
+    //NULL_CHECK_RETURN(m_Fog, E_FAIL);
 
-    m_Fog->Set_OriginalPos(m_FogPos);
-    m_Fog->Set_SwaySpeed(m_FogSwaySpeed);
-    m_Fog->Set_SwayAmount(m_FogSwayAmount);
-    m_Fog->Set_Alpha(m_FogAlpha);
-    layer->Add_GameObject(OBJTYPE::FOG, m_Fog);
+    //m_Fog->Set_OriginalPos(m_FogPos);
+    //m_Fog->Set_SwaySpeed(m_FogSwaySpeed);
+    //m_Fog->Set_SwayAmount(m_FogSwayAmount);
+    //m_Fog->Set_Alpha(m_FogAlpha);
+    //layer->Add_GameObject(OBJTYPE::FOG, m_Fog);
 
-    for (_int i = 0; i < 10; i++)
-    {
-        CFog* fog2 = CFog::Create(m_GraphicDev);
-        fog2->Set_OriginalPos(_vec3(48.5f, 8.f, 11.f));
-        fog2->Set_SwaySpeed(0.7f);  // 약간 다른 속도
-        layer->Add_GameObject(OBJTYPE::FOG, fog2);
-    }
+    //for (_int i = 0; i < 10; i++)
+    //{
+    //    CFog* fog2 = CFog::Create(m_GraphicDev);
+    //    fog2->Set_OriginalPos(_vec3(48.5f, 8.f, 11.f));
+    //    fog2->Set_SwaySpeed(0.7f);  // 약간 다른 속도
+    //    layer->Add_GameObject(OBJTYPE::FOG, fog2);
+    //}
 
 
     m_Layers.insert({ layerType, layer });          // scene -> map

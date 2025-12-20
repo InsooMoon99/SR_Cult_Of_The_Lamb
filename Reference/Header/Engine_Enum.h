@@ -78,6 +78,7 @@ enum class COLLISION_LAYERTYPE
     ATTACK,
     TRIGGER,
     INTERACTIVEOBJ,
+    FLY,
 
     WORKBENCH,          // COLLISION : 제작대
     KITCHEN,            // COLLISION : 요리
@@ -322,6 +323,7 @@ enum class ACTORSTATE
     KNEEL,
     KNEEL_WAKE,
     PLAYER_REBIRTH,
+    PLAYER_SACRIFICE,
 
     NPC_IDLE,
 

@@ -39,5 +39,7 @@ private:
 
     private:
         bool m_StartFlag = false;
+        /*vector<CEligos_Flies*> m_flyVec;*/
+        float m_Time = 0;
 };
 

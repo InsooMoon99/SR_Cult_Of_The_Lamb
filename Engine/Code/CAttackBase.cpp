@@ -8,6 +8,7 @@
 #include "CTimerMgr.h"
 #include "CTransform.h"
 
+
 CAttackBase::CAttackBase(DEVICE graphicDev)
     : CGameObject(graphicDev),
       m_TransformCom(nullptr),
@@ -130,15 +131,11 @@ void CAttackBase::OnBeginOverlap(CCollider* self, CCollider* other)
     {
         const auto& particle = m_AttackData.hitParticle;
 
-        // Pos나 Offset에서 랜덤값 줘야 좀 괜찮을듯
-        CParticleHelper::Spawn_Particle(
+        CParticleHelper::Spawn_Particle_Random(
             hitterPos,
-            particle.key,
-            particle.frames,
-            particle.interval,
-            particle.scale,
-            particle.offset
-        );
+            L"HitEffect_Star",
+            14,
+            2.f, 1.f);
     }
 
     // 데미지를 줬으면, 삭제 요청 -> AttackBuilder에서 세팅

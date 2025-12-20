@@ -41,7 +41,7 @@ HRESULT CFloaterMonster::Ready_GameObject()
     m_TransformCom->Set_Pos(_vec3(5.f, 1.f, 7.f));
     m_TransformCom->Set_Scale(_vec3(1.8f, 1.8f, 1.2f));
 
-    m_CombatStatCom->Set_MaxHp(750.f);
+    m_CombatStatCom->Set_MaxHp(300.f);
     m_CombatStatCom->Set_Speed(65.f);
 
     //!! Rigidbody에서 중력만 사용 안함
@@ -193,6 +193,7 @@ void CFloaterMonster::Update_State_Attack(const _float timeDelta)
             .LifeTime(0.2f)
             .DestroyOnHit(true)
             .InstigatorPos()
+            .CollisionLayer(COLLISION_LAYERTYPE::ENEMY)
             .Offset(m_TargetDir * 0.6f)
             .Knockback(50.f)
             .Scale(_vec3(1.f, 1.f, 1.f))

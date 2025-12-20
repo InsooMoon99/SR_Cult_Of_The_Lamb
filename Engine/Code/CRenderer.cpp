@@ -84,28 +84,30 @@ void CRenderer::Render_NonAlpha(DEVICE& graphicDev)
 void CRenderer::Render_Alpha(DEVICE& graphicDev)
 {
     // 알파 정렬
-    _matrix matView, matCam;
-    graphicDev->GetTransform(D3DTS_VIEW, &matView);
-    D3DXMatrixInverse(&matCam, nullptr, &matView);
-
-    _vec3 camPos = *(_vec3*)&matCam.m[3][0];
-
-    m_RenderGroup[RENDER_ALPHA].sort([&camPos](CGameObject* pObj1, CGameObject* pObj2)
-    {
-        CTransform* trans1 = pObj1->Get_Transform();
-        CTransform* trans2 = pObj2->Get_Transform();
-
-        if (!trans1 || !trans2)
-            return false;
-
-        _vec3 pivot1 = trans1->Get_Pos() - camPos;
-        _vec3 pivot2 = trans2->Get_Pos() - camPos;
-
-        _float dist1 = D3DXVec3LengthSq(&pivot1);
-        _float dist2 = D3DXVec3LengthSq(&pivot2);
-
-        return dist1 > dist2;
-    });
+    //!! 이걸 켜면 반투명 오브젝트 뒤에 불투명 오브젝트가 가려지는 문제가 해결되지만
+    //!! 렉 유발의 주범이라 꺼놓음. 왠만하면 사용하지 말 것
+    //_matrix matView, matCam;
+    //graphicDev->GetTransform(D3DTS_VIEW, &matView);
+    //D3DXMatrixInverse(&matCam, nullptr, &matView);
+    //
+    //_vec3 camPos = *(_vec3*)&matCam.m[3][0];
+    //
+    //m_RenderGroup[RENDER_ALPHA].sort([&camPos](CGameObject* pObj1, CGameObject* pObj2)
+    //{
+    //    CTransform* trans1 = pObj1->Get_Transform();
+    //    CTransform* trans2 = pObj2->Get_Transform();
+    //
+    //    if (!trans1 || !trans2)
+    //        return false;
+    //
+    //    _vec3 pivot1 = trans1->Get_Pos() - camPos;
+    //    _vec3 pivot2 = trans2->Get_Pos() - camPos;
+    //
+    //    _float dist1 = D3DXVec3LengthSq(&pivot1);
+    //    _float dist2 = D3DXVec3LengthSq(&pivot2);
+    //
+    //    return dist1 > dist2;
+    //});
 
     graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 
@@ -169,13 +171,24 @@ void CRenderer::Render_UI(DEVICE& graphicDev)
     graphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
     graphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
+
+    {
+        graphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+        graphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+        graphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+
+        graphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+        graphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+        graphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+    }
+
     for (auto& obj : m_RenderGroup[RENDER_UI])
     {
         obj->Render_GameObject();
     }
 
     // 상태 복구
-    graphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
+    //graphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
 
     graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
     graphicDev->SetRenderState(D3DRS_ZENABLE, TRUE);
@@ -227,7 +240,7 @@ void CRenderer::Render_Priority_UI(DEVICE& graphicDev)
     }
 
     // 상태 복구
-    graphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
+    //graphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
 
     graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
     graphicDev->SetRenderState(D3DRS_ZENABLE, TRUE);

@@ -25,7 +25,7 @@ public:
 
 public:
     // 대화
-    void    Start_Dialogue(const string& dialogueId,
+    _bool   Start_Dialogue(const string& dialogueId,
                             const _vec2 boxPos = {0.f, 200.f},
                             const _vec2& boxSize = {300.f, 80.f});
     void    End_Dialogue();

@@ -86,8 +86,6 @@ _int CUIItemGet::Update_GameObject(const _float& timeDelta)
 
         pos.x += timeDelta * m_Speed * dir;
 
-        m_TransformCom->Set_Pos(pos.x , (- m_Index) *  63.f + 60.f, pos.z);
-        m_UIItemIcon->Get_Transform()->Set_Pos(pos.x - uiItemOffset, ( - m_Index) *  63.f+ 60.f, pos.z);
 
         if ((dir <= 0 && pos.x <= targetX) ||
             (dir >= 0 && pos.x >= targetX))
@@ -96,6 +94,8 @@ _int CUIItemGet::Update_GameObject(const _float& timeDelta)
             m_IsOpen = !m_IsOpen;   
         }
 
+        m_TransformCom->Set_Pos(pos.x , (- m_Index) *  63.f + 60.f, pos.z);
+        m_UIItemIcon->Get_Transform()->Set_Pos(pos.x - uiItemOffset, ( - m_Index) *  63.f+ 60.f, pos.z);
 
 		if(m_UIItem.remainTime <= 0)
 		{

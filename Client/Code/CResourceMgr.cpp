@@ -67,9 +67,9 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
     if (FAILED(Ready_Terrain(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Decoration(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Building(graphicDev))) return E_FAIL;
-    //if (FAILED(Ready_Follower(graphicDev))) return E_FAIL;
+    if (FAILED(Ready_Follower(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Particle(graphicDev))) return E_FAIL;
-    //if (FAILED(Ready_MiniBoss(graphicDev))) return E_FAIL;
+    if (FAILED(Ready_MiniBoss(graphicDev))) return E_FAIL;
 
     return S_OK;
 }
@@ -458,6 +458,11 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
 
     if (FAILED(playerTex->Add_Texture(L"Prologue_Run_LUP", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Intro/Run/Run_Diagonal/Lamb-intro-run-up-diagonal%d.png", 50)))
+        return E_FAIL;
+
+    // Sacrifice
+    if (FAILED(playerTex->Add_Texture(L"Finish_Sacrifice", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Sacrifice/Lamb-sacrifice-long%d.png", 109)))
         return E_FAIL;
 
     // Rebirth
@@ -895,6 +900,11 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
         L"../Bin/Resource/Texture/BossPhase2/Slave/DeathCat/UnConverted/UnConverted%d.png", 50)))
         return E_FAIL;
 
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Follower_Die", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Slave/DeathCat/Die/TOWW_Die%d.png", 96)))
+        return E_FAIL;
+
+
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_BOSS2_PHASE2, bossPhase2)))
         return E_FAIL;
 
@@ -1246,6 +1256,11 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey0.png");
     interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey1.png");
     interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey2.png");
+    interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey3.png");
+    interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey4.png");
+    interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey5.png");
+    interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey6.png");
+    interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey7.png");
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_INTERACTION, CTexture::Create(graphicDev, TEX_NORMAL, interactionTex))))
         return E_FAIL;
@@ -1643,7 +1658,7 @@ HRESULT CResourceMgr::Ready_Follower(DEVICE graphicDev)
 
     if (FAILED(elephantTex->Add_Texture(L"ElephantRun", TEX_NORMAL,
         L"../Bin/Resource/Texture/NPC/Follower/Elephant/Run/Follower-run%d.png", 29)))
-        return E_FAIL;
+        return E_FAIL;  
 
     if (FAILED(elephantTex->Add_Texture(L"ElephantWalkPast", TEX_NORMAL,
         L"../Bin/Resource/Texture/NPC/Follower/Elephant/Walkpast/Follower-conversations-walkpast-love%d.png", 86)))

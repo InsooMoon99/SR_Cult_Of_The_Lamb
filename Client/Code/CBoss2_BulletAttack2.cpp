@@ -105,10 +105,8 @@ void CBoss2_BulletAttack2::PlayRoar()
 
     if (animator && animator->Is_AnimationFinished())
     {
-        m_ChainAnim = ChainAttackAnim::HANDSLMA;
-        animator->Play_Animation(L"Boss2_HandSlam", ANIMSTATE::LOOP);
+        m_IsFinished = true;
     }
-
 }
 
 void CBoss2_BulletAttack2::PlayHandSlam()
