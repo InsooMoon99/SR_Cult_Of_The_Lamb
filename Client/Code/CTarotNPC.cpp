@@ -62,8 +62,6 @@ _int CTarotNPC::Update_GameObject(const _float& timeDelta)
 {
     int exit = CCharacterBase::Update_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_ALPHA, this);
-
     m_bHovering = Is_Hovering();
 
     if(m_bPlayerOverlap == true && m_bHovering == true)
@@ -84,6 +82,8 @@ _int CTarotNPC::Update_GameObject(const _float& timeDelta)
 void CTarotNPC::LateUpdate_GameObject(const _float& timeDelta)
 {
     CCharacterBase::LateUpdate_GameObject(timeDelta);
+
+    //CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_ALPHA, this);
 }
 
 void CTarotNPC::Render_GameObject()
@@ -96,7 +96,8 @@ void CTarotNPC::Render_GameObject()
 
     if (m_TextureCom && m_AnimatorCom)
     {
-        _int           frame = m_AnimatorCom->Get_CurFrame();
+        _int frame = m_AnimatorCom->Get_CurFrame();
+
         m_TextureCom->Set_Texture(L"TarotNpcIdle", frame);
     }
 

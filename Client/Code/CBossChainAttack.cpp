@@ -89,7 +89,7 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
 
     if (m_Sound == false)
     {
-        CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/DeathCat_Grunt.wav", SOUNDTYPE::SOUND_BOSS4, 1.f);
+        CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/DeathCat_Grunt.wav", SOUNDTYPE::SOUND_BOSS4, 0.5f);
         m_Sound = true;
     }
 
@@ -109,7 +109,7 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
         {
             LineCount++;
 
-          //  CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Chain_Appear.wav", (SOUNDTYPE)(m_SoundNum + m_Count), 1.f);
+          //  CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Chain_Appear.wav", (SOUNDTYPE)(m_SoundNum + m_Count), 0.5f);
 
             
         }
@@ -183,7 +183,7 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
             m_Count++;
 
             
-          //  CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Chain_Appear.wav", (SOUNDTYPE)(m_SoundNum+m_Count), 1.f);
+          //  CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Chain_Appear.wav", (SOUNDTYPE)(m_SoundNum+m_Count), 0.5f);
 
 
         }
@@ -363,7 +363,7 @@ void CBossChainAttack::RandomChain(const _float& timeDelta, _vec3 BaseCenter, in
         }
             count++;
             //cout << count << endl;
-            CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Chain_Appear.wav", (SOUNDTYPE)(m_SoundNum + m_Count), 1.f);
+            CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Chain_Appear.wav", (SOUNDTYPE)(m_SoundNum + m_Count), 0.5f);
 
 
         m_RandChainTime = 0;

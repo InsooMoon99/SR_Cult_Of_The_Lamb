@@ -59,7 +59,7 @@ _int CEligos_Reveal::Update_State(const _float& timeDelta)
     {
         if (m_Sound == false)
         {
-            CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Elligos_Roar.wav", SOUNDTYPE::SOUND_BOSS4, 1.5f);
+            CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Elligos_Roar.wav", SOUNDTYPE::SOUND_BOSS4, 0.5f);
             m_Sound = true;
         }
     }

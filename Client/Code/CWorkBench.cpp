@@ -59,7 +59,7 @@ _int CWorkBench::Update_GameObject(const _float& timeDelta)
         if (CDInputMgr::GetInstance()->MouseDown(DIM_LB) ||
             CDInputMgr::GetInstance()->KeyDown(DIK_E))
         {
-            CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Open_Menu.wav", SOUNDTYPE::SOUND_UI, 1.f);
+            CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Open_Menu.wav", SOUNDTYPE::SOUND_UI, 0.7f);
             m_BuildMenu->Set_IsActive(true);
             m_BuildMenu->PlayOpenAnimation();
 

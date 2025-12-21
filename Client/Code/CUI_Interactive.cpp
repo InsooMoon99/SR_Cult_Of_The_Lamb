@@ -6,17 +6,16 @@
 #include "CCreateHelper.h"
 #include "CRenderer.h"
 
-CUI_Interactive::CUI_Interactive(DEVICE graphicDev):CUI(graphicDev)
-{
-}
+CUI_Interactive::CUI_Interactive(DEVICE graphicDev)
+    : CUI(graphicDev)
+{}
 
-CUI_Interactive::CUI_Interactive(const CUI_Interactive& rhs):CUI(rhs)
-{
-}
+CUI_Interactive::CUI_Interactive(const CUI_Interactive& rhs)
+    : CUI(rhs)
+{}
 
 CUI_Interactive::~CUI_Interactive()
-{
-}
+{}
 
 HRESULT CUI_Interactive::Ready_GameObject()
 {
@@ -26,18 +25,15 @@ HRESULT CUI_Interactive::Ready_GameObject()
     m_TransformCom->Set_Pos(_vec3(0.f, -250.f, 1.f));
     m_TransformCom->Set_Scale(_vec3(100.f, 30.f, 1.f));
 
-    m_Active = false;
+    m_Active       = false;
     m_textureIndex = 1;
     return S_OK;
-
 }
 
 _int CUI_Interactive::Update_GameObject(const _float& timeDelta)
 {
     if (!m_Active)
         return 0;
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
     _int exit = CUI::Update_GameObject(timeDelta);
     //m_TransformCom->Set_Pos(_vec3(0.f, -250.f, 1.f));
@@ -46,6 +42,9 @@ _int CUI_Interactive::Update_GameObject(const _float& timeDelta)
 
 void CUI_Interactive::LateUpdate_GameObject(const _float& timeDelta)
 {
+    CUI::LateUpdate_GameObject(timeDelta);
+
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUI_Interactive::Render_GameObject()
@@ -53,11 +52,12 @@ void CUI_Interactive::Render_GameObject()
     if (!m_Active)
         return;
     m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-   
+
     m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
     m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-    m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);    m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-   
+    m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+    m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
+
     m_TextureCom->Set_Texture(m_textureIndex);
     m_BufferCom->Render_Buffer();
 
@@ -66,6 +66,7 @@ void CUI_Interactive::Render_GameObject()
     //m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
     //m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 }
+
 HRESULT CUI_Interactive::Add_Component()
 {
     // buffer
@@ -88,7 +89,6 @@ HRESULT CUI_Interactive::Add_Component()
 
     return S_OK;
 }
-
 
 void CUI_Interactive::Free()
 {

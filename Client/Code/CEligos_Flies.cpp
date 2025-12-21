@@ -97,7 +97,7 @@ _int CEligos_Flies::Update_GameObject(const _float& timeDelta)
 
     if (m_spawnSound == false)
     {
-        CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Fly_Spawn.wav", SOUNDTYPE::SOUND_BOSS4, 1.0f);
+        CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Fly_Spawn.wav", SOUNDTYPE::SOUND_BOSS4, 0.5f);
        
         m_spawnSound = true;
     }
@@ -123,7 +123,7 @@ _int CEligos_Flies::Update_GameObject(const _float& timeDelta)
 
         //끝나면
         CSoundMgr::GetInstance()->Stop_Sound(L"Boss/Eligos/Fly_Fly_Loop.wav");
-        CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Flying_Hopper_Miniboss_Bite.wav", SOUNDTYPE::SOUND_BOSS3, 0.7f);
+        CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Flying_Hopper_Miniboss_Bite.wav", SOUNDTYPE::SOUND_BOSS3, 0.5f);
 
         Mark_As_PendingKill();
     }

@@ -11,20 +11,20 @@
 
 int CUIMp::m_nextID = 0;
 
-CUIMp::CUIMp(DEVICE pGraphicDev) : CUI(pGraphicDev)
+CUIMp::CUIMp(DEVICE pGraphicDev)
+    : CUI(pGraphicDev)
 {
-
     m_ID = ++m_nextID;
 }
 
-CUIMp::CUIMp(const CUIMp& rhs) : CUI(rhs)
+CUIMp::CUIMp(const CUIMp& rhs)
+    : CUI(rhs)
 {
     m_ID = ++m_nextID;
 }
 
 CUIMp::~CUIMp()
-{
-}
+{}
 
 HRESULT CUIMp::Ready_GameObject()
 {
@@ -40,14 +40,14 @@ _int CUIMp::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
-
     return exit;
 }
 
 void CUIMp::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
+
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUIMp::Render_GameObject()
@@ -68,18 +68,18 @@ void CUIMp::Render_GameObject()
     _vec3 vSize = m_TransformCom->Get_Scale();
 
     RECT rcFull;
-    rcFull.left    = LONG(sx - vSize.x);
-    rcFull.top     = LONG(sy - vSize.y);          // RcTex 기본 크기가 2이기 때문에 Transform Scale은 반 사이즈
-    rcFull.right   = LONG(sx + vSize.x);          // 따라서 여기서  vSize *0.5 하면 실제 크기가 반으로 줄어듦
-    rcFull.bottom  = LONG(sy + vSize.y);
+    rcFull.left   = static_cast<LONG>(sx - vSize.x);
+    rcFull.top    = static_cast<LONG>(sy - vSize.y);          // RcTex 기본 크기가 2이기 때문에 Transform Scale은 반 사이즈
+    rcFull.right  = static_cast<LONG>(sx + vSize.x);          // 따라서 여기서  vSize *0.5 하면 실제 크기가 반으로 줄어듦
+    rcFull.bottom = static_cast<LONG>(sy + vSize.y);
 
     float currMp = m_CombatStatCom->Get_Mp();
-    float maxMp = m_CombatStatCom->Get_MaxMp();
+    float maxMp  = m_CombatStatCom->Get_MaxMp();
 
     float ratio = currMp / maxMp;                //현재 MP의 비율
 
     int fullHeight = rcFull.bottom - rcFull.top; //MP가 가득 찼을 때의 높이
-    int fillHeight = int(fullHeight * ratio);    //높이는 MP에 비례
+    int fillHeight = static_cast<int>(fullHeight * ratio);    //높이는 MP에 비례
 
     rcFull.top = rcFull.bottom - fillHeight;     //MP가 늘어날수록 화면에 그려지는 rcFull의 top은 점점 작아진다
 
@@ -90,12 +90,10 @@ void CUIMp::Render_GameObject()
 
     m_GraphicDev->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
     //m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
-
 }
 
 HRESULT CUIMp::Add_Component()
 {
-
     // buffer
     m_BufferCom = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
     NULL_CHECK_RETURN(m_BufferCom, E_FAIL);
@@ -131,6 +129,5 @@ CUIMp* CUIMp::Create(DEVICE graphicDev)
 
 void CUIMp::Free()
 {
-
     CUI::Free();
 }

@@ -41,8 +41,6 @@ _int CBoss_SlavePig::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CCharacterBase::Update_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_ALPHA, this);
-
     switch (m_SlaveAnimState)
     {
     case Appear:
@@ -59,7 +57,7 @@ _int CBoss_SlavePig::Update_GameObject(const _float& timeDelta)
         break;
 
     case Freed:
-
+    default:
         break;
     }
 
@@ -70,6 +68,7 @@ void CBoss_SlavePig::LateUpdate_GameObject(const _float& timeDelta)
 {
     CCharacterBase::LateUpdate_GameObject(timeDelta);
 
+    //CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_ALPHA, this);
 }
 
 void CBoss_SlavePig::Render_GameObject()

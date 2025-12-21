@@ -231,7 +231,7 @@ void CHumanMonster::Update_State_Hit(const _float timeDelta)
 {
     if (!m_HitSoundPlayed)
     {
-        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Humanoid_GetHit.wav", SOUNDTYPE::SOUND_HUMANOID, 1.f);
+        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Humanoid_GetHit.wav", SOUNDTYPE::SOUND_HUMANOID, 0.5f);
         m_HitSoundPlayed = true;
     }
 
@@ -248,7 +248,7 @@ void CHumanMonster::Update_State_Dead(const _float timeDelta)
     // CombatStat에서 Dead 상태처리 진행중 Dead 애니메이션이 없다. 밀려나면서, 뼛가루 소환?
     if (m_StateCom->Get_State() == ACTORSTATE::DEAD)
     {
-        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Humanoid_Die.wav", SOUNDTYPE::SOUND_HUMANOID, 1.f);
+        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Humanoid_Die.wav", SOUNDTYPE::SOUND_HUMANOID, 0.5f);
         Trigger_OnDeath();
         Mark_As_PendingKill();
     }

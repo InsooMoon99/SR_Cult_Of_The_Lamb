@@ -97,8 +97,6 @@ _int CHarvestableHerb::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CWorldInteractive::Update_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
-
     if (m_CombatStatCom->Is_Dead() == true)
     {
         // 텍스쳐 바꿈
@@ -112,6 +110,8 @@ _int CHarvestableHerb::Update_GameObject(const _float& timeDelta)
 void CHarvestableHerb::LateUpdate_GameObject(const _float& timeDelta)
 {
     CWorldInteractive::LateUpdate_GameObject(timeDelta);
+
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 }
 
 void CHarvestableHerb::Render_GameObject()
@@ -129,7 +129,8 @@ void CHarvestableHerb::OnInteractiveDamaged()
         m_TransformCom->Get_Pos(),          // 위치
         COMPONENTTYPE::TEX_GRASS_PARTICLE,  // 텍스처 타입
         5,                                  // 생성할 개수
-        0.1f, 0.12f,                        // 크기 범위
+        0.1f,
+        0.12f,                        // 크기 범위
         6,                                  // 텍스처 랜덤으로 몇개 출력
         15.f,                               // 땅에 떨어지는 속도
         m_TransformCom->Get_Pos().y - 0.5f  // 바닥 Y (돌 아래쪽)

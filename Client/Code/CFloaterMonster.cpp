@@ -185,7 +185,7 @@ void CFloaterMonster::Update_State_Attack(const _float timeDelta)
 {
     if (m_AnimatorCom->Get_CurFrame() == 2 && !m_AttackSpawned)
     {
-        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Worm_Attack.wav", SOUNDTYPE::SOUND_FLOATERMONSTER, 1.f);
+        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Worm_Attack.wav", SOUNDTYPE::SOUND_FLOATERMONSTER, 0.5f);
 
         CAttackBuilder(m_GraphicDev, this)
             .SetType<CAttackBox>()
@@ -215,7 +215,7 @@ void CFloaterMonster::Update_State_Hit(const _float timeDelta)
     // 애니메이션이 끝나고, 넉백이 다 밀렸을 때
     if (m_AnimatorCom->Is_AnimationFinished() && !m_CombatStatCom->Is_Knockback())
     {
-        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Worm_GetHit.wav", SOUNDTYPE::SOUND_FLOATERMONSTER, 1.f);
+        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Worm_GetHit.wav", SOUNDTYPE::SOUND_FLOATERMONSTER, 0.5f);
         m_StateCom->Change_State(ACTORSTATE::IDLE);
 
     }
@@ -225,7 +225,7 @@ void CFloaterMonster::Update_State_Dead(const _float timeDelta)
 {
     if (m_StateCom->Get_State() == ACTORSTATE::DEAD)
     {
-        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Bat_Dead.wav", SOUNDTYPE::SOUND_FLOATERMONSTER, 1.f);
+        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Bat_Dead.wav", SOUNDTYPE::SOUND_FLOATERMONSTER, 0.5f);
         Trigger_OnDeath();
         Mark_As_PendingKill();
     }

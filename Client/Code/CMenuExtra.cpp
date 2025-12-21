@@ -9,17 +9,17 @@
 #include "CTexture.h"
 #include "CTransform.h"
 
-CMenuExtra::CMenuExtra(DEVICE graphicDev, int textureIndex) : CRenderObject(graphicDev), m_textureIndex(textureIndex)
-{
-}
+CMenuExtra::CMenuExtra(DEVICE graphicDev, int textureIndex)
+    : CRenderObject(graphicDev),
+      m_textureIndex(textureIndex)
+{}
 
-CMenuExtra::CMenuExtra(const CMenuExtra& rhs) : CRenderObject(rhs)
-{
-}
+CMenuExtra::CMenuExtra(const CMenuExtra& rhs)
+    : CRenderObject(rhs)
+{}
 
 CMenuExtra::~CMenuExtra()
-{
-}
+{}
 
 HRESULT CMenuExtra::Ready_GameObject()
 {
@@ -33,16 +33,14 @@ _int CMenuExtra::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CRenderObject::Update_GameObject(timeDelta);
 
-
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
-
     return exit;
 }
 
 void CMenuExtra::LateUpdate_GameObject(const _float& timeDelta)
 {
     CRenderObject::LateUpdate_GameObject(timeDelta);
+
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 }
 
 void CMenuExtra::Render_GameObject()
@@ -65,7 +63,6 @@ HRESULT CMenuExtra::Add_Component()
     if (FAILED(CRenderObject::Add_Component()))
         return E_FAIL;
 
-
     // texture
     m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_MAINMENU);
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
@@ -76,12 +73,9 @@ HRESULT CMenuExtra::Add_Component()
     m_BufferComOffset1 = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
     NULL_CHECK_RETURN(m_BufferComOffset1, E_FAIL);
 
-
     //bufferoffset1
     m_BufferComOffset2 = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
     NULL_CHECK_RETURN(m_BufferComOffset2, E_FAIL);
-
-
 
     return S_OK;
 }

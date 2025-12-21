@@ -121,7 +121,7 @@ _uint CLoading::Loading_ForBoss2()
 
     vector<future<HRESULT>> futures;
 
-    futures.push_back(async(launch::async, [&]() {
+    /*futures.push_back(async(launch::async, [&]() {
         return resourceMgr->Ready_BossP2(m_GraphicDev);
         }));
     
@@ -131,7 +131,7 @@ _uint CLoading::Loading_ForBoss2()
     
     futures.push_back(async(launch::async, [&]() {
         return resourceMgr->Ready_BossP2_Follower(m_GraphicDev);
-        }));
+        }));*/
     
     // 병렬 태스크 완료 대기
     for (auto& future : futures)
@@ -191,20 +191,20 @@ _uint CLoading::Loading_ForState_Parallel()
         return resourceMgr->Ready_Building(m_GraphicDev);
         }));
     futures.push_back(async(launch::async, [&]() {
-        return resourceMgr->Ready_Follower(m_GraphicDev);
-        }));
+       return resourceMgr->Ready_Follower(m_GraphicDev);
+       }));
     futures.push_back(async(launch::async, [&]() {
         return resourceMgr->Ready_MiniBoss(m_GraphicDev);
         }));
 
     // 프롤로그 NPC들
-    //futures.push_back(async(launch::async, [&]() {
-    //    return resourceMgr->Ready_Prologue(m_GraphicDev);
-    //    }));
-    //
-    //futures.push_back(async(launch::async, [&]() {
-    //    return resourceMgr->Ready_BossP1(m_GraphicDev);
-    //    }));
+    futures.push_back(async(launch::async, [&]() {
+        return resourceMgr->Ready_Prologue(m_GraphicDev);
+        }));
+    
+    futures.push_back(async(launch::async, [&]() {
+        return resourceMgr->Ready_BossP1(m_GraphicDev);
+        }));
 
     // 병렬 태스크 완료 대기
     for (size_t i = 0; i < futures.size(); ++i)
@@ -257,7 +257,7 @@ unsigned CLoading::Thread_Main(void* pArg)
 
     //_endthreadex(0);
     // -> _beginthreadex()로 생성된 스레드는 함수가 return 될 때
-    // 내부적으로 _endthreadex() 가 자동 호출되어 정리됨.
+    // 내부적으로 _endthreadex() 가 자동 호출되어 정리됨.z
     // 따라서 명시적으로 호출할 필요가 없음
 
     return iFlag;

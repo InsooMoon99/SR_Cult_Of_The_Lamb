@@ -70,8 +70,6 @@ _int CChest::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CRenderObject::Update_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
-
     switch (m_chest)
     {
         case CHESTSTATE::REVEAL:
@@ -118,6 +116,7 @@ void CChest::LateUpdate_GameObject(const _float& timeDelta)
 {
     CRenderObject::LateUpdate_GameObject(timeDelta);
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 }
 
 void CChest::Render_GameObject()

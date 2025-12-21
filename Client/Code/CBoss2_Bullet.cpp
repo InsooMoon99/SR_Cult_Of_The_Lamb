@@ -67,8 +67,6 @@ _int CBoss2_Bullet::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CAttackSphere::Update_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
-
     m_SpawnTimer += timeDelta;
 
     if (!m_StartShoot)
@@ -109,9 +107,9 @@ _int CBoss2_Bullet::Update_GameObject(const _float& timeDelta)
 
 void CBoss2_Bullet::LateUpdate_GameObject(const _float& timeDelta)
 {
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
+
     CAttackSphere::LateUpdate_GameObject(timeDelta);
-
-
 }
 
 void CBoss2_Bullet::Render_GameObject()
