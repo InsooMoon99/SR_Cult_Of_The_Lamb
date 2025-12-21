@@ -7,16 +7,15 @@
 #include "CAnimator.h"
 #include "CSpriteAnimation.h"
 #include "CSoundMgr.h"
+
 CBossGroggy::CBossGroggy(CBossPhase1* pOwner, CBossStateMachine* pStateMachine)
 {
-    m_pOwner = pOwner;
+    m_pOwner        = pOwner;
     m_pStateMachine = pStateMachine;
 }
 
 CBossGroggy::~CBossGroggy()
-{
-
-}
+{}
 
 void CBossGroggy::Enter()
 {
@@ -28,7 +27,6 @@ void CBossGroggy::Enter()
 void CBossGroggy::Exit()
 {
     CMonsterState::Exit();
-
 }
 
 HRESULT CBossGroggy::Ready_State()
@@ -36,7 +34,7 @@ HRESULT CBossGroggy::Ready_State()
     m_fMinStateTime = 0.f;
 
     m_pOwnerTransformCom = static_cast<CTransform*>(m_pOwner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-    m_pOwnerAnimatorCom = static_cast<CAnimator*>(m_pOwner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+    m_pOwnerAnimatorCom  = static_cast<CAnimator*>(m_pOwner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
 
     return S_OK;
 }
@@ -54,11 +52,9 @@ _int CBossGroggy::Update_State(const _float& timeDelta)
 
         if (m_Sound == false)
         {
-        CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/DeathCat_Hurt.wav", SOUNDTYPE::SOUND_BOSS1, 1.f);
-        m_Sound = true;
+            CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/DeathCat_Hurt.wav", SOUNDTYPE::SOUND_BOSS1, 0.5f);
+            m_Sound = true;
         }
-
-        
 
         if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
             m_ePhase = PHASE::LOOP;
@@ -67,16 +63,14 @@ _int CBossGroggy::Update_State(const _float& timeDelta)
     case PHASE::LOOP:
         m_pOwnerAnimatorCom->Play_Animation(L"BossGroggy_loop", ANIMSTATE::ONCE);
         if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
-        {
             m_ePhase = PHASE::UP;
-        }
         break;
 
     case PHASE::UP:
 
         if (m_Sound == false)
         {
-            CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Deathcat_Start_Transform.wav", SOUNDTYPE::SOUND_BOSS1, 1.f);
+            CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Deathcat_Start_Transform.wav", SOUNDTYPE::SOUND_BOSS1, 0.5f);
             m_Sound = true;
         }
 
@@ -86,16 +80,13 @@ _int CBossGroggy::Update_State(const _float& timeDelta)
         break;
     }
     return CBossPhase1::BOSSPHASE1::BOSSGROGGRY;
-
 }
 
 void CBossGroggy::LateUpdate_State(const _float& timeDelta)
-{
-}
+{}
 
 void CBossGroggy::Render_State()
-{
-}
+{}
 
 CBossGroggy* CBossGroggy::Create(CBossPhase1* pOwner, CBossStateMachine* pStateMachine)
 {
@@ -112,6 +103,4 @@ CBossGroggy* CBossGroggy::Create(CBossPhase1* pOwner, CBossStateMachine* pStateM
 }
 
 void CBossGroggy::Free()
-{
-
-}
+{}

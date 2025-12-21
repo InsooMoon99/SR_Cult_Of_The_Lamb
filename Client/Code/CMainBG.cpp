@@ -8,7 +8,9 @@
 #include "CTransform.h"
 
 CMainBG::CMainBG(DEVICE graphicDev)
-    : CGameObject(graphicDev), m_BufferCom(nullptr), m_TextureCom(nullptr)
+    : CGameObject(graphicDev),
+      m_BufferCom(nullptr),
+      m_TextureCom(nullptr)
 { }
 
 CMainBG::CMainBG(const CMainBG& rhs)
@@ -28,7 +30,6 @@ HRESULT CMainBG::Ready_GameObject()
     if (false == SetTexAspectInit(m_TextureCom, m_TransformCom, 0))
         return E_FAIL;
 
-
     return S_OK;
 }
 
@@ -37,7 +38,6 @@ _int CMainBG::Update_GameObject(const _float& timeDelta)
     _int exit = CGameObject::Update_GameObject(timeDelta);
 
     //m_TransformCom->Set_Scale(800.f, 600.f, 1.f);
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_PRIORITY_UI, this);
 
     return exit;
 }
@@ -45,7 +45,10 @@ _int CMainBG::Update_GameObject(const _float& timeDelta)
 void CMainBG::LateUpdate_GameObject(const _float& timeDelta)
 {
     CGameObject::LateUpdate_GameObject(timeDelta);
+
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_PRIORITY_UI, this);
 }
+
 void CMainBG::Render_GameObject()
 {
     //m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
@@ -79,7 +82,7 @@ HRESULT CMainBG::Add_Component()
     m_TransformCom = CreateProtoComponent<CTransform>(this, COMPONENTTYPE::TRANSFORM);
     NULL_CHECK_RETURN(m_TransformCom, E_FAIL);
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::TRANSFORM, m_TransformCom });
-   
+
     return S_OK;
 }
 

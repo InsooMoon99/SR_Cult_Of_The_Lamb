@@ -88,8 +88,6 @@ _int CWarningChain::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CGameObject::Update_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
-
     if (m_Sizeflag == false)
     {
         // 초기 사이즈 저장
@@ -196,6 +194,8 @@ _int CWarningChain::Update_GameObject(const _float& timeDelta)
 void CWarningChain::LateUpdate_GameObject(const _float& timeDelta)
 {
     CGameObject::LateUpdate_GameObject(timeDelta);
+
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 }
 
 void CWarningChain::Render_GameObject()

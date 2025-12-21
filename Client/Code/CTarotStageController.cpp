@@ -178,6 +178,9 @@ void CTarotStageController::LateUpdate_GameObject(const _float& timeDelta)
         break;
 
     }
+
+    if (m_Dialogue)
+        m_Dialogue->LateUpdate_GameObject(timeDelta);
 }
 
 

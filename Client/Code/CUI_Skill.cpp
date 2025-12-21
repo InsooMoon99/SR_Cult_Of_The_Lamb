@@ -23,7 +23,7 @@ HRESULT CUI_Skill::Ready_GameObject()
     if (FAILED(Add_Component()))
         return E_FAIL;
 
-  //  m_TransformCom->Set_Pos(_vec3(-450.f, 220.f, 0.f));
+    //  m_TransformCom->Set_Pos(_vec3(-450.f, 220.f, 0.f));
     m_TransformCom->Set_Scale(_vec3(27.f, 27.f, 0.f));
 
     m_Invisible = true;
@@ -35,19 +35,23 @@ _int CUI_Skill::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+    CPlayerSkill* playerskill = dynamic_cast<CPlayerSkill*>(
+        CManagement::GetInstance()->Get_Component(
+            COMPONENTID::ID_STATIC,
+            LAYERTYPE::GAMELOGIC,
+            OBJTYPE::PLAYER,
+            COMPONENTTYPE::PL_SKILL));
 
-    CPlayerSkill* playerskill = dynamic_cast<CPlayerSkill*>(CManagement::GetInstance()->Get_Component(COMPONENTID::ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::PL_SKILL));
-    if(playerskill->Get_IsSkillUnlocked())
-    {
+    if (playerskill->Get_CurrentCharges() >= 1)
         m_Invisible = false;
-    }
     return CUI::Update_GameObject(timeDelta);
 }
 
 void CUI_Skill::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
+
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUI_Skill::Render_GameObject()
@@ -60,25 +64,25 @@ void CUI_Skill::Render_GameObject()
         m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
         m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
         m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-       // CPlayerSkill* playerskill = dynamic_cast<CPlayerSkill*>(CManagement::GetInstance()->Get_Component(COMPONENTID::ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::PL_SKILL));
-       // if(playerskill->Get_SingleSkillAvailability())
-       // {
-       //     m_TextureIndex = 1;
-       // }
-       // else if(playerskill->Get_TripleSkillAvailability())
-       // {
-       //     m_TextureIndex = 2;
-       // }
-       // else
-       // {
-       //     m_TextureIndex = 0;
-       // }
+        // CPlayerSkill* playerskill = dynamic_cast<CPlayerSkill*>(CManagement::GetInstance()->Get_Component(COMPONENTID::ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::PL_SKILL));
+        // if(playerskill->Get_SingleSkillAvailability())
+        // {
+        //     m_TextureIndex = 1;
+        // }
+        // else if(playerskill->Get_TripleSkillAvailability())
+        // {
+        //     m_TextureIndex = 2;
+        // }
+        // else
+        // {
+        //     m_TextureIndex = 0;
+        // }
         m_TextureCom->Set_Texture(m_TextureIndex);
         m_BufferCom->Render_Buffer();
     }
 }
 
-HRESULT    CUI_Skill::Add_Component()
+HRESULT CUI_Skill::Add_Component()
 {
     // buffer
     m_BufferCom = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
@@ -100,6 +104,7 @@ HRESULT    CUI_Skill::Add_Component()
 
     return S_OK;
 }
+
 CUI_Skill* CUI_Skill::Create(DEVICE graphicDev)
 {
     auto skillUI = new CUI_Skill(graphicDev);

@@ -113,25 +113,25 @@ HRESULT CStage::Ready_Scene()
         _vec3 pos;
     };
 
-    vector<SpawnInfo> spawnList = {
-        { 1001, { 11.f, 1.f, 10.f } },      // 동전
-        { 1001, { 12.f, 1.f, 10.f } },
-        //{ 1001, { 13.f, 1.f, 10.f } },
-        //{ 1001, { 14.f, 1.f, 10.f } },
-        //{ 1001, { 15.f, 1.f, 10.f } },
-        //{ 3001, { 20.f, 1.f, 10.f } },    // 검
-        //{ 2001, { 25.f, 1.f, 10.f } },    // 풀죽
-        //{ 2001, { 27.f, 1.f, 10.f } },
-        //{ 2003, { 30.f, 1.f, 10.f } },    // 베리 그릇
-        //{ 2003, { 32.f, 1.f, 10.f } }
-    };
-
-    for (const auto& info : spawnList)
-    {
-        ItemInstance inst = { info.id, -1, 0 };
-        CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, info.pos);
-    }
-
+    //vector<SpawnInfo> spawnList = {
+    //    { 1001, { 11.f, 1.f, 10.f } },      // 동전
+    //    { 1001, { 12.f, 1.f, 10.f } },
+    //    //{ 1001, { 13.f, 1.f, 10.f } },
+    //    //{ 1001, { 14.f, 1.f, 10.f } },
+    //    //{ 1001, { 15.f, 1.f, 10.f } },
+    //    //{ 3001, { 20.f, 1.f, 10.f } },    // 검
+    //    //{ 2001, { 25.f, 1.f, 10.f } },    // 풀죽
+    //    //{ 2001, { 27.f, 1.f, 10.f } },
+    //    //{ 2003, { 30.f, 1.f, 10.f } },    // 베리 그릇
+    //    //{ 2003, { 32.f, 1.f, 10.f } }
+    //};
+    //
+    //for (const auto& info : spawnList)
+    //{
+    //    ItemInstance inst = { info.id, -1, 0 };
+    //    CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, info.pos);
+    //}
+    //
     //for (int i = 0; i < CItemDB::GetInstance()->GetVector().size(); i++)
     //{
     //    int          id   = CItemDB::GetInstance()->GetVector()[i].id;
@@ -371,24 +371,19 @@ _int CStage::Update_Scene(const _float& timeDelta)
     // xptmxm dksdmstn
     if (CDInputMgr::GetInstance()->KeyDown(DIK_U))
     {
-        /*CHarvestableHerb*  tmpObject = CHarvestableHerb::Create(m_GraphicDev, CHarvestableHerb::BERRY::SMALLBERRY);
-        NULL_CHECK_RETURN_MSG(tmpObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CWorldInteractive::Create() returned null")
- 
-            SpawnObjectOnLayer(tmpObject, OBJTYPE::INTERACTIVE);
- 
-         tmpObject->Get_Transform()->Set_Pos(20.f, 0.6f, 20.f);
- 
- 
-         RecipeInst r{ 4001 ,3,2001 };
- 
-         CUICookingGame* cook = CUICookingGame::Create(m_GraphicDev, tmpObject, r);
- 
-         SpawnUIOnLayer(cook, OBJTYPE::UI);
- 
-         cook->Initialize_GameObject();*/
-
         CChest* tmp = CChest::Create(m_GraphicDev, { 23, 2, 23 });
-        tmp->AddItem(1002, 4);
+
+        for (int i = 0; i < 5; i++)
+        {
+            tmp->AddItem(1001, 4);
+            tmp->AddItem(1004, 2);
+            tmp->AddItem(1005, 1);
+            tmp->AddItem(1003, 2);
+        }
+        tmp->AddItem(1001, 2);
+
+        tmp->AddItem(1001, 2);
+
         tmp->Initialize_GameObject();
         SpawnObjectOnLayer(tmp, OBJTYPE::INTERACTIVE);
     }

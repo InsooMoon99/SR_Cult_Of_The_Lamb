@@ -233,7 +233,7 @@ void CUIInventory::Check_Hovered() //셀 선택 체크는 인벤토리 UI 클래
             {
                 CSoundMgr::GetInstance()->Play_Once(L"ui/ui_pointeron.wav",
                     SOUNDTYPE::SOUND_UI,
-                    5.f);
+                    1.f);
             };
             m_Cells[i]->Set_IsHovered(hoveredNow);
         }

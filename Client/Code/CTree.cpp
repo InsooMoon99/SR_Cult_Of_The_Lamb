@@ -57,7 +57,7 @@ HRESULT CTree::Ready_GameObject()
 
         m_ItemNum = 1;
 
-        m_CombatStatCom->Set_MaxHp(20.f);
+        m_CombatStatCom->Set_MaxHp(15.f);
         m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
         break;
     case REALSMALLTREE:
@@ -68,7 +68,7 @@ HRESULT CTree::Ready_GameObject()
 
         m_ItemNum = 4;
 
-        m_CombatStatCom->Set_MaxHp(30.f);
+        m_CombatStatCom->Set_MaxHp(20.f);
         m_TransformCom->Set_Scale(_vec3(3.f, 3.f, 3.f));
         m_BoxColCom->Set_Size({ 1.5f, 1.5f, 1.5f });
 
@@ -82,7 +82,7 @@ HRESULT CTree::Ready_GameObject()
 
         m_ItemNum = 7;
 
-        m_CombatStatCom->Set_MaxHp(40.f);
+        m_CombatStatCom->Set_MaxHp(35.f);
         m_TransformCom->Set_Scale(_vec3(3.f, 3.f, 3.f));
         m_BoxColCom->Set_Size({ 1.5f, 2.5f, 1.5f });
         m_SpriteEffCom->InitOutLine(D3DCOLOR_ARGB(255, 255, 255, 255), 0.025f);
@@ -150,8 +150,6 @@ _int CTree::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CWorldInteractive::Update_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
-
     if (m_OnDamage == true)
     {
         if (m_tree == RUBBLE1 || m_tree == RUBBLE2 || m_tree == RUBBLE3 || m_tree == RUBBLE4)
@@ -186,6 +184,8 @@ _int CTree::Update_GameObject(const _float& timeDelta)
 void CTree::LateUpdate_GameObject(const _float& timeDelta)
 {
     CWorldInteractive::LateUpdate_GameObject(timeDelta);
+
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 }
 
 void CTree::Render_GameObject()

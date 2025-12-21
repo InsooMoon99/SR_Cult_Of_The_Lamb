@@ -295,7 +295,7 @@ HRESULT CMainMenu::Ready_UI_Layer(LAYERTYPE layerType)
     //bt->Set_TextureIndex(1,0);
     bt->SetCloneTexAspectScale({ scaleX, scaleY, 1 });
     bt->Get_Transform()->Set_Pos(-WINCX / 3, -0, .3);
-    bt->SetOnClick([]() { CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_STAGE); });
+    bt->SetOnClick([]() { CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_PROLOGUE); });
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::UI, bt),
         L"CMainMenu::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUIIcon) failed");
@@ -315,7 +315,7 @@ HRESULT CMainMenu::Ready_UI_Layer(LAYERTYPE layerType)
     //bt2->Set_TextureIndex(1, 0);
     bt2->SetCloneTexAspectScale({ scaleX, scaleY, 1 });
     bt2->Get_Transform()->Set_Pos(-WINCX / 3, -WINCX / 9, .3);
-    bt2->SetOnClick([]() { CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_PROLOGUE); });
+    bt2->SetOnClick([]() { CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_STAGE); });
     FAILED_CHECK_MSG(
         layer->Add_GameObject(OBJTYPE::UI, bt2),
         L"CMainMenu::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUIIcon) failed");

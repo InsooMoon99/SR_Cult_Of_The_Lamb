@@ -37,7 +37,7 @@ HRESULT CUICircle::Ready_GameObject()
     //m_StarImage->SetRegister(false);
     //m_StarImage->Set_TextureIndex(1);
     //m_StarImage->Get_Transform()->Set_Pos(_vec3(-550.f, 270.f, 0.f));
-   // m_StarImage->Get_Transform()->Set_Scale(50.f, 40.f, 0.f);
+    // m_StarImage->Get_Transform()->Set_Scale(50.f, 40.f, 0.f);
 
     return S_OK;
 }
@@ -45,8 +45,6 @@ HRESULT CUICircle::Ready_GameObject()
 _int CUICircle::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
     //m_StarImage->Update_GameObject(timeDelta);
     //m_StarImage->Get_Transform()->Set_Scale(55.f, 55.f, 0.f);
@@ -57,7 +55,9 @@ _int CUICircle::Update_GameObject(const _float& timeDelta)
 void CUICircle::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
-   // m_StarImage->LateUpdate_GameObject(timeDelta);
+    // m_StarImage->LateUpdate_GameObject(timeDelta);
+
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUICircle::Render_GameObject()
@@ -70,18 +70,27 @@ void CUICircle::Render_GameObject()
 
     m_BufferCom->Render_Buffer();
 
-    _vec3 pos = m_TransformCom->Get_Pos();
-    _vec2 fontOffset = { 0.f,10.f };
-    _vec2 screen = { WINCX / 2 + pos.x + fontOffset.x,WINCY / 2 - pos.y + fontOffset.y };
-     
-    CPlayerSkill* playerskill = dynamic_cast<CPlayerSkill*>(CManagement::GetInstance()->Get_Component(COMPONENTID::ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::PL_SKILL));
+    _vec3 pos        = m_TransformCom->Get_Pos();
+    _vec2 fontOffset = { 0.f, 10.f };
+    _vec2 screen     = { WINCX / 2 + pos.x + fontOffset.x,WINCY / 2 - pos.y + fontOffset.y };
+
+    CPlayerSkill* playerskill = dynamic_cast<CPlayerSkill*>(CManagement::GetInstance()->Get_Component(
+        COMPONENTID::ID_STATIC,
+        LAYERTYPE::GAMELOGIC,
+        OBJTYPE::PLAYER,
+        COMPONENTTYPE::PL_SKILL));
     int currentCharges = playerskill->Get_CurrentCharges();
 
-    CFontMgr::GetInstance()->Render_FontOutlined(L"NanumSquare_Skill", to_wstring(currentCharges), &screen, D3DXCOLOR(1.f, 1.f, 1.f, 1.f), D3DXCOLOR(0.f, 0.f, 0.f, 1.f), 2);
+    CFontMgr::GetInstance()->Render_FontOutlined(L"NanumSquare_Skill",
+                                                 to_wstring(currentCharges),
+                                                 &screen,
+                                                 D3DXCOLOR(1.f, 1.f, 1.f, 1.f),
+                                                 D3DXCOLOR(0.f, 0.f, 0.f, 1.f),
+                                                 2);
 
     //m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
 
-   // m_StarImage->Render_GameObject();
+    // m_StarImage->Render_GameObject();
 }
 
 HRESULT CUICircle::Add_Component()

@@ -37,8 +37,6 @@ _int CMonster::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CGameObject::Update_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_NONALPHA, this);
-
     return exit;
 }
 
@@ -65,6 +63,8 @@ void CMonster::LateUpdate_GameObject(const _float& timeDelta)
     playerTransformCom->Get_Info(INFO_POS, &vPlayerPos);
 
     m_TransformCom->Chase_Target(&vPlayerPos, timeDelta, 5.f);
+
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_NONALPHA, this);
 }
 
 void CMonster::Render_GameObject()

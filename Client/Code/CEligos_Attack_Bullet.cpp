@@ -116,7 +116,7 @@ _int CEligos_Attack_Bullet::Update_State(const _float& timeDelta)
             }
 
 
-                CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Elligos_Charge.wav", SOUNDTYPE::SOUND_BOSS2, 1.f);
+                CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Elligos_Charge.wav", SOUNDTYPE::SOUND_BOSS2, 0.5f);
 
 
             m_flag = true;
@@ -136,7 +136,7 @@ _int CEligos_Attack_Bullet::Update_State(const _float& timeDelta)
         m_pOwnerAnimatorCom->Play_Animation(L"Eligos_attack_bullet", ANIMSTATE::ONCE);
         if (m_Sound == false)
         {
-            CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Elligos_Attack1.wav", SOUNDTYPE::SOUND_BOSS4, 1.f);
+            CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Elligos_Attack1.wav", SOUNDTYPE::SOUND_BOSS4, 0.5f);
             m_Sound = true;
         }
 

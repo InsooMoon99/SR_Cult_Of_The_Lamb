@@ -54,7 +54,7 @@ void CCharacterBase::Initialize_GameObject()
 
 _int CCharacterBase::Update_GameObject(const _float& timeDelta)
 {
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
+
 
     _int exit = CRenderObject::Update_GameObject(timeDelta);
 
@@ -64,6 +64,9 @@ _int CCharacterBase::Update_GameObject(const _float& timeDelta)
 void CCharacterBase::LateUpdate_GameObject(const _float& timeDelta)
 {
     CRenderObject::LateUpdate_GameObject(timeDelta);
+
+    //!! PendingKill 체크 전에 렌더러에 등록되어 씬 전환시 문제가 생겨 LateUpdate 쪽으로 렌더 등록을 이전
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 }
 
 void CCharacterBase::Render_GameObject()

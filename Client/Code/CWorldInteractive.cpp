@@ -59,29 +59,28 @@ void CWorldInteractive::Initialize_GameObject()
 
 _int CWorldInteractive::Update_GameObject(const _float& timeDelta)
 {
-    _int  exit = CRenderObject::Update_GameObject(timeDelta);
-    
-        if (m_CombatStatCom->Is_Dead() == true ) // 컴포넌트 내부에서 처리함 0 만들고 Dead true
+    _int exit = CRenderObject::Update_GameObject(timeDelta);
+
+    if (m_CombatStatCom->Is_Dead() == true) // 컴포넌트 내부에서 처리함 0 만들고 Dead true
+    {
+        if (m_bInvenDropped == false)
         {
-            if (m_bInvenDropped == false)
-            {
             // 플레이어 위치
             _vec3 DropDir = m_CombatStatCom->Get_Dir();
-            int offset = 40; //
+            int   offset  = 40; //
             CDropSystem::GetInstance()->SpawnAllFromInven(m_GraphicDev, m_InventoryCom, DropDir, offset);
             m_bHovering = false;
             m_BoxColCom->Set_CollisionActive(false);
 
             m_bInvenDropped = true;
-           }
-
-            return exit;
         }
 
+        return exit;
+    }
 
     //CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
-        if (!m_EnableHoverCheck)
-            return 0;
+    if (!m_EnableHoverCheck)
+        return 0;
 
     // 플레이어가 가까이 있을떄만
     if (m_bPlayerOverlap == true)
@@ -100,15 +99,13 @@ _int CWorldInteractive::Update_GameObject(const _float& timeDelta)
     else
         m_bHovering = false;
 
-
-
-   // if (m_ProgressBar)
-   // {
-   //     m_ProgressBar->Set_Progress(CalcProgress());
-   //
-   //     //CCombatStat* combat = dynamic_cast<CCombatStat*>(Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
-   //
-   // }
+    // if (m_ProgressBar)
+    // {
+    //     m_ProgressBar->Set_Progress(CalcProgress());
+    //
+    //     //CCombatStat* combat = dynamic_cast<CCombatStat*>(Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
+    //
+    // }
     return exit;
 }
 
@@ -138,26 +135,21 @@ void CWorldInteractive::Render_GameObject()
 
 void CWorldInteractive::OnBeginOverlap(CCollider* self, CCollider* other)
 {
-  
-        CRenderObject::OnBeginOverlap(self, other);
+    CRenderObject::OnBeginOverlap(self, other);
 
-        CPlayer* ply = dynamic_cast<CPlayer*>(other->Get_Owner());
-        if (ply)
-            m_bPlayerOverlap = true;
-    
+    CPlayer* ply = dynamic_cast<CPlayer*>(other->Get_Owner());
+    if (ply)
+        m_bPlayerOverlap = true;
 }
 
 void CWorldInteractive::OnEndOverlap(CCollider* self, CCollider* other)
 {
-  
-        CRenderObject::OnEndOverlap(self, other);
+    CRenderObject::OnEndOverlap(self, other);
 
+    CPlayer* ply = dynamic_cast<CPlayer*>(other->Get_Owner());
 
-        CPlayer* ply = dynamic_cast<CPlayer*>(other->Get_Owner());
-
-        if (m_bPlayerOverlap == true && ply != nullptr)
-            m_bPlayerOverlap = false;
-  
+    if (m_bPlayerOverlap == true && ply != nullptr)
+        m_bPlayerOverlap = false;
 }
 
 bool CWorldInteractive::Is_Hovering()
@@ -305,7 +297,7 @@ void CWorldInteractive::Check_WorldState()
             m_CombatStatCom->Set_Hp(state->hp);
             if (state->isDead)
             {
-                m_CombatStatCom->Set_Hp(0.f); 
+                m_CombatStatCom->Set_Hp(0.f);
                 m_CombatStatCom->On_Dead();
                 m_bInvenDropped = true;
             }
@@ -316,19 +308,19 @@ void CWorldInteractive::Check_WorldState()
 void CWorldInteractive::OnInteractiveDamaged()
 {
     SavedInteractive data;
-    data.pos = m_TransformCom->Get_Pos();
-    data.hp = m_CombatStatCom->Get_Hp();
+    data.pos    = m_TransformCom->Get_Pos();
+    data.hp     = m_CombatStatCom->Get_Hp();
     data.isDead = (data.hp <= 0.f);
 
     CVillageStateMgr::GetInstance()->Save_Interactive(data);
 }
+
 _float CWorldInteractive::CalcProgress()
 {
- 
     _float cur = m_CombatStatCom->Get_Hp();
     _float max = m_CombatStatCom->Get_MaxHp();
-    
+
     m_Progress = (1.f - cur / max);
-    
-    return std::clamp(m_Progress, 0.f, 1.f);    
+
+    return std::clamp(m_Progress, 0.f, 1.f);
 }

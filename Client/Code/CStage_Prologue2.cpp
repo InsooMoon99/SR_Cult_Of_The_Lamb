@@ -26,6 +26,8 @@
 #include "CUI_MonsterHp.h"
 #include "CUI_Interactive.h"
 #include "CInteractiveGrass.h"
+#include "CDropSystem.h"
+#include "CSceneMgr.h"
 
 CStage_Prologue2::CStage_Prologue2(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -58,12 +60,14 @@ void CStage_Prologue2::Initialize_Scene()
 {
     CScene::Initialize_Scene();
 
+    //!! 드롭 시스템의 오작동을 막기 위해, SetCurrentScene을 nullptr로 초기화
+    CDropSystem::GetInstance()->SetCurrentScene(nullptr);
+
     Set_RoomData();
 
     //m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Tutorial2.map");
 
     CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Prologue.wav", 0.4f, true, 1.f);
-    //CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Bird.wav", 0.15f, false, 1.f);
 
     auto player = dynamic_cast<CPlayer*>(m_PlayerTransform->Get_Owner());
     NULL_CHECK(player);
@@ -140,14 +144,21 @@ _int CStage_Prologue2::Update_Scene(const _float& timeDelta)
 
     if (m_WarpStarted)
     {
-        auto animator = dynamic_cast<CAnimator*>(
-            m_Player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+        m_WarpTimer += timeDelta;
 
-        if (animator && animator->Get_CurKey() == L"Player_WarpOut"
-            && animator->Is_AnimationFinished())
+        if (m_WarpTimer >= 1.0f)
         {
-            //m_PrologueCleared = true;
+            CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_STAGE);
         }
+        
+        // auto animator = dynamic_cast<CAnimator*>(
+        //     m_Player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+
+        // if (animator && animator->Get_CurKey() == L"Player_WarpOut"
+        //     && animator->Is_AnimationFinished())
+        // {
+        //     //m_PrologueCleared = true;
+        // }
     }
 
     if (m_UIDelayTime > 0.f)
@@ -328,12 +339,12 @@ HRESULT CStage_Prologue2::Ready_GameLogic_Layer(LAYERTYPE layerType)
     grass->Get_Transform()->Set_Pos(110.f, 1.f, 8.f);
     grass->Set_EnableHoverCheck(false);
     grass->Check_WorldState();
-
+    
     grass = CInteractiveGrass::Create(m_GraphicDev);
     NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
         FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
             L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
-    grass->Get_Transform()->Set_Pos(140.f, 1.f, 20.f);
+    grass->Get_Transform()->Set_Pos(122.f, 1.f, 16.f);
     grass->Set_EnableHoverCheck(false);
     grass->Check_WorldState();
 
@@ -656,7 +667,7 @@ void CStage_Prologue2::Rebirth_End()
 
         if (playerAnimator && playerAnimator->Is_AnimationFinished())
         {
-            CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Battle1.wav", 0.22f, true, 1.f);
+            CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Battle1.wav", 0.2f, true, 0.5f);
 
             m_IsRebirthPlaying = false;
 
