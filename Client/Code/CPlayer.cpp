@@ -1,6 +1,5 @@
 ﻿#include "pch.h"
 #include "CPlayer.h"
-
 #include "CAnimator.h"
 #include "CAttackBuilder.h"
 #include "CAttackSphere.h"
@@ -36,6 +35,8 @@
 #include "CMonster.h"
 #include "CMonsterBase.h"
 #include "CNPCBase.h"
+#include "CMonsterBase.h"
+
 CPlayer::CPlayer(DEVICE graphicDev)
     : CCharacterBase(graphicDev),
       m_RigidbodyCom(nullptr),
@@ -79,7 +80,7 @@ HRESULT CPlayer::Ready_GameObject()
 
     m_CombatStatCom->Set_Hp(100.f);
     m_CombatStatCom->Set_MaxHp(100.f);
-    m_CombatStatCom->Set_Attack(50.f);
+    m_CombatStatCom->Set_Attack(20.f);
     m_CombatStatCom->Set_Mp(0.f);
     m_CombatStatCom->Set_Speed(5.f);
 
@@ -171,16 +172,12 @@ void CPlayer::OnStayOverlap(CCollider* self, CCollider* other)
             weapon = nullptr;
         }
     }
-    if (dynamic_cast<CNPCBase*>(character))
+    if (dynamic_cast<CNPCBase*>(character)&&dynamic_cast<CMonsterBase*>(character))
     {
         character = nullptr;
     }
-     if (dynamic_cast<CNPCBase*>(character))
-    {
-        character = nullptr;
-    }
-
-   if (dynamic_cast<CMonsterBase*>(character))
+  
+   if (dynamic_cast<CInteractiveGrass*>(worldInteractiveObj))
    {
        character = nullptr;
    }

@@ -28,6 +28,7 @@
 #include "CUIIcon.h"
 #include "CSoundMgr.h"
 #include "CStateMachine.h"
+#include "CUI_SkillPanel.h"
 
 CStage_Boss2::CStage_Boss2(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -261,6 +262,18 @@ HRESULT CStage_Boss2::Ready_UI_Layer(LAYERTYPE layerType)
     uiIcon->Get_Transform()->Set_Scale(12.5f, 15.f, 0.f);
     layer->Add_GameObject(OBJTYPE::UI, uiIcon);
     m_Player_UI.push_back(uiIcon);
+
+    FAILED_CHECK_MSG(
+        Engine::AcquirePersistentObject<CUI_SkillPanel>(
+            OBJTYPE::UI,
+            L"UI_SkillPanel",
+            m_GraphicDev,
+            layer,
+            &gameObject),
+        L"Persistent object setup failed: UI_SkillPanel");
+
+    m_Player_UI.push_back(dynamic_cast<CUI*>(gameObject));
+
 
     // 보스 체력
     auto combat = dynamic_cast<CCombatStat*>(m_Boss->Get_Component(ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));

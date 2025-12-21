@@ -34,6 +34,7 @@
 #include "CUI_Text.h"
 #include "CDroppedItem.h"
 #include "CSoundMgr.h"
+#include "CUI_SkillPanel.h"
 
 CStage_Boss1::CStage_Boss1(DEVICE graphicDev)
     : Engine::CScene(graphicDev), m_Terrain(nullptr), m_Boss(nullptr), m_Player(nullptr), m_Dialogue(nullptr),
@@ -359,6 +360,17 @@ HRESULT CStage_Boss1::Ready_UI_Layer(LAYERTYPE layerType)
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUIIcon) failed");
 
     m_Player_UI.push_back(uiIcon);
+
+    FAILED_CHECK_MSG(
+        Engine::AcquirePersistentObject<CUI_SkillPanel>(
+            OBJTYPE::UI,
+            L"UI_SkillPanel",
+            m_GraphicDev,
+            layer,
+            &gameObject),
+        L"Persistent object setup failed: UI_SkillPanel");
+
+    m_Player_UI.push_back(dynamic_cast<CUI*>(gameObject));
 
     // ===== 보스 UI =====
     auto combat = dynamic_cast<CCombatStat*>(
