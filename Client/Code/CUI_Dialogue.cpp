@@ -176,7 +176,7 @@ _bool CUI_Dialogue::Start_Dialogue(const string& dialogueId, const _vec2 boxPos,
         if (!line.voicePath.empty())
         {
             wstring path = CDialogueDB::GetInstance()->Utf8ToWstring(line.voicePath);
-            CSoundMgr::GetInstance()->Play_Once(path.c_str(), SOUND_EFFECT, 1.f);
+            CSoundMgr::GetInstance()->Play_Once(path.c_str(), SOUND_EFFECT, 0.8f);
         }
     }
 
@@ -215,7 +215,7 @@ void CUI_Dialogue::End_Dialogue()
     {
         //CSoundMgr::GetInstance()->Play_Once(L"UI/Conversation_End.wav",
         //    SOUND_EFFECT,
-        //    1.4f);
+        //    1.f);
         m_OnDialogueEnd(lastId);
     }
 }
@@ -252,7 +252,7 @@ void CUI_Dialogue::Next_Line()
     if (!line.voicePath.empty())
     {
         wstring path = CDialogueDB::GetInstance()->Utf8ToWstring(line.voicePath);
-        CSoundMgr::GetInstance()->Play_Once(path.c_str(), SOUND_EFFECT, 1.f);
+        CSoundMgr::GetInstance()->Play_Once(path.c_str(), SOUND_EFFECT, 0.8f);
     }
 
 	m_TypeTimer = 0.f;              

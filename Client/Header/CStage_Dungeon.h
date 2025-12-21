@@ -113,7 +113,7 @@ private:
 
     void Setup_DynamicCam_For_Boss();
 
-    HRESULT Grass(DEVICE m_GraphicDev, CLayer* layer);
+    HRESULT Grass(DEVICE graphicDev, CLayer* layer);
 private:
     CCombatStat*  m_PlayerCombatStatCom;
     CInventory*   m_PlayerInventoryCom;

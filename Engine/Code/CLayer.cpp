@@ -94,6 +94,14 @@ void CLayer::LateUpdate_Layer(const _float& timeDelta)
                 continue;
             }
 
+            //!! LateUpdate_GameObject가 이루어지기 전, 안전 체크
+            if (obj->Is_PendingDestroy())
+            {
+                Safe_Release(obj);
+                iter = objList.erase(iter);
+                continue;
+            }
+
             obj->LateUpdate_GameObject(timeDelta);
 
             if (obj->Is_PendingDestroy())

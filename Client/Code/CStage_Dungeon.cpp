@@ -46,27 +46,26 @@
 BEGIN(Engine)
 #include "CCombatStat.h"
 END
+
 class CUI_DungeonLootPanel;
 
 CStage_Dungeon::CStage_Dungeon(DEVICE graphicDev)
     : CScene(graphicDev),
-    m_PlayerCombatStatCom(nullptr),
-    m_PlayerInventoryCom(nullptr),
-    m_WeaponEquipCom(nullptr),
-    m_CurrentRoom(Room::DUNGEON_END),
-    m_Player(nullptr),
-    m_PlayerTransform(nullptr),
-    m_UI_Fade(nullptr),
-    m_NextRoom(Room::DUNGEON_END),
-    m_CamMovement(nullptr),
-    m_Timer(0),
-    m_TimerRunning(false)
-{
-}
+      m_PlayerCombatStatCom(nullptr),
+      m_PlayerInventoryCom(nullptr),
+      m_WeaponEquipCom(nullptr),
+      m_CurrentRoom(Room::DUNGEON_END),
+      m_Player(nullptr),
+      m_PlayerTransform(nullptr),
+      m_UI_Fade(nullptr),
+      m_NextRoom(Room::DUNGEON_END),
+      m_CamMovement(nullptr),
+      m_Timer(0),
+      m_TimerRunning(false)
+{}
 
 CStage_Dungeon::~CStage_Dungeon()
-{
-}
+{}
 
 HRESULT CStage_Dungeon::Ready_Scene()
 {
@@ -104,7 +103,7 @@ void CStage_Dungeon::Initialize_Scene()
         { 104.f, 1.f, 11.851f },
         "../Bin/Resource/Data/Terrain/Terrain_Dungeon_Woods.map",
         { 100.f, 0.f, 0.f },
-                {117.f, 1.f, 8.8f}
+        { 117.f, 1.f, 8.8f }
     };
 
     m_RoomData[static_cast<_int>(Room::MONSTER2)] =
@@ -112,7 +111,7 @@ void CStage_Dungeon::Initialize_Scene()
         { 205.f, 1.f, 11.85f },
         "../Bin/Resource/Data/Terrain/Terrain_Dungeon_Mush.map",
         { 200.f, 0.f, 0.f },
-                {217.f, 1.f, 11.2f}
+        { 217.f, 1.f, 11.2f }
     };
 
     m_RoomData[static_cast<_int>(Room::MONSTER3)] =
@@ -120,7 +119,7 @@ void CStage_Dungeon::Initialize_Scene()
         { 212.1f, 1.f, 103.79f },
         "../Bin/Resource/Data/Terrain/Terrain_Dun_Down_Right_Up_Mon.map",
         { 200.f, 0.f, 100.f },
-                {212.f, 1.f, 108.8f}
+        { 212.f, 1.f, 108.8f }
     };
 
     m_RoomData[static_cast<_int>(Room::TARO)] =
@@ -135,7 +134,7 @@ void CStage_Dungeon::Initialize_Scene()
         { 205.f, 1.f, 205.f },
         "../Bin/Resource/Data/Terrain/Terrain_Down_Up_Mon.map",
         { 200.f, 0.f, 200.f },
-                {215.f, 1.f, 213.8f}
+        { 215.f, 1.f, 213.8f }
     };
 
     m_RoomData[static_cast<_int>(Room::MONSTER5)] =
@@ -143,7 +142,7 @@ void CStage_Dungeon::Initialize_Scene()
         { 212.f, 1.f, 302.f },
         "../Bin/Resource/Data/Terrain/Terrain_Dun_Down_Right_Mon.map",
         { 200.f, 0.f, 300.f },
-                {215.f, 1.f, 308.8f}
+        { 215.f, 1.f, 308.8f }
     };
 
     m_RoomData[static_cast<_int>(Room::BOSS)] =
@@ -160,7 +159,7 @@ void CStage_Dungeon::Initialize_Scene()
 
     for (auto& pair : m_Terrains)
     {
-        Room      room = pair.first;
+        Room      room    = pair.first;
         CTerrain* terrain = pair.second;
 
         if (terrain)
@@ -173,14 +172,12 @@ void CStage_Dungeon::Initialize_Scene()
 
             terrain->Set_ChestSpawnPos(m_RoomData[static_cast<_int>(room)].chestSpawnPos);
         }
-
     }
 
     // 시작 방만 활성화
     for (auto& pair : m_Terrains)
     {
         pair.second->Set_Active(false);
-
     }
 
     m_Terrains[Room::START]->Set_Active(true);
@@ -223,7 +220,7 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
 
         if (m_IsClearMenuOpened)
         {
-            m_TimerRunning = false;
+            m_TimerRunning   = false;
             m_DungeonCleared = true;
         }
         else
@@ -288,7 +285,6 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
 
     _int exit = Engine::CScene::Update_Scene(timeDelta);
 
-
     // Fade
     Fade_Check(timeDelta);
 
@@ -316,8 +312,7 @@ void CStage_Dungeon::LateUpdate_Scene(const _float& timeDelta)
 }
 
 void CStage_Dungeon::Render_Scene()
-{
-}
+{}
 
 HRESULT CStage_Dungeon::Ready_Light()
 {
@@ -346,12 +341,12 @@ void CStage_Dungeon::Spawn_Weapon()
         _vec3 size = _vec3(1.2f, 1.2f, 1.2f);
 
         auto drop = CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev,
-            inst,
-            { spawnPos }, size);
+                                                          inst,
+                                                          { spawnPos },
+                                                          size);
 
         drop->Initialize_GameObject();
     }
-
 }
 
 void CStage_Dungeon::Spawn_FollowerCow_Rescue(_vec3* pSpawnPos)
@@ -377,14 +372,14 @@ void CStage_Dungeon::Spawn_FollowerCow_Rescue(_vec3* pSpawnPos)
         if (pSpawnPos)
         {
             spawnPos.x = pSpawnPos->x - 1.0f;
-			spawnPos.y = pSpawnPos->y - 0.5f;
+            spawnPos.y = pSpawnPos->y - 0.5f;
             spawnPos.z = pSpawnPos->z;
         }
         else
         {
             spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
             //spawnPos += _vec3(6.f, 1.f, 8.f);
-			spawnPos += _vec3(6.f, 0.5f, 8.f);
+            spawnPos += _vec3(6.f, 0.5f, 8.f);
         }
 
         cowTransform->Set_Pos(spawnPos);
@@ -424,7 +419,7 @@ void CStage_Dungeon::Spawn_FollowerElephant_Rescue(_vec3* pSpawnPos)
         {
             spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
             //spawnPos += _vec3(8.f, 1.f, 8.f);
-			spawnPos += _vec3(8.f, 0.5f, 8.f);
+            spawnPos += _vec3(8.f, 0.5f, 8.f);
         }
 
         elephantTransform->Set_Pos(spawnPos);
@@ -464,7 +459,7 @@ void CStage_Dungeon::Spawn_FollowerPig_Rescue(_vec3* pSpawnPos)
         {
             spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
             //spawnPos += _vec3(10.f, 1.f, 8.f);
-			spawnPos += _vec3(10.f, 0.5f, 8.f);
+            spawnPos += _vec3(10.f, 0.5f, 8.f);
         }
 
         pigTransform->Set_Pos(spawnPos);
@@ -478,43 +473,57 @@ void CStage_Dungeon::Create_RoomTriggers()
 {
     // START -> MONSTER1
     Create_BiDirectional_Trigger(
-        Room::START, _vec3(24.7f, 1.f, 8.8f),       // 1
-        Room::MONSTER1, _vec3(0.f, 1.f, 11.8f),     // 2
+        Room::START,
+        _vec3(24.7f, 1.f, 8.8f),       // 1
+        Room::MONSTER1,
+        _vec3(0.f, 1.f, 11.8f),     // 2
         _vec3(5.f, 5.f, 4.5f));
 
     // MONSTER1 <-> MONSTER2
     Create_BiDirectional_Trigger(
-        Room::MONSTER1, _vec3(34.4f, 1.f, 11.3f),   // 3
-        Room::MONSTER2, _vec3(0.5f, 1.f, 11.9f),    // 4
+        Room::MONSTER1,
+        _vec3(34.4f, 1.f, 11.3f),   // 3
+        Room::MONSTER2,
+        _vec3(0.5f, 1.f, 11.9f),    // 4
         _vec3(5.f, 5.f, 4.5f));
 
     // MONSTER2 <-> MONSTER3
     Create_BiDirectional_Trigger(
-        Room::MONSTER2, _vec3(17.4f, 1.f, 23.2f),   // 5
-        Room::MONSTER3, _vec3(12.1f, 1.f, -1.7f),   // 6
+        Room::MONSTER2,
+        _vec3(17.4f, 1.f, 23.2f),   // 5
+        Room::MONSTER3,
+        _vec3(12.1f, 1.f, -1.7f),   // 6
         _vec3(6.f, 5.f, 4.5f));
 
     // MONSTER3 <-> MONSTER4
     Create_BiDirectional_Trigger(
-        Room::MONSTER3, _vec3(13.2f, 1.f, 21.4f),    // 7
-        Room::MONSTER4, _vec3(2.5f, 1.f, -0.2f),     // 8
+        Room::MONSTER3,
+        _vec3(13.2f, 1.f, 21.4f),    // 7
+        Room::MONSTER4,
+        _vec3(2.5f, 1.f, -0.2f),     // 8
         _vec3(6.f, 5.f, 4.5f));
 
     // MONSTER3 <-> Taro
     Create_BiDirectional_Trigger(
-        Room::MONSTER3, _vec3(32.6f, 1.f, 11.4f),    // 9
-        Room::TARO, _vec3(-0.9f, 1.f, 25.2f),        // 10
+        Room::MONSTER3,
+        _vec3(32.6f, 1.f, 11.4f),    // 9
+        Room::TARO,
+        _vec3(-0.9f, 1.f, 25.2f),        // 10
         _vec3(5.f, 5.f, 4.5f));
 
     // MONSTER4 <-> MONSTER5
     Create_BiDirectional_Trigger(
-        Room::MONSTER4, _vec3(22.5f, 1.f, 28.3f),    // 11
-        Room::MONSTER5, _vec3(12.f, 1.f, -1.5f),     // 12
+        Room::MONSTER4,
+        _vec3(22.5f, 1.f, 28.3f),    // 11
+        Room::MONSTER5,
+        _vec3(12.f, 1.f, -1.5f),     // 12
         _vec3(6.f, 5.f, 4.5f));
 
     // 보스방 진입
     Create_Trigger_Between(
-        Room::MONSTER5, _vec3(31.4f, 1.f, 11.5f), _vec3(5.f, 5.f, 4.5f),
+        Room::MONSTER5,
+        _vec3(31.4f, 1.f, 11.5f),
+        _vec3(5.f, 5.f, 4.5f),
         [this]()
         {
             // 엘리고스 생성
@@ -527,12 +536,11 @@ void CStage_Dungeon::Create_RoomTriggers()
                 m_Boss->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
             m_BTransform->Set_Pos({ 318, 3, 310 });
 
-
             // 카메라 연출
 
-                // 첫 번째 연출 끝났을 때 콜백
+            // 첫 번째 연출 끝났을 때 콜백
 
-                // Refuse 카메라 연출 끝, 이제 보스한테 줌
+            // Refuse 카메라 연출 끝, 이제 보스한테 줌
             CCamSetupBuilder(m_CamController)
                 .SetTarget(m_Boss->Get_Transform())
                 .Distance(11.f)
@@ -543,29 +551,21 @@ void CStage_Dungeon::Create_RoomTriggers()
 
             // 줌(전환) 끝났을 때 -> 홀드 시작 예약
             m_CamController->Get_OwnerCamMovement()->Set_OnTransitionEnd([this]()
-                {
-                    m_BossIntroPhase = BossIntroPhase::HOLDING;
+            {
+                m_BossIntroPhase = BossIntroPhase::HOLDING;
 
-                    m_BossHoldTime = 2.f;
-                    m_BossNameDelay = 0.5f;   // 홀드 시작 후 1초 뒤 폰트
-                    m_BossNameShown = false;
+                m_BossHoldTime  = 2.f;
+                m_BossNameDelay = 0.5f;   // 홀드 시작 후 1초 뒤 폰트
+                m_BossNameShown = false;
 
-                    m_UIOpenTime = 0.f;   // 아직 안 켠 상태
-                    m_EligosNameUI->Set_IsActive(false);
-                });
-
+                m_UIOpenTime = 0.f;   // 아직 안 켠 상태
+                m_EligosNameUI->Set_IsActive(false);
+            });
 
             // 방 이동
             Change_Room(Room::BOSS);
-
-
-
         });
-
-
 }
-
-
 
 void CStage_Dungeon::Create_Trigger_Between(Room fromRoom, Room toRoom, _vec3 offsetFromRoom, _vec3 size)
 {
@@ -575,23 +575,23 @@ void CStage_Dungeon::Create_Trigger_Between(Room fromRoom, Room toRoom, _vec3 of
     auto trigger = CTrigger_Dungeon::Create(m_GraphicDev);
 
     _vec3 roomBasePos = m_RoomData[static_cast<_int>(fromRoom)].terrainOffset;
-    _vec3 triggerPos = roomBasePos + offsetFromRoom;
+    _vec3 triggerPos  = roomBasePos + offsetFromRoom;
 
     trigger->Set_Bounds(triggerPos, size);
     trigger->Set_TriggerOnce(true);
 
     trigger->Set_Callback([this, toRoom]()
-        {
-            Change_Room(toRoom);
-        });
+    {
+        Change_Room(toRoom);
+    });
 
     gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
 }
 
-void CStage_Dungeon::Create_Trigger_Between(Room fromRoom,
-    _vec3                 offsetFromRoom,
-    _vec3                 size,
-    std::function<void()> callback)
+void CStage_Dungeon::Create_Trigger_Between(Room                  fromRoom,
+                                            _vec3                 offsetFromRoom,
+                                            _vec3                 size,
+                                            std::function<void()> callback)
 {
     auto gameLayer = m_Layers[LAYERTYPE::GAMELOGIC];
     NULL_CHECK(gameLayer);
@@ -599,7 +599,7 @@ void CStage_Dungeon::Create_Trigger_Between(Room fromRoom,
     auto trigger = CTrigger_Dungeon::Create(m_GraphicDev);
 
     _vec3 roomBasePos = m_RoomData[static_cast<int>(fromRoom)].terrainOffset;
-    _vec3 triggerPos = roomBasePos + offsetFromRoom;
+    _vec3 triggerPos  = roomBasePos + offsetFromRoom;
 
     trigger->Set_Bounds(triggerPos, size);
     trigger->Set_TriggerOnce(false);
@@ -615,41 +615,40 @@ void CStage_Dungeon::Create_BiDirectional_Trigger(Room roomA, _vec3 offsetA, Roo
 
     // A → B 트리거
     {
-        auto trigger = CTrigger_Dungeon::Create(m_GraphicDev);
+        auto  trigger  = CTrigger_Dungeon::Create(m_GraphicDev);
         _vec3 roomAPos = m_RoomData[static_cast<_int>(roomA)].terrainOffset;
 
         trigger->Set_Bounds(roomAPos + offsetA, size);
         trigger->Set_TriggerOnce(false);
 
         trigger->Set_Callback([this, roomB]()
-            {
-                Change_Room(roomB);
-            });
+        {
+            Change_Room(roomB);
+        });
 
         gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
     }
 
     // B → A 트리거
     {
-        auto trigger = CTrigger_Dungeon::Create(m_GraphicDev);
+        auto  trigger  = CTrigger_Dungeon::Create(m_GraphicDev);
         _vec3 roomBPos = m_RoomData[static_cast<_int>(roomB)].terrainOffset;
 
         trigger->Set_Bounds(roomBPos + offsetB, size);
         trigger->Set_TriggerOnce(false);
 
         trigger->Set_Callback([this, roomA]()
-            {
-                Change_Room(roomA);
-            });
+        {
+            Change_Room(roomA);
+        });
 
         gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
     }
-
 }
 
 void CStage_Dungeon::EnterDungeon()
 {
-    m_Timer = 0.f;
+    m_Timer        = 0.f;
     m_TimerRunning = true;
 }
 
@@ -671,7 +670,10 @@ void CStage_Dungeon::Change_Room(Room room)
 void CStage_Dungeon::OnMonsterDeath(CGameObject* obj)
 {
     CScene::OnMonsterDeath(obj);
-    (dynamic_cast<CCombatStat*>(CManagement::GetInstance()->Get_Component(ID_DYNAMIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::COMBATSTAT)))->Add_Mp(15.f);
+    (dynamic_cast<CCombatStat*>(CManagement::GetInstance()->Get_Component(ID_DYNAMIC,
+                                                                          LAYERTYPE::GAMELOGIC,
+                                                                          OBJTYPE::PLAYER,
+                                                                          COMPONENTTYPE::COMBATSTAT)))->Add_Mp(15.f);
     m_KillCount++;
 }
 
@@ -794,7 +796,7 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
 
     gameObject = CTarotNPC::Create(m_GraphicDev);
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::NPC, gameObject),
-        L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(TarotNPC) failed");
+                     L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(TarotNPC) failed");
     dynamic_cast<CTarotNPC*>(gameObject)->Set_TarotController(dynamic_cast<CTarotStageController*>(tarotController));
 
     //gameObject = CFloaterMonster::Create(m_GraphicDev);
@@ -809,16 +811,16 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
     //상호작용 오브젝트
     CInteractiveGrass* grass = CInteractiveGrass::Create(m_GraphicDev);
     NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
-        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
-            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+                     L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
     grass->Get_Transform()->Set_Pos(12.f, 1.f, 10.f);
     grass->Set_EnableHoverCheck(false);
     grass->Check_WorldState();
 
     grass = CInteractiveGrass::Create(m_GraphicDev);
     NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
-        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
-            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+                     L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
     grass->Get_Transform()->Set_Pos(15.f, 1.f, 30.f);
     grass->Set_EnableHoverCheck(false);
     grass->Check_WorldState();
@@ -828,116 +830,120 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
     m_Layers.insert({ layerType, layer });
     return S_OK;
 }
-HRESULT CStage_Dungeon::Grass(DEVICE m_GraphicDev, CLayer* layer)
+
+HRESULT CStage_Dungeon::Grass(DEVICE graphicDev, CLayer* layer)
 {
-    CInteractiveGrass* grass = CInteractiveGrass::Create(m_GraphicDev);
+    CInteractiveGrass* grass = CInteractiveGrass::Create(graphicDev);
     NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
-        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
-            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+                     L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
     grass->Get_Transform()->Set_Pos(117.6f, 0.7f, 10.6f);
     grass->Set_EnableHoverCheck(false);
     grass->Check_WorldState();
 
     //
-    grass = CInteractiveGrass::Create(m_GraphicDev);
+    grass = CInteractiveGrass::Create(graphicDev);
     NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
-        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
-            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+                     L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
     grass->Get_Transform()->Set_Pos(117.6f, 0.7f, 12.3f);
     grass->Set_EnableHoverCheck(false);
     grass->Check_WorldState();
 
     //
-    grass = CInteractiveGrass::Create(m_GraphicDev);
+    grass = CInteractiveGrass::Create(graphicDev);
     NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
-        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
-            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+                     L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
     grass->Get_Transform()->Set_Pos(116.1f, 0.7f, 11.2f);
     grass->Set_EnableHoverCheck(false);
     grass->Check_WorldState();
     //
-    grass = CInteractiveGrass::Create(m_GraphicDev);
+    grass = CInteractiveGrass::Create(graphicDev);
     NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
-        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
-            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+                     L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
     grass->Get_Transform()->Set_Pos(119.1f, 0.7f, 11.2f);
     grass->Set_EnableHoverCheck(false);
     grass->Check_WorldState();
     //
-    grass = CInteractiveGrass::Create(m_GraphicDev);
+    grass = CInteractiveGrass::Create(graphicDev);
     NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
-        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
-            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+                     L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
     grass->Get_Transform()->Set_Pos(107.9f, 0.7f, 16.7f);
     grass->Set_EnableHoverCheck(false);
     grass->Check_WorldState();
 
     //
-    grass = CInteractiveGrass::Create(m_GraphicDev);
+    grass = CInteractiveGrass::Create(graphicDev);
     NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
-        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
-            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+                     L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
     grass->Get_Transform()->Set_Pos(108.6, 0.7f, 15.7f);
     grass->Set_EnableHoverCheck(false);
     grass->Check_WorldState();
 
     //
-    grass = CInteractiveGrass::Create(m_GraphicDev);
+    grass = CInteractiveGrass::Create(graphicDev);
     NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
-        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
-            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+                     L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
     grass->Get_Transform()->Set_Pos(128.0f, 0.7f, 16.7f);
     grass->Set_EnableHoverCheck(false);
     grass->Check_WorldState();
     //////////////////////////////////////////
 
-    grass = CInteractiveGrass::Create(m_GraphicDev);
+    grass = CInteractiveGrass::Create(graphicDev);
     NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
-        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
-            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
-    grass->Get_Transform()->Set_Pos ( 225.0f, 0.7f, 12.0f );
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+                     L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(225.0f, 0.7f, 12.0f);
     grass->Set_EnableHoverCheck(false);
     grass->Check_WorldState();
     //
-    grass = CInteractiveGrass::Create(m_GraphicDev);
+    grass = CInteractiveGrass::Create(graphicDev);
     NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
-        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
-            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
-    grass->Get_Transform()->Set_Pos(224.3f, 0.7f, 12.7f)
-        ;
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+                     L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(224.3f, 0.7f, 12.7f);
     grass->Set_EnableHoverCheck(false);
     grass->Check_WorldState();
 
     //
 
-    grass = CInteractiveGrass::Create(m_GraphicDev);
+    grass = CInteractiveGrass::Create(graphicDev);
     NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
-        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
-            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+                     L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
     grass->Get_Transform()->Set_Pos(227.0f, 0.7f, 9.1f);
     grass->Set_EnableHoverCheck(false);
     grass->Check_WorldState();
 
     //
 
-    grass = CInteractiveGrass::Create(m_GraphicDev);
+    grass = CInteractiveGrass::Create(graphicDev);
     NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
-        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
-            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+                     L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
     grass->Get_Transform()->Set_Pos(225.0f, 0.7f, 10.5f);
     grass->Set_EnableHoverCheck(false);
     grass->Check_WorldState();
 
     //
 
-    grass = CInteractiveGrass::Create(m_GraphicDev);
+    grass = CInteractiveGrass::Create(graphicDev);
     NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
-        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
-            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+                     L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
     grass->Get_Transform()->Set_Pos(228.0f, 0.7f, 8.5f);
     grass->Set_EnableHoverCheck(false);
     grass->Check_WorldState();
+
+
+    return S_OK;
 }
+
 HRESULT CStage_Dungeon::Ready_UI_Layer(LAYERTYPE layerType)
 {
     auto layer = Engine::CLayer::Create();
@@ -1008,14 +1014,14 @@ HRESULT CStage_Dungeon::Ready_UI_Layer(LAYERTYPE layerType)
     uiTabMenu->Initialize();
 
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, uiTabMenu),
-        L"CStage_Dungeon::Ready_UI_Layer() failed: CLayer::Add_GameObject(UITabMenu) failed");
+                     L"CStage_Dungeon::Ready_UI_Layer() failed: CLayer::Add_GameObject(UITabMenu) failed");
 
     FAILED_CHECK_MSG(Engine::AcquirePersistentObject<CUIItemGetManager>
-        (OBJTYPE::UI, L"UI_ItemGetManager",
-            m_GraphicDev, layer,
-            &gameObject),
-        L"Persistent object setup failed: UI_ItemGetManager")
-        dynamic_cast<CUIItemGetManager*>(gameObject)->SetInventory(m_PlayerInventoryCom);
+                     (OBJTYPE::UI, L"UI_ItemGetManager",
+                         m_GraphicDev, layer,
+                         &gameObject),
+                     L"Persistent object setup failed: UI_ItemGetManager")
+    dynamic_cast<CUIItemGetManager*>(gameObject)->SetInventory(m_PlayerInventoryCom);
     dynamic_cast<CUIItemGetManager*>(gameObject)->Initialize();
 
     // Fade In - Fade Out
@@ -1039,8 +1045,7 @@ HRESULT CStage_Dungeon::Ready_UI_Layer(LAYERTYPE layerType)
     dungeonLootPanel->Set_RunLootLog(&m_RunLootLog);
     dungeonLootPanel->Initialize_GameObject();
     FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::UI, dungeonLootPanel),
-        L"CStage_Dungeon::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUI_DungeonLootPanel) failed");
-
+                     L"CStage_Dungeon::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUI_DungeonLootPanel) failed");
 
     m_Layers.insert({ layerType, layer });
 
@@ -1074,9 +1079,8 @@ void CStage_Dungeon::Free()
     m_CamController->Get_OwnerCamMovement()->Enable_DynamicDistance(false);
     m_CamController->Get_OwnerCamMovement()->Reset_Camera();
 
-
     m_CamMovement = nullptr;
-    m_UI_Fade = nullptr;
+    m_UI_Fade     = nullptr;
 
     Engine::CScene::Free();
 }
@@ -1092,13 +1096,15 @@ void CStage_Dungeon::Fade_Check(const _float timeDelta)
             m_Terrains[m_CurrentRoom]->Clear_SpawnedObjects();
 
         for (auto& pair : m_Terrains)
+        {
             pair.second->Set_Active(false);
+        }
 
         m_Terrains[m_NextRoom]->Set_Active(true);
 
         m_CurrentRoom = m_NextRoom;
 
-        auto key = make_pair(m_FromRoom, m_NextRoom);
+        auto  key = make_pair(m_FromRoom, m_NextRoom);
         _vec3 spawnPos;
 
         if (m_SpawnPositions.count(key) > 0)
@@ -1137,30 +1143,29 @@ void CStage_Dungeon::Connect_Rooms()
 
     m_ConnectRooms[Room::TARO] = { Room::MONSTER3 };
     m_ConnectRooms[Room::BOSS] = { Room::MONSTER5 };
-
 }
 
 void CStage_Dungeon::Set_SpawnPos()
 {
-    m_SpawnPositions[{Room::START, Room::MONSTER1}] = { 105.f, 1.f, 11.851f };
-    m_SpawnPositions[{Room::MONSTER1, Room::START}] = { 20.01f, 1.f, 8.507f };
+    m_SpawnPositions[{ Room::START, Room::MONSTER1 }] = { 105.f, 1.f, 11.851f };
+    m_SpawnPositions[{ Room::MONSTER1, Room::START }] = { 20.01f, 1.f, 8.507f };
 
-    m_SpawnPositions[{Room::MONSTER1, Room::MONSTER2}] = { 206.f, 1.f, 11.9f };
-    m_SpawnPositions[{Room::MONSTER2, Room::MONSTER1}] = { 129.9f, 1.f, 11.3f };
+    m_SpawnPositions[{ Room::MONSTER1, Room::MONSTER2 }] = { 206.f, 1.f, 11.9f };
+    m_SpawnPositions[{ Room::MONSTER2, Room::MONSTER1 }] = { 129.9f, 1.f, 11.3f };
 
-    m_SpawnPositions[{Room::MONSTER2, Room::MONSTER3}] = { 213.1f, 1.f, 103.79f };
-    m_SpawnPositions[{Room::MONSTER3, Room::MONSTER2}] = { 217.f, 1.f, 19.2f };
+    m_SpawnPositions[{ Room::MONSTER2, Room::MONSTER3 }] = { 213.1f, 1.f, 103.79f };
+    m_SpawnPositions[{ Room::MONSTER3, Room::MONSTER2 }] = { 217.f, 1.f, 19.2f };
 
-    m_SpawnPositions[{Room::MONSTER3, Room::TARO}] = { 305.f, 1.f, 124.f };
-    m_SpawnPositions[{Room::TARO, Room::MONSTER3}] = { 228.f, 1.f, 111.f };
+    m_SpawnPositions[{ Room::MONSTER3, Room::TARO }] = { 305.f, 1.f, 124.f };
+    m_SpawnPositions[{ Room::TARO, Room::MONSTER3 }] = { 228.f, 1.f, 111.f };
 
-    m_SpawnPositions[{Room::MONSTER3, Room::MONSTER4}] = { 202.5f, 1.f, 203.f };
-    m_SpawnPositions[{Room::MONSTER4, Room::MONSTER3}] = { 213.f, 1.f, 117.3f };
+    m_SpawnPositions[{ Room::MONSTER3, Room::MONSTER4 }] = { 202.5f, 1.f, 203.f };
+    m_SpawnPositions[{ Room::MONSTER4, Room::MONSTER3 }] = { 213.f, 1.f, 117.3f };
 
-    m_SpawnPositions[{Room::MONSTER4, Room::MONSTER5}] = { 212.f, 1.f, 302.f };
-    m_SpawnPositions[{Room::MONSTER5, Room::MONSTER4}] = { 222.f, 1.f, 224.f };
+    m_SpawnPositions[{ Room::MONSTER4, Room::MONSTER5 }] = { 212.f, 1.f, 302.f };
+    m_SpawnPositions[{ Room::MONSTER5, Room::MONSTER4 }] = { 222.f, 1.f, 224.f };
 
-    m_SpawnPositions[{Room::MONSTER5, Room::BOSS}] = { 304.f, 1.f, 310.7f };
+    m_SpawnPositions[{ Room::MONSTER5, Room::BOSS }] = { 304.f, 1.f, 310.7f };
 }
 
 void CStage_Dungeon::Setup_DynamicCam_For_Boss()

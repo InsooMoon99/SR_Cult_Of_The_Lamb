@@ -59,6 +59,7 @@ void CStage_Prologue2::Initialize_Scene()
 {
     CScene::Initialize_Scene();
 
+    //!! 드롭 시스템의 오작동을 막기 위해, SetCurrentScene을 nullptr로 초기화
     CDropSystem::GetInstance()->SetCurrentScene(nullptr);
 
     Set_RoomData();
@@ -331,12 +332,12 @@ HRESULT CStage_Prologue2::Ready_GameLogic_Layer(LAYERTYPE layerType)
     grass->Get_Transform()->Set_Pos(110.f, 1.f, 8.f);
     grass->Set_EnableHoverCheck(false);
     grass->Check_WorldState();
-
+    
     grass = CInteractiveGrass::Create(m_GraphicDev);
     NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
         FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
             L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
-    grass->Get_Transform()->Set_Pos(140.f, 1.f, 20.f);
+    grass->Get_Transform()->Set_Pos(122.f, 1.f, 16.f);
     grass->Set_EnableHoverCheck(false);
     grass->Check_WorldState();
 
@@ -659,7 +660,7 @@ void CStage_Prologue2::Rebirth_End()
 
         if (playerAnimator && playerAnimator->Is_AnimationFinished())
         {
-            CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Battle1.wav", 0.22f, true, 1.f);
+            CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Battle1.wav", 0.2f, true, 0.5f);
 
             m_IsRebirthPlaying = false;
 
