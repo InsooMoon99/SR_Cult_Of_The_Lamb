@@ -66,7 +66,7 @@ HRESULT CVIBuffer::Ready_Buffer()
 
 void CVIBuffer::Render_Buffer()
 {
-    if (nullptr == m_VB)
+    if (nullptr == m_VB || nullptr == m_GraphicDev)
         return;
 
     m_GraphicDev->SetStreamSource(0, m_VB, 0, m_VtxSize);

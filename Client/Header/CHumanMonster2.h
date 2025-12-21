@@ -26,6 +26,7 @@ public:
 public:
     // 공통 체크 (넉백, 사망)
     _bool   Check_CommonTransitions();
+    void    Setup_SpawnDeadParticle();
 
     // 상태 변환
     void    Update_State_Idle(const _float timeDelta);

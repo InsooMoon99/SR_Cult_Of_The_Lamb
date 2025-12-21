@@ -76,6 +76,7 @@ void CHumanMonster2::Initialize_GameObject()
     if (m_TargetTransform)
         m_Target = m_TargetTransform->Get_Owner();
 
+    Setup_SpawnDeadParticle();
 }
 
 _int CHumanMonster2::Update_GameObject(const _float& timeDelta)
@@ -136,6 +137,23 @@ _bool CHumanMonster2::Check_CommonTransitions()
     }
 
     return false;
+}
+
+void CHumanMonster2::Setup_SpawnDeadParticle()
+{
+    m_CombatStatCom->Set_OnDeathEvent([this]()
+        {
+            CParticleHelper::Spawn_StaticBurstParticle(
+                m_TransformCom->Get_Pos(),
+                COMPONENTTYPE::TEX_MONSTER_HUMAN_HIT_PARTICLE,
+                8,
+                0.15f,
+                0.2f,
+                3,
+                12.f,
+                m_TransformCom->Get_Pos().y - 0.5f
+            );
+        });
 }
 
 void CHumanMonster2::Update_State_Idle(const _float timeDelta)
@@ -201,7 +219,7 @@ void CHumanMonster2::Update_State_Attack(const _float timeDelta)
             .LifeTime(0.2f)
             .DestroyOnHit(true)
             .InstigatorPos()
-            .CollisionLayer(COLLISION_LAYERTYPE::ENEMY)
+            .CollisionLayer(COLLISION_LAYERTYPE::ATTACK_MONSTER)
             .Offset(m_TargetDir * 0.6f)
             .Knockback(50.f)
             .Scale(_vec3(1.f, 1.f, 1.f))

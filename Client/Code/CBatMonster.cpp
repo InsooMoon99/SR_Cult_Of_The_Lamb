@@ -75,7 +75,7 @@ void CBatMonster::Initialize_GameObject()
     if (m_TargetTransform)
         m_Target = m_TargetTransform->Get_Owner();
 
-
+    Setup_SpawnDeadParticle();
 }
 
 _int CBatMonster::Update_GameObject(const _float& timeDelta)
@@ -136,6 +136,23 @@ _bool CBatMonster::Check_CommonTransitions()
     }
 
     return false;
+}
+
+void CBatMonster::Setup_SpawnDeadParticle()
+{
+    m_CombatStatCom->Set_OnDeathEvent([this]()
+        {
+            CParticleHelper::Spawn_StaticBurstParticle(
+                m_TransformCom->Get_Pos(),
+                COMPONENTTYPE::TEX_MONSTER_BAT_HIT_PARTICLE, 
+                8,                                  
+                0.15f,
+                0.2f,
+                3,
+                12.f,
+                m_TransformCom->Get_Pos().y - 0.5f
+            );
+        });
 }
 
 void CBatMonster::Update_State_Idle(const _float timeDelta)
@@ -199,7 +216,7 @@ void CBatMonster::Update_State_Attack(const _float timeDelta)
                 .Track(m_AttackBox)
                 .LifeTime(0.8f)
                 .DestroyOnHit(false)
-                .CollisionLayer(COLLISION_LAYERTYPE::ENEMY)
+                .CollisionLayer(COLLISION_LAYERTYPE::ATTACK_MONSTER)
                 .InstigatorPos()  
                 .Knockback(50.f)
                 .Scale(_vec3(0.8f, 0.8f, 0.8f))

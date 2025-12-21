@@ -233,6 +233,8 @@ void CCollisionManager::Initialize_CollisionMatrix()
     _int kitchen_Index          = static_cast<_int>(COLLISION_LAYERTYPE::KITCHEN);
     _int site_Index             = static_cast<_int>(COLLISION_LAYERTYPE::CONSTRUCTION_SITE);
     _int fly_Index             = static_cast<_int>(COLLISION_LAYERTYPE::FLY);
+    _int MonsterAttack_Index             = static_cast<_int>(COLLISION_LAYERTYPE::ATTACK_MONSTER);
+
 
     // 벽끼리는 충돌하지 않도록 설정
     m_CollisionMatrix[wall_Index][wall_Index] = false;
@@ -251,6 +253,14 @@ void CCollisionManager::Initialize_CollisionMatrix()
     // 아이템, 적 충돌 ㄴㄴ
     m_CollisionMatrix[item_Index][enemy_Index] = false;
     m_CollisionMatrix[enemy_Index][item_Index] = false;
+
+    // 플레이어, 몬스터 몸박 ㄴㄴ
+    m_CollisionMatrix[enemy_Index][player_Index] = false;
+    m_CollisionMatrix[player_Index][enemy_Index] = false;
+
+    // 몬스터 공격, 몬스터 충돌 ㄴㄴ
+    m_CollisionMatrix[MonsterAttack_Index][enemy_Index] = false;
+    m_CollisionMatrix[enemy_Index][MonsterAttack_Index] = false;
 
     // TODO : 다른 충돌 상태 판정 추가하기
 
