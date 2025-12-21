@@ -1,9 +1,10 @@
 ﻿#include "pch.h"
 #include "CStage_Dungeon.h"
-#include "CCreateHelper.h"
+
 #include "CCameraController.h"
 #include "CCamSetupBuilder.h"
 #include "CCombatStat.h"
+#include "CCreateHelper.h"
 #include "CDInputMgr.h"
 #include "CDroppedItem.h"
 #include "CDropSystem.h"
@@ -12,11 +13,13 @@
 #include "CFollowerCow.h"
 #include "CFollowerElephant.h"
 #include "CFollowerPig.h"
+#include "CInteractiveGrass.h"
 #include "CInventory.h"
 #include "CItemDB.h"
 #include "CLayer.h"
 #include "CMainCamera.h"
 #include "CMainEditorMgr.h"
+#include "CManagement.h"
 #include "CPersistentObjectHelper.h"
 #include "CPlayer.h"
 #include "CSceneMgr.h"
@@ -33,19 +36,15 @@
 #include "CUIPlayerPanel.h"
 #include "CUITabMenu.h"
 #include "CUIWeapon.h"
+#include "CUI_BossHp.h"
 #include "CUI_DungeonLootPanel.h"
 #include "CUI_Fade.h"
 #include "CUI_Skill.h"
 #include "CUI_SkillPanel.h"
-#include "ItemInstance.h"
-#include "CVillageStateMgr.h"
-#include "CInteractiveGrass.h"
-#include "CUI_BossHp.h"
 #include "CUI_Text.h"
-#include "CManagement.h"
-BEGIN(Engine)
-#include "CCombatStat.h"
-END
+#include "CVillageStateMgr.h"
+#include "ItemInstance.h"
+
 
 class CUI_DungeonLootPanel;
 
@@ -60,8 +59,12 @@ CStage_Dungeon::CStage_Dungeon(DEVICE graphicDev)
       m_UI_Fade(nullptr),
       m_NextRoom(Room::DUNGEON_END),
       m_CamMovement(nullptr),
-      m_Timer(0),
-      m_TimerRunning(false)
+      m_CamController(nullptr),
+      m_Timer(0.f),
+      m_TimerRunning(false),
+      m_IsClearMenuOpened(false),
+      m_Start(false),
+      m_UIOpenTime(0.f)
 {}
 
 CStage_Dungeon::~CStage_Dungeon()
@@ -303,6 +306,7 @@ void CStage_Dungeon::LateUpdate_Scene(const _float& timeDelta)
     if (CDInputMgr::GetInstance()->KeyDown(DIK_G))
         CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_LOGO_BOSS2);
 
+    // 수동 구출 테스트
     if (CDInputMgr::GetInstance()->KeyDown(DIK_R))
     {
         Spawn_FollowerCow_Rescue();
