@@ -66,6 +66,8 @@ _int CUI_SkillPanel::Update_GameObject(const _float& timeDelta)
 
     if (!m_Active)
         return 0;
+    
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
     if (m_SingleSkillUI)
         m_SingleSkillUI->Update_GameObject(timeDelta);
@@ -79,8 +81,6 @@ _int CUI_SkillPanel::Update_GameObject(const _float& timeDelta)
 void CUI_SkillPanel::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUI_SkillPanel::Render_GameObject()

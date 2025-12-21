@@ -79,6 +79,8 @@ void CHumanMonster::Initialize_GameObject()
     if (m_TargetTransform)
         m_Target = m_TargetTransform->Get_Owner();
 
+    Setup_SpawnDeadParticle();
+
 }
 
 _int CHumanMonster::Update_GameObject(const _float& timeDelta)
@@ -208,7 +210,7 @@ void CHumanMonster::Update_State_Attack(const _float timeDelta)
             .SetType<CAttackBox>()
             .Damage(1.f)
             .LifeTime(0.2f)
-            .CollisionLayer(COLLISION_LAYERTYPE::ENEMY)
+            .CollisionLayer(COLLISION_LAYERTYPE::ATTACK_MONSTER)
             .DestroyOnHit(true)
             .InstigatorPos()
             .Offset(m_TargetDir * 0.6f)
@@ -299,8 +301,8 @@ void CHumanMonster::Animation_Setting()
         _vec2(0.f, 0.04f));
 
     m_AnimatorCom->Create_Animation(L"HumanMonsterPray", 45, 0.02f,
-        _vec2(0.24f, 0.36f),
-        _vec2(0.f, -0.04f));
+        _vec2(0.31f, 0.47f),
+        _vec2(0.f, -0.52f));
 
     // State -> Animation 연동
     m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"HumanMonsterIdle", ANIMSTATE::LOOP);
@@ -397,6 +399,23 @@ HRESULT CHumanMonster::Add_Component()
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::RIGIDBODY, m_RigidbodyCom });
 
     return S_OK;
+}
+
+void CHumanMonster::Setup_SpawnDeadParticle()
+{
+    m_CombatStatCom->Set_OnDeathEvent([this]()
+        {
+            CParticleHelper::Spawn_StaticBurstParticle(
+                m_TransformCom->Get_Pos(),
+                COMPONENTTYPE::TEX_MONSTER_HUMAN_HIT_PARTICLE,
+                8,                                  
+                0.15f,
+                0.2f,
+                3,
+                12.f,
+                0.5f
+            );
+        });
 }
 
 CHumanMonster* CHumanMonster::Create(DEVICE graphicDev)

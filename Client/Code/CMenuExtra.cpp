@@ -33,14 +33,14 @@ _int CMenuExtra::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CRenderObject::Update_GameObject(timeDelta);
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
+
     return exit;
 }
 
 void CMenuExtra::LateUpdate_GameObject(const _float& timeDelta)
 {
     CRenderObject::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 }
 
 void CMenuExtra::Render_GameObject()

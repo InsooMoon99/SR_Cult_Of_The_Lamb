@@ -86,6 +86,8 @@ void CFloaterMonster::Initialize_GameObject()
 
         SpawnUIOnLayer(m_HpBar, OBJTYPE::UI);
     }*/
+
+    Setup_SpawnDeadParticle();
 }
 
 _int CFloaterMonster::Update_GameObject(const _float& timeDelta)
@@ -148,6 +150,23 @@ _bool CFloaterMonster::Check_CommonTransitions()
     return false;
 }
 
+void CFloaterMonster::Setup_SpawnDeadParticle()
+{
+    m_CombatStatCom->Set_OnDeathEvent([this]()
+        {
+            CParticleHelper::Spawn_StaticBurstParticle(
+                m_TransformCom->Get_Pos(),
+                COMPONENTTYPE::TEX_MONSTER_FLOATER_HIT_PARTICLE,
+                8,
+                0.15f,
+                0.2f,
+                3,
+                12.f,
+                m_TransformCom->Get_Pos().y - 0.5f
+            );
+        });
+}
+
 void CFloaterMonster::Update_State_Idle(const _float timeDelta)
 {
     m_AttackTimer += timeDelta;
@@ -193,7 +212,7 @@ void CFloaterMonster::Update_State_Attack(const _float timeDelta)
             .LifeTime(0.2f)
             .DestroyOnHit(true)
             .InstigatorPos()
-            .CollisionLayer(COLLISION_LAYERTYPE::ENEMY)
+            .CollisionLayer(COLLISION_LAYERTYPE::ATTACK_MONSTER)
             .Offset(m_TargetDir * 0.6f)
             .Knockback(50.f)
             .Scale(_vec3(1.f, 1.f, 1.f))

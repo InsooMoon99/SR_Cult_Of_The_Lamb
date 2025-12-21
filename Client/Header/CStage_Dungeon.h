@@ -106,6 +106,7 @@ public:
     static CStage_Dungeon* Create(DEVICE graphicDev);
 
 private:
+    void PreDestroy_Scene() override;
     void Free() override;
     void Fade_Check(const _float timeDelta);
     void Connect_Rooms();
@@ -168,6 +169,5 @@ private:
     float m_BossNameDelay = 0.f;
     bool  m_BossNameShown = false;
 
-    _bool  m_DebugWarpStarted = false;
-    _float m_DebugWarpTimer   = 0.f;
+    _bool  m_WarpStarted = false;
 };

@@ -30,6 +30,8 @@ _int CUI_Text::Update_GameObject(const _float& timeDelta)
 {
     if (!m_Active)
         return 0;
+    
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
     return 0;
 }
@@ -37,8 +39,6 @@ _int CUI_Text::Update_GameObject(const _float& timeDelta)
 void CUI_Text::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUI_Text::Render_GameObject()

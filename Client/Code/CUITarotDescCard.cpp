@@ -66,6 +66,8 @@ _int CUITarotDescCard::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+
     _vec3 pos  = m_TransformCom->Get_Pos();
     _vec3 size = m_TransformCom->Get_Scale();
 
@@ -126,8 +128,6 @@ _int CUITarotDescCard::Update_GameObject(const _float& timeDelta)
 void CUITarotDescCard::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUITarotDescCard::Render_GameObject()

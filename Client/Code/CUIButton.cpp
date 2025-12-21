@@ -67,6 +67,8 @@ _int CUIButton::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+
     _vec3 pos = m_TransformCom->Get_Pos();   // (0,0) = 화면 중앙, +Y = 위
     _vec3 size = m_TransformCom->Get_Scale(); // 픽셀 단위 가정
 
@@ -131,8 +133,6 @@ _int CUIButton::Update_GameObject(const _float& timeDelta)
 void CUIButton::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUIButton::Render_GameObject()

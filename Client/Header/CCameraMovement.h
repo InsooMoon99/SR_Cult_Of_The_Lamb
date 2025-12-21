@@ -11,7 +11,7 @@ typedef struct CameraPreset
     // 타겟 오프셋
     _vec3 pivotOffset = { 0.f, 0.f, 0.f };
     // 거리
-    _float dist = 11.f;
+    _float dist = 12.f;
     // X축 회전
     _float pitch = D3DXToRadian(45.f);
     // Y축 회전

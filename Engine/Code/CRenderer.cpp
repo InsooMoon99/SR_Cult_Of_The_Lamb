@@ -1,12 +1,13 @@
 ﻿#include "CRenderer.h"
 
 #include "CGameObject.h"
+#include "CManagement.h"
 #include "CTransform.h"
 
 IMPLEMENT_SINGLETON(CRenderer)
 
 CRenderer::CRenderer()
-{}
+{ }
 
 CRenderer::~CRenderer()
 {
@@ -53,7 +54,8 @@ void CRenderer::Render_Priority(DEVICE& graphicDev)
 {
     for (auto& obj : m_RenderGroup[RENDER_PRIORITY])
     {
-        obj->Render_GameObject();
+        if (obj && !obj->Is_PendingDestroy())
+            obj->Render_GameObject();
     }
 }
 
@@ -66,7 +68,8 @@ void CRenderer::Render_Priority_Alpha(DEVICE& graphicDev)
 
     for (auto& obj : m_RenderGroup[RENDER_PRIORITY_ALPHA])
     {
-        obj->Render_GameObject();
+        if (obj && !obj->Is_PendingDestroy())
+            obj->Render_GameObject();
     }
 
     // 알파 블렌딩 끄기
@@ -77,41 +80,43 @@ void CRenderer::Render_NonAlpha(DEVICE& graphicDev)
 {
     for (auto& obj : m_RenderGroup[RENDER_NONALPHA])
     {
-        obj->Render_GameObject();
+        if (obj && !obj->Is_PendingDestroy())
+            obj->Render_GameObject();
     }
 }
 
 void CRenderer::Render_Alpha(DEVICE& graphicDev)
 {
     // 알파 정렬
-  //  _matrix matView, matCam;
-  //  graphicDev->GetTransform(D3DTS_VIEW, &matView);
-  //  D3DXMatrixInverse(&matCam, nullptr, &matView);
-  //
-  //  _vec3 camPos = *(_vec3*)&matCam.m[3][0];
-  //
-  //  m_RenderGroup[RENDER_ALPHA].sort([&camPos](CGameObject* pObj1, CGameObject* pObj2)
-  //  {
-  //      CTransform* trans1 = pObj1->Get_Transform();
-  //      CTransform* trans2 = pObj2->Get_Transform();
-  //
-  //      if (!trans1 || !trans2)
-  //          return false;
-  //
-  //      _vec3 pivot1 = trans1->Get_Pos() - camPos;
-  //      _vec3 pivot2 = trans2->Get_Pos() - camPos;
-  //
-  //      _float dist1 = D3DXVec3LengthSq(&pivot1);
-  //      _float dist2 = D3DXVec3LengthSq(&pivot2);
-  //
-  //      return dist1 > dist2;
-  //  });
+    //  _matrix matView, matCam;
+    //  graphicDev->GetTransform(D3DTS_VIEW, &matView);
+    //  D3DXMatrixInverse(&matCam, nullptr, &matView);
+    //
+    //  _vec3 camPos = *(_vec3*)&matCam.m[3][0];
+    //
+    //  m_RenderGroup[RENDER_ALPHA].sort([&camPos](CGameObject* pObj1, CGameObject* pObj2)
+    //  {
+    //      CTransform* trans1 = pObj1->Get_Transform();
+    //      CTransform* trans2 = pObj2->Get_Transform();
+    //
+    //      if (!trans1 || !trans2)
+    //          return false;
+    //
+    //      _vec3 pivot1 = trans1->Get_Pos() - camPos;
+    //      _vec3 pivot2 = trans2->Get_Pos() - camPos;
+    //
+    //      _float dist1 = D3DXVec3LengthSq(&pivot1);
+    //      _float dist2 = D3DXVec3LengthSq(&pivot2);
+    //
+    //      return dist1 > dist2;
+    //  });
 
     graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 
     for (auto& obj : m_RenderGroup[RENDER_ALPHA])
     {
-        obj->Render_GameObject();
+        if (obj && !obj->Is_PendingDestroy())
+            obj->Render_GameObject();
     }
 
     graphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
@@ -126,7 +131,8 @@ void CRenderer::Render_Particle(DEVICE& graphicDev)
 
     for (auto& obj : m_RenderGroup[RENDER_PARTICLE])
     {
-        obj->Render_GameObject();
+        if (obj && !obj->Is_PendingDestroy())
+            obj->Render_GameObject();
     }
 
     // 알파 블렌딩 끄기
@@ -169,7 +175,6 @@ void CRenderer::Render_UI(DEVICE& graphicDev)
     graphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
     graphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
-
     {
         graphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
         graphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
@@ -182,7 +187,8 @@ void CRenderer::Render_UI(DEVICE& graphicDev)
 
     for (auto& obj : m_RenderGroup[RENDER_UI])
     {
-        obj->Render_GameObject();
+        if (obj && !obj->Is_PendingDestroy())
+            obj->Render_GameObject();
     }
 
     // 상태 복구
@@ -234,7 +240,8 @@ void CRenderer::Render_Priority_UI(DEVICE& graphicDev)
 
     for (auto& obj : m_RenderGroup[RENDER_PRIORITY_UI])
     {
-        obj->Render_GameObject();
+        if (obj && !obj->Is_PendingDestroy())
+            obj->Render_GameObject();
     }
 
     // 상태 복구
@@ -270,7 +277,8 @@ void CRenderer::Render_Trail(DEVICE& graphicDev)
 
     for (auto& obj : m_RenderGroup[RENDER_TRAIL])
     {
-        obj->Render_Trail();
+        if (obj && !obj->Is_PendingDestroy())
+            obj->Render_GameObject();
     }
 
     // 렌더 상태 원복

@@ -40,6 +40,7 @@ HRESULT CParticle::Ready_GameObject()
         return E_FAIL;
 
     m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
+    m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(30.f));
 
     return S_OK;
 }
