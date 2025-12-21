@@ -217,7 +217,7 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
     if (m_TimerRunning)
         m_Timer += timeDelta;
 
-    if (m_CurrentRoom == Room::MONSTER2 && CDInputMgr::GetInstance()->KeyDown(DIK_M))
+    if (m_CurrentRoom == Room::BOSS && CDInputMgr::GetInstance()->KeyDown(DIK_M))
     {
         m_IsClearMenuOpened = !m_IsClearMenuOpened;
 
@@ -237,54 +237,54 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
 
         return 0;
     }
-	if (m_UIOpenTime > 0.f)
-	{
-		m_UIOpenTime -= timeDelta;
+    if (m_UIOpenTime > 0.f)
+    {
+        m_UIOpenTime -= timeDelta;
 
-		if (m_UIOpenTime <= 0.f)
-		{
-			m_UIOpenTime = 0.f;
-			if (m_EligosNameUI)
-				m_EligosNameUI->Set_IsActive(false);
-		}
-	}
+        if (m_UIOpenTime <= 0.f)
+        {
+            m_UIOpenTime = 0.f;
+            if (m_EligosNameUI)
+                m_EligosNameUI->Set_IsActive(false);
+        }
+    }
 
-	if (m_BossIntroPhase == BossIntroPhase::HOLDING)
-	{
-		// 1) 홀드 중간에 폰트 켜기 (한 번만)
-		if (!m_BossNameShown)
-		{
-			m_BossNameDelay -= timeDelta;
-			if (m_BossNameDelay <= 0.f)
-			{
-				m_BossNameShown = true;
+    if (m_BossIntroPhase == BossIntroPhase::HOLDING)
+    {
+        // 1) 홀드 중간에 폰트 켜기 (한 번만)
+        if (!m_BossNameShown)
+        {
+            m_BossNameDelay -= timeDelta;
+            if (m_BossNameDelay <= 0.f)
+            {
+                m_BossNameShown = true;
 
-				// 폰트 ON + 지속시간 시작
-				m_UIOpenTime = 2.f;
-				if (m_EligosNameUI)
-					m_EligosNameUI->Set_IsActive(true);
-			}
-		}
+                // 폰트 ON + 지속시간 시작
+                m_UIOpenTime = 2.f;
+                if (m_EligosNameUI)
+                    m_EligosNameUI->Set_IsActive(true);
+            }
+        }
 
-		// 2) 홀드 시간 감소
-		m_BossHoldTime -= timeDelta;
+        // 2) 홀드 시간 감소
+        m_BossHoldTime -= timeDelta;
 
-		// 3) 홀드 끝나면 카메라 복귀는 딱 1번
-		if (m_BossHoldTime <= 0.f)
-		{
-			CCamSetupBuilder(m_CamController)
-				.SetTarget(m_PlayerTransform)
-				.Distance(11.f)
-				.LagSpeed(3.f)
-				.ZoomSpeed(3.f)
-				.Apply();
+        // 3) 홀드 끝나면 카메라 복귀는 딱 1번
+        if (m_BossHoldTime <= 0.f)
+        {
+            CCamSetupBuilder(m_CamController)
+                .SetTarget(m_PlayerTransform)
+                .Distance(11.f)
+                .LagSpeed(3.f)
+                .ZoomSpeed(3.f)
+                .Apply();
 
-			// 필요하면 여기서 Setup_DynamicCam_For_Boss() 호출
-			// Setup_DynamicCam_For_Boss();
+            // 필요하면 여기서 Setup_DynamicCam_For_Boss() 호출
+            // Setup_DynamicCam_For_Boss();
 
-			m_BossIntroPhase = BossIntroPhase::DONE;
-		}
-	}
+            m_BossIntroPhase = BossIntroPhase::DONE;
+        }
+    }
 
     _int exit = Engine::CScene::Update_Scene(timeDelta);
 
@@ -377,13 +377,14 @@ void CStage_Dungeon::Spawn_FollowerCow_Rescue(_vec3* pSpawnPos)
         if (pSpawnPos)
         {
             spawnPos.x = pSpawnPos->x - 1.0f;
-            spawnPos.y = pSpawnPos->y;
+			spawnPos.y = pSpawnPos->y - 0.5f;
             spawnPos.z = pSpawnPos->z;
         }
         else
         {
-             spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
-             spawnPos += _vec3(6.f, 1.f, 8.f);
+            spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
+            //spawnPos += _vec3(6.f, 1.f, 8.f);
+			spawnPos += _vec3(6.f, 0.5f, 8.f);
         }
 
         cowTransform->Set_Pos(spawnPos);
@@ -416,13 +417,14 @@ void CStage_Dungeon::Spawn_FollowerElephant_Rescue(_vec3* pSpawnPos)
         if (pSpawnPos)
         {
             spawnPos.x = pSpawnPos->x;
-            spawnPos.y = pSpawnPos->y;
+            spawnPos.y = pSpawnPos->y - 0.5f;
             spawnPos.z = pSpawnPos->z;
         }
         else
         {
             spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
-            spawnPos += _vec3(8.f, 1.f, 8.f);
+            //spawnPos += _vec3(8.f, 1.f, 8.f);
+			spawnPos += _vec3(8.f, 0.5f, 8.f);
         }
 
         elephantTransform->Set_Pos(spawnPos);
@@ -455,13 +457,14 @@ void CStage_Dungeon::Spawn_FollowerPig_Rescue(_vec3* pSpawnPos)
         if (pSpawnPos)
         {
             spawnPos.x = pSpawnPos->x + 1.0f;
-            spawnPos.y = pSpawnPos->y;
+            spawnPos.y = pSpawnPos->y - 0.5f;
             spawnPos.z = pSpawnPos->z;
         }
         else
         {
             spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
-            spawnPos += _vec3(10.f, 1.f, 8.f);
+            //spawnPos += _vec3(10.f, 1.f, 8.f);
+			spawnPos += _vec3(10.f, 0.5f, 8.f);
         }
 
         pigTransform->Set_Pos(spawnPos);
@@ -524,7 +527,7 @@ void CStage_Dungeon::Create_RoomTriggers()
                 m_Boss->Get_Component(ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
             m_BTransform->Set_Pos({ 318, 3, 310 });
 
- 
+
             // 카메라 연출
 
                 // 첫 번째 연출 끝났을 때 콜백
@@ -536,22 +539,22 @@ void CStage_Dungeon::Create_RoomTriggers()
                 .LagSpeed(3.f)
                 .ZoomSpeed(3.f)
                 .Apply();
-			m_BossIntroPhase = BossIntroPhase::ZOOMING;
+            m_BossIntroPhase = BossIntroPhase::ZOOMING;
 
-			// 줌(전환) 끝났을 때 -> 홀드 시작 예약
-			m_CamController->Get_OwnerCamMovement()->Set_OnTransitionEnd([this]()
-				{
-					m_BossIntroPhase = BossIntroPhase::HOLDING;
+            // 줌(전환) 끝났을 때 -> 홀드 시작 예약
+            m_CamController->Get_OwnerCamMovement()->Set_OnTransitionEnd([this]()
+                {
+                    m_BossIntroPhase = BossIntroPhase::HOLDING;
 
-					m_BossHoldTime = 2.f;
-					m_BossNameDelay = 0.5f;   // 홀드 시작 후 1초 뒤 폰트
-					m_BossNameShown = false;
+                    m_BossHoldTime = 2.f;
+                    m_BossNameDelay = 0.5f;   // 홀드 시작 후 1초 뒤 폰트
+                    m_BossNameShown = false;
 
-					m_UIOpenTime = 0.f;   // 아직 안 켠 상태
-					m_EligosNameUI->Set_IsActive(false);
-				});
-		
-           
+                    m_UIOpenTime = 0.f;   // 아직 안 켠 상태
+                    m_EligosNameUI->Set_IsActive(false);
+                });
+
+
             // 방 이동
             Change_Room(Room::BOSS);
 
@@ -668,7 +671,7 @@ void CStage_Dungeon::Change_Room(Room room)
 void CStage_Dungeon::OnMonsterDeath(CGameObject* obj)
 {
     CScene::OnMonsterDeath(obj);
-    (dynamic_cast<CCombatStat*>(CManagement::GetInstance()->Get_Component(ID_DYNAMIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::COMBATSTAT)))->Add_Mp(5.f);
+    (dynamic_cast<CCombatStat*>(CManagement::GetInstance()->Get_Component(ID_DYNAMIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::COMBATSTAT)))->Add_Mp(15.f);
     m_KillCount++;
 }
 
@@ -825,7 +828,7 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
     m_Layers.insert({ layerType, layer });
     return S_OK;
 }
-HRESULT CStage_Dungeon::Grass(DEVICE m_GraphicDev ,CLayer* layer)
+HRESULT CStage_Dungeon::Grass(DEVICE m_GraphicDev, CLayer* layer)
 {
     CInteractiveGrass* grass = CInteractiveGrass::Create(m_GraphicDev);
     NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
@@ -1016,13 +1019,6 @@ HRESULT CStage_Dungeon::Ready_UI_Layer(LAYERTYPE layerType)
     dynamic_cast<CUIItemGetManager*>(gameObject)->Initialize();
 
     // Fade In - Fade Out
-    m_UI_Fade = CUI_Fade::Create(m_GraphicDev);
-    NULL_CHECK_RETURN(m_UI_Fade, E_FAIL);
-
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::UI, m_UI_Fade),
-        L"CStage_Dungeon::Ready_UI_Layer() failed: CFade_UI Add failed");
-
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CUI_SkillPanel>(
             OBJTYPE::UI,
@@ -1031,6 +1027,13 @@ HRESULT CStage_Dungeon::Ready_UI_Layer(LAYERTYPE layerType)
             layer,
             &gameObject),
         L"Persistent object setup failed: UI_SkillPanel");
+
+    m_UI_Fade = CUI_Fade::Create(m_GraphicDev);
+    NULL_CHECK_RETURN(m_UI_Fade, E_FAIL);
+
+    FAILED_CHECK_MSG(
+        layer->Add_GameObject(OBJTYPE::UI, m_UI_Fade),
+        L"CStage_Dungeon::Ready_UI_Layer() failed: CFade_UI Add failed");
 
     CUI_DungeonLootPanel* dungeonLootPanel = CUI_DungeonLootPanel::Create(m_GraphicDev);
     dungeonLootPanel->Set_RunLootLog(&m_RunLootLog);

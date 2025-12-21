@@ -302,17 +302,17 @@ void CCollisionManager::Initialize_CollisionMatrix()
         }
     }
 
-    // 채집 오브젝트와 충돌 판정 : 플레이어, NPC가 가능
-    m_CollisionMatrix[interactive_Index][interactive_Index] = false;
-
-    for (_int i = 0; i < colLayerEnd; i++)
-    {
-        if (i != player_Index && i != npc_Index && i != interactive_Index)
-        {
-            m_CollisionMatrix[interactive_Index][i] = false;
-            m_CollisionMatrix[i][interactive_Index] = false;
-        }
-    }
+   // // 채집 오브젝트와 충돌 판정 : 플레이어, NPC가 가능
+   // m_CollisionMatrix[interactive_Index][interactive_Index] = false;
+   //
+   // for (_int i = 0; i < colLayerEnd; i++)
+   // {
+   //     if (i != player_Index && i != npc_Index && i != interactive_Index && i != attack_Index)
+   //     {
+   //         m_CollisionMatrix[interactive_Index][i] = false;
+   //         m_CollisionMatrix[i][interactive_Index] = false;
+   //     }
+   // }
 
     // 투사체끼리도 충돌 X, 투사체랑 보스랑도 충돌X
     //m_CollisionMatrix[fly_Index][fly_Index] = true;

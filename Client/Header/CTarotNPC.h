@@ -26,8 +26,8 @@ public:
     void    Set_TarotController(CTarotStageController* tarotStageController) { m_TarotStageController = tarotStageController; }
     void    OnBeginOverlap(CCollider* self, CCollider* other) override;
     void    OnEndOverlap(CCollider* self, CCollider* other) override;
-    void OnStayOverlap(CCollider* self, CCollider* other) override;
-    bool GetPlayerOverlap() { return m_bPlayerOverlap; }
+    void    OnStayOverlap(CCollider* self, CCollider* other) override;
+    bool    GetPlayerOverlap() { return m_bPlayerOverlap; }
      static CTarotNPC*   Create(DEVICE graphicDev);
 
 protected:
