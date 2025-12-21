@@ -1518,11 +1518,25 @@ HRESULT CResourceMgr::Ready_Particle(DEVICE graphicDev)
         CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Particle/Tree/Tree_Particle%d.png", 6))))
         return E_FAIL;
 
-    // 몬스터 맞았을 때
+    // 엘리고스 파리
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_MONSTER_HIT_PARTICLE,
         CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Particle/Enemy/Enemy_Particle%d.png", 4))))
         return E_FAIL;
 
+    // HumanMonster
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_MONSTER_HUMAN_HIT_PARTICLE,
+        CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Particle/Enemy/HumanMonster/Human_Particle%d.png", 4))))
+        return E_FAIL;
+
+    // Floater
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_MONSTER_FLOATER_HIT_PARTICLE,
+        CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Particle/Enemy/Floater/Floater_Particle%d.png", 3))))
+        return E_FAIL;
+
+    // Bat
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_MONSTER_BAT_HIT_PARTICLE,
+        CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Particle/Enemy/Bat/Bat_Particle%d.png", 4))))
+        return E_FAIL;
 
     return S_OK;
 }

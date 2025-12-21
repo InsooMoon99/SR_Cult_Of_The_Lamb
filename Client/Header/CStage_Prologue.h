@@ -5,6 +5,7 @@ class CCameraController;
 class CTerrain;
 class CUI_Dialogue;
 class CPlayer;
+class CUI_Fade;
 
 class CHeket;
 class CKallamar;
@@ -82,5 +83,8 @@ private:
     D3DXCOLOR m_LightSpecular = D3DXCOLOR(1.0f, 0.4f, 0.4f, 1.0f);
     D3DXVECTOR3 m_LightDir = D3DXVECTOR3(0.f, -1.f, 1.f);
 
+private:
+    CUI_Fade* m_UI_Fade = nullptr;
+    _bool m_FadeOutStarted = false;
 
 };

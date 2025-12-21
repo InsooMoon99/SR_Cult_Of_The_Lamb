@@ -67,7 +67,8 @@ void CStage_Prologue2::Initialize_Scene()
 
     //m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Tutorial2.map");
 
-    CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Prologue.wav", 0.4f, true, 1.f);
+    //CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Prologue.wav", 0.4f, true, 1.f);
+    CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Battle1.wav", 0.2f, true, 0.5f);
 
     auto player = dynamic_cast<CPlayer*>(m_PlayerTransform->Get_Owner());
     NULL_CHECK(player);
@@ -199,7 +200,6 @@ HRESULT CStage_Prologue2::Ready_Environment_Layer(LAYERTYPE layerType)
     if (nullptr == layer)
         return E_FAIL;
 
-    // 프롤로그 2는 방 4개만?
     for (_int i = 0; i < static_cast<_int>(Room::PROLOGUE2_END); i++)
     {
         Room room = static_cast<Room>(i);
@@ -668,8 +668,6 @@ void CStage_Prologue2::Rebirth_End()
 
         if (playerAnimator && playerAnimator->Is_AnimationFinished())
         {
-            CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Battle1.wav", 0.2f, true, 0.5f);
-
             m_IsRebirthPlaying = false;
 
             auto player = dynamic_cast<CPlayer*>(m_Player);

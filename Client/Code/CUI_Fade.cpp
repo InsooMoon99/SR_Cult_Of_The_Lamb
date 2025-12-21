@@ -39,6 +39,9 @@ _int CUI_Fade::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
 
+    if (m_UseRenderer)
+        CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+
     if (!m_IsActive) // 진행중이면 ㄴㄴ
         return exit;
 
@@ -72,15 +75,14 @@ void CUI_Fade::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
 
-    if (m_UseRenderer)
-        CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+
 }
 
 void CUI_Fade::Render_GameObject()
 {
     CUI::Render_GameObject();
 
-    if (!m_IsActive)
+    if (m_Alpha <= 0.f)
     {
         m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
         m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
