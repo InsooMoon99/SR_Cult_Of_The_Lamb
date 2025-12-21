@@ -332,12 +332,13 @@ HRESULT CStage_Prologue2::Ready_GameLogic_Layer(LAYERTYPE layerType)
         // 에디터에 카메라 설정
         CMainEditorMgr::GetInstance()->Set_MainCamera(m_CamController);
     }
+
     //풀 생성
     CInteractiveGrass* grass = CInteractiveGrass::Create(m_GraphicDev);
     NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
         FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
             L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
-    grass->Get_Transform()->Set_Pos(110.f, 1.f, 8.f);
+    grass->Get_Transform()->Set_Pos(116.f, 1.f, 11.f);
     grass->Set_EnableHoverCheck(false);
     grass->Check_WorldState();
     
@@ -345,7 +346,55 @@ HRESULT CStage_Prologue2::Ready_GameLogic_Layer(LAYERTYPE layerType)
     NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
         FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
             L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
-    grass->Get_Transform()->Set_Pos(122.f, 1.f, 16.f);
+    grass->Get_Transform()->Set_Pos(119.f, 1.f, 11.f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
+
+    grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(117.5f, 1.f, 9.5f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
+
+    grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(117.5f, 1.f, 12.5f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
+
+    grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+                     L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(116.75, 1.f, 10.25f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
+
+    grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+                     L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(116.75, 1.f, 11.75f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
+
+    grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+                     L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(118.25, 1.f, 10.25f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
+
+    grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+                     L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(118.25, 1.f, 11.75f);
     grass->Set_EnableHoverCheck(false);
     grass->Check_WorldState();
 

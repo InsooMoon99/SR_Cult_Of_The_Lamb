@@ -61,6 +61,8 @@ void CUI_MonsterHp::Initialize_GameObject()
 _int CUI_MonsterHp::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
+    
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
     if (!m_Owner)
         return exit;
@@ -117,8 +119,6 @@ _int CUI_MonsterHp::Update_GameObject(const _float& timeDelta)
 void CUI_MonsterHp::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUI_MonsterHp::Render_GameObject()

@@ -59,6 +59,7 @@ private:
     CScene* m_NextScene;            // 전환 예약 씬
 
     _bool m_ShouldChangeScene;      // 전환 플래그
+    _int  m_SkipRenderFrames;       // 씬 전환 후 렌더링 건너뛸 프레임 수
 
     map<wstring, CGameObject*> m_PersistentObjects; // 문자열 키 기반 Persistent 오브젝트 컨테이너
 

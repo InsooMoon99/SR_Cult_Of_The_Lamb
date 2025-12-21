@@ -10,7 +10,8 @@ IMPLEMENT_SINGLETON(CManagement)
 CManagement::CManagement()
     : m_Scene(nullptr),
       m_NextScene(nullptr),
-      m_ShouldChangeScene(false)
+      m_ShouldChangeScene(false),
+      m_SkipRenderFrames(0)
 { }
 
 CManagement::~CManagement()
@@ -94,6 +95,13 @@ void CManagement::LateUpdate_Scene(const _float& timeDelta)
 
 void CManagement::Render_Scene(DEVICE graphicDev)
 {
+    // 씬 전환 직후 렌더링 건너뛰기 (초기화 시간 확보)
+    if (m_SkipRenderFrames > 0)
+    {
+        m_SkipRenderFrames--;
+        return;
+    }
+
     CRenderer::GetInstance()->Render_GameObject(graphicDev);
 
     m_Scene->Render_Scene();   // 디버깅 출력용
@@ -133,7 +141,12 @@ void CManagement::Commit_ChangeScene()
 
     // 로딩 끝난 후 Initialize 호출
     if (m_Scene)
+    {
         m_Scene->Initialize_Scene();
+        
+        // 새 씬의 첫 렌더링을 1프레임 지연 (초기화 시간 확보)
+        m_SkipRenderFrames = 1;
+    }
 }
 
 void CManagement::Free()

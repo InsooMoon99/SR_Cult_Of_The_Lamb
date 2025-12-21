@@ -106,14 +106,14 @@ _int CDroppedItem::Update_GameObject(const _float& timeDelta)
     if (m_Active == true)
         m_SpriteEff->Update_Component(timeDelta);
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
+
     return exit;
 }
 
 void CDroppedItem::LateUpdate_GameObject(const _float& timeDelta)
 {
     CGameObject::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 }
 
 void CDroppedItem::Render_GameObject()

@@ -74,8 +74,6 @@ _int CUI_Fade::Update_GameObject(const _float& timeDelta)
 void CUI_Fade::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
-
-
 }
 
 void CUI_Fade::Render_GameObject()

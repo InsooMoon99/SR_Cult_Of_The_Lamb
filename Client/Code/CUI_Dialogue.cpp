@@ -94,6 +94,8 @@ _int CUI_Dialogue::Update_GameObject(const _float& timeDelta)
     if (!m_IsActive)
         return exit;
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+
     if (!m_IsTypingComplete && m_CurrentDialogue)
     {
 		m_TypeTimer += timeDelta;
@@ -128,8 +130,6 @@ _int CUI_Dialogue::Update_GameObject(const _float& timeDelta)
 void CUI_Dialogue::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUI_Dialogue::Render_GameObject()

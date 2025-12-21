@@ -142,6 +142,8 @@ _int CUI_FollowerCommand::Update_GameObject(const _float& timeDelta)
 {
     if (!m_Active)
         return 0;
+    
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
     if (CDInputMgr::GetInstance()->MouseDown(DIM_RB))
     {
@@ -171,8 +173,6 @@ _int CUI_FollowerCommand::Update_GameObject(const _float& timeDelta)
 void CUI_FollowerCommand::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUI_FollowerCommand::Render_GameObject()

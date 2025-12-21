@@ -55,6 +55,8 @@ HRESULT CTestMonster::Ready_GameObject()
 _int CTestMonster::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CGameObject::Update_GameObject(timeDelta);
+    
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_NONALPHA, this);
 
     return exit;
 }
@@ -62,8 +64,6 @@ _int CTestMonster::Update_GameObject(const _float& timeDelta)
 void CTestMonster::LateUpdate_GameObject(const _float& timeDelta)
 {
     CGameObject::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_NONALPHA, this);
 }
 
 void CTestMonster::Render_GameObject()

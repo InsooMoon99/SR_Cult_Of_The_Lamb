@@ -120,14 +120,14 @@ _int CUIPlayerPanel::Update_GameObject(const _float& timeDelta)
 
     _int exit = CUIPanel::Update_GameObject(timeDelta);
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+
     return exit;
 }
 
 void CUIPlayerPanel::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUIPanel::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUIPlayerPanel::Render_GameObject()
