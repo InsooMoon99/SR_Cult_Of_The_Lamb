@@ -15,16 +15,16 @@ class CItemDB;
 
 CUIItemGet::CUIItemGet(DEVICE graphicDev)
     : CUI(graphicDev),
-    m_UIItemIcon(nullptr),
-    m_UIItem{},
-    m_IsOpen(false),
-    m_IsShifting(false),
-    m_CloseAnimation(false),
-    m_OpenAnimaiton(false),
-    m_TargetX(-520.f),
-    m_ClosedX(-900.f),
-    m_Speed(250.f),
-    m_IsDead(false)
+      m_UIItemIcon(nullptr),
+      m_UIItem{},
+      m_IsOpen(false),
+      m_IsShifting(false),
+      m_CloseAnimation(false),
+      m_OpenAnimaiton(false),
+      m_IsDead(false),
+      m_TargetX(-520.f),
+      m_ClosedX(-900.f),
+      m_Speed(250.f)
 { }
 
 CUIItemGet::CUIItemGet(const CUIItemGet& rhs)
@@ -35,16 +35,14 @@ CUIItemGet::CUIItemGet(const CUIItemGet& rhs)
       m_IsShifting(false),
       m_CloseAnimation(false),
       m_OpenAnimaiton(false),
+      m_IsDead(false),
       m_TargetX(-520.f),
       m_ClosedX(-900.f),
-      m_Speed(250.f),
-      m_IsDead(false)
+      m_Speed(250.f)
 { }
 
 CUIItemGet::~CUIItemGet()
-{
-    
-}
+{ }
 
 HRESULT CUIItemGet::Ready_GameObject()
 {
@@ -64,18 +62,16 @@ HRESULT CUIItemGet::Ready_GameObject()
 
 _int CUIItemGet::Update_GameObject(const _float& timeDelta)
 {
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
-
     int exit = CUI::Update_GameObject(timeDelta);
 
     if (m_UIItem.itemId)
     {
         m_IsShifting = true;
-		m_UIItem.remainTime -= timeDelta;
-        int  index = CItemDB::GetInstance()->GetIndexById(m_UIItem.itemId);
+        m_UIItem.remainTime -= timeDelta;
+        int index = CItemDB::GetInstance()->GetIndexById(m_UIItem.itemId);
         m_UIItemIcon->Set_TextureIndex(index);
         m_UIItemIcon->Update_GameObject(timeDelta);
-		
+
         float targetX = m_IsOpen ? m_TargetX : m_ClosedX; // 열림 vs 닫힘 상태에 따라서 목표 X좌표 결정
 
         _vec3 pos = m_TransformCom->Get_Pos();
@@ -86,23 +82,21 @@ _int CUIItemGet::Update_GameObject(const _float& timeDelta)
 
         pos.x += timeDelta * m_Speed * dir;
 
-
         if ((dir <= 0 && pos.x <= targetX) ||
             (dir >= 0 && pos.x >= targetX))
         {
-            pos.x = targetX;        
-            m_IsOpen = !m_IsOpen;   
+            pos.x    = targetX;
+            m_IsOpen = !m_IsOpen;
         }
 
-        m_TransformCom->Set_Pos(pos.x , (- m_Index) *  63.f + 60.f, pos.z);
-        m_UIItemIcon->Get_Transform()->Set_Pos(pos.x - uiItemOffset, ( - m_Index) *  63.f+ 60.f, pos.z);
+        m_TransformCom->Set_Pos(pos.x, (- m_Index) * 63.f + 60.f, pos.z);
+        m_UIItemIcon->Get_Transform()->Set_Pos(pos.x - uiItemOffset, (- m_Index) * 63.f + 60.f, pos.z);
 
-		if(m_UIItem.remainTime <= 0)
-		{
+        if (m_UIItem.remainTime <= 0)
+        {
             m_IsShifting = false;
-			m_IsDead = true;
-		}
-
+            m_IsDead     = true;
+        }
     }
     return exit;
 }
@@ -110,30 +104,32 @@ _int CUIItemGet::Update_GameObject(const _float& timeDelta)
 void CUIItemGet::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
+
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUIItemGet::Render_GameObject()
 {
     CUI::Render_GameObject();
     m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-    
+
     if (m_UIItem.itemId)
     {
         // 배경 이미지 렌더
         m_TextureCom->Set_Texture(8);
         m_BufferCom->Render_Buffer();
-
     }
-        _vec3 pos = m_TransformCom->Get_Pos();
-        // 아이콘 렌더
-        m_UIItemIcon->Render_GameObject();
+    _vec3 pos = m_TransformCom->Get_Pos();
+    // 아이콘 렌더
+    m_UIItemIcon->Render_GameObject();
 
-        Item* item = CItemDB::GetInstance()->GetItemById(m_UIItem.itemId);
-		_vec2 screen = { WINCX / 2 + pos.x +30.f, WINCY / 2 - pos.y};
-		CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Small", CItemDB::GetInstance()->Utf8ToWstring(item->name) + L"    +" + to_wstring(m_UIItem.count), &screen, D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.f));
-
-    }
-
+    Item* item   = CItemDB::GetInstance()->GetItemById(m_UIItem.itemId);
+    _vec2 screen = { WINCX / 2 + pos.x + 30.f, WINCY / 2 - pos.y };
+    CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Small",
+                                         CItemDB::GetInstance()->Utf8ToWstring(item->name) + L"    +" + to_wstring(m_UIItem.count),
+                                         &screen,
+                                         D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.f));
+}
 
 HRESULT CUIItemGet::Add_Component()
 {
@@ -160,15 +156,15 @@ void CUIItemGet::Set_UIItem(int itemId, int itemCount)
     if (!m_IsDead && m_UIItem.itemId == itemId)
     {
         m_UIItem.itemId = itemId;
-        int oldCount = m_UIItem.count;
+        int oldCount    = m_UIItem.count;
         m_UIItem.count += itemCount;
         m_UIItem.newcount = m_UIItem.count - oldCount;
     }
     else
     {
-        m_UIItem.itemId = itemId;
-        m_UIItem.count = itemCount;
-        m_UIItem.newcount = itemCount;
+        m_UIItem.itemId     = itemId;
+        m_UIItem.count      = itemCount;
+        m_UIItem.newcount   = itemCount;
         m_UIItem.remainTime = 3.f;
     }
 }

@@ -16,8 +16,8 @@ class CUI_Text;
 BEGIN(Engine)
 class CCombatStat;
 class CTransform;
-
 END
+
 enum class BossIntroPhase { NONE, ZOOMING, HOLDING, DONE };
 
 struct RoomData
@@ -156,15 +156,18 @@ private:
     _bool m_IsClearMenuOpened;
     _bool m_Start;
 
-    CGameObject* m_Boss      = nullptr;
-    CUI_BossHp*  m_BossHpbar = nullptr;
-    CUI_Text* m_EligosNameUI = nullptr;
-    _float      m_UIOpenTime;
-    bool m_flag = false;
+    CGameObject* m_Boss         = nullptr;
+    CUI_BossHp*  m_BossHpbar    = nullptr;
+    CUI_Text*    m_EligosNameUI = nullptr;
+    _float       m_UIOpenTime;
+    bool         m_flag = false;
 
     BossIntroPhase m_BossIntroPhase = BossIntroPhase::NONE;
 
-    float m_BossHoldTime = 0.f;    
-    float m_BossNameDelay = 0.f;   
+    float m_BossHoldTime  = 0.f;
+    float m_BossNameDelay = 0.f;
     bool  m_BossNameShown = false;
+
+    _bool  m_DebugWarpStarted = false;
+    _float m_DebugWarpTimer   = 0.f;
 };

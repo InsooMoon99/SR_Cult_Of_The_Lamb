@@ -24,6 +24,7 @@
 #include "CPlayer.h"
 #include "CSceneMgr.h"
 #include "CSoundMgr.h"
+#include "CState.h"
 #include "CTarotNPC.h"
 #include "CTarotStageController.h"
 #include "CTerrain.h"
@@ -217,6 +218,7 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
     if (m_TimerRunning)
         m_Timer += timeDelta;
 
+    //TODO 석호 : 클리어 UI가 제대로 동작하는지 검증 필요
     if (m_CurrentRoom == Room::BOSS && CDInputMgr::GetInstance()->KeyDown(DIK_M))
     {
         m_IsClearMenuOpened = !m_IsClearMenuOpened;
@@ -227,7 +229,23 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
             m_DungeonCleared = true;
         }
         else
-            m_DungeonCleared = false;
+        {
+            m_DebugWarpStarted = true;
+            
+            auto playerState = dynamic_cast<CState*>(
+                m_Player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
+
+            if (playerState)
+                playerState->Change_State(ACTORSTATE::PLAYER_WARPOUT);
+        }
+    }
+
+    if (m_DebugWarpStarted)
+    {
+        m_DebugWarpTimer += timeDelta;
+
+        if (m_DebugWarpTimer >= 1.0f)
+            CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_STAGE);
     }
 
     if (m_RequestChangeScene)
@@ -375,8 +393,8 @@ void CStage_Dungeon::Spawn_FollowerCow_Rescue(_vec3* pSpawnPos)
         _vec3 spawnPos;
         if (pSpawnPos)
         {
-            spawnPos.x = pSpawnPos->x - 1.0f;
-            spawnPos.y = pSpawnPos->y - 0.5f;
+            spawnPos.x = pSpawnPos->x - 1.5f;
+            spawnPos.y = 1.f;
             spawnPos.z = pSpawnPos->z;
         }
         else
@@ -416,7 +434,7 @@ void CStage_Dungeon::Spawn_FollowerElephant_Rescue(_vec3* pSpawnPos)
         if (pSpawnPos)
         {
             spawnPos.x = pSpawnPos->x;
-            spawnPos.y = pSpawnPos->y - 0.5f;
+            spawnPos.y = 1.f;
             spawnPos.z = pSpawnPos->z;
         }
         else
@@ -455,8 +473,8 @@ void CStage_Dungeon::Spawn_FollowerPig_Rescue(_vec3* pSpawnPos)
         _vec3 spawnPos;
         if (pSpawnPos)
         {
-            spawnPos.x = pSpawnPos->x + 1.0f;
-            spawnPos.y = pSpawnPos->y - 0.5f;
+            spawnPos.x = pSpawnPos->x + 1.5f;
+            spawnPos.y = 1.f;
             spawnPos.z = pSpawnPos->z;
         }
         else

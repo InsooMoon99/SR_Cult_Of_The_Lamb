@@ -32,6 +32,8 @@ void CEligos_Dead::Enter()
     if (stage)
     {
         _vec3 pos = m_pOwnerTransformCom->Get_Pos();
+        pos.y = 1;
+
         stage->Spawn_FollowerCow_Rescue(&pos);
         stage->Spawn_FollowerElephant_Rescue(&pos);
         stage->Spawn_FollowerPig_Rescue(&pos);

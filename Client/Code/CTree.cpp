@@ -150,8 +150,6 @@ _int CTree::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CWorldInteractive::Update_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
-
     if (m_OnDamage == true)
     {
         if (m_tree == RUBBLE1 || m_tree == RUBBLE2 || m_tree == RUBBLE3 || m_tree == RUBBLE4)
@@ -186,6 +184,8 @@ _int CTree::Update_GameObject(const _float& timeDelta)
 void CTree::LateUpdate_GameObject(const _float& timeDelta)
 {
     CWorldInteractive::LateUpdate_GameObject(timeDelta);
+
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 }
 
 void CTree::Render_GameObject()

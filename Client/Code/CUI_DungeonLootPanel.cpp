@@ -129,8 +129,6 @@ _int CUI_DungeonLootPanel::Update_GameObject(const _float& timeDelta)
     if (m_Active == true && CDInputMgr::GetInstance()->KeyDown(DIK_K))
         m_Alpha = 0.f;
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
-
     int exit = CUI::Update_GameObject(timeDelta);
 
     const vector<CRunLootLog::Slot>& slots = m_RunLootLog->Get_Vector();
@@ -171,6 +169,8 @@ _int CUI_DungeonLootPanel::Update_GameObject(const _float& timeDelta)
 void CUI_DungeonLootPanel::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
+
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUI_DungeonLootPanel::Render_GameObject()

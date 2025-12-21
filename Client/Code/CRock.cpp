@@ -190,8 +190,6 @@ _int CRock::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CWorldInteractive::Update_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
-
     if (m_OnDamage == true)
         KnockBackEff(timeDelta);
 
@@ -208,6 +206,8 @@ _int CRock::Update_GameObject(const _float& timeDelta)
 void CRock::LateUpdate_GameObject(const _float& timeDelta)
 {
     CWorldInteractive::LateUpdate_GameObject(timeDelta);
+
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 }
 
 void CRock::Render_GameObject()

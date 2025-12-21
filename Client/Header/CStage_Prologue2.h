@@ -134,4 +134,5 @@ private:
     _bool                   m_InWarpZone = false;
     _bool                   m_WarpStarted = false;
     _bool                   m_PrologueCleared = false;
+    _float                  m_WarpTimer = 0.f;
 };

@@ -27,6 +27,7 @@
 #include "CUI_Interactive.h"
 #include "CInteractiveGrass.h"
 #include "CDropSystem.h"
+#include "CSceneMgr.h"
 
 CStage_Prologue2::CStage_Prologue2(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -143,14 +144,21 @@ _int CStage_Prologue2::Update_Scene(const _float& timeDelta)
 
     if (m_WarpStarted)
     {
-        auto animator = dynamic_cast<CAnimator*>(
-            m_Player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+        m_WarpTimer += timeDelta;
 
-        if (animator && animator->Get_CurKey() == L"Player_WarpOut"
-            && animator->Is_AnimationFinished())
+        if (m_WarpTimer >= 1.0f)
         {
-            //m_PrologueCleared = true;
+            CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_STAGE);
         }
+        
+        // auto animator = dynamic_cast<CAnimator*>(
+        //     m_Player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+
+        // if (animator && animator->Get_CurKey() == L"Player_WarpOut"
+        //     && animator->Is_AnimationFinished())
+        // {
+        //     //m_PrologueCleared = true;
+        // }
     }
 
     if (m_UIDelayTime > 0.f)

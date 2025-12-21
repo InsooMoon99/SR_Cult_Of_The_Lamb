@@ -16,20 +16,30 @@ private:
     ~CUICookingMenu() override;
 
 public:
-    HRESULT                Ready_GameObject() override;
-    void                   Initialize_GameObject() override;
-    _int                   Update_GameObject(const _float& timeDelta) override;
-    void                   LateUpdate_GameObject(const _float& timeDelta) override;
-    void                   Render_GameObject() override;
-    void                   PlayOpenAnimation();
-    void                   PlayCloseAnimation();
-    bool                   Get_IsOpen() { return m_IsOpen; }
-    void                   Set_CookingController(CCookingController* controller) { m_CookingController = controller; }
-    void                   Check_Hovered();
+    HRESULT Ready_GameObject() override;
+    void    Initialize_GameObject() override;
+    _int    Update_GameObject(const _float& timeDelta) override;
+    void    LateUpdate_GameObject(const _float& timeDelta) override;
+    void    Render_GameObject() override;
+
     HRESULT                Add_Component();
     static CUICookingMenu* Create(DEVICE graphicDev);
-    void                   SetOnDeactivate(function<void()> deactivate) { m_Deactivate = deactivate; }
-    void                   Free() override;
+
+public:
+    bool Get_IsOpen() { return m_IsOpen; }
+
+    void Set_CookingController(CCookingController* controller) { m_CookingController = controller; }
+    void SetOnDeactivate(function<void()> deactivate) { m_Deactivate = deactivate; }
+
+public:
+    void Check_Hovered();
+
+    void PlayOpenAnimation();
+    void PlayCloseAnimation();
+
+private:
+    void Free() override;
+
 private:
     vector<CUICookingCell*>    m_CookingCells;
     vector<CUICookedFoodCell*> m_CookedFoodCells;
