@@ -1,5 +1,7 @@
 ﻿#include "pch.h"
 #include "CStage_Dungeon.h"
+#include "CMapObjectMgr.h"
+#include "CFogMgr.h"
 
 #include "CCameraController.h"
 #include "CCamSetupBuilder.h"
@@ -45,7 +47,6 @@
 #include "CUI_Text.h"
 #include "CVillageStateMgr.h"
 #include "ItemInstance.h"
-
 
 class CUI_DungeonLootPanel;
 
@@ -218,7 +219,6 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
     if (m_TimerRunning)
         m_Timer += timeDelta;
 
-    //TODO 석호 : 클리어 UI가 제대로 동작하는지 검증 필요
     if (m_CurrentRoom == Room::BOSS && CDInputMgr::GetInstance()->KeyDown(DIK_M))
     {
         m_IsClearMenuOpened = !m_IsClearMenuOpened;
@@ -230,8 +230,8 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
         }
         else
         {
-            m_DebugWarpStarted = true;
-            
+            m_WarpStarted = true;
+
             auto playerState = dynamic_cast<CState*>(
                 m_Player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
 
@@ -240,11 +240,10 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
         }
     }
 
-    if (m_DebugWarpStarted)
+    if (m_WarpStarted)
     {
-        m_DebugWarpTimer += timeDelta;
-
-        if (m_DebugWarpTimer >= 1.0f)
+        // 워프 애니메이션 작동 이후, 마을로 수동 이동 테스트
+        if (CDInputMgr::GetInstance()->KeyDown(DIK_COMMA))
             CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_STAGE);
     }
 
@@ -792,12 +791,12 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
         //   그럴 때는 필요한 것만 사용해 .Apply() 하면 된다.
         CCamSetupBuilder(m_CamController)
             .SetTarget(m_PlayerTransform)
-            //.PivotOffset({ 0.f, 0.f, 0.f })
-            //.Distance(11.f)
-            //.RotX(45.f)
-            //.RotY(0.f)
-            //.LagSpeed(10.f)
-            //.ZoomSpeed(5.f)
+            .PivotOffset({ 0.f, 0.f, 0.f })
+            .Distance(11.f)
+            .RotX(45.f)
+            .RotY(0.f)
+            .LagSpeed(10.f)
+            .ZoomSpeed(5.f)
             .Snap()
             .Apply();
 
@@ -962,7 +961,6 @@ HRESULT CStage_Dungeon::Grass(DEVICE graphicDev, CLayer* layer)
     grass->Set_EnableHoverCheck(false);
     grass->Check_WorldState();
 
-
     return S_OK;
 }
 
@@ -1091,6 +1089,21 @@ CStage_Dungeon* CStage_Dungeon::Create(DEVICE graphicDev)
     }
 
     return stage;
+}
+
+void CStage_Dungeon::PreDestroy_Scene()
+{
+    // 카메라 콜백 해제
+    if (m_CamController)
+    {
+        auto camMovement = m_CamController->Get_OwnerCamMovement();
+        if (camMovement)
+            camMovement->Set_OnTransitionEnd(nullptr);
+    }
+
+    // 맵 오브젝트, 포그 등 매니저에 등록된 오브젝트들 정리
+    CMapObjectMgr::GetInstance()->Clear_PlacedObjects();
+    CFogMgr::GetInstance()->Clear_AllFog();
 }
 
 void CStage_Dungeon::Free()

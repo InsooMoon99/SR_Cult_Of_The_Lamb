@@ -84,7 +84,8 @@ CStage::CStage(DEVICE graphicDev)
       m_FollowerCommand(nullptr),
       m_PlayerGatherCom(nullptr),
       m_PlayerConstructionCom(nullptr),
-      m_VillageEnterUI(nullptr)
+      m_VillageEnterUI(nullptr),
+      m_WorldInteractive(nullptr)
 { }
 
 CStage::~CStage()
@@ -100,7 +101,7 @@ HRESULT CStage::Ready_Scene()
 
     if (FAILED(Ready_UI_Layer(LAYERTYPE::UI)))
         return E_FAIL;
-	
+
     if (FAILED(Ready_Light()))
         return E_FAIL;
 
@@ -314,6 +315,51 @@ _int CStage::Update_Scene(const _float& timeDelta)
         default: break;
         }
     }
+
+#pragma region 플레이어 위치에 따른 줌아웃
+
+    auto playerTransform = dynamic_cast<CTransform*>(CManagement::GetInstance()->Get_Component(
+        ID_DYNAMIC,
+        LAYERTYPE::GAMELOGIC,
+        OBJTYPE::PLAYER,
+        COMPONENTTYPE::TRANSFORM));
+
+    if (playerTransform->Get_Pos().z < 16 &&
+        !m_CameraZoomOut)
+    {
+        auto camController = dynamic_cast<CCameraController*>(CManagement::GetInstance()->Get_Component(
+            ID_DYNAMIC,
+            LAYERTYPE::GAMELOGIC,
+            OBJTYPE::CAMERA,
+            COMPONENTTYPE::CAM_CONTROLLER));
+
+        CCamSetupBuilder(camController)
+            .SetTarget(playerTransform)
+            .Distance(14.f)
+            .ZoomSpeed(2.f)
+            .Apply();
+
+        m_CameraZoomOut = true;
+    }
+    else if (playerTransform->Get_Pos().z >= 16 &&
+             m_CameraZoomOut)
+    {
+        auto camController = dynamic_cast<CCameraController*>(CManagement::GetInstance()->Get_Component(
+            ID_DYNAMIC,
+            LAYERTYPE::GAMELOGIC,
+            OBJTYPE::CAMERA,
+            COMPONENTTYPE::CAM_CONTROLLER));
+
+        CCamSetupBuilder(camController)
+            .SetTarget(playerTransform)
+            .Distance(11.f)
+            .ZoomSpeed(5.f)
+            .Apply();
+
+        m_CameraZoomOut = false;
+    }
+
+#pragma endregion
 
     CConstructionMgr::GetInstance()->Update_ConstructionMgr(timeDelta);
 
@@ -843,7 +889,7 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
 
     m_PlayerGatherCom->Set_ProgressBar(uiProgressBar);
     m_PlayerConstructionCom->Set_ProgressBar(uiProgressBar);
-   // m_WorldInteractive->Set_ProgressBar(uiProgressBar);
+    // m_WorldInteractive->Set_ProgressBar(uiProgressBar);
     m_Layers.insert({ layerType, layer });
 
     return S_OK;
@@ -857,6 +903,7 @@ HRESULT CStage::Ready_Prototype()
 HRESULT CStage::Ready_Light()
 {
     //return CScene::Ready_Light();
+
     return S_OK;
 }
 

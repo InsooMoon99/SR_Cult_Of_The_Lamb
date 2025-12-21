@@ -59,6 +59,51 @@ _int CStage_DungeonEntrance::Update_Scene(const _float& timeDelta)
 {
     _int exit = Engine::CScene::Update_Scene(timeDelta);
 
+    #pragma region 플레이어 위치에 따른 줌아웃
+
+    auto playerTransform = dynamic_cast<CTransform*>(CManagement::GetInstance()->Get_Component(
+        ID_DYNAMIC,
+        LAYERTYPE::GAMELOGIC,
+        OBJTYPE::PLAYER,
+        COMPONENTTYPE::TRANSFORM));
+
+    if (playerTransform->Get_Pos().z > 3 &&
+        !m_CameraZoomOut)
+    {
+        auto camController = dynamic_cast<CCameraController*>(CManagement::GetInstance()->Get_Component(
+            ID_DYNAMIC,
+            LAYERTYPE::GAMELOGIC,
+            OBJTYPE::CAMERA,
+            COMPONENTTYPE::CAM_CONTROLLER));
+
+        CCamSetupBuilder(camController)
+            .SetTarget(playerTransform)
+            .Distance(14.f)
+            .ZoomSpeed(2.f)
+            .Apply();
+
+        m_CameraZoomOut = true;
+    }
+    else if (playerTransform->Get_Pos().z <= 3 &&
+             m_CameraZoomOut)
+    {
+        auto camController = dynamic_cast<CCameraController*>(CManagement::GetInstance()->Get_Component(
+            ID_DYNAMIC,
+            LAYERTYPE::GAMELOGIC,
+            OBJTYPE::CAMERA,
+            COMPONENTTYPE::CAM_CONTROLLER));
+
+        CCamSetupBuilder(camController)
+            .SetTarget(playerTransform)
+            .Distance(11.f)
+            .ZoomSpeed(5.f)
+            .Apply();
+
+        m_CameraZoomOut = false;
+    }
+
+#pragma endregion
+
     return exit;
 }
 
@@ -158,7 +203,7 @@ HRESULT CStage_DungeonEntrance::Ready_GameLogic_Layer(LAYERTYPE layerType)
         CCamSetupBuilder(m_CamController)
             .SetTarget(m_PlayerTransform)
             .PivotOffset({ 0.f, 0.f, 0.f })
-            .Distance(9.5f)
+            .Distance(11.f)
             .RotX(45.f)
             .RotY(0.f)
             .LagSpeed(10.f)

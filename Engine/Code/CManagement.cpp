@@ -144,8 +144,8 @@ void CManagement::Commit_ChangeScene()
     {
         m_Scene->Initialize_Scene();
         
-        // 새 씬의 첫 렌더링을 1프레임 지연 (초기화 시간 확보)
-        m_SkipRenderFrames = 1;
+        // 새 씬의 첫 렌더링을 2프레임 지연 (초기화 시간 확보)
+        m_SkipRenderFrames = 2;
     }
 }
 

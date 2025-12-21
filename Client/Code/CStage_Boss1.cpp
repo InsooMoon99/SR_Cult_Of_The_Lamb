@@ -274,12 +274,12 @@ HRESULT CStage_Boss1::Ready_GameLogic_Layer(LAYERTYPE layerType)
         //   그럴 때는 필요한 것만 사용해 .Apply() 하면 된다.
         CCamSetupBuilder(m_CamController)
             .SetTarget(m_PlayerTransformCom)
-            //.PivotOffset({ 0.f, 0.f, 0.f })
-            //.Distance(11.f)
-            //.RotX(45.f)
-            //.RotY(0.f)
-            //.LagSpeed(10.f)
-            //.ZoomSpeed(5.f)
+            .PivotOffset({ 0.f, 0.f, 0.f })
+            .Distance(11.f)
+            .RotX(45.f)
+            .RotY(0.f)
+            .LagSpeed(10.f)
+            .ZoomSpeed(5.f)
             .Snap()
             .Apply();
 
