@@ -103,6 +103,35 @@ void CStage_Prologue_Boss::Render_Scene()
 
 }
 
+void CStage_Prologue_Boss::PreDestroy_Scene()
+{
+    // ===== 씬 삭제 전 정리 작업 =====
+    // 목적: 콜백 함수들이 삭제된 씬을 참조하지 않도록 사전 정리
+    
+    // 1. 대화 UI 콜백 해제
+    // - m_Dialogue는 UI 레이어에 속하므로 씬 삭제 시 함께 삭제됨
+    // - 하지만 콜백이 [this]를 캡처하고 있어 dangling pointer 가능성 있음
+    if (m_Dialogue)
+    {
+        m_Dialogue->Set_OnDialogueEnd(nullptr);
+    }
+
+    // 2. 카메라 전환 콜백 해제
+    // - CMainCamera는 Persistent 객체라 살아남지만,
+    // - 콜백 내부에서 [this]와 m_Dialogue를 참조하므로 반드시 해제 필요
+    if (m_CamController)
+    {
+        auto camMovement = m_CamController->Get_OwnerCamMovement();
+        if (camMovement)
+        {
+            camMovement->Set_OnTransitionEnd(nullptr);
+        }
+    }
+
+    // 3. 기타 진행 중인 애니메이션/타이머가 있다면 여기서 정리
+    // (현재는 없음)
+}
+
 HRESULT CStage_Prologue_Boss::Ready_Light()
 {
     return CScene::Ready_Light();

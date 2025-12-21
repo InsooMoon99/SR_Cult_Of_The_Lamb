@@ -118,6 +118,12 @@ void CManagement::Commit_ChangeScene()
 {
     if (!m_ShouldChangeScene) return;
 
+    // 씬 삭제 전 정리 작업 수행
+    // - 콜백 함수들을 해제하여 dangling pointer 방지
+    // - 진행 중인 애니메이션/전환 중단
+    if (m_Scene)
+        m_Scene->PreDestroy_Scene();
+
     CRenderer::GetInstance()->Clear_RenderGroup();
 
     Safe_Release(m_Scene);
