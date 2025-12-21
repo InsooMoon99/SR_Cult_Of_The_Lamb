@@ -46,7 +46,7 @@ HRESULT CRock::Ready_GameObject()
 
         m_ItemNum = 3;
 
-        m_CombatStatCom->Set_MaxHp(20.f);
+        m_CombatStatCom->Set_MaxHp(15.f);
         m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
         break;
 
@@ -57,7 +57,7 @@ HRESULT CRock::Ready_GameObject()
 
         m_ItemNum = 4;
 
-        m_CombatStatCom->Set_MaxHp(30.f);
+        m_CombatStatCom->Set_MaxHp(20.f);
         m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
         break;
 
@@ -68,7 +68,7 @@ HRESULT CRock::Ready_GameObject()
 
         m_ItemNum = 6;
 
-        m_CombatStatCom->Set_MaxHp(40.f);
+        m_CombatStatCom->Set_MaxHp(35.f);
         m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
         break;
 
