@@ -67,7 +67,7 @@ _int CStage_DungeonEntrance::Update_Scene(const _float& timeDelta)
         OBJTYPE::PLAYER,
         COMPONENTTYPE::TRANSFORM));
 
-    if (playerTransform->Get_Pos().z > 3 &&
+    if (playerTransform->Get_Pos().z > 3.5f &&
         !m_CameraZoomOut)
     {
         auto camController = dynamic_cast<CCameraController*>(CManagement::GetInstance()->Get_Component(
@@ -78,13 +78,13 @@ _int CStage_DungeonEntrance::Update_Scene(const _float& timeDelta)
 
         CCamSetupBuilder(camController)
             .SetTarget(playerTransform)
-            .Distance(14.f)
+            .Distance(15.f)
             .ZoomSpeed(2.f)
             .Apply();
 
         m_CameraZoomOut = true;
     }
-    else if (playerTransform->Get_Pos().z <= 3 &&
+    else if (playerTransform->Get_Pos().z <= 3.5f &&
              m_CameraZoomOut)
     {
         auto camController = dynamic_cast<CCameraController*>(CManagement::GetInstance()->Get_Component(
@@ -95,7 +95,7 @@ _int CStage_DungeonEntrance::Update_Scene(const _float& timeDelta)
 
         CCamSetupBuilder(camController)
             .SetTarget(playerTransform)
-            .Distance(11.f)
+            .Distance(12.f)
             .ZoomSpeed(5.f)
             .Apply();
 
@@ -203,7 +203,7 @@ HRESULT CStage_DungeonEntrance::Ready_GameLogic_Layer(LAYERTYPE layerType)
         CCamSetupBuilder(m_CamController)
             .SetTarget(m_PlayerTransform)
             .PivotOffset({ 0.f, 0.f, 0.f })
-            .Distance(11.f)
+            .Distance(12.f)
             .RotX(45.f)
             .RotY(0.f)
             .LagSpeed(10.f)

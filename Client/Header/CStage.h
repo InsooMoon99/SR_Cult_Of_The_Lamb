@@ -31,6 +31,7 @@ public:
     _int    Update_Scene(const _float& timeDelta) override;
     void    LateUpdate_Scene(const _float& timeDelta) override;
     void    Render_Scene() override;
+    void    PreDestroy_Scene() override;  // 씬 전환 전 정리
 
 public:
     CUICookingMenu*      Get_CookingMenu() { return m_CookingMenu; }

@@ -12,6 +12,7 @@
 #include "CDInputMgr.h"
 #include "CDroppedItem.h"
 #include "CDropSystem.h"
+#include "CFogMgr.h"
 #include "CFollowerCow.h"
 #include "CFollowerElephant.h"
 #include "CFollowerPig.h"
@@ -65,6 +66,7 @@
 #include "CUI_ProgressBar.h"
 #include "CWeaponEquip.h"
 #include "CFontMgr.h"
+#include "CMapObjectMgr.h"
 #include "CUI_Text.h"
 #include "CState.h"
 #include "CRenderer.h"
@@ -324,7 +326,7 @@ _int CStage::Update_Scene(const _float& timeDelta)
         OBJTYPE::PLAYER,
         COMPONENTTYPE::TRANSFORM));
 
-    if (playerTransform->Get_Pos().z < 16 &&
+    if (playerTransform->Get_Pos().z < 36 &&
         !m_CameraZoomOut)
     {
         auto camController = dynamic_cast<CCameraController*>(CManagement::GetInstance()->Get_Component(
@@ -341,7 +343,7 @@ _int CStage::Update_Scene(const _float& timeDelta)
 
         m_CameraZoomOut = true;
     }
-    else if (playerTransform->Get_Pos().z >= 16 &&
+    else if (playerTransform->Get_Pos().z >= 36 &&
              m_CameraZoomOut)
     {
         auto camController = dynamic_cast<CCameraController*>(CManagement::GetInstance()->Get_Component(
@@ -352,7 +354,7 @@ _int CStage::Update_Scene(const _float& timeDelta)
 
         CCamSetupBuilder(camController)
             .SetTarget(playerTransform)
-            .Distance(11.f)
+            .Distance(12.f)
             .ZoomSpeed(5.f)
             .Apply();
 
@@ -558,7 +560,7 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
         CCamSetupBuilder(camController)
             .SetTarget(playerTransform)
             .PivotOffset({ 0.f, 0.f, 0.f })
-            .Distance(11.f)
+            .Distance(12.f)
             .RotX(45.f)
             .RotY(0.f)
             .LagSpeed(10.f)
@@ -1006,6 +1008,30 @@ CStage* CStage::Create(DEVICE graphicDev)
     }
 
     return stage;
+}
+
+void CStage::PreDestroy_Scene()
+{
+    // 트리거 콜백 해제 (씬 삭제 시 트리거가 this를 참조하는 콜백 실행 방지)
+    auto gameLayer = m_Layers[LAYERTYPE::GAMELOGIC];
+    if (gameLayer)
+    {
+        auto& objects = gameLayer->Get_Objects();
+        auto iter = objects.find(OBJTYPE::TRIGGER);
+        if (iter != objects.end())
+        {
+            for (auto trigger : iter->second)
+            {
+                auto dungeonTrigger = dynamic_cast<CTrigger_Dungeon*>(trigger);
+                if (dungeonTrigger)
+                    dungeonTrigger->Clear_Callback();
+            }
+        }
+    }
+
+    // 맵 오브젝트, 포그 등 매니저에 등록된 오브젝트들 정리
+    CMapObjectMgr::GetInstance()->Clear_PlacedObjects();
+    CFogMgr::GetInstance()->Clear_AllFog();
 }
 
 void CStage::Free()

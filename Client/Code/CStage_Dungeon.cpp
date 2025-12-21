@@ -291,7 +291,7 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
         {
             CCamSetupBuilder(m_CamController)
                 .SetTarget(m_PlayerTransform)
-                .Distance(11.f)
+                .Distance(12.f)
                 .LagSpeed(3.f)
                 .ZoomSpeed(3.f)
                 .Apply();
@@ -564,7 +564,7 @@ void CStage_Dungeon::Create_RoomTriggers()
             // Refuse 카메라 연출 끝, 이제 보스한테 줌
             CCamSetupBuilder(m_CamController)
                 .SetTarget(m_Boss->Get_Transform())
-                .Distance(11.f)
+                .Distance(12.f)
                 .LagSpeed(3.f)
                 .ZoomSpeed(3.f)
                 .Apply();
@@ -792,7 +792,7 @@ HRESULT CStage_Dungeon::Ready_GameLogic_Layer(LAYERTYPE layerType)
         CCamSetupBuilder(m_CamController)
             .SetTarget(m_PlayerTransform)
             .PivotOffset({ 0.f, 0.f, 0.f })
-            .Distance(11.f)
+            .Distance(12.f)
             .RotX(45.f)
             .RotY(0.f)
             .LagSpeed(10.f)
@@ -1099,6 +1099,23 @@ void CStage_Dungeon::PreDestroy_Scene()
         auto camMovement = m_CamController->Get_OwnerCamMovement();
         if (camMovement)
             camMovement->Set_OnTransitionEnd(nullptr);
+    }
+
+    // 트리거 콜백 해제 (씬 삭제 시 트리거가 this를 참조하는 콜백 실행 방지)
+    auto gameLayer = m_Layers[LAYERTYPE::GAMELOGIC];
+    if (gameLayer)
+    {
+        auto& objects = gameLayer->Get_Objects();
+        auto iter = objects.find(OBJTYPE::TRIGGER);
+        if (iter != objects.end())
+        {
+            for (auto trigger : iter->second)
+            {
+                auto dungeonTrigger = dynamic_cast<CTrigger_Dungeon*>(trigger);
+                if (dungeonTrigger)
+                    dungeonTrigger->Clear_Callback();
+            }
+        }
     }
 
     // 맵 오브젝트, 포그 등 매니저에 등록된 오브젝트들 정리

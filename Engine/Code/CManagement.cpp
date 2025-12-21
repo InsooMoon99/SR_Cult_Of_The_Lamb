@@ -11,7 +11,7 @@ CManagement::CManagement()
     : m_Scene(nullptr),
       m_NextScene(nullptr),
       m_ShouldChangeScene(false),
-      m_SkipRenderFrames(0)
+      m_IsChangingScene(false)
 { }
 
 CManagement::~CManagement()
@@ -95,15 +95,11 @@ void CManagement::LateUpdate_Scene(const _float& timeDelta)
 
 void CManagement::Render_Scene(DEVICE graphicDev)
 {
-    // 씬 전환 직후 렌더링 건너뛰기 (초기화 시간 확보)
-    if (m_SkipRenderFrames > 0)
-    {
-        m_SkipRenderFrames--;
+    // 씬 전환 중에는 렌더링 차단
+    if (m_IsChangingScene || !m_Scene)
         return;
-    }
 
     CRenderer::GetInstance()->Render_GameObject(graphicDev);
-
     m_Scene->Render_Scene();   // 디버깅 출력용
 }
 
@@ -126,9 +122,10 @@ void CManagement::Commit_ChangeScene()
 {
     if (!m_ShouldChangeScene) return;
 
+    // 씬 전환 시작 - 렌더링 차단
+    m_IsChangingScene = true;
+
     // 씬 삭제 전 정리 작업 수행
-    // - 콜백 함수들을 해제하여 dangling pointer 방지
-    // - 진행 중인 애니메이션/전환 중단
     if (m_Scene)
         m_Scene->PreDestroy_Scene();
 
@@ -139,14 +136,12 @@ void CManagement::Commit_ChangeScene()
     m_NextScene         = nullptr;
     m_ShouldChangeScene = false;
 
-    // 로딩 끝난 후 Initialize 호출
+    // 새 씬 초기화
     if (m_Scene)
-    {
         m_Scene->Initialize_Scene();
-        
-        // 새 씬의 첫 렌더링을 2프레임 지연 (초기화 시간 확보)
-        m_SkipRenderFrames = 2;
-    }
+
+    // 씬 전환 완료 - 렌더링 재개
+    m_IsChangingScene = false;
 }
 
 void CManagement::Free()

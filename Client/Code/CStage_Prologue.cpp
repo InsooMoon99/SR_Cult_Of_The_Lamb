@@ -278,7 +278,7 @@ HRESULT CStage_Prologue::Ready_GameLogic_Layer(LAYERTYPE layerType)
         CCamSetupBuilder(m_CamController)
             .SetTarget(m_PlayerTransform)
             .PivotOffset({ 0.f, 0.f, 0.f })
-            .Distance(11.f)
+            .Distance(12.f)
             .RotX(45.f)
             .RotY(0.f)
             .LagSpeed(10.f)
@@ -487,5 +487,7 @@ CStage_Prologue* CStage_Prologue::Create(DEVICE graphicDev)
 
 void CStage_Prologue::Free()
 {
+    CSoundMgr::GetInstance()->Stop_Sound(L"BGM/BGM_Bird.wav");
+
     CScene::Free();
 }

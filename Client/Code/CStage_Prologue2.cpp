@@ -816,6 +816,23 @@ void CStage_Prologue2::PreDestroy_Scene()
         m_Dialogue->Set_OnDialogueEnd(nullptr);
     }
 
+    // 트리거 콜백 해제 (씬 삭제 시 트리거가 this를 참조하는 콜백 실행 방지)
+    auto gameLayer = m_Layers[LAYERTYPE::GAMELOGIC];
+    if (gameLayer)
+    {
+        auto& objects = gameLayer->Get_Objects();
+        auto iter = objects.find(OBJTYPE::TRIGGER);
+        if (iter != objects.end())
+        {
+            for (auto trigger : iter->second)
+            {
+                auto dungeonTrigger = dynamic_cast<CTrigger_Dungeon*>(trigger);
+                if (dungeonTrigger)
+                    dungeonTrigger->Clear_Callback();
+            }
+        }
+    }
+
     // 맵 오브젝트, 포그 등 매니저에 등록된 오브젝트들 정리
     CMapObjectMgr::GetInstance()->Clear_PlacedObjects();
     CFogMgr::GetInstance()->Clear_AllFog();
@@ -824,17 +841,7 @@ void CStage_Prologue2::PreDestroy_Scene()
 void CStage_Prologue2::Free()
 {
     // 조명 기본값으로 복구
-    D3DLIGHT9 lightInfo;
-    ZeroMemory(&lightInfo, sizeof(D3DLIGHT9));
-
-    lightInfo.Type      = D3DLIGHT_DIRECTIONAL;
-    lightInfo.Diffuse   = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
-    lightInfo.Ambient   = D3DXCOLOR(0.2f, 0.2f, 0.2f, 1.f);
-    lightInfo.Specular  = D3DXCOLOR(1.f, 1.f, 1.f, 1.f);
-    lightInfo.Direction = _vec3(1.f, -1.f, 1.f);
-
-    m_GraphicDev->SetLight(0, &lightInfo);
-    m_GraphicDev->LightEnable(0, TRUE);
+    CScene::Ready_Light();
 
     CScene::Free();
 }
