@@ -563,16 +563,14 @@ void CPlayerAttack::Play_AttackSound()
     switch (m_ComboIndex)
     {
     case 3:
-        CSoundMgr::GetInstance()->Play_Once(
-            L"Player/Player_Attack_3.wav",
-            SOUND_EFFECT,
-            1.f);
+        CSoundMgr::GetInstance()->Play_Once(L"Player/Player_Attack_3.wav",
+                                            SOUND_EFFECT,
+                                            1.f);
         break;
     default:
-        CSoundMgr::GetInstance()->Play_Once(
-            L"Player/Player_Attack_0.wav",
-            SOUND_EFFECT,
-            1.f);
+        CSoundMgr::GetInstance()->Play_Once(L"Player/Player_Attack_0.wav",
+                                            SOUND_EFFECT,
+                                            1.f);
         break;
     }
 }

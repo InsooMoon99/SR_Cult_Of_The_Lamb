@@ -91,7 +91,7 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
 
     if (m_Sound == false)
     {
-        CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/DeathCat_Grunt.wav", SOUNDTYPE::SOUND_BOSS2, 1.f);
+        CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/DeathCat_Grunt.wav", SOUNDTYPE::SOUND_BOSS2, 0.5f);
         m_Sound = true;
     }
 
@@ -189,12 +189,12 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
 
         m_pOwnerAnimatorCom->Play_Animation(L"BossAttack", ANIMSTATE::LOOP);
 
-#pragma region 플레이어 베리 채집 효과음. 0.5초마다 재생
+#pragma region 보스 효과음?
         g_Timers[TIMER_SOUND_BS] -= timeDelta;
 
         if (g_Timers[TIMER_SOUND_BS] < 0.f)
         {
-            CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/DeathCat_Grunt.wav", SOUND_BOSS2, 2.0f);
+            CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/DeathCat_Grunt.wav", SOUND_BOSS2, 0.7f);
             g_Timers[TIMER_SOUND_BS] = 2.0f;
         }
 #pragma endregion
@@ -261,7 +261,7 @@ _int CBossBulletAttack::Update_State(const _float& timeDelta)
     }
 
 
-#pragma region 플레이어 베리 채집 효과음. 0.5초마다 재생
+#pragma region 총알 효과음??
     g_Timers[TIMER_SOUND_BS_Bullet] -= timeDelta;
 
     if (g_Timers[TIMER_SOUND_BS_Bullet] < 0.f)

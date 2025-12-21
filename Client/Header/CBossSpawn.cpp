@@ -54,7 +54,7 @@ _int CBossSpawn::Update_State(const _float& timeDelta)
         return CBossPhase1::BOSSPHASE1::SPAWNATTACK;
     if (m_Sound == false)
     {
-        CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/DeathCat_Grunt.wav", SOUNDTYPE::SOUND_BOSS2, 1.f);
+        CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/DeathCat_Grunt.wav", SOUNDTYPE::SOUND_BOSS2, 0.5f);
         m_Sound = true;
     }
  

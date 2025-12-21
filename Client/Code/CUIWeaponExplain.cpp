@@ -68,7 +68,7 @@ void CUIWeaponExplain::Render_GameObject()
     {
         CSoundMgr::GetInstance()->Play_Once(L"UI/Objective_Text_Appear_Base.wav",
             SOUND_EFFECT,
-            1.f);
+            0.8f);
         m_SoundEnded = true;
     }
     //배경 그리기

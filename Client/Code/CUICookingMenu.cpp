@@ -114,7 +114,7 @@ void CUICookingMenu::Initialize_GameObject()
     m_CancelButton->SetCloneTexAspectScale({ 0.17f, 0.22f, 0.f });
     m_CancelButton->SetOnClick([this]() { PlayCloseAnimation(); m_CookingController->RemoveAllRecipe(m_Inventory);
                                           m_CookingController->Quit();
-                                          CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Close_Menu.wav", SOUNDTYPE::SOUND_UI, 1.f); });
+                                          CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Close_Menu.wav", SOUNDTYPE::SOUND_UI, 0.7f); });
 
 }
 
@@ -238,7 +238,7 @@ void CUICookingMenu::Check_Hovered()
 			{
                 CSoundMgr::GetInstance()->Play_Once(L"ui/ui_pointeron.wav",
                     SOUNDTYPE::SOUND_UI,
-                    5.f);
+                    1.0f);
 			}
             m_CookingCells[i]->Set_IsHovered(hoveredNow);
         }

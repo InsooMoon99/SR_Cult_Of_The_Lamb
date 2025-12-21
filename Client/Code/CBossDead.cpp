@@ -57,7 +57,7 @@ _int CBossDead::Update_State(const _float& timeDelta)
 
         if (m_Sound == false)
         {
-            CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Deathcat_1st_Death_Earthquake.wav", SOUNDTYPE::SOUND_BOSS2, 1.f);
+            CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Deathcat_1st_Death_Earthquake.wav", SOUNDTYPE::SOUND_BOSS2, 0.5f);
             m_Sound = true;
         }
 

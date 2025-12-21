@@ -24,6 +24,9 @@ CDropSystem::~CDropSystem()
 CDroppedItem* CDropSystem::SpawnDrop(DEVICE pGraphicDev, const ItemInstance& item, const _vec3& worldPos,
     std::optional<_vec3> scale, std::optional<SpriteBounceDesc> bounceDesc)
 {
+    if (m_nowScene == nullptr)
+        return nullptr;
+
     CDroppedItem* pDrop = CDroppedItem::Create(pGraphicDev, item, worldPos);
 
     // Scale 설정

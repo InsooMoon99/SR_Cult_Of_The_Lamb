@@ -26,6 +26,7 @@
 #include "CUI_MonsterHp.h"
 #include "CUI_Interactive.h"
 #include "CInteractiveGrass.h"
+#include "CDropSystem.h"
 
 CStage_Prologue2::CStage_Prologue2(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -58,12 +59,13 @@ void CStage_Prologue2::Initialize_Scene()
 {
     CScene::Initialize_Scene();
 
+    CDropSystem::GetInstance()->SetCurrentScene(nullptr);
+
     Set_RoomData();
 
     //m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Tutorial2.map");
 
     CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Prologue.wav", 0.4f, true, 1.f);
-    //CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Bird.wav", 0.15f, false, 1.f);
 
     auto player = dynamic_cast<CPlayer*>(m_PlayerTransform->Get_Owner());
     NULL_CHECK(player);

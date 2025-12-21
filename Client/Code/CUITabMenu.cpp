@@ -95,8 +95,16 @@ HRESULT CUITabMenu::Ready_GameObject()
     m_PlayerBtn->SetCloneTexAspectScale({ 0.16f, 0.16f, 0.f });
     m_GyodanBtn->SetCloneTexAspectScale({ 0.16f, 0.16f, 0.f });
     m_QuestBtn->SetCloneTexAspectScale({ 0.16f, 0.16f, 0.f });
-    m_InvenBtn->SetOnClick([this]() {ChangePage(UITabCategory::INVENTORY); CSoundMgr::GetInstance()->Play_Once(L"UI/UI_PageFlip.wav",SOUNDTYPE::SOUND_UI,0.6f); });
-    m_PlayerBtn->SetOnClick([this]() { ChangePage(UITabCategory::PLAYER); CSoundMgr::GetInstance()->Play_Once(L"UI/UI_PageFlip.wav", SOUNDTYPE::SOUND_UI,0.6f); });
+    m_InvenBtn->SetOnClick([this]()
+    {
+        ChangePage(UITabCategory::INVENTORY);
+        CSoundMgr::GetInstance()->Play_Once(L"UI/UI_PageFlip.wav", SOUNDTYPE::SOUND_UI, 0.6f);
+    });
+    m_PlayerBtn->SetOnClick([this]()
+    {
+        ChangePage(UITabCategory::PLAYER);
+        CSoundMgr::GetInstance()->Play_Once(L"UI/UI_PageFlip.wav", SOUNDTYPE::SOUND_UI, 0.6f);
+    });
 
     return S_OK;
 } 
@@ -115,11 +123,11 @@ _int CUITabMenu::Update_GameObject(const _float& timeDelta)
         switch (m_IsOpen)
         {
         case true:
-            CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Open_Menu.wav", SOUNDTYPE::SOUND_UI, 1.f);
+            CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Open_Menu.wav", SOUNDTYPE::SOUND_UI, 0.7f);
             break;
 
         case false:
-            CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Close_Menu.wav", SOUNDTYPE::SOUND_UI, 1.f);
+            CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Close_Menu.wav", SOUNDTYPE::SOUND_UI, 0.7f);
             break;
         }
         

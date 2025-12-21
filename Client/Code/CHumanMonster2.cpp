@@ -222,7 +222,7 @@ void CHumanMonster2::Update_State_Hit(const _float timeDelta)
 {
     if (!m_HitSoundPlayed)
     {
-        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Humanoid_GetHit.wav", SOUNDTYPE::SOUND_HUMANOID, 1.f);
+        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Humanoid_GetHit.wav", SOUNDTYPE::SOUND_HUMANOID, 0.5f);
         m_HitSoundPlayed = true;
     }
 

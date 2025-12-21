@@ -95,7 +95,7 @@ HRESULT CUIBuildMenu::Ready_GameObject()
         {
             PlayCloseAnimation(); 
             CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::TEMPLE);
-            CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Confirm_Selection", SOUNDTYPE::SOUND_UI, 1.f);
+            CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Confirm_Selection", SOUNDTYPE::SOUND_UI, 0.7f);
         }
         else
         {
@@ -149,7 +149,7 @@ _int CUIBuildMenu::Update_GameObject(const _float& timeDelta)
 
 	if (CDInputMgr::GetInstance()->MouseDown(DIM_RB) && m_IsOpen == true)
 	{
-		CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Close_Menu.wav", SOUNDTYPE::SOUND_UI, 1.f);
+		CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Close_Menu.wav", SOUNDTYPE::SOUND_UI, 0.7f);
 		PlayCloseAnimation();
 	}
     float targetX = m_IsOpen ? m_TargetX : m_ClosedX; //열려있냐 닫혀있냐에 따라서 목표 X값이 달라짐

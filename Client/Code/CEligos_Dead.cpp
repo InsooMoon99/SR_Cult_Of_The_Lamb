@@ -69,7 +69,7 @@ _int CEligos_Dead::Update_State(const _float& timeDelta)
     if (m_Sound == false)
     {
         CSoundMgr::GetInstance()->Stop_All();
-        CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Elligos_Dead.wav", SOUNDTYPE::SOUND_BOSS2, 1.f);
+        CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Elligos_Dead.wav", SOUNDTYPE::SOUND_BOSS2, 0.5f);
 
         m_Sound = true;
     }

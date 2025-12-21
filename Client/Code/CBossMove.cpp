@@ -55,7 +55,7 @@ _int CBossMove::Update_State(const _float& timeDelta)
     case PHASE::DOWN:
         if (m_Sound == false)
         {
-            CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Deathcat_Appear.wav", SOUNDTYPE::SOUND_BOSS3, 1.f);
+            CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Deathcat_Appear.wav", SOUNDTYPE::SOUND_BOSS3, 0.5f);
             m_Sound = true;
         }
         if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
@@ -89,7 +89,7 @@ _int CBossMove::Update_State(const _float& timeDelta)
     case PHASE::UP://움직임 + idle
         if (m_Sound2 == false)
         {
-            CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Deathcat_Disappear.wav", SOUNDTYPE::SOUND_BOSS2, 1.f);
+            CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Deathcat_Disappear.wav", SOUNDTYPE::SOUND_BOSS2, 0.5f);
             m_Sound2 = true;
         }
         m_pOwnerAnimatorCom->Play_Animation(L"BossMove_up", ANIMSTATE::ONCE);

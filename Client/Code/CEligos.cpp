@@ -15,38 +15,41 @@
 #include "CEligos_StateMachine.h"
 #include "CWall.h"
 
-CEligos::CEligos(DEVICE graphicDev) : CMonsterBase(graphicDev), m_StateMachine(nullptr)
-{
-}
+CEligos::CEligos(DEVICE graphicDev)
+    : CMonsterBase(graphicDev),
+      m_StateMachine(nullptr),
+      m_RigidbodyCom(nullptr)
+{}
 
-CEligos::CEligos(const CEligos& rhs) : CMonsterBase(rhs), m_StateMachine(nullptr)
-{
-}
+CEligos::CEligos(const CEligos& rhs)
+    : CMonsterBase(rhs),
+      m_StateMachine(nullptr),
+      m_RigidbodyCom(nullptr)
+{}
 
 CEligos::~CEligos()
-{
-}
+{}
 
 HRESULT CEligos::Ready_GameObject()
 {
     if (FAILED(CMonsterBase::Ready_GameObject()))
         return E_FAIL;
 
-  //if (FAILED(Add_Component()))
-  //      return E_FAIL;
+    //if (FAILED(Add_Component()))
+    //      return E_FAIL;
 
     m_StateMachine = CEligos_StateMachine::Create(this);
 
-    m_TransformCom->Set_Scale({ 3.0f,3.0f ,1.f });
+    m_TransformCom->Set_Scale({ 3.0f, 3.0f, 1.f });
 
-    m_BoxColCom->Set_Size({ m_TransformCom->Get_Scale().x * .2f,m_TransformCom->Get_Scale().y ,2.f });
+    m_BoxColCom->Set_Size({ m_TransformCom->Get_Scale().x * .2f, m_TransformCom->Get_Scale().y, 2.f });
 
     //!! Rigidbody에서 중력만 사용 안함
     m_RigidbodyCom->Set_UseAccel(true);
     m_RigidbodyCom->Set_UseFriction(true);
     m_RigidbodyCom->Set_UseGravity(false);
 
-    m_RigidbodyCom->Set_VelocityLimit({ 50.f,100.f,50.f });
+    m_RigidbodyCom->Set_VelocityLimit({ 50.f, 100.f, 50.f });
 
     m_RigidbodyCom->Set_Friction(0.2f);
     m_RigidbodyCom->Set_Mass(1.2f);
@@ -60,9 +63,10 @@ HRESULT CEligos::Ready_GameObject()
     m_CombatStatCom->Set_Mp(5.f);
     m_CombatStatCom->Set_Speed(5.f);
     m_CombatStatCom->Set_HitState(false);
-    m_CombatStatCom->Set_OnDamagedEvent([]() {CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/GetHit2.wav", SOUNDTYPE::SOUND_BOSS3, 1.0f);
-        });
-
+    m_CombatStatCom->Set_OnDamagedEvent([]()
+    {
+        CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/GetHit2.wav", SOUNDTYPE::SOUND_BOSS3, 0.5f);
+    });
 
     if (m_BoxColCom)
         m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::ENEMY);
@@ -75,7 +79,6 @@ HRESULT CEligos::Ready_GameObject()
 void CEligos::Initialize_GameObject()
 {
     CMonsterBase::Initialize_GameObject();
-
 }
 
 _int CEligos::Update_GameObject(const _float& timeDelta)
@@ -86,7 +89,7 @@ _int CEligos::Update_GameObject(const _float& timeDelta)
 
     if (m_spawnSound == false)
     {
-        CSoundMgr::GetInstance()->Play_Once(L"Boss/Spawn_Mini_Bosses.wav",SOUNDTYPE::SOUND_BOSS1,1.f);
+        CSoundMgr::GetInstance()->Play_Once(L"Boss/Spawn_Mini_Bosses.wav", SOUNDTYPE::SOUND_BOSS1, 0.5f);
         m_spawnSound = true;
     }
 
@@ -98,7 +101,6 @@ void CEligos::LateUpdate_GameObject(const _float& timeDelta)
     CMonsterBase::LateUpdate_GameObject(timeDelta);
 
     m_StateMachine->LateUpdate_StateMachine(timeDelta);
-
 }
 
 void CEligos::Render_GameObject()
@@ -106,8 +108,6 @@ void CEligos::Render_GameObject()
     m_StateMachine->Get_CurState()->Render_State();
 
     CMonsterBase::Render_GameObject();
-
-
 }
 
 void CEligos::Render_Editor()
@@ -118,19 +118,12 @@ void CEligos::Render_Editor()
 
     _int num = m_StateMachine->GetCurStateNum();
 
-
-
-
     for (int i = 0; i < BOSS_END; i++)
     {
         if (ImGui::Button(GetBossStateName(i)))
-        {
             m_StateMachine->Change_State(i);
-        }
     }
-
 }
-
 
 void CEligos::OnBeginOverlap(CCollider* self, CCollider* other)
 {
@@ -139,7 +132,7 @@ void CEligos::OnBeginOverlap(CCollider* self, CCollider* other)
     CWall* wall = dynamic_cast<CWall*>(other->Get_Owner());
     if (wall)
     {
-        m_RigidbodyCom->Set_Velocity({ 0,0,0 });
+        m_RigidbodyCom->Set_Velocity({ 0, 0, 0 });
         m_OnWall = true;
     }
 
@@ -154,9 +147,7 @@ void CEligos::OnEndOverlap(CCollider* self, CCollider* other)
 
 HRESULT CEligos::Add_Component()
 {
-
     // 텍스쳐는 해야함 무조건
-
 
     // 부모쪽에 Transform, Buffer, Animator, State, CombatStat, BoxCollider 있음
     if (FAILED(CMonsterBase::Add_Component()))
@@ -174,13 +165,11 @@ HRESULT CEligos::Add_Component()
     NULL_CHECK_RETURN(m_RigidbodyCom, E_FAIL);
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::RIGIDBODY, m_RigidbodyCom });
 
-
     return S_OK;
 }
 
 void CEligos::Animation_Setting()
 {
-
     m_AnimatorCom->Create_Animation(L"Eligos_roar", 140, 0.02f, _vec2(1.1f, 1.f), _vec2(0.f, 0.f));
     m_AnimatorCom->Create_Animation(L"Eligos_fly", 42, 0.02f, _vec2(1.09f, 0.89f), _vec2(0.01f, -0.08f));
     m_AnimatorCom->Create_Animation(L"Eligos_burpcharge", 50, 0.02f, _vec2(1.2f, 0.88f), _vec2(0.f, -0.09f));
@@ -190,22 +179,21 @@ void CEligos::Animation_Setting()
 
     m_AnimatorCom->Create_Animation(L"Eligos_attackcharge_bullet", 59, 0.02f, _vec2(1.16f, 1.130f), _vec2(0.010f, 0.120f));
     m_AnimatorCom->Create_Animation(L"Eligos_attack_bullet", 32, 0.06f, _vec2(1.0f, 1.0f));
-   
 }
 
 const char* CEligos::GetBossStateName(_int StateNum)
 {
     switch (StateNum)
     {
-    case BOSSREVEAL:         return "BOSSREVEAL";
-    case ATTACK_BULLET:      return "ATTACK_BULLET";
-    case ATTACK_FLY:         return "ATTACK_FLY";
-    case ATTACK_MELEE:       return "ATTACK_MELEE";
-    case BOSSDEAD:           return "BOSSDEAD";
-    case BOSSIDLE:           return "BOSSIDLE";
-    case BOSSMOVE:           return "BOSSMOVE";
+    case BOSSREVEAL: return "BOSSREVEAL";
+    case ATTACK_BULLET: return "ATTACK_BULLET";
+    case ATTACK_FLY: return "ATTACK_FLY";
+    case ATTACK_MELEE: return "ATTACK_MELEE";
+    case BOSSDEAD: return "BOSSDEAD";
+    case BOSSIDLE: return "BOSSIDLE";
+    case BOSSMOVE: return "BOSSMOVE";
 
-    case BOSS_END:           return "BOSS_END";
+    case BOSS_END: return "BOSS_END";
     }
     return "UNKNOWN";
 }
