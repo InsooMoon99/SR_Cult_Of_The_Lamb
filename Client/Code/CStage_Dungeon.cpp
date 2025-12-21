@@ -1,4 +1,5 @@
-﻿#include "CStage_Dungeon.h"
+﻿#include "pch.h"
+#include "CStage_Dungeon.h"
 #include "CCreateHelper.h"
 #include "CCameraController.h"
 #include "CCamSetupBuilder.h"
@@ -216,7 +217,7 @@ _int CStage_Dungeon::Update_Scene(const _float& timeDelta)
     if (m_TimerRunning)
         m_Timer += timeDelta;
 
-    if (m_CurrentRoom == Room::MONSTER2 && CDInputMgr::GetInstance()->KeyDown(DIK_M))
+    if (m_CurrentRoom == Room::BOSS && CDInputMgr::GetInstance()->KeyDown(DIK_M))
     {
         m_IsClearMenuOpened = !m_IsClearMenuOpened;
 
@@ -376,13 +377,14 @@ void CStage_Dungeon::Spawn_FollowerCow_Rescue(_vec3* pSpawnPos)
         if (pSpawnPos)
         {
             spawnPos.x = pSpawnPos->x - 1.0f;
-            spawnPos.y = pSpawnPos->y;
+			spawnPos.y = pSpawnPos->y - 0.5f;
             spawnPos.z = pSpawnPos->z;
         }
         else
         {
             spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
-            spawnPos += _vec3(6.f, 1.f, 8.f);
+            //spawnPos += _vec3(6.f, 1.f, 8.f);
+			spawnPos += _vec3(6.f, 0.5f, 8.f);
         }
 
         cowTransform->Set_Pos(spawnPos);
@@ -415,13 +417,14 @@ void CStage_Dungeon::Spawn_FollowerElephant_Rescue(_vec3* pSpawnPos)
         if (pSpawnPos)
         {
             spawnPos.x = pSpawnPos->x;
-            spawnPos.y = pSpawnPos->y;
+            spawnPos.y = pSpawnPos->y - 0.5f;
             spawnPos.z = pSpawnPos->z;
         }
         else
         {
             spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
-            spawnPos += _vec3(8.f, 1.f, 8.f);
+            //spawnPos += _vec3(8.f, 1.f, 8.f);
+			spawnPos += _vec3(8.f, 0.5f, 8.f);
         }
 
         elephantTransform->Set_Pos(spawnPos);
@@ -454,13 +457,14 @@ void CStage_Dungeon::Spawn_FollowerPig_Rescue(_vec3* pSpawnPos)
         if (pSpawnPos)
         {
             spawnPos.x = pSpawnPos->x + 1.0f;
-            spawnPos.y = pSpawnPos->y;
+            spawnPos.y = pSpawnPos->y - 0.5f;
             spawnPos.z = pSpawnPos->z;
         }
         else
         {
             spawnPos = m_RoomData[static_cast<_int>(m_CurrentRoom)].terrainOffset;
-            spawnPos += _vec3(10.f, 1.f, 8.f);
+            //spawnPos += _vec3(10.f, 1.f, 8.f);
+			spawnPos += _vec3(10.f, 0.5f, 8.f);
         }
 
         pigTransform->Set_Pos(spawnPos);
@@ -667,7 +671,7 @@ void CStage_Dungeon::Change_Room(Room room)
 void CStage_Dungeon::OnMonsterDeath(CGameObject* obj)
 {
     CScene::OnMonsterDeath(obj);
-    (dynamic_cast<CCombatStat*>(CManagement::GetInstance()->Get_Component(ID_DYNAMIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::COMBATSTAT)))->Add_Mp(5.f);
+    (dynamic_cast<CCombatStat*>(CManagement::GetInstance()->Get_Component(ID_DYNAMIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::COMBATSTAT)))->Add_Mp(15.f);
     m_KillCount++;
 }
 
@@ -1015,13 +1019,6 @@ HRESULT CStage_Dungeon::Ready_UI_Layer(LAYERTYPE layerType)
     dynamic_cast<CUIItemGetManager*>(gameObject)->Initialize();
 
     // Fade In - Fade Out
-    m_UI_Fade = CUI_Fade::Create(m_GraphicDev);
-    NULL_CHECK_RETURN(m_UI_Fade, E_FAIL);
-
-    FAILED_CHECK_MSG(
-        layer->Add_GameObject(OBJTYPE::UI, m_UI_Fade),
-        L"CStage_Dungeon::Ready_UI_Layer() failed: CFade_UI Add failed");
-
     FAILED_CHECK_MSG(
         Engine::AcquirePersistentObject<CUI_SkillPanel>(
             OBJTYPE::UI,
@@ -1030,6 +1027,13 @@ HRESULT CStage_Dungeon::Ready_UI_Layer(LAYERTYPE layerType)
             layer,
             &gameObject),
         L"Persistent object setup failed: UI_SkillPanel");
+
+    m_UI_Fade = CUI_Fade::Create(m_GraphicDev);
+    NULL_CHECK_RETURN(m_UI_Fade, E_FAIL);
+
+    FAILED_CHECK_MSG(
+        layer->Add_GameObject(OBJTYPE::UI, m_UI_Fade),
+        L"CStage_Dungeon::Ready_UI_Layer() failed: CFade_UI Add failed");
 
     CUI_DungeonLootPanel* dungeonLootPanel = CUI_DungeonLootPanel::Create(m_GraphicDev);
     dungeonLootPanel->Set_RunLootLog(&m_RunLootLog);

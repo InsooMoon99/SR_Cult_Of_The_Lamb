@@ -307,7 +307,7 @@ void CCollisionManager::Initialize_CollisionMatrix()
 
     for (_int i = 0; i < colLayerEnd; i++)
     {
-        if (i != player_Index && i != npc_Index && i != interactive_Index)
+        if (i != player_Index && i != npc_Index && i != interactive_Index && i != attack_Index)
         {
             m_CollisionMatrix[interactive_Index][i] = false;
             m_CollisionMatrix[i][interactive_Index] = false;

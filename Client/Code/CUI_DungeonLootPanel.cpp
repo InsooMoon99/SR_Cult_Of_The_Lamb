@@ -96,7 +96,7 @@ HRESULT CUI_DungeonLootPanel::Ready_GameObject()
     m_TransformCom->Set_Scale(640.f, 380.f, 0.f);
 
     m_Active = false;
-
+    m_BGMStarted = false;
 
     return S_OK;
 }
@@ -110,7 +110,7 @@ _int CUI_DungeonLootPanel::Update_GameObject(const _float& timeDelta)
     {
         if (!m_BGMStarted)
         {
-            CSoundMgr::GetInstance()->Play_BGM(L"UI/UI_DungeonClear.wav",
+            CSoundMgr::GetInstance()->Play_Once(L"UI/UI_DungeonClear.wav",
                 SOUND_EFFECT,
                 0.3f);
             m_BGMStarted = true;

@@ -38,7 +38,7 @@ _int CUI_Skill::Update_GameObject(const _float& timeDelta)
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
     CPlayerSkill* playerskill = dynamic_cast<CPlayerSkill*>(CManagement::GetInstance()->Get_Component(COMPONENTID::ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::PL_SKILL));
-    if(playerskill->Get_IsSkillUnlocked())
+    if(playerskill->Get_CurrentCharges()>=1)
     {
         m_Invisible = false;
     }
