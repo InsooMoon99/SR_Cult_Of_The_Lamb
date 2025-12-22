@@ -116,9 +116,9 @@ HRESULT CStage::Ready_Scene()
         _vec3 pos;
     };
 
-    vector<SpawnInfo> spawnList = {
-        { 1001, { 11.f, 1.f, 10.f } },      // 동전
-        { 1001, { 12.f, 1.f, 10.f } } };
+    //vector<SpawnInfo> spawnList = {
+    //    { 1001, { 11.f, 1.f, 10.f } },      // 동전
+    //    { 1001, { 12.f, 1.f, 10.f } } };
     //    //{ 1001, { 13.f, 1.f, 10.f } },
     //    //{ 1001, { 14.f, 1.f, 10.f } },
     //    //{ 1001, { 15.f, 1.f, 10.f } },
@@ -129,11 +129,11 @@ HRESULT CStage::Ready_Scene()
     //    //{ 2003, { 32.f, 1.f, 10.f } }
     //};
     //
-    for (const auto& info : spawnList)
-    {
-        ItemInstance inst = { info.id, -1, 0 };
-        CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, info.pos);
-    }
+   //for (const auto& info : spawnList)
+   //{
+   //    ItemInstance inst = { info.id, -1, 0 };
+   //    CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, info.pos);
+   //}
     //
     //for (int i = 0; i < CItemDB::GetInstance()->GetVector().size(); i++)
     //{
