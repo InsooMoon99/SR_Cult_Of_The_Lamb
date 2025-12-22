@@ -193,9 +193,9 @@ _uint CLoading::Loading_ForState_Parallel()
     futures.push_back(async(launch::async, [&]() {
         return resourceMgr->Ready_Follower(m_GraphicDev);
         }));
-    //futures.push_back(async(launch::async, [&]() {
-    //    return resourceMgr->Ready_MiniBoss(m_GraphicDev);
-    //    }));
+    futures.push_back(async(launch::async, [&]() {
+        return resourceMgr->Ready_MiniBoss(m_GraphicDev);
+        }));
 
     // 프롤로그 NPC들
     futures.push_back(async(launch::async, [&]() {

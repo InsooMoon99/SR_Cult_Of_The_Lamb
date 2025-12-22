@@ -277,8 +277,8 @@ void CRenderer::Render_Trail(DEVICE& graphicDev)
 
     for (auto& obj : m_RenderGroup[RENDER_TRAIL])
     {
-        if (obj && !obj->Is_PendingDestroy())
-            obj->Render_GameObject();
+        //if (obj && !obj->Is_PendingDestroy())
+            obj->Render_Trail();
     }
 
     // 렌더 상태 원복
