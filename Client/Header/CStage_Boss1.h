@@ -53,6 +53,7 @@ private:
 
     void    Setup_UIAnimation(_float offsetY);
     void    OnRefusedEnd();
+    void    Setup_StartUIPos();
 
     // 대화 끝났을 때 호출
     void    On_BossStartEnd();
@@ -124,4 +125,5 @@ private:
     _float              m_FogAlpha = 0.5f;
     _vec3               m_FogScale = { 15.f, 10.f, 1.f };
 
+    vector<_vec3> m_InitialUIPositions;
 };

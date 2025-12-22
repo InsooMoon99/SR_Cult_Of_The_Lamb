@@ -10,6 +10,7 @@
 #include "CProjectile.h"
 #include "CRandomMgr.h"
 #include "CTimerMgr.h"
+#include "CSoundMgr.h"
 
 CEyeball_CenterAttack::CEyeball_CenterAttack(CMonsterBase* owner)
     : m_Owner(owner)
@@ -162,8 +163,7 @@ void CEyeball_CenterAttack::Spawn_BounceBullets()
 
     _vec3 eyeballPos = m_Controller->Get_OwnerTransform()->Get_Pos();
 
-    // 일단 8번만
-    for (_int i = 0; i < 8; i++)
+    for (_int i = 0; i < 10; i++)
     {
         _float horizonAngle = static_cast<_float>(CRandomMgr::GetInstance()->Get_Int_Random(0, 360));
 
@@ -178,6 +178,8 @@ void CEyeball_CenterAttack::Spawn_BounceBullets()
         velocity.z = sinf(D3DXToRadian(horizonAngle)) * cosf(D3DXToRadian(verticalAngle)) * speed;
 
         CBoss2_Bullet* bullet = nullptr;
+
+        CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Bomb_Shoot3.wav", SOUNDTYPE::SOUND_BOSS1, 0.22f);
 
         CAttackBuilder(eyeball->Get_GraphicDev(), m_Owner)
             .SetType<CBoss2_Bullet>()

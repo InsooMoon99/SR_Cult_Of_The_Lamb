@@ -10,6 +10,7 @@
 #include "CProjectile.h"
 #include "CRandomMgr.h"
 #include "CTimerMgr.h"
+#include "CSoundMgr.h"
 
 const _int CIRCLE_BULLET_MAX = 12;
 
@@ -239,6 +240,8 @@ void CEyeball_Attack::Bullet_Dispresion()
     _int bulletCount = 8;
     _float angleStep = 360.f / static_cast<_float>(bulletCount);
 
+    CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Bomb_Shoot3.wav", SOUNDTYPE::SOUND_BOSS1, 0.3f);
+
     for (_int i = 0; i < bulletCount; ++i)
     {
         _float angle = D3DXToRadian(angleStep * i);
@@ -315,6 +318,8 @@ void CEyeball_Attack::Bullet_Circle()
 
     CBoss2_Bullet* bullet = nullptr;
 
+    CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Bomb_Shoot3.wav", SOUNDTYPE::SOUND_BOSS1, 0.22f);
+
     CAttackBuilder(m_GraphicDev, m_Owner)
         .SetType<CBoss2_Bullet>()
         .Track(bullet)
@@ -325,7 +330,7 @@ void CEyeball_Attack::Bullet_Circle()
         .LifeTime(3.f)
         .CollisionLayer(COLLISION_LAYERTYPE::BOSSPROJECTILE)
         .DestroyOnHit(true)
-        .Particle(L"HitEffect_Star", 14, 0.02)
+        .Particle(L"HitEffect_Star", 14, 0.02f)
         .Spawn();
 
     if (bullet)
@@ -385,6 +390,8 @@ void CEyeball_Attack::Bullet_Brust()
     _vec3 eyeballPos = m_Controller->Get_OwnerTransform()->Get_Pos();
 
     CBoss2_Bullet* bullet = nullptr;
+
+    CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Bomb_Shoot3.wav", SOUNDTYPE::SOUND_BOSS1, 0.22f);
 
     CAttackBuilder(m_GraphicDev, m_Owner)
         .SetType<CBoss2_Bullet>()

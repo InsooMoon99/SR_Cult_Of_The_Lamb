@@ -297,7 +297,6 @@ HRESULT CStage_Prologue2::Ready_GameLogic_Layer(LAYERTYPE layerType)
         m_Monsters.push_back(gameObject);
     }
 
-
     // -----------------------------
     // Camera
     // -----------------------------

@@ -471,7 +471,8 @@ void CStage_Boss2::Start_CameraShaking(CAM_MOVE_TYPE type)
 
 HRESULT CStage_Boss2::Ready_Light()
 {
-    m_GraphicDev->LightEnable(0, FALSE);
+    CLightMgr::GetInstance()->Clear_Lights();
+
 
     D3DLIGHT9 lightInfo;
     ZeroMemory(&lightInfo, sizeof(D3DLIGHT9));
@@ -498,6 +499,8 @@ HRESULT CStage_Boss2::Ready_Light()
 
     if (FAILED(CLightMgr::GetInstance()->Ready_Light(m_GraphicDev, &lightInfo, 0)))
         return E_FAIL;
+
+    m_GraphicDev->LightEnable(0, TRUE);
 
     return S_OK;
 }

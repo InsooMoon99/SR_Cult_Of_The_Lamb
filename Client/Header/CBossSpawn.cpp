@@ -11,6 +11,9 @@
 #include "CHumanMonster.h"
 #include "CCreateHelper.h"
 #include "CSoundMgr.h"
+#include "CCombatStat.h"
+#include "CUI_MonsterHp.h"
+#include "CCreateHelper.h"
 
 CBossSpawn::CBossSpawn(CBossPhase1* pOwner, CBossStateMachine* pStateMachine)
 {
@@ -80,39 +83,52 @@ _int CBossSpawn::Update_State(const _float& timeDelta)
 void CBossSpawn::RandomMove(const _float& timeDelta, _vec3 BaseCenter, int BaseLenght, float interval)
 {
 
-    for (int i = 0; i < 5;i++)
+    for (int i = 0; i < 6; i++)
     {
-    _vec3 LT = { BaseCenter.x - BaseLenght * 0.5f, 0.f, BaseCenter.z + BaseLenght * 0.5f };
-    _vec3 RB = { BaseCenter.x + BaseLenght * 0.5f,0.f,BaseCenter.z - BaseLenght * 0.5f };
+        _vec3 LT = { BaseCenter.x - BaseLenght * 0.5f, 0.f, BaseCenter.z + BaseLenght * 0.5f };
+        _vec3 RB = { BaseCenter.x + BaseLenght * 0.5f,0.f,BaseCenter.z - BaseLenght * 0.5f };
 
-    int m_CellSize = 5;// TOOD:: 나중에 맴버 변수로 오프셋 조정 (사이의 거리)
+        int m_CellSize = 5;// TOOD:: 나중에 맴버 변수로 오프셋 조정 (사이의 거리)
 
-    int xCell = BaseLenght / m_CellSize;
-    int zCell = BaseLenght / m_CellSize;
+        int xCell = BaseLenght / m_CellSize;
+        int zCell = BaseLenght / m_CellSize;
 
 
-    int tmpx = CRandomMgr::GetInstance()->Get_Int_Random(0, xCell); // x 몇번쨰 칸인지는 랜덤
-    int tmpz = CRandomMgr::GetInstance()->Get_Int_Random(0, zCell); // x 몇번쨰 칸인지는 랜덤
+        int tmpx = CRandomMgr::GetInstance()->Get_Int_Random(0, xCell); // x 몇번쨰 칸인지는 랜덤
+        int tmpz = CRandomMgr::GetInstance()->Get_Int_Random(0, zCell); // x 몇번쨰 칸인지는 랜덤
 
-    float xPos = tmpx * (m_CellSize);
-    float zPos = tmpz * (m_CellSize);
+        float xPos = tmpx * (m_CellSize);
+        float zPos = tmpz * (m_CellSize);
 
-   // 스폰 잡몹
+        // 스폰 잡몹
 
-    CGameObject* gameObject = CHumanMonster::Create(m_pOwner->Get_GraphicDev());
-    //NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CHumanMonster::Create() returned null");
-    SpawnObjectOnLayer(gameObject,OBJTYPE::MONSTER);
+        CGameObject* gameObject = CHumanMonster::Create(m_pOwner->Get_GraphicDev());
+        //NULL_CHECK_RETURN_MSG(gameObject, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CHumanMonster::Create() returned null");
+        SpawnObjectOnLayer(gameObject, OBJTYPE::MONSTER);
 
-    gameObject->Initialize_GameObject();
+        gameObject->Initialize_GameObject();
 
-    CTransform* Transform =
-        dynamic_cast<CTransform*>(gameObject->Get_Component(
-            ID_DYNAMIC,
-            COMPONENTTYPE::TRANSFORM));
+        CTransform* Transform =
+            dynamic_cast<CTransform*>(gameObject->Get_Component(
+                ID_DYNAMIC,
+                COMPONENTTYPE::TRANSFORM));
 
-    gameObject->Initialize_GameObject();
+        gameObject->Initialize_GameObject();
 
-    Transform->Set_Pos(LT.x + xPos, 1, LT.z - zPos);
+        Transform->Set_Pos(LT.x + xPos, 1, LT.z - zPos);
+
+        // UI 추가
+        {
+            auto combat = dynamic_cast<CCombatStat*>(
+                gameObject->Get_Component(ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
+            if (combat)
+            {
+                CUI_MonsterHp* hpBar = CUI_MonsterHp::Create(m_pOwner->Get_GraphicDev(), combat);
+                SpawnUIOnLayer(hpBar);
+
+                hpBar->Initialize_GameObject();
+            }
+        }
     }
 }
 

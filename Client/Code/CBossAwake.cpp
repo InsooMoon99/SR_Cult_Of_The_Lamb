@@ -51,9 +51,10 @@ _int CBossAwake::Update_State(const _float& timeDelta)
 
         CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Deathcat_Break_Free.wav", SOUNDTYPE::SOUND_BOSS3, 0.5f);
 
-        CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Deathcat_1b.wav", 0.4f, true, 1.f);
+        //CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Deathcat_1b.wav", 0.4f, true, 1.f);
         m_Sound = true;
     }
+
     if (m_pOwnerAnimatorCom->Get_CurAnimation() == nullptr)
         return CBossPhase1::BOSSPHASE1::BOSSAWAKE;
 

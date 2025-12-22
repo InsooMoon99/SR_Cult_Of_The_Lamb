@@ -61,7 +61,7 @@ HRESULT CHumanMonster::Ready_GameObject()
     // 거리 설정
     Set_StoppingDistance(2.5f);
     Set_AttackRange(2.5f);
-    Set_ChaseRange(10.f);
+    Set_ChaseRange(25.f);
 
     return S_OK;
 }

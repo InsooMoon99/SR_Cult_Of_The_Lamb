@@ -31,6 +31,9 @@ public:
 
     float easeInQuint10(float x);
 
+    static void Reset_PatternCount() { m_CPatterCount = 0; }
+
+
 private:
     CBossPhase1* m_pOwner;
     CBossStateMachine* m_pStateMachine;

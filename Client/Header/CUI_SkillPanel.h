@@ -12,7 +12,7 @@ private:
     ~CUI_SkillPanel() override;
 
 public:
-    void Initialize_GameObject() override;
+    void    Initialize_GameObject() override;
     HRESULT Ready_GameObject() override;
     _int    Update_GameObject(const _float& timeDelta) override;
     void    LateUpdate_GameObject(const _float& timeDelta) override;

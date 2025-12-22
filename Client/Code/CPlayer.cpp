@@ -77,7 +77,7 @@ HRESULT CPlayer::Ready_GameObject()
     m_CombatStatCom->Set_Hp(100.f);
     m_CombatStatCom->Set_MaxHp(100.f);
     m_CombatStatCom->Set_Attack(50.f);
-    m_CombatStatCom->Set_Mp(0.f);
+    m_CombatStatCom->Set_Mp(100.f);
     m_CombatStatCom->Set_Speed(5.f);
 
     // Hit 상태로 전환할 것인가? [ 보스1, 보스2 ]만 False로 세팅할듯 추가로 중간보스가 있다면 세팅
@@ -117,10 +117,10 @@ void CPlayer::Initialize_GameObject()
     m_InteractiveUI = CUI_Interactive::Create(m_GraphicDev);
     CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::UI)->Add_GameObject(OBJTYPE::UI, m_InteractiveUI);
 
-   /* CPlayerSkill* playerskill = dynamic_cast<CPlayerSkill*>(CManagement::GetInstance()->Get_Component(COMPONENTID::ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::PL_SKILL));
+    CPlayerSkill* playerskill = dynamic_cast<CPlayerSkill*>(CManagement::GetInstance()->Get_Component(COMPONENTID::ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::PL_SKILL));
     {
         playerskill->Set_SkillUnlocked(true); playerskill->Set_CurrentCharges(3);
-    };*/
+    };
 }
 
 _int CPlayer::Update_GameObject(const _float& timeDelta)

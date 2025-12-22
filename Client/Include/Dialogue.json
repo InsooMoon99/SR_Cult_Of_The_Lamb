@@ -9,7 +9,7 @@
           "speaker": "기다리는 자",
           "text": "드디어... 내가 자유로워진다!",
           "hasChoices": false,
-          "leftPadding": 150.0,
+          "leftPadding": 90.0,
           "voicePath": "Boss/Dialogue/DeathCat/Deathcat6.wav"
         },
         {

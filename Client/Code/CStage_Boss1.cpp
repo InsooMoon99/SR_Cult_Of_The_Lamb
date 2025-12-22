@@ -25,6 +25,7 @@
 #include "CUI_Dialogue.h"
 #include "CWall.h"
 #include "CAnimator.h"
+#include "CBossChainAttack.h"
 #include "CBossDead.h"
 #include "CBossStateMachine.h"
 #include "CBossTalk.h"
@@ -80,7 +81,7 @@ void CStage_Boss1::Initialize_Scene()
     Setup_BossCallbacks();
     Setup_PlayerCallbacks();
 
-    CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Prologue.wav", 0.3f, true, 1.f);
+    CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Prologue.wav", 0.25f, true, 1.f);
    
     m_BossEnterUI = CUI_Text::Create(m_GraphicDev);
     m_BossEnterUI->Set_Font(L"NanumSquare_Max");
@@ -94,6 +95,10 @@ void CStage_Boss1::Initialize_Scene()
     camMovement->Disable_DynamicDistance();
 
     Spawn_Weapon();
+
+    // 처음 UI 위치
+    Setup_StartUIPos();
+    CBossChainAttack::Reset_PatternCount();
 }
 
 _int CStage_Boss1::Update_Scene(const _float& timeDelta)
@@ -199,27 +204,7 @@ HRESULT CStage_Boss1::Ready_Environment_Layer(LAYERTYPE layerType)
     NULL_CHECK_RETURN(wall, E_FAIL);
     layer->Add_GameObject(OBJTYPE::WALL, wall);
 
-    //////////////////////////////////////////////////
-    //// Fog
-    //m_Fog = CFog::Create(m_GraphicDev);
-    //NULL_CHECK_RETURN(m_Fog, E_FAIL);
-
-    //m_Fog->Set_OriginalPos(m_FogPos);
-    //m_Fog->Set_SwaySpeed(m_FogSwaySpeed);
-    //m_Fog->Set_SwayAmount(m_FogSwayAmount);
-    //m_Fog->Set_Alpha(m_FogAlpha);
-    //layer->Add_GameObject(OBJTYPE::FOG, m_Fog);
-
-    //for (_int i = 0; i < 10; i++)
-    //{
-    //    CFog* fog2 = CFog::Create(m_GraphicDev);
-    //    fog2->Set_OriginalPos(_vec3(48.5f, 8.f, 11.f));
-    //    fog2->Set_SwaySpeed(0.7f);  // 약간 다른 속도
-    //    layer->Add_GameObject(OBJTYPE::FOG, fog2);
-    //}
-
-
-    m_Layers.insert({ layerType, layer });          // scene -> map
+    m_Layers.insert({ layerType, layer });    
 
     return S_OK;
 }
@@ -508,6 +493,24 @@ void CStage_Boss1::OnRefusedEnd()
 
 }
 
+void CStage_Boss1::Setup_StartUIPos()
+{
+    if (m_InitialUIPositions.empty())
+    {
+        for (auto ui : m_Player_UI)
+            m_InitialUIPositions.push_back(ui->Get_Transform()->Get_Pos());
+    }
+    else
+    {
+        for (size_t i = 0; i < m_Player_UI.size(); ++i)
+            m_Player_UI[i]->Get_Transform()->Set_Pos(m_InitialUIPositions[i]);
+    }
+
+    m_IsUIMoving = false;
+    m_IsBossUIMoving = false;
+    m_UIAnimTime = 0.f;
+}
+
 void CStage_Boss1::On_BossStartEnd()
 {
     Reset_Cam();
@@ -562,6 +565,8 @@ void CStage_Boss1::On_RejectEnd()
 
     if (talkState)
         talkState->Set_Phase(CBossTalk::PHASE::CAHANGE);
+
+    CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Deathcat_1b.wav", 0.3f, true, 1.f);
 
     Reset_Cam();        // Cam 원래대로 돌리고,
     Setup_DynamicCam(); // Dynamic Cam 시작

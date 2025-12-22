@@ -32,7 +32,7 @@ HRESULT CEyeball::Ready_GameObject()
     if (FAILED(CMonsterBase::Ready_GameObject()))
         return E_FAIL;
 
-    m_CombatStatCom->Set_MaxHp(200.f);
+    m_CombatStatCom->Set_MaxHp(300.f);
 
     m_TransformCom->Set_Scale(_vec3(1.1f, 1.4f, 1.f));
     m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(20.f));
@@ -72,7 +72,7 @@ void CEyeball::Initialize_GameObject()
                     bossCombat->Apply_Damage(hitData);
 
                     CSoundMgr::GetInstance()->Play_Once(
-                        L"Boss/DeathCat/DeathCat_GetHit.wav", SOUNDTYPE::SOUND_BOSS, 0.4f);
+                        L"Boss/DeathCat/DeathCat_GetHit.wav", SOUNDTYPE::SOUND_BOSS, 0.15f);
                 }
 
                 m_Boss->Set_Hurt(true);

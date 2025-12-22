@@ -45,7 +45,7 @@ private:
     CMonsterBase*           m_Owner;
 
     // 이동 관련
-    _vec3                   m_TargetPos = { 0.f, 0.f, 0.f };
+    _vec3                   m_TargetPos = { 0.f, 1.f, 0.f };
     _float                  m_MoveSpeed = 5.f;
     _bool                   m_HasReachedCenter = false; // 가운데에 도착했는지
 

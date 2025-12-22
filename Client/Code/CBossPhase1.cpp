@@ -48,7 +48,7 @@ HRESULT CBossPhase1::Ready_GameObject()
     m_TransformCom->Set_Pos(StartPos.x, m_TransformCom->Get_Scale().y, StartPos.z);
     m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(25.f));
 
-    m_CombatStatCom->Set_MaxHp(500.f);
+    m_CombatStatCom->Set_MaxHp(2000.f);
     m_CombatStatCom->Set_Attack(10.f);
     m_CombatStatCom->Set_Mp(5.f);
     m_CombatStatCom->Set_Speed(5.f);
@@ -57,7 +57,7 @@ HRESULT CBossPhase1::Ready_GameObject()
     m_CombatStatCom->Set_OnDamagedEvent([]()
     {
         CSoundMgr::GetInstance()->Play_Once(
-            L"Boss/DeathCat/DeathCat_GetHit.wav", SOUNDTYPE::SOUND_BOSS, 0.5f);
+            L"Boss/DeathCat/DeathCat_GetHit.wav", SOUNDTYPE::SOUND_BOSS, 0.3f);
     });
 
     BaseCenter = { 47 ,m_TransformCom->Get_Scale().y, 47 };
@@ -130,7 +130,6 @@ void CBossPhase1::Render_Editor()
         }
     }
 }
-
 
 HRESULT CBossPhase1::Add_Component()
 {

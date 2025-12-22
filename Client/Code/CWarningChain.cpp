@@ -1,6 +1,5 @@
 ﻿#include "pch.h"
 #include "CWarningChain.h"
-
 #include "CAnimator.h"
 #include "CAttackBox.h"
 #include "CBoss2_Chain.h"
@@ -96,7 +95,7 @@ _int CWarningChain::Update_GameObject(const _float& timeDelta)
         m_originSize = m_TransformCom->Get_Scale();
         m_Sizeflag   = true;
 
-        CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Chain_GroundAppear.wav", SOUNDTYPE::SOUND_BOSS1, 0.5f);
+        CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Chain_GroundAppear.wav", SOUNDTYPE::SOUND_BOSS1, 0.4f);
 
     }
     m_fElapsedTime += timeDelta;
@@ -130,7 +129,7 @@ _int CWarningChain::Update_GameObject(const _float& timeDelta)
 				ChainTransform->Set_Pos(offset);
 				SpawnObjectOnLayer(chain);
 
-                CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Chain_Appear.wav", SOUNDTYPE::SOUND_BOSS1, 0.5f);
+                CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Chain_Appear.wav", SOUNDTYPE::SOUND_BOSS1, 0.3f);
 
 			}
 		}
@@ -153,6 +152,8 @@ _int CWarningChain::Update_GameObject(const _float& timeDelta)
 					ChainTransform->Set_Scale(0.8f, 3.f, 1.f);
 					ChainTransform->Set_Pos(offset);
 					SpawnObjectOnLayer(chain);
+
+                    CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Chain_Appear.wav", SOUNDTYPE::SOUND_BOSS1, 0.3f);
 				}
                 else
                 {

@@ -11,13 +11,19 @@ CUI_SkillPanel::CUI_SkillPanel(DEVICE graphicDev)
     : CUI(graphicDev),
       m_PlayerSkillCom(nullptr),
       m_SingleSkillUI(nullptr),
-      m_TripleSkillUI(nullptr) {}
+      m_TripleSkillUI(nullptr)
+{
+    this->Set_Name(L"Skill_Panel");
+}
 
 CUI_SkillPanel::CUI_SkillPanel(const CUI_SkillPanel& rhs)
     : CUI(rhs),
       m_PlayerSkillCom(nullptr),
       m_SingleSkillUI(nullptr),
-      m_TripleSkillUI(nullptr) {}
+      m_TripleSkillUI(nullptr)
+{
+    this->Set_Name(L"Skill_Panel");
+}
 
 CUI_SkillPanel::~CUI_SkillPanel() {}
 
@@ -44,6 +50,8 @@ HRESULT CUI_SkillPanel::Ready_GameObject()
     m_TripleSkillUI->Set_TextureIndex(2);
 
     m_Active = false;
+
+
 
     return S_OK;
 }
@@ -90,16 +98,12 @@ void CUI_SkillPanel::Render_GameObject()
     if (!m_Active)
         return;
 
-    m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
+    _vec3 parentPos = m_TransformCom->Get_Pos();
 
-    if (m_SingleSkillUI)
-        m_SingleSkillUI->Get_Transform()->Set_Pos(-450.f, 220.f, 0.f);
-
+    m_SingleSkillUI->Get_Transform()->Set_Pos(parentPos.x - 450.f, parentPos.y + 220.f, 0.f);
     m_SingleSkillUI->Render_GameObject();
 
-    if (m_TripleSkillUI)
-        m_TripleSkillUI->Get_Transform()->Set_Pos(-400.f, 220.f, 0.f);
-
+    m_TripleSkillUI->Get_Transform()->Set_Pos(parentPos.x - 400.f, parentPos.y + 220.f, 0.f);
     m_TripleSkillUI->Render_GameObject();
 }
 

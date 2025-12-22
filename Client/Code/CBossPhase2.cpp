@@ -56,7 +56,7 @@ void CBossPhase2::Initialize_GameObject()
     m_CombatStatCom->Set_OnDamagedEvent([]()
         {
             CSoundMgr::GetInstance()->Play_Once(
-                L"Boss/DeathCat/DeathCat_GetHit.wav", SOUNDTYPE::SOUND_BOSS, 0.4f);
+                L"Boss/DeathCat/DeathCat_GetHit.wav", SOUNDTYPE::SOUND_BOSS, 0.15f);
         });
 
 }
