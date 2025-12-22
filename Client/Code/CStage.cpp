@@ -424,12 +424,13 @@ _int CStage::Update_Scene(const _float& timeDelta)
         for (int i = 0 ; i < 5; i++)
         {
             tmp->AddItem(1001, 4);
-            tmp->AddItem(1004, 2);
+            
             tmp->AddItem(1005, 1);
             tmp->AddItem(1003, 2);
         }
-        tmp->AddItem(1001, 2);
 
+        tmp->AddItem(1001, 2);
+        tmp->AddItem(1004, 2);
         tmp->AddItem(1001, 2);
 
         tmp->Initialize_GameObject();
