@@ -37,7 +37,7 @@ void CEyeball_Enter::Enter()
         m_StartPos = transform->Get_Pos();  
 
         m_TargetPos = m_StartPos;
-        m_TargetPos.y = 1.f;  
+        m_TargetPos.y = 1.75f;
     }
 
     m_fCurStateElapsedTime = 0.f;

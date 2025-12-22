@@ -11,6 +11,7 @@
 #include "CBoxCollider.h"
 #include "CEyeball.h"
 #include "CUI_BossHp.h"
+#include "CSoundMgr.h"
 
 CBossPhase2::CBossPhase2(DEVICE graphicDev)
     : CMonsterBase(graphicDev), m_BossController(nullptr)
@@ -52,7 +53,10 @@ void CBossPhase2::Initialize_GameObject()
     m_BossController->Set_StateMachine(stateMachine); 
     Safe_Release(stateMachine);
 
-    
+    m_CombatStatCom->Set_OnDamagedEvent([]()
+        {
+            CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/DeathCat_GetHit.wav", SOUNDTYPE::SOUND_BOSS, 0.3f);
+        });
 }
 
 _int CBossPhase2::Update_GameObject(const _float& timeDelta)

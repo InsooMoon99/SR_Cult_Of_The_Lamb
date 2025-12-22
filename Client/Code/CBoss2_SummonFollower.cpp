@@ -201,9 +201,9 @@ void CBoss2_SummonFollower::Spawn_Single(_int index)
 
     case 3:
     {
-        auto cow = CBoss_SlaveCow::Create(dev);
-        cow->Get_Transform()->Set_Pos(_vec3(64.3f, 3.5f, 42.1f));
-        SpawnObjectOnLayer(cow, OBJTYPE::NPC);
+        auto pig = CBoss_SlavePig::Create(dev);
+        pig->Get_Transform()->Set_Pos(_vec3(64.3f, 3.5f, 42.1f));
+        SpawnObjectOnLayer(pig, OBJTYPE::NPC);
     }
     break;
     }

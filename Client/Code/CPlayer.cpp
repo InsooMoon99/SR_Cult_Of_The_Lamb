@@ -78,7 +78,7 @@ HRESULT CPlayer::Ready_GameObject()
     m_CombatStatCom->Set_Hp(100.f);
     m_CombatStatCom->Set_MaxHp(100.f);
     m_CombatStatCom->Set_Attack(50.f);
-    m_CombatStatCom->Set_Mp(5.f);
+    m_CombatStatCom->Set_Mp(100.f);
     m_CombatStatCom->Set_Speed(5.f);
 
     // Hit 상태로 전환할 것인가? [ 보스1, 보스2 ]만 False로 세팅할듯 추가로 중간보스가 있다면 세팅
@@ -88,7 +88,7 @@ HRESULT CPlayer::Ready_GameObject()
     {
         CSoundMgr::GetInstance()->Play_Once(L"Player/Player_GetHit.wav",
                                             SOUND_EFFECT,
-                                            0.5f);
+                                            0.3f);
     });
 
     m_TransformCom->Set_Pos(_vec3(20.f, 1.f, 15.f));
