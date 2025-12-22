@@ -143,6 +143,8 @@ _int CUIBuildMenu::Update_GameObject(const _float& timeDelta)
             COMPONENTTYPE::INVENTORY));
     }
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+
     m_DecoIcon1->Update_GameObject(timeDelta);
     m_DecoIcon2->Update_GameObject(timeDelta);
     m_InteractionKey->Update_GameObject(timeDelta);
@@ -196,8 +198,6 @@ _int CUIBuildMenu::Update_GameObject(const _float& timeDelta)
 void CUIBuildMenu::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUIBuildMenu::Render_GameObject()

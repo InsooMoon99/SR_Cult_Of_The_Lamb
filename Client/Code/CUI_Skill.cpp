@@ -35,6 +35,8 @@ _int CUI_Skill::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+
     CPlayerSkill* playerskill = dynamic_cast<CPlayerSkill*>(
         CManagement::GetInstance()->Get_Component(
             COMPONENTID::ID_STATIC,
@@ -50,8 +52,6 @@ _int CUI_Skill::Update_GameObject(const _float& timeDelta)
 void CUI_Skill::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUI_Skill::Render_GameObject()

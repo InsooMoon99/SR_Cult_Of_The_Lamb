@@ -61,6 +61,8 @@ _int CUITarotCard::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+
     if (m_FadeOut)
     {
         m_Alpha -= m_FadeSpeed * timeDelta;
@@ -187,8 +189,6 @@ _int CUITarotCard::Update_GameObject(const _float& timeDelta)
 void CUITarotCard::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUITarotCard::Render_GameObject()

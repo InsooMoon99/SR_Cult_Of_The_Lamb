@@ -97,6 +97,8 @@ _int CHarvestableHerb::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CWorldInteractive::Update_GameObject(timeDelta);
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
+
     if (m_CombatStatCom->Is_Dead() == true)
     {
         // 텍스쳐 바꿈
@@ -110,8 +112,6 @@ _int CHarvestableHerb::Update_GameObject(const _float& timeDelta)
 void CHarvestableHerb::LateUpdate_GameObject(const _float& timeDelta)
 {
     CWorldInteractive::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 }
 
 void CHarvestableHerb::Render_GameObject()

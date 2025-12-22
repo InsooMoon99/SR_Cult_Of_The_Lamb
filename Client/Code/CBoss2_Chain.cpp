@@ -58,6 +58,8 @@ _int CBoss2_Chain::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CGameObject::Update_GameObject(timeDelta);
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
+
     if (m_flag == false)
     {
         {
@@ -89,8 +91,6 @@ _int CBoss2_Chain::Update_GameObject(const _float& timeDelta)
 void CBoss2_Chain::LateUpdate_GameObject(const _float& timeDelta)
 {
     CGameObject::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 }
 
 void CBoss2_Chain::Render_GameObject()

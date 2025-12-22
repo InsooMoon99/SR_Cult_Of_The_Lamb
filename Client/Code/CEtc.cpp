@@ -56,6 +56,8 @@ HRESULT CEtc::Ready_GameObject()
 _int CEtc::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CGameObject::Update_GameObject(timeDelta);
+    
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 
     return exit;
 }
@@ -63,8 +65,6 @@ _int CEtc::Update_GameObject(const _float& timeDelta)
 void CEtc::LateUpdate_GameObject(const _float& timeDelta)
 {
     CGameObject::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 }
 
 void CEtc::Render_GameObject()

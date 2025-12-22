@@ -274,12 +274,12 @@ HRESULT CStage_Boss1::Ready_GameLogic_Layer(LAYERTYPE layerType)
         //   그럴 때는 필요한 것만 사용해 .Apply() 하면 된다.
         CCamSetupBuilder(m_CamController)
             .SetTarget(m_PlayerTransformCom)
-            //.PivotOffset({ 0.f, 0.f, 0.f })
-            //.Distance(11.f)
-            //.RotX(45.f)
-            //.RotY(0.f)
-            //.LagSpeed(10.f)
-            //.ZoomSpeed(5.f)
+            .PivotOffset({ 0.f, 0.f, 0.f })
+            .Distance(12.f)
+            .RotX(45.f)
+            .RotY(0.f)
+            .LagSpeed(10.f)
+            .ZoomSpeed(5.f)
             .Snap()
             .Apply();
 
@@ -445,7 +445,7 @@ void CStage_Boss1::Hide_PlayerUI()
 
     CCamSetupBuilder(m_CamController)
         .SetTarget(m_Boss->Get_Transform())
-        .Distance(11.f)
+        .Distance(12.f)
         .LagSpeed(3.f)
         .ZoomSpeed(0.5f)
         .Apply();
@@ -484,7 +484,7 @@ void CStage_Boss1::OnRefusedEnd()
             // Refuse 카메라 연출 끝, 이제 보스한테 줌
             CCamSetupBuilder(m_CamController)
                 .SetTarget(m_Boss->Get_Transform())
-                .Distance(11.f)
+                .Distance(12.f)
                 .LagSpeed(3.f)
                 .ZoomSpeed(3.f)
                 .Apply();
@@ -501,7 +501,7 @@ void CStage_Boss1::OnRefusedEnd()
     // 카메라 플레이어한테 원래대로 돌리기
     CCamSetupBuilder(m_CamController)
         .SetTarget(m_PlayerTransformCom)
-        .Distance(11.f)
+        .Distance(12.f)
         .LagSpeed(3.f)
         .ZoomSpeed(3.f)
         .Apply();

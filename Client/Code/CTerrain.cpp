@@ -81,6 +81,8 @@ _int CTerrain::Update_GameObject(const _float& timeDelta)
             }
         }
 
+        CRenderer::GetInstance()->Add_RenderGroup(RENDER_NONALPHA, this);
+
         if (m_WallRendererCom && m_WallRendererCom->Get_EditMode())
         {
             _int cellX, cellZ;
@@ -148,8 +150,6 @@ _int CTerrain::Update_GameObject(const _float& timeDelta)
 void CTerrain::LateUpdate_GameObject(const _float& timeDelta)
 {
     CRenderObject::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_NONALPHA, this);
 }
 
 void CTerrain::Render_GameObject()

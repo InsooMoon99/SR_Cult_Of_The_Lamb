@@ -87,7 +87,7 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitboxStartTime  = 0.02f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitboxEndTime    = 0.02f * 8;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].comboInputTime   = 0.3f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].damageMultiplier = 0.75f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].damageMultiplier = 1.25f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].knockbackPower   = 30.f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].spawnOffset      = 1.2f; // 가까움
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
@@ -99,7 +99,7 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
 
     // 인수 : HitStop은 일단 각 무기 1타에만 넣어놓을게요
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitStopDuration = 0.01f;   // 0.01초 동안
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitStopScale    = 0.3f;       // 30%로 슬로우
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitStopScale    = 0.3f;    // 30%로 슬로우
 
     // 2타
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].state            = ACTORSTATE::PLAYER_SWORD_COMBO2;
@@ -107,7 +107,7 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitboxStartTime  = 0.02f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitboxEndTime    = 0.02f * 8;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].comboInputTime   = 0.3f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].damageMultiplier = 0.75f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].damageMultiplier = 1.25f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].knockbackPower   = 30.f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].spawnOffset      = 1.2f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
@@ -117,13 +117,16 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].particle.interval = 0.03f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].particle.scale    = _vec3(1.5f, 1.5f, 1.5f);
 
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitStopDuration = 0.01f;   // 0.01초 동안
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitStopScale    = 0.3f;    // 30%로 슬로우
+
     // 3타
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].state            = ACTORSTATE::PLAYER_SWORD_COMBO3;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].duration         = 0.02f * 38;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitboxStartTime  = 0.02f * 4;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitboxEndTime    = 0.02f * 11;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].comboInputTime   = 0.3f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].damageMultiplier = 1.5f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].damageMultiplier = 2.f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].knockbackPower   = 30.f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].spawnOffset      = 1.2f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
@@ -132,6 +135,9 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].particle.frames   = 14;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].particle.interval = 0.03f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].particle.scale    = _vec3(1.5f, 1.5f, 1.5f);
+
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitStopDuration = 0.01f;   // 0.01초 동안
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitStopScale    = 0.3f;    // 30%로 슬로우
 
     // =========================================================
     // [2] 건틀릿 (GAUNTLET) 데이터 설정
@@ -159,7 +165,7 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].hitboxStartTime  = 0.02f * 5;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].hitboxEndTime    = 0.02f * 12;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].comboInputTime   = 0.4f;
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].damageMultiplier = 1.f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].damageMultiplier = 2.f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].knockbackPower   = 30.f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].spawnOffset      = 1.2f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
@@ -178,7 +184,7 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].hitboxStartTime  = 0.02f * 12;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].hitboxEndTime    = 0.02f * 24;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].comboInputTime   = 0.4f;
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].damageMultiplier = 1.25f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].damageMultiplier = 2.f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].knockbackPower   = 30.f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].spawnOffset      = 1.2f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
@@ -188,13 +194,16 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].particle.interval = 0.03f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].particle.scale    = _vec3(1.5f, 1.5f, 1.5f);
 
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].hitStopDuration = 0.01f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].hitStopScale    = 0.3f;
+
     //3타
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].state            = ACTORSTATE::PLAYER_GAUNTLET_COMBO3;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].duration         = 0.02f * 46;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].hitboxStartTime  = 0.02f * 20;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].hitboxEndTime    = 0.02f * 27;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].comboInputTime   = 0.4f;
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].damageMultiplier = 2.25f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].damageMultiplier = 2.5f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].knockbackPower   = 50.f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].spawnOffset      = 1.2f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
@@ -203,6 +212,9 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].particle.frames   = 14;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].particle.interval = 0.03f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].particle.scale    = _vec3(1.5f, 1.5f, 1.5f);
+
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].hitStopDuration = 0.01f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].hitStopScale    = 0.3f;
 
     return S_OK;
 }

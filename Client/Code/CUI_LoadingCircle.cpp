@@ -53,6 +53,8 @@ void CUI_LoadingCircle::Initialize_GameObject()
 _int CUI_LoadingCircle::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
+    
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
     return exit;
 }
@@ -60,8 +62,6 @@ _int CUI_LoadingCircle::Update_GameObject(const _float& timeDelta)
 void CUI_LoadingCircle::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUI_LoadingCircle::Render_GameObject()

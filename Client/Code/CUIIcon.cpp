@@ -52,15 +52,15 @@ _int CUIIcon::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
 
+    if (m_Register)
+        CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+
     return exit;
 }
 
 void CUIIcon::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
-
-    if (m_Register)
-        CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUIIcon::Render_Setting()

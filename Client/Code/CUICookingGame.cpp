@@ -89,6 +89,8 @@ _int CUICookingGame::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+
     m_Curser->Update_GameObject(timeDelta);
     m_ItemIcon->Update_GameObject(timeDelta);
 
@@ -151,8 +153,6 @@ void CUICookingGame::LateUpdate_GameObject(const _float& timeDelta)
     m_Curser->Get_Transform()->Set_Pos({ m_CurserX, m_TransformCom->Get_Pos().y, 1.f });
     m_Curser->LateUpdate_GameObject(timeDelta);
     m_ItemIcon->LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUICookingGame::Render_GameObject()

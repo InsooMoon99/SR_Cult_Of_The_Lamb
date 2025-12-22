@@ -110,6 +110,8 @@ HRESULT CUITabMenu::Ready_GameObject()
 _int CUITabMenu::Update_GameObject(const _float& timeDelta)
 {
     int exit = CUI::Update_GameObject(timeDelta);
+    
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
     if (CDInputMgr::GetInstance()->KeyDown(DIK_TAB))
     {
@@ -231,8 +233,6 @@ void CUITabMenu::SetInventory(CInventory* inventory)
 void CUITabMenu::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 CUITabMenu* CUITabMenu::Create(DEVICE graphicDev)

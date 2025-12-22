@@ -45,6 +45,8 @@ HRESULT CUICircle::Ready_GameObject()
 _int CUICircle::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
+    
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
     //m_StarImage->Update_GameObject(timeDelta);
     //m_StarImage->Get_Transform()->Set_Scale(55.f, 55.f, 0.f);
@@ -56,8 +58,6 @@ void CUICircle::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
     // m_StarImage->LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUICircle::Render_GameObject()

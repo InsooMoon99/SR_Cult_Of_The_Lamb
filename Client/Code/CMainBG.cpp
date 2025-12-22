@@ -38,6 +38,8 @@ _int CMainBG::Update_GameObject(const _float& timeDelta)
     _int exit = CGameObject::Update_GameObject(timeDelta);
 
     //m_TransformCom->Set_Scale(800.f, 600.f, 1.f);
+    
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_PRIORITY_UI, this);
 
     return exit;
 }
@@ -45,8 +47,6 @@ _int CMainBG::Update_GameObject(const _float& timeDelta)
 void CMainBG::LateUpdate_GameObject(const _float& timeDelta)
 {
     CGameObject::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_PRIORITY_UI, this);
 }
 
 void CMainBG::Render_GameObject()

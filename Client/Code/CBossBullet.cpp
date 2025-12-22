@@ -66,6 +66,9 @@ _int CBossBullet::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CGameObject::Update_GameObject(timeDelta);
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_TRAIL, this);
+
     m_TrailEff->Update_Component(timeDelta);
 
     // 업데이트 입장시
@@ -157,9 +160,6 @@ void CBossBullet::Render_Trail()
 void CBossBullet::LateUpdate_GameObject(const _float& timeDelta)
 {
     CGameObject::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_TRAIL, this);
 }
 
 void CBossBullet::Render_GameObject()

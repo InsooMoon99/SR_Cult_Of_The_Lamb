@@ -34,6 +34,8 @@ int CUICharging::Update_GameObject(const _float& timeDelta)
 
     if (m_Active)
     {
+        CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_ALPHA, this);
+
         float Length        = 3.5f;
         float chargeTime    = m_PlayerSkill->Get_ChargeTime();
         float maxChargeTime = m_PlayerSkill->Get_MaxChargeTime();
@@ -71,9 +73,6 @@ int CUICharging::Update_GameObject(const _float& timeDelta)
 void CUICharging::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
-
-    if (m_IsActive)
-        CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_ALPHA, this);
 }
 
 void CUICharging::Render_GameObject()

@@ -33,7 +33,15 @@ public:
     virtual void    Render_Scene() PURE;
     virtual HRESULT Ready_Light();
 
-    void            AddObjectOnLayer(LAYERTYPE layerType, CGameObject* obj, OBJTYPE objType);
+    /// @brief [추가] 씬이 삭제되기 직전에 호출되어 정리 작업을 수행하는 가상 함수
+    /// @details 
+    /// - 콜백 함수 해제 (대화 UI, 카메라 전환 등)
+    /// - 타이머/애니메이션 중단
+    /// - 기타 씬 전환 전 필요한 정리 작업
+    /// - 각 씬에서 override하여 구현
+    virtual void PreDestroy_Scene() {}
+
+    void AddObjectOnLayer(LAYERTYPE layerType, CGameObject* obj, OBJTYPE objType);
 
     // Editor
     const map<LAYERTYPE, CLayer*>& Get_Layers() const { return m_Layers; }
@@ -47,7 +55,7 @@ protected:
     map<LAYERTYPE, CLayer*> m_Layers;
     DEVICE                  m_GraphicDev;
 
-    _int                    m_KillCount = 0;
+    _int m_KillCount = 0;
 
 protected:
     void Free() override;

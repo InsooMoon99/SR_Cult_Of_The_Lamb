@@ -64,6 +64,8 @@ _int CUIItemGet::Update_GameObject(const _float& timeDelta)
 {
     int exit = CUI::Update_GameObject(timeDelta);
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+
     if (m_UIItem.itemId)
     {
         m_IsShifting = true;
@@ -104,8 +106,6 @@ _int CUIItemGet::Update_GameObject(const _float& timeDelta)
 void CUIItemGet::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUIItemGet::Render_GameObject()
