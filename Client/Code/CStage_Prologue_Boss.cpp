@@ -24,6 +24,8 @@
 #include "CRenderer.h"
 #include "CWeaponEquip.h"
 #include "CEtc.h"
+#include "CFogMgr.h"
+#include "CMapObjectMgr.h"
 #include "CSceneMgr.h"
 
 CStage_Prologue_Boss::CStage_Prologue_Boss(DEVICE graphicDev)
@@ -101,6 +103,50 @@ void CStage_Prologue_Boss::LateUpdate_Scene(const _float& timeDelta)
 void CStage_Prologue_Boss::Render_Scene()
 {
 
+}
+
+void CStage_Prologue_Boss::PreDestroy_Scene()
+{
+    // ===== 씬 삭제 전 정리 작업 =====
+    // 목적: 콜백 함수들이 삭제된 씬을 참조하지 않도록 사전 정리
+
+    // 1. 카메라 전환 콜백 해제
+    // - CMainCamera는 Persistent 객체라 살아남지만,
+    // - 콜백 내부에서 [this]와 m_Dialogue를 참조하므로 반드시 해제 필요
+    if (m_CamController)
+    {
+        auto camMovement = m_CamController->Get_OwnerCamMovement();
+        if (camMovement)
+            camMovement->Set_OnTransitionEnd(nullptr);
+    }
+
+    // 2. 대화 UI 콜백 해제
+    // - m_Dialogue는 UI 레이어에 속하므로 씬 삭제 시 함께 삭제됨
+    // - 하지만 콜백이 [this]를 캡처하고 있어 dangling pointer 가능성 있음
+    if (m_Dialogue)
+        m_Dialogue->Set_OnDialogueEnd(nullptr);
+
+    // 3. 트리거 콜백 해제 (씬 삭제 시 트리거가 this를 참조하는 콜백 실행 방지)
+    auto gameLayer = m_Layers[LAYERTYPE::GAMELOGIC];
+    if (gameLayer)
+    {
+        auto& objects = gameLayer->Get_Objects();
+        auto iter = objects.find(OBJTYPE::TRIGGER);
+        if (iter != objects.end())
+        {
+            for (auto trigger : iter->second)
+            {
+                auto dungeonTrigger = dynamic_cast<CTrigger_Dungeon*>(trigger);
+                if (dungeonTrigger)
+                    dungeonTrigger->Clear_Callback();
+            }
+        }
+    }
+
+    // 4. 기타 진행 중인 애니메이션/타이머가 있다면 여기서 정리
+    // 맵 오브젝트, 포그 등 매니저에 등록된 오브젝트들 정리
+    CMapObjectMgr::GetInstance()->Clear_PlacedObjects();
+    CFogMgr::GetInstance()->Clear_AllFog();
 }
 
 HRESULT CStage_Prologue_Boss::Ready_Light()
@@ -214,7 +260,7 @@ HRESULT CStage_Prologue_Boss::Ready_GameLogic_Layer(LAYERTYPE layerType)
         CCamSetupBuilder(m_CamController)
             .SetTarget(m_PlayerTransformCom)
             .PivotOffset({ 0.f, 1.8f, 0.f })
-            .Distance(11.f)
+            .Distance(12.f)
             //.RotX(45.f)
             //.RotY(0.f)
             //.LagSpeed(10.f)
@@ -349,7 +395,7 @@ void CStage_Prologue_Boss::Hide_PlayerUI()
 
     CCamSetupBuilder(m_CamController)
         .SetTarget(m_Boss->Get_Transform())
-        .Distance(11.f)
+        .Distance(12.f)
         .LagSpeed(3.f)
         .ZoomSpeed(0.5f)
         .Apply();

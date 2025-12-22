@@ -110,8 +110,6 @@ _int CBoss2_Bullet::Update_GameObject(const _float& timeDelta)
 void CBoss2_Bullet::LateUpdate_GameObject(const _float& timeDelta)
 {
     CAttackSphere::LateUpdate_GameObject(timeDelta);
-
-
 }
 
 void CBoss2_Bullet::Render_GameObject()

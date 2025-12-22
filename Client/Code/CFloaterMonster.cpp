@@ -86,6 +86,8 @@ void CFloaterMonster::Initialize_GameObject()
 
         SpawnUIOnLayer(m_HpBar, OBJTYPE::UI);
     }*/
+
+    Setup_SpawnDeadParticle();
 }
 
 _int CFloaterMonster::Update_GameObject(const _float& timeDelta)
@@ -148,6 +150,23 @@ _bool CFloaterMonster::Check_CommonTransitions()
     return false;
 }
 
+void CFloaterMonster::Setup_SpawnDeadParticle()
+{
+    m_CombatStatCom->Set_OnDeathEvent([this]()
+        {
+            CParticleHelper::Spawn_StaticBurstParticle(
+                m_TransformCom->Get_Pos(),
+                COMPONENTTYPE::TEX_MONSTER_FLOATER_HIT_PARTICLE,
+                8,
+                0.15f,
+                0.2f,
+                3,
+                12.f,
+                m_TransformCom->Get_Pos().y - 0.5f
+            );
+        });
+}
+
 void CFloaterMonster::Update_State_Idle(const _float timeDelta)
 {
     m_AttackTimer += timeDelta;
@@ -185,7 +204,7 @@ void CFloaterMonster::Update_State_Attack(const _float timeDelta)
 {
     if (m_AnimatorCom->Get_CurFrame() == 2 && !m_AttackSpawned)
     {
-        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Worm_Attack.wav", SOUNDTYPE::SOUND_FLOATERMONSTER, 1.f);
+        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Worm_Attack.wav", SOUNDTYPE::SOUND_FLOATERMONSTER, 0.5f);
 
         CAttackBuilder(m_GraphicDev, this)
             .SetType<CAttackBox>()
@@ -193,7 +212,7 @@ void CFloaterMonster::Update_State_Attack(const _float timeDelta)
             .LifeTime(0.2f)
             .DestroyOnHit(true)
             .InstigatorPos()
-            .CollisionLayer(COLLISION_LAYERTYPE::ENEMY)
+            .CollisionLayer(COLLISION_LAYERTYPE::ATTACK_MONSTER)
             .Offset(m_TargetDir * 0.6f)
             .Knockback(50.f)
             .Scale(_vec3(1.f, 1.f, 1.f))
@@ -215,7 +234,7 @@ void CFloaterMonster::Update_State_Hit(const _float timeDelta)
     // 애니메이션이 끝나고, 넉백이 다 밀렸을 때
     if (m_AnimatorCom->Is_AnimationFinished() && !m_CombatStatCom->Is_Knockback())
     {
-        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Worm_GetHit.wav", SOUNDTYPE::SOUND_FLOATERMONSTER, 1.f);
+        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Worm_GetHit.wav", SOUNDTYPE::SOUND_FLOATERMONSTER, 0.5f);
         m_StateCom->Change_State(ACTORSTATE::IDLE);
 
     }
@@ -225,7 +244,7 @@ void CFloaterMonster::Update_State_Dead(const _float timeDelta)
 {
     if (m_StateCom->Get_State() == ACTORSTATE::DEAD)
     {
-        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Bat_Dead.wav", SOUNDTYPE::SOUND_FLOATERMONSTER, 1.f);
+        CSoundMgr::GetInstance()->Play_Once(L"Enemy/Bat_Dead.wav", SOUNDTYPE::SOUND_FLOATERMONSTER, 0.5f);
         Trigger_OnDeath();
         Mark_As_PendingKill();
     }

@@ -9,25 +9,22 @@
 
 CUI_LoadingCircle::CUI_LoadingCircle(DEVICE graphicDev)
     : CUI(graphicDev)
-{
-}
+{}
 
 CUI_LoadingCircle::CUI_LoadingCircle(const CUI_LoadingCircle& rhs)
     : CUI(rhs)
-{
-}
+{}
 
 CUI_LoadingCircle::~CUI_LoadingCircle()
-{
-}
+{}
 
 HRESULT CUI_LoadingCircle::Ready_GameObject()
 {
     if (FAILED(Add_Component()))
         return E_FAIL;
 
-    m_Position = { -550.f, -300.f };  
-    m_Scale = { 80.f, 80.f };
+    m_Position = { -550.f, -300.f };
+    m_Scale    = { 80.f, 80.f };
 
     m_TransformCom->Set_Pos(m_Position.x, m_Position.y, 0.f);
     m_TransformCom->Set_Scale(m_Scale.x, m_Scale.y, 1.f);
@@ -45,19 +42,18 @@ void CUI_LoadingCircle::Initialize_GameObject()
     m_AnimatorCom->Set_TextureType(COMPONENTTYPE::TEX_LOADING_CIRCLE);
 
     m_AnimatorCom->Create_Animation(L"Loading_Circle",
-        58,
-        0.05f,
-        _vec2(1.65f, 1.f),
-        _vec2(-0.5f, 0.8f));
+                                    58,
+                                    0.05f,
+                                    _vec2(1.65f, 1.f),
+                                    _vec2(-0.5f, 0.8f));
 
     m_AnimatorCom->Play_Animation(L"Loading_Circle", ANIMSTATE::LOOP);
-
 }
 
 _int CUI_LoadingCircle::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
-
+    
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
     return exit;
@@ -80,8 +76,8 @@ void CUI_LoadingCircle::Render_GameObject()
 
     if (m_TextureCom && m_AnimatorCom)
     {
-        const wstring& key = m_AnimatorCom->Get_CurKey();
-        _int frame = m_AnimatorCom->Get_CurFrame();
+        const wstring& key   = m_AnimatorCom->Get_CurKey();
+        _int           frame = m_AnimatorCom->Get_CurFrame();
         m_TextureCom->Set_Texture(key, frame);
     }
 
@@ -112,7 +108,6 @@ HRESULT CUI_LoadingCircle::Add_Component()
     m_AnimatorCom = CreateProtoComponent<CAnimator>(this, COMPONENTTYPE::ANIMATOR);
     NULL_CHECK_RETURN(m_AnimatorCom, E_FAIL);
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::ANIMATOR, m_AnimatorCom });
-
 
     return S_OK;
 }

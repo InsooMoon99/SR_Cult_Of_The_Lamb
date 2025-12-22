@@ -233,6 +233,8 @@ void CCollisionManager::Initialize_CollisionMatrix()
     _int kitchen_Index          = static_cast<_int>(COLLISION_LAYERTYPE::KITCHEN);
     _int site_Index             = static_cast<_int>(COLLISION_LAYERTYPE::CONSTRUCTION_SITE);
     _int fly_Index             = static_cast<_int>(COLLISION_LAYERTYPE::FLY);
+    _int MonsterAttack_Index             = static_cast<_int>(COLLISION_LAYERTYPE::ATTACK_MONSTER);
+
 
     // 벽끼리는 충돌하지 않도록 설정
     m_CollisionMatrix[wall_Index][wall_Index] = false;
@@ -252,6 +254,14 @@ void CCollisionManager::Initialize_CollisionMatrix()
     m_CollisionMatrix[item_Index][enemy_Index] = false;
     m_CollisionMatrix[enemy_Index][item_Index] = false;
 
+    // 플레이어, 몬스터 몸박 ㄴㄴ
+    m_CollisionMatrix[enemy_Index][player_Index] = false;
+    m_CollisionMatrix[player_Index][enemy_Index] = false;
+
+    // 몬스터 공격, 몬스터 충돌 ㄴㄴ
+    m_CollisionMatrix[MonsterAttack_Index][enemy_Index] = false;
+    m_CollisionMatrix[enemy_Index][MonsterAttack_Index] = false;
+
     // TODO : 다른 충돌 상태 판정 추가하기
 
     // 투사체끼리도 충돌 X, 투사체랑 보스랑도 충돌X
@@ -263,12 +273,8 @@ void CCollisionManager::Initialize_CollisionMatrix()
     m_CollisionMatrix[playerprojectile_Index][playerprojectile_Index] = false;
     m_CollisionMatrix[playerprojectile_Index][item_Index]             = false;
     m_CollisionMatrix[item_Index][playerprojectile_Index]             = false;
-    //m_CollisionMatrix[playerprojectile_Index][player_Index] = false;
-    //m_CollisionMatrix[player_Index][playerprojectile_Index] = false;
-
-    // 플레이어, 몬스터 몸박 ㄴㄴ
-    m_CollisionMatrix[enemy_Index][player_Index] = false;
-    m_CollisionMatrix[player_Index][enemy_Index] = false;
+    m_CollisionMatrix[playerprojectile_Index][player_Index] = false;
+    m_CollisionMatrix[player_Index][playerprojectile_Index] = false;
 
     // 트리거와 충돌 판정 : 플레이어, NPC가 가능
     m_CollisionMatrix[trigger_Index][trigger_Index] = false;
@@ -303,16 +309,16 @@ void CCollisionManager::Initialize_CollisionMatrix()
     }
 
     // 채집 오브젝트와 충돌 판정 : 플레이어, NPC가 가능
-    m_CollisionMatrix[interactive_Index][interactive_Index] = false;
-
-    for (_int i = 0; i < colLayerEnd; i++)
-    {
-        if (i != player_Index && i != npc_Index && i != interactive_Index)
-        {
-            m_CollisionMatrix[interactive_Index][i] = false;
-            m_CollisionMatrix[i][interactive_Index] = false;
-        }
-    }
+    //m_CollisionMatrix[interactive_Index][interactive_Index] = false;
+    //
+    //for (_int i = 0; i < colLayerEnd; i++)
+    //{
+    //    if (i != player_Index && i != npc_Index && i != interactive_Index)
+    //    {
+    //        m_CollisionMatrix[interactive_Index][i] = false;
+    //        m_CollisionMatrix[i][interactive_Index] = false;
+    //    }
+    //}
 
     // 투사체끼리도 충돌 X, 투사체랑 보스랑도 충돌X
     //m_CollisionMatrix[fly_Index][fly_Index] = true;

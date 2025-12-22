@@ -53,12 +53,14 @@ public:
 public:
     HRESULT Request_ChangeScene(CScene* nextScene);    // 씬 전환 예약
     void    Commit_ChangeScene();   // 프레임 경계(다음 프레임 업데이트 시작)에서 씬 실제 전환
+    _bool   Is_ChangingScene() const { return m_IsChangingScene; }  // 씬 전환 중 여부
 
 private:
     CScene* m_Scene;                // 현재 씬
     CScene* m_NextScene;            // 전환 예약 씬
 
     _bool m_ShouldChangeScene;      // 전환 플래그
+    _bool m_IsChangingScene;        // 씬 전환 진행 중 플래그
 
     map<wstring, CGameObject*> m_PersistentObjects; // 문자열 키 기반 Persistent 오브젝트 컨테이너
 

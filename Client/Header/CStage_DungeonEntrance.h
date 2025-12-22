@@ -60,5 +60,6 @@ private:
     D3DXCOLOR m_LightSpecular = D3DXCOLOR(1.0f, 0.4f, 0.4f, 1.0f);
     D3DXVECTOR3 m_LightDir = D3DXVECTOR3(0.f, -1.f, 1.f);
 
-
+private:
+    _bool m_CameraZoomOut = false;
 };

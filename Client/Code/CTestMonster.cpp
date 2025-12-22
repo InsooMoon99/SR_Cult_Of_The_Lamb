@@ -55,7 +55,7 @@ HRESULT CTestMonster::Ready_GameObject()
 _int CTestMonster::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CGameObject::Update_GameObject(timeDelta);
-
+    
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_NONALPHA, this);
 
     return exit;
@@ -113,7 +113,7 @@ void CTestMonster::OnBeginOverlap(CCollider* self, CCollider* other)
 
 void CTestMonster::OnEndOverlap(CCollider* self, CCollider* other)
 {
-     CGameObject::OnEndOverlap(self, other);
+    CGameObject::OnEndOverlap(self, other);
 }
 
 HRESULT CTestMonster::Add_Component()

@@ -49,7 +49,7 @@ void CWeaponEquip::Equip_Weapon(ItemInstance itemInst)
 
     CSoundMgr::GetInstance()->Play_Once(L"Player/Player_ChangeWeapon.wav",
                                     SOUND_EFFECT,
-                                    0.5f);
+                                    0.8f);
 
     //cout << "Weapon Equipped" << endl;
 }

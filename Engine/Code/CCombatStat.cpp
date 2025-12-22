@@ -150,6 +150,9 @@ void CCombatStat::On_Dead()
 {
     m_IsDead = true;
 
+    if (OnDeath)
+        OnDeath();
+
     if (m_Owner)
     {
         CState* state = dynamic_cast<CState*>(
@@ -157,22 +160,6 @@ void CCombatStat::On_Dead()
 
         if (state)
             state->Change_State(ACTORSTATE::DEAD);
-
-     //  // 각자 클래스에서 애니메이션 끝났을 때 판단해서 추가로 처리하기
-     //  CMonsterBase* monster = dynamic_cast<CMonsterBase*>(m_Owner);
-     //  if (monster)
-     //  {
-	 //
-	//	CScene* scene = CManagement::GetInstance()->Get_Scene();
-	//	CStage_Dungeon* dungeonStage = dynamic_cast<CStage_Dungeon*>(scene);
-	 //
-	//	if (dungeonStage)
-	//	{
-	//		dungeonStage->Get_RunLootLog().Add(m_itemInst);
-	//	}
-     //  }
-	 //
-
     }
 }
 

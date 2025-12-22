@@ -22,6 +22,7 @@
 #include "CTransform.h"
 #include "CTrigger_Dungeon.h"
 #include "CUI_Dialogue.h"
+#include "CUI_Fade.h"
 
 CStage_Prologue::CStage_Prologue(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -100,15 +101,25 @@ _int CStage_Prologue::Update_Scene(const _float& timeDelta)
     {
         auto animator = dynamic_cast<CAnimator*>(
             m_Excutioner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+
         if (animator &&
             animator->Get_CurKey() == L"Excutioner_Excute" &&
-            animator->Get_CurFrame() >= 38)
+            animator->Get_CurFrame() >= 38 &&
+            !m_FadeOutStarted)
         {
-            m_SceneChanged = true;
-            CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_BOSS_PROLOGUE);
+            m_FadeOutStarted = true;
+            m_UI_Fade->Start_FadeOut(1.5f); 
+        }
+
+        if (m_FadeOutStarted && !m_SceneChanged)
+        {
+            if (!m_UI_Fade->IsFading() && m_UI_Fade->Get_Alpha() >= 1.0f)
+            {
+                m_SceneChanged = true;
+                CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_BOSS_PROLOGUE);
+            }
         }
     }
-    return exit;
 
     return exit;
 }
@@ -120,18 +131,7 @@ void CStage_Prologue::LateUpdate_Scene(const _float& timeDelta)
 
 void CStage_Prologue::Render_Scene()
 {
-    if (ImGui::CollapsingHeader("Light Settings"))
-    {
-        bool changed = false;
-
-        changed |= ImGui::ColorEdit4("Diffuse", (_float*)&m_LightDiffuse);
-        changed |= ImGui::ColorEdit4("Ambient", (_float*)&m_LightAmbient);
-        changed |= ImGui::ColorEdit4("Specular", (_float*)&m_LightSpecular);
-        changed |= ImGui::DragFloat3("Direction", (_float*)&m_LightDir, 0.01f);
-
-        if (changed)
-            Ready_Light();  
-    }
+   
 
 }
 
@@ -197,12 +197,46 @@ HRESULT CStage_Prologue::Ready_GameLogic_Layer(LAYERTYPE layerType)
 
     m_PlayerRigid->Set_VelocityLimit(_vec3(2.5f, 0.f, 2.5f));
 
-    // Monster
-    gameObject = CHumanMonster::Create(m_GraphicDev);
-    layer->Add_GameObject(OBJTYPE::MONSTER, gameObject);
+    // Monster1
+    {
+        gameObject = CHumanMonster::Create(m_GraphicDev);
+        layer->Add_GameObject(OBJTYPE::MONSTER, gameObject);
 
-    gameObject->Get_Transform()->Set_Pos(18.9f, 1.f, 41.6f);
-    dynamic_cast<CHumanMonster*>(gameObject)->Set_PrayMode(true);
+        gameObject->Get_Transform()->Set_Pos(18.6f, 1.f, 41.9f);
+        dynamic_cast<CHumanMonster*>(gameObject)->Set_PrayMode(true);
+    }
+
+    // Monster2
+    {
+        gameObject = CHumanMonster::Create(m_GraphicDev);
+        layer->Add_GameObject(OBJTYPE::MONSTER, gameObject);
+
+        gameObject->Get_Transform()->Set_Pos(18.6f, 1.f, 46.9f);
+        dynamic_cast<CHumanMonster*>(gameObject)->Set_PrayMode(true);
+    }
+
+    // Monster3
+    {
+        gameObject = CHumanMonster::Create(m_GraphicDev);
+        layer->Add_GameObject(OBJTYPE::MONSTER, gameObject);
+
+        auto tr = gameObject->Get_Transform();
+        gameObject->Get_Transform()->Set_Pos(12.1f, 1.f, 46.9f);
+        tr->Set_Scale(_vec3(-tr->Get_Scale().x, tr->Get_Scale().y, tr->Get_Scale().z));
+        dynamic_cast<CHumanMonster*>(gameObject)->Set_PrayMode(true);
+    }
+
+    // Monster4
+    {
+        gameObject = CHumanMonster::Create(m_GraphicDev);
+        layer->Add_GameObject(OBJTYPE::MONSTER, gameObject);
+
+        auto tr = gameObject->Get_Transform();
+        tr->Set_Pos(12.91f, 1.f, 41.9f);
+        tr->Set_Scale(_vec3(-tr->Get_Scale().x, tr->Get_Scale().y, tr->Get_Scale().z));
+        dynamic_cast<CHumanMonster*>(gameObject)->Set_PrayMode(true);
+    }
+   
 
     m_Excutioner = CExcutioner::Create(m_GraphicDev);
     layer->Add_GameObject(OBJTYPE::MONSTER, m_Excutioner);
@@ -244,7 +278,7 @@ HRESULT CStage_Prologue::Ready_GameLogic_Layer(LAYERTYPE layerType)
         CCamSetupBuilder(m_CamController)
             .SetTarget(m_PlayerTransform)
             .PivotOffset({ 0.f, 0.f, 0.f })
-            .Distance(9.5f)
+            .Distance(12.f)
             .RotX(45.f)
             .RotY(0.f)
             .LagSpeed(10.f)
@@ -266,6 +300,9 @@ HRESULT CStage_Prologue::Ready_UI_Layer(LAYERTYPE layerType)
 {
     auto layer = Engine::CLayer::Create();
     NULL_CHECK_RETURN(layer, E_FAIL);
+
+    m_UI_Fade = CUI_Fade::Create(m_GraphicDev);
+    layer->Add_GameObject(OBJTYPE::UI, m_UI_Fade);
 
     m_Dialogue = CUI_Dialogue::Create(m_GraphicDev);
     layer->Add_GameObject(OBJTYPE::UI, m_Dialogue);
@@ -450,5 +487,7 @@ CStage_Prologue* CStage_Prologue::Create(DEVICE graphicDev)
 
 void CStage_Prologue::Free()
 {
+    CSoundMgr::GetInstance()->Stop_Sound(L"BGM/BGM_Bird.wav");
+
     CScene::Free();
 }

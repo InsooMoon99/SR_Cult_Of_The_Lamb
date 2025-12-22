@@ -64,6 +64,7 @@ _int CInteractiveGrass::Update_GameObject(const _float& timeDelta)
     //m_TransformCom->Set_Pos(_vec3(30.f, 1.f, 30.f));
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
+
     if (m_CombatStatCom->Is_Dead() == true)
     {
         m_CurTexIndex = m_DeadTexIndex;

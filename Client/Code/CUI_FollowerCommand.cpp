@@ -37,14 +37,15 @@ void CUI_FollowerCommand::Initialize_GameObject()
     m_PrayButton = CUIButton::Create(m_GraphicDev, 8, 7);
     m_PrayButton->SetCloneTexAspectScale(_vec3(0.05f, 0.17f, 0.1f));
 
-    m_PrayButton->SetOnClick([this]() {
+    m_PrayButton->SetOnClick([this]()
+    {
         if (m_TargetNPC)
         {
             // NPC에게 기도 작업 지시
             if (auto controller = m_TargetNPC->Get_Controller())
             {
                 controller->Set_Work(CNPCController::NPC_WORK::PRAY);
-                
+
                 if (auto stateMachine = controller->Get_StateMachine())
                     stateMachine->Change_State(static_cast<_uint>(CNPCStateMachine::NPC_STATE::IDLE));
 
@@ -55,13 +56,13 @@ void CUI_FollowerCommand::Initialize_GameObject()
         }
     });
 
-    
     m_AxeButton = CUIButton::Create(m_GraphicDev, 10, 9);
     m_AxeButton->SetCloneTexAspectScale(_vec3(0.05f, 0.17f, 0.f));
 
-    m_AxeButton->SetOnClick([this]() {
-         if (m_TargetNPC)
-         {
+    m_AxeButton->SetOnClick([this]()
+    {
+        if (m_TargetNPC)
+        {
             if (auto controller = m_TargetNPC->Get_Controller())
             {
                 controller->Set_Work(CNPCController::NPC_WORK::CHOPWOOD);
@@ -73,40 +74,40 @@ void CUI_FollowerCommand::Initialize_GameObject()
             }
             m_TargetNPC = nullptr;
             Set_IsActive(false);
-         } 
+        }
     });
-    
+
     m_MiningButton = CUIButton::Create(m_GraphicDev, 12, 11);
     m_MiningButton->SetCloneTexAspectScale(_vec3(0.05f, 0.17f, 0.f));
 
-    m_MiningButton->SetOnClick([this]() {
-         if (m_TargetNPC)
-         {
-             if (auto controller = m_TargetNPC->Get_Controller())
-             {
-                 controller->Set_Work(CNPCController::NPC_WORK::MINING);
+    m_MiningButton->SetOnClick([this]()
+    {
+        if (m_TargetNPC)
+        {
+            if (auto controller = m_TargetNPC->Get_Controller())
+            {
+                controller->Set_Work(CNPCController::NPC_WORK::MINING);
 
-                 if (auto stateMachine = controller->Get_StateMachine())
-                     stateMachine->Change_State(static_cast<_uint>(CNPCStateMachine::NPC_STATE::IDLE));
+                if (auto stateMachine = controller->Get_StateMachine())
+                    stateMachine->Change_State(static_cast<_uint>(CNPCStateMachine::NPC_STATE::IDLE));
 
-                 cout << "MiningButton Click" << endl;
-             }
-             m_TargetNPC = nullptr;
-             Set_IsActive(false);
-         }
+                cout << "MiningButton Click" << endl;
+            }
+            m_TargetNPC = nullptr;
+            Set_IsActive(false);
+        }
     });
 
-    _vec3 pos = m_TransformCom->Get_Pos();
-    _vec3 offset1 = { 0.f,40.f,0.f };
-    _vec3 offset2 = { 40.f,40.f,0.f };
-    _vec3 offset3 = { 40.f,40.f,0.f };
-    
+    _vec3 pos     = m_TransformCom->Get_Pos();
+    _vec3 offset1 = { 0.f, 40.f, 0.f };
+    _vec3 offset2 = { 40.f, 40.f, 0.f };
+    _vec3 offset3 = { 40.f, 40.f, 0.f };
+
     m_PrayButton->Get_Transform()->Set_Pos(_vec3(pos.x, pos.y + offset1.y, 0.f));
     m_AxeButton->Get_Transform()->Set_Pos(_vec3(pos.x - offset2.x, pos.y - offset2.y, 0.f));
     m_MiningButton->Get_Transform()->Set_Pos(_vec3(pos.x + offset3.x, pos.y - offset3.y, 0.f));
 
     m_Active = false;
-
 }
 
 void CUI_FollowerCommand::OnBeginOverlap(CCollider* self, CCollider* other)
@@ -141,6 +142,8 @@ _int CUI_FollowerCommand::Update_GameObject(const _float& timeDelta)
 {
     if (!m_Active)
         return 0;
+    
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
     if (CDInputMgr::GetInstance()->MouseDown(DIM_RB))
     {
@@ -150,25 +153,19 @@ _int CUI_FollowerCommand::Update_GameObject(const _float& timeDelta)
             if (auto controller = m_TargetNPC->Get_Controller())
             {
                 if (CStateMachine* stateMachine = controller->Get_StateMachine())
-                {
                     stateMachine->Change_State(static_cast<_uint>(CNPCStateMachine::NPC_STATE::IDLE));
-                }
             }
         }
 
         m_TargetNPC = nullptr;
-        m_Active = false;
+        m_Active    = false;
     }
 
     _int exit = CUI::Update_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
-
-
     m_PrayButton->Update_GameObject(timeDelta);
     m_AxeButton->Update_GameObject(timeDelta);
     m_MiningButton->Update_GameObject(timeDelta);
-
 
     return exit;
 }
@@ -181,7 +178,7 @@ void CUI_FollowerCommand::LateUpdate_GameObject(const _float& timeDelta)
 void CUI_FollowerCommand::Render_GameObject()
 {
     if (!m_Active)
-        return ;
+        return;
 
     CUI::Render_GameObject();
 
@@ -194,7 +191,6 @@ void CUI_FollowerCommand::Render_GameObject()
     m_PrayButton->Render_GameObject();
     m_AxeButton->Render_GameObject();
     m_MiningButton->Render_GameObject();
-
 }
 
 CUI_FollowerCommand* CUI_FollowerCommand::Create(DEVICE graphicDev)
@@ -213,7 +209,6 @@ CUI_FollowerCommand* CUI_FollowerCommand::Create(DEVICE graphicDev)
 
 HRESULT CUI_FollowerCommand::Add_Component()
 {
-
     m_TextureCom = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_UI_COMMAND);
     NULL_CHECK_RETURN(m_TextureCom, E_FAIL);
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_UI_COMMAND, m_TextureCom });
@@ -229,7 +224,7 @@ HRESULT CUI_FollowerCommand::Add_Component()
     return S_OK;
 }
 
-void    CUI_FollowerCommand::Free()
+void CUI_FollowerCommand::Free()
 {
     Safe_Release(m_PrayButton);
     Safe_Release(m_MiningButton);

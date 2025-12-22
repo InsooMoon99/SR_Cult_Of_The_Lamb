@@ -34,6 +34,7 @@
 #include "CUI_Text.h"
 #include "CDroppedItem.h"
 #include "CSoundMgr.h"
+#include "CUI_SkillPanel.h"
 
 CStage_Boss1::CStage_Boss1(DEVICE graphicDev)
     : Engine::CScene(graphicDev), m_Terrain(nullptr), m_Boss(nullptr), m_Player(nullptr), m_Dialogue(nullptr),
@@ -273,12 +274,12 @@ HRESULT CStage_Boss1::Ready_GameLogic_Layer(LAYERTYPE layerType)
         //   그럴 때는 필요한 것만 사용해 .Apply() 하면 된다.
         CCamSetupBuilder(m_CamController)
             .SetTarget(m_PlayerTransformCom)
-            //.PivotOffset({ 0.f, 0.f, 0.f })
-            //.Distance(11.f)
-            //.RotX(45.f)
-            //.RotY(0.f)
-            //.LagSpeed(10.f)
-            //.ZoomSpeed(5.f)
+            .PivotOffset({ 0.f, 0.f, 0.f })
+            .Distance(12.f)
+            .RotX(45.f)
+            .RotY(0.f)
+            .LagSpeed(10.f)
+            .ZoomSpeed(5.f)
             .Snap()
             .Apply();
 
@@ -360,6 +361,17 @@ HRESULT CStage_Boss1::Ready_UI_Layer(LAYERTYPE layerType)
 
     m_Player_UI.push_back(uiIcon);
 
+    FAILED_CHECK_MSG(
+        Engine::AcquirePersistentObject<CUI_SkillPanel>(
+            OBJTYPE::UI,
+            L"UI_SkillPanel",
+            m_GraphicDev,
+            layer,
+            &gameObject),
+        L"Persistent object setup failed: UI_SkillPanel");
+
+    m_Player_UI.push_back(dynamic_cast<CUI*>(gameObject));
+
     // ===== 보스 UI =====
     auto combat = dynamic_cast<CCombatStat*>(
         m_Boss->Get_Component(ID_DYNAMIC, COMPONENTTYPE::COMBATSTAT));
@@ -433,7 +445,7 @@ void CStage_Boss1::Hide_PlayerUI()
 
     CCamSetupBuilder(m_CamController)
         .SetTarget(m_Boss->Get_Transform())
-        .Distance(11.f)
+        .Distance(12.f)
         .LagSpeed(3.f)
         .ZoomSpeed(0.5f)
         .Apply();
@@ -472,7 +484,7 @@ void CStage_Boss1::OnRefusedEnd()
             // Refuse 카메라 연출 끝, 이제 보스한테 줌
             CCamSetupBuilder(m_CamController)
                 .SetTarget(m_Boss->Get_Transform())
-                .Distance(11.f)
+                .Distance(12.f)
                 .LagSpeed(3.f)
                 .ZoomSpeed(3.f)
                 .Apply();
@@ -489,7 +501,7 @@ void CStage_Boss1::OnRefusedEnd()
     // 카메라 플레이어한테 원래대로 돌리기
     CCamSetupBuilder(m_CamController)
         .SetTarget(m_PlayerTransformCom)
-        .Distance(11.f)
+        .Distance(12.f)
         .LagSpeed(3.f)
         .ZoomSpeed(3.f)
         .Apply();

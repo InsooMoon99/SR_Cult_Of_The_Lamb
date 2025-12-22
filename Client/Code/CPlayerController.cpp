@@ -506,7 +506,7 @@ void CPlayerController::Action_Idle(const _float& timeDelta)
 
 void CPlayerController::Action_Run(const _float& timeDelta)
 {
-#pragma region 플레이어 달리기 효과음. 달릴 때는 0.2초, 걸을 때는 0.45 초마다 재생
+#pragma region 플레이어 달리기 효과음. 달릴 때는 0.2초, 걸을 때는 0.5 초마다 재생
     g_Timers[TIMER_SOUND_PL_FOOTSTEP] -= timeDelta;
 
     if (g_Timers[TIMER_SOUND_PL_FOOTSTEP] < 0.f)
@@ -517,7 +517,7 @@ void CPlayerController::Action_Run(const _float& timeDelta)
         if (auto pPlayer = dynamic_cast<CPlayer*>(m_Owner))
         {
             if (pPlayer->Is_PrologueMode())
-                fDelay = 0.45f;
+                fDelay = 0.5f;
         }
 
         g_Timers[TIMER_SOUND_PL_FOOTSTEP] = fDelay;

@@ -114,6 +114,7 @@ _int CBossChain::Update_GameObject(const _float& timeDelta)
 void CBossChain::LateUpdate_GameObject(const _float& timeDelta)
 {
     CGameObject::LateUpdate_GameObject(timeDelta);
+
 }
 
 void CBossChain::Render_GameObject()

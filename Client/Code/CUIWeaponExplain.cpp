@@ -52,6 +52,7 @@ _int CUIWeaponExplain::Update_GameObject(const _float& timeDelta)
     m_Alpha = clamp(m_Alpha, 0.f, 1.f);
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+
     return exit;
 }
 
@@ -67,8 +68,8 @@ void CUIWeaponExplain::Render_GameObject()
     if (m_Active && !m_SoundEnded)
     {
         CSoundMgr::GetInstance()->Play_Once(L"UI/Objective_Text_Appear_Base.wav",
-            SOUND_EFFECT,
-            1.f);
+                                            SOUND_EFFECT,
+                                            0.8f);
         m_SoundEnded = true;
     }
     //배경 그리기
@@ -106,7 +107,6 @@ void CUIWeaponExplain::Render_GameObject()
                                              &screenPos,
                                              D3DXCOLOR{ 0.6f, 0.6f, 0.6f, m_Alpha });
     }
-
 }
 
 HRESULT CUIWeaponExplain::Add_Component()
@@ -144,6 +144,5 @@ CUIWeaponExplain* CUIWeaponExplain::Create(DEVICE graphicDev)
 
 void CUIWeaponExplain::Free()
 {
-
     CUI::Free();
 }

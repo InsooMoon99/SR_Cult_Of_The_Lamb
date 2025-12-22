@@ -117,7 +117,6 @@ _int CChest::Update_GameObject(const _float& timeDelta)
 void CChest::LateUpdate_GameObject(const _float& timeDelta)
 {
     CRenderObject::LateUpdate_GameObject(timeDelta);
-
 }
 
 void CChest::Render_GameObject()

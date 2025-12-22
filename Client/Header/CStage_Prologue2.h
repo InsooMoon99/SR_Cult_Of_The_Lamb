@@ -89,6 +89,7 @@ public:
     _bool IsCleared() const { return m_PrologueCleared; }
 
 private:
+    void PreDestroy_Scene() override;
     void Free() override;
 
 private:

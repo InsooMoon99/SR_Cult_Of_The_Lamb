@@ -52,22 +52,21 @@ _int CUI_SkillPanel::Update_GameObject(const _float& timeDelta)
 {
     int exit = CUI::Update_GameObject(timeDelta);
 
-    if(!m_PlayerSkillCom)
-    {
-        m_PlayerSkillCom = dynamic_cast<CPlayerSkill*>(CManagement::GetInstance()->Get_Component(ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::PL_SKILL));
-    }
+    if (!m_PlayerSkillCom)
+        m_PlayerSkillCom = dynamic_cast<CPlayerSkill*>(CManagement::GetInstance()->Get_Component(
+            ID_STATIC,
+            LAYERTYPE::GAMELOGIC,
+            OBJTYPE::PLAYER,
+            COMPONENTTYPE::PL_SKILL));
 
     if (m_PlayerSkillCom->Get_IsSkillUnlocked())
-    {
         m_Active = true;
-    }
     else
-    {
         m_Active = false;
-    }
+
     if (!m_Active)
         return 0;
-
+    
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
     if (m_SingleSkillUI)
@@ -95,12 +94,13 @@ void CUI_SkillPanel::Render_GameObject()
 
     if (m_SingleSkillUI)
         m_SingleSkillUI->Get_Transform()->Set_Pos(-450.f, 220.f, 0.f);
-        m_SingleSkillUI->Render_GameObject();
+
+    m_SingleSkillUI->Render_GameObject();
 
     if (m_TripleSkillUI)
         m_TripleSkillUI->Get_Transform()->Set_Pos(-400.f, 220.f, 0.f);
-        m_TripleSkillUI->Render_GameObject();
 
+    m_TripleSkillUI->Render_GameObject();
 }
 
 CUI_SkillPanel* CUI_SkillPanel::Create(DEVICE graphicDev)

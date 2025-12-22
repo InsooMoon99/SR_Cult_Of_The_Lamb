@@ -7,6 +7,7 @@
 #include "CEyeball.h"
 #include "CStateMachine.h"
 #include "CSoundMgr.h"
+#include "CTransform.h"
 
 CBoss2_FollowerDie::CBoss2_FollowerDie(CGameObject* owner)
     : m_Owner(owner), m_Pattern_Cooldown(0)
@@ -29,6 +30,14 @@ void CBoss2_FollowerDie::Enter()
         auto animator = m_Controller->Get_OwnerAnimator();
         if (animator)
             animator->Play_Animation(L"Boss2_Follower_Die", ANIMSTATE::ONCE);
+    }
+
+    auto transform = m_Controller->Get_OwnerTransform();
+    if (transform)
+    {
+        _vec3 scale = transform->Get_Scale();
+        scale.x = -fabs(scale.x); 
+        transform->Set_Scale(scale);
     }
 
     m_fCurStateElapsedTime = 0.f;

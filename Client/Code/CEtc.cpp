@@ -9,35 +9,31 @@
 #include "CState.h"
 #include "CTexture.h"
 #include "CTransform.h"
-#include "CTransform.h"
-
 
 CEtc::CEtc(DEVICE graphicDev, COMPONENTTYPE _TexComType, wstring _AnimationKey, int _SpriteNum)
     : CGameObject(graphicDev),
-    m_BufferCom(nullptr),
-    m_TransformCom(nullptr),
-    m_TextureCom(nullptr),
-    m_AnimatorCom(nullptr),
-    m_StateCom(nullptr)
+      m_BufferCom(nullptr),
+      m_TransformCom(nullptr),
+      m_TextureCom(nullptr),
+      m_AnimatorCom(nullptr),
+      m_StateCom(nullptr)
 {
-    m_TexComType = _TexComType;
+    m_TexComType   = _TexComType;
     m_AnimationKey = _AnimationKey;
-    m_SpriteNum = _SpriteNum;
+    m_SpriteNum    = _SpriteNum;
 }
 
 CEtc::CEtc(const CEtc& rhs)
     : CGameObject(rhs),
-    m_BufferCom(nullptr),
-    m_TransformCom(nullptr),
-    m_TextureCom(nullptr),
-    m_AnimatorCom(nullptr),
-    m_StateCom(nullptr)
-{
-}
+      m_BufferCom(nullptr),
+      m_TransformCom(nullptr),
+      m_TextureCom(nullptr),
+      m_AnimatorCom(nullptr),
+      m_StateCom(nullptr)
+{}
 
 CEtc::~CEtc()
-{
-}
+{}
 
 HRESULT CEtc::Ready_GameObject()
 {
@@ -54,20 +50,14 @@ HRESULT CEtc::Ready_GameObject()
     if (false == SetTexAspectInit(m_TextureCom, m_TransformCom, 1, &key))
         return E_FAIL;
 
-
-
-
     return S_OK;
 }
 
 _int CEtc::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CGameObject::Update_GameObject(timeDelta);
+    
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
-
-
-
-
 
     return exit;
 }
@@ -86,7 +76,7 @@ void CEtc::Render_GameObject()
 
     if (m_TextureCom && m_AnimatorCom)
     {
-        const wstring& key = m_AnimatorCom->Get_CurKey();
+        const wstring& key   = m_AnimatorCom->Get_CurKey();
         _int           frame = m_AnimatorCom->Get_CurFrame();
 
         m_TextureCom->Set_Texture(key, frame);
@@ -94,8 +84,6 @@ void CEtc::Render_GameObject()
 
     m_BufferCom->Render_Buffer();
     //
-
-
 
     Render_Reset();
     //m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
@@ -142,8 +130,6 @@ HRESULT CEtc::Add_Component()
 
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::STATE, m_StateCom });
 
-
-
     return S_OK;
 }
 
@@ -168,12 +154,10 @@ void CEtc::Render_Reset()
 }
 
 void CEtc::OnBeginOverlap(CCollider* self, CCollider* other)
-{
-}
+{}
 
 void CEtc::OnEndOverlap(CCollider* self, CCollider* other)
-{
-}
+{}
 
 CEtc* CEtc::Create(DEVICE graphicDev, COMPONENTTYPE _TexComType, wstring _AnimationKey, int _SpriteNum)
 {
@@ -190,9 +174,7 @@ CEtc* CEtc::Create(DEVICE graphicDev, COMPONENTTYPE _TexComType, wstring _Animat
     //return nullptr;
 }
 
-
 void CEtc::Free()
 {
-
     CGameObject::Free();
 }

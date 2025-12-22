@@ -55,6 +55,7 @@ HRESULT CMenuChar::Ready_GameObject()
 _int CMenuChar::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CGameObject::Update_GameObject(timeDelta);
+    
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 
     if (m_TransformComPattern)
@@ -67,7 +68,6 @@ _int CMenuChar::Update_GameObject(const _float& timeDelta)
     m_TransformComPattern->Set_Pos({ mainPos.x,mainPos.y -mainSize.y, mainPos.z+0.2f });
     m_TransformComPattern->Set_Scale(2.5f, 2.5f, 2.5f);
     m_TransformComPattern->Set_Rotation({ D3DXToRadian(90),0.f,0.f });
-
 
     return exit;
 }

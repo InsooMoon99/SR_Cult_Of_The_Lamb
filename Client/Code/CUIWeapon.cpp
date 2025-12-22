@@ -13,19 +13,20 @@
 class CWeaponEquip;
 int CUIWeapon::m_NextID = 0;
 
-CUIWeapon::CUIWeapon(DEVICE pGraphicDev) : CUI(pGraphicDev)
+CUIWeapon::CUIWeapon(DEVICE pGraphicDev)
+    : CUI(pGraphicDev)
 {
     m_ID = ++m_NextID;
 }
 
-CUIWeapon::CUIWeapon(const CUIWeapon& rhs) : CUI(rhs)
+CUIWeapon::CUIWeapon(const CUIWeapon& rhs)
+    : CUI(rhs)
 {
     m_ID = ++m_NextID;
 }
 
 CUIWeapon::~CUIWeapon()
-{
-}
+{}
 
 HRESULT CUIWeapon::Ready_GameObject()
 {
@@ -40,16 +41,19 @@ HRESULT CUIWeapon::Ready_GameObject()
 _int CUIWeapon::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
-
+    
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
     CScene* scene = CManagement::GetInstance()->Get_Scene();
 
-    CWeaponEquip* weaponEquip = dynamic_cast<CWeaponEquip*>(scene->Get_Component(COMPONENTID::ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::WEAPON_EQUIP));
+    CWeaponEquip* weaponEquip = dynamic_cast<CWeaponEquip*>(scene->Get_Component(COMPONENTID::ID_STATIC,
+                                                                                 LAYERTYPE::GAMELOGIC,
+                                                                                 OBJTYPE::PLAYER,
+                                                                                 COMPONENTTYPE::WEAPON_EQUIP));
 
     if (weaponEquip->Get_WeaponEquipped())
     {
-        m_WeaponID = weaponEquip->Get_CurrentWeaponID();
+        m_WeaponID  = weaponEquip->Get_CurrentWeaponID();
         m_Invisible = false;
     }
     else
@@ -71,9 +75,9 @@ void CUIWeapon::Render_GameObject()
         CUI::Render_GameObject();
 
         m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
-     //   // 예시: 0번 텍스처 스테이지의 COLOROP 상태 저장
-     //   DWORD dwOldColorOp;
-     //   m_GraphicDev->GetTextureStageState(0, D3DTSS_COLOROP, &dwOldColorOp);
+        //   // 예시: 0번 텍스처 스테이지의 COLOROP 상태 저장
+        //   DWORD dwOldColorOp;
+        //   m_GraphicDev->GetTextureStageState(0, D3DTSS_COLOROP, &dwOldColorOp);
 
         // --- [2단계: 아이콘 전용 상태 설정] ---------------------------------
         // 아이콘이 투명하게, 색상 변질 없이 그려지도록 설정합니다.
@@ -81,9 +85,9 @@ void CUIWeapon::Render_GameObject()
         m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
         m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
-      //  m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
-      //  m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-        switch(m_WeaponID)
+        //  m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+        //  m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+        switch (m_WeaponID)
         {
         case 3001:
             m_TextureCom->Set_Texture(0);
@@ -92,21 +96,18 @@ void CUIWeapon::Render_GameObject()
         case 3002:
             m_TextureCom->Set_Texture(1);
             break;
-
         }
         m_BufferCom->Render_Buffer();
-    //    // --- [4단계: 원래 상태로 복원] --------------------------------------
-    //// 렌더링이 끝났으므로, 저장해 둔 값으로 상태를 되돌립니다.
-    //    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE); // 또는 저장된 값으로 복원
-    //
-    //    // 저장된 ColorOp 값으로 복원
-    //    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, dwOldColorOp);
-    //
-     
+        //    // --- [4단계: 원래 상태로 복원] --------------------------------------
+        //// 렌더링이 끝났으므로, 저장해 둔 값으로 상태를 되돌립니다.
+        //    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE); // 또는 저장된 값으로 복원
+        //
+        //    // 저장된 ColorOp 값으로 복원
+        //    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, dwOldColorOp);
+        //
     }
 
     //m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
-
 }
 
 HRESULT CUIWeapon::Add_Component()
@@ -146,9 +147,9 @@ CUIWeapon* CUIWeapon::Create(DEVICE graphicDev)
 
 void CUIWeapon::Free()
 {
-   // Safe_Release(m_BufferCom);
-   // Safe_Release(m_TextureCom);
-   // Safe_Release(m_TransformCom);
+    // Safe_Release(m_BufferCom);
+    // Safe_Release(m_TextureCom);
+    // Safe_Release(m_TransformCom);
 
     CUI::Free();
 }

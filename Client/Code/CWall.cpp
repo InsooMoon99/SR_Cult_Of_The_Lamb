@@ -40,7 +40,7 @@ void CWall::Initialize_GameObject()
 _int CWall::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CRenderObject::Update_GameObject(timeDelta);
-
+    
     CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_PRIORITY, this);
 
     return exit;

@@ -150,7 +150,6 @@ _int CTerrain::Update_GameObject(const _float& timeDelta)
 void CTerrain::LateUpdate_GameObject(const _float& timeDelta)
 {
     CRenderObject::LateUpdate_GameObject(timeDelta);
-
 }
 
 void CTerrain::Render_GameObject()

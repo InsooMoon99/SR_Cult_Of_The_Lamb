@@ -77,7 +77,7 @@ _int CEligos_Attack_Fly::Update_State(const _float& timeDelta)
         {
         m_pOwnerAnimatorCom->Play_Animation(L"Eligos_burpcharge", ANIMSTATE::ONCE);
 
-        CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Elligos_Charge.wav", SOUNDTYPE::SOUND_BOSS3, 1.f);
+        CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Elligos_Charge.wav", SOUNDTYPE::SOUND_BOSS3, 0.5f);
 
             m_StartFlag = true;
 
@@ -95,7 +95,7 @@ _int CEligos_Attack_Fly::Update_State(const _float& timeDelta)
 
         if (m_StartFlag == false)
         {
-            CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Burp_Flies.wav", SOUNDTYPE::SOUND_BOSS1, 1.f);
+            CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Burp_Flies.wav", SOUNDTYPE::SOUND_BOSS1, 0.5f);
 
             m_pOwnerAnimatorCom->Play_Animation(L"Eligos_burp", ANIMSTATE::ONCE);
             SpawnFlies(10.f,1.2f,1.2f, 1.f);
@@ -112,7 +112,7 @@ _int CEligos_Attack_Fly::Update_State(const _float& timeDelta)
 
         if (g_Timers[TIMER_SOUND_ENEMY_FLY] < 0.f)
         {
-            CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Fly_Fly_Loop.wav", SOUND_BOSS2, 0.5f);
+            CSoundMgr::GetInstance()->Play_Once(L"Boss/Eligos/Fly_Fly_Loop.wav", SOUND_BOSS2, 0.4f);
             g_Timers[TIMER_SOUND_ENEMY_FLY] = 0.5f;
         }
 #pragma endregion

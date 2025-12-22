@@ -16,8 +16,8 @@ class CUI_Text;
 BEGIN(Engine)
 class CCombatStat;
 class CTransform;
-
 END
+
 enum class BossIntroPhase { NONE, ZOOMING, HOLDING, DONE };
 
 struct RoomData
@@ -106,6 +106,7 @@ public:
     static CStage_Dungeon* Create(DEVICE graphicDev);
 
 private:
+    void PreDestroy_Scene() override;
     void Free() override;
     void Fade_Check(const _float timeDelta);
     void Connect_Rooms();
@@ -113,7 +114,7 @@ private:
 
     void Setup_DynamicCam_For_Boss();
 
-    HRESULT Grass(DEVICE m_GraphicDev, CLayer* layer);
+    HRESULT Grass(DEVICE graphicDev, CLayer* layer);
 private:
     CCombatStat*  m_PlayerCombatStatCom;
     CInventory*   m_PlayerInventoryCom;
@@ -156,15 +157,17 @@ private:
     _bool m_IsClearMenuOpened;
     _bool m_Start;
 
-    CGameObject* m_Boss      = nullptr;
-    CUI_BossHp*  m_BossHpbar = nullptr;
-    CUI_Text* m_EligosNameUI = nullptr;
-    _float      m_UIOpenTime;
-    bool m_flag = false;
+    CGameObject* m_Boss         = nullptr;
+    CUI_BossHp*  m_BossHpbar    = nullptr;
+    CUI_Text*    m_EligosNameUI = nullptr;
+    _float       m_UIOpenTime;
+    bool         m_flag = false;
 
     BossIntroPhase m_BossIntroPhase = BossIntroPhase::NONE;
 
-    float m_BossHoldTime = 0.f;    
-    float m_BossNameDelay = 0.f;   
+    float m_BossHoldTime  = 0.f;
+    float m_BossNameDelay = 0.f;
     bool  m_BossNameShown = false;
+
+    _bool  m_WarpStarted = false;
 };

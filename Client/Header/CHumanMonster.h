@@ -54,6 +54,7 @@ public:
 private:
     void     Animation_Setting() override;
     HRESULT  Add_Component() override;
+    void     Setup_SpawnDeadParticle();
 
 public:
     static CHumanMonster* Create(DEVICE graphicDev);

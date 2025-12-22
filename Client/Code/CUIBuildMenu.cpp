@@ -68,11 +68,11 @@ HRESULT CUIBuildMenu::Ready_GameObject()
     m_CookingFireCell->Set_BuildIndex(BUILDITEM::COOKINGFIRE);
     m_CookingFireCell->Set_TextureIndex(0);
     m_CookingFireCell->Set_RecipeId(5001);
-    m_CookingFireCell->Set_OnClick([this]() 
+    m_CookingFireCell->Set_OnClick([this]()
     {
         if (CheckResources(5001))
         {
-            PlayCloseAnimation(); 
+            PlayCloseAnimation();
             CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::KITCHEN);
             CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Confirm_Selection", SOUNDTYPE::SOUND_UI, 0.7f);
         }
@@ -81,7 +81,7 @@ HRESULT CUIBuildMenu::Ready_GameObject()
             //cout << "Not enough resources for Kitchen!" << endl;
         }
     });
-    m_CookingFireCell->Set_OnActive([this]() {return CheckResources(5001); });
+    m_CookingFireCell->Set_OnActive([this]() { return CheckResources(5001); });
     m_CookingFireCell->Set_BuildMenu(this);
     m_BuildCells.push_back(m_CookingFireCell);
 
@@ -89,17 +89,17 @@ HRESULT CUIBuildMenu::Ready_GameObject()
     m_TempleCell->Set_BuildIndex(BUILDITEM::TEMPLE);
     m_TempleCell->Set_TextureIndex(1);
     m_TempleCell->Set_RecipeId(5002);
-    m_TempleCell->Set_OnClick([this]() 
+    m_TempleCell->Set_OnClick([this]()
     {
         if (CheckResources(5002))
         {
-            PlayCloseAnimation(); 
+            PlayCloseAnimation();
             CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::TEMPLE);
-            CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Confirm_Selection", SOUNDTYPE::SOUND_UI, 1.f);
+            CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Confirm_Selection", SOUNDTYPE::SOUND_UI, 0.7f);
         }
         else
         {
-             //cout << "Not enough resources for Temple!" << endl;
+            //cout << "Not enough resources for Temple!" << endl;
         }
     });
     m_TempleCell->Set_OnActive([this]() { return CheckResources(5002); });
@@ -135,11 +135,13 @@ _int CUIBuildMenu::Update_GameObject(const _float& timeDelta)
         return 0;
 
     if (nullptr == m_Inventory)
+    {
         m_Inventory = dynamic_cast<CInventory*>(CManagement::GetInstance()->Get_Component(
             ID_STATIC,
             LAYERTYPE::GAMELOGIC,
             OBJTYPE::PLAYER,
             COMPONENTTYPE::INVENTORY));
+    }
 
     CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
@@ -147,11 +149,11 @@ _int CUIBuildMenu::Update_GameObject(const _float& timeDelta)
     m_DecoIcon2->Update_GameObject(timeDelta);
     m_InteractionKey->Update_GameObject(timeDelta);
 
-	if (CDInputMgr::GetInstance()->MouseDown(DIM_RB) && m_IsOpen == true)
-	{
-		CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Close_Menu.wav", SOUNDTYPE::SOUND_UI, 1.f);
-		PlayCloseAnimation();
-	}
+    if (CDInputMgr::GetInstance()->MouseDown(DIM_RB) && m_IsOpen == true)
+    {
+        CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Close_Menu.wav", SOUNDTYPE::SOUND_UI, 0.7f);
+        PlayCloseAnimation();
+    }
     float targetX = m_IsOpen ? m_TargetX : m_ClosedX; //열려있냐 닫혀있냐에 따라서 목표 X값이 달라짐
     _vec3 pos     = m_TransformCom->Get_Pos();
 
@@ -191,6 +193,11 @@ _int CUIBuildMenu::Update_GameObject(const _float& timeDelta)
     Check_Hovered();
 
     return exit;
+}
+
+void CUIBuildMenu::LateUpdate_GameObject(const _float& timeDelta)
+{
+    CUI::LateUpdate_GameObject(timeDelta);
 }
 
 void CUIBuildMenu::Render_GameObject()
@@ -236,11 +243,6 @@ void CUIBuildMenu::Render_GameObject()
     m_DecoIcon1->Render_GameObject();
     m_DecoIcon2->Render_GameObject();
     m_InteractionKey->Render_GameObject();
-}
-
-void CUIBuildMenu::LateUpdate_GameObject(const _float& timeDelta)
-{
-    CUI::LateUpdate_GameObject(timeDelta);
 }
 
 HRESULT CUIBuildMenu::Add_Component()
@@ -340,11 +342,11 @@ void CUIBuildMenu::Check_Hovered()
 
         if (hoveredNow != m_BuildCells[i]->Get_IsHovered())
         {
-            if (hoveredNow&&m_BuildCells[i]->Get_IsActive()())
+            if (hoveredNow && m_BuildCells[i]->Get_IsActive()())
             {
                 CSoundMgr::GetInstance()->Play_Once(L"ui/ui_pointeron.wav",
-                    SOUNDTYPE::SOUND_UI,
-                    5.f);
+                                                    SOUNDTYPE::SOUND_UI,
+                                                    5.f);
             };
             m_BuildCells[i]->Set_IsHovered(hoveredNow);
         }

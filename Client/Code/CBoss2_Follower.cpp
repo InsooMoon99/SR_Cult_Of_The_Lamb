@@ -6,6 +6,7 @@
 #include "CUI_Dialogue.h"
 #include "CTransform.h"
 #include "CBoxCollider.h"
+#include "CTransform.h"
 
 CBoss2_Follower::CBoss2_Follower(CGameObject* owner)
     : m_Owner(owner)
@@ -46,6 +47,14 @@ void CBoss2_Follower::Enter()
     {
         collider->Set_Size(_vec3(0.2f, 0.26f, 0.51f));
         collider->Set_Offset(_vec3(0.13f, -4.48f, -0.25f));
+    }
+
+    transform = m_Controller->Get_OwnerTransform();
+    if (transform)
+    {
+        _vec3 scale = transform->Get_Scale();
+        scale.x = -fabs(scale.x);
+        transform->Set_Scale(scale);
     }
 
     m_fCurStateElapsedTime = 0.f;

@@ -78,7 +78,7 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
 HRESULT CResourceMgr::Ready_BossResource(DEVICE graphicDev)
 {
     if (FAILED(Ready_BossP1(graphicDev))) return E_FAIL;
-    //if (FAILED(Ready_BossP2(graphicDev))) return E_FAIL;
+    if (FAILED(Ready_BossP2(graphicDev))) return E_FAIL;
 
     return S_OK;
 }
@@ -614,22 +614,22 @@ HRESULT CResourceMgr::Ready_Monster(DEVICE graphicDev)
     CTexture* burperTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(burperTex, E_FAIL);
 
-    //if (FAILED(burperTex->Add_Texture(L"Burper_Idle", TEX_NORMAL,
-    //    L"../Bin/Resource/Texture/Monster/Burper/Idle/Burper-idle%d.png", 34)))
-    //    return E_FAIL;
-    //
-    //if (FAILED(burperTex->Add_Texture(L"Burper_Hit", TEX_NORMAL,
-    //    L"../Bin/Resource/Texture/Monster/Burper/Hit/Burper-hit%d.png", 16)))
-    //    return E_FAIL;
-    //
-    //if (FAILED(burperTex->Add_Texture(L"Burper_Attack", TEX_NORMAL,
-    //    L"../Bin/Resource/Texture/Monster/Burper/Attack/Burper-attack%d.png", 61)))
-    //    return E_FAIL;
-    //
-    //if (FAILED(burperTex->Add_Texture(L"Burper_Run", TEX_NORMAL,
-    //    L"../Bin/Resource/Texture/Monster/Burper/Run/Burper-jump%d.png", 49)))
-    //    return E_FAIL;
-    //
+    if (FAILED(burperTex->Add_Texture(L"Burper_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Burper/Idle/Burper-idle%d.png", 34)))
+        return E_FAIL;
+    
+    if (FAILED(burperTex->Add_Texture(L"Burper_Hit", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Burper/Hit/Burper-hit%d.png", 16)))
+        return E_FAIL;
+    
+    if (FAILED(burperTex->Add_Texture(L"Burper_Attack", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Burper/Attack/Burper-attack%d.png", 61)))
+        return E_FAIL;
+    
+    if (FAILED(burperTex->Add_Texture(L"Burper_Run", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Burper/Run/Burper-jump%d.png", 49)))
+        return E_FAIL;
+    
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_BURPER_MONSTER, burperTex)))
         return E_FAIL;
@@ -728,10 +728,10 @@ HRESULT CResourceMgr::Ready_BossP1(DEVICE graphicDev)
         L"../Bin/Resource/Texture/BossPhase1/ChainAttack/Summon_Chain%d.png", 34)))
         return E_FAIL;
 
-    //// 바닥 이팩트
-    //if (FAILED(BossP1Tex->Add_Texture(L"ChainGroundEff", TEX_NORMAL,
-    //    L"../Bin/Resource/Texture/BossPhase1/ChainAttackGround.png", 1)))
-    //    return E_FAIL;
+    // 바닥 이팩트
+    if (FAILED(BossP1Tex->Add_Texture(L"ChainGroundEff", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/ChainAttackGround.png", 1)))
+        return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_BOSSPHASE1, BossP1Tex)))
@@ -1518,11 +1518,25 @@ HRESULT CResourceMgr::Ready_Particle(DEVICE graphicDev)
         CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Particle/Tree/Tree_Particle%d.png", 6))))
         return E_FAIL;
 
-    // 몬스터 맞았을 때
+    // 엘리고스 파리
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_MONSTER_HIT_PARTICLE,
         CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Particle/Enemy/Enemy_Particle%d.png", 4))))
         return E_FAIL;
 
+    // HumanMonster
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_MONSTER_HUMAN_HIT_PARTICLE,
+        CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Particle/Enemy/HumanMonster/Human_Particle%d.png", 4))))
+        return E_FAIL;
+
+    // Floater
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_MONSTER_FLOATER_HIT_PARTICLE,
+        CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Particle/Enemy/Floater/Floater_Particle%d.png", 3))))
+        return E_FAIL;
+
+    // Bat
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_MONSTER_BAT_HIT_PARTICLE,
+        CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Particle/Enemy/Bat/Bat_Particle%d.png", 4))))
+        return E_FAIL;
 
     return S_OK;
 }
