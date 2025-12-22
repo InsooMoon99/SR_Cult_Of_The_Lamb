@@ -1,17 +1,26 @@
 ﻿#include "pch.h"
 #include "CPlayer.h"
+
 #include "CAnimator.h"
 #include "CAttackBuilder.h"
 #include "CAttackSphere.h"
 #include "CBoxCollider.h"
 #include "CBuildingBase.h"
+#include "CBuildingBase.h"
 #include "CCombatStat.h"
 #include "CCreateHelper.h"
 #include "CDInputMgr.h"
+#include "CDroppedItem.h"
 #include "CDropSystem.h"
+#include "CInteractiveGrass.h"
 #include "CInteractiveGrass.h"
 #include "CInventory.h"
 #include "CLayer.h"
+#include "CLayer.h"
+#include "CMonster.h"
+#include "CMonsterBase.h"
+#include "CMonsterBase.h"
+#include "CNPCBase.h"
 #include "CPlayerAttack.h"
 #include "CPlayerConstruction.h"
 #include "CPlayerController.h"
@@ -20,6 +29,7 @@
 #include "CPlayerMovement.h"
 #include "CPlayerSkill.h"
 #include "CRigidbody.h"
+#include "CSceneMgr.h"
 #include "CSoundMgr.h"
 #include "CState.h"
 #include "CTexture.h"
@@ -27,15 +37,6 @@
 #include "CUI_Interactive.h"
 #include "CWeaponEquip.h"
 #include "CWorldInteractive.h"
-#include "CUI_Interactive.h"
-#include "CLayer.h"
-#include "CBuildingBase.h"
-#include "CInteractiveGrass.h"
-#include "CDroppedItem.h"
-#include "CMonster.h"
-#include "CMonsterBase.h"
-#include "CNPCBase.h"
-#include "CMonsterBase.h"
 
 CPlayer::CPlayer(DEVICE graphicDev)
     : CCharacterBase(graphicDev),
@@ -132,8 +133,19 @@ _int CPlayer::Update_GameObject(const _float& timeDelta)
     _int exit = CCharacterBase::Update_GameObject(timeDelta);
 
     // 안은수 테스트
-    if (CDInputMgr::GetInstance()->Get_DIKeyState(DIK_BACKSPACE))
-        CDropSystem::GetInstance()->SpawnAllFromInven(m_GraphicDev, m_InventoryCom);
+    //if (CDInputMgr::GetInstance()->Get_DIKeyState(DIK_BACKSPACE))
+    //    CDropSystem::GetInstance()->SpawnAllFromInven(m_GraphicDev, m_InventoryCom);
+
+#pragma region 플레이어 스킬 수동 활성화. 세미콜론 키
+    if (CDInputMgr::GetInstance()->KeyDown(DIK_SEMICOLON))
+    {
+        if (m_PlayerSkillCom)
+        {
+            m_PlayerSkillCom->Set_SkillUnlocked(true);
+            m_PlayerSkillCom->Set_CurrentCharges(3);
+        }
+    }
+#pragma endregion
 
     return exit;
 }
@@ -164,12 +176,28 @@ void CPlayer::OnStayOverlap(CCollider* self, CCollider* other)
     CWorldInteractive* worldInteractiveObj = dynamic_cast<CWorldInteractive*>(other->Get_Owner());
     CBuildingBase*     building            = dynamic_cast<CBuildingBase*>(other->Get_Owner());
     CCharacterBase*    character           = dynamic_cast<CCharacterBase*>(other->Get_Owner());
-    CDroppedItem*       weapon              = dynamic_cast<CDroppedItem*>(other->Get_Owner());
+    CDroppedItem*      weapon              = dynamic_cast<CDroppedItem*>(other->Get_Owner());
     if (weapon)
     {
         if (!(weapon->Get_ItemInst().itemId == 3001 || weapon->Get_ItemInst().itemId == 3002))
-        {
             weapon = nullptr;
+    }
+    if (dynamic_cast<CNPCBase*>(character) && dynamic_cast<CMonsterBase*>(character))
+        character = nullptr;
+
+    if (dynamic_cast<CInteractiveGrass*>(worldInteractiveObj))
+        character = nullptr;
+
+    if ((character) && m_OverlapBegin)
+    {
+        m_InteractiveUI->Set_TextureIndex(7);
+        m_InteractiveUI->Set_IsActive(true);
+        m_InteractiveUI->Get_Transform()->Set_Scale(110.f, 35.f, 1.f);
+        m_InteractiveUI->Get_Transform()->Set_Pos(0.f, -250.f, 1.f);
+        if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
+        {
+            m_InteractiveUI->Set_IsActive(false);
+            m_OverlapBegin = false;
         }
     }
    /* if (dynamic_cast<CNPCBase*>(character)&&dynamic_cast<CMonsterBase*>(character))
@@ -183,6 +211,19 @@ void CPlayer::OnStayOverlap(CCollider* self, CCollider* other)
     if (dynamic_cast<CMonsterBase*>(character))
     {
         character = nullptr;
+        
+    }
+    if ((worldInteractiveObj || building) && m_OverlapBegin)
+    {
+        m_InteractiveUI->Set_TextureIndex(4);
+        m_InteractiveUI->Set_IsActive(true);
+        m_InteractiveUI->Get_Transform()->Set_Scale(185.f, 35.f, 1.f);
+        m_InteractiveUI->Get_Transform()->Set_Pos(60.f, -250.f, 1.f);
+        if (CDInputMgr::GetInstance()->MouseDown(DIM_LB))
+        {
+            m_InteractiveUI->Set_IsActive(false);
+            m_OverlapBegin = false;
+        }
     }
    if (dynamic_cast<CInteractiveGrass*>(worldInteractiveObj))
    {
@@ -240,9 +281,9 @@ void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)
     //{
     //    worldInteractiveObj = nullptr;
     //}   
-    CBuildingBase*     building            = dynamic_cast<CBuildingBase*>(other->Get_Owner());
-    CCharacterBase*    character           = dynamic_cast<CCharacterBase*>(other->Get_Owner());
-    CDroppedItem*      weapon              = dynamic_cast<CDroppedItem*>(other->Get_Owner());
+    CBuildingBase*  building  = dynamic_cast<CBuildingBase*>(other->Get_Owner());
+    CCharacterBase* character = dynamic_cast<CCharacterBase*>(other->Get_Owner());
+    CDroppedItem*   weapon    = dynamic_cast<CDroppedItem*>(other->Get_Owner());
     if (worldInteractiveObj || building || character || weapon)
         m_InteractiveUI->Set_IsActive(false);
 
@@ -611,11 +652,10 @@ void CPlayer::Animation_Setting()
     //m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_REFUSE, L"Refuse_Sword", ANIMSTATE::ONCE);
 
     m_AnimatorCom->Create_Animation(L"Finish_Sacrifice",
-        109,
-        0.03f,
-        _vec2(2.24f, 2.32f),
-        _vec2(0.f, 1.06f));
-
+                                    109,
+                                    0.03f,
+                                    _vec2(2.24f, 2.32f),
+                                    _vec2(0.f, 1.06f));
 
 #pragma endregion
 
