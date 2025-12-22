@@ -75,7 +75,7 @@ HRESULT CPlayer::Ready_GameObject()
 
     m_CombatStatCom->Set_Hp(100.f);
     m_CombatStatCom->Set_MaxHp(100.f);
-    m_CombatStatCom->Set_Attack(20.f);
+    m_CombatStatCom->Set_Attack(50.f);
     m_CombatStatCom->Set_Mp(0.f);
     m_CombatStatCom->Set_Speed(5.f);
 
