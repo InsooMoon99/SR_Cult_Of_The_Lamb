@@ -421,7 +421,7 @@ _int CStage::Update_Scene(const _float& timeDelta)
     {
         CChest* tmp = CChest::Create(m_GraphicDev, { 23, 2, 23 });
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0 ; i < 5; i++)
         {
             tmp->AddItem(1001, 4);
             tmp->AddItem(1004, 2);
