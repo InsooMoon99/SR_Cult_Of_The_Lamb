@@ -232,8 +232,8 @@ void CCollisionManager::Initialize_CollisionMatrix()
     _int workbench_Index        = static_cast<_int>(COLLISION_LAYERTYPE::WORKBENCH);
     _int kitchen_Index          = static_cast<_int>(COLLISION_LAYERTYPE::KITCHEN);
     _int site_Index             = static_cast<_int>(COLLISION_LAYERTYPE::CONSTRUCTION_SITE);
-    _int fly_Index             = static_cast<_int>(COLLISION_LAYERTYPE::FLY);
-    _int MonsterAttack_Index             = static_cast<_int>(COLLISION_LAYERTYPE::ATTACK_MONSTER);
+    _int fly_Index              = static_cast<_int>(COLLISION_LAYERTYPE::FLY);
+    _int MonsterAttack_Index    = static_cast<_int>(COLLISION_LAYERTYPE::ATTACK_MONSTER);
 
 
     // 벽끼리는 충돌하지 않도록 설정

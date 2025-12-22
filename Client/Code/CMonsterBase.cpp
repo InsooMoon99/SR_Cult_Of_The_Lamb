@@ -8,8 +8,9 @@
 #include "CRcTex.h"
 #include "CTexture.h"
 #include "CTransform.h"
-#include "CStage_Dungeon.h";
-#include "CWall.h";
+#include "CStage_Dungeon.h"
+#include "CWall.h"
+#include "CWorldInteractive.h"
 
 namespace Engine
 {
@@ -199,6 +200,10 @@ void CMonsterBase::OnBeginOverlap(CCollider* self, CCollider* other)
 
     CWall* wall = dynamic_cast<CWall*>(other->Get_Owner());
     if (wall)
+        return;
+
+    CWorldInteractive* interact = dynamic_cast<CWorldInteractive*>(other->Get_Owner());
+    if (interact)
         return;
 
   if(self->Get_CollisionLayer()== other->Get_CollisionLayer())
