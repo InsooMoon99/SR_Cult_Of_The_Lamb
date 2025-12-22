@@ -113,24 +113,24 @@ HRESULT CStage::Ready_Scene()
         _vec3 pos;
     };
 
-    vector<SpawnInfo> spawnList = {
-        { 1001, { 11.f, 1.f, 10.f } },      // 동전
-        { 1001, { 12.f, 1.f, 10.f } },
-        //{ 1001, { 13.f, 1.f, 10.f } },
-        //{ 1001, { 14.f, 1.f, 10.f } },
-        //{ 1001, { 15.f, 1.f, 10.f } },
-        //{ 3001, { 20.f, 1.f, 10.f } },    // 검
-        //{ 2001, { 25.f, 1.f, 10.f } },    // 풀죽
-        //{ 2001, { 27.f, 1.f, 10.f } },
-        //{ 2003, { 30.f, 1.f, 10.f } },    // 베리 그릇
-        //{ 2003, { 32.f, 1.f, 10.f } }
-    };
+    //vector<SpawnInfo> spawnList = {
+    //    { 1001, { 11.f, 1.f, 10.f } },      // 동전
+    //    { 1001, { 12.f, 1.f, 10.f } },
+    //    //{ 1001, { 13.f, 1.f, 10.f } },
+    //    //{ 1001, { 14.f, 1.f, 10.f } },
+    //    //{ 1001, { 15.f, 1.f, 10.f } },
+    //    //{ 3001, { 20.f, 1.f, 10.f } },    // 검
+    //    //{ 2001, { 25.f, 1.f, 10.f } },    // 풀죽
+    //    //{ 2001, { 27.f, 1.f, 10.f } },
+    //    //{ 2003, { 30.f, 1.f, 10.f } },    // 베리 그릇
+    //    //{ 2003, { 32.f, 1.f, 10.f } }
+    //};
 
-    for (const auto& info : spawnList)
+  /*  for (const auto& info : spawnList)
     {
         ItemInstance inst = { info.id, -1, 0 };
         CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev, inst, info.pos);
-    }
+    }*/
 
     //for (int i = 0; i < CItemDB::GetInstance()->GetVector().size(); i++)
     //{
@@ -388,7 +388,18 @@ _int CStage::Update_Scene(const _float& timeDelta)
          cook->Initialize_GameObject();*/
 
         CChest* tmp = CChest::Create(m_GraphicDev, { 23, 2, 23 });
-        tmp->AddItem(1002, 4);
+
+        for (int i = 0 ; i < 5; i++)
+        {
+            tmp->AddItem(1001, 4);
+            tmp->AddItem(1004, 2);
+            tmp->AddItem(1005, 1);
+            tmp->AddItem(1003, 2);
+        }
+        tmp->AddItem(1001, 2);
+
+        tmp->AddItem(1001, 2);
+
         tmp->Initialize_GameObject();
         SpawnObjectOnLayer(tmp, OBJTYPE::INTERACTIVE);
     }
