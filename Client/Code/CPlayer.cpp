@@ -116,6 +116,11 @@ void CPlayer::Initialize_GameObject()
 
     m_InteractiveUI = CUI_Interactive::Create(m_GraphicDev);
     CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::UI)->Add_GameObject(OBJTYPE::UI, m_InteractiveUI);
+
+   /* CPlayerSkill* playerskill = dynamic_cast<CPlayerSkill*>(CManagement::GetInstance()->Get_Component(COMPONENTID::ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::PL_SKILL));
+    {
+        playerskill->Set_SkillUnlocked(true); playerskill->Set_CurrentCharges(3);
+    };*/
 }
 
 _int CPlayer::Update_GameObject(const _float& timeDelta)
@@ -190,6 +195,19 @@ void CPlayer::OnStayOverlap(CCollider* self, CCollider* other)
             m_OverlapBegin = false;
         }
     }
+   /* if (dynamic_cast<CNPCBase*>(character)&&dynamic_cast<CMonsterBase*>(character))
+    {
+        character = nullptr;
+    }*/
+    if (dynamic_cast<CNPCBase*>(character))
+    {
+        character = nullptr;
+    }
+    if (dynamic_cast<CMonsterBase*>(character))
+    {
+        character = nullptr;
+        
+    }
     if ((worldInteractiveObj || building) && m_OverlapBegin)
     {
         m_InteractiveUI->Set_TextureIndex(4);
@@ -202,19 +220,48 @@ void CPlayer::OnStayOverlap(CCollider* self, CCollider* other)
             m_OverlapBegin = false;
         }
     }
-    if (weapon && m_OverlapBegin)
-    {
-        m_InteractiveUI->Set_TextureIndex(6);
-        m_InteractiveUI->Set_IsActive(true);
-        m_InteractiveUI->Get_Transform()->Set_Scale(110.f, 35.f, 1.f);
-        m_InteractiveUI->Get_Transform()->Set_Pos(0, 80.f, 1.f);
-        if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
-        {
-            m_InteractiveUI->Set_IsActive(false);
-            m_OverlapBegin = false;
-        }
-    }
-    // (building->Get_IsHovered())
+   if (dynamic_cast<CInteractiveGrass*>(worldInteractiveObj))
+   {
+       character = nullptr;
+   }
+
+   if ((character) && m_OverlapBegin)
+   {
+       m_InteractiveUI->Set_TextureIndex(7);
+       m_InteractiveUI->Set_IsActive(true);
+       m_InteractiveUI->Get_Transform()->Set_Scale(110.f, 35.f, 1.f);
+       m_InteractiveUI->Get_Transform()->Set_Pos(0.f, -250.f, 1.f);
+       if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
+       {
+           m_InteractiveUI->Set_IsActive(false);
+           m_OverlapBegin = false;
+       }
+   }
+   if ((worldInteractiveObj||building)&&m_OverlapBegin)
+   {
+       m_InteractiveUI->Set_TextureIndex(4);
+       m_InteractiveUI->Set_IsActive(true);
+       m_InteractiveUI->Get_Transform()->Set_Scale(185.f, 35.f, 1.f);
+       m_InteractiveUI->Get_Transform()->Set_Pos(60.f, -250.f, 1.f);
+       if (CDInputMgr::GetInstance()->MouseDown(DIM_LB))
+       {
+           m_InteractiveUI->Set_IsActive(false);
+           m_OverlapBegin = false;
+       }
+   }
+   if (weapon && m_OverlapBegin)
+   {
+       m_InteractiveUI->Set_TextureIndex(6);
+       m_InteractiveUI->Set_IsActive(true);
+       m_InteractiveUI->Get_Transform()->Set_Scale(110.f, 35.f, 1.f);
+       m_InteractiveUI->Get_Transform()->Set_Pos(0, 80.f, 1.f);
+       if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
+       {
+           m_InteractiveUI->Set_IsActive(false);
+           m_OverlapBegin = false;
+       }
+   }
+  // (building->Get_IsHovered())
 }
 
 void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)
