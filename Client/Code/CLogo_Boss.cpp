@@ -12,6 +12,7 @@
 #include "CMainMenu.h"
 #include "CSceneMgr.h"
 #include "CStage_Boss1.h"
+#include "CUI_LoadingCircle.h"
 
 CLogo_Boss::CLogo_Boss(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -59,13 +60,12 @@ void CLogo_Boss::LateUpdate_Scene(const _float& timeDelta)
 
 void CLogo_Boss::Render_Scene()
 {
-    // debug 용
-    _vec2 pos{ 160.f, 120.f };
+    _vec2 pos{ 281.8f, 602.8f };
 
-    CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Heavy",
-                                         m_Loading->Get_String(),
-                                         &pos,
-                                         D3DXCOLOR(1.f, 0.f, 1.f, 1.f));
+    CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Regular",
+        m_Loading->Get_String(),
+        &pos,
+        D3DXCOLOR(1.f, 0.f, 0.f, 1.f));
 }
 
 HRESULT CLogo_Boss::Ready_Environment_Layer(LAYERTYPE layerType)
@@ -84,8 +84,12 @@ HRESULT CLogo_Boss::Ready_Environment_Layer(LAYERTYPE layerType)
 HRESULT CLogo_Boss::Ready_UI_Layer(LAYERTYPE layerType)
 {
     auto layer = Engine::CLayer::Create();
+    NULL_CHECK_RETURN(layer, E_FAIL);
 
-    NULL_CHECK_RETURN(layer, E_FAIL)
+    CUI_LoadingCircle* loadingCircle = CUI_LoadingCircle::Create(m_GraphicDev);
+    NULL_CHECK_RETURN(loadingCircle, E_FAIL);
+
+    layer->Add_GameObject(OBJTYPE::UI, loadingCircle);
 
     m_Layers.insert({ layerType, layer });
 

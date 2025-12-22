@@ -16,11 +16,11 @@ private:
     virtual ~CBoss2_Idle();
 
 public:
-    void Enter() override;
-    _int Update_State(const _float& timeDelta) override;
-    void Exit() override;
+    void     Enter() override;
+    _int     Update_State(const _float& timeDelta) override;
+    void     Exit() override;
 
-    HRESULT Ready_State() override;
+    HRESULT  Ready_State() override;
 
 public:
     static CBoss2_Idle* Create(CGameObject* owner);
@@ -29,9 +29,11 @@ private:
     void Free() override;
 
 private:
-    CGameObject*     m_Owner;
+    CGameObject*    m_Owner;
 
-    _float           m_Pattern_Cooldown;
+    _float          m_Pattern_Cooldown;
+    _int            m_CooldownMin = 10; // Min, Max 사이에 랜덤하게
+    _int            m_CooldownMax = 15;
 
 };
 

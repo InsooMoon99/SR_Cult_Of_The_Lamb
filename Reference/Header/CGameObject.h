@@ -31,6 +31,8 @@ public:
     virtual _int    Update_GameObject(const _float& timeDelta);
     virtual void    LateUpdate_GameObject(const _float& timeDelta);
     virtual void    Render_GameObject() PURE;
+    //
+    virtual void    Render_Trail() {};
 
 public:
     virtual void OnBeginOverlap(CCollider* self, CCollider* other) {}
@@ -64,12 +66,18 @@ public:
     void SetAspectScale(CTransform* transCom,_vec3 magnification);
     //void SetScaleAsp(_vec3 ScaleAsp) { m_ScaleAsp = ScaleAsp; }
 
+public:
+    void Set_Active(_bool active) { m_IsActive = active; }
+    _bool Is_Active() const { return m_IsActive; }
+
 private:
     _vec3 m_BaseScaleAsp;
     _vec3 m_ScaleAsp;
 
 protected:
     map<COMPONENTTYPE, CComponent*> m_Components[ID_END];
+    
+    _bool m_IsActive = true;
 
     DEVICE m_GraphicDev;
 

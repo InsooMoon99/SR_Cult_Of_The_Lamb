@@ -4,11 +4,14 @@
 #include "CAttackBuilder.h"
 #include "CAttackSphere.h"
 #include "CBoxCollider.h"
+#include "CBuildingBase.h"
 #include "CCombatStat.h"
 #include "CCreateHelper.h"
 #include "CDInputMgr.h"
 #include "CDropSystem.h"
+#include "CInteractiveGrass.h"
 #include "CInventory.h"
+#include "CLayer.h"
 #include "CPlayerAttack.h"
 #include "CPlayerConstruction.h"
 #include "CPlayerController.h"
@@ -17,10 +20,22 @@
 #include "CPlayerMovement.h"
 #include "CPlayerSkill.h"
 #include "CRigidbody.h"
+#include "CSoundMgr.h"
 #include "CState.h"
 #include "CTexture.h"
 #include "CTransform.h"
+#include "CUI_Interactive.h"
 #include "CWeaponEquip.h"
+#include "CWorldInteractive.h"
+#include "CUI_Interactive.h"
+#include "CLayer.h"
+#include "CBuildingBase.h"
+#include "CInteractiveGrass.h"
+#include "CDroppedItem.h"
+#include "CMonster.h"
+#include "CMonsterBase.h"
+#include "CNPCBase.h"
+#include "CMonsterBase.h"
 
 CPlayer::CPlayer(DEVICE graphicDev)
     : CCharacterBase(graphicDev),
@@ -33,7 +48,9 @@ CPlayer::CPlayer(DEVICE graphicDev)
       m_PlayerAttackCom(nullptr),
       m_PlayerSkillCom(nullptr),
       m_PlayerGatherCom(nullptr),
-      m_PlayerConstructionCom(nullptr)
+      m_PlayerConstructionCom(nullptr),
+      m_InteractiveUI(nullptr),
+      m_OverlapBegin(false)
 
 { }
 
@@ -48,7 +65,9 @@ CPlayer::CPlayer(const CPlayer& rhs)
       m_PlayerAttackCom(nullptr),
       m_PlayerSkillCom(nullptr),
       m_PlayerGatherCom(nullptr),
-      m_PlayerConstructionCom(nullptr)
+      m_PlayerConstructionCom(nullptr),
+      m_InteractiveUI(nullptr),
+      m_OverlapBegin(false)
 { }
 
 CPlayer::~CPlayer()
@@ -61,12 +80,19 @@ HRESULT CPlayer::Ready_GameObject()
 
     m_CombatStatCom->Set_Hp(100.f);
     m_CombatStatCom->Set_MaxHp(100.f);
-    m_CombatStatCom->Set_Attack(50.f);
-    m_CombatStatCom->Set_Mp(5.f);
+    m_CombatStatCom->Set_Attack(20.f);
+    m_CombatStatCom->Set_Mp(0.f);
     m_CombatStatCom->Set_Speed(5.f);
 
     // Hit 상태로 전환할 것인가? [ 보스1, 보스2 ]만 False로 세팅할듯 추가로 중간보스가 있다면 세팅
     m_CombatStatCom->Set_HitState(true);
+
+    m_CombatStatCom->Set_OnDamagedEvent([&]()
+    {
+        CSoundMgr::GetInstance()->Play_Once(L"Player/Player_GetHit.wav",
+                                            SOUND_EFFECT,
+                                            0.5f);
+    });
 
     m_TransformCom->Set_Pos(_vec3(20.f, 1.f, 15.f));
     m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
@@ -90,9 +116,15 @@ void CPlayer::Initialize_GameObject()
     m_PlayerControllerCom->Init_OwnerComponent();
     m_PlayerMovementCom->Init_OwnerComponent();
     m_PlayerAttackCom->Init_OwnerComponent();
-
     m_PlayerSkillCom->Init_OwnerComponent();
-    //m_PlayerConstructionCom->Init_OwnerComponent(); // Construction doesn't have Init_Owner logic yet, but safe to add if base has it or we add it later
+
+    m_InteractiveUI = CUI_Interactive::Create(m_GraphicDev);
+    CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::UI)->Add_GameObject(OBJTYPE::UI, m_InteractiveUI);
+
+    CPlayerSkill* playerskill = dynamic_cast<CPlayerSkill*>(CManagement::GetInstance()->Get_Component(COMPONENTID::ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::PL_SKILL));
+    {
+        playerskill->Set_SkillUnlocked(true); playerskill->Set_CurrentCharges(3);
+    };
 }
 
 _int CPlayer::Update_GameObject(const _float& timeDelta)
@@ -121,11 +153,72 @@ void CPlayer::OnBeginOverlap(CCollider* self, CCollider* other)
     CCharacterBase::OnBeginOverlap(self, other);
     m_PlayerGatherCom->OnBeginOverlap(self, other);
     m_PlayerConstructionCom->OnOverlapEnter(self, other);
+
+    m_OverlapBegin = true;
 }
 
 void CPlayer::OnStayOverlap(CCollider* self, CCollider* other)
 {
     CCharacterBase::OnStayOverlap(self, other);
+    //상호작용 키 띄우기
+    CWorldInteractive* worldInteractiveObj = dynamic_cast<CWorldInteractive*>(other->Get_Owner());
+    CBuildingBase*     building            = dynamic_cast<CBuildingBase*>(other->Get_Owner());
+    CCharacterBase*    character           = dynamic_cast<CCharacterBase*>(other->Get_Owner());
+    CDroppedItem*       weapon              = dynamic_cast<CDroppedItem*>(other->Get_Owner());
+    if (weapon)
+    {
+        if (!(weapon->Get_ItemInst().itemId == 3001 || weapon->Get_ItemInst().itemId == 3002))
+        {
+            weapon = nullptr;
+        }
+    }
+    if (dynamic_cast<CNPCBase*>(character)&&dynamic_cast<CMonsterBase*>(character))
+    {
+        character = nullptr;
+    }
+  
+   if (dynamic_cast<CInteractiveGrass*>(worldInteractiveObj))
+   {
+       character = nullptr;
+   }
+
+   if ((character) && m_OverlapBegin)
+   {
+       m_InteractiveUI->Set_TextureIndex(7);
+       m_InteractiveUI->Set_IsActive(true);
+       m_InteractiveUI->Get_Transform()->Set_Scale(110.f, 35.f, 1.f);
+       m_InteractiveUI->Get_Transform()->Set_Pos(0.f, -250.f, 1.f);
+       if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
+       {
+           m_InteractiveUI->Set_IsActive(false);
+           m_OverlapBegin = false;
+       }
+   }
+   if ((worldInteractiveObj||building)&&m_OverlapBegin)
+   {
+       m_InteractiveUI->Set_TextureIndex(4);
+       m_InteractiveUI->Set_IsActive(true);
+       m_InteractiveUI->Get_Transform()->Set_Scale(185.f, 35.f, 1.f);
+       m_InteractiveUI->Get_Transform()->Set_Pos(60.f, -250.f, 1.f);
+       if (CDInputMgr::GetInstance()->MouseDown(DIM_LB))
+       {
+           m_InteractiveUI->Set_IsActive(false);
+           m_OverlapBegin = false;
+       }
+   }
+   if (weapon && m_OverlapBegin)
+   {
+       m_InteractiveUI->Set_TextureIndex(6);
+       m_InteractiveUI->Set_IsActive(true);
+       m_InteractiveUI->Get_Transform()->Set_Scale(110.f, 35.f, 1.f);
+       m_InteractiveUI->Get_Transform()->Set_Pos(0, 80.f, 1.f);
+       if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
+       {
+           m_InteractiveUI->Set_IsActive(false);
+           m_OverlapBegin = false;
+       }
+   }
+  // (building->Get_IsHovered())
 }
 
 void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)
@@ -134,6 +227,18 @@ void CPlayer::OnEndOverlap(CCollider* self, CCollider* other)
 
     m_PlayerGatherCom->OnEndOverlap(self, other);
     m_PlayerConstructionCom->OnOverlapExit(self, other);
+    //상호작용 키 끄기
+    CWorldInteractive* worldInteractiveObj = dynamic_cast<CWorldInteractive*>(other->Get_Owner());
+    //if (dynamic_cast<CInteractiveGrass*>(worldInteractiveObj))
+    //{
+    //    worldInteractiveObj = nullptr;
+    //}   
+    CBuildingBase*     building            = dynamic_cast<CBuildingBase*>(other->Get_Owner());
+    CCharacterBase*    character           = dynamic_cast<CCharacterBase*>(other->Get_Owner());
+    CDroppedItem*      weapon              = dynamic_cast<CDroppedItem*>(other->Get_Owner());
+    if (worldInteractiveObj || building || character || weapon)
+        m_InteractiveUI->Set_IsActive(false);
+
     //cout << "Player HitOut" << endl;
 }
 
@@ -217,7 +322,6 @@ void CPlayer::Animation_Setting()
 #pragma region --- IDLE ---
     m_AnimatorCom->Create_Animation(L"PlayerIdle", 150, 0.02f, _vec2(0.75f, 0.80f));
 
-    m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"PlayerIdle", ANIMSTATE::LOOP);
 #pragma endregion
 
 #pragma region --- RUN ---
@@ -227,7 +331,8 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"PlayerRun_LUP", 19, 0.02f, _vec2(0.68f, 0.8f));
     m_AnimatorCom->Create_Animation(L"PlayerRun_LDOWN", 19, 0.02f, _vec2(0.68f, 0.8f));
 
-    m_StateCom->Set_AnimInfo(ACTORSTATE::RUN, L"PlayerRun", ANIMSTATE::LOOP);
+    Set_NormalMode();
+
 #pragma endregion
 
 #pragma region --- ROLL ---
@@ -240,7 +345,7 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"PlayerRoll_UP",
                                     16,
                                     0.02f * 19 / 16,
-                                    _vec2(0.6f, 0.7f),
+                                    _vec2(0.7f, 0.7f),
                                     _vec2(0.f, 0.f));
 
     m_AnimatorCom->Create_Animation(L"PlayerRoll_DOWN",
@@ -286,8 +391,9 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"PlayerSwordHeavy",
                                     70,
                                     0.02f,
-                                    _vec2(2.f, 2.f),
-                                    _vec2(0.f, 0.f));
+                                    _vec2(2.9f, 2.9f),
+                                    _vec2(0.25f, 1.2f),
+                                    _vec2(-0.25f, 1.2f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SWORD_HEAVY,
                              L"PlayerSwordHeavy",
@@ -299,7 +405,8 @@ void CPlayer::Animation_Setting()
                                     41,
                                     0.02f,
                                     _vec2(2.2f, 1.5f),
-                                    _vec2(0.f, 0.3f));
+                                    _vec2(0.1f, 0.3f),
+                                    _vec2(-0.1f, 0.3f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_COMBO1,
                              L"PlayerGauntletCombo1",
@@ -309,7 +416,8 @@ void CPlayer::Animation_Setting()
                                     43,
                                     0.02f,
                                     _vec2(2.2f, 1.5f),
-                                    _vec2(0.f, 0.f));
+                                    _vec2(0.1f, 0.f),
+                                    _vec2(-0.1f, 0.f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_COMBO2,
                              L"PlayerGauntletCombo2",
@@ -319,7 +427,8 @@ void CPlayer::Animation_Setting()
                                     46,
                                     0.02f,
                                     _vec2(2.6f, 2.f),
-                                    _vec2(0.f, 0.45f));
+                                    _vec2(-1.f, 0.45f),
+                                    _vec2(1.f, 0.45f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_COMBO3,
                              L"PlayerGauntletCombo3",
@@ -328,8 +437,9 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"PlayerGauntletHeavy",
                                     70,
                                     0.02f,
-                                    _vec2(2.2f, 2.2f),
-                                    _vec2(0.f, 0.f));
+                                    _vec2(2.4f, 2.4f),
+                                    _vec2(0.15f, -0.3f),
+                                    _vec2(-0.15f, -0.3f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_GAUNTLET_HEAVY,
                              L"PlayerGauntletHeavy",
@@ -341,7 +451,8 @@ void CPlayer::Animation_Setting()
                                     17,
                                     0.02f,
                                     _vec2(0.6f, 0.8f),
-                                    _vec2(0.f, 0.f));
+                                    _vec2(-0.15f, 0.f),
+                                    _vec2(0.15f, 0.f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SKILL_CHARGING,
                              L"PlayerSkillCharging",
@@ -351,7 +462,8 @@ void CPlayer::Animation_Setting()
                                     32,
                                     0.02f,
                                     _vec2(1.f, 1.2f),
-                                    _vec2(0.f, 0.4f));
+                                    _vec2(0.2f, 0.4f),
+                                    _vec2(-0.2f, 0.4f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_SKILL_SINGLE,
                              L"PlayerSkillAttack",
@@ -378,8 +490,8 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"PlayerWood",
                                     39,
                                     0.02f,
-                                    _vec2(1.5f, 1.5f),
-                                    _vec2(0.f, -.5f));
+                                    _vec2(1.6f, 1.5f),
+                                    _vec2(0.f, -0.45f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_WOOD,
                              L"PlayerWood",
@@ -388,8 +500,8 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"PlayerStone",
                                     45,
                                     0.02f,
-                                    _vec2(1.2f, 1.2f),
-                                    _vec2(0.f, 0.3f));
+                                    _vec2(1.3f, 1.2f),
+                                    _vec2(0.f, 0.2f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_STONE,
                              L"PlayerStone",
@@ -422,7 +534,8 @@ void CPlayer::Animation_Setting()
                                     77,
                                     0.02f,
                                     _vec2(1.3f, 1.67f),
-                                    _vec2(0.01f, 0.1f));
+                                    _vec2(0.15f, -0.05f),
+                                    _vec2(-0.15f, -0.05f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_WEAPONGET,
                              L"Player_WeaponGet",
@@ -430,12 +543,32 @@ void CPlayer::Animation_Setting()
 
     m_AnimatorCom->Create_Animation(L"Player_Hit",
                                     34,
-                                    0.01f,
+                                    0.015f,
                                     _vec2(1.f, 0.97f),
                                     _vec2(0.f, 0.18f));
 
     m_StateCom->Set_AnimInfo(ACTORSTATE::HIT,
                              L"Player_Hit",
+                             ANIMSTATE::ONCE);
+
+    m_AnimatorCom->Create_Animation(L"Player_WarpOut",
+                                    48,
+                                    0.04f,
+                                    _vec2(0.8f, 1.6f),
+                                    _vec2(0.f, 0.8f));
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_WARPOUT,
+                             L"Player_WarpOut",
+                             ANIMSTATE::ONCE);
+
+    m_AnimatorCom->Create_Animation(L"Player_WarpIn",
+                                    51,
+                                    0.04f,
+                                    _vec2(0.8f, 1.6f),
+                                    _vec2(0.f, 0.8f));
+
+    m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_WARPIN,
+                             L"Player_WarpIn",
                              ANIMSTATE::ONCE);
 
 #pragma endregion
@@ -444,14 +577,16 @@ void CPlayer::Animation_Setting()
     m_AnimatorCom->Create_Animation(L"Decide_Start",
                                     41,
                                     0.04f,
-                                    _vec2(0.77f, 1.12f),
-                                    _vec2(0.f, 0.32f));
+                                    _vec2(0.74f, 1.09f),
+                                    _vec2(-0.01f, 0.29f),
+                                    _vec2(0.01f, 0.29f));
 
     m_AnimatorCom->Create_Animation(L"Decide_Loop",
                                     50,
                                     0.04f,
-                                    _vec2(0.76f, 0.73f),
-                                    _vec2(0.f, -0.05f));
+                                    _vec2(0.7f, 0.7f),
+                                    _vec2(-0.01f, -0.08f),
+                                    _vec2(0.01f, -0.08f));
 
     m_AnimatorCom->Create_Animation(L"Refuse_Sword",
                                     55,
@@ -468,9 +603,120 @@ void CPlayer::Animation_Setting()
     m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_DECIDE, L"Decide_Start", ANIMSTATE::ONCE);
     //m_StateCom->Set_AnimInfo(ACTORSTATE::PLAYER_REFUSE, L"Refuse_Sword", ANIMSTATE::ONCE);
 
+    m_AnimatorCom->Create_Animation(L"Finish_Sacrifice",
+        109,
+        0.03f,
+        _vec2(2.24f, 2.32f),
+        _vec2(0.f, 1.06f));
+
+
 #pragma endregion
 
+    // 프롤로그
+    Prologue_Animation_Setting();
+}
 
+void CPlayer::Prologue_Animation_Setting()
+{
+    // Idle
+    m_AnimatorCom->Create_Animation(L"Prologue_Idle",
+                                    38,
+                                    0.02f,
+                                    _vec2(0.8f, 0.65f),
+                                    _vec2(0.f, -0.1f));
+
+    m_AnimatorCom->Create_Animation(L"Prologue_Idle_Up",
+                                    38,
+                                    0.02f,
+                                    _vec2(0.8f, 0.65f),
+                                    _vec2(0.f, -0.1f));
+
+    // Run
+    m_AnimatorCom->Create_Animation(L"Prologue_Run_UP",
+                                    50,
+                                    0.02f,
+                                    _vec2(0.72f, 0.65f),
+                                    _vec2(0.f, -0.1f));
+
+    m_AnimatorCom->Create_Animation(L"Prologue_Run_DOWN",
+                                    50,
+                                    0.02f,
+                                    _vec2(0.72f, 0.65f),
+                                    _vec2(0.f, -0.1f));
+
+    m_AnimatorCom->Create_Animation(L"Prologue_Run_LDOWN",
+                                    50,
+                                    0.02f,
+                                    _vec2(0.72f, 0.65f),
+                                    _vec2(0.f, -0.1f));
+
+    m_AnimatorCom->Create_Animation(L"Prologue_Run_LEFT",
+                                    50,
+                                    0.02f,
+                                    _vec2(0.57f, 0.72f),
+                                    _vec2(0.f, -0.08f));
+
+    m_AnimatorCom->Create_Animation(L"Prologue_Run_LUP",
+                                    50,
+                                    0.02f,
+                                    _vec2(0.67f, 0.67f),
+                                    _vec2(0.f, -0.1f));
+
+    // Rebirth
+    m_AnimatorCom->Create_Animation(L"Prologue_Rebirth",
+                                    91,
+                                    0.04f,
+                                    _vec2(1.9f, 2.6f),
+                                    _vec2(0.f, 1.2f));
+
+    // Knnel
+    m_AnimatorCom->Create_Animation(L"Prologue_Kneel_Start",
+                                    56,
+                                    0.02f,
+                                    _vec2(0.92f, 0.68f),
+                                    _vec2(-0.07f, -0.08f));
+
+    m_AnimatorCom->Create_Animation(L"Prologue_Kneel_Wake",
+                                    75,
+                                    0.02f,
+                                    _vec2(0.78f, 0.68f),
+                                    _vec2(-0.08f, -0.1f));
+
+    m_AnimatorCom->Create_Animation(L"Prologue_Kneel_Loop",
+                                    34,
+                                    0.02f,
+                                    _vec2(0.65f, 0.6f),
+                                    _vec2(-0.145f, -0.155f));
+
+    // Dead
+    //?? 아직 뭔지 모름
+    m_AnimatorCom->Create_Animation(L"Prologue_Dead",
+                                    1,
+                                    0.02f,
+                                    _vec2(1.f, 1.f),
+                                    _vec2(0.f, 0.f));
+}
+
+void CPlayer::Set_PrologueMode(_bool prologue)
+{
+    m_IsPrologue = prologue;
+
+    if (prologue)
+    {
+        m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"Prologue_Idle", ANIMSTATE::LOOP);
+        m_StateCom->Set_AnimInfo(ACTORSTATE::RUN, L"Prologue_Run", ANIMSTATE::LOOP);
+    }
+
+    else
+        Set_NormalMode();
+
+    m_StateCom->Force_UpdateAnimation();
+}
+
+void CPlayer::Set_NormalMode()
+{
+    m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"PlayerIdle", ANIMSTATE::LOOP);
+    m_StateCom->Set_AnimInfo(ACTORSTATE::RUN, L"PlayerRun", ANIMSTATE::LOOP);
 }
 
 CPlayer* CPlayer::Create(DEVICE graphicDev)

@@ -25,7 +25,7 @@ public:
 
 public:
     // 대화
-    void    Start_Dialogue(const string& dialogueId,
+    _bool   Start_Dialogue(const string& dialogueId,
                             const _vec2 boxPos = {0.f, 200.f},
                             const _vec2& boxSize = {300.f, 80.f});
     void    End_Dialogue();
@@ -35,6 +35,9 @@ public:
     
     _bool   IsActive() const { return m_IsActive; }
     _bool   IsShowingChoices() const { return m_IsShowingChoices; }
+
+    static _bool g_IsDialogueActive;
+    static _bool IsGlobalActive() { return g_IsDialogueActive; }
 
 public:
     // 대화 종료

@@ -12,15 +12,6 @@ END
 
 class CBoss2_ChainAttack : public CMonsterState
 {
-public:
-    enum ChainAttackAnim
-    {
-        ROAR,       // 시작
-        HANDSLMA,   // 공격
-
-        ChainAnim_END
-    };
-
 private:
     explicit CBoss2_ChainAttack(CGameObject* owner);
     virtual ~CBoss2_ChainAttack();
@@ -33,8 +24,7 @@ public:
     HRESULT Ready_State() override;
 
 public:
-    void PlayRoar();
-    void PlayHandSlam();
+    void PlaySweep();
 
     void SpawnChain();
 
@@ -48,7 +38,6 @@ private:
     CGameObject*     m_Owner;
 
     _float           m_Pattern_Cooldown;
-    ChainAttackAnim  m_ChainAnim = ChainAttackAnim::ChainAnim_END;
 
     _int             m_SlamCount = 0;
     _bool            m_IsFinished = false;

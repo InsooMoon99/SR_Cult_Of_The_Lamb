@@ -1,16 +1,13 @@
 ﻿#include "pch.h"
 #include "CNPCState.h"
 
-#include "CAnimator.h"
 #include "CLayer.h"
 #include "CManagement.h"
 #include "CNPCBase.h"
 #include "CNPCController.h"
 #include "CNPCStateMachine.h"
 #include "CPlayer.h"
-#include "CRigidbody.h"
 #include "CScene.h"
-#include "CTransform.h"
 
 CNPCState::CNPCState(CNPCBase* owner, CNPCStateMachine* stateMachine)
     : m_Owner(owner),
@@ -45,7 +42,9 @@ _int CNPCState::Update_State(const _float& timeDelta)
 }
 
 void CNPCState::Exit()
-{ }
+{
+    m_CurStateElapsedTime = 0.f;
+}
 
 void CNPCState::Find_Player()
 {
@@ -53,11 +52,7 @@ void CNPCState::Find_Player()
         return;
 
     CGameObject* object = nullptr;
-    // CManagement::GetInstance()->Get_PersistentObject(L"Player", &pObject); 
-    // 위 방식이 아니라면 Layer 검색
-    // 기존 CMonsterState::Find_Player 참고
 
-    // 만약 PersistentObject가 아니라면:
     CScene* scene = CManagement::GetInstance()->Get_Scene();
     if (scene)
     {

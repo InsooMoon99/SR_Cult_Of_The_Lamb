@@ -2,10 +2,12 @@
 #include "CPlayerAttack.h"
 
 #include "CAttackBuilder.h"
+#include "CCameraMovement.h"
 #include "CCombatStat.h"
 #include "CGameObject.h"
 #include "CPlayerInput.h"
 #include "CPlayerMovement.h"
+#include "CSoundMgr.h"
 #include "CState.h"
 #include "CWeaponEquip.h"
 
@@ -64,8 +66,7 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     // =========================================================
 
     // 강공격
-    //TODO 아직 애니메이션과 FSM 조건이 안만들어짐. 추후에 완전 구현 예정
-    m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].state            = ACTORSTATE::PLAYER_SWORD_HEAVY; // 가정
+    m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].state            = ACTORSTATE::PLAYER_SWORD_HEAVY;
     m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].duration         = 0.02f * 70;
     m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].hitboxStartTime  = 0.5f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_HEAVY].hitboxEndTime    = 0.6f;
@@ -86,7 +87,7 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitboxStartTime  = 0.02f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitboxEndTime    = 0.02f * 8;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].comboInputTime   = 0.3f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].damageMultiplier = 1.f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].damageMultiplier = 0.75f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].knockbackPower   = 30.f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].spawnOffset      = 1.2f; // 가까움
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
@@ -98,7 +99,7 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
 
     // 인수 : HitStop은 일단 각 무기 1타에만 넣어놓을게요
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitStopDuration = 0.01f;   // 0.01초 동안
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitStopScale = 0.3f;       // 30%로 슬로우
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO1].hitStopScale    = 0.3f;       // 30%로 슬로우
 
     // 2타
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].state            = ACTORSTATE::PLAYER_SWORD_COMBO2;
@@ -106,7 +107,7 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitboxStartTime  = 0.02f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitboxEndTime    = 0.02f * 8;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].comboInputTime   = 0.3f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].damageMultiplier = 1.f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].damageMultiplier = 0.75f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].knockbackPower   = 30.f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].spawnOffset      = 1.2f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO2].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
@@ -122,7 +123,7 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitboxStartTime  = 0.02f * 4;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitboxEndTime    = 0.02f * 11;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].comboInputTime   = 0.3f;
-    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].damageMultiplier = 1.f;
+    m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].damageMultiplier = 1.5f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].knockbackPower   = 30.f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].spawnOffset      = 1.2f;
     m_AttackInfo[WEAPON_SWORD][ATTACK_COMBO3].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
@@ -158,7 +159,7 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].hitboxStartTime  = 0.02f * 5;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].hitboxEndTime    = 0.02f * 12;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].comboInputTime   = 0.4f;
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].damageMultiplier = 2.f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].damageMultiplier = 1.f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].knockbackPower   = 30.f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].spawnOffset      = 1.2f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
@@ -168,8 +169,8 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].particle.interval = 0.03f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].particle.scale    = _vec3(1.5f, 1.5f, 1.5f);
 
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].hitStopDuration = 0.01f;   
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].hitStopScale = 0.3f;       
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].hitStopDuration = 0.01f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO1].hitStopScale    = 0.3f;
 
     //2타
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].state            = ACTORSTATE::PLAYER_GAUNTLET_COMBO2;
@@ -177,7 +178,7 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].hitboxStartTime  = 0.02f * 12;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].hitboxEndTime    = 0.02f * 24;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].comboInputTime   = 0.4f;
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].damageMultiplier = 2.f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].damageMultiplier = 1.25f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].knockbackPower   = 30.f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].spawnOffset      = 1.2f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO2].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
@@ -193,7 +194,7 @@ HRESULT CPlayerAttack::Ready_PlayerCombat()
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].hitboxStartTime  = 0.02f * 20;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].hitboxEndTime    = 0.02f * 27;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].comboInputTime   = 0.4f;
-    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].damageMultiplier = 4.f;
+    m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].damageMultiplier = 2.25f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].knockbackPower   = 50.f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].spawnOffset      = 1.2f;
     m_AttackInfo[WEAPON_GAUNTLET][ATTACK_COMBO3].hitboxScale      = _vec3(0.85f, 0.85f, 0.85f);
@@ -304,19 +305,6 @@ ACTORSTATE CPlayerAttack::Start_NormalAttack()
     else
         m_OwnerStateCom->Change_Dir(ACTORDIR::RIGHT);
 
-    // 무기 종류에 따라 최대 콤보 허용 설정
-    //!! 최대 3타 고정
-    //switch (weaponIdx)
-    //{
-    //case WEAPON_SWORD:
-    //    m_MaxCombo = 3;     // 검 : 최대 3타
-    //    break;
-    //case WEAPON_GAUNTLET:
-    //    m_MaxCombo = 3;     // 건틀릿 : 최대 3타
-    //    break;
-    //default: return ACTORSTATE::STATE_END;
-    //}
-
     // 1타(COMBO_1) 시작
     m_ComboIndex = static_cast<_int>(ATTACK_COMBO1);
 
@@ -401,11 +389,12 @@ _bool CPlayerAttack::Update_NormalAttack(const _float& timeDelta)
 
         // 마우스 방향으로 도약
         if (weaponIdx == 1 && m_ComboIndex == 3)
-            m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir(), 600.f);
+            m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir(), 700.f);
         else
             m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir(), 450.f);
 
         m_OwnerStateCom->Change_State(m_AttackInfo[weaponIdx][m_ComboIndex].state);
+
         return true;
     }
 
@@ -547,6 +536,8 @@ void CPlayerAttack::Create_AttackObj(const AttackInfo& attackInfo, const _vec3& 
                   attackInfo.particle.scale,
                   attackInfo.particle.offset)
         .HitStop(attackInfo.hitStopDuration, attackInfo.hitStopScale)
+        // 적중 시 강한 셰이킹 콜백 등록
+        .OnHit(bind(&CPlayerAttack::CamShake_ByHit, this, placeholders::_1))
         // 모든 설정을 마치고 생성
         .Spawn();
 
@@ -561,6 +552,55 @@ void CPlayerAttack::Create_AttackObj(const AttackInfo& attackInfo, const _vec3& 
                 m_CurrentAttackObj = nullptr;
         });
     }
+
+    // 공격 사운드를 히트박스의 생성과 동시에 재생
+    Play_AttackSound();
+    CamShake_BySwing();
+}
+
+void CPlayerAttack::Play_AttackSound()
+{
+    switch (m_ComboIndex)
+    {
+    case 3:
+        CSoundMgr::GetInstance()->Play_Once(L"Player/Player_Attack_3.wav",
+                                            SOUND_EFFECT,
+                                            1.f);
+        break;
+    default:
+        CSoundMgr::GetInstance()->Play_Once(L"Player/Player_Attack_0.wav",
+                                            SOUND_EFFECT,
+                                            1.f);
+        break;
+    }
+}
+
+void CPlayerAttack::CamShake_BySwing()
+{
+    auto camMovement = dynamic_cast<CCameraMovement*>(
+        CManagement::GetInstance()->Get_Component(
+            ID_STATIC,
+            LAYERTYPE::GAMELOGIC,
+            OBJTYPE::CAMERA,
+            COMPONENTTYPE::CAM_MOVEMENT));
+
+    NULL_CHECK(camMovement);
+
+    camMovement->Start_CamShake(0.08f, 0.52f, 50.f, 25.f);
+}
+
+void CPlayerAttack::CamShake_ByHit(CGameObject* hitTarget)
+{
+    auto camMovement = dynamic_cast<CCameraMovement*>(
+        CManagement::GetInstance()->Get_Component(
+            ID_STATIC,
+            LAYERTYPE::GAMELOGIC,
+            OBJTYPE::CAMERA,
+            COMPONENTTYPE::CAM_MOVEMENT));
+
+    NULL_CHECK(camMovement);
+
+    camMovement->Start_CamShake(0.15f, 0.52f, 50.f, 25.f);
 }
 
 CPlayerAttack* CPlayerAttack::Create(DEVICE graphicDev)

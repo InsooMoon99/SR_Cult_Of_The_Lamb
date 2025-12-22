@@ -13,9 +13,11 @@
 #include "CTimerMgr.h"
 #include "CUIButton.h"
 #include "CUIInventoryCell.h"
+#include "CSoundMgr.h"
+#include "Engine_Enum.h"
 
-CUIInventory::CUIInventory(DEVICE pGraphicDev)
-    : CUI(pGraphicDev),
+CUIInventory::CUIInventory(DEVICE graphicDev)
+    : CUI(graphicDev),
       m_Cols(6),
       m_CellWidth(100.f),
       m_CellHeight(150.f),
@@ -205,6 +207,7 @@ HRESULT CUIInventory::Add_Component()
 
 void CUIInventory::Check_Hovered() //셀 선택 체크는 인벤토리 UI 클래스에서 하고, 상태 변화에 따른 변경은 셀 클래스에서 함
 {
+ 
     const vector<InventorySlot>& slots = m_Inventory->GetVector();
     for(int i = 0; i < slots.size();i++)
     {
@@ -226,6 +229,12 @@ void CUIInventory::Check_Hovered() //셀 선택 체크는 인벤토리 UI 클래
 
         if(hoveredNow !=m_Cells[i]->Get_IsHovered())
         {
+            if (hoveredNow)
+            {
+                CSoundMgr::GetInstance()->Play_Once(L"ui/ui_pointeron.wav",
+                    SOUNDTYPE::SOUND_UI,
+                    1.f);
+            };
             m_Cells[i]->Set_IsHovered(hoveredNow);
         }
 

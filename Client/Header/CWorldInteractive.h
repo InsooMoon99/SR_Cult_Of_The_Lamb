@@ -30,6 +30,11 @@ public:
 
     TYPE GetInteractiveType() { return m_Type; }
     bool Get_Hovering() { return m_bHovering; }
+    bool Set_EnableHoverCheck(bool enableHoverCheck) { return m_EnableHoverCheck = enableHoverCheck; }
+    void Check_WorldState();
+
+    //void Set_ProgressBar(CUI_ProgressBar* progressui) { m_ProgressBar = progressui; }
+    _float CalcProgress();
 protected:
     HRESULT Add_Component() override;
 
@@ -37,6 +42,7 @@ protected:
     void OnEndOverlap(CCollider* self, CCollider* other) override;
 
     bool Is_Hovering();
+    virtual void OnInteractiveDamaged(); 
 
 protected:
     //m_TransformCom, m_BufferCom, m_TextureCom 부모에 있음, 텍스쳐 만 자식에서 추가 설정해줘야 함
@@ -47,7 +53,7 @@ protected:
 
     CInventory* m_InventoryCom;
     CSpriteEff* m_SpriteEffCom;
-
+    _float m_Progress;
     bool m_bDead = false;
 private:
     // 상태용
@@ -55,6 +61,7 @@ private:
     bool m_bHovering      = false;
 
     bool m_bInvenDropped = false;
+    bool m_EnableHoverCheck = true;
 
 public:
     TYPE m_Type = END_TYPE;

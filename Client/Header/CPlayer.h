@@ -12,6 +12,7 @@ class CPlayerInput;
 class CWeaponEquip;
 class CPlayerGathering;
 class CPlayerConstruction;
+class CUI_Interactive;
 
 BEGIN(Engine)
 class CRigidbody;
@@ -38,9 +39,16 @@ public:
 
     void    Render_Editor() override;
 
+public:
+    void    Set_PrologueMode(_bool prologue);
+    void    Set_NormalMode();
+
+    _bool   Is_PrologueMode() const { return m_IsPrologue; }
+
 private:
     HRESULT Add_Component() override;
     void    Animation_Setting() override;
+    void    Prologue_Animation_Setting();
 
 private:
 #pragma region Engine Components
@@ -56,7 +64,6 @@ private:
     CPlayerAttack*     m_PlayerAttackCom;
     CPlayerSkill*      m_PlayerSkillCom;
     CPlayerGathering*  m_PlayerGatherCom;
-
     CPlayerConstruction* m_PlayerConstructionCom;
 
 #pragma endregion
@@ -68,4 +75,11 @@ public:
 
 private:
     void Free() override;
+
+private:
+    CUI_Interactive* m_InteractiveUI;
+    _bool            m_OverlapBegin;
+
+    _bool            m_IsPrologue = false;
+
 };

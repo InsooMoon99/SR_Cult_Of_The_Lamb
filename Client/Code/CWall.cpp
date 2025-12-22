@@ -41,14 +41,14 @@ _int CWall::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CRenderObject::Update_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_PRIORITY, this);
-
     return exit;
 }
 
 void CWall::LateUpdate_GameObject(const _float& timeDelta)
 {
     CRenderObject::LateUpdate_GameObject(timeDelta);
+
+    CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_PRIORITY, this);
 }
 
 void CWall::Render_GameObject()

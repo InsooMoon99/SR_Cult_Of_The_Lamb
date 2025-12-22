@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "CRunLootLog.h"
 #include "CScene.h"
 
 class CInventory;
@@ -7,22 +8,24 @@ class CTerrain;
 class CPlayer;
 class CUI_Fade;
 class CCameraMovement;
+class CCameraController;
+class CTarotNPC;
+class CUI_BossHp;
+class CUI_Text;
 
 BEGIN(Engine)
 class CCombatStat;
 class CTransform;
 END
 
+enum class BossIntroPhase { NONE, ZOOMING, HOLDING, DONE };
+
 struct RoomData
 {
-    _vec3   playerSpawnPos{};         
-    string  terrainFilePath;    
-    _vec3   terrainOffset{};    
-
-    // 방 클리어 여부
-    // 근데 이거 일단은 구현 X
-    bool    isCleared = false;
-    _int    requiredKills = 0;
+    _vec3  playerSpawnPos{};
+    string terrainFilePath;
+    _vec3  terrainOffset{};
+    _vec3  chestSpawnPos;
 };
 
 class CStage_Dungeon : public CScene
@@ -33,7 +36,10 @@ public:
         START,
         MONSTER1,
         MONSTER2,
+        MONSTER3,
         TARO,
+        MONSTER4,
+        MONSTER5,
         BOSS,
 
         DUNGEON_END
@@ -52,17 +58,43 @@ public:
     HRESULT Ready_Light() override;
 
 public:
-    void    Spawn_Weapon();
+    void Spawn_Weapon();
+    void Spawn_FollowerCow_Rescue(_vec3* spawnPos = nullptr);
+    void Spawn_FollowerElephant_Rescue(_vec3* spawnPos = nullptr);
+    void Spawn_FollowerPig_Rescue(_vec3* spawnPos = nullptr);
 
-    void    Create_RoomTriggers();
-    void    Create_Trigger_Between(Room fromRoom, Room toRoom,
-                _vec3 offsetFromRoom, _vec3 size);
+    void Create_RoomTriggers();
+    void Create_Trigger_Between(Room  fromRoom,
+                                Room  toRoom,
+                                _vec3 offsetFromRoom,
+                                _vec3 size);
 
-    void    Create_Trigger_Between(Room fromRoom,
-        _vec3 offsetFromRoom, _vec3 size, function<void()> callback);
+    void Create_Trigger_Between(Room             fromRoom,
+                                _vec3            offsetFromRoom,
+                                _vec3            size,
+                                function<void()> callback);
 
-    void    Change_Room(Room room);
+    // 양방향 가능 트리거
+    void Create_BiDirectional_Trigger(
+        Room  roomA,
+        _vec3 offsetA,    // A방 출구 위치
+        Room  roomB,
+        _vec3 offsetB,    // B방 출구 위치
+        _vec3 size);
 
+    void EnterDungeon();
+    void Change_Room(Room room);
+
+    CRunLootLog& Get_RunLootLog() { return m_RunLootLog; }
+    _float       Get_Timer() { return m_Timer; }
+    void         Set_TimerRunning(bool timerRunning) { m_TimerRunning = timerRunning; }
+
+    // 몬스터 죽었을 때 호출
+    void  OnMonsterDeath(CGameObject* obj) override;
+    _bool IsCleared() { return m_DungeonCleared; }
+
+private:
+    const CRunLootLog& Get_RunLootLog() const { return m_RunLootLog; }
 private:
     HRESULT Ready_Environment_Layer(LAYERTYPE layerType);
     HRESULT Ready_GameLogic_Layer(LAYERTYPE layerType);
@@ -76,34 +108,66 @@ public:
 private:
     void Free() override;
     void Fade_Check(const _float timeDelta);
+    void Connect_Rooms();
+    void Set_SpawnPos();
+
+    void Setup_DynamicCam_For_Boss();
+
+    HRESULT Grass(DEVICE graphicDev, CLayer* layer);
+private:
+    CCombatStat*  m_PlayerCombatStatCom;
+    CInventory*   m_PlayerInventoryCom;
+    CWeaponEquip* m_WeaponEquipCom;
+
+    map<Room, CTerrain*> m_Terrains{};
+
+    // 연결된 방들
+    map<Room, vector<Room>> m_ConnectRooms;
+
+    map<pair<Room, Room>, _vec3> m_SpawnPositions;
 
 private:
-    CCombatStat*    m_PlayerCombatStatCom;
-    CInventory*     m_PlayerInventoryCom;
-    CWeaponEquip*   m_WeaponEquipCom;
+    RoomData m_RoomData[static_cast<_int>(Room::DUNGEON_END)];
+    Room     m_CurrentRoom;   // 현재 방
+    Room     m_FromRoom = Room::DUNGEON_END;
 
-    map<Room, CTerrain*> m_Terrains {};
+    CGameObject* m_Player;
+    CTransform*  m_PlayerTransform;
 
-private:
-    RoomData        m_RoomData[5];   // 5개 방 미리 생성
-    Room            m_CurrentRoom;   // 현재 방
+    _bool     m_RequestChangeScene = false;
+    SCENETYPE m_NextSceneType      = SCENETYPE::SC_END;
 
-    CGameObject*    m_Player;
-    CTransform*     m_PlayerTransform;
-
-    _bool           m_RequestChangeScene = false;
-    SCENETYPE       m_NextSceneType = SCENETYPE::SC_END;
-
-    CUI_Fade*       m_UI_Fade;
+    CUI_Fade* m_UI_Fade;
 
 private:
-    _bool           m_IsFading = false;
-    Room            m_NextRoom;
+    _bool m_IsFading = false;
+    Room  m_NextRoom;
 
-    _float          m_PrevZoomSpeed = 0.f;
+    _float m_PrevZoomSpeed = 0.f;
 
     // 카메라 무브먼트
-    CCameraMovement* m_CamMovement;
+    CCameraMovement*   m_CamMovement;
+    CCameraController* m_CamController;
+    CRunLootLog        m_RunLootLog;
+    _float             m_Timer;
+
+    _bool m_TimerRunning;
+    _bool m_DungeonCleared = false;
+    _bool m_IsClearMenuOpened;
+    _bool m_Start;
+
+    CGameObject* m_Boss         = nullptr;
+    CUI_BossHp*  m_BossHpbar    = nullptr;
+    CUI_Text*    m_EligosNameUI = nullptr;
+    _float       m_UIOpenTime;
+    bool         m_flag = false;
+
+    BossIntroPhase m_BossIntroPhase = BossIntroPhase::NONE;
+
+    float m_BossHoldTime  = 0.f;
+    float m_BossNameDelay = 0.f;
+    bool  m_BossNameShown = false;
+
+    _bool  m_DebugWarpStarted = false;
+    _float m_DebugWarpTimer   = 0.f;
 };
-
-

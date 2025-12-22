@@ -5,8 +5,9 @@
 #include "CFontMgr.h"
 #include "CLayer.h"
 #include "CLoading.h"
-#include "CMonster.h"
 #include "CSceneMgr.h"
+#include "CUI_LoadingCircle.h"
+#include "CRenderer.h"
 
 CLogo_Boss2::CLogo_Boss2(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -27,12 +28,20 @@ HRESULT CLogo_Boss2::Ready_Scene()
     if (FAILED(Ready_UI_Layer(LAYERTYPE::UI)))
         return E_FAIL;
 
+    CRenderer::GetInstance()->OffFog();
+
     m_Loading = CLoading::Create(m_GraphicDev, CLoading::LOADING_BOSS2);
 
     if (nullptr == m_Loading)
         return E_FAIL;
 
     return S_OK;
+}
+
+void CLogo_Boss2::Initialize_Scene()
+{
+    CScene::Initialize_Scene();
+
 }
 
 _int CLogo_Boss2::Update_Scene(const _float& timeDelta)
@@ -54,13 +63,12 @@ void CLogo_Boss2::LateUpdate_Scene(const _float& timeDelta)
 
 void CLogo_Boss2::Render_Scene()
 {
-    // debug 용
-    _vec2 pos{ 160.f, 120.f };
+    _vec2 pos{ 281.8f, 602.8f };
 
-    CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Heavy",
-                                         m_Loading->Get_String(),
-                                         &pos,
-                                         D3DXCOLOR(1.f, 0.f, 1.f, 1.f));
+    CFontMgr::GetInstance()->Render_Font(L"NanumSquare_Regular",
+        m_Loading->Get_String(),
+        &pos,
+        D3DXCOLOR(1.f, 0.f, 0.f, 1.f));
 }
 
 HRESULT CLogo_Boss2::Ready_Environment_Layer(LAYERTYPE layerType)
@@ -79,8 +87,12 @@ HRESULT CLogo_Boss2::Ready_Environment_Layer(LAYERTYPE layerType)
 HRESULT CLogo_Boss2::Ready_UI_Layer(LAYERTYPE layerType)
 {
     auto layer = Engine::CLayer::Create();
+    NULL_CHECK_RETURN(layer, E_FAIL);
 
-    NULL_CHECK_RETURN(layer, E_FAIL)
+    CUI_LoadingCircle* loadingCircle = CUI_LoadingCircle::Create(m_GraphicDev);
+    NULL_CHECK_RETURN(loadingCircle, E_FAIL);
+
+    layer->Add_GameObject(OBJTYPE::UI, loadingCircle);
 
     m_Layers.insert({ layerType, layer });
 
@@ -89,6 +101,7 @@ HRESULT CLogo_Boss2::Ready_UI_Layer(LAYERTYPE layerType)
 
 HRESULT CLogo_Boss2::Ready_Prototype()
 {
+    
 
     return S_OK;
 }

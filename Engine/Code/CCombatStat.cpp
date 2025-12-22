@@ -1,22 +1,30 @@
 ﻿#include "CCombatStat.h"
 #include "CAnimator.h"
 #include "CGameObject.h"
+#include "CManagement.h"
 #include "CRigidbody.h"
 #include "CState.h"
 #include "CTimerMgr.h"
 #include "CTransform.h"
+
+class CMonsterBase;
 
 CCombatStat::CCombatStat(DEVICE graphicDev)
     : CComponent(graphicDev), m_OwnerRigidbody(nullptr),
       m_Attack(0),
       m_AttackSpeed(1.f),
       m_Hp(0),
-      m_MaxHp(6),
+      m_MaxHp(100),
       m_Mp(0),
-      m_MaxMp(10),
+      m_MaxMp(100),
       m_Speed(20),
       m_IsDead(false), m_CanHitState(true), m_IsInvincible(false), m_KnockbackTimer(0)
 {
+    m_Hp = m_MaxHp;
+    m_Mp = m_MaxMp;
+
+
+    m_IsDead = false;
 }
 
 CCombatStat::CCombatStat(const CCombatStat& rhs)
@@ -126,9 +134,14 @@ void CCombatStat::Apply_Knockback(const HITDATA& hitData)
 {
     if (hitData.knockback > 0.f && m_OwnerRigidbody)
     {
-        _vec3 knockbackVel = hitData.dir * hitData.knockback;
-        m_OwnerRigidbody->Set_Velocity(knockbackVel);
+        _vec3 knockbackDir = hitData.dir;
+        knockbackDir.y = 0.f;  
+        D3DXVec3Normalize(&knockbackDir, &knockbackDir);  
 
+        _float mass = m_OwnerRigidbody->Get_Mass();
+        _vec3 knockbackVel = knockbackDir * (hitData.knockback / mass);
+
+        m_OwnerRigidbody->Set_Velocity(knockbackVel);
         m_KnockbackTimer = hitData.knockbackTimer;
     }
 }
@@ -137,6 +150,9 @@ void CCombatStat::On_Dead()
 {
     m_IsDead = true;
 
+    if (OnDeath)
+        OnDeath();
+
     if (m_Owner)
     {
         CState* state = dynamic_cast<CState*>(
@@ -144,9 +160,6 @@ void CCombatStat::On_Dead()
 
         if (state)
             state->Change_State(ACTORSTATE::DEAD);
-
-        // 각자 클래스에서 애니메이션 끝났을 때 판단해서 추가로 처리하기
-
     }
 }
 

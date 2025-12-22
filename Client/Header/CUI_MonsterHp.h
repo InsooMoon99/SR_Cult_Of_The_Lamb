@@ -28,8 +28,6 @@ public:
 private:
     HRESULT Add_Component();
 
-    void    Update_Billboard();  // 빌보드 계산
-
 public:
     static CUI_MonsterHp* Create(DEVICE graphicDev, CCombatStat* combat);
 

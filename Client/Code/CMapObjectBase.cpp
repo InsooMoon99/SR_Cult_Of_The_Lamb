@@ -10,24 +10,25 @@
 
 CMapObjectBase::CMapObjectBase(DEVICE graphicDev)
     : CRenderObject(graphicDev),
-      m_TextureCom(nullptr),
-      m_AttachTerrain(false), m_IsPreview(false),
-      m_Terrain(nullptr)
+    m_TextureCom(nullptr),
+    m_AttachTerrain(false), m_IsPreview(false),
+    m_Terrain(nullptr)
 {
 }
 
 CMapObjectBase::CMapObjectBase(const CMapObjectBase& rhs)
     : CRenderObject(rhs),
-      m_TextureCom(nullptr),
-      m_AttachTerrain(rhs.m_AttachTerrain), m_IsPreview(false),
-      m_CellX(rhs.m_CellX),
-      m_CellZ(rhs.m_CellZ),
-      m_Terrain(rhs.m_Terrain)
+    m_TextureCom(nullptr),
+    m_AttachTerrain(rhs.m_AttachTerrain), m_IsPreview(false),
+    m_CellX(rhs.m_CellX),
+    m_CellZ(rhs.m_CellZ),
+    m_Terrain(rhs.m_Terrain)
 {
 }
 
 CMapObjectBase::~CMapObjectBase()
-{ }
+{
+}
 
 HRESULT CMapObjectBase::Ready_GameObject()
 {
@@ -54,7 +55,7 @@ void CMapObjectBase::LateUpdate_GameObject(const _float& timeDelta)
     CRenderObject::LateUpdate_GameObject(timeDelta);
 
     if (!m_IsPreview)
-        CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_PRIORITY_ALPHA, this);
+        CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_ALPHA, this);
 }
 
 void CMapObjectBase::Render_GameObject()
@@ -66,7 +67,7 @@ void CMapObjectBase::Render_GameObject()
 
     Render_Setting();
 
-    m_TextureCom->Set_Texture(m_TextureIndex); 
+    m_TextureCom->Set_Texture(m_TextureIndex);
     m_BufferCom->Render_Buffer();
 
     Render_Reset();
@@ -81,8 +82,8 @@ void CMapObjectBase::Set_Material()
 
     ZeroMemory(&material, sizeof(D3DMATERIAL9));
 
-    material.Diffuse  = COLOR(1.f, 1.f, 1.f, 1.f);
-    material.Ambient  = COLOR(1.f, 1.f, 1.f, 1.f);
+    material.Diffuse = COLOR(1.f, 1.f, 1.f, 1.f);
+    material.Ambient = COLOR(1.f, 1.f, 1.f, 1.f);
     material.Specular = COLOR(1.f, 1.f, 1.f, 1.f);
     material.Emissive = COLOR(0.f, 0.f, 0.f, 1.f);
     material.Power = 0.f;
@@ -98,7 +99,7 @@ void CMapObjectBase::Set_WorldPos(const _vec3& pos)
         m_TransformCom = dynamic_cast<CTransform*>(com);
 
         if (m_TransformCom == nullptr)
-            return; 
+            return;
     }
 
     m_TransformCom->Set_Pos(pos);
@@ -122,8 +123,16 @@ void CMapObjectBase::Render_Setting()
 {
     CRenderObject::Render_Setting();
 
-    
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
+    Set_Material();
 }
+
+void CMapObjectBase::Render_Reset()
+{
+    CRenderObject::Render_Reset();
+}
+
+
 
 void CMapObjectBase::Free()
 {

@@ -2,9 +2,14 @@
 #include "CNPCState_Spawn.h"
 
 #include "CAnimator.h"
+#include "CCamSetupBuilder.h"
+#include "CManagement.h"
+#include "CNPCBase.h"
 #include "CNPCController.h"
 #include "CNPCStateMachine.h"
+#include "CSoundMgr.h"
 #include "CSpriteAnimation.h"
+#include "CVillageStateMgr.h"
 
 CNPCState_Spawn::CNPCState_Spawn(CNPCBase* owner, CNPCStateMachine* stateMachine)
     : CNPCState(owner, stateMachine)
@@ -17,11 +22,34 @@ void CNPCState_Spawn::Enter()
 {
     CNPCState::Enter();
 
-    // 생성 애니메이션 (Prefix + Spawn_Half)
     if (m_OwnerAnimator && m_Controller)
     {
-        wstring key = m_Controller->Get_AnimKeyPrefix() + L"Spawn_Half";
+        wstring key = m_Controller->Get_AnimKeyPrefix() + L"Spawn";
         m_OwnerAnimator->Play_Animation(key, ANIMSTATE::ONCE);
+    }
+
+    CSoundMgr::GetInstance()->Play_Once(L"Follower/Follower_Start_Indo.wav",
+                                        SOUND_EFFECT,
+                                        0.3f);
+
+    auto camController = dynamic_cast<CCameraController*>(
+        CManagement::GetInstance()->Get_Component(
+            ID_DYNAMIC,
+            LAYERTYPE::GAMELOGIC,
+            OBJTYPE::CAMERA,
+            COMPONENTTYPE::CAM_CONTROLLER));
+
+    if (m_Owner->Get_Name() == L"FollowerCow")
+    {
+        CCamSetupBuilder(camController)
+            .SetTarget(m_OwnerTransform)
+            .PivotOffset({ 0.f, 0.f, -0.5f })
+            .Distance(9.f)
+            .RotX(45.f)
+            .RotY(0.f)
+            .LagSpeed(10.f)
+            .ZoomSpeed(5.f)
+            .Apply();
     }
 }
 
@@ -33,7 +61,12 @@ _int CNPCState_Spawn::Update_State(const _float& timeDelta)
     if (m_OwnerAnimator && m_OwnerAnimator->Get_CurAnimation()->Get_AnimState() == ANIMSTATE::ONCE)
     {
         if (m_OwnerAnimator->Is_AnimationFinished())
+        {
+            if (m_Owner)
+                CVillageStateMgr::GetInstance()->Save_NPC(m_Owner->Get_Name(), true, true);
+
             return static_cast<_int>(CNPCStateMachine::NPC_STATE::IDLE);
+        }
     }
 
     return static_cast<_int>(CNPCStateMachine::NPC_STATE::SPAWN);
@@ -42,6 +75,26 @@ _int CNPCState_Spawn::Update_State(const _float& timeDelta)
 void CNPCState_Spawn::Exit()
 {
     CNPCState::Exit();
+
+    if (m_Owner->Get_Name() == L"FollowerCow")
+    {
+        auto camController = dynamic_cast<CCameraController*>(
+            CManagement::GetInstance()->Get_Component(
+                ID_DYNAMIC,
+                LAYERTYPE::GAMELOGIC,
+                OBJTYPE::CAMERA,
+                COMPONENTTYPE::CAM_CONTROLLER));
+
+        CCamSetupBuilder(camController)
+            .SetTarget(m_PlayerTransform)
+            .PivotOffset({ 0.f, 0.f, 0.f })
+            .Distance(11.f)
+            .RotX(45.f)
+            .RotY(0.f)
+            .LagSpeed(10.f)
+            .ZoomSpeed(5.f)
+            .Apply();
+    }
 }
 
 HRESULT CNPCState_Spawn::Ready_State()

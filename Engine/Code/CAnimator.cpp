@@ -73,7 +73,8 @@ HRESULT CAnimator::Add_Animation(const wstring& key, CSpriteAnimation* animation
     AnimDesc desc;
     desc.anim = animation;
     desc.size = _vec2(1.f, 1.f); // 사이즈 안넘기면 기본값으로
-    desc.offset = _vec2(0.f, 0.f);
+    desc.offsetLeft = _vec2(0.f, 0.f);
+    desc.offsetRight = _vec2(0.f, 0.f);
 
     m_Animations.insert({ key, desc });
 
@@ -104,7 +105,8 @@ HRESULT CAnimator::Add_Animation(const wstring& key, CSpriteAnimation* animation
     AnimDesc desc;
     desc.anim = animation;
     desc.size = size;
-    desc.offset = offset;
+    desc.offsetLeft = offset;
+    desc.offsetRight = offset;
 
     m_Animations.insert({ key, desc });
 
@@ -117,6 +119,40 @@ HRESULT CAnimator::Create_Animation(const wstring& key, _uint frameCount, _float
     NULL_CHECK_RETURN(anim, E_FAIL);
 
     return Add_Animation(key, anim, size, offset);
+}
+
+HRESULT CAnimator::Add_Animation(const wstring& key, CSpriteAnimation* animation, const _vec2 size,
+    const _vec2 offsetLeft, const _vec2 offsetRight)
+{
+    if (animation == nullptr)
+        return E_FAIL;
+
+    auto iter = m_Animations.find(key);
+
+    if (iter != m_Animations.end())
+    {
+        MSG_BOX("Exits animation");
+        return E_FAIL;
+    }
+
+    AnimDesc desc;
+    desc.anim = animation;
+    desc.size = size;
+    desc.offsetLeft = offsetLeft;
+    desc.offsetRight = offsetRight;
+
+    m_Animations.insert({ key, desc });
+
+    return S_OK;
+}
+
+HRESULT CAnimator::Create_Animation(const wstring& key, _uint frameCount, _float interval,
+    const _vec2& size, const _vec2 offsetLeft, const _vec2 offsetRight)
+{
+    CSpriteAnimation* anim = CSpriteAnimation::Create(frameCount, interval);
+    NULL_CHECK_RETURN(anim, E_FAIL);
+
+    return Add_Animation(key, anim, size, offsetLeft, offsetRight);  
 }
 
 void CAnimator::Play_Animation(const wstring& key, ANIMSTATE state, bool reset)
@@ -146,7 +182,7 @@ void CAnimator::Play_Animation(const wstring& key, ANIMSTATE state, bool reset)
         if (rect)
         {
             rect->Set_Scale(desc.size.x, desc.size.y);
-            rect->Set_Offset(desc.offset.x, desc.offset.y);
+            rect->Set_Offset(desc.offsetLeft.x, desc.offsetLeft.y);
         }
     }
 
@@ -197,6 +233,14 @@ _int CAnimator::Get_MaxFrame()
     return m_CurAnimation->Get_MaxFrameX();
 }
 
+void CAnimator::Set_CurFrame(_int frame)
+{
+    if (m_CurAnimation == nullptr)
+        return;
+
+    m_CurAnimation->Set_Frame(frame);
+}
+
 _vec2 CAnimator::Get_CurSize() const
 {
     if (m_CurKey.empty())
@@ -211,18 +255,19 @@ _vec2 CAnimator::Get_CurSize() const
     return _vec2(1.f, 1.f);
 }
 
-_vec2 CAnimator::Get_CurOffset() const
+_vec2 CAnimator::Get_CurOffset(_bool bRightDir) const
 {
     if (m_CurKey.empty())
-        return _vec2(1.f, 1.f);
+        return _vec2(0.f, 0.f);
 
     auto iter = m_Animations.find(m_CurKey);
+
     if (iter != m_Animations.end())
     {
-        return iter->second.offset;
+        return bRightDir ? iter->second.offsetRight : iter->second.offsetLeft;
     }
 
-    return _vec2(1.f, 1.f);
+    return _vec2(0.f, 0.f);
 }
 
 void CAnimator::Set_CurSize(const _vec2& size)
@@ -256,7 +301,8 @@ void CAnimator::Set_CurOffset(const _vec2& offset)
     auto iter = m_Animations.find(m_CurKey);
     if (iter != m_Animations.end())
     {
-        iter->second.offset = offset;
+        iter->second.offsetLeft = offset; 
+        iter->second.offsetRight = offset;
 
         if (m_BufferCom)
         {
@@ -269,6 +315,59 @@ void CAnimator::Set_CurOffset(const _vec2& offset)
     }
 
     return;
+}
+
+void CAnimator::Set_CurOffsetByDir(_bool rightDir)
+{
+    if(m_CurKey.empty() || !m_BufferCom)
+        return;
+
+    auto iter = m_Animations.find(m_CurKey);
+    if (iter != m_Animations.end())
+    {
+        _vec2 offset = rightDir ? iter->second.offsetRight : iter->second.offsetLeft;
+
+        CRcTex* rect = static_cast<CRcTex*>(m_BufferCom);
+        if (rect)
+        {
+            rect->Set_Offset(offset.x, offset.y);
+        }
+    }
+}
+
+void CAnimator::Set_CurOffsetLeft(const _vec2& offset)
+{
+    if (m_CurKey.empty())
+        return;
+    auto iter = m_Animations.find(m_CurKey);
+    if (iter != m_Animations.end())
+    {
+        iter->second.offsetLeft = offset;
+
+        CRcTex* rect = static_cast<CRcTex*>(m_BufferCom);
+        if (rect && !rect->Get_FlipX())  // Left 방향일 때만
+        {
+            rect->Set_Offset(offset.x, offset.y);
+        }
+    }
+    
+}
+
+void CAnimator::Set_CurOffsetRight(const _vec2& offset)
+{
+    if (m_CurKey.empty())
+        return;
+    auto iter = m_Animations.find(m_CurKey);
+    if (iter != m_Animations.end())
+    {
+        iter->second.offsetRight = offset;
+
+        CRcTex* rect = static_cast<CRcTex*>(m_BufferCom);
+        if (rect && rect->Get_FlipX())  // Right 방향일 때만
+        {
+            rect->Set_Offset(offset.x, offset.y);
+        }
+    }
 }
 
 void CAnimator::Set_FlipX(_bool flip)

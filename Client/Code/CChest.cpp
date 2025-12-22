@@ -30,7 +30,7 @@ HRESULT CChest::Ready_GameObject()
 
     m_TransformCom->Set_Rotation({ D3DXToRadian(40), 0, 0 });
     m_TransformCom->Set_Pos(m_Pos);// 생성할때 셋팅
-    m_TransformCom->Set_Scale({ 2.f,2.f,2.f });// 생성할때 셋팅
+    m_TransformCom->Set_Scale({ 1.7f,2.f,2.f });// 생성할때 셋팅
 
     m_InventoryCom->SetInvenSlotNum(7);// 기본셋팅 무조건 해야 하는거
 
@@ -69,8 +69,6 @@ bool CChest::AddItem(int id, int Num)
 _int CChest::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CRenderObject::Update_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 
     switch (m_chest)
     {
@@ -118,6 +116,7 @@ void CChest::LateUpdate_GameObject(const _float& timeDelta)
 {
     CRenderObject::LateUpdate_GameObject(timeDelta);
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 }
 
 void CChest::Render_GameObject()

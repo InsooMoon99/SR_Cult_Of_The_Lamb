@@ -28,7 +28,7 @@ public:
     void             OnEndOverlap(CCollider* self, CCollider* other) override;
 
 public:
-    DEVICE          Get_GraphicDev() { return m_GraphicDev; }
+    virtual DEVICE          Get_GraphicDev() { return m_GraphicDev; }
     _float          Get_DistanceToTarget();
     _bool           Can_Attack() { return m_AttackTimer >= m_AttackCooldown; }
 
@@ -54,6 +54,16 @@ public:
     virtual void    AlphaRenderEnd();
     void            Set_Hurt(bool hurt) { m_bHurt = hurt; }
 
+    virtual void    Retreat_FromTarget(const _float& timeDelta, _float speed) { }
+
+public:
+    using   OnDeathCallback = function<void()>;
+    void    Set_OnDeath(OnDeathCallback callback) { m_OnDeath = callback; }
+    void    Trigger_OnDeath();
+
+private:
+    OnDeathCallback m_OnDeath = nullptr;
+
 protected:
     void            Free() override;
 
@@ -73,11 +83,13 @@ protected:
     _float          m_AttackTimer;       // 현재 공격 타이머
     _bool           m_CanAttack;         // Timer >= Cooldown 공격이 가능한지 ?
 
+protected:
+    bool    m_OnDead = false;
+
 private:
     bool    m_bHurt = false;
     float   HurtTime = 0;
     float   flashTime = 0.1f;
-
 
 };
 

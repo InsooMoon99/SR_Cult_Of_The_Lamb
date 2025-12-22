@@ -8,6 +8,7 @@
 #include "CSpriteAnimation.h"
 #include "CRandomMgr.h"
 #include "CCollider.h"
+#include "CSoundMgr.h"
 
 CBossMove::CBossMove(CBossPhase1* pOwner, CBossStateMachine* pStateMachine)
 {
@@ -52,7 +53,11 @@ _int CBossMove::Update_State(const _float& timeDelta)
     switch (m_ePhase)
     {
     case PHASE::DOWN:
-
+        if (m_Sound == false)
+        {
+            CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Deathcat_Appear.wav", SOUNDTYPE::SOUND_BOSS3, 0.5f);
+            m_Sound = true;
+        }
         if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
         {
             m_ePhase = PHASE::WAIT;
@@ -82,7 +87,11 @@ _int CBossMove::Update_State(const _float& timeDelta)
         break;
 
     case PHASE::UP://움직임 + idle
-
+        if (m_Sound2 == false)
+        {
+            CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Deathcat_Disappear.wav", SOUNDTYPE::SOUND_BOSS2, 0.5f);
+            m_Sound2 = true;
+        }
         m_pOwnerAnimatorCom->Play_Animation(L"BossMove_up", ANIMSTATE::ONCE);
         if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1)
             return CBossPhase1::BOSSPHASE1::BOSSIDLE;// 이거 아님 공격상태전환 아이들로 

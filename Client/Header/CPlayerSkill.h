@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "CComponent.h"
+#include <CPlayerMovement.h>
 
 class CPlayerInput;
 class CWeaponEquip;
@@ -63,6 +64,7 @@ public:
     float Get_MaxChargeTime() { return m_MaxChargeTime; }
     SkillInfo Get_SkillInfo() { return m_SkillInfo[m_SkillIndex]; }
     _bool Get_IsCharging() { return m_IsCharging; }
+	_bool Get_IsSkillUnlocked() { return m_IsSkillUnlocked; }
 public:
     ACTORSTATE  Start_Charging();
     ACTORSTATE  Update_Charging(const float& timeDelta);
@@ -77,7 +79,9 @@ public:
 public:
     void Set_CurrentTimer(_float timer) { m_SkillTimer = timer; }
     void Cancel_Attack();
-
+    void Set_SkillUnlocked(bool unlocked) { m_IsSkillUnlocked = unlocked; }
+    _int Get_CurrentCharges() { return m_CurrentCharges; }
+    void Set_CurrentCharges(_int charge) { m_CurrentCharges = charge; }
 private:
     void Reset_AttackData();
    // void Create_Projectile(const SkillInfo& skillInfo, const _vec3& SkillDir);
@@ -87,7 +91,8 @@ private:
     CPlayerInput* m_OwnerInputCom;
     CState* m_OwnerStateCom;
     CCombatStat* m_OwnerCombatStatCom;
-    CFireball* m_Fireball{};
+    CPlayerMovement* m_OwnerPlayerMovement;
+    CFireball* m_Fireball;
 private:
     CAttackBase* m_CurrentAttackObj;
 
@@ -105,7 +110,7 @@ private:
     _bool     m_SingleSkillEnable;
     _bool     m_TripleSkillEnable;
     _bool     m_SingleFired;
-    _bool    m_TripleFired{};
+    _bool    m_TripleFired;
 
     vector<CFireball*> m_Fireballs;
 
@@ -117,7 +122,9 @@ private:
     void Free() override;
 
 private:
-    CUICharging* m_LeftChargingUI{};
-    CUICharging* m_CenterChargingUI{};
-    CUICharging* m_RightChargingUI{};
+    CUICharging* m_LeftChargingUI;
+    CUICharging* m_CenterChargingUI;
+    CUICharging* m_RightChargingUI;
+
+    _int m_CurrentCharges;
 };

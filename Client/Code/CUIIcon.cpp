@@ -40,21 +40,17 @@ bool CUIIcon::SetCloneTexAspectScale(_vec3 vec) // 텍스쳐 등록후
 {
     float x, y;
     m_TextureCom->Get_TextureSize(0, x, y);
-    if (false == SetTexAspectInit(m_TextureCom, m_TransformCom, 0, nullptr ,true, x))
+    if (false == SetTexAspectInit(m_TextureCom, m_TransformCom, 0, nullptr, true, x))
         return false;
 
-     SetAspectScale(m_TransformCom, vec);
+    SetAspectScale(m_TransformCom, vec);
 
-     return true;
+    return true;
 }
 
 _int CUIIcon::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
-    if(m_Register)
-    {
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
-    }
 
     return exit;
 }
@@ -62,6 +58,9 @@ _int CUIIcon::Update_GameObject(const _float& timeDelta)
 void CUIIcon::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
+
+    if (m_Register)
+        CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUIIcon::Render_Setting()
@@ -71,9 +70,7 @@ void CUIIcon::Render_Setting()
     //m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
     //m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
     //m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-
 }
-
 
 void CUIIcon::Render_Reset()
 {

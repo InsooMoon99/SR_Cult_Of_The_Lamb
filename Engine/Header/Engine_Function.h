@@ -37,7 +37,16 @@ unsigned long Safe_Release(T& instance)
 
     if (nullptr != instance)
     {
-        refCnt = instance->Release();
+        __try
+        {
+            refCnt = instance->Release();
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER)
+        {
+            // 이미 해제된 객체이거나 메모리 손상
+            instance = nullptr;
+            return 0;
+        }
 
         if (0 == refCnt)
             instance = NULL;
@@ -86,9 +95,20 @@ public:
     template <typename T>
     void operator ()(T& instance)
     {
+        if (nullptr == instance)
+            return;
+
         _ulong refCnt = 0;
 
-        refCnt = instance->Release();
+        __try
+        {
+            refCnt = instance->Release();
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER)
+        {
+            instance = nullptr;
+            return;
+        }
 
         if (0 == refCnt)
             instance = nullptr;
@@ -109,9 +129,20 @@ public:
     template <typename T>
     void operator ()(T& pair)
     {
+        if (nullptr == pair.second)
+            return;
+
         _ulong refCnt = 0;
 
-        refCnt = pair.second->Release();
+        __try
+        {
+            refCnt = pair.second->Release();
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER)
+        {
+            pair.second = nullptr;
+            return;
+        }
 
         if (0 == refCnt)
             pair.second = NULL;

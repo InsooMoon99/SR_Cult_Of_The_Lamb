@@ -8,6 +8,7 @@
 #include "CTimerMgr.h"
 #include "CTransform.h"
 
+
 CAttackBase::CAttackBase(DEVICE graphicDev)
     : CGameObject(graphicDev),
       m_TransformCom(nullptr),
@@ -66,6 +67,8 @@ void CAttackBase::Render_GameObject()
 void CAttackBase::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CGameObject::OnBeginOverlap(self, other);
+   
+   // cout << "AttackBase hit -> PendingKill\n" << endl;
 
     if (!m_Instigator || !other)
         return;
@@ -111,6 +114,9 @@ void CAttackBase::OnBeginOverlap(CCollider* self, CCollider* other)
 
     combat->Take_Damage(hit);
 
+    if (m_OnHitCallback)
+        m_OnHitCallback(hitter);
+
     // HitStop
     if (m_AttackData.hitStopDuration > 0.f)
     {
@@ -125,15 +131,11 @@ void CAttackBase::OnBeginOverlap(CCollider* self, CCollider* other)
     {
         const auto& particle = m_AttackData.hitParticle;
 
-        // Pos나 Offset에서 랜덤값 줘야 좀 괜찮을듯
-        CParticleHelper::Spawn_Particle(
+        CParticleHelper::Spawn_Particle_Random(
             hitterPos,
-            particle.key,
-            particle.frames,
-            particle.interval,
-            particle.scale,
-            particle.offset
-        );
+            L"HitEffect_Star",
+            14,
+            2.f, 1.f);
     }
 
     // 데미지를 줬으면, 삭제 요청 -> AttackBuilder에서 세팅
@@ -157,6 +159,7 @@ void CAttackBase::Set_Instigator(CGameObject* instigator)
 
 void CAttackBase::Free()
 {
+   // cout << "AttackBase Free\n" << endl;
     // 오브젝트가 해제되기 직전, 등록된 콜백이 있다면 실행
     if (m_OnDestroyCallback)
         m_OnDestroyCallback();

@@ -17,8 +17,8 @@
 #include "CInteractionChecker.h"
 #include "CInventory.h"
 #include "CItemDB.h"
-#include "CObjectSpawner.h"
 #include "CNPCController.h"
+#include "CObjectSpawner.h"
 #include "CPlayerAttack.h"
 #include "CPlayerConstruction.h"
 #include "CPlayerController.h"
@@ -33,12 +33,12 @@
 #include "CRigidbody.h"
 #include "CSphereCollider.h"
 #include "CSpriteEff.h"
-#include "CTrailEff.h"
 #include "CState.h"
 #include "CTerrain.h"
 #include "CTerrainRenderer.h"
 #include "CTerrainTex.h"
 #include "CTexture.h"
+#include "CTrailEff.h"
 #include "CTransform.h"
 #include "CTriCol.h"
 #include "CWallRenderer.h"
@@ -60,15 +60,16 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
 {
     if (FAILED(Ready_Buffer(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Player(graphicDev))) return E_FAIL;
-    //if (FAILED(Ready_Monster(graphicDev))) return E_FAIL;
+    if (FAILED(Ready_Monster(graphicDev))) return E_FAIL;
     if (FAILED(Ready_UI(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Item(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Common(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Terrain(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Decoration(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Building(graphicDev))) return E_FAIL;
-    //if (FAILED(Ready_Follower(graphicDev))) return E_FAIL;
+    if (FAILED(Ready_Follower(graphicDev))) return E_FAIL;
     if (FAILED(Ready_Particle(graphicDev))) return E_FAIL;
+    if (FAILED(Ready_MiniBoss(graphicDev))) return E_FAIL;
 
     return S_OK;
 }
@@ -77,7 +78,7 @@ HRESULT CResourceMgr::Ready_Resource(DEVICE graphicDev)
 HRESULT CResourceMgr::Ready_BossResource(DEVICE graphicDev)
 {
     if (FAILED(Ready_BossP1(graphicDev))) return E_FAIL;
-    //if (FAILED(Ready_BossP2(graphicDev))) return E_FAIL;
+    if (FAILED(Ready_BossP2(graphicDev))) return E_FAIL;
 
     return S_OK;
 }
@@ -93,15 +94,7 @@ HRESULT CResourceMgr::Ready_Common(DEVICE graphicDev)
 {
     auto protoMgr = CProtoMgr::GetInstance();
 
-    // Transform
-    if (FAILED(protoMgr->Ready_Prototype(
-        COMPONENTTYPE::TRANSFORM, Engine::CTransform::Create(graphicDev))))
-        return E_FAIL;
-
-    // Animator
-    if (FAILED(protoMgr->Ready_Prototype(
-        COMPONENTTYPE::ANIMATOR, CAnimator::Create(graphicDev))))
-        return E_FAIL;
+    // Transform, Animator는 로고로 이동
 
     // Camera Controller
     if (FAILED(protoMgr->Ready_Prototype(
@@ -166,7 +159,6 @@ HRESULT CResourceMgr::Ready_Common(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TRAILEFFECT, CTrailEff::Create(graphicDev))))
         return E_FAIL;
-
 
     // Construction
     if (FAILED(protoMgr->Ready_Prototype(
@@ -412,10 +404,16 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         L"../Bin/Resource/Texture/Player/Knockback_Shot/Lamb-knockback%d.png", 34)))
         return E_FAIL;
 
-    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
+    // Warp Out
+    if (FAILED(playerTex->Add_Texture(L"Player_WarpOut", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Warp/Warp_Out/Lamb-warp-out-down%d.png", 48)))
         return E_FAIL;
 
-#pragma region --- Tex: Final
+    // Warp In
+    if (FAILED(playerTex->Add_Texture(L"Player_WarpIn", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Warp/Warp_In/Lamb-warp-in-up%d.png", 51)))
+        return E_FAIL;
+
     if (FAILED(playerTex->Add_Texture(L"Decide_Start", TEX_NORMAL,
         L"../Bin/Resource/Texture/Player/Final/Decide_Start/Decide_Start%d.png", 41)))
         return E_FAIL;
@@ -432,11 +430,84 @@ HRESULT CResourceMgr::Ready_Player(DEVICE graphicDev)
         L"../Bin/Resource/Texture/Player/Final/Refuse_Guantlets/Refuse_Guantlets%d.png", 54)))
         return E_FAIL;
 
-#pragma endregion
+    // Idle
+    if (FAILED(playerTex->Add_Texture(L"Prologue_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Idle/Lamb-intro-idle%d.png", 38)))
+        return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"Prologue_IdleUp", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Idle_Up/Lamb-intro-idle-up%d.png", 38)))
+        return E_FAIL;
+
+    // Run
+    if (FAILED(playerTex->Add_Texture(L"Prologue_Run_UP", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Run/Run_Up/Lamb-intro-run-up%d.png", 50)))
+        return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"Prologue_Run_DOWN", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Run/Run_Down/Lamb-intro-run-down%d.png", 50)))
+        return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"Prologue_Run_LDOWN", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Run/Run_Down/Lamb-intro-run-down%d.png", 50)))
+        return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"Prologue_Run_LEFT", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Run/Run_Horizontal/Lamb-intro-run-horizontal%d.png", 50)))
+        return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"Prologue_Run_LUP", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Run/Run_Diagonal/Lamb-intro-run-up-diagonal%d.png", 50)))
+        return E_FAIL;
+
+    // Sacrifice
+    if (FAILED(playerTex->Add_Texture(L"Finish_Sacrifice", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Sacrifice/Lamb-sacrifice-long%d.png", 109)))
+        return E_FAIL;
+
+    // Rebirth
+    if (FAILED(playerTex->Add_Texture(L"Prologue_Rebirth", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Rebirth/Lamb-intro-rebirth%d.png", 91)))
+        return E_FAIL;
+
+    // Kneel
+    if (FAILED(playerTex->Add_Texture(L"Prologue_Kneel_Start", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Kneel/Start/Lamb-intro-kneel%d.png", 56)))
+        return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"Prologue_Kneel_Wake", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Kneel/Wake/Lamb-intro-kneel-wake%d.png", 75)))
+        return E_FAIL;
+
+    if (FAILED(playerTex->Add_Texture(L"Prologue_Kneel_Loop", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Kneel/Loop/Lamb-intro-kneel-loop%d.png", 34)))
+        return E_FAIL;
+
+    // Dead
+    if (FAILED(playerTex->Add_Texture(L"Prologue_Dead", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Player/Intro/Dead/Lamb-intro-dead1.png", 1)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PLAYER, playerTex)))
+        return E_FAIL;
+
 
     if (FAILED(
         protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_SKILL, Engine::CTexture::Create(graphicDev, TEX_NORMAL,
             L"../Bin/Resource/Texture/Player/Bullet/Fireball.png", 1))))
+        return E_FAIL;
+
+    //TarotNPC
+    //플레이어는 아니긴 한데 마땅한 자리가 없어서 좀 빌리겠습니다ㅎㅎ;
+
+    CTexture* TarotNpcTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(TarotNpcTex, E_FAIL);
+
+    if (FAILED(TarotNpcTex->Add_Texture(L"TarotNpcIdle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/TarotSeller/TarotSeller%d.png", 87)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_TAROTNPC, TarotNpcTex)))
         return E_FAIL;
 
     return S_OK;
@@ -466,6 +537,11 @@ HRESULT CResourceMgr::Ready_Monster(DEVICE graphicDev)
         L"../Bin/Resource/Texture/Monster/Human/Hurt/Hurt%d.png", 28)))
         return E_FAIL;
 
+    // Pray
+    if (FAILED(humanmonsterTex->Add_Texture(L"HumanMonsterPray", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Human/Pray/Cultist-pray%d.png", 45)))
+        return E_FAIL;
+
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_HUMAN_MONSTER, humanmonsterTex)))
         return E_FAIL;
@@ -490,6 +566,94 @@ HRESULT CResourceMgr::Ready_Monster(DEVICE graphicDev)
         COMPONENTTYPE::TEX_FLOATER_MONSTER, floaterTex)))
         return E_FAIL;
 
+    // Bat
+    CTexture* batTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(batTex, E_FAIL);
+
+    if (FAILED(batTex->Add_Texture(L"Bat_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Bat2/Fly/Bat-fly%d.png", 34)))
+        return E_FAIL;
+
+    if (FAILED(batTex->Add_Texture(L"Bat_Charge", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Bat2/Charge/Bat-attackcharge%d.png", 59)))
+        return E_FAIL;
+
+    if (FAILED(batTex->Add_Texture(L"Bat_Attack", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Bat2/Attack/Bat-attack%d.png", 32)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_BAT_MONSTER, batTex)))
+        return E_FAIL;
+
+    // HumanMonster2
+    CTexture* human2Tex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(human2Tex, E_FAIL);
+
+    if (FAILED(human2Tex->Add_Texture(L"Human2_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Human2/Idle/Cultist-idle%d.png", 34)))
+        return E_FAIL;
+
+    if (FAILED(human2Tex->Add_Texture(L"Human2_Hit", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Human2/Hit/Cultist_Hit%d.png", 48)))
+        return E_FAIL;
+
+    if (FAILED(human2Tex->Add_Texture(L"Human2_Attack", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Human2/Attack_Long/Cultist-grunt-attack-impact%d.png", 56)))
+        return E_FAIL;
+
+    if (FAILED(human2Tex->Add_Texture(L"Human2_Run", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Human2/Run/Cultist-run%d.png", 29)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_HUMAN_MONSTER2, human2Tex)))
+        return E_FAIL;
+
+    // Burper
+    CTexture* burperTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(burperTex, E_FAIL);
+
+    if (FAILED(burperTex->Add_Texture(L"Burper_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Burper/Idle/Burper-idle%d.png", 34)))
+        return E_FAIL;
+    
+    if (FAILED(burperTex->Add_Texture(L"Burper_Hit", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Burper/Hit/Burper-hit%d.png", 16)))
+        return E_FAIL;
+    
+    if (FAILED(burperTex->Add_Texture(L"Burper_Attack", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Burper/Attack/Burper-attack%d.png", 61)))
+        return E_FAIL;
+    
+    if (FAILED(burperTex->Add_Texture(L"Burper_Run", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Monster/Burper/Run/Burper-jump%d.png", 49)))
+        return E_FAIL;
+    
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_BURPER_MONSTER, burperTex)))
+        return E_FAIL;
+
+    // 라따우
+    CTexture* ratauTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(ratauTex, E_FAIL);
+
+    if (FAILED(ratauTex->Add_Texture(L"Ratau_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Ratau/Idle/Ratau-animation%d.png", 68)))
+        return E_FAIL;
+
+    if (FAILED(ratauTex->Add_Texture(L"Ratau_Enter", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Ratau/Enter/Ratau-enter%d.png", 46)))
+        return E_FAIL;
+
+    if (FAILED(ratauTex->Add_Texture(L"Ratau_Exit", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Ratau/Exit/Ratau-exit%d.png", 50)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_RATAU, ratauTex)))
+        return E_FAIL;
+    
     // 보물상자....
     CTexture* chest = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(floaterTex, E_FAIL);
@@ -505,8 +669,6 @@ HRESULT CResourceMgr::Ready_Monster(DEVICE graphicDev)
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_CHEST, chest)))
         return E_FAIL;
-
-
 
     return S_OK;
 }
@@ -566,16 +728,87 @@ HRESULT CResourceMgr::Ready_BossP1(DEVICE graphicDev)
         L"../Bin/Resource/Texture/BossPhase1/ChainAttack/Summon_Chain%d.png", 34)))
         return E_FAIL;
 
-    //// 바닥 이팩트
-    //if (FAILED(BossP1Tex->Add_Texture(L"ChainGroundEff", TEX_NORMAL,
-    //    L"../Bin/Resource/Texture/BossPhase1/ChainAttackGround.png", 1)))
-    //    return E_FAIL;
+    // 바닥 이팩트
+    if (FAILED(BossP1Tex->Add_Texture(L"ChainGroundEff", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase1/ChainAttackGround.png", 1)))
+        return E_FAIL;
 
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_BOSSPHASE1, BossP1Tex)))
         return E_FAIL;
 
     ///////////////////////////////////////////////////////////////////////
+
+    return S_OK;
+}
+
+HRESULT CResourceMgr::Ready_Prologue(DEVICE graphicDev)
+{
+    auto protoMgr = CProtoMgr::GetInstance();
+
+    // 레쉬
+    CTexture* leshyTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(leshyTex, E_FAIL);
+
+    if (FAILED(leshyTex->Add_Texture(L"Leshy", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Leshy/Leshy-idle%d.png", 84)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_LESHY, leshyTex)))
+        return E_FAIL;
+
+    // 헤켓
+    CTexture* heketTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(heketTex, E_FAIL);
+
+    if (FAILED(heketTex->Add_Texture(L"Heket", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Heket/Heket-idle%d.png", 60)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_HEKET, heketTex)))
+        return E_FAIL;
+
+    // 칼라마르
+    CTexture* kalaTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(kalaTex, E_FAIL);
+
+    if (FAILED(kalaTex->Add_Texture(L"Kallamar", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Kallamar/Kallamar-leader-idle%d.png", 60)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_KALLAMAR, kalaTex)))
+        return E_FAIL;
+
+    // 사무라
+    CTexture* shamuraTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(shamuraTex, E_FAIL);
+
+    if (FAILED(shamuraTex->Add_Texture(L"Shamura", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Shamura/Shamura-idle%d.png", 60)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_SHAMURA, shamuraTex)))
+        return E_FAIL;
+
+    // 처형하는놈
+    CTexture* excutionerTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(excutionerTex, E_FAIL);
+
+    if (FAILED(excutionerTex->Add_Texture(L"Excutioner_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Excutioner/Idle/Executioner-idle%d.png", 45)))
+        return E_FAIL;
+
+    if (FAILED(excutionerTex->Add_Texture(L"Excutioner_Excute", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Excutioner/Excute/Executioner-execute%d.png", 55)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_EXCUTIONER, excutionerTex)))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -589,24 +822,18 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
         CBossController::Create(graphicDev))))
         return E_FAIL;
 
-    // 춘식이
-    CTexture* slaveTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
-    NULL_CHECK_RETURN(slaveTex, E_FAIL);
-
-    if (FAILED(slaveTex->Add_Texture(L"Boss_Slave_Appear", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase2/Slave/ChunSik/Follower-finab-loss-appear%d.png", 42)))
-        return E_FAIL;
-
-    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_SLAVE_TEST, slaveTex)))
-        return E_FAIL;
-
     // Boss Phase 2
     CTexture* bossPhase2 = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
     NULL_CHECK_RETURN(bossPhase2, E_FAIL);
 
+    // Summon Follower
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Summon", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Summon/TOWW_Summon%d.png", 134)))
+        return E_FAIL;
+
     // Start
     if (FAILED(bossPhase2->Add_Texture(L"Boss2_Start", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Start_Eye/TOWW_Start_Eye%d.png", 68)))
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Start_Eye/TOWW_Start_Eye%d.png", 85)))
         return E_FAIL;
 
     // Idle
@@ -614,9 +841,19 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
         L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Idle/TOWW_Idle%d.png", 68)))
         return E_FAIL;
 
+    // Idle Eyeball Alive
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Idle_Alive", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Idle_Alive/TOWW_Idle_Alive%d.png", 68)))
+        return E_FAIL;
+
     // Roar
     if (FAILED(bossPhase2->Add_Texture(L"Boss2_Roar", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Roar/TOWW_Roar%d.png", 69)))
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Roar/TOWW_Roar%d.png", 70)))
+        return E_FAIL;
+
+    // Roar Alive
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Roar_Alive", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Roar_Alive/TOWW_Roar_Alive%d.png", 70)))
         return E_FAIL;
 
     // HandSlam
@@ -626,7 +863,7 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
 
     // Dead
     if (FAILED(bossPhase2->Add_Texture(L"Boss2_Dead", TEX_NORMAL,
-        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Die/TOWW_Die%d.png", 56)))
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Die/TOWW_Die%d.png", 117)))
         return E_FAIL;
 
     // Warning Chain
@@ -634,10 +871,39 @@ HRESULT CResourceMgr::Ready_BossP2(DEVICE graphicDev)
         L"../Bin/Resource/Texture/BossPhase1/ChainAttackGround.png", 1)))
         return E_FAIL;
 
+    // Sweep
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Sweep", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_Sweep/TOWW_Sweep%d.png", 82)))
+        return E_FAIL;
+
     // Chain
     if (FAILED(bossPhase2->Add_Texture(L"Boss2_Chain", TEX_NORMAL,
         L"../Bin/Resource/Texture/BossPhase1/ChainAttack/Summon_Chain%d.png", 34)))
         return E_FAIL;
+
+    // Down Start
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_DownStart", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_DownStart/TOWW_DownStart%d.png", 64)))
+        return E_FAIL;
+
+    // Down Idle
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_DownIdle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/TOWW/TOWW_DownIdle/TOWW_DownIdle%d.png", 67)))
+        return E_FAIL;
+
+    // Transform Follower
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Follower_Transform", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Slave/DeathCat/Transform/Boss_Transform%d.png", 62)))
+        return E_FAIL;
+
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Follower_UnConverted", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Slave/DeathCat/UnConverted/UnConverted%d.png", 50)))
+        return E_FAIL;
+
+    if (FAILED(bossPhase2->Add_Texture(L"Boss2_Follower_Die", TEX_NORMAL,
+        L"../Bin/Resource/Texture/BossPhase2/Slave/DeathCat/Die/TOWW_Die%d.png", 96)))
+        return E_FAIL;
+
 
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_BOSS2_PHASE2, bossPhase2)))
         return E_FAIL;
@@ -698,6 +964,57 @@ HRESULT CResourceMgr::Ready_BossP2_Eyeball(DEVICE graphicDev)
     return S_OK;
 }
 
+HRESULT CResourceMgr::Ready_BossP2_Follower(DEVICE graphicDev)
+{
+    auto protoMgr = CProtoMgr::GetInstance();
+
+    // 춘식이들
+    CTexture* slaveTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(slaveTex, E_FAIL);
+
+    // Cow3
+    if (FAILED(slaveTex->Add_Texture(L"NPC_Cow3_Appear", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Finalboss_Appear/Follower-finalboss-appear%d.png", 140)))
+        return E_FAIL;
+
+    if (FAILED(slaveTex->Add_Texture(L"NPC_Cow3_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Finalboss_Idle/Follower-finalboss-idle%d.png", 50)))
+        return E_FAIL;
+
+    //if (FAILED(slaveTex->Add_Texture(L"NPC_Cow3_Freed", TEX_NORMAL,
+    //    L"../Bin/Resource/Texture/NPC/Follower/Cow3/Finalboss_Freed/Follower-finalboss-freed%d.png", 102)))
+    //    return E_FAIL;
+
+    // Elephant
+    if (FAILED(slaveTex->Add_Texture(L"NPC_Elephant_Appear", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Finalboss_Appear/Follower-finalboss-appear%d.png", 142)))
+        return E_FAIL;
+
+    if (FAILED(slaveTex->Add_Texture(L"NPC_Elephant_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Finalboss_Idle/Follower-finalboss-idle%d.png", 50)))
+        return E_FAIL;
+
+    //if (FAILED(slaveTex->Add_Texture(L"NPC_Elephant_Freed", TEX_NORMAL,
+    //    L"../Bin/Resource/Texture/NPC/Follower/Elephant/Finalboss_Freed/Follower-finalboss-freed%d.png", 102)))
+    //    return E_FAIL;
+
+    // Pig2
+    if (FAILED(slaveTex->Add_Texture(L"NPC_Pig2_Appear", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Finalboss_Appear/Follower-finalboss-appear%d.png", 142)))
+        return E_FAIL;
+
+    if (FAILED(slaveTex->Add_Texture(L"NPC_Pig2_Idle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Finalboss_Idle/Follower-finalboss-idle%d.png", 50)))
+        return E_FAIL;
+
+    //if (FAILED(slaveTex->Add_Texture(L"NPC_Pig2_Freed", TEX_NORMAL,
+    //    L"../Bin/Resource/Texture/NPC/Follower/Pig2/Finalboss_Freed/Follower-finalboss-freed%d.png", 102)))
+    //    return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_SLAVE_TEST, slaveTex)))
+        return E_FAIL;
+}
+
 HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
 {
     auto protoMgr = CProtoMgr::GetInstance();
@@ -717,13 +1034,19 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     //circleTex
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_CIRCLE,
         Engine::CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Circle_Red.png", 1))))
+            L"../Bin/Resource/Texture/UI/PlayerState/Sermon/Circle_Red%d.png", 2))))
         return E_FAIL;
 
     //circleTex
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_WEAPON,
         Engine::CTexture::Create(graphicDev, TEX_NORMAL,
             L"../Bin/Resource/Texture/UI/PlayerState/Icon/Weapon%d.png", 2))))
+        return E_FAIL;
+
+    //circleTex
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_SKILL,
+        Engine::CTexture::Create(graphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/UI/PlayerState/Icon/Skill%d.png", 3))))
         return E_FAIL;
 
     // 메인 메뉴 이미지
@@ -735,6 +1058,14 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
         L"../Bin/Resource/Texture/MainMenu/MenuChar/Main menu-animation%d.png", 100)))
         return E_FAIL;
 
+    // 일단 여기 넝고 메인보스의 졸
+    if (FAILED(menuChar->Add_Texture(L"Etc_White", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Etc/Etc_White/Etc_White%d.png", 84)))
+        return E_FAIL;
+    if (FAILED(menuChar->Add_Texture(L"Etc_Black", TEX_NORMAL,
+        L"../Bin/Resource/Texture/Etc/Etc_Black/Etc_Black%d.png", 84)))
+        return E_FAIL;
+    //
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_MENU_CHAR, menuChar)))
         return E_FAIL;
@@ -780,19 +1111,36 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     pathVec2.push_back(L"../Bin/Resource/Texture/UI/Inventory/ButtonTab0.png");
     pathVec2.push_back(L"../Bin/Resource/Texture/UI/Inventory/ButtonTab1.png");
     pathVec2.push_back(L"../Bin/Resource/Texture/UI/Tarot/ExplainBox/HeartExplain.png");
-
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/Tarot/ExplainBox/SkillExplain.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/Tarot/ExplainBox/SkillExplain.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/FollowerCommand/Pray_Icon0.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/FollowerCommand/Pray_Icon1.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/FollowerCommand/Axe_Icon0.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/FollowerCommand/Axe_Icon1.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/FollowerCommand/Mining_Icon0.png");
+    pathVec2.push_back(L"../Bin/Resource/Texture/UI/FollowerCommand/Mining_Icon1.png");
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_BUTTON, Engine::CTexture::Create(graphicDev, TEX_NORMAL, pathVec2))))
         return E_FAIL;
 
     //// Texture : MainMenu BackGround
-    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_MAINBG,
-        Engine::CTexture::Create(
-            graphicDev,
-            TEX_NORMAL,
-            L"../Bin/Resource/Texture/BackGround/MainMenu/MenuMask1.png",
-            1))))
+
+    //UIButton 텍스쳐
+    vector<wstring> BG;
+    BG.push_back(L"../Bin/Resource/Texture/BackGround/MainMenu/MenuMask1.png");
+    BG.push_back(L"../Bin/Resource/Texture/MainMenu/RitualStone_Activated.png");
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_MAINBG, Engine::CTexture::Create(graphicDev, TEX_NORMAL, BG))))
         return E_FAIL;
+
+    //if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_MAINBG,
+    //    Engine::CTexture::Create(
+    //        graphicDev,
+    //        TEX_NORMAL,
+    //        L"../Bin/Resource/Texture/BackGround/MainMenu/MenuMask1.png",
+    //        1))))
+    //    return E_FAIL;
 
     // Texture : Inventory BackGround
     if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_INVEN,
@@ -885,6 +1233,8 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     vector<wstring> decoTex;
     decoTex.emplace_back(L"../Bin/Resource/Texture/UI/Inventory/Title_Bracket_Left.png");
     decoTex.emplace_back(L"../Bin/Resource/Texture/UI/Inventory/Title_Bracket_Right.png");
+    decoTex.emplace_back(L"../Bin/Resource/Texture/UI/Deco/Skeleton.png");
+    decoTex.emplace_back(L"../Bin/Resource/Texture/UI/Deco/Timer.png");
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_DECO, CTexture::Create(graphicDev, TEX_NORMAL, decoTex))))
         return E_FAIL;
@@ -903,8 +1253,68 @@ HRESULT CResourceMgr::Ready_UI(DEVICE graphicDev)
     //UI 상호작용 키 
     vector<wstring> interactionTex;
     interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InterAction_E.png");
+    interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey0.png");
+    interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey1.png");
+    interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey2.png");
+    interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey3.png");
+    interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey4.png");
+    interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey5.png");
+    interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey6.png");
+    interactionTex.emplace_back(L"../Bin/Resource/Texture/UI/Interaction/InteractionKey7.png");
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_UI_INTERACTION, CTexture::Create(graphicDev, TEX_NORMAL, interactionTex))))
+        return E_FAIL;
+
+    //// Texture : Clear BackGround
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_CLEAR,
+        Engine::CTexture::Create(
+            graphicDev,
+            TEX_NORMAL,
+            L"../Bin/Resource/Texture/UI/BG/ClearBG.png",
+            1))))
+        return E_FAIL;
+
+    // Texture : MainMenu Extra
+    //
+    vector<wstring> extra;
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Front_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideFront0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideFront0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Side_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Side_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideBack_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideBack_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Back_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Back_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideBack_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideBack_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Side_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Side_0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideFront0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_SideFront0.png");
+    extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_Front_0.png");
+
+    //extra.push_back(L"../Bin/Resource/Texture/MainMenu/Follower_0.png");
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_MAINMENU, CTexture::Create(graphicDev, TEX_NORMAL, extra))))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_UI_COMMAND,
+        Engine::CTexture::Create(
+            graphicDev,
+            TEX_NORMAL,
+            L"../Bin/Resource/Texture/UI/FollowerCommand/BackGround0.png",
+            1))))
+        return E_FAIL;
+
+    //// Texture : InteractiveObj
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_INTERACTIVEOBJ,
+        Engine::CTexture::Create(
+            graphicDev,
+            TEX_NORMAL,
+            L"../Bin/Resource/Texture/InteractiveObj/InteractiveGrass%d.png",
+            2))))
         return E_FAIL;
 
     return S_OK;
@@ -967,6 +1377,12 @@ HRESULT CResourceMgr::Ready_Terrain(DEVICE graphicDev)
             L"../Bin/Resource/Texture/Terrain/TileOutline%d.png", 3))))
         return E_FAIL;
 
+    // Terrain_Outline2
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::TEX_TILE_OUTLINE2, CTexture::Create(graphicDev, TEX_NORMAL,
+            L"../Bin/Resource/Texture/Terrain/TileOutline4.png", 1))))
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -983,7 +1399,7 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     // Rubble
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_RUBBLE, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/MapObject/Rubble/Rubble%d.png", 50))))
+            L"../Bin/Resource/Texture/MapObject/Rubble/Rubble%d.png", 94))))
         return E_FAIL;
 
     // Deco
@@ -995,7 +1411,7 @@ HRESULT CResourceMgr::Ready_Decoration(DEVICE graphicDev)
     // Dungeon_Deco
     if (FAILED(protoMgr->Ready_Prototype(
         COMPONENTTYPE::TEX_DUNGEON_DECO, CTexture::Create(graphicDev, TEX_NORMAL,
-            L"../Bin/Resource/Texture/MapObject/Dungeon_Deco2/Dungeon_Deco2_%d.png", 139))))
+            L"../Bin/Resource/Texture/MapObject/Dungeon_Deco2/Dungeon_Deco2_%d.png", 165))))
         return E_FAIL;
 
     // ETC
@@ -1087,6 +1503,41 @@ HRESULT CResourceMgr::Ready_Particle(DEVICE graphicDev)
         CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Effect/Fog/fog.png", 1))))
         return E_FAIL;
 
+    // Rock
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_ROCK_PARTICLE,
+        CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Particle/Rock/Rock_Particle%d.png", 2))))
+        return E_FAIL;
+
+    // Grass
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_GRASS_PARTICLE,
+        CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Particle/Grass/Grass_Particle%d.png", 4))))
+        return E_FAIL;
+
+    // Tree
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_TREE_PARTICLE,
+        CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Particle/Tree/Tree_Particle%d.png", 6))))
+        return E_FAIL;
+
+    // 엘리고스 파리
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_MONSTER_HIT_PARTICLE,
+        CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Particle/Enemy/Enemy_Particle%d.png", 4))))
+        return E_FAIL;
+
+    // HumanMonster
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_MONSTER_HUMAN_HIT_PARTICLE,
+        CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Particle/Enemy/HumanMonster/Human_Particle%d.png", 4))))
+        return E_FAIL;
+
+    // Floater
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_MONSTER_FLOATER_HIT_PARTICLE,
+        CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Particle/Enemy/Floater/Floater_Particle%d.png", 3))))
+        return E_FAIL;
+
+    // Bat
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_MONSTER_BAT_HIT_PARTICLE,
+        CTexture::Create(graphicDev, TEX_NORMAL, L"../Bin/Resource/Texture/Particle/Enemy/Bat/Bat_Particle%d.png", 4))))
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -1130,176 +1581,267 @@ HRESULT CResourceMgr::Ready_Building(DEVICE graphicDev)
 
     return S_OK;
 }
- 
-//HRESULT CResourceMgr::Ready_Follower(DEVICE graphicDev)
-//{
-//    auto protoMgr = CProtoMgr::GetInstance();
-//
-//#pragma region --- NPC Components ---
-//
-//    // Interaction Checker
-//    if (FAILED(protoMgr->Ready_Prototype(
-//        COMPONENTTYPE::NPC_INTERACTION_CHECKER, CInteractionChecker::Create(graphicDev))))
-//        return E_FAIL;
-//
-//    if (FAILED(protoMgr->Ready_Prototype(
-//        COMPONENTTYPE::NPC_CONTROLLER, CNPCController::Create(graphicDev))))
-//        return E_FAIL;
-//
-//#pragma endregion
-//
-//#pragma region --- Cow ---
-//
-//    CTexture* cowTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
-//    NULL_CHECK_RETURN(cowTex, E_FAIL);
-//
-//    if (FAILED(cowTex->Add_Texture(L"CowIdle", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Idle/Follower-idle%d.png", 49)))
-//        return E_FAIL;
-//
-//    if (FAILED(cowTex->Add_Texture(L"CowRun", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Run/Follower-run%d.png", 29)))
-//        return E_FAIL;
-//
-//    if (FAILED(cowTex->Add_Texture(L"CowWalkpast", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Walkpast/Follower-conversations-walkpast-nice%d.png", 86)))
-//        return E_FAIL;
-//
-//    if (FAILED(cowTex->Add_Texture(L"CowBuild", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Build/Follower-build%d.png", 53)))
-//        return E_FAIL;
-//
-//    if (FAILED(cowTex->Add_Texture(L"CowChopWood", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Cow3/ChopWood/Follower-chop-wood%d.png", 81)))
-//        return E_FAIL;
-//
-//    if (FAILED(cowTex->Add_Texture(L"CowMining", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Mining/Follower-mining%d.png", 48)))
-//        return E_FAIL;
-//
-//    if (FAILED(cowTex->Add_Texture(L"CowPray_Half", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Pray_Half/Follower-pray%d.png", 62)))
-//        return E_FAIL;
-//
-//    if (FAILED(cowTex->Add_Texture(L"CowPrayPeek_Half", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Cow3/PrayPeek_Half/Follower-pray-peek%d.png", 62)))
-//        return E_FAIL;
-//
-//    if (FAILED(cowTex->Add_Texture(L"CowEat_Half", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Eat_Half/Follower-food-food_eat%d.png", 50)))
-//        return E_FAIL;
-//
-//    if (FAILED(cowTex->Add_Texture(L"CowSpawn_Half", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Spawn_Half/Follower-spawn-in-base%d.png", 172)))
-//        return E_FAIL;
-//
-//    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_COW, cowTex)))
-//        return E_FAIL;
-//
-//#pragma endregion
-//
-//#pragma region --- Elephant ---
-//
-//    CTexture* elephantTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
-//    NULL_CHECK_RETURN(elephantTex, E_FAIL);
-//
-//    if (FAILED(elephantTex->Add_Texture(L"CowIdle", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Idle/Follower-idle%d.png", 49)))
-//        return E_FAIL;
-//
-//    if (FAILED(elephantTex->Add_Texture(L"CowRun", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Run/Follower-run%d.png", 29)))
-//        return E_FAIL;
-//
-//    if (FAILED(elephantTex->Add_Texture(L"CowWalkpast", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Walkpast/Follower-conversations-walkpast-love%d.png", 86)))
-//        return E_FAIL;
-//
-//    if (FAILED(elephantTex->Add_Texture(L"CowBuild", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Build/Follower-build%d.png", 53)))
-//        return E_FAIL;
-//
-//    if (FAILED(elephantTex->Add_Texture(L"CowChopWood", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Elephant/ChopWood/Follower-chop-wood%d.png", 81)))
-//        return E_FAIL;
-//
-//    if (FAILED(elephantTex->Add_Texture(L"CowMining", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Mining/Follower-mining%d.png", 48)))
-//        return E_FAIL;
-//
-//    if (FAILED(elephantTex->Add_Texture(L"CowPray_Half", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Pray_Half/Follower-pray%d.png", 62)))
-//        return E_FAIL;
-//
-//    if (FAILED(elephantTex->Add_Texture(L"CowPrayPeek_Half", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Elephant/PrayPeek_Half/Follower-pray-peek%d.png", 62)))
-//        return E_FAIL;
-//
-//    if (FAILED(elephantTex->Add_Texture(L"CowEat_Half", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Eat_Half/Follower-food-food_eat%d.png", 50)))
-//        return E_FAIL;
-//
-//    if (FAILED(elephantTex->Add_Texture(L"CowSpawn_Half", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Spawn_Half/Follower-spawn-in-base%d.png", 172)))
-//        return E_FAIL;
-//
-//    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_ELEPHANT, elephantTex)))
-//        return E_FAIL;
-//
-//#pragma endregion
-//
-//#pragma region --- Pig ---
-//
-//    CTexture* pigTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
-//    NULL_CHECK_RETURN(pigTex, E_FAIL);
-//
-//    if (FAILED(pigTex->Add_Texture(L"CowIdle", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Idle/Follower-idle%d.png", 49)))
-//        return E_FAIL;
-//
-//    if (FAILED(pigTex->Add_Texture(L"CowRun", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Run/Follower-run%d.png", 29)))
-//        return E_FAIL;
-//
-//    if (FAILED(pigTex->Add_Texture(L"CowWalkpast", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Walkpast/Follower-conversations-walkpast-nice%d.png", 86)))
-//        return E_FAIL;
-//
-//    if (FAILED(pigTex->Add_Texture(L"CowBuild", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Build/Follower-build%d.png", 53)))
-//        return E_FAIL;
-//
-//    if (FAILED(pigTex->Add_Texture(L"CowChopWood", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Pig2/ChopWood/Follower-chop-wood%d.png", 81)))
-//        return E_FAIL;
-//
-//    if (FAILED(pigTex->Add_Texture(L"CowMining", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Mining/Follower-mining%d.png", 48)))
-//        return E_FAIL;
-//
-//    if (FAILED(pigTex->Add_Texture(L"CowPray_Half", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Pray_Half/Follower-pray%d.png", 62)))
-//        return E_FAIL;
-//
-//    if (FAILED(pigTex->Add_Texture(L"CowPrayPeek_Half", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Pig2/PrayPeek_Half/Follower-pray-peek%d.png", 62)))
-//        return E_FAIL;
-//
-//    if (FAILED(pigTex->Add_Texture(L"CowEat_Half", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Eat_Half/Follower-food-food_eat%d.png", 50)))
-//        return E_FAIL;
-//
-//    if (FAILED(pigTex->Add_Texture(L"CowSpawn_Half", TEX_NORMAL,
-//        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Spawn_Half/Follower-spawn-in-base%d.png", 172)))
-//        return E_FAIL;
-//
-//    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PIG, pigTex)))
-//        return E_FAIL;
-//
-//#pragma endregion
-//
-//    return S_OK;
-//}
-//
+
+HRESULT CResourceMgr::Ready_Follower(DEVICE graphicDev)
+{
+    auto protoMgr = CProtoMgr::GetInstance();
+
+#pragma region --- NPC Components ---
+
+    // Interaction Checker
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::NPC_INTERACTION_CHECKER, CInteractionChecker::Create(graphicDev))))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(
+        COMPONENTTYPE::NPC_CONTROLLER, CNPCController::Create(graphicDev))))
+        return E_FAIL;
+
+#pragma endregion
+
+#pragma region --- Cow ---
+
+    CTexture* cowTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(cowTex, E_FAIL);
+
+    if (FAILED(cowTex->Add_Texture(L"CowIdle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Idle/Follower-idle%d.png", 49)))
+        return E_FAIL;
+
+    if (FAILED(cowTex->Add_Texture(L"CowRun", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Run/Follower-run%d.png", 29)))
+        return E_FAIL;
+
+    if (FAILED(cowTex->Add_Texture(L"CowWalkPast", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Walkpast/Follower-conversations-walkpast-nice%d.png", 86)))
+        return E_FAIL;
+
+    if (FAILED(cowTex->Add_Texture(L"CowBuild", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Build/Follower-build%d.png", 53)))
+        return E_FAIL;
+
+    if (FAILED(cowTex->Add_Texture(L"CowChopWood", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Cow3/ChopWood/Follower-chop-wood%d.png", 81)))
+        return E_FAIL;
+
+    if (FAILED(cowTex->Add_Texture(L"CowMining", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Mining/Follower-mining%d.png", 48)))
+        return E_FAIL;
+
+    if (FAILED(cowTex->Add_Texture(L"CowPray", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Pray/Follower-pray%d.png", 62)))
+        return E_FAIL;
+
+    if (FAILED(cowTex->Add_Texture(L"CowPrayPeek", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Cow3/PrayPeek/Follower-pray-peek%d.png", 62)))
+        return E_FAIL;
+
+    if (FAILED(cowTex->Add_Texture(L"CowEat", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Eat/Follower-food-food_eat%d.png", 50)))
+        return E_FAIL;
+
+    if (FAILED(cowTex->Add_Texture(L"CowSpawn", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Spawn/Follower-spawn-in-base%d.png", 172)))
+        return E_FAIL;
+
+    if (FAILED(cowTex->Add_Texture(L"CowTransform1", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Transform1/Follower-transform1-%d.png", 94)))
+        return E_FAIL;
+
+    if (FAILED(cowTex->Add_Texture(L"CowTransform2", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Transform2/Follower-transform2-%d.png", 26)))
+        return E_FAIL;
+
+    if (FAILED(cowTex->Add_Texture(L"CowTransform3", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Cow3/Transform3/Follower-transform3-%d.png", 89)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_COW, cowTex)))
+        return E_FAIL;
+
+#pragma endregion
+
+#pragma region --- Elephant ---
+
+    CTexture* elephantTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(elephantTex, E_FAIL);
+
+    if (FAILED(elephantTex->Add_Texture(L"ElephantIdle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Idle/Follower-idle%d.png", 49)))
+        return E_FAIL;
+
+    if (FAILED(elephantTex->Add_Texture(L"ElephantRun", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Run/Follower-run%d.png", 29)))
+        return E_FAIL;  
+
+    if (FAILED(elephantTex->Add_Texture(L"ElephantWalkPast", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Walkpast/Follower-conversations-walkpast-love%d.png", 86)))
+        return E_FAIL;
+
+    if (FAILED(elephantTex->Add_Texture(L"ElephantBuild", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Build/Follower-build%d.png", 53)))
+        return E_FAIL;
+
+    if (FAILED(elephantTex->Add_Texture(L"ElephantChopWood", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Elephant/ChopWood/Follower-chop-wood%d.png", 81)))
+        return E_FAIL;
+
+    if (FAILED(elephantTex->Add_Texture(L"ElephantMining", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Mining/Follower-mining%d.png", 48)))
+        return E_FAIL;
+
+    if (FAILED(elephantTex->Add_Texture(L"ElephantPray", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Pray/Follower-pray%d.png", 62)))
+        return E_FAIL;
+
+    if (FAILED(elephantTex->Add_Texture(L"ElephantPrayPeek", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Elephant/PrayPeek/Follower-pray-peek%d.png", 62)))
+        return E_FAIL;
+
+    if (FAILED(elephantTex->Add_Texture(L"ElephantEat", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Eat/Follower-food-food_eat%d.png", 50)))
+        return E_FAIL;
+
+    if (FAILED(elephantTex->Add_Texture(L"ElephantSpawn", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Spawn/Follower-spawn-in-base%d.png", 172)))
+        return E_FAIL;
+
+    if (FAILED(elephantTex->Add_Texture(L"ElephantTransform1", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Transform1/Follower-transform1-%d.png", 94)))
+        return E_FAIL;
+
+    if (FAILED(elephantTex->Add_Texture(L"ElephantTransform2", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Transform2/Follower-transform2-%d.png", 26)))
+        return E_FAIL;
+
+    if (FAILED(elephantTex->Add_Texture(L"ElephantTransform3", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Elephant/Transform3/Follower-transform3-%d.png", 89)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_ELEPHANT, elephantTex)))
+        return E_FAIL;
+
+#pragma endregion
+
+#pragma region --- Pig ---
+
+    CTexture* pigTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(pigTex, E_FAIL);
+
+    if (FAILED(pigTex->Add_Texture(L"PigIdle", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Idle/Follower-idle%d.png", 49)))
+        return E_FAIL;
+
+    if (FAILED(pigTex->Add_Texture(L"PigRun", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Run/Follower-run%d.png", 29)))
+        return E_FAIL;
+
+    if (FAILED(pigTex->Add_Texture(L"PigWalkPast", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Walkpast/Follower-conversations-walkpast-nice%d.png", 86)))
+        return E_FAIL;
+
+    if (FAILED(pigTex->Add_Texture(L"PigBuild", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Build/Follower-build%d.png", 53)))
+        return E_FAIL;
+
+    if (FAILED(pigTex->Add_Texture(L"PigChopWood", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Pig2/ChopWood/Follower-chop-wood%d.png", 81)))
+        return E_FAIL;
+
+    if (FAILED(pigTex->Add_Texture(L"PigMining", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Mining/Follower-mining%d.png", 48)))
+        return E_FAIL;
+
+    if (FAILED(pigTex->Add_Texture(L"PigPray", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Pray/Follower-pray%d.png", 62)))
+        return E_FAIL;
+
+    if (FAILED(pigTex->Add_Texture(L"PigPrayPeek", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Pig2/PrayPeek/Follower-pray-peek%d.png", 62)))
+        return E_FAIL;
+
+    if (FAILED(pigTex->Add_Texture(L"PigEat", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Eat/Follower-food-food_eat%d.png", 50)))
+        return E_FAIL;
+
+    if (FAILED(pigTex->Add_Texture(L"PigSpawn", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Spawn/Follower-spawn-in-base%d.png", 172)))
+        return E_FAIL;
+
+    if (FAILED(pigTex->Add_Texture(L"PigTransform1", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Transform1/Follower-transform1-%d.png", 94)))
+        return E_FAIL;
+
+    if (FAILED(pigTex->Add_Texture(L"PigTransform2", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Transform2/Follower-transform2-%d.png", 26)))
+        return E_FAIL;
+
+    if (FAILED(pigTex->Add_Texture(L"PigTransform3", TEX_NORMAL,
+        L"../Bin/Resource/Texture/NPC/Follower/Pig2/Transform3/Follower-transform3-%d.png", 89)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_PIG, pigTex)))
+        return E_FAIL;
+
+#pragma endregion
+
+    return S_OK;
+}
+
+HRESULT CResourceMgr::Ready_MiniBoss(DEVICE graphicDev)
+{
+    auto protoMgr = CProtoMgr::GetInstance();
+
+    CTexture* MiniBossTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(MiniBossTex, E_FAIL);
+
+    if (FAILED(MiniBossTex->Add_Texture(L"Eligos_roar", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Eligos_roar/Eligos_roar%d.png", 140)))
+        return E_FAIL;
+
+    if (FAILED(MiniBossTex->Add_Texture(L"Eligos_fly", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Eligos_fly/Eligos_fly%d.png", 42)))
+        return E_FAIL;
+
+    if (FAILED(MiniBossTex->Add_Texture(L"Eligos_burpcharge", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Eligos_burpcharge/Eligos_burpcharge%d.png", 50)))
+        return E_FAIL;
+
+    if (FAILED(MiniBossTex->Add_Texture(L"Eligos_burp", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Eligos_burp/Eligos_burp%d.png", 42)))
+        return E_FAIL;
+
+    if (FAILED(MiniBossTex->Add_Texture(L"Eligos_attackcharge", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Eligos_attackcharge/Eligos_attackcharge%d.png", 59)))
+        return E_FAIL;
+
+    if (FAILED(MiniBossTex->Add_Texture(L"Eligos_attack", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Eligos_attack/Eligos_attack%d.png", 32)))
+        return E_FAIL;
+
+    if (FAILED(MiniBossTex->Add_Texture(L"Eligos_attackcharge_bullet", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Eligos_attackcharge/Eligos_attackcharge%d.png", 59)))
+        return E_FAIL;
+
+    if (FAILED(MiniBossTex->Add_Texture(L"Eligos_attack_bullet", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Eligos_attack/Eligos_attack%d.png", 32)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_MINIBOSS, MiniBossTex)))
+        return E_FAIL;
+
+    CTexture* flyTex = CTexture::Create(graphicDev, TEX_NORMAL, L"", 0);
+    NULL_CHECK_RETURN(flyTex, E_FAIL);
+
+    if (FAILED(flyTex->Add_Texture(L"Mortar_fly", TEX_NORMAL,
+        L"../Bin/Resource/Texture/MiniBoss/Mortar_fly/Mortar_fly%d.png", 27)))
+        return E_FAIL;
+
+    if (FAILED(protoMgr->Ready_Prototype(COMPONENTTYPE::TEX_FLY, flyTex)))
+        return E_FAIL;
+
+    return S_OK;
+}
+
 void CResourceMgr::Free()
 { }

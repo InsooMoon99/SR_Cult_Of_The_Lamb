@@ -41,6 +41,7 @@ public:
     void    Set_OnClick(function<void()> onclick) { m_OnClick = onclick; }
     void    Set_OnActive(function<bool()> active) { m_IsActive = active; }
     void     Set_BuildMenu(CUIBuildMenu* buildmenu) { m_BuildMenu = buildmenu; }
+    function<bool()>   Get_IsActive() { return m_IsActive; }
     CUIIcon* Get_Icon() { return m_ItemIcon; }
 
 protected:

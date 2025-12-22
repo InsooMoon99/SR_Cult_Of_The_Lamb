@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include "CUI.h"
 
+class CSpriteEff;
+
 enum class TAROTSTATE
 {
     START,
@@ -70,7 +72,6 @@ protected:
     bool m_Selected;
     RECT m_Rect;
     int  m_TextureIndex;
-    CAnimator* m_AnimatorCom;
     TAROTSTATE m_CurrentState;
     TAROTTYPE m_CurrentType;
     TAROTSTATE m_PrevState;
@@ -82,7 +83,12 @@ protected:
     _vec3       m_BaseScale;
     _vec3       m_TargetScale;
 
+    CAnimator* m_AnimatorCom;
+    CSpriteEff* m_SpriteEffCom;
 
+    _bool   m_FadeOut = false;
+    _float   m_FadeSpeed = 1.5f;
+    _float m_Alpha = 0.8f;
 };
 
 

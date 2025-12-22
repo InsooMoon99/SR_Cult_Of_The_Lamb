@@ -28,14 +28,6 @@ class CPlayerConstruction;
 /// - CPlayerAttack: 공격 및 전투 로직을 처리합니다.
 class CPlayerController : public CComponent
 {
-private:
-    // 플레이어 컨트롤러 내 사용하는 타이머용 열거체
-    enum PLCON_TIMER
-    {
-        TIMER_RUNSOUND,  // 달리기 효과음 재생용
-
-        TIMER_END
-    };
 
 private:
     explicit CPlayerController(DEVICE graphicDev);
@@ -74,13 +66,23 @@ private:
     void Action_SingleSkill(const _float& timeDelta);
     void Action_TripleSkill(const _float& timeDelta);
     void Action_Construction(const _float& timeDelta);
-    void Action_Hit(const _float& timeDetla);
+    void Action_Hit(const _float& timeDelta);
 
-    void Action_Decide(const _float& timeDetla);
-    void Action_Refuse(const _float& timeDetla);
+    void Action_Decide(const _float& timeDelta);
+    void Action_Refuse(const _float& timeDelta);
+    void Action_Kneel(const _float& timeDelta);
+    void Action_Kneel_Wake(const _float& timeDelta);
+    void Action_Rebirth(const _float& timeDelta);
+
+    void Action_Sacrifice(const _float& timeDelta);
+
+    void Action_WarpOut(const _float& timeDelta);
+    void Action_WarpIn(const _float& timeDelta);
 
     // --- [기타 기능 함수] ---
-    _bool Living_Interaction(); // 채집, 건축 등의 상황, CheckStateTransition 내에서 사용
+    void Check_Gathering();
+    void Check_Construction();
+    // _bool Living_Interaction(); // Deprecated
 
 private:
 #pragma region Caching owner components
@@ -96,8 +98,6 @@ private:
     CPlayerGathering* m_OwnerGatherCom;
     CPlayerConstruction* m_OwnerConstructionCom;
 #pragma endregion
-
-    _float m_Timers[TIMER_END]; // enum값을 통해 사용하는 타이머
 
     OnRefuseEndCallback m_OnRefuseEnd = nullptr;
 

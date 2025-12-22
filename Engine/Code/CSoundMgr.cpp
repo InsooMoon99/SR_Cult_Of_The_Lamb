@@ -20,7 +20,13 @@ void CSoundMgr::Ready_SoundMgr()
 
     FMOD_System_CreateChannelGroup(m_System, "BGM", &m_SoundGroups[SOUND_BGM]);
     FMOD_System_CreateChannelGroup(m_System, "Effect", &m_SoundGroups[SOUND_EFFECT]);
-
+    FMOD_System_CreateChannelGroup(m_System, "UI", &m_SoundGroups[SOUND_UI]);
+    FMOD_System_CreateChannelGroup(m_System, "Boss1", &m_SoundGroups[SOUND_BOSS1]);
+    FMOD_System_CreateChannelGroup(m_System, "Boss2", &m_SoundGroups[SOUND_BOSS2]);
+    FMOD_System_CreateChannelGroup(m_System, "Boss3", &m_SoundGroups[SOUND_BOSS3]);
+    FMOD_System_CreateChannelGroup(m_System, "Boss4", &m_SoundGroups[SOUND_BOSS4]);
+    FMOD_System_CreateChannelGroup(m_System, "Floatermonster", &m_SoundGroups[SOUND_FLOATERMONSTER]);
+    FMOD_System_CreateChannelGroup(m_System, "Humanoid", &m_SoundGroups[SOUND_HUMANOID]);
     LoadSoundFile();
 }
 
@@ -85,10 +91,24 @@ void CSoundMgr::Play_Once(const wstring& soundFile, SOUNDTYPE soundType, _float 
     }
 }
 
+void CSoundMgr::Play_Once_Pitched(const wstring& soundFile, SOUNDTYPE soundType, _float volume, _float pitch)
+{
+    wstring key = soundFile;
+    transform(key.begin(), key.end(), key.begin(), ::towlower);
+
+    auto iter = m_Sounds.find(key);
+    if (iter == m_Sounds.end())
+        return;
+
+    FMOD_System_PlaySound(m_System, iter->second, m_SoundGroups[soundType], FALSE, &m_Channel[soundType]);
+    FMOD_Channel_SetVolume(m_Channel[soundType], volume);
+    FMOD_Channel_SetPitch(m_Channel[soundType], pitch);
+}
+
 void CSoundMgr::Play_BGM(const wstring& soundFile,
-                          _float         volume,
-                          _bool          stopPrevBGM,
-                          _float         fadeOutDuration)
+                         _float         volume,
+                         _bool          stopPrevBGM,
+                         _float         fadeOutDuration)
 {
     NULL_CHECK_MSG(m_System, L"FMod System is Null");
 
@@ -181,6 +201,55 @@ void CSoundMgr::Stop_SoundChannel(SOUNDTYPE soundType, _float fadeOutDuration)
     }
     else
         m_Channel[soundType] = nullptr;
+}
+
+void CSoundMgr::Stop_Sound(const wstring& soundFile)
+{
+    NULL_CHECK(m_System);
+
+    wstring key = soundFile;
+    transform(key.begin(), key.end(), key.begin(), ::towlower);
+
+    auto iter = m_Sounds.find(key);
+    if (iter == m_Sounds.end())
+        return;
+
+    FMOD_SOUND* pTargetSound = iter->second;
+    vector<FMOD_CHANNEL*> channelsToStop;
+
+    // 모든 채널 그룹(BGM/EFFECT)을 순회하며 해당 사운드를 재생 중인 채널 검색
+    for (_int i = 0; i < SOUND_END; ++i)
+    {
+        int iNumChannels = 0;
+        FMOD_ChannelGroup_GetNumChannels(m_SoundGroups[i], &iNumChannels);
+
+        for (int j = 0; j < iNumChannels; ++j)
+        {
+            FMOD_CHANNEL* pChannel = nullptr;
+            FMOD_ChannelGroup_GetChannel(m_SoundGroups[i], j, &pChannel);
+
+            if (!pChannel) continue;
+
+            FMOD_BOOL bIsPlaying = FALSE;
+            FMOD_Channel_IsPlaying(pChannel, &bIsPlaying);
+
+            if (!bIsPlaying) continue;
+
+            FMOD_SOUND* pCurrentSound = nullptr;
+            FMOD_Channel_GetCurrentSound(pChannel, &pCurrentSound);
+
+            if (pCurrentSound == pTargetSound)
+            {
+                channelsToStop.push_back(pChannel);
+            }
+        }
+    }
+
+    // 수집된 채널들 정지
+    for (auto& pChannel : channelsToStop)
+    {
+        FMOD_Channel_Stop(pChannel);
+    }
 }
 
 void CSoundMgr::Stop_All()

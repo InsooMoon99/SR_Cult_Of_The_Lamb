@@ -1,0 +1,59 @@
+﻿#pragma once
+#include "CMonsterBase.h"
+
+class CProjectile;
+
+class CEligos_Flies :
+    public CMonsterBase
+{
+private:
+    explicit CEligos_Flies(DEVICE graphicDev, CGameObject* owner, CGameObject* Target);
+    explicit CEligos_Flies(const CEligos_Flies& rhs);
+    ~CEligos_Flies() override;
+
+public:
+    HRESULT Ready_GameObject() override;
+    void    Initialize_GameObject() override;
+    _int    Update_GameObject(const _float& timeDelta) override;
+    void    LateUpdate_GameObject(const _float& timeDelta) override;
+    void    Render_GameObject() override;
+
+public:
+
+
+    void    Update_Direction();
+
+    void Animation_Setting();
+public:
+    void    OnBeginOverlap(CCollider* self, CCollider* other) override;
+    void OnStayOverlap(CCollider* self, CCollider* other);
+    void    OnEndOverlap(CCollider* self, CCollider* other) override;
+
+    //void    Chase_Target(const float& timeDelta, _float speed);
+
+private:
+
+    HRESULT  Add_Component() override;
+
+    CProjectile* m_ProjectileCom;
+    bool m_flag = false;
+    float m_Timer = 0;
+public:
+    static CEligos_Flies* Create(DEVICE graphicDev, CGameObject* owner, CGameObject* Target);
+
+protected:
+    void Free() override;
+    bool m_flyDie = false;
+private:
+
+    _bool           m_AttackSpawned;
+
+    CGameObject* m_pOwner;
+    CGameObject* m_pTarget;
+
+    _bool m_spawnSound = false;
+    float m_FlapTime = 0;
+    float RandHeight = 0;
+    float RandTerm = 0;
+};
+

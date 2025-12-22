@@ -8,14 +8,14 @@
 #include "CRenderer.h"
 #include "CFontMgr.h"
 
-CUI_BossHp::CUI_BossHp(DEVICE graphicDev, CCombatStat* combatStat)
+CUI_BossHp::CUI_BossHp(DEVICE graphicDev, CCombatStat* combatStat, const wstring& bossName)
      : CUI(graphicDev),
      m_Owner(combatStat->Get_Owner()),
      m_OwnerCombatStat(combatStat),
      m_HpRatio(1.0f),
      m_HpDelayRatio(1.0f),
      m_HpDelayLerpSpeed(0.f),
-     m_Buffer_Hp(nullptr), m_Buffer_Delay(nullptr)
+     m_Buffer_Hp(nullptr), m_Buffer_Delay(nullptr), m_BossName(bossName)
 {
     Set_Name(L"Boss Hp");
 
@@ -40,7 +40,9 @@ HRESULT CUI_BossHp::Ready_GameObject()
         m_TransformCom->Set_Pos(_vec3(0.f, -250.f, 0.f));  // 화면 하단
         m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
     }
-
+    //m_TextureCom->Set_Texture(3);
+    //m_TextureCom->Set_Texture(4);
+    //m_TextureCom->Set_Texture(5);
     return S_OK;
 }
 
@@ -54,8 +56,6 @@ void CUI_BossHp::Initialize_GameObject()
 _int CUI_BossHp::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
     if (!m_Owner)
         return exit;
@@ -91,7 +91,9 @@ void CUI_BossHp::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
+
 void CUI_BossHp::Render_GameObject()
 {
     if (m_Invisible)
@@ -99,6 +101,23 @@ void CUI_BossHp::Render_GameObject()
 
     if (!m_Owner || !m_TextureCom)
         return;
+
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+
+    m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
+    m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+    m_GraphicDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
+    m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+    m_GraphicDev->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+    m_GraphicDev->SetRenderState(D3DRS_ALPHAREF, 0);
+
 
     _float ratio         = clamp(m_HpRatio, 0.f, 1.f);
     _float delayRatio    = clamp(m_HpDelayRatio, 0.f, 1.f);
@@ -159,13 +178,21 @@ void CUI_BossHp::Render_GameObject()
 
         CFontMgr::GetInstance()->Render_FontOutlined(
             L"NanumSquare_Regular",
-            L"기다리는 자",
+			m_BossName,
             &screen,
             D3DXCOLOR(1.f, 1.f, 1.f, 1.f),
             D3DXCOLOR(0.f, 0.f, 0.f, 1.f),
             1);
 
     }
+
+    //m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
+   // m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+   // m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+   // m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_CURRENT);
+   // m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+   // m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+   // m_GraphicDev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
 }
 
 HRESULT CUI_BossHp::Add_Component()
@@ -191,9 +218,9 @@ HRESULT CUI_BossHp::Add_Component()
     return S_OK;
 }
 
-CUI_BossHp* CUI_BossHp::Create(DEVICE graphicDev, CCombatStat* combatStat)
+CUI_BossHp* CUI_BossHp::Create(DEVICE graphicDev, CCombatStat* combatStat, const wstring& bossName)
 {
-    CUI_BossHp* hp = new CUI_BossHp(graphicDev, combatStat);
+    CUI_BossHp* hp = new CUI_BossHp(graphicDev, combatStat, bossName);
 
     if (FAILED(hp->Ready_GameObject()))
     {

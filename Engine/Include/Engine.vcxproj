@@ -225,6 +225,7 @@ xcopy /Y /I "$(SolutionDir)Engine\Header\*.*" "$(SolutionDir)Reference\Header\"<
     <ClInclude Include="..\Header\CSphereCollider.h" />
     <ClInclude Include="..\Header\CSpriteAnimation.h" />
     <ClInclude Include="..\Header\CState.h" />
+    <ClInclude Include="..\Header\CStaticParticle.h" />
     <ClInclude Include="..\Header\CTerrainTex.h" />
     <ClInclude Include="..\Header\CTexture.h" />
     <ClInclude Include="..\Header\CTimer.h" />
@@ -284,6 +285,7 @@ xcopy /Y /I "$(SolutionDir)Engine\Header\*.*" "$(SolutionDir)Reference\Header\"<
     <ClCompile Include="..\Code\CSphereCollider.cpp" />
     <ClCompile Include="..\Code\CSpriteAnimation.cpp" />
     <ClCompile Include="..\Code\CState.cpp" />
+    <ClCompile Include="..\Code\CStaticParticle.cpp" />
     <ClCompile Include="..\Code\CTerrainTex.cpp" />
     <ClCompile Include="..\Code\CTexture.cpp" />
     <ClCompile Include="..\Code\CTimer.cpp" />

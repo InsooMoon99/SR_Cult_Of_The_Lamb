@@ -1,19 +1,23 @@
 ﻿#pragma once
 #include "CScene.h"
 
-class CKitchen;
-class CWorkBench;
-class CInventory;
-class CWeaponEquip;
-class CTerrain;
-class CPlayerSkill;
-
-
 BEGIN(Engine)
 class CCombatStat;
 END
 
-class CPlayer;
+class CTerrain;
+class CPlayerSkill;
+class CWorkBench;
+class CWeaponEquip;
+class CInventory;
+class CUI_FollowerCommand;
+class CUICookingMenu;
+class CPlayerGathering;
+class CPlayerConstruction;
+class CFollowerCow;
+class CKitchen;
+class CUI_Text;
+class CWorldInteractive;
 
 class CStage : public CScene
 {
@@ -28,6 +32,10 @@ public:
     void    LateUpdate_Scene(const _float& timeDelta) override;
     void    Render_Scene() override;
 
+public:
+    CUICookingMenu*      Get_CookingMenu() { return m_CookingMenu; }
+    CUI_FollowerCommand* Get_FollowerCommand() { return m_FollowerCommand; }
+
 private:
     HRESULT Ready_Environment_Layer(LAYERTYPE layerType);
     HRESULT Ready_GameLogic_Layer(LAYERTYPE layerType);
@@ -41,6 +49,11 @@ private:
     // 마을 -> 던전 씬 전환용 트리거
     void Create_Trigger();
 
+    // 추종자 생성
+    void Spawn_FollowerCow();
+    void Spawn_FollowerElephant();
+    void Spawn_FollowerPig();
+
 public:
     static CStage* Create(DEVICE graphicDev);
 
@@ -48,18 +61,24 @@ private:
     void Free() override;
 
 private:
-    //CUIPlayerPanel* m_playerPanel;
-    //CPlayer*        m_player;
-
-    // 플레이어는 GAMELOGIC 안에서 만들고 CStage가 직접 참고할 수 없는 오브젝트이므로
-    // 그 대신 플레이어 생성 시 Ready_GameLogic_Layer 쪽에서 플레이어의 스테이터스를 저장한 부품인
-    // CCombatStat 만을 어쩔수 없이 여기 보관하고, 사용 후 바로 제거하는 의도
-    CCombatStat*  m_PlayerCombatStatCom;
-    CInventory*   m_PlayerInventoryCom;
-    CWeaponEquip* m_WeaponEquipCom;
-    CWorkBench*   m_WorkBench;
-    CPlayerSkill* m_PlayerSkillCom;
-    CTerrain*     m_Terrain;
-    CKitchen*     m_Kitchen;
+    CCombatStat*         m_PlayerCombatStatCom;
+    CInventory*          m_PlayerInventoryCom;
+    CWeaponEquip*        m_WeaponEquipCom;
+    CWorkBench*          m_WorkBench;
+    CPlayerSkill*        m_PlayerSkillCom;
+    CTerrain*            m_Terrain;
+    CUICookingMenu*      m_CookingMenu;
+    CUI_FollowerCommand* m_FollowerCommand;
+    CPlayerGathering*    m_PlayerGatherCom;
+    CPlayerConstruction* m_PlayerConstructionCom;
+    CUI_Text*            m_VillageEnterUI;
+    _float               m_Alpha      = 0;
+    _float               m_UIOpenTime = 3.f;
+    _bool                m_StageBegin;
+    CWorldInteractive*   m_WorldInteractive;
+    _int                 m_FollowerSpawnStep  = 0;
+    //CWorkBench*   m_WorkBench;
+    //CKitchen*     m_Kitchen;
+    //CFollowerCow* m_FollowerCow;
 
 };

@@ -19,6 +19,7 @@ HRESULT CUICharging::Ready_GameObject()
     Set_IsActive(false);
     return S_OK;
 }
+
 void CUICharging::Initialize_GameObject()
 {
     CUI::Initialize_GameObject();
@@ -29,14 +30,12 @@ void CUICharging::Initialize_GameObject()
 
 int CUICharging::Update_GameObject(const _float& timeDelta)
 {
-        int exit = CUI::Update_GameObject(timeDelta);
+    int exit = CUI::Update_GameObject(timeDelta);
 
     if (m_Active)
     {
-        CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_ALPHA, this);
-
-        float Length = 3.5f;
-        float chargeTime = m_PlayerSkill->Get_ChargeTime();
+        float Length        = 3.5f;
+        float chargeTime    = m_PlayerSkill->Get_ChargeTime();
         float maxChargeTime = m_PlayerSkill->Get_MaxChargeTime();
 
         m_ChargeRatio = chargeTime / maxChargeTime;
@@ -51,33 +50,40 @@ int CUICharging::Update_GameObject(const _float& timeDelta)
         _vec3 dir = m_ArrowDir;
 
         D3DXVec3Normalize(&dir, &dir);
-        dir.x = -dir.x;
+        dir.x       = -dir.x;
         float angle = atan2f(dir.z, dir.x);
-        dir.x = -dir.x;
+        dir.x       = -dir.x;
 
-        _float offset = m_PlayerSkill->Get_SkillInfo().spawnOffset;
-        _vec3 playerPos = m_PlayerSkill->Get_Owner()->Get_Transform()->Get_Pos();
+        _float offset    = m_PlayerSkill->Get_SkillInfo().spawnOffset;
+        _vec3  playerPos = m_PlayerSkill->Get_Owner()->Get_Transform()->Get_Pos();
 
-        _vec3 tailPos = playerPos + dir * offset;
+        _vec3 tailPos   = playerPos + dir * offset;
         _vec3 centerPos = tailPos + dir * (changeLength * 0.5f);
-        centerPos.y = 0.3;
+        centerPos.y     = 0.3;
         m_TransformCom->Set_Pos(centerPos);
 
         _vec3 rot{ D3DXToRadian(90.f), angle, 0.f };
         m_TransformCom->Set_Rotation(rot);
-
     }
     return exit;
 }
 
+void CUICharging::LateUpdate_GameObject(const _float& timeDelta)
+{
+    CUI::LateUpdate_GameObject(timeDelta);
+
+    if (m_IsActive)
+        CRenderer::GetInstance()->Add_RenderGroup(RENDERID::RENDER_ALPHA, this);
+}
+
 void CUICharging::Render_GameObject()
 {
-        CUI::Render_GameObject();
-        m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
+    CUI::Render_GameObject();
+    m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
     if (m_Active)
 
     {
-       m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+        m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
         m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
         m_GraphicDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
@@ -92,8 +98,7 @@ void CUICharging::Render_GameObject()
 
         m_GraphicDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
         m_GraphicDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-       m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-     
+        m_GraphicDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
     }
 }
 
@@ -123,7 +128,7 @@ CUICharging* CUICharging::Create(DEVICE graphicDev)
 {
     auto chargingUI = new CUICharging(graphicDev);
 
-    if(FAILED(chargingUI->Ready_GameObject()))
+    if (FAILED(chargingUI->Ready_GameObject()))
     {
         Safe_Release(chargingUI);
         MSG_BOX("ChargingUI Create Failed");

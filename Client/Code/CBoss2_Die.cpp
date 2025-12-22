@@ -3,6 +3,7 @@
 #include "CBossController.h"
 #include "CBossPhase2.h"
 #include "CAnimator.h"
+#include "CSoundMgr.h"
 
 CBoss2_Die::CBoss2_Die(CGameObject* owner)
     : m_Owner(owner), m_Pattern_Cooldown(0)
@@ -26,9 +27,15 @@ void CBoss2_Die::Enter()
     {
         auto animator = m_Controller->Get_OwnerAnimator();
         if (animator)
+        {
             animator->Play_Animation(L"Boss2_Dead", ANIMSTATE::ONCE);
+            CSoundMgr::GetInstance()->Play_Once_Pitched(L"Boss/DeathCat/DeathCat_Hurt3.wav", SOUNDTYPE::SOUND_EFFECT, 0.3f, 1.4f);
+        }
     }
 
+    boss->Trigger_OnDead();
+
+    m_SoundPlayed = false;
     m_fCurStateElapsedTime = 0.f;
 }
 
@@ -37,10 +44,18 @@ _int CBoss2_Die::Update_State(const _float& timeDelta)
     m_fCurStateElapsedTime += timeDelta;
 
     auto animator = m_Controller->Get_OwnerAnimator();
+    NULL_CHECK_RETURN(animator, 0);
 
-    if (animator)
+    if (!m_SoundPlayed && animator->Get_CurFrame() >= 38)
     {
-        // ? 상태 전환 필요없을듯
+        m_SoundPlayed = true;
+
+        CSoundMgr::GetInstance()->Play_Once_Pitched(L"Boss/DeathCat/Death_Sequence.wav", SOUNDTYPE::SOUND_EFFECT, 0.3f, 1.4f);
+    }
+
+    if (animator->Is_AnimationFinished())
+    {
+        return CBossPhase2::PATTERN::PHASE2_FOLLOWER;
     }
 
     return CBossPhase2::PATTERN::PHASE2_DEAD;

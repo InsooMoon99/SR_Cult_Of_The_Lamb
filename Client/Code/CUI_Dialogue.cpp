@@ -8,9 +8,12 @@
 #include "CTexture.h"
 #include "CDInputMgr.h"
 #include "CCreateHelper.h"
+#include "CSoundMgr.h"
 
 const _float SPEAKER_OFFSET = 16.9f;
 const _float DIALOGUE_OFFSET = 15.f;
+
+_bool CUI_Dialogue::g_IsDialogueActive = false;
 
 CUI_Dialogue::CUI_Dialogue(DEVICE graphicDev)
     : CUI(graphicDev),
@@ -91,8 +94,6 @@ _int CUI_Dialogue::Update_GameObject(const _float& timeDelta)
     if (!m_IsActive)
         return exit;
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
-
     if (!m_IsTypingComplete && m_CurrentDialogue)
     {
 		m_TypeTimer += timeDelta;
@@ -128,6 +129,7 @@ void CUI_Dialogue::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUI_Dialogue::Render_GameObject()
@@ -154,17 +156,32 @@ void CUI_Dialogue::Render_GameObject()
     }
 }
 
-void CUI_Dialogue::Start_Dialogue(const string& dialogueId, const _vec2 boxPos, const _vec2& boxSize)
+_bool CUI_Dialogue::Start_Dialogue(const string& dialogueId, const _vec2 boxPos, const _vec2& boxSize)
 {
     m_BoxPos = boxPos;
     m_BoxSize = boxSize;
 
+    m_TransformCom->Set_Pos(m_BoxPos.x, m_BoxPos.y, 0.f);
+    m_TransformCom->Set_Scale(m_BoxSize.x, m_BoxSize.y, 1.f);
+
     m_CurrentDialogue = CDialogueDB::GetInstance()->GetDialogueById(dialogueId);
 
-    NULL_CHECK(m_CurrentDialogue);
+    if (nullptr == m_CurrentDialogue)
+        return false;
+
+    if (!m_CurrentDialogue->lines.empty())
+    {
+        const auto& line = m_CurrentDialogue->lines[0];
+        if (!line.voicePath.empty())
+        {
+            wstring path = CDialogueDB::GetInstance()->Utf8ToWstring(line.voicePath);
+            CSoundMgr::GetInstance()->Play_Once(path.c_str(), SOUND_EFFECT, 0.8f);
+        }
+    }
 
     m_CurrentLineIndex = 0;
     m_IsActive = true;
+    g_IsDialogueActive = true;
     m_IsShowingChoices = false; // 선택지 보일지
     m_SelectedLeft = true;
 
@@ -172,13 +189,15 @@ void CUI_Dialogue::Start_Dialogue(const string& dialogueId, const _vec2 boxPos, 
 	m_CurrentCharIndex = 0;
     m_IsTypingComplete = false;
     m_TextAlpha = 0.f;
-
+	
     // 첫 라인이 선택지인지 확인
     if (!m_CurrentDialogue->lines.empty() &&
         m_CurrentDialogue->lines[0].hasChoices)
     {
         m_IsShowingChoices = true;
     }
+
+    return true;
 }
 
 void CUI_Dialogue::End_Dialogue()
@@ -188,10 +207,14 @@ void CUI_Dialogue::End_Dialogue()
     m_CurrentDialogue = nullptr;
     m_CurrentLineIndex = 0;
     m_IsActive = false;
+    g_IsDialogueActive = false;
     m_IsShowingChoices = false;
 
     if (m_OnDialogueEnd)
     {
+        //CSoundMgr::GetInstance()->Play_Once(L"UI/Conversation_End.wav",
+        //    SOUND_EFFECT,
+        //    1.f);
         m_OnDialogueEnd(lastId);
     }
 }
@@ -208,6 +231,10 @@ void CUI_Dialogue::Next_Line()
         wstring fullText = CDialogueDB::GetInstance()->Utf8ToWstring(line.text);
         m_CurrentCharIndex = (_int)fullText.length();
 
+        //CSoundMgr::GetInstance()->Play_Once(L"UI/UI_DialogueNext.wav",
+        //    SOUND_EFFECT,
+        //    1.f);
+
         return;  
     }
 
@@ -218,6 +245,13 @@ void CUI_Dialogue::Next_Line()
     {
         End_Dialogue();
         return;
+    }
+
+    const auto& line = m_CurrentDialogue->lines[m_CurrentLineIndex];
+    if (!line.voicePath.empty())
+    {
+        wstring path = CDialogueDB::GetInstance()->Utf8ToWstring(line.voicePath);
+        CSoundMgr::GetInstance()->Play_Once(path.c_str(), SOUND_EFFECT, 0.8f);
     }
 
 	m_TypeTimer = 0.f;              
@@ -337,7 +371,7 @@ void CUI_Dialogue::Render_DialogueText()
 
     const DialogueLine& line = m_CurrentDialogue->lines[m_CurrentLineIndex];
 
-    static _float padding = -95.f; // 좌우 여백
+    _float padding = -95.f + line.leftPadding; // 좌우 여백
     static _float offset1 = 43.f;
 
 	wstring fullText = CDialogueDB::GetInstance()->Utf8ToWstring(line.text);
@@ -434,7 +468,6 @@ void CUI_Dialogue::Render_Choices()
 
 void CUI_Dialogue::Handle_Input()
 {
-    // 일단 키보드로 입력처리 테스트 해보기
     if (m_IsShowingChoices)
     {
         // Left
@@ -481,5 +514,6 @@ CUI_Dialogue* CUI_Dialogue::Create(DEVICE graphicDev)
 
 void CUI_Dialogue::Free()
 {
+    g_IsDialogueActive = false;
     CUI::Free();
 }

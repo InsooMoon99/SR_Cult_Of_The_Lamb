@@ -4,6 +4,8 @@
 #include "Client_Struct.h"
 
 class CUIWeaponExplain;
+class CPlayer;
+
 BEGIN(Engine)
 class CTransform;
 class CBoxCollider;
@@ -41,6 +43,9 @@ public:
     void SetFoodQuality(FOODQUALITY quality) { m_foodQuality = quality; }
     static void Reset_WeaponExplainUI() { m_WeaponExplainUI = nullptr; }
 
+    // 추가 : NPC가 음식 오브젝트를 인식하기 위해 필요한 ItemInstance 반환
+    const ItemInstance& Get_ItemInst() const { return m_itemInst; }
+
 
 private:
     HRESULT Add_Component();
@@ -49,7 +54,7 @@ private:
     Engine::CRcTex*             m_BufferCom;
     Engine::CTransform*         m_TransformCom;
     Engine::CTexture*           m_TextureCom;
-    Engine::CBoxCollider* m_BoxColCom;
+    Engine::CBoxCollider*       m_BoxColCom;
     //Engine::CAnimator*       m_AnimationCom;
     static CUIWeaponExplain*    m_WeaponExplainUI;
 
@@ -61,6 +66,10 @@ public:
     static CDroppedItem* Create(DEVICE graphicDev, ItemInstance itemInst, _vec3 pos);
 
     void SetBounceDesc(SpriteBounceDesc& d) { m_BounceDesc = d; is_SetBounceDesc = true; } // 바닥완성 후 추가 작업 예정
+
+private:
+    void Player_ZoomIn(CPlayer* ply);
+
 private:
     SpriteBounceDesc m_BounceDesc;
     bool is_SetBounceDesc = false;
@@ -75,4 +84,7 @@ private:
 
 private:
     void Free() override;
+
+private:
+    _bool  m_SoundEnded = false;
 };

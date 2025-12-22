@@ -8,14 +8,16 @@
 #include "CEyeball_StateMachine.h"
 #include "CMonsterController.h"
 #include "CTransform.h"
+#include "CRigidbody.h"
+#include "CCollisionManager.h"
 
 CEyeball::CEyeball(DEVICE graphicDev, CMonsterBase* boss)
-    : CMonsterBase(graphicDev), m_EyeballController(nullptr), m_Boss(boss)
+    : CMonsterBase(graphicDev), m_RigidbodyCom(nullptr), m_EyeballController(nullptr), m_Boss(boss)
 {
 }
 
 CEyeball::CEyeball(const CEyeball& rhs, CMonsterBase* boss)
-    : CMonsterBase(rhs), m_EyeballController(nullptr), m_Boss(rhs.m_Boss)
+    : CMonsterBase(rhs), m_RigidbodyCom(nullptr), m_EyeballController(nullptr), m_Boss(rhs.m_Boss)
 {
 }
 
@@ -33,6 +35,11 @@ HRESULT CEyeball::Ready_GameObject()
 
     m_TransformCom->Set_Scale(_vec3(1.1f, 1.4f, 1.f));
     m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(20.f));
+
+    m_RigidbodyCom->Set_UseAccel(true);
+    m_RigidbodyCom->Set_UseFriction(true);
+    m_RigidbodyCom->Set_UseGravity(false);
+    m_RigidbodyCom->Set_Mass(100.f);
 
     return S_OK;
 }
@@ -58,7 +65,7 @@ void CEyeball::Initialize_GameObject()
                 if (bossCombat)
                 {
                     HITDATA hitData;
-                    hitData.damage = 100.f; // TODO : 보스 체력 값 제대로 설정하면 바꿔야함
+                    hitData.damage = 50.f; // TODO : 보스 체력 값 제대로 설정하면 바꿔야함
                     hitData.dir = { 0.f, 0.f, 0.f };
 
                     bossCombat->Apply_Damage(hitData);
@@ -107,6 +114,14 @@ void CEyeball::Render_GameObject()
 
 }
 
+void CEyeball::Render_Setting()
+{
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);  // 조명 OFF
+
+    CMonsterBase::Render_Setting();
+
+}
+
 void CEyeball::Render_Editor()
 {
     CMonsterBase::Render_Editor();
@@ -147,25 +162,34 @@ void CEyeball::OnEndOverlap(CCollider* self, CCollider* other)
 
 void CEyeball::Set_OnDeathCallback(OnEyeDeadCallback callback)
 {
-    m_OnEyeDeadCallback = callback;
+    m_OnEyeDead = callback;
 }
 
 void CEyeball::Trigger_OnDeath()
 {
-    if (m_OnEyeDeadCallback)
-        m_OnEyeDeadCallback();
+    if (m_OnEyeDead)
+        m_OnEyeDead();
 }
 
 void CEyeball::Set_OnReachedCallback(OnReachedTargetCallback callback)
 {
-    m_OnReachedTarget_Callback = callback;
+    m_OnReachedTarget = callback;
 }
 
 void CEyeball::Trigger_OnReachedTarget()
 {
-    if (m_OnReachedTarget_Callback)
-        m_OnReachedTarget_Callback();
+    if (m_OnReachedTarget)
+        m_OnReachedTarget();
 
+}
+
+_bool CEyeball::Trace_HitWall(const _vec3& pos, const _vec3& dir, _float distance)
+{
+    _vec3 targetPos = pos + dir * distance;
+
+    auto* collisionMgr = CCollisionManager::GetInstance();
+
+    return collisionMgr->Check_PointOverlap(targetPos, COLLISION_LAYERTYPE::WALL);
 }
 
 void CEyeball::Animation_Setting()
@@ -200,6 +224,12 @@ HRESULT CEyeball::Add_Component()
     NULL_CHECK_RETURN(m_EyeballController, E_FAIL);
     m_Components[ID_DYNAMIC].insert({ type, m_EyeballController });
 
+    // Rigidbody
+    type = COMPONENTTYPE::RIGIDBODY;
+    m_RigidbodyCom = CreateProtoComponent<CRigidbody>(this, type);
+    NULL_CHECK_RETURN(m_RigidbodyCom, E_FAIL);
+    m_Components[ID_DYNAMIC].insert({ type, m_RigidbodyCom });
+
     return S_OK;
 }
 
@@ -216,6 +246,8 @@ const char* CEyeball::Get_StateName(_int stateNum)
     case EYEBALL_START_GROUND:      return "EYEBALL_GROUND";
     case EYEBALL_MOVE:              return "EYEBALL_MOVE";
     case EYEBALL_ATTACK:            return "EYEBALL_ATTACK";
+    case EYEBALL_GROUND_MOVE:       return "EYEBALL_GROUND_MOVE";
+    case EYEBALL_CENTER_ATTACK:     return "EYEBALL_CENTER_ATTACK";
     case EYEBALL_DEAD:              return "EYEBALL_DEAD";
     }
     return "UNKNOWN";

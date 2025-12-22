@@ -34,12 +34,11 @@ HRESULT CUI_MonsterHp::Ready_GameObject()
     if (FAILED(Add_Component()))
         return E_FAIL;
 
-    m_YOffset = 1.2f;
-    m_BarSize = _vec3(0.6f, 0.7f, 1.f);
+    m_YOffset = 1.5f;
     m_HpRatio = 1.f;
     m_HpDelaySpeed = 1.5f;
 
-    m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(45.f));
+    //m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(45.f));
 
     return S_OK;
 }
@@ -63,8 +62,6 @@ _int CUI_MonsterHp::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
-
     if (!m_Owner)
         return exit;
 
@@ -87,10 +84,24 @@ _int CUI_MonsterHp::Update_GameObject(const _float& timeDelta)
     if (m_OwnerTransform && m_TransformCom)
     {
         _vec3 ownerPos = m_OwnerTransform->Get_Pos();
-        ownerPos.y += m_YOffset; 
-        
-        m_TransformCom->Set_Pos(ownerPos);
-        m_TransformCom->Set_Scale(m_BarSize);
+        ownerPos.y += m_YOffset;
+      
+        _vec3 screenPos;
+        D3DVIEWPORT9 vp;
+        m_GraphicDev->GetViewport(&vp);
+
+        _matrix view, proj, world;
+        m_GraphicDev->GetTransform(D3DTS_VIEW, &view);
+        m_GraphicDev->GetTransform(D3DTS_PROJECTION, &proj);
+
+        D3DXMatrixIdentity(&world);
+        D3DXVec3Project(&screenPos, &ownerPos, &vp, &proj, &view, &world);
+  
+        _float uiX = screenPos.x - WINCX * 0.5f;
+        _float uiY = -(screenPos.y - WINCY * 0.5f);
+
+        m_TransformCom->Set_Pos(_vec3(uiX, uiY, 0.f));
+        m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
     }
 
     if (m_HpDelayRatio > m_HpRatio)
@@ -107,57 +118,69 @@ void CUI_MonsterHp::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUI_MonsterHp::Render_GameObject()
 {
     if (!m_Owner || !m_TextureCom)
         return;
+    
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, FALSE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
 
-    float ratio = clamp(m_HpRatio, 0.f, 1.f);
-    float delayRatio = clamp(m_HpDelayRatio, 0.f, 1.f);
+    _float ratio = clamp(m_HpRatio, 0.f, 1.f);
+    _float delayRatio = clamp(m_HpDelayRatio, 0.f, 1.f);
 
-    const float FULL_HALF_WIDTH = 1.0f;
-    const float FULL_HALF_HEIGHT = 0.15f;
+    const _float FULL_HALF_WIDTH = 40.f;
+    const _float FULL_HALF_HEIGHT = 5.f;
 
     const _matrix& world = m_TransformCom->Get_World();
 
+    // 배경
     {
-        const float BG_WIDTH = 1.08f;
-        const float BG_HEIGHT = 0.18f;
+        const _float BG_WIDTH = 42.f;
+        const _float BG_HEIGHT = 7.f;
 
         m_BufferCom->Set_Scale(BG_WIDTH, BG_HEIGHT);
         m_BufferCom->Set_Offset(0.f, 0.f);
 
         m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
+        m_TextureCom->Set_Texture(1);  // 배경 텍스처
         m_BufferCom->Render_Buffer();
     }
-
+    // 딜레이 바
     if (delayRatio > 0.f)
     {
-        float hw = FULL_HALF_WIDTH * delayRatio;
-        float offsetX = FULL_HALF_WIDTH * (1.f - delayRatio);
+        _float hw = FULL_HALF_WIDTH * delayRatio;
+        _float offsetX = FULL_HALF_WIDTH * (1.f - delayRatio);
 
         m_Buffer_Delay->Set_Scale(hw, FULL_HALF_HEIGHT);
-        m_Buffer_Delay->Set_Offset(offsetX, 0.f);
+        m_Buffer_Delay->Set_Offset(+offsetX, 0.f);
 
         m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
         m_TextureCom->Set_Texture(2);  // 흰색 텍스처
         m_Buffer_Delay->Render_Buffer();
     }
-
+    // HP 바
     if (ratio > 0.f)
     {
-        float hw = FULL_HALF_WIDTH * ratio;
-        float offsetX = FULL_HALF_WIDTH * (1.f - ratio);
+        _float hw = FULL_HALF_WIDTH * ratio;
+        _float offsetX = FULL_HALF_WIDTH * (1.f - ratio);
 
         m_Buffer_Hp->Set_Scale(hw, FULL_HALF_HEIGHT);
-        m_Buffer_Hp->Set_Offset(offsetX, 0.f);
+        m_Buffer_Hp->Set_Offset(+offsetX, 0.f);
 
         m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
         m_TextureCom->Set_Texture(0);  // HP 바 텍스처
         m_Buffer_Hp->Render_Buffer();
     }
+
+    m_GraphicDev->SetRenderState(D3DRS_LIGHTING, TRUE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    m_GraphicDev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_CURRENT);
 }
 
 HRESULT CUI_MonsterHp::Add_Component()
@@ -186,11 +209,6 @@ HRESULT CUI_MonsterHp::Add_Component()
     
 
     return S_OK;
-}
-
-void CUI_MonsterHp::Update_Billboard()
-{
-
 }
 
 CUI_MonsterHp* CUI_MonsterHp::Create(DEVICE graphicDev, CCombatStat* combat)

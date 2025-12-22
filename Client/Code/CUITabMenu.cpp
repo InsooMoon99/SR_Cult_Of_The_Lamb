@@ -10,6 +10,7 @@
 #include "CTransform.h"
 #include "CRenderer.h"
 #include "CUIPlayerPage.h"
+#include "CSoundMgr.h"
 
 CUITabMenu::CUITabMenu(DEVICE graphicDev)
     : CUI(graphicDev),
@@ -50,9 +51,7 @@ CUITabMenu::CUITabMenu(const CUI& rhs)
 { }
 
 CUITabMenu::~CUITabMenu()
-{
-    
-}
+{ }
 
 HRESULT CUITabMenu::Ready_GameObject()
 {
@@ -61,11 +60,11 @@ HRESULT CUITabMenu::Ready_GameObject()
 
     m_TargetX = 0;
     m_ClosedX = -WINCX;
-    m_Speed = 900.f;
+    m_Speed   = 900.f;
 
     m_InventoryPage = CUIInventory::Create(m_GraphicDev);
     NULL_CHECK_RETURN(m_InventoryPage, E_FAIL);
-    m_PlayerPage = CUIPlayerPage::Create(m_GraphicDev,this);
+    m_PlayerPage = CUIPlayerPage::Create(m_GraphicDev, this);
     NULL_CHECK_RETURN(m_PlayerPage, E_FAIL);
 
     m_InvenBtn = CUIButton::Create(m_GraphicDev, 3, 2);
@@ -81,13 +80,12 @@ HRESULT CUITabMenu::Ready_GameObject()
     m_QuestBtn->Set_HasText();
     m_QuestBtn->Set_Text(L"임무");
 
-
-    m_InvenTransformCom = dynamic_cast<CTransform*>(m_InventoryPage->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+    m_InvenTransformCom      = dynamic_cast<CTransform*>(m_InventoryPage->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
     m_PlayerPageTransformCom = dynamic_cast<CTransform*>(m_PlayerPage->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-    m_InvenBtnTransformCom = dynamic_cast<CTransform*>(m_InvenBtn->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-    m_PlayerBtnTransformCom = dynamic_cast<CTransform*>(m_PlayerBtn->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-    m_GyodanBtnTransformCom = dynamic_cast<CTransform*>(m_GyodanBtn->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
-    m_QuestBtnTransformCom = dynamic_cast<CTransform*>(m_QuestBtn->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+    m_InvenBtnTransformCom   = dynamic_cast<CTransform*>(m_InvenBtn->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+    m_PlayerBtnTransformCom  = dynamic_cast<CTransform*>(m_PlayerBtn->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+    m_GyodanBtnTransformCom  = dynamic_cast<CTransform*>(m_GyodanBtn->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
+    m_QuestBtnTransformCom   = dynamic_cast<CTransform*>(m_QuestBtn->Get_Component(COMPONENTID::ID_DYNAMIC, COMPONENTTYPE::TRANSFORM));
 
     m_TransformCom->Set_Pos(m_ClosedX, 0.f, 0.f);
     m_InvenBtn->SetCloneTexAspectScale({ 0.16f, 0.16f, 0.f });
@@ -95,26 +93,43 @@ HRESULT CUITabMenu::Ready_GameObject()
     m_PlayerBtn->SetCloneTexAspectScale({ 0.16f, 0.16f, 0.f });
     m_GyodanBtn->SetCloneTexAspectScale({ 0.16f, 0.16f, 0.f });
     m_QuestBtn->SetCloneTexAspectScale({ 0.16f, 0.16f, 0.f });
-    m_InvenBtn->SetOnClick([this]() {ChangePage(UITabCategory::INVENTORY); });
-    m_PlayerBtn->SetOnClick([this]() { ChangePage(UITabCategory::PLAYER); });
+    m_InvenBtn->SetOnClick([this]()
+    {
+        ChangePage(UITabCategory::INVENTORY);
+        CSoundMgr::GetInstance()->Play_Once(L"UI/UI_PageFlip.wav", SOUNDTYPE::SOUND_UI, 0.6f);
+    });
+    m_PlayerBtn->SetOnClick([this]()
+    {
+        ChangePage(UITabCategory::PLAYER);
+        CSoundMgr::GetInstance()->Play_Once(L"UI/UI_PageFlip.wav", SOUNDTYPE::SOUND_UI, 0.6f);
+    });
 
     return S_OK;
-} 
+}
 
 _int CUITabMenu::Update_GameObject(const _float& timeDelta)
 {
-   int exit = CUI::Update_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+    int exit = CUI::Update_GameObject(timeDelta);
 
     if (CDInputMgr::GetInstance()->KeyDown(DIK_TAB))
     {
-        m_IsOpen = !m_IsOpen;
+        m_IsOpen      = !m_IsOpen;
         m_IsAnimating = true;
+
+        switch (m_IsOpen)
+        {
+        case true:
+            CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Open_Menu.wav", SOUNDTYPE::SOUND_UI, 0.7f);
+            break;
+
+        case false:
+            CSoundMgr::GetInstance()->Play_Once(L"UI/UI_Close_Menu.wav", SOUNDTYPE::SOUND_UI, 0.7f);
+            break;
+        }
     }
-    
+
     float targetX = m_IsOpen ? m_TargetX : m_ClosedX; //열려있냐 닫혀있냐에 따라서 목표 X값이 달라짐
-    _vec3 pos = m_TransformCom->Get_Pos();
+    _vec3 pos     = m_TransformCom->Get_Pos();
 
     if (m_IsAnimating)
     {
@@ -123,18 +138,18 @@ _int CUITabMenu::Update_GameObject(const _float& timeDelta)
 
         if ((dir > 0.f && pos.x >= targetX) || (dir < 0.f && pos.x <= targetX)) //목표한 X에 도달하면 애니메이션 동작 꺼주기
         {
-            pos.x = targetX;
+            pos.x         = targetX;
             m_IsAnimating = false;
         }
         m_TransformCom->Set_Pos(pos);
     }
-    _vec2 invenOffset = { -300.f, 0.f };
-    _vec2 invenButtonOffset = { -500.f, 250.f };
+    _vec2 invenOffset        = { -300.f, 0.f };
+    _vec2 invenButtonOffset  = { -500.f, 250.f };
     _vec2 playerButtonOffset = { -350.f, 250.f };
     _vec2 GyodanButtonOffset = { -200.f, 250.f };
-    _vec2 QuestButtonOffset = { -50.f, 250.f };
+    _vec2 QuestButtonOffset  = { -50.f, 250.f };
 
-    if(m_IsOpen||m_IsAnimating)
+    if (m_IsOpen || m_IsAnimating)
     {
         switch (m_Current)
         {
@@ -144,7 +159,7 @@ _int CUITabMenu::Update_GameObject(const _float& timeDelta)
             break;
 
         case UITabCategory::PLAYER:
-            m_PlayerPageTransformCom->Set_Pos(pos.x + invenOffset.x, pos.y + invenOffset.y,0.f);
+            m_PlayerPageTransformCom->Set_Pos(pos.x + invenOffset.x, pos.y + invenOffset.y, 0.f);
             m_PlayerPage->Update_GameObject(timeDelta);
             break;
         }
@@ -157,8 +172,6 @@ _int CUITabMenu::Update_GameObject(const _float& timeDelta)
         m_GyodanBtn->Update_GameObject(timeDelta);
         m_QuestBtnTransformCom->Set_Pos(pos.x + QuestButtonOffset.x, pos.y + QuestButtonOffset.y, 0.f);
         m_QuestBtn->Update_GameObject(timeDelta);
-
-
     }
 
     return exit;
@@ -188,9 +201,9 @@ void CUITabMenu::Render_GameObject()
     CUI::Render_GameObject();
 
     if (!m_IsOpen && !m_IsAnimating)
-      return;
+        return;
 
-    switch(m_Current)
+    switch (m_Current)
     {
     case UITabCategory::INVENTORY:
         m_InventoryPage->Render_GameObject();
@@ -205,8 +218,8 @@ void CUITabMenu::Render_GameObject()
     m_PlayerBtn->Render_GameObject();
     m_GyodanBtn->Render_GameObject();
     m_QuestBtn->Render_GameObject();
-
 }
+
 void CUITabMenu::SetInventory(CInventory* inventory)
 {
     m_Inventory = inventory;
@@ -214,10 +227,12 @@ void CUITabMenu::SetInventory(CInventory* inventory)
     if (!m_Inventory)
         return;
 }
-    
+
 void CUITabMenu::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
+
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 CUITabMenu* CUITabMenu::Create(DEVICE graphicDev)
@@ -237,7 +252,6 @@ CUITabMenu* CUITabMenu::Create(DEVICE graphicDev)
 void CUITabMenu::Initialize()
 {
     m_PlayerPage->Initialize();
-
 }
 
 void CUITabMenu::Free()

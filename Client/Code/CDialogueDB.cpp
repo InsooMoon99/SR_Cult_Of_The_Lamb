@@ -92,6 +92,9 @@ HRESULT CDialogueDB::LoadFromJson(const string& fileName)
                 line.choice.rightNextId = choiceNode.value("rightNextId", "");
             }
 
+            line.leftPadding = lineNode.value("leftPadding", 0.f);
+            line.voicePath = lineNode.value("voicePath", "");
+
             dialogue.lines.push_back(line);
         }
 

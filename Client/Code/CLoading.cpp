@@ -1,7 +1,7 @@
 ﻿#include "pch.h"
 #include "CLoading.h"
-#include <future>
 #include <chrono>
+#include <future>
 #include "CAnimator.h"
 #include "CBoxCol.h"
 #include "CProtoMgr.h"
@@ -82,9 +82,17 @@ _uint CLoading::Loading_ForBoss1()
     futures.push_back(async(launch::async, [&]() {
         return resourceMgr->Ready_BossP2(m_GraphicDev);
         }));
-
+	
     futures.push_back(async(launch::async, [&]() {
         return resourceMgr->Ready_BossP2_Eyeball(m_GraphicDev);
+        }));
+    
+     futures.push_back(async(launch::async, [&]() {
+         return resourceMgr->Ready_Follower(m_GraphicDev);
+         }));
+
+    futures.push_back(async(launch::async, [&]() {
+        return resourceMgr->Ready_BossP2_Follower(m_GraphicDev);
         }));
 
     // 병렬 태스크 완료 대기
@@ -106,25 +114,36 @@ _uint CLoading::Loading_ForBoss1()
 
 _uint CLoading::Loading_ForBoss2()
 {
+    auto start = chrono::high_resolution_clock::now();
+
     m_LoadingText = L"Boss2 Loading...";
     auto resourceMgr = CResourceMgr::GetInstance();
 
     vector<future<HRESULT>> futures;
 
-    futures.push_back(async(launch::async, [&]() {
+    /*futures.push_back(async(launch::async, [&]() {
         return resourceMgr->Ready_BossP2(m_GraphicDev);
         }));
-
+    
     futures.push_back(async(launch::async, [&]() {
             return resourceMgr->Ready_BossP2_Eyeball(m_GraphicDev);
         }));
-
+    
+    futures.push_back(async(launch::async, [&]() {
+        return resourceMgr->Ready_BossP2_Follower(m_GraphicDev);
+        }));*/
+    
     // 병렬 태스크 완료 대기
     for (auto& future : futures)
     {
         if (FAILED(future.get()))
             return E_FAIL;
     }
+
+    // 로딩 시간 체크
+    auto end = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
+    OutputDebugString((L"Loading Time: " + to_wstring(duration.count()) + L"ms\n").c_str());
 
     m_IsFinish = true;
 
@@ -135,7 +154,7 @@ _uint CLoading::Loading_ForState_Parallel()
 {
     auto start = chrono::high_resolution_clock::now();
 
-    m_LoadingText = L"Resource Loading (Parallel)...";
+    m_LoadingText = L"텍스처 로딩 중...";
     auto resourceMgr = CResourceMgr::GetInstance();
 
     // 버퍼는 먼저 준비
@@ -172,14 +191,30 @@ _uint CLoading::Loading_ForState_Parallel()
         return resourceMgr->Ready_Building(m_GraphicDev);
         }));
     //futures.push_back(async(launch::async, [&]() {
-    //    return resourceMgr->Ready_Follower(m_GraphicDev);
+    //   return resourceMgr->Ready_Follower(m_GraphicDev);
+    //   }));
+    //futures.push_back(async(launch::async, [&]() {
+    //    return resourceMgr->Ready_MiniBoss(m_GraphicDev);
     //    }));
 
+    // 프롤로그 NPC들
+    futures.push_back(async(launch::async, [&]() {
+        return resourceMgr->Ready_Prologue(m_GraphicDev);
+        }));
+    
+    futures.push_back(async(launch::async, [&]() {
+        return resourceMgr->Ready_BossP1(m_GraphicDev);
+        }));
+
     // 병렬 태스크 완료 대기
-    for (auto& future : futures)
+    for (size_t i = 0; i < futures.size(); ++i)
     {
-        if (FAILED(future.get()))
+        if (FAILED(futures[i].get()))
+        {
+            wstring msg = L"[Parallel Loading Failed] Task Index: " + to_wstring(i) + L"\n";
+            OutputDebugString(msg.c_str());
             return E_FAIL;
+        }
     }
 
     auto end = chrono::high_resolution_clock::now();
@@ -222,7 +257,7 @@ unsigned CLoading::Thread_Main(void* pArg)
 
     //_endthreadex(0);
     // -> _beginthreadex()로 생성된 스레드는 함수가 return 될 때
-    // 내부적으로 _endthreadex() 가 자동 호출되어 정리됨.
+    // 내부적으로 _endthreadex() 가 자동 호출되어 정리됨.z
     // 따라서 명시적으로 호출할 필요가 없음
 
     return iFlag;

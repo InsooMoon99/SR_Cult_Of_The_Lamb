@@ -8,6 +8,7 @@
 #include "CEyeball.h"
 #include "CStateMachine.h"
 #include "CParticleHelper.h"
+#include "CSoundMgr.h"
 
 CBoss2_Start::CBoss2_Start(CMonsterBase* owner)
     : m_Owner(owner), m_Eyeball_SpawnCount(0), m_Pattern_Cooldown(0), m_Eyeball_ReachedCount(0)
@@ -63,16 +64,28 @@ _int CBoss2_Start::Update_State(const _float& timeDelta)
             // 17 , 32 , 50
             if (m_Eyeball_SpawnCount == 0 && curFrame == 17)
             {
+                CSoundMgr::GetInstance()->Play_Once_Pitched(L"Boss/DeathCat/Eye_Appear.wav",
+                    SOUND_EFFECT,
+                    0.15f, 1.4f);
+
                 Spawn_Eyeball(1);
                 m_Eyeball_SpawnCount = 1;
             }
             else if (m_Eyeball_SpawnCount == 1 && curFrame == 32)
             {
+                CSoundMgr::GetInstance()->Play_Once_Pitched(L"Boss/DeathCat/Eye_Appear.wav",
+                    SOUND_EFFECT,
+                    0.15f, 1.4f);
+
                 Spawn_Eyeball(2);
                 m_Eyeball_SpawnCount = 2;
             }
             else if (m_Eyeball_SpawnCount == 2 && curFrame == 50)
             {
+                CSoundMgr::GetInstance()->Play_Once_Pitched(L"Boss/DeathCat/Eye_Appear.wav",
+                    SOUND_EFFECT,
+                    0.15f, 1.4f);
+
                 Spawn_Eyeball(3);
                 m_Eyeball_SpawnCount = 3;
             }
@@ -101,21 +114,6 @@ _int CBoss2_Start::Update_State(const _float& timeDelta)
         }
     }
 
-    //if (m_Controller)
-    //{
-    //    auto animator = m_Controller->Get_OwnerAnimator();
-    //    if (animator && animator->Is_AnimationFinished())
-    //    {
-    //        return CBossPhase2::PATTERN::PHASE2_EYEBALL;
-    //    }
-    //}
-
-    // 세팅한 m_fCurStateElapsedTime 초 뒤 끝
-    //if (m_fCurStateElapsedTime >= m_Pattern_Cooldown)
-    //{
-    //    return CBossPhase2::PATTERN::PHASE2_EYEBALL;
-    //}
-
     return CBossPhase2::PATTERN::PHASE2_START;
 }
 
@@ -131,8 +129,44 @@ void CBoss2_Start::Trigger_Eyeball_Descend(_int index)
     if (m_Eyeballs[index] && m_Eyeballs[index]->Get_Controller())
     {
         auto stateMachine = m_Eyeballs[index]->Get_Controller()->Get_StateMachine();
+
         if (stateMachine)
             stateMachine->Change_State(CEyeball::PATTERN::EYEBALL_START_EXIT);
+    }
+}
+
+void CBoss2_Start::Setup_EyebalDeath()
+{
+    auto boss = static_cast<CBossPhase2*>(m_Owner);
+    if (!boss || !m_Controller)
+        return;
+
+    auto bossTransform = m_Controller->Get_OwnerTransform();
+    if (!bossTransform)
+        return;
+
+    if (boss && boss->Get_Controller())
+    {
+        auto stateMachine = boss->Get_Controller()->Get_StateMachine();
+        if (!stateMachine)
+            return;
+
+        boss->Increase_DeathCount();
+
+        switch (boss->Get_DeathCount())
+        {
+        case 1 :
+            stateMachine->Change_State(CBossPhase2::PATTERN::PHASE2_BULLET1);
+            break;
+
+        case 2:
+            stateMachine->Change_State(CBossPhase2::PATTERN::PHASE2_BULLET2);
+            break;
+
+        case 3:
+            stateMachine->Change_State(CBossPhase2::PATTERN::PHASE2_GROGGY);
+            break;
+        }
     }
 }
 
@@ -150,18 +184,13 @@ void CBoss2_Start::Spawn_Eyeball(_int index)
     if (!eyeball)  
         return;
 
+    boss->Add_Eyeball(eyeball);
+
     // Eyeball 사망 콜백 -> 보스 Roar 이후 다른 패턴 시작
-    eyeball->Set_OnDeathCallback([boss]()
+    eyeball->Set_OnDeathCallback([this, boss, eyeball]()
         {
-            if (boss && boss->Get_Controller())
-            {
-                auto stateMachine = boss->Get_Controller()->Get_StateMachine();
-                if (stateMachine)
-                {
-                    // ROAR로 변경하는게 아니라, 다른 공격으로 전환하면서 ROAR는 그냥 그 전에 애니메이션만 출력하도록 하기
-                    stateMachine->Change_State(CBossPhase2::PATTERN::PHASE2_ROAR);
-                }
-            }
+            boss->Remove_Eyeball(eyeball);
+            Setup_EyebalDeath();
         });
 
     eyeball->Set_OnReachedCallback([this, index]

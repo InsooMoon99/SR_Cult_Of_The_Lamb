@@ -22,7 +22,8 @@ public:
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
 
-    bool Is_Hovering();
+    virtual bool Is_Hovering();
+    bool            Get_IsHovered() { return m_bHovering; }
 
 public:
     void OnBeginOverlap(CCollider* self, CCollider* other) override;
@@ -38,9 +39,10 @@ protected:
 
 protected:
     Engine::CBoxCollider* m_BoxCollCom = nullptr;
-    CSpriteEff* m_SpritEff = nullptr;
+    CSpriteEff*           m_SpriteEff  = nullptr;
 
-    _bool m_IsPreview = false;
+    _bool m_IsPreview      = false;
     _bool m_bPlayerOverlap = false;
-    _bool m_bHovering = false;
+    _bool m_bHovering      = false;
+    _bool m_OutlineEnabled = true;
 };

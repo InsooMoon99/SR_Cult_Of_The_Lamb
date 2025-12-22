@@ -31,6 +31,10 @@
 #include "CFog.h"
 #include "CPlayerController.h"
 #include "CWeaponEquip.h"
+#include "CUI_Text.h"
+#include "CDroppedItem.h"
+#include "CSoundMgr.h"
+#include "CUI_SkillPanel.h"
 
 CStage_Boss1::CStage_Boss1(DEVICE graphicDev)
     : Engine::CScene(graphicDev), m_Terrain(nullptr), m_Boss(nullptr), m_Player(nullptr), m_Dialogue(nullptr),
@@ -69,26 +73,51 @@ void CStage_Boss1::Initialize_Scene()
 {
     CScene::Initialize_Scene();
 
-    m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Boss1_Fog.map");
+    m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Boss1.map");
 
     Setup_TriggerCallbacks();
     Setup_DialogueCallbacks();
     Setup_BossCallbacks();
     Setup_PlayerCallbacks();
 
+    CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Prologue.wav", 0.3f, true, 1.f);
+   
+    m_BossEnterUI = CUI_Text::Create(m_GraphicDev);
+    m_BossEnterUI->Set_Font(L"NanumSquare_Max");
+    m_BossEnterUI->Set_Text(L"기다리는 자");
+    m_BossEnterUI->Set_Color({ 1.f, 1.f, 1.f, 0.5f });
+
+    CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::UI)->Add_GameObject(OBJTYPE::UI, m_BossEnterUI);
+
     // 처음에는 거리비례 카메라 Off
     auto camMovement = m_CamController->Get_OwnerCamMovement();
     camMovement->Disable_DynamicDistance();
+
+    Spawn_Weapon();
 }
 
 _int CStage_Boss1::Update_Scene(const _float& timeDelta)
 {
     _int exit = Engine::CScene::Update_Scene(timeDelta);
 
+    if (m_UIOpenTime >= 0.f)
+    {
+        m_UIOpenTime -= timeDelta;
+
+        _vec2 pos = { 50.f, 50.f };
+
+        m_BossEnterUI->Set_IsActive(true);
+
+        if (m_UIOpenTime <= 0.f)
+        {
+            m_BossEnterUI->Set_IsActive(false);
+            m_UIOpenTime = 0.f;
+        }
+    }
+
+
     Move_PlayerUI(timeDelta);
     Move_BossUI(timeDelta);
-
-    Update_Fog();
 
     if (m_WaitingForDialogue)
     {
@@ -143,18 +172,6 @@ void CStage_Boss1::Create_Trigger(_vec3 pos, _vec3 size, OnTriggerCallback callb
     gameLayer->Add_GameObject(OBJTYPE::TRIGGER, trigger);
 }
 
-void CStage_Boss1::Update_Fog()
-{
-    if (m_Fog)
-    {
-        m_Fog->Set_OriginalPos(m_FogPos);
-        m_Fog->Set_SwaySpeed(m_FogSwaySpeed);
-        m_Fog->Set_SwayAmount(m_FogSwayAmount);
-        m_Fog->Set_Alpha(m_FogAlpha);
-        m_Fog->Get_Transform()->Set_Scale(m_FogScale);
-    }
-}
-
 HRESULT CStage_Boss1::Ready_Environment_Layer(LAYERTYPE layerType)
 {
     Engine::CLayer* layer = Engine::CLayer::Create();
@@ -182,23 +199,24 @@ HRESULT CStage_Boss1::Ready_Environment_Layer(LAYERTYPE layerType)
     NULL_CHECK_RETURN(wall, E_FAIL);
     layer->Add_GameObject(OBJTYPE::WALL, wall);
 
-    // Fog
-    m_Fog = CFog::Create(m_GraphicDev);
-    NULL_CHECK_RETURN(m_Fog, E_FAIL);
+    //////////////////////////////////////////////////
+    //// Fog
+    //m_Fog = CFog::Create(m_GraphicDev);
+    //NULL_CHECK_RETURN(m_Fog, E_FAIL);
 
-    m_Fog->Set_OriginalPos(m_FogPos);
-    m_Fog->Set_SwaySpeed(m_FogSwaySpeed);
-    m_Fog->Set_SwayAmount(m_FogSwayAmount);
-    m_Fog->Set_Alpha(m_FogAlpha);
-    layer->Add_GameObject(OBJTYPE::FOG, m_Fog);
+    //m_Fog->Set_OriginalPos(m_FogPos);
+    //m_Fog->Set_SwaySpeed(m_FogSwaySpeed);
+    //m_Fog->Set_SwayAmount(m_FogSwayAmount);
+    //m_Fog->Set_Alpha(m_FogAlpha);
+    //layer->Add_GameObject(OBJTYPE::FOG, m_Fog);
 
-    for (_int i = 0; i < 10; i++)
-    {
-        CFog* fog2 = CFog::Create(m_GraphicDev);
-        fog2->Set_OriginalPos(_vec3(48.5f, 8.f, 11.f));
-        fog2->Set_SwaySpeed(0.7f);  // 약간 다른 속도
-        layer->Add_GameObject(OBJTYPE::FOG, fog2);
-    }
+    //for (_int i = 0; i < 10; i++)
+    //{
+    //    CFog* fog2 = CFog::Create(m_GraphicDev);
+    //    fog2->Set_OriginalPos(_vec3(48.5f, 8.f, 11.f));
+    //    fog2->Set_SwaySpeed(0.7f);  // 약간 다른 속도
+    //    layer->Add_GameObject(OBJTYPE::FOG, fog2);
+    //}
 
 
     m_Layers.insert({ layerType, layer });          // scene -> map
@@ -257,7 +275,7 @@ HRESULT CStage_Boss1::Ready_GameLogic_Layer(LAYERTYPE layerType)
         CCamSetupBuilder(m_CamController)
             .SetTarget(m_PlayerTransformCom)
             //.PivotOffset({ 0.f, 0.f, 0.f })
-            //.Distance(12.f)
+            //.Distance(11.f)
             //.RotX(45.f)
             //.RotY(0.f)
             //.LagSpeed(10.f)
@@ -342,6 +360,17 @@ HRESULT CStage_Boss1::Ready_UI_Layer(LAYERTYPE layerType)
         L"CStage::Ready_UI_Layer() failed: CLayer::Add_GameObject(CUIIcon) failed");
 
     m_Player_UI.push_back(uiIcon);
+
+    FAILED_CHECK_MSG(
+        Engine::AcquirePersistentObject<CUI_SkillPanel>(
+            OBJTYPE::UI,
+            L"UI_SkillPanel",
+            m_GraphicDev,
+            layer,
+            &gameObject),
+        L"Persistent object setup failed: UI_SkillPanel");
+
+    m_Player_UI.push_back(dynamic_cast<CUI*>(gameObject));
 
     // ===== 보스 UI =====
     auto combat = dynamic_cast<CCombatStat*>(
@@ -452,13 +481,6 @@ void CStage_Boss1::OnRefusedEnd()
     // 첫 번째 연출 끝났을 때 콜백
     m_CamController->Get_OwnerCamMovement()->Set_OnTransitionEnd([this]()
         {
-            // 두 번쨰 연출 끝났을 때 콜백
-            m_CamController->Get_OwnerCamMovement()->Set_OnTransitionEnd([this]()
-                {
-                    // 대사 시작
-                    m_Dialogue->Start_Dialogue("Boss_Reject", _vec2(0.f, 200.f), _vec2(300.f, 80.f));
-                });
-
             // Refuse 카메라 연출 끝, 이제 보스한테 줌
             CCamSetupBuilder(m_CamController)
                 .SetTarget(m_Boss->Get_Transform())
@@ -466,21 +488,23 @@ void CStage_Boss1::OnRefusedEnd()
                 .LagSpeed(3.f)
                 .ZoomSpeed(3.f)
                 .Apply();
+
+            // 두 번쨰 연출 끝났을 때 콜백
+            m_CamController->Get_OwnerCamMovement()->Set_OnTransitionEnd([this]()
+                {
+                    // 대사 시작
+                    m_Dialogue->Start_Dialogue("Boss_Reject", _vec2(0.f, 210.f), _vec2(300.f, 80.f));
+                });
         });
 
 
     // 카메라 플레이어한테 원래대로 돌리기
     CCamSetupBuilder(m_CamController)
         .SetTarget(m_PlayerTransformCom)
-        .Distance(12.f)
+        .Distance(11.f)
         .LagSpeed(3.f)
         .ZoomSpeed(3.f)
         .Apply();
-
-}
-
-void CStage_Boss1::End_CutScene()
-{
 
 }
 
@@ -626,13 +650,15 @@ void CStage_Boss1::Setup_BossCallbacks()
                 .SetTarget(m_Boss->Get_Transform())
                 .Distance(10.f)
                 .PivotOffset(_vec3(0.f, 0.f, -3.f))
-                .LagSpeed(3.f)
-                .ZoomSpeed(0.5f)
+                .LagSpeed(4.f)
+                .ZoomSpeed(3.5f)
                 .Apply();
 
-            m_Dialogue->Start_Dialogue("Boss1_Dead");
+            m_CamController->Get_OwnerCamMovement()->Set_OnTransitionEnd([this]()
+                {
+                    m_Dialogue->Start_Dialogue("Boss1_Dead", _vec2(0, 150));
+                });
         });
-
 }
 
 void CStage_Boss1::Setup_PlayerCallbacks()
@@ -693,7 +719,7 @@ void CStage_Boss1::Move_BossUI(const _float timeDelta)
 
     if (ratio >= 1.f)
         m_IsBossUIMoving = false;
-
+   
 }
 
 CStage_Boss1* CStage_Boss1::Create(DEVICE graphicDev)
@@ -713,4 +739,34 @@ CStage_Boss1* CStage_Boss1::Create(DEVICE graphicDev)
 void CStage_Boss1::Free()
 {
     Engine::CScene::Free();
+}
+
+void CStage_Boss1::Spawn_Weapon()
+{
+    // 일단 무기 2개만 스폰
+    CDropSystem::GetInstance()->SetCurrentScene(this);
+
+    _int size = CItemDB::GetInstance()->GetVector().size();
+    for (_int i = 1; i <= 2; i++)
+    {
+        int id = CItemDB::GetInstance()->GetVector()[size - i - 1].id;
+
+        ItemInstance inst = { id, -1, 0 };
+
+        _vec3 spawnPos;
+        if (i == 1)
+            spawnPos = _vec3(50.f, 1.f, 13.f);
+
+        if (i == 2)
+            spawnPos = _vec3(44.0f, 1.f, 13.f);
+
+        _vec3 size = _vec3(1.2f, 1.2f, 1.2f);
+
+        auto drop = CDropSystem::GetInstance()->SpawnDrop(m_GraphicDev,
+            inst,
+            { spawnPos }, size);
+
+        drop->Initialize_GameObject();
+    }
+
 }

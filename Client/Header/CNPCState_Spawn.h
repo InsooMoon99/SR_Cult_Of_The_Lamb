@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CNPCState.h"
 
+// NPC의 소환(Spawn) 연출 상태
 class CNPCState_Spawn : public CNPCState
 {
 private:

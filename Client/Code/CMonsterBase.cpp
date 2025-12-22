@@ -1,19 +1,27 @@
 ﻿#include "pch.h"
 #include "CMonsterBase.h"
-
+#include "CScene.h"
+#include "CManagement.h"
 #include "CAnimator.h"
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
 #include "CRcTex.h"
 #include "CTexture.h"
 #include "CTransform.h"
+#include "CStage_Dungeon.h";
+#include "CWall.h";
+
+namespace Engine
+{
+class CScene;
+}
 
 CMonsterBase::CMonsterBase(DEVICE graphicDev)
     : CCharacterBase(graphicDev),
       m_Target(nullptr),
       m_TargetTransform(nullptr),
       m_StoppingDistance(2.f),
-      m_AttackRange(2.5f),
+       m_AttackRange(2.5f),
       m_ChaseRange(10.f),
       m_AttackCooldown(0),
       m_AttackTimer(0),
@@ -55,8 +63,9 @@ void CMonsterBase::Initialize_GameObject()
 
 _int CMonsterBase::Update_GameObject(const _float& timeDelta)
 {
-    _int exit = CCharacterBase::Update_GameObject(timeDelta);
 
+    _int exit = CCharacterBase::Update_GameObject(timeDelta);
+ 
     if (m_Target) // 타겟의 방향 설정
     {
         _vec3 pos       = m_TransformCom->Get_Pos();
@@ -186,6 +195,15 @@ _bool CMonsterBase::Is_OutofChaseRange() const
 
 void CMonsterBase::OnBeginOverlap(CCollider* self, CCollider* other)
 {
+    CCharacterBase::OnBeginOverlap(self, other);
+
+    CWall* wall = dynamic_cast<CWall*>(other->Get_Owner());
+    if (wall)
+        return;
+
+  if(self->Get_CollisionLayer()== other->Get_CollisionLayer())
+        return;
+
     m_bHurt = true;
 }
 
@@ -232,6 +250,16 @@ void CMonsterBase::AlphaRenderEnd()
     m_GraphicDev->SetRenderState(
         D3DRS_TEXTUREFACTOR,
         D3DCOLOR_ARGB(255, 255, 255, 255)); // 알파 1.0, 색 그대로
+}
+
+void CMonsterBase::Trigger_OnDeath()
+{
+    if (m_OnDeath)
+        m_OnDeath();
+
+    auto scene = CManagement::GetInstance()->Get_Scene();
+    if (scene)
+        scene->OnMonsterDeath(this);
 }
 
 void CMonsterBase::Free()

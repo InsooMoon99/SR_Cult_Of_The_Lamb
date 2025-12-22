@@ -25,9 +25,13 @@ enum TEXTUREID { TEX_NORMAL, TEX_CUBE, TEX_END };
 enum RENDERID
 {
     RENDER_PRIORITY,
+    RENDER_PRIORITY_UI,
+
     RENDER_PRIORITY_ALPHA,
     RENDER_NONALPHA,
+    RENDER_TRAIL,
     RENDER_ALPHA,
+    RENDER_PARTICLE,
     RENDER_UI,
 
     RENDER_END
@@ -66,13 +70,16 @@ enum class COLLISION_LAYERTYPE
     DEFAULT, // 모든 충돌
     PLAYER,
     ENEMY,
+    NPC,
     WALL,
     PLAYERPROJECTILE,
     BOSSPROJECTILE,
     ITEM,
     ATTACK,
+    ATTACK_MONSTER,
     TRIGGER,
     INTERACTIVEOBJ,
+    FLY,
 
     WORKBENCH,          // COLLISION : 제작대
     KITCHEN,            // COLLISION : 요리
@@ -97,6 +104,7 @@ enum class OBJTYPE
     INTERACTIVE,
     BUILDING,           // 오브젝트 : 건물
     CONSTRUCTION_SITE,  // 오브젝트 : 건축 부지
+    EXTRA,
 
     ATTACK_COL,
     PARTICLE,
@@ -172,6 +180,7 @@ enum class COMPONENTTYPE
     TEX_UI_BUTTON,
     TEX_UI_BUILD,
     TEX_UI_INTERACTION,
+    TEX_TAROTNPC,
     TEX_BOSSPHASE1,
     TEX_BULLET,
     TEX_WORKBENCH,
@@ -186,6 +195,14 @@ enum class COMPONENTTYPE
     TEX_DIALOGUE,
     TEX_UI_COOK,
     TEX_CHEST,
+    TEX_MAINMENU,
+    TEX_UI_SKILL,
+    TEX_UI_COMMAND,
+    TEX_UI_CLEAR,
+    TEX_INTERACTIVEOBJ,
+
+    TEX_MINIBOSS,
+    TEX_FLY,
 
     ANIMATOR,
 
@@ -197,6 +214,35 @@ enum class COMPONENTTYPE
     CIRCLE_COLL,
     BOX_COLL,
     SPHERE_COLL,
+
+    TEX_LOADING_CIRCLE,
+
+    TEX_BAT_MONSTER,
+    TEX_HUMAN_MONSTER2,
+    TEX_BURPER_MONSTER,
+
+    
+    ////////////////////
+    //  Prologue NPC  //
+    ////////////////////
+    TEX_LESHY,
+    TEX_HEKET,
+    TEX_KALLAMAR,
+    TEX_SHAMURA,
+
+    TEX_EXCUTIONER,
+    TEX_RATAU,
+
+    ////////////////
+    //  Particle  //
+    ////////////////
+    TEX_ROCK_PARTICLE,
+    TEX_GRASS_PARTICLE,
+    TEX_TREE_PARTICLE,
+    TEX_MONSTER_HIT_PARTICLE,
+    TEX_MONSTER_HUMAN_HIT_PARTICLE,
+    TEX_MONSTER_BAT_HIT_PARTICLE,
+    TEX_MONSTER_FLOATER_HIT_PARTICLE,
 
     ////////////////
     //  Follower  //
@@ -216,6 +262,7 @@ enum class COMPONENTTYPE
     EYEBALL_CONTROLLER,
     TEX_WARNING_CHAIN,
     TEX_CHAIN,
+    TEX_BOSS2_FOLLOWER,
 
     TEX_FOG,
 
@@ -225,6 +272,7 @@ enum class COMPONENTTYPE
     TEX_TILE_284,
     TEX_TILE_1024,
     TEX_TILE_OUTLINE,
+    TEX_TILE_OUTLINE2,
 
     TEX_GRASS,
     TEX_RUBBLE,
@@ -268,11 +316,20 @@ enum class ACTORSTATE
     PLAYER_BERRY,
     PLAYER_WEAPONGET,
     PLAYER_HAMMER,              // 플레이어 건축
-    //GATHERING,
+    PLAYER_WARPOUT,
+    PLAYER_WARPIN,
 
     // 보스 1페
     PLAYER_DECIDE,
     PLAYER_REFUSE,
+
+    // Kneel
+    KNEEL,
+    KNEEL_WAKE,
+    PLAYER_REBIRTH,
+    PLAYER_SACRIFICE,
+
+    NPC_IDLE,
 
     DEAD,
 
@@ -299,11 +356,15 @@ enum class SCENETYPE
     SC_LOGO_BOSS1,
     SC_LOGO_BOSS2,
     SC_MAINMENU,
+    SC_PROLOGUE,
     SC_STAGE,
     SC_DUNGEON,
     SC_TAROT_TEST,
     SC_BOSS_STAGE1,
     SC_BOSS_STAGE2,
+    SC_BOSS_PROLOGUE,
+    SC_PROLOGUE2,
+    SC_DUNGEON_ENTRANCE,
 
     SC_EDIT,
 
@@ -314,7 +375,15 @@ enum SOUNDTYPE
 {
     SOUND_BGM,
     SOUND_EFFECT,
-
+    SOUND_UI,
+    SOUND_BOSS,
+    SOUND_BOSS1,
+    SOUND_BOSS2,
+    SOUND_BOSS3,
+    SOUND_BOSS4,
+    SOUND_FLOATERMONSTER,
+    SOUND_HUMANOID,
+    SOUND_MONSTER,
     SOUND_END
 };
 

@@ -70,6 +70,26 @@ void CState::Update_Animation()
     if (m_Animator != nullptr && m_TransformCom != nullptr &&
         (m_State != m_PrevState || m_Dir != m_PrevDir))
     {
+        // 플레이어, 몬스터 등 ACTORSTATE를 직접 사용하는 경우를 제외하고, 나머지 CCharacter 에 대해 사용
+        if (m_UseStateIndependentDir)
+        {
+            CComponent* bufferCom = m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::RC_TEX);
+            CRcTex*     rcTex     = dynamic_cast<CRcTex*>(bufferCom);
+
+            if (rcTex)
+            {
+                bool bFlip = false;
+
+                if (m_Dir == ACTORDIR::RIGHT ||
+                    m_Dir == ACTORDIR::R_UP ||
+                    m_Dir == ACTORDIR::R_DOWN)
+                    bFlip = true;
+
+                rcTex->Set_FlipX(bFlip);
+            }
+        }
+
+        // 플레이어용 State 를 사용할 경우
         auto iter = m_PlayerStateMap.find(m_State);
 
         if (iter != m_PlayerStateMap.end())
@@ -111,7 +131,14 @@ void CState::Update_Animation()
             CRcTex*     rcTex     = dynamic_cast<CRcTex*>(bufferCom);
 
             if (rcTex)
+            {
                 rcTex->Set_FlipX(dirInfo.second);
+
+                if (m_Animator)
+                {
+                    m_Animator->Set_CurOffsetByDir(dirInfo.second);
+                }
+            }
         }
 
         m_PrevState = m_State;
@@ -139,6 +166,12 @@ void CState::Set_AnimInfo(ACTORSTATE playerState, const wstring& key, ANIMSTATE 
 {
     m_PlayerStateMap[playerState] = key;
     m_AnimStateMap[playerState]   = animState;
+}
+
+void CState::Force_UpdateAnimation()
+{
+    m_PrevState = ACTORSTATE::STATE_END;
+    m_PrevDir = ACTORDIR::DIR_END;
 }
 
 CState* CState::Create(DEVICE graphicDev)

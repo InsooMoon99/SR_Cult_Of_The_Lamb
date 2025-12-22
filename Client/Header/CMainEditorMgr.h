@@ -42,12 +42,12 @@ public:
     void Render_MainEditor();
 
     void Set_MainCamera(CCameraController* cam) { m_MainCameraController = cam; }
+    CCameraController* Get_MainCameraControl() { return m_MainCameraController; }
 
     _bool IsPlaying() const { return m_IsPlaying; }
 
     _float Get_TimeScale() const { return m_TimeScale; }
     void   Set_TimeScale(_float timeScale) { m_TimeScale = timeScale; }
-
 
     _bool IsGuiVisible() const { return m_ShowImGui; }
     void  Toggle_ImGui() { m_ShowImGui = !m_ShowImGui; }

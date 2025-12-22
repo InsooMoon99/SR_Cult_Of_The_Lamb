@@ -26,31 +26,31 @@ public:
                               COMPONENTTYPE componentType);
 
 public:
-    virtual HRESULT     Ready_Scene();
-    virtual void        Initialize_Scene();
-    virtual _int        Update_Scene(const _float& timeDelta);
-    virtual void        LateUpdate_Scene(const _float& timeDelta);
-    virtual void        Render_Scene() PURE;
-    virtual HRESULT     Ready_Light();
+    virtual HRESULT Ready_Scene();
+    virtual void    Initialize_Scene();
+    virtual _int    Update_Scene(const _float& timeDelta);
+    virtual void    LateUpdate_Scene(const _float& timeDelta);
+    virtual void    Render_Scene() PURE;
+    virtual HRESULT Ready_Light();
 
-    void AddObjectOnLayer(LAYERTYPE layerType, CGameObject* obj, OBJTYPE objType);
+    void            AddObjectOnLayer(LAYERTYPE layerType, CGameObject* obj, OBJTYPE objType);
 
     // Editor
     const map<LAYERTYPE, CLayer*>& Get_Layers() const { return m_Layers; }
-    CLayer* Get_Layer(LAYERTYPE type);
+    CLayer*                        Get_Layer(LAYERTYPE type);
 
-    // MainCamera
-    CMainCamera* Get_MainCamera() { return m_MainCam; }
+public:
+    virtual void OnMonsterDeath(CGameObject* obj) {}
+    _int         Get_KillCount() { return m_KillCount; }
 
 protected:
     map<LAYERTYPE, CLayer*> m_Layers;
     DEVICE                  m_GraphicDev;
 
-    CMainCamera*            m_MainCam;
+    _int                    m_KillCount = 0;
 
 protected:
     void Free() override;
-
 };
 
 END

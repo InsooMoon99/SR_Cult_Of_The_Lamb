@@ -223,7 +223,7 @@ void CMapObjectMgr::Render_RubbleWindow()
         if (rubbleTexture)
         {
 
-            const _int TOTAL_RUBBLE = 50;
+            const _int TOTAL_RUBBLE = 94;
             const _int COLS = 4;
             const ImVec2 buttonSize(50.f, 50.f);
 
@@ -345,7 +345,7 @@ void CMapObjectMgr::Render_DungeonDeco()
 
         if (decoTexture)
         {
-            const _int TOTAL_DECO = 139;
+            const _int TOTAL_DECO = 165;
             const _int COLS = 5;
             const ImVec2 buttonSize(50.f, 50.f);
 
@@ -595,7 +595,9 @@ HRESULT CMapObjectMgr::Save_ToStream(ofstream& ofs)
                 {
                     data.pos = objTransform->Get_Pos();
                     data.scale = objTransform->Get_Scale();        
-                    data.rotation = objTransform->Get_Euler();  
+                    data.rotation = objTransform->Get_Euler();
+                    data.rotation.x = -data.rotation.x;
+                    data.rotation.z = -data.rotation.z;
 
                     objects.push_back(data);
                 }
@@ -646,8 +648,14 @@ HRESULT CMapObjectMgr::Load_FromStream(ifstream& ifs, _vec3 terrainOffset)
 
                 transform->Set_Pos(worldPos);
 
-                transform->Set_Scale(data.scale);  
-                transform->Set_Rotation(data.rotation);
+                transform->Set_Scale(data.scale);
+
+                _vec3 loadedRotation = data.rotation;
+                loadedRotation.x = -loadedRotation.x;
+                //loadedRotation.y = -loadedRotation.y;
+                loadedRotation.z = -loadedRotation.z;
+
+                transform->Set_Rotation(loadedRotation);
             }
 
             layer->Add_GameObject(OBJTYPE::PLACEMENT, newObj);

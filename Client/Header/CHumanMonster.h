@@ -41,10 +41,20 @@ public:
     void    OnEndOverlap(CCollider* self, CCollider* other) override;
 
     void    Chase_Target(const float& timeDelta, _float speed) override;
+    void    Retreat_FromTarget(const _float& timeDelta, _float speed) override;
+
+    void    Enable_Battle() { m_BattleEnabled = true; }
+    void    Set_Battle(_bool b) { m_BattleEnabled = b; }
+    bool    Is_BattleEnabled() const { return m_BattleEnabled; }
+
+public:
+    void    Set_PrayMode(_bool pray);
+    _bool   Is_PrayMode() const { return m_IsPraying; }
 
 private:
     void     Animation_Setting() override;
     HRESULT  Add_Component() override;
+    void     Setup_SpawnDeadParticle();
 
 public:
     static CHumanMonster* Create(DEVICE graphicDev);
@@ -56,6 +66,9 @@ private:
     CRigidbody*     m_RigidbodyCom;
     _bool           m_AttackSpawned;
 
-    CUI_MonsterHp*  m_HpBar;
+    bool            m_BattleEnabled = true;
 
+    CUI_MonsterHp*  m_HpBar;
+    _bool           m_IsPraying = false;
+    _bool           m_HitSoundPlayed = false;
 };

@@ -19,8 +19,13 @@
 #include "CTransform.h"
 #include "CWallRenderer.h"
 #include "CWeaponEquip.h"
+#include "CManagement.h"
+#include "CScene.h"
+#include "CLayer.h"
 
 USING(Engine)
+
+static void Change_Target(CCameraMovement* movement);
 
 static void Transform_Inspector(CTransform* transform)
 {
@@ -101,61 +106,63 @@ static void State_Inspector(CState* state)
 {
     if (state == nullptr)
         return;
-    
+
     static bool showStateWindow = false;
 
     ImGui::PushID("State_Inspector");
     {
         ImGui::Checkbox("State Debug Window", &showStateWindow);
-        int curStateIdx = static_cast<int>(state->Get_State());
-        static const char* stateNames[] =
-        {
-            "IDLE", "RUN", "ATTACK",
-            "PLAYER_ROLL",
-            "PLAYER_SWORD_COMBO1", "PLAYER_SWORD_COMBO2", "PLAYER_SWORD_COMBO3",
-            "PLAYER_SWORD_HEAVY",
-            "PLAYER_GAUNTLET_COMBO1", "PLAYER_GAUNTLET_COMBO2", "PLAYER_GAUNTLET_COMBO3",
-            "PLAYER_GAUNTLET_HEAVY",
-            "PLAYER_SKILL_CHARGING", "PLAYER_SKILL_SINGLE", "PLAYER_SKILL_TRIPLE",
-            "HIT",
-            "PLAYER_ACTION", "PLAYER_WOOD", "PLAYER_STONE", "PLAYER_BERRY",
-            "PLAYER_WEAPONGET", "PLAYER_HAMMER",
-            "PLAYER_DECIDE", "PLAYER_REFUSE",
-            "DEAD",
-            "STATE_END"
-        };
-
-        // 별도 창으로 띄울지 여부
-        if (showStateWindow)
-        {
-            ImGui::Begin("State Debug");
-            {
-                ImGui::Text("State : ");
-                ImGui::SameLine();
-
-                if (ImGui::Combo("##StateCombo", &curStateIdx, stateNames, IM_ARRAYSIZE(stateNames)))
-                {
-                    state->Change_State(static_cast<ACTORSTATE>(curStateIdx));
-                }
-            }
-            ImGui::End();
-        }
-        else
-        {
-            const char* curState = ToString(state->Get_State());
-            ImGui::Text("State : ");
-            ImGui::SameLine();
-            ImGui::TextUnformatted(curState);
-        }
-
-        // Dir 
+        const char* curStateName = ToString(state->Get_State());
+        ImGui::Text("State : %s", curStateName);
         const char* curDir = ToString(state->Get_Dir());
-        ImGui::Text("Dir   : ");
-        ImGui::SameLine();
-        ImGui::TextUnformatted(curDir);
+        ImGui::Text("Dir   : %s", curDir);
     }
 
     ImGui::PopID();
+
+    if (showStateWindow)
+    {
+        ImGui::Begin("State Debug", &showStateWindow);
+        {
+            ImGui::Text("Current State: %s", ToString(state->Get_State()));
+            ImGui::Separator();
+            static const char* stateNames[] =
+            {
+                "IDLE", "RUN", "ATTACK",
+                "PLAYER_ROLL",
+                "PLAYER_SWORD_COMBO1", "PLAYER_SWORD_COMBO2", "PLAYER_SWORD_COMBO3",
+                "PLAYER_SWORD_HEAVY",
+                "PLAYER_GAUNTLET_COMBO1", "PLAYER_GAUNTLET_COMBO2", "PLAYER_GAUNTLET_COMBO3",
+                "PLAYER_GAUNTLET_HEAVY",
+                "PLAYER_SKILL_CHARGING", "PLAYER_SKILL_SINGLE", "PLAYER_SKILL_TRIPLE",
+                "HIT",
+                "PLAYER_ACTION",
+                "PLAYER_WOOD", "PLAYER_STONE", "PLAYER_BERRY",
+                "PLAYER_WEAPONGET", "PLAYER_HAMMER",
+                "PLAYER_WARPOUT", "PLAYER_WARPIN",
+                "PLAYER_DECIDE", "PLAYER_REFUSE",
+                "KNEEL", "KNEEL_WAKE",
+                "PLAYER_REBIRTH",
+                  "PLAYER_SACRIFICE",
+                "NPC_IDLE",
+                "DEAD",
+                "STATE_END"
+            };
+
+            const int buttonWidth = 160;
+            const int buttonsPerRow = 3;
+
+            for (int i = 0; i < IM_ARRAYSIZE(stateNames); i++)
+            {
+                if (ImGui::Button(stateNames[i], ImVec2(buttonWidth, 0)))
+                    state->Change_State(static_cast<ACTORSTATE>(i));
+
+                if ((i + 1) % buttonsPerRow != 0 && i < IM_ARRAYSIZE(stateNames) - 1)
+                    ImGui::SameLine();
+            }
+        }
+        ImGui::End();
+    }
 }
 
 static void CombatStat_Inspector(CCombatStat* stat)
@@ -693,6 +700,7 @@ static void Animator_Inspector(CAnimator* animator)
 
     CSpriteAnimation* curAnimation = animator->Get_CurAnimation();
     _bool             isFinished   = false;
+    _int editFrame = curFrame;
 
     if (curAnimation)
         isFinished = curAnimation->IsFinished();
@@ -710,7 +718,10 @@ static void Animator_Inspector(CAnimator* animator)
 
         ImGui::Text(u8"현재 프레임 : ");
         ImGui::SameLine();
-        ImGui::Text("%d", curFrame);
+        if (ImGui::DragInt("##CurFrame", &editFrame, 1.f, 0, maxFrame - 1))
+        {
+            animator->Set_CurFrame(editFrame);
+        }
 
         ImGui::Text(u8"최대 프레임 : ");
         ImGui::SameLine();
@@ -732,17 +743,34 @@ static void Animator_Inspector(CAnimator* animator)
             animator->Set_CurSize(size);
 
         ImGui::Columns(1);
+        // Offset Left
 
-        ImGui::Columns(2, "##Offset");
+        ImGui::Columns(2, "##OffsetLeft");
         ImGui::SetColumnWidth(0, columnsWidth);
 
-        ImGui::Text("Offset : ");
-        ImGui::SameLine();
+        _vec2 offsetLeft = animator->Get_CurOffset(false);
 
+        ImGui::Text("Offset Left : ");
+        ImGui::SameLine();
         ImGui::NextColumn();
 
-        if (ImGui::DragFloat2("##AnimOffset", &offset.x, 0.01f, -15.f, 15.f))
-            animator->Set_CurOffset(offset);
+        if (ImGui::DragFloat2("##AnimOffsetLeft", &offsetLeft.x, 0.01f, -15.f, 15.f))
+            animator->Set_CurOffsetLeft(offsetLeft);
+
+        ImGui::Columns(1);
+
+        // Offset Right
+        ImGui::Columns(2, "##OffsetRight");
+        ImGui::SetColumnWidth(0, columnsWidth);
+
+        _vec2 offsetRight = animator->Get_CurOffset(true);
+
+        ImGui::Text("Offset Right : ");
+        ImGui::SameLine();
+        ImGui::NextColumn();
+
+        if (ImGui::DragFloat2("##AnimOffsetRight", &offsetRight.x, 0.01f, -15.f, 15.f))
+            animator->Set_CurOffsetRight(offsetRight);
 
         ImGui::Columns(1);
     }
@@ -831,6 +859,9 @@ static void CamMovement_Inspector(CCameraMovement* movement)
         if (ImGui::DragFloat(u8"줌 속도", &zoomSpeed, 0.1f, 0.0f, 20.0f))
             movement->Set_ZoomSpeed(zoomSpeed);
 
+        // 타겟 변경
+        Change_Target(movement);
+
         ImGui::Separator();
 
         // Shake Test
@@ -914,4 +945,87 @@ static void MonsterSpawner_Inspector(CObjectSpawner* spawner)
     NULL_CHECK(spawner);
 
     spawner->Render_Editor();
+}
+
+static void Change_Target(CCameraMovement* movement)
+{
+    // =====================================
+    // 카메라 타겟 변경
+    // =====================================
+    ImGui::Text(u8"카메라 타겟 변경");
+    
+    static vector<string> targetNames;
+    static vector<CTransform*> targetTransforms;
+    static int selectedTargetIdx = 0;
+
+    
+    if (ImGui::Button(u8"타겟 목록 새로고침"))
+    {
+        targetNames.clear();
+        targetTransforms.clear();
+        selectedTargetIdx = 0;
+
+        CScene* scene = CManagement::GetInstance()->Get_Scene();
+
+        if (scene)
+        {
+            CLayer* layer = scene->Get_Layer(LAYERTYPE::GAMELOGIC);
+            if (layer)
+            {
+                const auto& objMap = layer->Get_Objects();
+
+                for (const auto& objPair : objMap)
+                {
+                    OBJTYPE objType = objPair.first;
+                    const vector<CGameObject*>& objList = objPair.second;
+
+                    for (CGameObject* obj : objList)
+                    {
+                        if (!obj) continue;
+
+                        CTransform* transform = obj->Get_Transform();
+                        if (!transform) continue;
+
+                        wstring wName = obj->Get_Name();
+                        string name = ToString(objType);
+                        name += " - ";
+                        name += string(wName.begin(), wName.end());
+
+                        targetNames.push_back(name);
+                        targetTransforms.push_back(transform);
+                    }
+                }
+            }
+        }
+    }
+    // Combo로 선택
+    if (!targetNames.empty())
+    {
+        vector<const char*> items;
+        for (auto& name : targetNames)
+            items.push_back(name.c_str());
+
+        if (ImGui::Combo(u8"타겟 선택", &selectedTargetIdx, items.data(), (int)items.size()))
+        {
+            if (selectedTargetIdx < (int)targetTransforms.size())
+            {
+                // CamMovement의 owner인 카메라에서 CCameraController 가져오기
+                CGameObject* camOwner = movement->Get_Owner();
+                if (camOwner)
+                {
+                    auto camController = dynamic_cast<CCameraController*>(
+                        camOwner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::CAM_CONTROLLER));
+                    if (camController)
+                    {
+                        camController->Set_CamTarget(targetTransforms[selectedTargetIdx]);
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        ImGui::TextDisabled(u8"목록 새로고침을 눌러주세요");
+    }
+    ImGui::Separator();
 }

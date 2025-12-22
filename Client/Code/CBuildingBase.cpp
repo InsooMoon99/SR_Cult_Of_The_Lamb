@@ -3,12 +3,12 @@
 
 #include "CBoxCollider.h"
 #include "CCreateHelper.h"
+#include "CDInputMgr.h"
+#include "CPlayer.h"
 #include "CRcTex.h"
 #include "CRenderer.h"
-#include "CTransform.h"
-#include "CDInputMgr.h"
 #include "CSpriteEff.h"
-#include <CPlayer.h>
+#include "CTransform.h"
 
 CBuildingBase::CBuildingBase(DEVICE graphicDev)
     : CRenderObject(graphicDev)
@@ -26,7 +26,7 @@ HRESULT CBuildingBase::Ready_GameObject()
     if (FAILED(CRenderObject::Ready_GameObject()))
         return E_FAIL;
 
-    m_SpritEff->InitOutLine(D3DCOLOR_ARGB(255, 255, 255, 255), 0.05f);
+    m_SpriteEff->InitOutLine(D3DCOLOR_ARGB(255, 255, 255, 255), 0.05f);
 
     return S_OK;
 }
@@ -40,10 +40,6 @@ _int CBuildingBase::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CRenderObject::Update_GameObject(timeDelta);
 
-    if (!m_IsPreview)
-        CRenderer::GetInstance()->Add_RenderGroup(RENDER_PRIORITY_ALPHA, this);
-
-
     m_bHovering = Is_Hovering();
 
     return exit;
@@ -52,6 +48,9 @@ _int CBuildingBase::Update_GameObject(const _float& timeDelta)
 void CBuildingBase::LateUpdate_GameObject(const _float& timeDelta)
 {
     CRenderObject::LateUpdate_GameObject(timeDelta);
+
+    if (!m_IsPreview)
+        CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 }
 
 void CBuildingBase::Render_GameObject()
@@ -69,8 +68,8 @@ void CBuildingBase::Render_GameObject()
 
         Render_Setting();
 
-        if (m_bPlayerOverlap ==true && m_bHovering == true)
-            m_SpritEff->OutLineEff(m_BufferCom);
+        if (m_bPlayerOverlap == true && m_bHovering == true && m_OutlineEnabled == true)
+            m_SpriteEff->OutLineEff(m_BufferCom);
 
         m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
@@ -206,9 +205,9 @@ HRESULT CBuildingBase::Add_Component()
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::BOX_COLL, m_BoxCollCom });
 
     // 
-    m_SpritEff = CreateProtoComponent<CSpriteEff>(this, COMPONENTTYPE::SPRITEEFFECT);
-    NULL_CHECK_RETURN(m_SpritEff, E_FAIL);
-    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::SPRITEEFFECT, m_SpritEff });
+    m_SpriteEff = CreateProtoComponent<CSpriteEff>(this, COMPONENTTYPE::SPRITEEFFECT);
+    NULL_CHECK_RETURN(m_SpriteEff, E_FAIL);
+    m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::SPRITEEFFECT, m_SpriteEff });
     return S_OK;
 }
 

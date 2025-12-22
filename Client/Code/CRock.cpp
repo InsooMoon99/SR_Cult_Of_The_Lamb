@@ -46,9 +46,10 @@ HRESULT CRock::Ready_GameObject()
 
         m_ItemNum = 3;
 
-        m_CombatStatCom->Set_MaxHp(5.f);
+        m_CombatStatCom->Set_MaxHp(15.f);
         m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
         break;
+
     case MIDDLEROCK:
         m_deadTexIndex = 999;
         m_TexIndex1 = 1;
@@ -56,9 +57,10 @@ HRESULT CRock::Ready_GameObject()
 
         m_ItemNum = 4;
 
-        m_CombatStatCom->Set_MaxHp(8.f);
+        m_CombatStatCom->Set_MaxHp(20.f);
         m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
         break;
+
     case BIGROCK:
         m_deadTexIndex = 999;
         m_TexIndex1 = 2;
@@ -66,12 +68,12 @@ HRESULT CRock::Ready_GameObject()
 
         m_ItemNum = 6;
 
-        m_CombatStatCom->Set_MaxHp(10.f);
+        m_CombatStatCom->Set_MaxHp(35.f);
         m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
         break;
+
     case END_ROCK:
         return E_FAIL;
-        break;
     }
 
     // 밑은 공통
@@ -109,21 +111,34 @@ void CRock::Initialize_GameObject()
     m_KockBackTimer = 0.1f;
 
     m_OrignPos = m_TransformCom->Get_Pos();
+}
 
-    m_CombatStatCom->Set_OnDamagedEvent([this]()
-    {
-        this->m_OnDamage = true;
+void CRock::OnInteractiveDamaged()
+{
+    CWorldInteractive::OnInteractiveDamaged();
 
-        // HitEffect_Star
-        CParticleHelper::Spawn_Particle({ m_TransformCom->Get_Pos().x, m_TransformCom->Get_Pos().y + 0.3f, m_TransformCom->Get_Pos().z },
-                                        L"HitEffect_Star",
-                                        14);
-    });
+    this->m_OnDamage = true;
+
+    //CParticleHelper::Spawn_Particle({ m_TransformCom->Get_Pos().x, m_TransformCom->Get_Pos().y + 0.3f, m_TransformCom->Get_Pos().z },
+    //                                L"HitEffect_Star",
+    //                                14);
+
+    CParticleHelper::Spawn_StaticBurstParticle(
+        m_TransformCom->Get_Pos(),          // 위치
+        COMPONENTTYPE::TEX_ROCK_PARTICLE,   // 텍스처 타입
+        5,                                  // 생성할 개수
+        0.1f,
+        0.12f,                        // 크기 범위
+        2,                                  // 텍스처 랜덤으로 몇개 출력
+        15.f,                               // 땅에 떨어지는 속도
+        m_TransformCom->Get_Pos().y - 0.5f  // 바닥 Y (돌 아래쪽)
+    );
 }
 
 void CRock::KnockBackEff(const _float& timeDelta)
 {
     _vec3 backDir = m_CombatStatCom->Get_Dir();
+    backDir.y     = 0.f;
 
     D3DXVec3Normalize(&backDir, &backDir);
     if (m_KockBackTimer > 0.f)
@@ -143,7 +158,7 @@ void CRock::KnockBackEff(const _float& timeDelta)
     {
         LerpTime += timeDelta * 5.f;
 
-        if (LerpTime >= 0.f)
+        if (LerpTime >= 0.5f)
         {
             LerpTime     = 0;
             m_ReturnDone = true;
@@ -167,15 +182,13 @@ void CRock::KnockBackEff(const _float& timeDelta)
         m_KockBackTimer = 0.1f;
         m_OnDamage      = false;
         LerpTime        = 0.f;
-        m_MovedPos = { 0.f, 0.f, 0.f };
+        m_MovedPos      = { 0.f, 0.f, 0.f };
     }
 }
 
 _int CRock::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CWorldInteractive::Update_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 
     if (m_OnDamage == true)
         KnockBackEff(timeDelta);
@@ -193,6 +206,8 @@ _int CRock::Update_GameObject(const _float& timeDelta)
 void CRock::LateUpdate_GameObject(const _float& timeDelta)
 {
     CWorldInteractive::LateUpdate_GameObject(timeDelta);
+
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 }
 
 void CRock::Render_GameObject()

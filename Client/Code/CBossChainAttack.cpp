@@ -9,6 +9,7 @@
 #include "CBossChain.h"
 #include "CCreateHelper.h"
 #include "CWarningChain.h"
+#include "CSoundMgr.h"
 
 #include "CRandomMgr.h"
 
@@ -31,7 +32,7 @@ CBossChainAttack::~CBossChainAttack()
 void CBossChainAttack::Enter()
 {
     CMonsterState::Enter();
-    m_pOwnerAnimatorCom->Play_Animation(L"BossAttack", ANIMSTATE::ONCE); // 지금 이게 안들어오거든 바로 상태안의 애니로 감
+  //  m_pOwnerAnimatorCom->Play_Animation(L"BossAttack", ANIMSTATE::ONCE); // 지금 이게 안들어오거든 바로 상태안의 애니로 감
 
     int RandPhase = CRandomMgr::GetInstance()->Get_Int_Random(0, ((int)PHASE::PHASE_END)-1); // 페이즈 랜덤
     m_ePhase = (PHASE)RandPhase;
@@ -83,7 +84,15 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
     if (m_pOwnerAnimatorCom->Get_CurFrame() == m_pOwnerAnimatorCom->Get_MaxFrame() - 1 && m_StartFlag == false)
     {
         m_StartFlag = true;
+
     }
+
+    if (m_Sound == false)
+    {
+        CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/DeathCat_Grunt.wav", SOUNDTYPE::SOUND_BOSS4, 0.5f);
+        m_Sound = true;
+    }
+
 
     if (m_StartFlag == false)
         return CBossPhase1::BOSSPHASE1::CHAINATTACK;
@@ -99,6 +108,10 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
         if (PlayerLineUpdate(timeDelta, m_MaxLineCount, m_DirectionOffset, .2f) == true)
         {
             LineCount++;
+
+          //  CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Chain_Appear.wav", (SOUNDTYPE)(m_SoundNum + m_Count), 0.5f);
+
+            
         }
         //경고이팩트다 나가면 -> 다음 플레이어 위치 캐싱 -> 
 
@@ -169,6 +182,10 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
             m_fElapsedTime= 0;
             m_Count++;
 
+            
+          //  CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Chain_Appear.wav", (SOUNDTYPE)(m_SoundNum+m_Count), 0.5f);
+
+
         }
 
         if (m_Count >= 10)
@@ -203,6 +220,9 @@ _int CBossChainAttack::Update_State(const _float& timeDelta)
             int BaseLength = m_pOwner->Get_Length();
             float interval = 0.5f; //  이건 시간
             RandomChain(timeDelta, BaseCenter, BaseLength, interval);
+      
+
+
         }
         else if (m_fElapsedTime >= 5.f && m_StartPhase == true)
         {
@@ -343,6 +363,9 @@ void CBossChainAttack::RandomChain(const _float& timeDelta, _vec3 BaseCenter, in
         }
             count++;
             //cout << count << endl;
+            CSoundMgr::GetInstance()->Play_Once(L"Boss/DeathCat/Chain_Appear.wav", (SOUNDTYPE)(m_SoundNum + m_Count), 0.5f);
+
+
         m_RandChainTime = 0;
     }
 

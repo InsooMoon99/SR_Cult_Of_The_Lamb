@@ -1,7 +1,10 @@
 ﻿#include "pch.h"
 #include "CPlayerController.h"
-#include "CWeaponEquip.h"
-#include "CTimerMgr.h"
+#include "CRcTex.h"
+#include "CUI_Dialogue.h"
+#include "CTarotStageController.h"
+#include "CPlayer.h"
+
 #include "CAnimator.h"
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
@@ -17,6 +20,8 @@
 #include "CRigidbody.h"
 #include "CSoundMgr.h"
 #include "CState.h"
+#include "CTimerMgr.h"
+#include "CWeaponEquip.h"
 #include "CWorldInteractive.h"
 
 CPlayerController::CPlayerController(DEVICE graphicDev)
@@ -31,25 +36,21 @@ CPlayerController::CPlayerController(DEVICE graphicDev)
       m_OwnerSkillCom(nullptr),
       m_OwnerGatherCom(nullptr),
       m_OwnerConstructionCom(nullptr)
-{
-    ZeroMemory(m_Timers, sizeof(m_Timers));
-}
+{ }
 
 CPlayerController::CPlayerController(const CPlayerController& rhs)
     : CComponent(rhs),
-    m_OwnerStateCom(nullptr),
-    m_OwnerCombatStatCom(nullptr),
-    m_OwnerRigidbodyCom(nullptr),
-    m_OwnerColliderCom(nullptr),
-    m_OwnerInputCom(nullptr),
-    m_OwnerMovementCom(nullptr),
-    m_OwnerAttackCom(nullptr),
-    m_OwnerSkillCom(nullptr),
-    m_OwnerGatherCom(nullptr),
-    m_OwnerConstructionCom(nullptr)
-{
-    ZeroMemory(m_Timers, sizeof(m_Timers));
-}
+      m_OwnerStateCom(nullptr),
+      m_OwnerCombatStatCom(nullptr),
+      m_OwnerRigidbodyCom(nullptr),
+      m_OwnerColliderCom(nullptr),
+      m_OwnerInputCom(nullptr),
+      m_OwnerMovementCom(nullptr),
+      m_OwnerAttackCom(nullptr),
+      m_OwnerSkillCom(nullptr),
+      m_OwnerGatherCom(nullptr),
+      m_OwnerConstructionCom(nullptr)
+{ }
 
 CPlayerController::~CPlayerController()
 { }
@@ -60,9 +61,7 @@ HRESULT CPlayerController::Ready_PlayerController()
 }
 
 void CPlayerController::Initialize_Component()
-{
-    m_Timers[TIMER_RUNSOUND] = FLT_MAX;
-}
+{ }
 
 _int CPlayerController::Update_Component(const _float& timeDelta)
 {
@@ -160,10 +159,12 @@ void CPlayerController::CheckStateTransition()
     ACTORSTATE curState = m_OwnerStateCom->Get_State();
     const auto inputMgr = CDInputMgr::GetInstance();
 
-    //!! 상태 변경 불가 조건 (사망, 결정, 거절)
+    //!! 상태 변경 불가 조건 (사망, 결정, 거절, 워프)
     if (curState == ACTORSTATE::DEAD ||
         curState == ACTORSTATE::PLAYER_DECIDE ||
-        curState == ACTORSTATE::PLAYER_REFUSE)
+        curState == ACTORSTATE::PLAYER_REFUSE ||
+        curState == ACTORSTATE::KNEEL ||
+        curState == ACTORSTATE::KNEEL_WAKE || curState == ACTORSTATE::PLAYER_REBIRTH)
         return;
 
     // 피격 시 Hit 처리
@@ -178,6 +179,9 @@ void CPlayerController::CheckStateTransition()
     // - 공격 상태여도 구르기로 이행 (캔슬)
     if (inputMgr->KeyDown(DIK_SPACE))
     {
+        if (CUI_Dialogue::IsGlobalActive() || CTarotStageController::IsGlobalActive())
+            return;
+
         if (curState != ACTORSTATE::PLAYER_ROLL)
         {
             // 공격 중이었다면 공격 취소
@@ -216,14 +220,28 @@ void CPlayerController::CheckStateTransition()
         if (io.WantCaptureMouse)
             return;
 
-        // 좌클릭으로 채집, 건축
-        if (Living_Interaction())
+        // 대화 중이라면 좌클릭 동작 막기
+        if (CUI_Dialogue::IsGlobalActive() || CTarotStageController::IsGlobalActive())
+            return;
+
+        // 좌클릭으로 채집
+        Check_Gathering();
+        if (m_OwnerStateCom->Get_State() == ACTORSTATE::PLAYER_BERRY ||
+            m_OwnerStateCom->Get_State() == ACTORSTATE::PLAYER_WOOD ||
+            m_OwnerStateCom->Get_State() == ACTORSTATE::PLAYER_STONE)
             return;
 
         if (curState == ACTORSTATE::PLAYER_ROLL ||
             curState == ACTORSTATE::IDLE ||
             curState == ACTORSTATE::RUN)
         {
+            // 구르기 중이었다면 구르기 상태 정리
+            if (curState == ACTORSTATE::PLAYER_ROLL)
+            {
+                m_OwnerMovementCom->End_Roll();
+                m_OwnerCombatStatCom->Set_Invincible(false);
+            }
+
             ACTORSTATE nextState = m_OwnerAttackCom->Start_NormalAttack();
             if (nextState != ACTORSTATE::STATE_END)
                 m_OwnerStateCom->Change_State(nextState);
@@ -249,6 +267,9 @@ void CPlayerController::CheckStateTransition()
 
         ImGuiIO& io = ImGui::GetIO();
         if (io.WantCaptureMouse)
+            return;
+
+        if (CUI_Dialogue::IsGlobalActive() || CTarotStageController::IsGlobalActive())
             return;
 
         if (curState == ACTORSTATE::PLAYER_ROLL ||
@@ -288,7 +309,16 @@ void CPlayerController::CheckStateTransition()
     // [우선순위 3] E 키
     else if (inputMgr->KeyPress(DIK_E))
     {
-        if (Living_Interaction())
+        if (CUI_Dialogue::IsGlobalActive() || CTarotStageController::IsGlobalActive())
+            return;
+
+        Check_Gathering();
+        Check_Construction();
+
+        if (m_OwnerStateCom->Get_State() == ACTORSTATE::PLAYER_BERRY ||
+            m_OwnerStateCom->Get_State() == ACTORSTATE::PLAYER_WOOD ||
+            m_OwnerStateCom->Get_State() == ACTORSTATE::PLAYER_STONE ||
+            m_OwnerStateCom->Get_State() == ACTORSTATE::PLAYER_HAMMER)
             return;
     }
 
@@ -303,7 +333,8 @@ void CPlayerController::CheckStateTransition()
     }
 
     // 이동 (방향 입력)
-    if (D3DXVec3LengthSq(&m_OwnerInputCom->Get_MoveDir()) > 0.001f)
+    if (!CUI_Dialogue::IsGlobalActive() && !CTarotStageController::IsGlobalActive() &&
+        D3DXVec3LengthSq(&m_OwnerInputCom->Get_MoveDir()) > 0.001f)
     {
         if (curState != ACTORSTATE::RUN)
             m_OwnerStateCom->Change_State(ACTORSTATE::RUN);
@@ -372,7 +403,7 @@ void CPlayerController::Update_State(const _float& timeDelta)
         break;
     case ACTORSTATE::HIT:
         Action_Hit(timeDelta);
-    break;
+        break;
 
     case ACTORSTATE::PLAYER_BERRY:
     case ACTORSTATE::PLAYER_WOOD:
@@ -413,6 +444,18 @@ void CPlayerController::Update_State(const _float& timeDelta)
     }
     break;
 
+    case ACTORSTATE::PLAYER_WARPOUT:
+    {
+        Action_WarpOut(timeDelta);
+    }
+    break;
+
+    case ACTORSTATE::PLAYER_WARPIN:
+    {
+        Action_WarpIn(timeDelta);
+    }
+    break;
+
     case ACTORSTATE::DEAD:
     {
         //MSG_BOX("CPlayerController: Player Dead!");
@@ -426,6 +469,26 @@ void CPlayerController::Update_State(const _float& timeDelta)
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
     }
     break;
+
+    case ACTORSTATE::KNEEL:
+    {
+        Action_Kneel(timeDelta);
+    }
+    break;
+
+    case ACTORSTATE::KNEEL_WAKE:
+    {
+        Action_Kneel_Wake(timeDelta);
+    }
+    break;
+
+    case ACTORSTATE::PLAYER_REBIRTH:
+        Action_Rebirth(timeDelta);
+        break;
+
+    case ACTORSTATE::PLAYER_SACRIFICE:
+        Action_Sacrifice(timeDelta);
+        break;
 
     default:
     {
@@ -443,13 +506,21 @@ void CPlayerController::Action_Idle(const _float& timeDelta)
 
 void CPlayerController::Action_Run(const _float& timeDelta)
 {
-#pragma region 플레이어 달리기 효과음
-    m_Timers[TIMER_RUNSOUND] += timeDelta;
+#pragma region 플레이어 달리기 효과음. 달릴 때는 0.2초, 걸을 때는 0.45 초마다 재생
+    g_Timers[TIMER_SOUND_PL_FOOTSTEP] -= timeDelta;
 
-    if (m_Timers[TIMER_RUNSOUND] >= 0.2f)
+    if (g_Timers[TIMER_SOUND_PL_FOOTSTEP] < 0.f)
     {
-        CSoundMgr::GetInstance()->Play_Once(L"Player/Player_Walk2.wav", SOUND_EFFECT, 0.4f);
-        m_Timers[TIMER_RUNSOUND] = 0.f;
+        CSoundMgr::GetInstance()->Play_Once(L"Player/Player_Footstep.wav", SOUND_EFFECT, 0.5f);
+
+        _float fDelay = 0.2f;
+        if (auto pPlayer = dynamic_cast<CPlayer*>(m_Owner))
+        {
+            if (pPlayer->Is_PrologueMode())
+                fDelay = 0.45f;
+        }
+
+        g_Timers[TIMER_SOUND_PL_FOOTSTEP] = fDelay;
     }
 #pragma endregion
 
@@ -506,20 +577,20 @@ void CPlayerController::Action_SingleSkill(const _float& timeDelta)
 {
     if (!m_OwnerSkillCom->Update_SingleSkill(timeDelta))
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
-
-    //아니면 TripleSkill로 넘기는 것도 여기서 해줘야 하는 건가?
+    m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir() * -1, 50.f);
 }
 
 void CPlayerController::Action_TripleSkill(const _float& timeDelta)
 {
     if (!m_OwnerSkillCom->Update_TripleSkill(timeDelta))
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+    m_OwnerMovementCom->ImpulseMove(m_OwnerInputCom->Get_MouseDir() * -1, 50.f);
 }
 
 void CPlayerController::Action_Construction(const _float& timeDelta)
 {
-    bool bStopConstruction = CDInputMgr::GetInstance()->KeyUp(DIK_E) ||
-                             CDInputMgr::GetInstance()->MouseUp(DIM_LB);
+    bool bStopConstruction = CDInputMgr::GetInstance()->KeyUp(DIK_E);
+    //CDInputMgr::GetInstance()->MouseUp(DIM_LB);
 
     if (!bStopConstruction)
     {
@@ -534,7 +605,7 @@ void CPlayerController::Action_Construction(const _float& timeDelta)
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
 }
 
-void CPlayerController::Action_Hit(const _float& timeDetla)
+void CPlayerController::Action_Hit(const _float& timeDelta)
 {
     m_OwnerMovementCom->Stop();
 
@@ -543,25 +614,19 @@ void CPlayerController::Action_Hit(const _float& timeDetla)
 
     if (animator && animator->Is_AnimationFinished() &&
         !m_OwnerCombatStatCom->Is_Knockback())
-    {
         m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
-    }
 }
 
-void CPlayerController::Action_Decide(const _float& timeDetla)
+void CPlayerController::Action_Decide(const _float& timeDelta)
 {
     auto animator = dynamic_cast<CAnimator*>(
         m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
 
-    NULL_CHECK(animator);
-
     if (animator->Is_AnimationFinished())
-    {
         animator->Play_Animation(L"Decide_Loop", ANIMSTATE::LOOP);
-    }
 }
 
-void CPlayerController::Action_Refuse(const _float& timeDetla)
+void CPlayerController::Action_Refuse(const _float& timeDelta)
 {
     auto animator = dynamic_cast<CAnimator*>(
         m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
@@ -578,7 +643,103 @@ void CPlayerController::Action_Refuse(const _float& timeDetla)
     }
 }
 
-_bool CPlayerController::Living_Interaction()
+void CPlayerController::Action_WarpOut(const _float& timeDelta)
+{
+    auto animator = dynamic_cast<CAnimator*>(
+        m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+
+    NULL_CHECK(animator);
+
+    if (animator->Is_AnimationFinished())
+        m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+    //!! WarpOut 상태 이후 씬을 나가기 때문에 일단 Idle로
+}
+
+void CPlayerController::Action_WarpIn(const _float& timeDelta)
+{
+    auto animator = dynamic_cast<CAnimator*>(
+        m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+
+    NULL_CHECK(animator);
+
+    if (animator->Is_AnimationFinished())
+        m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+}
+
+void CPlayerController::Action_Kneel(const _float& timeDelta)
+{
+    auto animator = dynamic_cast<CAnimator*>(
+        m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+
+    NULL_CHECK(animator);
+
+    wstring curKey = animator->Get_CurKey();
+
+    auto rcTex = dynamic_cast<CRcTex*>(
+        m_Owner->Get_Component(ID_STATIC, COMPONENTTYPE::RC_TEX));
+
+    if (rcTex)
+        rcTex->Set_FlipX(true);
+
+    if (curKey == L"Prologue_Kneel_Start")
+    {
+        if (animator->Is_AnimationFinished())
+            animator->Play_Animation(L"Prologue_Kneel_Loop", ANIMSTATE::LOOP);
+    }
+
+    else if (curKey == L"Prologue_Kneel_Loop")
+    {
+        // 외부에서 Wake 호출 대기
+    }
+
+    else
+        animator->Play_Animation(L"Prologue_Kneel_Start", ANIMSTATE::ONCE);
+}
+
+void CPlayerController::Action_Kneel_Wake(const _float& timeDelta)
+{
+    auto animator = dynamic_cast<CAnimator*>(
+        m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+
+    NULL_CHECK(animator);
+
+    if (animator->Get_CurKey() != L"Prologue_Kneel_Wake")
+        animator->Play_Animation(L"Prologue_Kneel_Wake", ANIMSTATE::ONCE);
+
+    if (animator->Is_AnimationFinished())
+        m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+}
+
+void CPlayerController::Action_Rebirth(const _float& timeDelta)
+{
+    auto animator = dynamic_cast<CAnimator*>(
+        m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+    NULL_CHECK(animator);
+
+    if (animator->Get_CurKey() != L"Prologue_Rebirth")
+        animator->Play_Animation(L"Prologue_Rebirth", ANIMSTATE::ONCE);
+
+    if (animator->Is_AnimationFinished())
+        m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+}
+
+void CPlayerController::Action_Sacrifice(const _float& timeDelta)
+{
+    auto animator = dynamic_cast<CAnimator*>(
+        m_Owner->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
+
+    NULL_CHECK(animator);
+
+    if (animator->Get_CurKey() != L"Finish_Sacrifice")
+        animator->Play_Animation(L"Finish_Sacrifice", ANIMSTATE::ONCE);
+
+    if (animator->Is_AnimationFinished())
+        m_OwnerStateCom->Change_State(ACTORSTATE::IDLE);
+
+
+}
+
+void CPlayerController::Check_Gathering()
 {
     // 채집 상호작용
     if (m_OwnerGatherCom->GetInteractiveObj() != nullptr)
@@ -590,36 +751,44 @@ _bool CPlayerController::Living_Interaction()
             if (m_OwnerStateCom->Get_State() != ACTORSTATE::PLAYER_BERRY)
                 m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_BERRY);
             m_OwnerMovementCom->Stop();
-            return true;
+            //return true;
         }
+        break;
         case CWorldInteractive::TYPE::WOOD:
         {
             if (m_OwnerStateCom->Get_State() != ACTORSTATE::PLAYER_WOOD)
                 m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_WOOD);
             m_OwnerMovementCom->Stop();
-            return true;
+            //return true;
         }
+        break;
         case CWorldInteractive::TYPE::ROCK:
         {
             if (m_OwnerStateCom->Get_State() != ACTORSTATE::PLAYER_STONE)
                 m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_STONE);
             m_OwnerMovementCom->Stop();
-            return true;
+            //return true;
         }
+        break;
         default: break;
         }
     }
 
+    //return false;
+}
+
+void CPlayerController::Check_Construction()
+{
     // 건축 상호작용
     if (m_OwnerConstructionCom && m_OwnerConstructionCom->Get_ConstructZone())
     {
         if (m_OwnerStateCom->Get_State() != ACTORSTATE::PLAYER_HAMMER)
             m_OwnerStateCom->Change_State(ACTORSTATE::PLAYER_HAMMER);
         m_OwnerMovementCom->Stop();
-        return true;
+        //return true;
     }
 
-    return false;
+    //return false;
 }
 
 CPlayerController* CPlayerController::Create(DEVICE graphicDev)

@@ -8,40 +8,37 @@
 
 CUIItemGetManager::CUIItemGetManager(DEVICE graphicDev)
     : CGameObject(graphicDev),
-    m_Inventory(nullptr),
-    m_IsAnyShifting(false),
-    m_NeedsReindex(false)
-{
-}
+      m_Inventory(nullptr),
+      m_IsAnyShifting(false),
+      m_NeedsReindex(false)
+{}
 
 CUIItemGetManager::CUIItemGetManager(const CUIItemGetManager& rhs)
     : CGameObject(rhs),
-    m_Inventory(nullptr),
-    m_IsAnyShifting(false),
-    m_NeedsReindex(false)
-{
-}
+      m_Inventory(nullptr),
+      m_IsAnyShifting(false),
+      m_NeedsReindex(false)
+{}
 
 CUIItemGetManager::~CUIItemGetManager()
-{
-
-}
+{}
 
 HRESULT CUIItemGetManager::Ready_GameObject()
 {
-
-
     return S_OK;
 }
+
 void CUIItemGetManager::Initialize()
 {
-    m_Inventory->SetOnItemAdded([this](ItemInstance* itemInstance/*, int itemCount*/) {this->Add_UIItemGet(itemInstance, 1); }); // 아이템은 1 개씩 처리 로직이라 기본값으로 1
+    m_Inventory->SetOnItemAdded([this](ItemInstance* itemInstance/*, int itemCount*/)
+    {
+        this->Add_UIItemGet(itemInstance, 1);
+    }); // 아이템은 1 개씩 처리 로직이라 기본값으로 1
 }
+
 _int CUIItemGetManager::Update_GameObject(const _float& timeDelta)
 {
     int exit = CGameObject::Update_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
     m_IsAnyShifting = false;
 
@@ -50,11 +47,8 @@ _int CUIItemGetManager::Update_GameObject(const _float& timeDelta)
 
     for (auto iter = m_UIItemGets.begin(); iter != m_UIItemGets.end();)
     {
-
         if ((*iter)->Get_IsShifting())
-        {
             m_IsAnyShifting = true;
-        }
 
         if ((*iter)->Get_IsDead())
         {
@@ -64,27 +58,25 @@ _int CUIItemGetManager::Update_GameObject(const _float& timeDelta)
         else
         {
             (*iter)->Update_GameObject(timeDelta);
-            iter++;
+            ++iter;
         }
-
     }
 
     int index = 0;
 
     if (!m_IsAnyShifting)
     {
-
-        for (auto iter = m_UIItemGets.begin(); iter != m_UIItemGets.end(); iter++)
+        for (auto iter = m_UIItemGets.begin(); iter != m_UIItemGets.end(); ++iter)
         {
             (*iter)->Set_Index(index);
             index++;
         }
     }
-    cout << m_UIItemGets.size() << endl;
-
+    //cout << m_UIItemGets.size() << endl;
 
     return exit;
 }
+
 void CUIItemGetManager::LateUpdate_GameObject(const _float& timeDelta)
 {
     CGameObject::LateUpdate_GameObject(timeDelta);
@@ -94,38 +86,36 @@ void CUIItemGetManager::LateUpdate_GameObject(const _float& timeDelta)
         for (auto iter = m_UIItemGets.begin(); iter != m_UIItemGets.end();)
         {
             (*iter)->LateUpdate_GameObject(timeDelta);
-            iter++;
+            ++iter;
         }
     }
+
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUIItemGetManager::Render_GameObject()
 {
-
     CGameObject::Render_GameObject();
 
     if (!m_UIItemGets.empty())
     {
         for (auto iter = m_UIItemGets.begin(); iter != m_UIItemGets.end();)
         {
-
             (*iter)->Render_GameObject();
-            iter++;
+            ++iter;
         }
     }
-
 }
 
 void CUIItemGetManager::Add_UIItemGet(ItemInstance* itemInstance, int itemCount)
 
 {
-    for (auto iter = m_UIItemGets.begin(); iter != m_UIItemGets.end(); iter++)
+    for (auto iter = m_UIItemGets.begin(); iter != m_UIItemGets.end(); ++iter)
     {
-        
         if ((*iter)->Get_UIItem().itemId == itemInstance->itemId)
         {
             (*iter)->Set_UIItem(itemInstance->itemId, itemCount);
-            return; 
+            return;
         }
     }
 
@@ -137,9 +127,7 @@ void CUIItemGetManager::Add_UIItemGet(ItemInstance* itemInstance, int itemCount)
         m_UIItemGet->Set_Index(m_UIItemGets.size());
         m_UIItemGets.push_back(m_UIItemGet);
     }
-
 }
-
 
 CUIItemGetManager* CUIItemGetManager::Create(DEVICE graphicDev)
 {
@@ -157,11 +145,7 @@ CUIItemGetManager* CUIItemGetManager::Create(DEVICE graphicDev)
 void CUIItemGetManager::Free()
 {
     if (!m_UIItemGets.empty())
-    {
         for_each(m_UIItemGets.begin(), m_UIItemGets.end(), CDeleteObj());
-   
-    }
 
     CGameObject::Free();
-
 }

@@ -57,7 +57,7 @@ HRESULT CTree::Ready_GameObject()
 
         m_ItemNum = 1;
 
-        m_CombatStatCom->Set_MaxHp(3.f);
+        m_CombatStatCom->Set_MaxHp(15.f);
         m_TransformCom->Set_Scale(_vec3(1.f, 1.f, 1.f));
         break;
     case REALSMALLTREE:
@@ -68,7 +68,7 @@ HRESULT CTree::Ready_GameObject()
 
         m_ItemNum = 4;
 
-        m_CombatStatCom->Set_MaxHp(6.f);
+        m_CombatStatCom->Set_MaxHp(20.f);
         m_TransformCom->Set_Scale(_vec3(3.f, 3.f, 3.f));
         m_BoxColCom->Set_Size({ 1.5f, 1.5f, 1.5f });
 
@@ -82,7 +82,7 @@ HRESULT CTree::Ready_GameObject()
 
         m_ItemNum = 7;
 
-        m_CombatStatCom->Set_MaxHp(10.f);
+        m_CombatStatCom->Set_MaxHp(35.f);
         m_TransformCom->Set_Scale(_vec3(3.f, 3.f, 3.f));
         m_BoxColCom->Set_Size({ 1.5f, 2.5f, 1.5f });
         m_SpriteEffCom->InitOutLine(D3DCOLOR_ARGB(255, 255, 255, 255), 0.025f);
@@ -122,23 +122,33 @@ void CTree::Initialize_GameObject()
     m_KockBackTimer = 0.1f;
 
     m_OrignPos = m_TransformCom->Get_Pos();
+}
 
-    m_CombatStatCom->Set_OnDamagedEvent([this]()
-    {
-        this->m_OnDamage = true;
+void CTree::OnInteractiveDamaged()
+{
+    CWorldInteractive::OnInteractiveDamaged();
 
-        // HitEffect_Star
-        CParticleHelper::Spawn_Particle({ m_TransformCom->Get_Pos().x, m_TransformCom->Get_Pos().y + 0.5f, m_TransformCom->Get_Pos().z },
-                                        L"HitEffect_Star",
-                                        14);
-    });
+    this->m_OnDamage = true;
+
+    // HitEffect_Star
+    //CParticleHelper::Spawn_Particle({ m_TransformCom->Get_Pos().x, m_TransformCom->Get_Pos().y + 0.5f, m_TransformCom->Get_Pos().z },
+    //                                L"HitEffect_Star",
+    //                                14);
+
+    CParticleHelper::Spawn_StaticBurstParticle(
+        m_TransformCom->Get_Pos(),          // 위치
+        COMPONENTTYPE::TEX_TREE_PARTICLE,   // 텍스처 타입
+        5,                                  // 생성할 개수
+        0.1f, 0.12f,						// 크기 범위
+        4,                                  // 텍스처 랜덤으로 몇개 출력
+        15.f,                               // 땅에 떨어지는 속도
+        0.5f								// 바닥 Y (돌 아래쪽)
+    );
 }
 
 _int CTree::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CWorldInteractive::Update_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 
     if (m_OnDamage == true)
     {
@@ -174,6 +184,8 @@ _int CTree::Update_GameObject(const _float& timeDelta)
 void CTree::LateUpdate_GameObject(const _float& timeDelta)
 {
     CWorldInteractive::LateUpdate_GameObject(timeDelta);
+
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 }
 
 void CTree::Render_GameObject()
@@ -187,6 +199,7 @@ void CTree::Render_GameObject()
 void CTree::KnockBackEff(const _float& timeDelta)
 {
     _vec3 backDir = m_CombatStatCom->Get_Dir();
+    backDir.y = 0.f;
 
     D3DXVec3Normalize(&backDir, &backDir);
     if (m_KockBackTimer > 0.f)
@@ -206,7 +219,7 @@ void CTree::KnockBackEff(const _float& timeDelta)
     {
         LerpTime += timeDelta * 5.f;
 
-        if (LerpTime >= 0.f)
+        if (LerpTime >= 0.5f)
         {
             LerpTime     = 0;
             m_ReturnDone = true;

@@ -3,6 +3,7 @@
 #include "CBossPhase1.h"
 #include "CMonsterState.h"
 
+#include "CBossSpawn.h"
 #include "CBossAwake.h"
 #include "CBossBulletAttack.h"
 #include "CBossChainAttack.h"
@@ -11,6 +12,7 @@
 #include "CBossIdle.h"
 #include "CBossMove.h"
 #include "CBossTalk.h"
+
 
 CBossStateMachine::CBossStateMachine(CMonsterBase* owner)
     : m_pOwner(owner)
@@ -29,7 +31,7 @@ HRESULT CBossStateMachine::Ready_StateMachine()
     m_CurState = m_vecState[CBossPhase1::BOSSPHASE1::TALK];
 
     m_CurState->Enter();
-
+    
     return S_OK;
 }
 
@@ -139,6 +141,10 @@ HRESULT CBossStateMachine::Ready_BossStates()
     if (nullptr == (pState = CBossTalk::Create(phase1, this)))
         return E_FAIL;
     m_vecState[CBossPhase1::BOSSPHASE1::TALK] = pState;
+
+    if (nullptr == (pState = CBossSpawn::Create(phase1, this)))
+        return E_FAIL;
+    m_vecState[CBossPhase1::BOSSPHASE1::SPAWNATTACK] = pState;
 
     return S_OK;
 }

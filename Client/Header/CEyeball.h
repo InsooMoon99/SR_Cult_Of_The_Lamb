@@ -23,6 +23,7 @@ public:
         EYEBALL_GROUND_MOVE, // 땅속에서 랜덤이동
         EYEBALL_MOVE,
         EYEBALL_ATTACK,
+        EYEBALL_CENTER_ATTACK,
         EYEBALL_DEAD,
 
         EYEBALL_END
@@ -40,6 +41,7 @@ public:
     void    LateUpdate_GameObject(const _float& timeDelta) override;
     void    Render_GameObject() override;
 
+    void    Render_Setting() override;
     void    Render_Editor() override;
 
 public:
@@ -57,10 +59,12 @@ public:
     void Set_OnReachedCallback(OnReachedTargetCallback callback);
     void Trigger_OnReachedTarget();
 
+    // 움직일 경로에 벽 있는지 판단
+    _bool Trace_HitWall(const _vec3& pos, const _vec3& dir, _float distance);
 
 private:
-    OnEyeDeadCallback       m_OnEyeDeadCallback = nullptr;
-    OnReachedTargetCallback m_OnReachedTarget_Callback = nullptr;
+    OnEyeDeadCallback       m_OnEyeDead = nullptr;
+    OnReachedTargetCallback m_OnReachedTarget = nullptr;
     _bool                   m_HasTriggeredReached = false;
 
 private:
@@ -73,6 +77,8 @@ public:
 
     _vec3               Get_MoveDirection() const { return m_MoveDirection; }
     void                Set_MoveDirection(const _vec3& dir) { m_MoveDirection = dir; }
+
+    CMonsterBase*       Get_Boss() { return m_Boss; }
 
 public:
     static CEyeball* Create(DEVICE graphicDev, CMonsterBase* boss);

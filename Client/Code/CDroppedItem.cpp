@@ -1,26 +1,31 @@
 ﻿#include"pch.h"
 #include"CDroppedItem.h"
-#include "CState.h"
-#include "CLayer.h"
+
+#include "CAnimator.h"
 #include "CBoxCollider.h"
+#include "CCameraController.h"
+#include "CCamSetupBuilder.h"
 #include "CComponent.h"
 #include "CCreateHelper.h"
+#include "CDInputMgr.h"
 #include "CDropSystem.h"
 #include "CInventory.h"
 #include "CItemDB.h"
+#include "CLayer.h"
+#include "CParticleHelper.h"
 #include "CPlayer.h"
 #include "CProtoMgr.h"
 #include "CRcTex.h"
 #include "CRenderer.h"
+#include "CSoundMgr.h"
+#include "CSpriteEff.h"
+#include "CStage_Dungeon.h"
+#include "CState.h"
 #include "CTexture.h"
 #include "CTransform.h"
+#include "CUIWeaponExplain.h"
 #include "CWeaponEquip.h"
 #include "ItemData.h"
-#include "CSpriteEff.h"
-#include "CUIWeaponExplain.h"
-#include "CDInputMgr.h"
-#include "CAnimator.h"
-#include "CParticleHelper.h"
 
 CUIWeaponExplain* CDroppedItem::m_WeaponExplainUI = nullptr;
 
@@ -30,8 +35,8 @@ CDroppedItem::CDroppedItem(DEVICE graphicDev, ItemInstance itemInst)
       m_TransformCom(nullptr),
       m_TextureCom(nullptr),
       m_BoxColCom(nullptr),
+      m_SpriteEff(nullptr),
       m_itemInst(itemInst)
-
 { }
 
 CDroppedItem::CDroppedItem(const CDroppedItem& rhs)
@@ -40,8 +45,8 @@ CDroppedItem::CDroppedItem(const CDroppedItem& rhs)
       m_TransformCom(rhs.m_TransformCom),
       m_TextureCom(rhs.m_TextureCom),
       m_BoxColCom(rhs.m_BoxColCom),
+      m_SpriteEff(nullptr),
       m_itemInst(rhs.m_itemInst)
-
 { }
 
 CDroppedItem::~CDroppedItem()
@@ -75,21 +80,21 @@ void CDroppedItem::Initialize_GameObject()
     if (m_BoxColCom)
         m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::ITEM);
 
-   // if (!m_WeaponExplainUI)
-   // {
-        m_WeaponExplainUI = CUIWeaponExplain::Create(m_GraphicDev);
-        m_WeaponExplainUI->Initialize_GameObject();
-        CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::UI)->Add_GameObject(OBJTYPE::UI, m_WeaponExplainUI);
-   // }
-        m_TransformCom->Set_Scale({ 0.4f, 0.4f, 0.4f });
-        m_BoxColCom->Set_Size(_vec3(2.f, 2.f, 2.f));
+    // if (!m_WeaponExplainUI)
+    // {
+    m_WeaponExplainUI = CUIWeaponExplain::Create(m_GraphicDev);
+    m_WeaponExplainUI->Initialize_GameObject();
+    CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::UI)->Add_GameObject(OBJTYPE::UI, m_WeaponExplainUI);
+    // }
+    m_TransformCom->Set_Scale({ 0.4f, 0.4f, 0.4f });
+    m_BoxColCom->Set_Size(_vec3(2.f, 2.f, 2.f));
 }
 
 _int CDroppedItem::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CGameObject::Update_GameObject(timeDelta);
 
-        m_ignoreTime += timeDelta;
+    m_ignoreTime += timeDelta;
 
     if (is_SetBounceDesc == true)
     {
@@ -101,14 +106,14 @@ _int CDroppedItem::Update_GameObject(const _float& timeDelta)
     if (m_Active == true)
         m_SpriteEff->Update_Component(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_NONALPHA, this);
-
     return exit;
 }
 
 void CDroppedItem::LateUpdate_GameObject(const _float& timeDelta)
 {
     CGameObject::LateUpdate_GameObject(timeDelta);
+
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 }
 
 void CDroppedItem::Render_GameObject()
@@ -130,34 +135,24 @@ void CDroppedItem::Render_GameObject()
 
     m_BufferCom->Render_Buffer();
 
-    if (CItemDB::GetInstance()->GetItemById(m_itemInst.itemId)->type == ItemType::Food&& m_foodQuality != FOODQUALITY::NO_FOOD)
+    if (CItemDB::GetInstance()->GetItemById(m_itemInst.itemId)->type == ItemType::Food && m_foodQuality != FOODQUALITY::NO_FOOD)
     {
-
         const _matrix& world = m_TransformCom->Get_World();
 
-    
-            const float BG_WIDTH = .8f;
-            const float BG_HEIGHT =1.5f;
+        const float BG_WIDTH  = .8f;
+        const float BG_HEIGHT = 1.5f;
 
-            m_Buffer_Cook->Set_Scale(BG_WIDTH, BG_HEIGHT);
-            m_Buffer_Cook->Set_Offset(0.f, 2.5f);
-            
-            m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
-   
+        m_Buffer_Cook->Set_Scale(BG_WIDTH, BG_HEIGHT);
+        m_Buffer_Cook->Set_Offset(0.f, 2.5f);
+
+        m_GraphicDev->SetTransform(D3DTS_WORLD, &world);
 
         if (m_foodQuality == FOODQUALITY::BAD)
-        {
             m_TextureComCook->Set_Texture(7);  // 레드
-
-        }
         else if (m_foodQuality == FOODQUALITY::GOOD)
-        {
-
             m_TextureComCook->Set_Texture(6);  // 파랑
-        }
         m_Buffer_Cook->Render_Buffer();
     }
-
 
     //
 
@@ -186,7 +181,6 @@ void CDroppedItem::OnBeginOverlap(CCollider* self, CCollider* other)
 
 void CDroppedItem::OnStayOverlap(CCollider* self, CCollider* other)
 {
-
     if (m_ignoreTime < 0.5f)
         return; // ★ 추가해야 함!!
 
@@ -200,7 +194,7 @@ void CDroppedItem::OnStayOverlap(CCollider* self, CCollider* other)
         if (CItemDB::GetInstance()->GetItemById(m_itemInst.itemId)->type == ItemType::Weapon)
         {
             //*** 아이템 지우기 ***
-
+            _bool wasActive = m_WeaponExplainUI->Get_Active();
             //1. 무기 정보 UI 띄우기
             switch (m_itemInst.itemId)
             {
@@ -215,15 +209,21 @@ void CDroppedItem::OnStayOverlap(CCollider* self, CCollider* other)
                 break;
             }
             }
+
+            if (!wasActive)
+            {
+                CSoundMgr::GetInstance()->Play_Once(L"UI/Objective_Text_Appear_Base.wav",
+                                                    SOUND_EFFECT,
+                                                    1.f);
+            }
+
             m_WeaponExplainUI->Set_Active(true);
 
-            // ImGui 클릭 시 무시
-            //ImGuiIO& io = ImGui::GetIO();
-            //if (io.WantCaptureKeyboard)
-            //    return;
-
+            // 무기 드랍
             if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
             {
+                Player_ZoomIn(ply);
+
                 dynamic_cast<CWeaponEquip*>(ply->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::WEAPON_EQUIP))->Equip_Weapon(m_itemInst);
 
                 auto state = dynamic_cast<CState*>(ply->Get_Component(ID_DYNAMIC, COMPONENTTYPE::STATE));
@@ -244,9 +244,32 @@ void CDroppedItem::OnStayOverlap(CCollider* self, CCollider* other)
             CComponent* com = ply->Get_Component(COMPONENTID::ID_STATIC, COMPONENTTYPE::INVENTORY);
             if (dynamic_cast<CInventory*>(com)->AddItem(m_itemInst) == true)
             {
+                if (!m_SoundEnded)
+                {
+                    if (CItemDB::GetInstance()->GetItemById(m_itemInst.itemId)->id == 4001)
+                    {
+                        CSoundMgr::GetInstance()->Play_Once(L"Object/Heart_Pickup.wav",
+                                                            SOUND_EFFECT,
+                                                            1.f);
+                    }
+                    else
+                    {
+                        CSoundMgr::GetInstance()->Play_Once(L"Object/Get_Item.wav",
+                                                            SOUND_EFFECT,
+                                                            1.f);
+                    }
+                    m_SoundEnded = true;
+                }
                 DisappearEff();
                 //*** 아이템 지우기 ***
                 Mark_As_PendingKill();
+
+                //던전 획득 아이템 로그용
+                CScene*         scene        = CManagement::GetInstance()->Get_Scene();
+                CStage_Dungeon* dungeonStage = dynamic_cast<CStage_Dungeon*>(scene);
+
+                if (dungeonStage)
+                    dungeonStage->Get_RunLootLog().Add(m_itemInst);
             }
         }
     }
@@ -266,9 +289,8 @@ void CDroppedItem::DisappearEff()
 {
     // HitEffect_Star
     CParticleHelper::Spawn_Particle({ m_TransformCom->Get_Pos().x, m_TransformCom->Get_Pos().y + 0.5f, m_TransformCom->Get_Pos().z },
-        L"Pickup_Item",
-        5);
-    
+                                    L"Pickup_Item",
+                                    5);
 }
 
 HRESULT CDroppedItem::Add_Component()
@@ -291,7 +313,6 @@ HRESULT CDroppedItem::Add_Component()
 
     m_Components[ID_STATIC].insert({ COMPONENTTYPE::TEX_ITEM, m_TextureCom });
 
-
     // cook ui tex
     m_TextureComCook = CreateProtoComponent<CTexture>(this, COMPONENTTYPE::TEX_UI_COOK);
     NULL_CHECK_RETURN(m_TextureComCook, E_FAIL);
@@ -310,11 +331,9 @@ HRESULT CDroppedItem::Add_Component()
 
     m_Components[ID_DYNAMIC].insert({ COMPONENTTYPE::SPRITEEFFECT, m_SpriteEff });
 
-
     m_Buffer_Cook = CreateProtoComponent<CRcTex>(this, COMPONENTTYPE::RC_TEX);
     NULL_CHECK_RETURN(m_Buffer_Cook, E_FAIL);
     //이건 컴포넌트모음에 안넣고 이 클래스가 관리
-
 
     // animation
     //m_AnimationCom = CreateProtoComponent<CAnimator>(this, COMPONENTTYPE::ANIMATOR);
@@ -337,6 +356,42 @@ CDroppedItem* CDroppedItem::Create(DEVICE graphicDev, ItemInstance itemInst, _ve
     }
 
     return DroppedItem;
+}
+
+void CDroppedItem::Player_ZoomIn(CPlayer* ply)
+{
+    // 카메라
+    auto* layer = CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::GAMELOGIC);
+    if (layer)
+    {
+        auto* camController = dynamic_cast<CCameraController*>(
+            layer->Get_Component(ID_DYNAMIC, OBJTYPE::CAMERA, COMPONENTTYPE::CAM_CONTROLLER));
+
+        if (camController)
+        {
+            auto* movement = camController->Get_OwnerCamMovement();
+
+            // 카메라 무빙 끝나면 원래대로 돌리는 콜백 설정
+            movement->Set_OnTransitionEnd([movement, camController, ply]()
+            {
+                // 기본 프리셋으로 리셋
+                CCamSetupBuilder(camController)
+                    .SetTarget(ply->Get_Transform())
+                    .Distance(11.f)
+                    .LagSpeed(2.5f)
+                    .ZoomSpeed(2.f)
+                    .Apply();
+            });
+
+            // 플레이어한테 줌인
+            CCamSetupBuilder(camController)
+                .SetTarget(ply->Get_Transform())
+                .Distance(8.f)
+                .LagSpeed(2.5f)
+                .ZoomSpeed(3.f)
+                .Apply();
+        }
+    }
 }
 
 void CDroppedItem::Free()

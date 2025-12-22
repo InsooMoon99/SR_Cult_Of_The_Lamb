@@ -9,7 +9,7 @@ class CInventory;
 class CUIInventory : public CUI
 {
 private:
-    explicit CUIInventory(DEVICE pGraphicDev);
+    explicit CUIInventory(DEVICE graphicDev);
     explicit CUIInventory(const CUIInventory& rhs);
     ~CUIInventory() override;
 

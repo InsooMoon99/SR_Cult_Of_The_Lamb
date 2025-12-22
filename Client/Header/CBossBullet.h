@@ -27,12 +27,14 @@ private:
 public:
 
     virtual HRESULT Ready_GameObject() override;
+    virtual void    Initialize_GameObject(); // Ready보다 한 단계 아래 생명주기
     virtual _int    Update_GameObject(const _float& timeDelta) override;
     virtual void    LateUpdate_GameObject(const _float& timeDelta) override;
     virtual void    Render_GameObject() override;
+    void Render_Trail();
 
     void Render_Core();
-    void Render_Trail();
+
 
     virtual void OnBeginOverlap(CCollider* self, CCollider* other) override;
     virtual void OnEndOverlap(CCollider* self, CCollider* other) override;
@@ -63,7 +65,7 @@ protected:
     CGameObject* m_pOwner;
     CGameObject* m_pTarget;
     //CAttackBox* ATBox = nullptr;
-    CTransform* m_ATKBoxTransformCom;
+    CTransform* m_ATKBoxTransformCom = nullptr;
     CProjectile* m_ProjectileCom;
 
     CTrailEff* m_TrailEff;
@@ -88,6 +90,8 @@ protected:
 
 private:
     void Free() override;
+
+    bool m_Sound = false;
 
 
 };

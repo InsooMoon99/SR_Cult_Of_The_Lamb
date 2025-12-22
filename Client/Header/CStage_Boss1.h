@@ -10,6 +10,7 @@ class CCameraController;
 class CPlayerSkill;
 class CWeaponEquip;
 class CInventory;
+class CUI_Text;
 
 BEGIN(Engine)
 class CUI;
@@ -35,7 +36,6 @@ public:
 public:
     using   OnTriggerCallback = function<void()>;
     void    Create_Trigger(_vec3 pos, _vec3 size, OnTriggerCallback callback, _bool autoDestroy = true);;
-    void    Update_Fog();
 
 private:
     HRESULT Ready_Environment_Layer(LAYERTYPE layerType);
@@ -53,8 +53,6 @@ private:
 
     void    Setup_UIAnimation(_float offsetY);
     void    OnRefusedEnd();
-
-    void    End_CutScene();
 
     // 대화 끝났을 때 호출
     void    On_BossStartEnd();
@@ -80,6 +78,8 @@ public:
 private:
     void Free() override;
 
+    void Spawn_Weapon();
+
 private:
     CTerrain*           m_Terrain;
     CGameObject*        m_Boss;
@@ -98,7 +98,7 @@ private:
     vector<CUI*>        m_Player_UI;
 
     CUI_BossHp*         m_BossHpbar;
-
+    CUI_Text*           m_BossEnterUI;
 private:
     _bool               m_IsUIMoving = false;
     _bool               m_IsBossUIMoving = false;
@@ -113,6 +113,7 @@ private:
     _float              m_DialogueDelayTimer = 0.f;
     _bool               m_WaitingForDialogue = false;
 
+    _float              m_UIOpenTime = 3.f;
 private:
     // Fog
     CFog*               m_Fog = nullptr;

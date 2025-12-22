@@ -28,7 +28,11 @@ public:
     ACTORSTATE Get_State() const { return m_State; }
     ACTORDIR   Get_Dir() const { return m_Dir; }
 
+    void Set_StateIndependentDir(_bool bEnable) { m_UseStateIndependentDir = bEnable; }
+
     void Set_AnimInfo(ACTORSTATE playerState, const wstring& key, ANIMSTATE animState);
+
+    void    Force_UpdateAnimation();
 
     static CState* Create(DEVICE graphicDev);
     CComponent*    Clone() override;
@@ -46,6 +50,8 @@ private:
 
     ACTORDIR m_Dir;
     ACTORDIR m_PrevDir;
+
+    _bool m_UseStateIndependentDir = false;
 
     CAnimator* m_Animator;
 

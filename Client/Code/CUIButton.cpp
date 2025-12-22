@@ -15,9 +15,11 @@ int CUIButton::m_NextID = 0;
 
 CUIButton::CUIButton(DEVICE graphicDev, int texOn, int texOff)
     : CUI(graphicDev),
+      m_Rect(),
       m_TextureOn(texOn),
       m_TextureOff(texOff),
-      m_HasText(false)
+      m_HasText(false),
+      m_TextureIndex(texOff)
 {
     m_ID = ++m_NextID;
 
@@ -27,9 +29,11 @@ CUIButton::CUIButton(DEVICE graphicDev, int texOn, int texOff)
 
 CUIButton::CUIButton(const CUIButton& rhs, int texOn, int texOff)
     : CUI(rhs),
+      m_Rect(),
       m_TextureOn(texOn),
       m_TextureOff(texOff),
-      m_HasText(false)
+      m_HasText(false),
+      m_TextureIndex(texOff)
 {
     m_ID = ++m_NextID;
 
@@ -62,7 +66,6 @@ HRESULT CUIButton::Ready_GameObject()
 _int CUIButton::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
     _vec3 pos = m_TransformCom->Get_Pos();   // (0,0) = 화면 중앙, +Y = 위
     _vec3 size = m_TransformCom->Get_Scale(); // 픽셀 단위 가정
@@ -129,6 +132,7 @@ void CUIButton::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUIButton::Render_GameObject()
