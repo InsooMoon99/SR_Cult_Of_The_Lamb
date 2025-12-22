@@ -416,7 +416,7 @@ _int CStage::Update_Scene(const _float& timeDelta)
             CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::KITCHEN);
     }
 
-    // xptmxm dksdmstn
+    // 상자 생성
     if (CDInputMgr::GetInstance()->KeyDown(DIK_U))
     {
         CChest* tmp = CChest::Create(m_GraphicDev, { 23, 2, 23 });
