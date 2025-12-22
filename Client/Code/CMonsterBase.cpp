@@ -201,7 +201,7 @@ void CMonsterBase::OnBeginOverlap(CCollider* self, CCollider* other)
     if (wall)
         return;
 
-  if(self->Get_CollisionLayer()== other->Get_CollisionLayer())
+    if(self->Get_CollisionLayer() == other->Get_CollisionLayer())
         return;
 
     m_bHurt = true;

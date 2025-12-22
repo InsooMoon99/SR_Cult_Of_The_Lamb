@@ -10,6 +10,7 @@
 #include "CTransform.h"
 #include "CRigidbody.h"
 #include "CCollisionManager.h"
+#include "CSoundMgr.h"
 
 CEyeball::CEyeball(DEVICE graphicDev, CMonsterBase* boss)
     : CMonsterBase(graphicDev), m_RigidbodyCom(nullptr), m_EyeballController(nullptr), m_Boss(boss)
@@ -69,6 +70,9 @@ void CEyeball::Initialize_GameObject()
                     hitData.dir = { 0.f, 0.f, 0.f };
 
                     bossCombat->Apply_Damage(hitData);
+
+                    CSoundMgr::GetInstance()->Play_Once(
+                        L"Boss/DeathCat/DeathCat_GetHit.wav", SOUNDTYPE::SOUND_BOSS, 0.4f);
                 }
 
                 m_Boss->Set_Hurt(true);
