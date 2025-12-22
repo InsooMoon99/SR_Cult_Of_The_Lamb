@@ -48,6 +48,8 @@ _int CBossChain::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CGameObject::Update_GameObject(timeDelta);
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
+
     if (m_flag == false)
     {
         {
@@ -113,7 +115,6 @@ void CBossChain::LateUpdate_GameObject(const _float& timeDelta)
 {
     CGameObject::LateUpdate_GameObject(timeDelta);
 
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 }
 
 void CBossChain::Render_GameObject()

@@ -29,6 +29,7 @@ public:
 public:
     void    Set_Bounds(_vec3 position, _vec3 size);
     void    Set_Callback(TriggerCallback callback);
+    void    Clear_Callback() { m_Callback = nullptr; }  // 콜백 안전 해제
     void    Set_TriggerOnce(_bool once) { m_TriggerOnce = once; }
     void    Set_ShowDebug(_bool show);
 

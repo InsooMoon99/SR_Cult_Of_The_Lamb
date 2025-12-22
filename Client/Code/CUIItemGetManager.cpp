@@ -40,6 +40,8 @@ _int CUIItemGetManager::Update_GameObject(const _float& timeDelta)
 {
     int exit = CGameObject::Update_GameObject(timeDelta);
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+
     m_IsAnyShifting = false;
 
     if (m_UIItemGets.empty())
@@ -89,8 +91,6 @@ void CUIItemGetManager::LateUpdate_GameObject(const _float& timeDelta)
             ++iter;
         }
     }
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUIItemGetManager::Render_GameObject()

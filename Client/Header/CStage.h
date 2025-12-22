@@ -31,6 +31,7 @@ public:
     _int    Update_Scene(const _float& timeDelta) override;
     void    LateUpdate_Scene(const _float& timeDelta) override;
     void    Render_Scene() override;
+    void    PreDestroy_Scene() override;  // 씬 전환 전 정리
 
 public:
     CUICookingMenu*      Get_CookingMenu() { return m_CookingMenu; }
@@ -72,13 +73,14 @@ private:
     CPlayerGathering*    m_PlayerGatherCom;
     CPlayerConstruction* m_PlayerConstructionCom;
     CUI_Text*            m_VillageEnterUI;
-    _float               m_Alpha      = 0;
-    _float               m_UIOpenTime = 3.f;
-    _bool                m_StageBegin;
     CWorldInteractive*   m_WorldInteractive;
-    _int                 m_FollowerSpawnStep  = 0;
-    //CWorkBench*   m_WorkBench;
-    //CKitchen*     m_Kitchen;
-    //CFollowerCow* m_FollowerCow;
 
+private:
+    _int m_FollowerSpawnStep = 0;
+
+    _float m_Alpha      = 0;
+    _float m_UIOpenTime = 3.f;
+
+    _bool m_StageBegin =  false;
+    _bool m_CameraZoomOut = false;
 };

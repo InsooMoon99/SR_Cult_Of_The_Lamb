@@ -41,6 +41,8 @@ HRESULT CUIWeapon::Ready_GameObject()
 _int CUIWeapon::Update_GameObject(const _float& timeDelta)
 {
     _int exit = CUI::Update_GameObject(timeDelta);
+    
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 
     CScene* scene = CManagement::GetInstance()->Get_Scene();
 
@@ -62,8 +64,6 @@ _int CUIWeapon::Update_GameObject(const _float& timeDelta)
 void CUIWeapon::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUIWeapon::Render_GameObject()

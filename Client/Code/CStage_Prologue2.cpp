@@ -27,7 +27,10 @@
 #include "CUI_Interactive.h"
 #include "CInteractiveGrass.h"
 #include "CDropSystem.h"
+#include "CMapObjectMgr.h"
+#include "CFogMgr.h"
 #include "CSceneMgr.h"
+#include "CMapObjectMgr.h"
 
 CStage_Prologue2::CStage_Prologue2(DEVICE graphicDev)
     : Engine::CScene(graphicDev),
@@ -67,7 +70,8 @@ void CStage_Prologue2::Initialize_Scene()
 
     //m_Terrain->LoadMapOnStart("../Bin//Resource/Data/Terrain/Terrain_Tutorial2.map");
 
-    CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Prologue.wav", 0.4f, true, 1.f);
+    //CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Prologue.wav", 0.4f, true, 1.f);
+    CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Battle1.wav", 0.2f, true, 0.5f);
 
     auto player = dynamic_cast<CPlayer*>(m_PlayerTransform->Get_Owner());
     NULL_CHECK(player);
@@ -144,13 +148,10 @@ _int CStage_Prologue2::Update_Scene(const _float& timeDelta)
 
     if (m_WarpStarted)
     {
-        m_WarpTimer += timeDelta;
-
-        if (m_WarpTimer >= 1.0f)
-        {
+        // 워프 애니메이션이 시작한 이후, 마을로 수동 이동 테스트
+        if (CDInputMgr::GetInstance()->KeyDown(DIK_COMMA))
             CSceneMgr::GetInstance()->Change_SceneMgr(SCENETYPE::SC_STAGE);
-        }
-        
+
         // auto animator = dynamic_cast<CAnimator*>(
         //     m_Player->Get_Component(ID_DYNAMIC, COMPONENTTYPE::ANIMATOR));
 
@@ -199,7 +200,6 @@ HRESULT CStage_Prologue2::Ready_Environment_Layer(LAYERTYPE layerType)
     if (nullptr == layer)
         return E_FAIL;
 
-    // 프롤로그 2는 방 4개만?
     for (_int i = 0; i < static_cast<_int>(Room::PROLOGUE2_END); i++)
     {
         Room room = static_cast<Room>(i);
@@ -332,12 +332,13 @@ HRESULT CStage_Prologue2::Ready_GameLogic_Layer(LAYERTYPE layerType)
         // 에디터에 카메라 설정
         CMainEditorMgr::GetInstance()->Set_MainCamera(m_CamController);
     }
+
     //풀 생성
     CInteractiveGrass* grass = CInteractiveGrass::Create(m_GraphicDev);
     NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
         FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
             L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
-    grass->Get_Transform()->Set_Pos(110.f, 1.f, 8.f);
+    grass->Get_Transform()->Set_Pos(116.f, 1.f, 11.f);
     grass->Set_EnableHoverCheck(false);
     grass->Check_WorldState();
     
@@ -345,7 +346,55 @@ HRESULT CStage_Prologue2::Ready_GameLogic_Layer(LAYERTYPE layerType)
     NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
         FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
             L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
-    grass->Get_Transform()->Set_Pos(122.f, 1.f, 16.f);
+    grass->Get_Transform()->Set_Pos(119.f, 1.f, 11.f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
+
+    grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(117.5f, 1.f, 9.5f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
+
+    grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+        FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+            L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(117.5f, 1.f, 12.5f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
+
+    grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+                     L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(116.75, 1.f, 10.25f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
+
+    grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+                     L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(116.75, 1.f, 11.75f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
+
+    grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+                     L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(118.25, 1.f, 10.25f);
+    grass->Set_EnableHoverCheck(false);
+    grass->Check_WorldState();
+
+    grass = CInteractiveGrass::Create(m_GraphicDev);
+    NULL_CHECK_RETURN_MSG(grass, E_FAIL, L"CStage::Ready_GameLogic_Layer() failed: CInteractiveGrass::Create() returned null")
+    FAILED_CHECK_MSG(layer->Add_GameObject(OBJTYPE::INTERACTIVE, grass),
+                     L"CStage::Ready_GameLogic_Layer() failed: CLayer::Add_GameObject(CInteractiveGrass) failed");
+    grass->Get_Transform()->Set_Pos(118.25, 1.f, 11.75f);
     grass->Set_EnableHoverCheck(false);
     grass->Check_WorldState();
 
@@ -668,8 +717,6 @@ void CStage_Prologue2::Rebirth_End()
 
         if (playerAnimator && playerAnimator->Is_AnimationFinished())
         {
-            CSoundMgr::GetInstance()->Play_BGM(L"BGM/BGM_Battle1.wav", 0.2f, true, 0.5f);
-
             m_IsRebirthPlaying = false;
 
             auto player = dynamic_cast<CPlayer*>(m_Player);
@@ -751,7 +798,50 @@ CStage_Prologue2* CStage_Prologue2::Create(DEVICE graphicDev)
     return stagePrologue;
 }
 
+void CStage_Prologue2::PreDestroy_Scene()
+{
+    // 카메라 콜백 해제 (Persistent Object인 카메라가 씬 삭제 후에도 콜백을 들고 있으면 위험)
+    if (m_CamController)
+    {
+        auto camMovement = m_CamController->Get_OwnerCamMovement();
+        if (camMovement)
+        {
+            camMovement->Set_OnTransitionEnd(nullptr);
+        }
+    }
+
+    // 대화 UI 콜백 해제
+    if (m_Dialogue)
+    {
+        m_Dialogue->Set_OnDialogueEnd(nullptr);
+    }
+
+    // 트리거 콜백 해제 (씬 삭제 시 트리거가 this를 참조하는 콜백 실행 방지)
+    auto gameLayer = m_Layers[LAYERTYPE::GAMELOGIC];
+    if (gameLayer)
+    {
+        auto& objects = gameLayer->Get_Objects();
+        auto iter = objects.find(OBJTYPE::TRIGGER);
+        if (iter != objects.end())
+        {
+            for (auto trigger : iter->second)
+            {
+                auto dungeonTrigger = dynamic_cast<CTrigger_Dungeon*>(trigger);
+                if (dungeonTrigger)
+                    dungeonTrigger->Clear_Callback();
+            }
+        }
+    }
+
+    // 맵 오브젝트, 포그 등 매니저에 등록된 오브젝트들 정리
+    CMapObjectMgr::GetInstance()->Clear_PlacedObjects();
+    CFogMgr::GetInstance()->Clear_AllFog();
+}
+
 void CStage_Prologue2::Free()
 {
+    // 조명 기본값으로 복구
+    CScene::Ready_Light();
+
     CScene::Free();
 }

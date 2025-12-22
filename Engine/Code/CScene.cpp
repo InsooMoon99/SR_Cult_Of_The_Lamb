@@ -105,6 +105,28 @@ void CScene::LateUpdate_Scene(const _float& timeDelta)
 
 void CScene::Free()
 {
+    // 레이어 삭제 순서 명시화: UI → GAMELOGIC → ENVIRONMENT
+    // (의존성 역순으로 삭제하여 dangling pointer 방지)
+    
+    if (m_Layers.count(LAYERTYPE::UI) > 0)
+    {
+        Safe_Release(m_Layers[LAYERTYPE::UI]);
+        m_Layers.erase(LAYERTYPE::UI);
+    }
+    
+    if (m_Layers.count(LAYERTYPE::GAMELOGIC) > 0)
+    {
+        Safe_Release(m_Layers[LAYERTYPE::GAMELOGIC]);
+        m_Layers.erase(LAYERTYPE::GAMELOGIC);
+    }
+    
+    if (m_Layers.count(LAYERTYPE::ENVIRONMENT) > 0)
+    {
+        Safe_Release(m_Layers[LAYERTYPE::ENVIRONMENT]);
+        m_Layers.erase(LAYERTYPE::ENVIRONMENT);
+    }
+    
+    // 나머지 레이어 정리
     for_each(m_Layers.begin(), m_Layers.end(), CDeleteMap());
     m_Layers.clear();
 
