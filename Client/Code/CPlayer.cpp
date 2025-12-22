@@ -5,19 +5,15 @@
 #include "CAttackSphere.h"
 #include "CBoxCollider.h"
 #include "CBuildingBase.h"
-#include "CBuildingBase.h"
 #include "CCombatStat.h"
 #include "CCreateHelper.h"
 #include "CDInputMgr.h"
 #include "CDroppedItem.h"
 #include "CDropSystem.h"
 #include "CInteractiveGrass.h"
-#include "CInteractiveGrass.h"
 #include "CInventory.h"
 #include "CLayer.h"
-#include "CLayer.h"
 #include "CMonster.h"
-#include "CMonsterBase.h"
 #include "CMonsterBase.h"
 #include "CNPCBase.h"
 #include "CPlayerAttack.h"
@@ -51,7 +47,6 @@ CPlayer::CPlayer(DEVICE graphicDev)
       m_PlayerConstructionCom(nullptr),
       m_InteractiveUI(nullptr),
       m_OverlapBegin(false)
-
 { }
 
 CPlayer::CPlayer(const CPlayer& rhs)
