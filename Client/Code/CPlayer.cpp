@@ -226,6 +226,7 @@ void CPlayer::OnStayOverlap(CCollider* self, CCollider* other)
        m_InteractiveUI->Set_IsActive(true);
        m_InteractiveUI->Get_Transform()->Set_Scale(110.f, 35.f, 1.f);
        m_InteractiveUI->Get_Transform()->Set_Pos(0.f, -250.f, 1.f);
+
        if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
        {
            m_InteractiveUI->Set_IsActive(false);
