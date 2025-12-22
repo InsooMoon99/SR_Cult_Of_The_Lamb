@@ -10,6 +10,7 @@
 #include "CProjectile.h"
 #include "CRandomMgr.h"
 #include "CTimerMgr.h"
+#include "CSoundMgr.h"
 
 const _int CIRCLE_BULLET_MAX = 12;
 
@@ -236,6 +237,10 @@ void CEyeball_Attack::Bullet_Dispresion()
     // 8개 탄환 360도로 분산하게
     _vec3 eyeballPos = m_Controller->Get_OwnerTransform()->Get_Pos();
 
+    CSoundMgr::GetInstance()->Play_Once_Pitched(L"Boss/DeathCat/Bomb_Shoot3.wav",
+        SOUND_EFFECT,
+        0.2f, 1.55f);
+
     _int bulletCount = 8;
     _float angleStep = 360.f / static_cast<_float>(bulletCount);
 
@@ -288,6 +293,10 @@ void CEyeball_Attack::Bullet_Circle()
     // 탄환 순차 생성 후 완료하면 Shoot
     _float delta = CTimerMgr::GetInstance()->Get_TimeDelta();
     m_circleTimer += delta;
+
+    //CSoundMgr::GetInstance()->Play_Once_Pitched(L"Boss/DeathCat/Bomb_Shoot3.wav",
+    //    SOUND_EFFECT,
+    //    0.2f, 1.55f);
 
     if (m_circleTimer < 0.1f)
         return;
@@ -385,6 +394,10 @@ void CEyeball_Attack::Bullet_Brust()
     _vec3 eyeballPos = m_Controller->Get_OwnerTransform()->Get_Pos();
 
     CBoss2_Bullet* bullet = nullptr;
+
+    //CSoundMgr::GetInstance()->Play_Once_Pitched(L"Boss/DeathCat/Bomb_Shoot3.wav",
+    //    SOUND_EFFECT,
+    //    0.2f, 1.55f);
 
     CAttackBuilder(m_GraphicDev, m_Owner)
         .SetType<CBoss2_Bullet>()

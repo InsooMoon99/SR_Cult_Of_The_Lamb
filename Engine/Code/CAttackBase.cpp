@@ -1,5 +1,4 @@
 ﻿#include "CAttackBase.h"
-
 #include "CBoxCollider.h"
 #include "CCombatStat.h"
 #include "CCreateHelper.h"
@@ -7,7 +6,6 @@
 #include "CRenderer.h"
 #include "CTimerMgr.h"
 #include "CTransform.h"
-
 
 CAttackBase::CAttackBase(DEVICE graphicDev)
     : CGameObject(graphicDev),
@@ -129,13 +127,13 @@ void CAttackBase::OnBeginOverlap(CCollider* self, CCollider* other)
     // 파티클 있는지 확인
     if (m_AttackData.hitParticle.IsValid())
     {
-        const auto& particle = m_AttackData.hitParticle;
-
-        CParticleHelper::Spawn_Particle_Random(
-            hitterPos,
-            L"HitEffect_Star",
-            14,
-            2.f, 1.f);
+        //const auto& particle = m_AttackData.hitParticle;
+        //
+        //CParticleHelper::Spawn_Particle_Random(
+        //    hitterPos,
+        //    L"HitEffect_Star",
+        //    14,
+        //    2.f, 1.f);
     }
 
     // 데미지를 줬으면, 삭제 요청 -> AttackBuilder에서 세팅

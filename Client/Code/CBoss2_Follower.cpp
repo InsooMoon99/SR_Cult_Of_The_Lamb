@@ -39,7 +39,12 @@ void CBoss2_Follower::Enter()
         m_TargetPos = m_StartPos;
         m_TargetPos.y -= 0.3f;
         m_TargetPos.z -= 10.f;
+
+            _vec3 scale = transform->Get_Scale();
+            scale.x = -fabs(scale.x);  
+            transform->Set_Scale(scale);
     }
+
     _vec3 scale = transform->Get_Scale();
     scale.x = -fabs(scale.x);  
     transform->Set_Scale(scale);

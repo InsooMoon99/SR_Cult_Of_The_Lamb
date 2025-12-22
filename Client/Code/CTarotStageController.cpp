@@ -217,6 +217,7 @@ void CTarotStageController::Create_Cards()
     m_TarotCard2->Get_Transform()->Set_Scale(300.f, 500.f, 1.f);
     m_TarotCard2->Get_Transform()->Set_Pos(250.f, 0.f, 1.f);
     m_TarotCard2->InitializeScale();
+
     CPlayerSkill* playerskill = dynamic_cast<CPlayerSkill*>(CManagement::GetInstance()->Get_Component(COMPONENTID::ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::PL_SKILL));
     m_TarotCard2->SetOnClick([this, playerskill]() {playerskill->Set_SkillUnlocked(true); playerskill->Set_CurrentCharges(3); });
 }

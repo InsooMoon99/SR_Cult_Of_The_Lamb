@@ -35,8 +35,8 @@ void CTrigger_Dungeon::Render_GameObject()
         m_GraphicDev->SetTransform(D3DTS_WORLD, &m_TransformCom->Get_World());
 
     // 버퍼 렌더링
-    if (m_ColliderCom)
-        m_ColliderCom->Render();
+    //if (m_ColliderCom)
+    //    m_ColliderCom->Render();
 }
 
 void CTrigger_Dungeon::Render_Editor()

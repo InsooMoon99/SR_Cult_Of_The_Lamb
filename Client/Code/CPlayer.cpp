@@ -117,6 +117,11 @@ void CPlayer::Initialize_GameObject()
 
     m_InteractiveUI = CUI_Interactive::Create(m_GraphicDev);
     CManagement::GetInstance()->Get_Scene()->Get_Layer(LAYERTYPE::UI)->Add_GameObject(OBJTYPE::UI, m_InteractiveUI);
+
+    CPlayerSkill* playerskill = dynamic_cast<CPlayerSkill*>(CManagement::GetInstance()->Get_Component(COMPONENTID::ID_STATIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::PL_SKILL));
+    {
+        playerskill->Set_SkillUnlocked(true); playerskill->Set_CurrentCharges(3);
+    };
 }
 
 _int CPlayer::Update_GameObject(const _float& timeDelta)

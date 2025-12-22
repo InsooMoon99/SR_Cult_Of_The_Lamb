@@ -75,9 +75,9 @@ _uint CLoading::Loading_ForBoss1()
 
     vector<future<HRESULT>> futures;
 
-    //futures.push_back(async(launch::async, [&]() {
-    //    return resourceMgr->Ready_BossP1(m_GraphicDev);
-    //    }));
+    futures.push_back(async(launch::async, [&]() {
+        return resourceMgr->Ready_BossP1(m_GraphicDev);
+        }));
 
     //futures.push_back(async(launch::async, [&]() {
     //    return resourceMgr->Ready_BossP2(m_GraphicDev);

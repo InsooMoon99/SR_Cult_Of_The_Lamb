@@ -48,7 +48,7 @@ HRESULT CBossPhase1::Ready_GameObject()
     m_TransformCom->Set_Pos(StartPos.x, m_TransformCom->Get_Scale().y, StartPos.z);
     m_TransformCom->Set_RotationAxis(ROT_X, D3DXToRadian(25.f));
 
-    m_CombatStatCom->Set_MaxHp(500.f);
+    m_CombatStatCom->Set_MaxHp(800.f);
     m_CombatStatCom->Set_Attack(10.f);
     m_CombatStatCom->Set_Mp(5.f);
     m_CombatStatCom->Set_Speed(5.f);

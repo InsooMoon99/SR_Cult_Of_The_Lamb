@@ -9,7 +9,6 @@
           "speaker": "기다리는 자",
           "text": "드디어... 내가 자유로워진다!",
           "hasChoices": false,
-          "leftPadding": 150.0,
           "voicePath": "Boss/Dialogue/DeathCat/Deathcat6.wav"
         },
         {
@@ -284,9 +283,8 @@
         {
           "lineIndex": 0,
           "speaker": "라타우",
-          "text": "나는 라타우. \n한때 그대처럼 선택받은 그릇이었소.",
-          "hasChoices": false,
-          "leftPadding": 20.0
+          "text": "나는 라타우. 한때 그대처럼 선택받은 그릇이었소.",
+          "hasChoices": false
         },
         {
           "lineIndex": 1,
@@ -297,7 +295,7 @@
         {
           "lineIndex": 2,
           "speaker": "라타우",
-          "text": "오래된 사원으로 가게될 것이오. \n거기서 새로운 교단을 만드시오.",
+          "text": "오래된 사원으로 가게될 것이오. 거기서 새로운 교단을 만드시오.",
           "hasChoices": false
         }
       ]
