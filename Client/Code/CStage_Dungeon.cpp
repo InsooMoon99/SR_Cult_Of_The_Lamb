@@ -583,7 +583,7 @@ void CStage_Dungeon::Create_RoomTriggers()
                 m_UIOpenTime = 0.f;   // 아직 안 켠 상태
                 m_EligosNameUI->Set_IsActive(false);
             });
-
+            
             // 방 이동
             Change_Room(Room::BOSS);
         });
