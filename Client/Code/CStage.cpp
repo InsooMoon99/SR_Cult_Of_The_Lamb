@@ -416,7 +416,7 @@ _int CStage::Update_Scene(const _float& timeDelta)
             CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::KITCHEN);
     }
 
-    // xptmxm dksdmstn
+    // 상자 생성
     if (CDInputMgr::GetInstance()->KeyDown(DIK_U))
     {
         CChest* tmp = CChest::Create(m_GraphicDev, { 23, 2, 23 });
@@ -424,12 +424,13 @@ _int CStage::Update_Scene(const _float& timeDelta)
         for (int i = 0 ; i < 5; i++)
         {
             tmp->AddItem(1001, 4);
-            tmp->AddItem(1004, 2);
+            
             tmp->AddItem(1005, 1);
             tmp->AddItem(1003, 2);
         }
-        tmp->AddItem(1001, 2);
 
+        tmp->AddItem(1001, 2);
+        tmp->AddItem(1004, 2);
         tmp->AddItem(1001, 2);
 
         tmp->Initialize_GameObject();
