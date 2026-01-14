@@ -1,9 +1,5 @@
 ﻿#include "pch.h"
 #include "CPlayerController.h"
-#include "CRcTex.h"
-#include "CUI_Dialogue.h"
-#include "CTarotStageController.h"
-#include "CPlayer.h"
 
 #include "CAnimator.h"
 #include "CBoxCollider.h"
@@ -11,16 +7,20 @@
 #include "CDInputMgr.h"
 #include "CGameObject.h"
 #include "CMainEditorMgr.h"
+#include "CPlayer.h"
 #include "CPlayerAttack.h"
 #include "CPlayerConstruction.h"
 #include "CPlayerGathering.h"
 #include "CPlayerInput.h"
 #include "CPlayerMovement.h"
 #include "CPlayerSkill.h"
+#include "CRcTex.h"
 #include "CRigidbody.h"
 #include "CSoundMgr.h"
 #include "CState.h"
+#include "CTarotStageController.h"
 #include "CTimerMgr.h"
+#include "CUI_Dialogue.h"
 #include "CWeaponEquip.h"
 #include "CWorldInteractive.h"
 
@@ -506,7 +506,7 @@ void CPlayerController::Action_Idle(const _float& timeDelta)
 
 void CPlayerController::Action_Run(const _float& timeDelta)
 {
-#pragma region 플레이어 달리기 효과음. 달릴 때는 0.2초, 걸을 때는 0.45 초마다 재생
+#pragma region 플레이어 달리기 효과음. 달릴 때는 0.2초, 걸을 때는 0.5 초마다 재생
     g_Timers[TIMER_SOUND_PL_FOOTSTEP] -= timeDelta;
 
     if (g_Timers[TIMER_SOUND_PL_FOOTSTEP] < 0.f)
@@ -517,7 +517,7 @@ void CPlayerController::Action_Run(const _float& timeDelta)
         if (auto pPlayer = dynamic_cast<CPlayer*>(m_Owner))
         {
             if (pPlayer->Is_PrologueMode())
-                fDelay = 0.45f;
+                fDelay = 0.5f;
         }
 
         g_Timers[TIMER_SOUND_PL_FOOTSTEP] = fDelay;

@@ -36,6 +36,9 @@ _int CUI_Interactive::Update_GameObject(const _float& timeDelta)
         return 0;
 
     _int exit = CUI::Update_GameObject(timeDelta);
+
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+
     //m_TransformCom->Set_Pos(_vec3(0.f, -250.f, 1.f));
     return exit;
 }
@@ -43,8 +46,6 @@ _int CUI_Interactive::Update_GameObject(const _float& timeDelta)
 void CUI_Interactive::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUI_Interactive::Render_GameObject()

@@ -32,6 +32,9 @@ public:
 
     HRESULT Ready_Light() override;
 
+    // 씬 삭제 전 정리 작업
+    void    PreDestroy_Scene() override;
+
 public:
     using OnTriggerCallback = function<void()>;
     void Create_Trigger(_vec3 pos, _vec3 size, OnTriggerCallback callback, _bool autoDestroy = true);;

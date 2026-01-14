@@ -44,7 +44,7 @@ HRESULT CTarotNPC::Ready_GameObject()
 
     m_TransformCom->Set_Pos(331.f, 2.f, 130.5f);
     m_TransformCom->Set_Scale(3.f, 3.f, 3.f);
-    m_BoxColCom->Set_RawSize(_vec3(2.f, 2.f,2.f));
+    m_BoxColCom->Set_RawSize(_vec3(2.f, 2.f, 2.f));
 
     m_BoxColCom->Set_CollisionLayer(COLLISION_LAYERTYPE::ITEM);
 
@@ -64,16 +64,20 @@ _int CTarotNPC::Update_GameObject(const _float& timeDelta)
 
     m_bHovering = Is_Hovering();
 
-    if(m_bPlayerOverlap == true && m_bHovering == true)
+    //if(m_bPlayerOverlap == true && m_bHovering == true)
+
+    //!! 석호 : 내 쪽에서 안됐던 이유
+    // 조건이 마우스 호버링 + 플레이어와 NPC 충돌 + E 키 입력으로 조건 달성이 힘들어서
+    // 아예 실행이 안되던 문제였음...
+
+    //!! 그래서 마우스 호버링 조건은 뺌
+    if (m_bPlayerOverlap == true)
     {
-        if(CDInputMgr::GetInstance()->KeyDown(DIK_E))
-        {
+        if (CDInputMgr::GetInstance()->KeyDown(DIK_E))
             m_TarotStageController->Set_Active(true);
-        }
 
         //TODO 유림 대사
         //타로 카드 고르는 거 연결
-
     }
 
     return exit;
@@ -113,94 +117,96 @@ bool CTarotNPC::Is_Hovering()
     POINT pt;
     GetCursorPos(&pt);
     ScreenToClient(CDInputMgr::GetInstance()->Get_HWND(), &pt);
-    
+
     D3DVIEWPORT9 ViewPort;
     ZeroMemory(&ViewPort, sizeof(D3DVIEWPORT9));
-    
+
     m_GraphicDev->GetViewport(&ViewPort);
-    
+
     _vec3 vMousePos;
-    
+
     //vMousePos.x = pt.x / (ViewPort.Width * 0.5) - 1.f;
     //vMousePos.y = pt.y / (ViewPort.Height * 0.5) + 1.f;
     //vMousePos.z = 1.f;
     vMousePos.x = ((2.0f * pt.x) / ViewPort.Width) - 1.0f;
     vMousePos.y = ((-2.0f * pt.y) / ViewPort.Height) + 1.0f;
     vMousePos.z = 1.0f; // z=1로 해야 정상적인 pick ray가 됨
-    
+
     D3DXMATRIX matProj;
     m_GraphicDev->GetTransform(D3DTS_PROJECTION, &matProj);
     D3DXMatrixInverse(&matProj, nullptr, &matProj);
     //coord
     D3DXVec3TransformCoord(&vMousePos, &vMousePos, &matProj);
-    
+
     D3DXMATRIX matView;
     m_GraphicDev->GetTransform(D3DTS_VIEW, &matView);
     D3DXMatrixInverse(&matView, nullptr, &matView);
     // 뷰 행렬에서 레이랑 해야함
     _vec3 vRayPos = { matView._41, matView._42, matView._43 };// RayPos 는 카메라 위치
     //_vec3 vRayDir = vMousePos - vRayPos;
-    
+
     _vec3 vRayDir; //마우스 방향을 월드 방향으로 변환
     D3DXVec3TransformNormal(&vRayDir, &vMousePos, &matView);
     D3DXVec3Normalize(&vRayDir, &vRayDir);
-    
+
     /////////
-    
+
     // 이건 할 필요 없음 월드 공간 레이 vs 월드 AABB 테스트 할거라서
     /*D3DXMATRIX matWorld = (this->Get_Transform()->Get_World());
      3DXMatrixInverse(&matWorld, 0, &matWorld);
     
      3DXVec3TransformCoord(&vRayPos, &vRayPos, &matWorld);
      3DXVec3TransformNormal(&vRayDir, &vRayDir, &matWorld);*/
-    
+
     //_vec3 half = m_BoxColCom->Get_RawSize() * .5f;
-    
+
     _vec3 Min = m_BoxColCom->Get_Transform()->Get_Pos() - m_BoxColCom->Get_Size() * .5f;
     _vec3 Max = m_BoxColCom->Get_Transform()->Get_Pos() + m_BoxColCom->Get_Size() * .5f;
-    
-    
+
     float timeMin = (Min.x - vRayPos.x) / vRayDir.x;
     float timeMax = (Max.x - vRayPos.x) / vRayDir.x;
     if (timeMin > timeMax) swap(timeMin, timeMax);
-    
+
     float timeMinY = (Min.y - vRayPos.y) / vRayDir.y;
     float timeMaxY = (Max.y - vRayPos.y) / vRayDir.y;
     if (timeMinY > timeMaxY) swap(timeMinY, timeMaxY);
-    
+
     if (timeMinY > timeMax || timeMin > timeMaxY) return false;
-    
+
     if (timeMinY > timeMin) timeMin = timeMinY;
     if (timeMaxY < timeMax) timeMax = timeMaxY;
-    
+
     float timeMinZ = (Min.z - vRayPos.z) / vRayDir.z;
     float timeMaxZ = (Max.z - vRayPos.z) / vRayDir.z;
     if (timeMinZ > timeMaxZ) swap(timeMinZ, timeMaxZ);
-    
+
     if (timeMinZ > timeMax || timeMin > timeMaxZ) return false;
-    
+
     if (timeMinZ > timeMin) timeMin = timeMinZ;
     if (timeMaxZ < timeMax) timeMax = timeMaxZ;
-    
+
     //
-    
+
     if (timeMin > 0.f)
         return true;
-    
-    return false;
 
+    return false;
 }
 
 void CTarotNPC::OnBeginOverlap(CCollider* self, CCollider* other)
 {
     CCharacterBase::OnBeginOverlap(self, other);
 
-//   auto* ply = dynamic_cast<CPlayer*>(other ? other->Get_Owner() : nullptr);
-//   if (!ply) return;
+    //   auto* ply = dynamic_cast<CPlayer*>(other ? other->Get_Owner() : nullptr);
+    //   if (!ply) return;
 
     m_bPlayerOverlap = true;
 
-   CTransform* playerTransform = dynamic_cast<CTransform*>(CManagement::GetInstance()->Get_Component(ID_DYNAMIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::TRANSFORM));
+    CTransform* playerTransform = dynamic_cast<CTransform*>(CManagement::GetInstance()->Get_Component(
+        ID_DYNAMIC,
+        LAYERTYPE::GAMELOGIC,
+        OBJTYPE::PLAYER,
+        COMPONENTTYPE::TRANSFORM));
 
     auto* scene = CManagement::GetInstance()->Get_Scene();
     if (!scene) return;
@@ -210,7 +216,7 @@ void CTarotNPC::OnBeginOverlap(CCollider* self, CCollider* other)
 
     auto* camController = dynamic_cast<CCameraController*>(
         layer->Get_Component(ID_DYNAMIC, OBJTYPE::CAMERA, COMPONENTTYPE::CAM_CONTROLLER)
-        );
+    );
     if (!camController) return;
 
     CCamSetupBuilder(camController)
@@ -218,7 +224,7 @@ void CTarotNPC::OnBeginOverlap(CCollider* self, CCollider* other)
         .PivotOffset(_vec3{ 0.f, 0.f, 6.7f })
         .RotX(45.f)
         .Distance(18.5f)
-        .LagSpeed(5.f)     
+        .LagSpeed(5.f)
         .ZoomSpeed(10.f)
         .Apply();
 }
@@ -232,7 +238,11 @@ void CTarotNPC::OnEndOverlap(CCollider* self, CCollider* other)
     if (m_bPlayerOverlap == true)
         m_bPlayerOverlap = false;
 
-    CTransform* playerTransform = dynamic_cast<CTransform*>(CManagement::GetInstance()->Get_Component(ID_DYNAMIC, LAYERTYPE::GAMELOGIC, OBJTYPE::PLAYER, COMPONENTTYPE::TRANSFORM));
+    CTransform* playerTransform = dynamic_cast<CTransform*>(CManagement::GetInstance()->Get_Component(
+        ID_DYNAMIC,
+        LAYERTYPE::GAMELOGIC,
+        OBJTYPE::PLAYER,
+        COMPONENTTYPE::TRANSFORM));
 
     auto* scene = CManagement::GetInstance()->Get_Scene();
     if (!scene) return;
@@ -245,18 +255,16 @@ void CTarotNPC::OnEndOverlap(CCollider* self, CCollider* other)
 
     if (!camController) return;
 
-           // 플레이어한테 줌인
-           CCamSetupBuilder(camController)
-               .SetTarget(playerTransform)
-			.PivotOffset(_vec3{0.f,0.f,0.f})
-			.Distance(11.f)
-			.RotX(45.f)
-			.RotY(0.f)
-			.LagSpeed(10.f)
-			.ZoomSpeed(5.f)
-               .Apply();
-        
-    
+    // 플레이어한테 줌인
+    CCamSetupBuilder(camController)
+        .SetTarget(playerTransform)
+        .PivotOffset(_vec3{ 0.f, 0.f, 0.f })
+        .Distance(12.f)
+        .RotX(45.f)
+        .RotY(0.f)
+        .LagSpeed(10.f)
+        .ZoomSpeed(5.f)
+        .Apply();
 }
 
 void CTarotNPC::OnStayOverlap(CCollider* self, CCollider* other)
@@ -268,7 +276,7 @@ CTarotNPC* CTarotNPC::Create(DEVICE graphicDev)
 {
     auto tarotNPC = new CTarotNPC(graphicDev);
 
-    if(FAILED(tarotNPC->Ready_GameObject()))
+    if (FAILED(tarotNPC->Ready_GameObject()))
     {
         MSG_BOX("TarotNPC Create Failed");
         Safe_Release(tarotNPC);
@@ -281,13 +289,12 @@ void CTarotNPC::Animation_Setting()
 {
     m_AnimatorCom->Create_Animation(L"TarotNpcIdle", 86, 0.02f);
     m_AnimatorCom->Play_Animation(L"TarotNpcIdle", ANIMSTATE::LOOP, true);
-  //  m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"TarotNpcIdle", ANIMSTATE::LOOP);
-
+    //  m_StateCom->Set_AnimInfo(ACTORSTATE::IDLE, L"TarotNpcIdle", ANIMSTATE::LOOP);
 }
 
 HRESULT CTarotNPC::Add_Component()
 {
-    if(FAILED(CCharacterBase::Add_Component()))
+    if (FAILED(CCharacterBase::Add_Component()))
         return E_FAIL;
 
     //Animator,State,BoxCollider은 CharacterBase에 있음

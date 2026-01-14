@@ -129,5 +129,6 @@ CTrigger* CTrigger::Create(DEVICE graphicDev)
 
 void CTrigger::Free()
 {
+    m_Callback = nullptr;  // 콜백 명시적 해제
     CGameObject::Free();
 }

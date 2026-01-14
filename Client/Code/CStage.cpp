@@ -12,6 +12,7 @@
 #include "CDInputMgr.h"
 #include "CDroppedItem.h"
 #include "CDropSystem.h"
+#include "CFogMgr.h"
 #include "CFollowerCow.h"
 #include "CFollowerElephant.h"
 #include "CFollowerPig.h"
@@ -65,6 +66,7 @@
 #include "CUI_ProgressBar.h"
 #include "CWeaponEquip.h"
 #include "CFontMgr.h"
+#include "CMapObjectMgr.h"
 #include "CUI_Text.h"
 #include "CState.h"
 #include "CRenderer.h"
@@ -84,7 +86,8 @@ CStage::CStage(DEVICE graphicDev)
       m_FollowerCommand(nullptr),
       m_PlayerGatherCom(nullptr),
       m_PlayerConstructionCom(nullptr),
-      m_VillageEnterUI(nullptr)
+      m_VillageEnterUI(nullptr),
+      m_WorldInteractive(nullptr)
 { }
 
 CStage::~CStage()
@@ -100,7 +103,7 @@ HRESULT CStage::Ready_Scene()
 
     if (FAILED(Ready_UI_Layer(LAYERTYPE::UI)))
         return E_FAIL;
-	
+
     if (FAILED(Ready_Light()))
         return E_FAIL;
 
@@ -315,6 +318,51 @@ _int CStage::Update_Scene(const _float& timeDelta)
         }
     }
 
+#pragma region 플레이어 위치에 따른 줌아웃
+
+    auto playerTransform = dynamic_cast<CTransform*>(CManagement::GetInstance()->Get_Component(
+        ID_DYNAMIC,
+        LAYERTYPE::GAMELOGIC,
+        OBJTYPE::PLAYER,
+        COMPONENTTYPE::TRANSFORM));
+
+    if (playerTransform->Get_Pos().z < 36 &&
+        !m_CameraZoomOut)
+    {
+        auto camController = dynamic_cast<CCameraController*>(CManagement::GetInstance()->Get_Component(
+            ID_DYNAMIC,
+            LAYERTYPE::GAMELOGIC,
+            OBJTYPE::CAMERA,
+            COMPONENTTYPE::CAM_CONTROLLER));
+
+        CCamSetupBuilder(camController)
+            .SetTarget(playerTransform)
+            .Distance(14.f)
+            .ZoomSpeed(2.f)
+            .Apply();
+
+        m_CameraZoomOut = true;
+    }
+    else if (playerTransform->Get_Pos().z >= 36 &&
+             m_CameraZoomOut)
+    {
+        auto camController = dynamic_cast<CCameraController*>(CManagement::GetInstance()->Get_Component(
+            ID_DYNAMIC,
+            LAYERTYPE::GAMELOGIC,
+            OBJTYPE::CAMERA,
+            COMPONENTTYPE::CAM_CONTROLLER));
+
+        CCamSetupBuilder(camController)
+            .SetTarget(playerTransform)
+            .Distance(12.f)
+            .ZoomSpeed(5.f)
+            .Apply();
+
+        m_CameraZoomOut = false;
+    }
+
+#pragma endregion
+
     CConstructionMgr::GetInstance()->Update_ConstructionMgr(timeDelta);
 
     if (CDInputMgr::GetInstance()->KeyDown(DIK_F))
@@ -368,20 +416,21 @@ _int CStage::Update_Scene(const _float& timeDelta)
             CConstructionMgr::GetInstance()->Start_BuildMode(BUILDING_TYPE::KITCHEN);
     }
 
-    // xptmxm dksdmstn
+    // 상자 생성
     if (CDInputMgr::GetInstance()->KeyDown(DIK_U))
     {
         CChest* tmp = CChest::Create(m_GraphicDev, { 23, 2, 23 });
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0 ; i < 5; i++)
         {
             tmp->AddItem(1001, 4);
-            tmp->AddItem(1004, 2);
+            
             tmp->AddItem(1005, 1);
             tmp->AddItem(1003, 2);
         }
-        tmp->AddItem(1001, 2);
 
+        tmp->AddItem(1001, 2);
+        tmp->AddItem(1004, 2);
         tmp->AddItem(1001, 2);
 
         tmp->Initialize_GameObject();
@@ -512,7 +561,7 @@ HRESULT CStage::Ready_GameLogic_Layer(LAYERTYPE layerType)
         CCamSetupBuilder(camController)
             .SetTarget(playerTransform)
             .PivotOffset({ 0.f, 0.f, 0.f })
-            .Distance(11.f)
+            .Distance(12.f)
             .RotX(45.f)
             .RotY(0.f)
             .LagSpeed(10.f)
@@ -843,7 +892,7 @@ HRESULT CStage::Ready_UI_Layer(LAYERTYPE layerType)
 
     m_PlayerGatherCom->Set_ProgressBar(uiProgressBar);
     m_PlayerConstructionCom->Set_ProgressBar(uiProgressBar);
-   // m_WorldInteractive->Set_ProgressBar(uiProgressBar);
+    // m_WorldInteractive->Set_ProgressBar(uiProgressBar);
     m_Layers.insert({ layerType, layer });
 
     return S_OK;
@@ -857,6 +906,7 @@ HRESULT CStage::Ready_Prototype()
 HRESULT CStage::Ready_Light()
 {
     //return CScene::Ready_Light();
+
     return S_OK;
 }
 
@@ -959,6 +1009,30 @@ CStage* CStage::Create(DEVICE graphicDev)
     }
 
     return stage;
+}
+
+void CStage::PreDestroy_Scene()
+{
+    // 트리거 콜백 해제 (씬 삭제 시 트리거가 this를 참조하는 콜백 실행 방지)
+    auto gameLayer = m_Layers[LAYERTYPE::GAMELOGIC];
+    if (gameLayer)
+    {
+        auto& objects = gameLayer->Get_Objects();
+        auto iter = objects.find(OBJTYPE::TRIGGER);
+        if (iter != objects.end())
+        {
+            for (auto trigger : iter->second)
+            {
+                auto dungeonTrigger = dynamic_cast<CTrigger_Dungeon*>(trigger);
+                if (dungeonTrigger)
+                    dungeonTrigger->Clear_Callback();
+            }
+        }
+    }
+
+    // 맵 오브젝트, 포그 등 매니저에 등록된 오브젝트들 정리
+    CMapObjectMgr::GetInstance()->Clear_PlacedObjects();
+    CFogMgr::GetInstance()->Clear_AllFog();
 }
 
 void CStage::Free()

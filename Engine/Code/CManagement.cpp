@@ -10,7 +10,8 @@ IMPLEMENT_SINGLETON(CManagement)
 CManagement::CManagement()
     : m_Scene(nullptr),
       m_NextScene(nullptr),
-      m_ShouldChangeScene(false)
+      m_ShouldChangeScene(false),
+      m_IsChangingScene(false)
 { }
 
 CManagement::~CManagement()
@@ -94,8 +95,11 @@ void CManagement::LateUpdate_Scene(const _float& timeDelta)
 
 void CManagement::Render_Scene(DEVICE graphicDev)
 {
-    CRenderer::GetInstance()->Render_GameObject(graphicDev);
+    // 씬 전환 중에는 렌더링 차단
+    if (m_IsChangingScene || !m_Scene)
+        return;
 
+    CRenderer::GetInstance()->Render_GameObject(graphicDev);
     m_Scene->Render_Scene();   // 디버깅 출력용
 }
 
@@ -118,6 +122,13 @@ void CManagement::Commit_ChangeScene()
 {
     if (!m_ShouldChangeScene) return;
 
+    // 씬 전환 시작 - 렌더링 차단
+    m_IsChangingScene = true;
+
+    // 씬 삭제 전 정리 작업 수행
+    if (m_Scene)
+        m_Scene->PreDestroy_Scene();
+
     CRenderer::GetInstance()->Clear_RenderGroup();
 
     Safe_Release(m_Scene);
@@ -125,9 +136,12 @@ void CManagement::Commit_ChangeScene()
     m_NextScene         = nullptr;
     m_ShouldChangeScene = false;
 
-    // 로딩 끝난 후 Initialize 호출
+    // 새 씬 초기화
     if (m_Scene)
         m_Scene->Initialize_Scene();
+
+    // 씬 전환 완료 - 렌더링 재개
+    m_IsChangingScene = false;
 }
 
 void CManagement::Free()

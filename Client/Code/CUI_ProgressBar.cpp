@@ -66,14 +66,14 @@ _int CUI_ProgressBar::Update_GameObject(const _float& timeDelta)
         m_TransformCom->Set_Pos(uiX, uiY, 0.f);
     }
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+
     return exit;
 }
 
 void CUI_ProgressBar::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUI_ProgressBar::Render_GameObject()

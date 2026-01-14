@@ -106,14 +106,14 @@ _int CDroppedItem::Update_GameObject(const _float& timeDelta)
     if (m_Active == true)
         m_SpriteEff->Update_Component(timeDelta);
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
+
     return exit;
 }
 
 void CDroppedItem::LateUpdate_GameObject(const _float& timeDelta)
 {
     CGameObject::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_ALPHA, this);
 }
 
 void CDroppedItem::Render_GameObject()
@@ -377,7 +377,7 @@ void CDroppedItem::Player_ZoomIn(CPlayer* ply)
                 // 기본 프리셋으로 리셋
                 CCamSetupBuilder(camController)
                     .SetTarget(ply->Get_Transform())
-                    .Distance(11.f)
+                    .Distance(12.f)
                     .LagSpeed(2.5f)
                     .ZoomSpeed(2.f)
                     .Apply();

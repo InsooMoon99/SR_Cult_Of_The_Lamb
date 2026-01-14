@@ -94,6 +94,8 @@ _int CUI_Dialogue::Update_GameObject(const _float& timeDelta)
     if (!m_IsActive)
         return exit;
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+
     if (!m_IsTypingComplete && m_CurrentDialogue)
     {
 		m_TypeTimer += timeDelta;
@@ -128,8 +130,6 @@ _int CUI_Dialogue::Update_GameObject(const _float& timeDelta)
 void CUI_Dialogue::LateUpdate_GameObject(const _float& timeDelta)
 {
     CUI::LateUpdate_GameObject(timeDelta);
-
-    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
 }
 
 void CUI_Dialogue::Render_GameObject()
@@ -175,7 +175,7 @@ _bool CUI_Dialogue::Start_Dialogue(const string& dialogueId, const _vec2 boxPos,
         if (!line.voicePath.empty())
         {
             wstring path = CDialogueDB::GetInstance()->Utf8ToWstring(line.voicePath);
-            CSoundMgr::GetInstance()->Play_Once(path.c_str(), SOUND_EFFECT, 0.8f);
+            CSoundMgr::GetInstance()->Play_Once(path.c_str(), SOUND_EFFECT, 0.65f);
         }
     }
 
@@ -214,7 +214,7 @@ void CUI_Dialogue::End_Dialogue()
     {
         //CSoundMgr::GetInstance()->Play_Once(L"UI/Conversation_End.wav",
         //    SOUND_EFFECT,
-        //    1.f);
+        //    0.65f);
         m_OnDialogueEnd(lastId);
     }
 }
@@ -233,7 +233,7 @@ void CUI_Dialogue::Next_Line()
 
         //CSoundMgr::GetInstance()->Play_Once(L"UI/UI_DialogueNext.wav",
         //    SOUND_EFFECT,
-        //    1.f);
+        //    0.65f);
 
         return;  
     }
@@ -251,7 +251,7 @@ void CUI_Dialogue::Next_Line()
     if (!line.voicePath.empty())
     {
         wstring path = CDialogueDB::GetInstance()->Utf8ToWstring(line.voicePath);
-        CSoundMgr::GetInstance()->Play_Once(path.c_str(), SOUND_EFFECT, 0.8f);
+        CSoundMgr::GetInstance()->Play_Once(path.c_str(), SOUND_EFFECT, 0.65f);
     }
 
 	m_TypeTimer = 0.f;              

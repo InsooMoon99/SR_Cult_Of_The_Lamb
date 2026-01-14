@@ -133,6 +133,8 @@ _int CUICookingMenu::Update_GameObject(const _float& timeDelta)
     if (!m_Active)
         return 0;
 
+    CRenderer::GetInstance()->Add_RenderGroup(RENDER_UI, this);
+
     m_Inventory = dynamic_cast<CInventory*>(CManagement::GetInstance()->Get_Component(ID_STATIC,
                                                                                       LAYERTYPE::GAMELOGIC,
                                                                                       OBJTYPE::PLAYER,
